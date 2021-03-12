@@ -152,7 +152,7 @@ public class ID: NSObject {
                     | UInt(input.ovf << 5)
                     | UInt((input.ins >> 11) & 31)
         let ctl_ID = opcodeDecodeROM[Int(address)]
-        let ctl_EX = ~ctl_ID & UInt((1<<21)-1) // only the lower 21 bits are present on real hardware
+        let ctl_EX = ctl_ID & UInt((1<<21)-1) // only the lower 21 bits are present on real hardware
         return ctl_EX
     }
     

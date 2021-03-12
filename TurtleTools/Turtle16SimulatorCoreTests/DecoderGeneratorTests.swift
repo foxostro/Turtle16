@@ -42,7 +42,7 @@ class DecoderGeneratorTests: XCTestCase {
         let generator = DecoderGenerator()
         let decoder = generator.generate()
         for entry in decoder {
-            XCTAssertLessThan(entry, (1<<21)-1)
+            XCTAssertLessThanOrEqual(entry, (1<<21)-1)
         }
     }
     
@@ -51,7 +51,7 @@ class DecoderGeneratorTests: XCTestCase {
         let decoder = generator.generate()
         let indices = generator.indicesForReset()
         for index in indices {
-            XCTAssertEqual(decoder[index], 0)
+            XCTAssertEqual(decoder[index], ID.nopControlWord)
         }
     }
     
@@ -95,27 +95,7 @@ class DecoderGeneratorTests: XCTestCase {
         let decoder = generator.generate()
         for index in generator.indicesForAllConditions(DecoderGenerator.opcodeNop) {
             let controlWord = decoder[index]
-            XCTAssertEqual((controlWord >> HLT) & 1, 0)
-            XCTAssertEqual((controlWord >> SelStoreOpA) & 1, 0)
-            XCTAssertEqual((controlWord >> SelStoreOpB) & 1, 0)
-            XCTAssertEqual((controlWord >> SelRightOpA) & 1, 0)
-            XCTAssertEqual((controlWord >> SelRightOpB) & 1, 0)
-            XCTAssertEqual((controlWord >> FI) & 1, 0)
-            XCTAssertEqual((controlWord >> C0) & 1, 0)
-            XCTAssertEqual((controlWord >> I0) & 1, 0)
-            XCTAssertEqual((controlWord >> I1) & 1, 0)
-            XCTAssertEqual((controlWord >> I2) & 1, 0)
-            XCTAssertEqual((controlWord >> RS0) & 1, 0)
-            XCTAssertEqual((controlWord >> RS1) & 1, 0)
-            XCTAssertEqual((controlWord >> J) & 1, 0)
-            XCTAssertEqual((controlWord >> JABS) & 1, 0)
-            XCTAssertEqual((controlWord >> MemLoad) & 1, 0)
-            XCTAssertEqual((controlWord >> MemStore) & 1, 0)
-            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 0)
-            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 0)
-            XCTAssertEqual((controlWord >> WRL) & 1, 0)
-            XCTAssertEqual((controlWord >> WRH) & 1, 0)
-            XCTAssertEqual((controlWord >> WBEN) & 1, 0)
+            XCTAssertEqual(controlWord, ID.nopControlWord)
         }
     }
     
@@ -124,7 +104,7 @@ class DecoderGeneratorTests: XCTestCase {
         let decoder = generator.generate()
         for index in generator.indicesForAllConditions(DecoderGenerator.opcodeHlt) {
             let controlWord = decoder[index]
-            XCTAssertEqual((controlWord >> HLT) & 1, 1)
+            XCTAssertEqual((controlWord >> HLT) & 1, 0)
         }
     }
     
@@ -133,22 +113,22 @@ class DecoderGeneratorTests: XCTestCase {
         let decoder = generator.generate()
         for index in generator.indicesForAllConditions(DecoderGenerator.opcodeLoad) {
             let controlWord = decoder[index]
-            XCTAssertEqual((controlWord >> HLT) & 1, 0)
-            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0)
-            XCTAssertEqual(~(controlWord >> SelRightOpA) & 3, 0b01)
-            XCTAssertEqual((controlWord >> FI) & 1, 0)
-            XCTAssertEqual((controlWord >> C0) & 1, 1)
-            XCTAssertEqual(~(controlWord >> I0) & 7, 0b011)
-            XCTAssertEqual((controlWord >> RS0) & 3, 0)
-            XCTAssertEqual((controlWord >> J) & 1, 0)
-            XCTAssertEqual((controlWord >> JABS) & 1, 0)
-            XCTAssertEqual((controlWord >> MemLoad) & 1, 1)
-            XCTAssertEqual((controlWord >> MemStore) & 1, 0)
-            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 0)
-            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 0)
-            XCTAssertEqual((controlWord >> WRL) & 1, 1)
-            XCTAssertEqual((controlWord >> WRH) & 1, 1)
-            XCTAssertEqual((controlWord >> WBEN) & 1, 1)
+            XCTAssertEqual((controlWord >> HLT) & 1, 1)
+//            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0b11)
+            XCTAssertEqual((controlWord >> SelRightOpA) & 3, 0b01)
+            XCTAssertEqual((controlWord >> FI) & 1, 1)
+            XCTAssertEqual((controlWord >> C0) & 1, 0)
+            XCTAssertEqual((controlWord >> I0) & 7, 0b011)
+            XCTAssertEqual((controlWord >> RS0) & 3, 0b11)
+            XCTAssertEqual((controlWord >> J) & 1, 1)
+            XCTAssertEqual((controlWord >> JABS) & 1, 1)
+            XCTAssertEqual((controlWord >> MemLoad) & 1, 0)
+            XCTAssertEqual((controlWord >> MemStore) & 1, 1)
+            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 1)
+            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 1)
+            XCTAssertEqual((controlWord >> WRL) & 1, 0)
+            XCTAssertEqual((controlWord >> WRH) & 1, 0)
+            XCTAssertEqual((controlWord >> WBEN) & 1, 0)
         }
     }
     
@@ -157,16 +137,112 @@ class DecoderGeneratorTests: XCTestCase {
         let decoder = generator.generate()
         for index in generator.indicesForAllConditions(DecoderGenerator.opcodeStore) {
             let controlWord = decoder[index]
-            XCTAssertEqual((controlWord >> HLT) & 1, 0)
-            XCTAssertEqual(~(controlWord >> SelStoreOpA) & 3, 0b00)
-            XCTAssertEqual(~(controlWord >> SelRightOpA) & 3, 0b10)
+            XCTAssertEqual((controlWord >> HLT) & 1, 1)
+            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0b00)
+            XCTAssertEqual((controlWord >> SelRightOpA) & 3, 0b10)
+            XCTAssertEqual((controlWord >> FI) & 1, 1)
+            XCTAssertEqual((controlWord >> C0) & 1, 0)
+            XCTAssertEqual((controlWord >> I0) & 7, 0b011)
+            XCTAssertEqual((controlWord >> RS0) & 3, 0b11)
+            XCTAssertEqual((controlWord >> J) & 1, 1)
+            XCTAssertEqual((controlWord >> JABS) & 1, 1)
+            XCTAssertEqual((controlWord >> MemLoad) & 1, 1)
+            XCTAssertEqual((controlWord >> MemStore) & 1, 0)
+            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 0)
+            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 1)
+            XCTAssertEqual((controlWord >> WRL) & 1, 1)
+            XCTAssertEqual((controlWord >> WRH) & 1, 1)
+            XCTAssertEqual((controlWord >> WBEN) & 1, 1)
+        }
+    }
+    
+    func testOpcodeLoadImmediate() throws {
+        let generator = DecoderGenerator()
+        let decoder = generator.generate()
+        for index in generator.indicesForAllConditions(DecoderGenerator.opcodeLi) {
+            let controlWord = decoder[index]
+            XCTAssertEqual((controlWord >> HLT) & 1, 1)
+            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0b10)
+//            XCTAssertEqual((controlWord >> SelRightOpA) & 3, 0b11)
+            XCTAssertEqual((controlWord >> FI) & 1, 1)
+//            XCTAssertEqual((controlWord >> C0) & 1, 1)
+//            XCTAssertEqual((controlWord >> I0) & 7, 0b111)
+//            XCTAssertEqual((controlWord >> RS0) & 3, 0b11)
+            XCTAssertEqual((controlWord >> J) & 1, 1)
+            XCTAssertEqual((controlWord >> JABS) & 1, 1)
+            XCTAssertEqual((controlWord >> MemLoad) & 1, 1)
+            XCTAssertEqual((controlWord >> MemStore) & 1, 1)
+            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 0)
+            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 1)
+            XCTAssertEqual((controlWord >> WRL) & 1, 0)
+            XCTAssertEqual((controlWord >> WRH) & 1, 0)
+            XCTAssertEqual((controlWord >> WBEN) & 1, 0)
+        }
+    }
+    
+    func testOpcodeLoadUpperImmediate() throws {
+        let generator = DecoderGenerator()
+        let decoder = generator.generate()
+        for index in generator.indicesForAllConditions(DecoderGenerator.opcodeLui) {
+            let controlWord = decoder[index]
+            XCTAssertEqual((controlWord >> HLT) & 1, 1)
+            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0b11)
+//            XCTAssertEqual((controlWord >> SelRightOpA) & 3, 0b11)
+            XCTAssertEqual((controlWord >> FI) & 1, 1)
+//            XCTAssertEqual((controlWord >> C0) & 1, 1)
+//            XCTAssertEqual((controlWord >> I0) & 7, 0b11)
+//            XCTAssertEqual((controlWord >> RS0) & 3, 0b11)
+            XCTAssertEqual((controlWord >> J) & 1, 1)
+            XCTAssertEqual((controlWord >> JABS) & 1, 1)
+            XCTAssertEqual((controlWord >> MemLoad) & 1, 1)
+            XCTAssertEqual((controlWord >> MemStore) & 1, 1)
+            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 0)
+            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 1)
+            XCTAssertEqual((controlWord >> WRL) & 1, 1)
+            XCTAssertEqual((controlWord >> WRH) & 1, 0)
+            XCTAssertEqual((controlWord >> WBEN) & 1, 0)
+        }
+    }
+    
+    func testOpcodeCmp() throws {
+        let generator = DecoderGenerator()
+        let decoder = generator.generate()
+        for index in generator.indicesForAllConditions(DecoderGenerator.opcodeCmp) {
+            let controlWord = decoder[index]
+            XCTAssertEqual((controlWord >> HLT) & 1, 1)
+//            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0b11)
+            XCTAssertEqual((controlWord >> SelRightOpA) & 3, 0b00)
             XCTAssertEqual((controlWord >> FI) & 1, 0)
-            XCTAssertEqual(~(controlWord >> C0) & 1, 0)
-            XCTAssertEqual(~(controlWord >> I0) & 7, 0b011)
-            XCTAssertEqual((controlWord >> RS0) & 3, 0)
-            XCTAssertEqual((controlWord >> J) & 1, 0)
-            XCTAssertEqual((controlWord >> JABS) & 1, 0)
-            XCTAssertEqual((controlWord >> MemLoad) & 1, 0)
+            XCTAssertEqual((controlWord >> C0) & 1, 1)
+            XCTAssertEqual((controlWord >> I0) & 7, 0b010)
+            XCTAssertEqual((controlWord >> RS0) & 3, 0b11)
+            XCTAssertEqual((controlWord >> J) & 1, 1)
+            XCTAssertEqual((controlWord >> JABS) & 1, 1)
+            XCTAssertEqual((controlWord >> MemLoad) & 1, 1)
+            XCTAssertEqual((controlWord >> MemStore) & 1, 1)
+            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 1)
+            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 1)
+            XCTAssertEqual((controlWord >> WRL) & 1, 1)
+            XCTAssertEqual((controlWord >> WRH) & 1, 1)
+            XCTAssertEqual((controlWord >> WBEN) & 1, 1)
+        }
+    }
+    
+    func testOpcodeAdd() throws {
+        let generator = DecoderGenerator()
+        let decoder = generator.generate()
+        for index in generator.indicesForAllConditions(DecoderGenerator.opcodeAdd) {
+            let controlWord = decoder[index]
+            XCTAssertEqual((controlWord >> HLT) & 1, 1)
+//            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0b11)
+            XCTAssertEqual((controlWord >> SelRightOpA) & 3, 0b00)
+            XCTAssertEqual((controlWord >> FI) & 1, 0)
+            XCTAssertEqual((controlWord >> C0) & 1, 0)
+            XCTAssertEqual((controlWord >> I0) & 7, 0b011)
+            XCTAssertEqual((controlWord >> RS0) & 3, 0b11)
+            XCTAssertEqual((controlWord >> J) & 1, 1)
+            XCTAssertEqual((controlWord >> JABS) & 1, 1)
+            XCTAssertEqual((controlWord >> MemLoad) & 1, 1)
             XCTAssertEqual((controlWord >> MemStore) & 1, 1)
             XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 1)
             XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 0)
@@ -176,123 +252,27 @@ class DecoderGeneratorTests: XCTestCase {
         }
     }
     
-    func testOpcodeLoadImmediate() throws {
-        let generator = DecoderGenerator()
-        let decoder = generator.generate()
-        for index in generator.indicesForAllConditions(DecoderGenerator.opcodeLi) {
-            let controlWord = decoder[index]
-            XCTAssertEqual((controlWord >> HLT) & 1, 0)
-            XCTAssertEqual(~(controlWord >> SelStoreOpA) & 3, 0b10)
-            XCTAssertEqual((controlWord >> SelRightOpA) & 3, 0)
-            XCTAssertEqual((controlWord >> FI) & 1, 0)
-            XCTAssertEqual((controlWord >> C0) & 1, 0)
-            XCTAssertEqual((controlWord >> I0) & 7, 0)
-            XCTAssertEqual((controlWord >> RS0) & 3, 0)
-            XCTAssertEqual((controlWord >> J) & 1, 0)
-            XCTAssertEqual((controlWord >> JABS) & 1, 0)
-            XCTAssertEqual((controlWord >> MemLoad) & 1, 0)
-            XCTAssertEqual((controlWord >> MemStore) & 1, 0)
-            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 1)
-            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 0)
-            XCTAssertEqual((controlWord >> WRL) & 1, 1)
-            XCTAssertEqual((controlWord >> WRH) & 1, 1)
-            XCTAssertEqual((controlWord >> WBEN) & 1, 1)
-        }
-    }
-    
-    func testOpcodeLoadUpperImmediate() throws {
-        let generator = DecoderGenerator()
-        let decoder = generator.generate()
-        for index in generator.indicesForAllConditions(DecoderGenerator.opcodeLui) {
-            let controlWord = decoder[index]
-            XCTAssertEqual((controlWord >> HLT) & 1, 0)
-            XCTAssertEqual(~(controlWord >> SelStoreOpA) & 3, 0b11)
-            XCTAssertEqual((controlWord >> SelRightOpA) & 3, 0)
-            XCTAssertEqual((controlWord >> FI) & 1, 0)
-            XCTAssertEqual((controlWord >> C0) & 1, 0)
-            XCTAssertEqual((controlWord >> I0) & 7, 0)
-            XCTAssertEqual((controlWord >> RS0) & 3, 0)
-            XCTAssertEqual((controlWord >> J) & 1, 0)
-            XCTAssertEqual((controlWord >> JABS) & 1, 0)
-            XCTAssertEqual((controlWord >> MemLoad) & 1, 0)
-            XCTAssertEqual((controlWord >> MemStore) & 1, 0)
-            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 1)
-            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 0)
-            XCTAssertEqual((controlWord >> WRL) & 1, 0)
-            XCTAssertEqual((controlWord >> WRH) & 1, 1)
-            XCTAssertEqual((controlWord >> WBEN) & 1, 1)
-        }
-    }
-    
-    func testOpcodeCmp() throws {
-        let generator = DecoderGenerator()
-        let decoder = generator.generate()
-        for index in generator.indicesForAllConditions(DecoderGenerator.opcodeCmp) {
-            let controlWord = decoder[index]
-            XCTAssertEqual((controlWord >> HLT) & 1, 0)
-            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0)
-            XCTAssertEqual(~(controlWord >> SelRightOpA) & 3, 0b00)
-            XCTAssertEqual((controlWord >> FI) & 1, 1)
-            XCTAssertEqual(~(controlWord >> C0) & 1, 1)
-            XCTAssertEqual(~(controlWord >> I0) & 7, 0b010)
-            XCTAssertEqual((controlWord >> RS0) & 3, 0)
-            XCTAssertEqual((controlWord >> J) & 1, 0)
-            XCTAssertEqual((controlWord >> JABS) & 1, 0)
-            XCTAssertEqual((controlWord >> MemLoad) & 1, 0)
-            XCTAssertEqual((controlWord >> MemStore) & 1, 0)
-            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 0)
-            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 0)
-            XCTAssertEqual((controlWord >> WRL) & 1, 0)
-            XCTAssertEqual((controlWord >> WRH) & 1, 0)
-            XCTAssertEqual((controlWord >> WBEN) & 1, 0)
-        }
-    }
-    
-    func testOpcodeAdd() throws {
-        let generator = DecoderGenerator()
-        let decoder = generator.generate()
-        for index in generator.indicesForAllConditions(DecoderGenerator.opcodeAdd) {
-            let controlWord = decoder[index]
-            XCTAssertEqual((controlWord >> HLT) & 1, 0)
-            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0)
-            XCTAssertEqual(~(controlWord >> SelRightOpA) & 3, 0b00)
-            XCTAssertEqual((controlWord >> FI) & 1, 1)
-            XCTAssertEqual(~(controlWord >> C0) & 1, 0)
-            XCTAssertEqual(~(controlWord >> I0) & 7, 0b011)
-            XCTAssertEqual((controlWord >> RS0) & 3, 0)
-            XCTAssertEqual((controlWord >> J) & 1, 0)
-            XCTAssertEqual((controlWord >> JABS) & 1, 0)
-            XCTAssertEqual((controlWord >> MemLoad) & 1, 0)
-            XCTAssertEqual((controlWord >> MemStore) & 1, 0)
-            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 0)
-            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 1)
-            XCTAssertEqual((controlWord >> WRL) & 1, 1)
-            XCTAssertEqual((controlWord >> WRH) & 1, 1)
-            XCTAssertEqual((controlWord >> WBEN) & 1, 1)
-        }
-    }
-    
     func testOpcodeSub() throws {
         let generator = DecoderGenerator()
         let decoder = generator.generate()
         for index in generator.indicesForAllConditions(DecoderGenerator.opcodeSub) {
             let controlWord = decoder[index]
-            XCTAssertEqual((controlWord >> HLT) & 1, 0)
-            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0)
-            XCTAssertEqual(~(controlWord >> SelRightOpA) & 3, 0b00)
-            XCTAssertEqual((controlWord >> FI) & 1, 1)
-            XCTAssertEqual(~(controlWord >> C0) & 1, 1)
-            XCTAssertEqual(~(controlWord >> I0) & 7, 0b010)
-            XCTAssertEqual((controlWord >> RS0) & 3, 0)
-            XCTAssertEqual((controlWord >> J) & 1, 0)
-            XCTAssertEqual((controlWord >> JABS) & 1, 0)
-            XCTAssertEqual((controlWord >> MemLoad) & 1, 0)
-            XCTAssertEqual((controlWord >> MemStore) & 1, 0)
-            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 0)
-            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 1)
-            XCTAssertEqual((controlWord >> WRL) & 1, 1)
-            XCTAssertEqual((controlWord >> WRH) & 1, 1)
-            XCTAssertEqual((controlWord >> WBEN) & 1, 1)
+            XCTAssertEqual((controlWord >> HLT) & 1, 1)
+//            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0b11)
+            XCTAssertEqual((controlWord >> SelRightOpA) & 3, 0b00)
+            XCTAssertEqual((controlWord >> FI) & 1, 0)
+            XCTAssertEqual((controlWord >> C0) & 1, 1)
+            XCTAssertEqual((controlWord >> I0) & 7, 0b010)
+            XCTAssertEqual((controlWord >> RS0) & 3, 0b11)
+            XCTAssertEqual((controlWord >> J) & 1, 1)
+            XCTAssertEqual((controlWord >> JABS) & 1, 1)
+            XCTAssertEqual((controlWord >> MemLoad) & 1, 1)
+            XCTAssertEqual((controlWord >> MemStore) & 1, 1)
+            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 1)
+            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 0)
+            XCTAssertEqual((controlWord >> WRL) & 1, 0)
+            XCTAssertEqual((controlWord >> WRH) & 1, 0)
+            XCTAssertEqual((controlWord >> WBEN) & 1, 0)
         }
     }
     
@@ -301,22 +281,22 @@ class DecoderGeneratorTests: XCTestCase {
         let decoder = generator.generate()
         for index in generator.indicesForAllConditions(DecoderGenerator.opcodeAnd) {
             let controlWord = decoder[index]
-            XCTAssertEqual((controlWord >> HLT) & 1, 0)
-            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0)
-            XCTAssertEqual(~(controlWord >> SelRightOpA) & 3, 0b00)
-            XCTAssertEqual((controlWord >> FI) & 1, 1)
-            XCTAssertEqual(~(controlWord >> C0) & 1, 0)
-            XCTAssertEqual(~(controlWord >> I0) & 7, 0b110)
-            XCTAssertEqual((controlWord >> RS0) & 3, 0)
-            XCTAssertEqual((controlWord >> J) & 1, 0)
-            XCTAssertEqual((controlWord >> JABS) & 1, 0)
-            XCTAssertEqual((controlWord >> MemLoad) & 1, 0)
-            XCTAssertEqual((controlWord >> MemStore) & 1, 0)
-            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 0)
-            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 1)
-            XCTAssertEqual((controlWord >> WRL) & 1, 1)
-            XCTAssertEqual((controlWord >> WRH) & 1, 1)
-            XCTAssertEqual((controlWord >> WBEN) & 1, 1)
+            XCTAssertEqual((controlWord >> HLT) & 1, 1)
+//            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0b11)
+            XCTAssertEqual((controlWord >> SelRightOpA) & 3, 0b00)
+            XCTAssertEqual((controlWord >> FI) & 1, 0)
+            XCTAssertEqual((controlWord >> C0) & 1, 0)
+            XCTAssertEqual((controlWord >> I0) & 7, 0b110)
+            XCTAssertEqual((controlWord >> RS0) & 3, 0b11)
+            XCTAssertEqual((controlWord >> J) & 1, 1)
+            XCTAssertEqual((controlWord >> JABS) & 1, 1)
+            XCTAssertEqual((controlWord >> MemLoad) & 1, 1)
+            XCTAssertEqual((controlWord >> MemStore) & 1, 1)
+            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 1)
+            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 0)
+            XCTAssertEqual((controlWord >> WRL) & 1, 0)
+            XCTAssertEqual((controlWord >> WRH) & 1, 0)
+            XCTAssertEqual((controlWord >> WBEN) & 1, 0)
         }
     }
     
@@ -325,22 +305,22 @@ class DecoderGeneratorTests: XCTestCase {
         let decoder = generator.generate()
         for index in generator.indicesForAllConditions(DecoderGenerator.opcodeOr) {
             let controlWord = decoder[index]
-            XCTAssertEqual((controlWord >> HLT) & 1, 0)
-            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0)
-            XCTAssertEqual(~(controlWord >> SelRightOpA) & 3, 0b00)
-            XCTAssertEqual((controlWord >> FI) & 1, 1)
-            XCTAssertEqual(~(controlWord >> C0) & 1, 0)
-            XCTAssertEqual(~(controlWord >> I0) & 7, 0b101)
-            XCTAssertEqual((controlWord >> RS0) & 3, 0)
-            XCTAssertEqual((controlWord >> J) & 1, 0)
-            XCTAssertEqual((controlWord >> JABS) & 1, 0)
-            XCTAssertEqual((controlWord >> MemLoad) & 1, 0)
-            XCTAssertEqual((controlWord >> MemStore) & 1, 0)
-            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 0)
-            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 1)
-            XCTAssertEqual((controlWord >> WRL) & 1, 1)
-            XCTAssertEqual((controlWord >> WRH) & 1, 1)
-            XCTAssertEqual((controlWord >> WBEN) & 1, 1)
+            XCTAssertEqual((controlWord >> HLT) & 1, 1)
+//            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0b11)
+            XCTAssertEqual((controlWord >> SelRightOpA) & 3, 0b00)
+            XCTAssertEqual((controlWord >> FI) & 1, 0)
+            XCTAssertEqual((controlWord >> C0) & 1, 0)
+            XCTAssertEqual((controlWord >> I0) & 7, 0b101)
+            XCTAssertEqual((controlWord >> RS0) & 3, 0b11)
+            XCTAssertEqual((controlWord >> J) & 1, 1)
+            XCTAssertEqual((controlWord >> JABS) & 1, 1)
+            XCTAssertEqual((controlWord >> MemLoad) & 1, 1)
+            XCTAssertEqual((controlWord >> MemStore) & 1, 1)
+            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 1)
+            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 0)
+            XCTAssertEqual((controlWord >> WRL) & 1, 0)
+            XCTAssertEqual((controlWord >> WRH) & 1, 0)
+            XCTAssertEqual((controlWord >> WBEN) & 1, 0)
         }
     }
     
@@ -349,22 +329,22 @@ class DecoderGeneratorTests: XCTestCase {
         let decoder = generator.generate()
         for index in generator.indicesForAllConditions(DecoderGenerator.opcodeXor) {
             let controlWord = decoder[index]
-            XCTAssertEqual((controlWord >> HLT) & 1, 0)
-            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0)
-            XCTAssertEqual(~(controlWord >> SelRightOpA) & 3, 0b00)
-            XCTAssertEqual((controlWord >> FI) & 1, 1)
-            XCTAssertEqual(~(controlWord >> C0) & 1, 0)
-            XCTAssertEqual(~(controlWord >> I0) & 7, 0b100)
-            XCTAssertEqual((controlWord >> RS0) & 3, 0)
-            XCTAssertEqual((controlWord >> J) & 1, 0)
-            XCTAssertEqual((controlWord >> JABS) & 1, 0)
-            XCTAssertEqual((controlWord >> MemLoad) & 1, 0)
-            XCTAssertEqual((controlWord >> MemStore) & 1, 0)
-            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 0)
-            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 1)
-            XCTAssertEqual((controlWord >> WRL) & 1, 1)
-            XCTAssertEqual((controlWord >> WRH) & 1, 1)
-            XCTAssertEqual((controlWord >> WBEN) & 1, 1)
+            XCTAssertEqual((controlWord >> HLT) & 1, 1)
+//            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0b11)
+            XCTAssertEqual((controlWord >> SelRightOpA) & 3, 0b00)
+            XCTAssertEqual((controlWord >> FI) & 1, 0)
+            XCTAssertEqual((controlWord >> C0) & 1, 0)
+            XCTAssertEqual((controlWord >> I0) & 7, 0b100)
+            XCTAssertEqual((controlWord >> RS0) & 3, 0b11)
+            XCTAssertEqual((controlWord >> J) & 1, 1)
+            XCTAssertEqual((controlWord >> JABS) & 1, 1)
+            XCTAssertEqual((controlWord >> MemLoad) & 1, 1)
+            XCTAssertEqual((controlWord >> MemStore) & 1, 1)
+            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 1)
+            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 0)
+            XCTAssertEqual((controlWord >> WRL) & 1, 0)
+            XCTAssertEqual((controlWord >> WRH) & 1, 0)
+            XCTAssertEqual((controlWord >> WBEN) & 1, 0)
         }
     }
     
@@ -373,22 +353,22 @@ class DecoderGeneratorTests: XCTestCase {
         let decoder = generator.generate()
         for index in generator.indicesForAllConditions(DecoderGenerator.opcodeNot) {
             let controlWord = decoder[index]
-            XCTAssertEqual((controlWord >> HLT) & 1, 0)
-            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0)
-            XCTAssertEqual((controlWord >> SelRightOpA) & 3, 0)
-            XCTAssertEqual((controlWord >> FI) & 1, 0)
-            XCTAssertEqual(~(controlWord >> C0) & 1, 0)
-            XCTAssertEqual(~(controlWord >> I0) & 7, 0b001)
-            XCTAssertEqual(~(controlWord >> RS0) & 3, 0b01)
-            XCTAssertEqual((controlWord >> J) & 1, 0)
-            XCTAssertEqual((controlWord >> JABS) & 1, 0)
-            XCTAssertEqual((controlWord >> MemLoad) & 1, 0)
-            XCTAssertEqual((controlWord >> MemStore) & 1, 0)
-            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 0)
-            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 1)
-            XCTAssertEqual((controlWord >> WRL) & 1, 1)
-            XCTAssertEqual((controlWord >> WRH) & 1, 1)
-            XCTAssertEqual((controlWord >> WBEN) & 1, 1)
+            XCTAssertEqual((controlWord >> HLT) & 1, 1)
+//            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0b11)
+//            XCTAssertEqual((controlWord >> SelRightOpA) & 3, 0b11)
+            XCTAssertEqual((controlWord >> FI) & 1, 1)
+            XCTAssertEqual((controlWord >> C0) & 1, 0)
+            XCTAssertEqual((controlWord >> I0) & 7, 0b001)
+            XCTAssertEqual((controlWord >> RS0) & 3, 0b01)
+            XCTAssertEqual((controlWord >> J) & 1, 1)
+            XCTAssertEqual((controlWord >> JABS) & 1, 1)
+            XCTAssertEqual((controlWord >> MemLoad) & 1, 1)
+            XCTAssertEqual((controlWord >> MemStore) & 1, 1)
+            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 1)
+            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 0)
+            XCTAssertEqual((controlWord >> WRL) & 1, 0)
+            XCTAssertEqual((controlWord >> WRH) & 1, 0)
+            XCTAssertEqual((controlWord >> WBEN) & 1, 0)
         }
     }
     
@@ -397,22 +377,22 @@ class DecoderGeneratorTests: XCTestCase {
         let decoder = generator.generate()
         for index in generator.indicesForAllConditions(DecoderGenerator.opcodeCmpi) {
             let controlWord = decoder[index]
-            XCTAssertEqual((controlWord >> HLT) & 1, 0)
-            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0)
-            XCTAssertEqual(~(controlWord >> SelRightOpA) & 3, 0b01)
-            XCTAssertEqual((controlWord >> FI) & 1, 1)
-            XCTAssertEqual(~(controlWord >> C0) & 1, 1)
-            XCTAssertEqual(~(controlWord >> I0) & 7, 0b010)
-            XCTAssertEqual((controlWord >> RS0) & 3, 0)
-            XCTAssertEqual((controlWord >> J) & 1, 0)
-            XCTAssertEqual((controlWord >> JABS) & 1, 0)
-            XCTAssertEqual((controlWord >> MemLoad) & 1, 0)
-            XCTAssertEqual((controlWord >> MemStore) & 1, 0)
-            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 0)
-            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 0)
-            XCTAssertEqual((controlWord >> WRL) & 1, 0)
-            XCTAssertEqual((controlWord >> WRH) & 1, 0)
-            XCTAssertEqual((controlWord >> WBEN) & 1, 0)
+            XCTAssertEqual((controlWord >> HLT) & 1, 1)
+//            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0b11)
+            XCTAssertEqual((controlWord >> SelRightOpA) & 3, 0b01)
+            XCTAssertEqual((controlWord >> FI) & 1, 0)
+            XCTAssertEqual((controlWord >> C0) & 1, 1)
+            XCTAssertEqual((controlWord >> I0) & 7, 0b010)
+            XCTAssertEqual((controlWord >> RS0) & 3, 0b11)
+            XCTAssertEqual((controlWord >> J) & 1, 1)
+            XCTAssertEqual((controlWord >> JABS) & 1, 1)
+            XCTAssertEqual((controlWord >> MemLoad) & 1, 1)
+            XCTAssertEqual((controlWord >> MemStore) & 1, 1)
+            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 1)
+            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 1)
+            XCTAssertEqual((controlWord >> WRL) & 1, 1)
+            XCTAssertEqual((controlWord >> WRH) & 1, 1)
+            XCTAssertEqual((controlWord >> WBEN) & 1, 1)
         }
     }
     
@@ -421,22 +401,22 @@ class DecoderGeneratorTests: XCTestCase {
         let decoder = generator.generate()
         for index in generator.indicesForAllConditions(DecoderGenerator.opcodeAddi) {
             let controlWord = decoder[index]
-            XCTAssertEqual((controlWord >> HLT) & 1, 0)
-            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0)
-            XCTAssertEqual(~(controlWord >> SelRightOpA) & 3, 0b01)
-            XCTAssertEqual((controlWord >> FI) & 1, 1)
-            XCTAssertEqual(~(controlWord >> C0) & 1, 0)
-            XCTAssertEqual(~(controlWord >> I0) & 7, 0b011)
-            XCTAssertEqual((controlWord >> RS0) & 3, 0)
-            XCTAssertEqual((controlWord >> J) & 1, 0)
-            XCTAssertEqual((controlWord >> JABS) & 1, 0)
-            XCTAssertEqual((controlWord >> MemLoad) & 1, 0)
-            XCTAssertEqual((controlWord >> MemStore) & 1, 0)
-            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 0)
-            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 1)
-            XCTAssertEqual((controlWord >> WRL) & 1, 1)
-            XCTAssertEqual((controlWord >> WRH) & 1, 1)
-            XCTAssertEqual((controlWord >> WBEN) & 1, 1)
+            XCTAssertEqual((controlWord >> HLT) & 1, 1)
+//            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0b11)
+            XCTAssertEqual((controlWord >> SelRightOpA) & 3, 0b01)
+            XCTAssertEqual((controlWord >> FI) & 1, 0)
+            XCTAssertEqual((controlWord >> C0) & 1, 0)
+            XCTAssertEqual((controlWord >> I0) & 7, 0b011)
+            XCTAssertEqual((controlWord >> RS0) & 3, 0b11)
+            XCTAssertEqual((controlWord >> J) & 1, 1)
+            XCTAssertEqual((controlWord >> JABS) & 1, 1)
+            XCTAssertEqual((controlWord >> MemLoad) & 1, 1)
+            XCTAssertEqual((controlWord >> MemStore) & 1, 1)
+            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 1)
+            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 0)
+            XCTAssertEqual((controlWord >> WRL) & 1, 0)
+            XCTAssertEqual((controlWord >> WRH) & 1, 0)
+            XCTAssertEqual((controlWord >> WBEN) & 1, 0)
         }
     }
     
@@ -445,22 +425,22 @@ class DecoderGeneratorTests: XCTestCase {
         let decoder = generator.generate()
         for index in generator.indicesForAllConditions(DecoderGenerator.opcodeSubi) {
             let controlWord = decoder[index]
-            XCTAssertEqual((controlWord >> HLT) & 1, 0)
-            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0)
-            XCTAssertEqual(~(controlWord >> SelRightOpA) & 3, 0b01)
-            XCTAssertEqual((controlWord >> FI) & 1, 1)
-            XCTAssertEqual(~(controlWord >> C0) & 1, 1)
-            XCTAssertEqual(~(controlWord >> I0) & 7, 0b010)
-            XCTAssertEqual((controlWord >> RS0) & 3, 0)
-            XCTAssertEqual((controlWord >> J) & 1, 0)
-            XCTAssertEqual((controlWord >> JABS) & 1, 0)
-            XCTAssertEqual((controlWord >> MemLoad) & 1, 0)
-            XCTAssertEqual((controlWord >> MemStore) & 1, 0)
-            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 0)
-            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 1)
-            XCTAssertEqual((controlWord >> WRL) & 1, 1)
-            XCTAssertEqual((controlWord >> WRH) & 1, 1)
-            XCTAssertEqual((controlWord >> WBEN) & 1, 1)
+            XCTAssertEqual((controlWord >> HLT) & 1, 1)
+//            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0b11)
+            XCTAssertEqual((controlWord >> SelRightOpA) & 3, 0b01)
+            XCTAssertEqual((controlWord >> FI) & 1, 0)
+            XCTAssertEqual((controlWord >> C0) & 1, 1)
+            XCTAssertEqual((controlWord >> I0) & 7, 0b010)
+            XCTAssertEqual((controlWord >> RS0) & 3, 0b11)
+            XCTAssertEqual((controlWord >> J) & 1, 1)
+            XCTAssertEqual((controlWord >> JABS) & 1, 1)
+            XCTAssertEqual((controlWord >> MemLoad) & 1, 1)
+            XCTAssertEqual((controlWord >> MemStore) & 1, 1)
+            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 1)
+            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 0)
+            XCTAssertEqual((controlWord >> WRL) & 1, 0)
+            XCTAssertEqual((controlWord >> WRH) & 1, 0)
+            XCTAssertEqual((controlWord >> WBEN) & 1, 0)
         }
     }
     
@@ -469,22 +449,22 @@ class DecoderGeneratorTests: XCTestCase {
         let decoder = generator.generate()
         for index in generator.indicesForAllConditions(DecoderGenerator.opcodeAndi) {
             let controlWord = decoder[index]
-            XCTAssertEqual((controlWord >> HLT) & 1, 0)
-            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0)
-            XCTAssertEqual(~(controlWord >> SelRightOpA) & 3, 0b01)
-            XCTAssertEqual((controlWord >> FI) & 1, 1)
-            XCTAssertEqual(~(controlWord >> C0) & 1, 0)
-            XCTAssertEqual(~(controlWord >> I0) & 7, 0b110)
-            XCTAssertEqual((controlWord >> RS0) & 3, 0)
-            XCTAssertEqual((controlWord >> J) & 1, 0)
-            XCTAssertEqual((controlWord >> JABS) & 1, 0)
-            XCTAssertEqual((controlWord >> MemLoad) & 1, 0)
-            XCTAssertEqual((controlWord >> MemStore) & 1, 0)
-            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 0)
-            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 1)
-            XCTAssertEqual((controlWord >> WRL) & 1, 1)
-            XCTAssertEqual((controlWord >> WRH) & 1, 1)
-            XCTAssertEqual((controlWord >> WBEN) & 1, 1)
+            XCTAssertEqual((controlWord >> HLT) & 1, 1)
+//            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0b11)
+            XCTAssertEqual((controlWord >> SelRightOpA) & 3, 0b01)
+            XCTAssertEqual((controlWord >> FI) & 1, 0)
+            XCTAssertEqual((controlWord >> C0) & 1, 0)
+            XCTAssertEqual((controlWord >> I0) & 7, 0b110)
+            XCTAssertEqual((controlWord >> RS0) & 3, 0b11)
+            XCTAssertEqual((controlWord >> J) & 1, 1)
+            XCTAssertEqual((controlWord >> JABS) & 1, 1)
+            XCTAssertEqual((controlWord >> MemLoad) & 1, 1)
+            XCTAssertEqual((controlWord >> MemStore) & 1, 1)
+            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 1)
+            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 0)
+            XCTAssertEqual((controlWord >> WRL) & 1, 0)
+            XCTAssertEqual((controlWord >> WRH) & 1, 0)
+            XCTAssertEqual((controlWord >> WBEN) & 1, 0)
         }
     }
     
@@ -493,22 +473,22 @@ class DecoderGeneratorTests: XCTestCase {
         let decoder = generator.generate()
         for index in generator.indicesForAllConditions(DecoderGenerator.opcodeOri) {
             let controlWord = decoder[index]
-            XCTAssertEqual((controlWord >> HLT) & 1, 0)
-            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0)
-            XCTAssertEqual(~(controlWord >> SelRightOpA) & 3, 0b01)
-            XCTAssertEqual((controlWord >> FI) & 1, 1)
-            XCTAssertEqual(~(controlWord >> C0) & 1, 0)
-            XCTAssertEqual(~(controlWord >> I0) & 7, 0b101)
-            XCTAssertEqual((controlWord >> RS0) & 3, 0)
-            XCTAssertEqual((controlWord >> J) & 1, 0)
-            XCTAssertEqual((controlWord >> JABS) & 1, 0)
-            XCTAssertEqual((controlWord >> MemLoad) & 1, 0)
-            XCTAssertEqual((controlWord >> MemStore) & 1, 0)
-            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 0)
-            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 1)
-            XCTAssertEqual((controlWord >> WRL) & 1, 1)
-            XCTAssertEqual((controlWord >> WRH) & 1, 1)
-            XCTAssertEqual((controlWord >> WBEN) & 1, 1)
+            XCTAssertEqual((controlWord >> HLT) & 1, 1)
+            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0b11)
+            XCTAssertEqual((controlWord >> SelRightOpA) & 3, 0b01)
+            XCTAssertEqual((controlWord >> FI) & 1, 0)
+            XCTAssertEqual((controlWord >> C0) & 1, 0)
+            XCTAssertEqual((controlWord >> I0) & 7, 0b101)
+            XCTAssertEqual((controlWord >> RS0) & 3, 0b11)
+            XCTAssertEqual((controlWord >> J) & 1, 1)
+            XCTAssertEqual((controlWord >> JABS) & 1, 1)
+            XCTAssertEqual((controlWord >> MemLoad) & 1, 1)
+            XCTAssertEqual((controlWord >> MemStore) & 1, 1)
+            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 1)
+            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 0)
+            XCTAssertEqual((controlWord >> WRL) & 1, 0)
+            XCTAssertEqual((controlWord >> WRH) & 1, 0)
+            XCTAssertEqual((controlWord >> WBEN) & 1, 0)
         }
     }
     
@@ -517,22 +497,22 @@ class DecoderGeneratorTests: XCTestCase {
         let decoder = generator.generate()
         for index in generator.indicesForAllConditions(DecoderGenerator.opcodeXori) {
             let controlWord = decoder[index]
-            XCTAssertEqual((controlWord >> HLT) & 1, 0)
-            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0)
-            XCTAssertEqual(~(controlWord >> SelRightOpA) & 3, 0b01)
-            XCTAssertEqual((controlWord >> FI) & 1, 1)
-            XCTAssertEqual(~(controlWord >> C0) & 1, 0)
-            XCTAssertEqual(~(controlWord >> I0) & 7, 0b100)
-            XCTAssertEqual((controlWord >> RS0) & 3, 0)
-            XCTAssertEqual((controlWord >> J) & 1, 0)
-            XCTAssertEqual((controlWord >> JABS) & 1, 0)
-            XCTAssertEqual((controlWord >> MemLoad) & 1, 0)
-            XCTAssertEqual((controlWord >> MemStore) & 1, 0)
-            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 0)
-            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 1)
-            XCTAssertEqual((controlWord >> WRL) & 1, 1)
-            XCTAssertEqual((controlWord >> WRH) & 1, 1)
-            XCTAssertEqual((controlWord >> WBEN) & 1, 1)
+            XCTAssertEqual((controlWord >> HLT) & 1, 1)
+//            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0b11)
+            XCTAssertEqual((controlWord >> SelRightOpA) & 3, 0b01)
+            XCTAssertEqual((controlWord >> FI) & 1, 0)
+            XCTAssertEqual((controlWord >> C0) & 1, 0)
+            XCTAssertEqual((controlWord >> I0) & 7, 0b100)
+            XCTAssertEqual((controlWord >> RS0) & 3, 0b11)
+            XCTAssertEqual((controlWord >> J) & 1, 1)
+            XCTAssertEqual((controlWord >> JABS) & 1, 1)
+            XCTAssertEqual((controlWord >> MemLoad) & 1, 1)
+            XCTAssertEqual((controlWord >> MemStore) & 1, 1)
+            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 1)
+            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 0)
+            XCTAssertEqual((controlWord >> WRL) & 1, 0)
+            XCTAssertEqual((controlWord >> WRH) & 1, 0)
+            XCTAssertEqual((controlWord >> WBEN) & 1, 0)
         }
     }
     
@@ -541,22 +521,22 @@ class DecoderGeneratorTests: XCTestCase {
         let decoder = generator.generate()
         for index in generator.indicesForAllConditions(DecoderGenerator.opcodeJmp) {
             let controlWord = decoder[index]
-            XCTAssertEqual((controlWord >> HLT) & 1, 0)
-            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0)
-            XCTAssertEqual(~(controlWord >> SelRightOpA) & 3, 0b11)
-            XCTAssertEqual((controlWord >> FI) & 1, 0)
-            XCTAssertEqual(~(controlWord >> C0) & 1, 0)
-            XCTAssertEqual(~(controlWord >> I0) & 7, 0b101)
-            XCTAssertEqual(~(controlWord >> RS0) & 3, 0b10)
-            XCTAssertEqual((controlWord >> J) & 1, 1)
-            XCTAssertEqual((controlWord >> JABS) & 1, 0)
-            XCTAssertEqual((controlWord >> MemLoad) & 1, 0)
-            XCTAssertEqual((controlWord >> MemStore) & 1, 0)
-            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 0)
-            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 0)
-            XCTAssertEqual((controlWord >> WRL) & 1, 0)
-            XCTAssertEqual((controlWord >> WRH) & 1, 0)
-            XCTAssertEqual((controlWord >> WBEN) & 1, 0)
+            XCTAssertEqual((controlWord >> HLT) & 1, 1)
+//            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0b11)
+            XCTAssertEqual((controlWord >> SelRightOpA) & 3, 0b11)
+            XCTAssertEqual((controlWord >> FI) & 1, 1)
+            XCTAssertEqual((controlWord >> C0) & 1, 0)
+            XCTAssertEqual((controlWord >> I0) & 7, 0b101)
+            XCTAssertEqual((controlWord >> RS0) & 3, 0b10)
+            XCTAssertEqual((controlWord >> J) & 1, 0)
+            XCTAssertEqual((controlWord >> JABS) & 1, 1)
+            XCTAssertEqual((controlWord >> MemLoad) & 1, 1)
+            XCTAssertEqual((controlWord >> MemStore) & 1, 1)
+            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 1)
+            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 1)
+            XCTAssertEqual((controlWord >> WRL) & 1, 1)
+            XCTAssertEqual((controlWord >> WRH) & 1, 1)
+            XCTAssertEqual((controlWord >> WBEN) & 1, 1)
         }
     }
     
@@ -565,22 +545,22 @@ class DecoderGeneratorTests: XCTestCase {
         let decoder = generator.generate()
         for index in generator.indicesForAllConditions(DecoderGenerator.opcodeJr) {
             let controlWord = decoder[index]
-            XCTAssertEqual((controlWord >> HLT) & 1, 0)
-            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0)
-            XCTAssertEqual(~(controlWord >> SelRightOpA) & 3, 0b01)
-            XCTAssertEqual((controlWord >> FI) & 1, 0)
-            XCTAssertEqual(~(controlWord >> C0) & 1, 0)
-            XCTAssertEqual(~(controlWord >> I0) & 7, 0b011)
-            XCTAssertEqual(~(controlWord >> RS0) & 3, 0b11)
-            XCTAssertEqual((controlWord >> J) & 1, 1)
-            XCTAssertEqual((controlWord >> JABS) & 1, 1)
-            XCTAssertEqual((controlWord >> MemLoad) & 1, 0)
-            XCTAssertEqual((controlWord >> MemStore) & 1, 0)
-            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 0)
-            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 0)
-            XCTAssertEqual((controlWord >> WRL) & 1, 0)
-            XCTAssertEqual((controlWord >> WRH) & 1, 0)
-            XCTAssertEqual((controlWord >> WBEN) & 1, 0)
+            XCTAssertEqual((controlWord >> HLT) & 1, 1)
+//            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0b11)
+            XCTAssertEqual((controlWord >> SelRightOpA) & 3, 0b01)
+            XCTAssertEqual((controlWord >> FI) & 1, 1)
+            XCTAssertEqual((controlWord >> C0) & 1, 0)
+            XCTAssertEqual((controlWord >> I0) & 7, 0b011)
+            XCTAssertEqual((controlWord >> RS0) & 3, 0b11)
+            XCTAssertEqual((controlWord >> J) & 1, 0)
+            XCTAssertEqual((controlWord >> JABS) & 1, 0)
+            XCTAssertEqual((controlWord >> MemLoad) & 1, 1)
+            XCTAssertEqual((controlWord >> MemStore) & 1, 1)
+            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 1)
+            XCTAssertEqual((controlWord >> WriteBackSrcFlag) & 1, 1)
+            XCTAssertEqual((controlWord >> WRL) & 1, 1)
+            XCTAssertEqual((controlWord >> WRH) & 1, 1)
+            XCTAssertEqual((controlWord >> WBEN) & 1, 1)
         }
     }
     
@@ -589,22 +569,22 @@ class DecoderGeneratorTests: XCTestCase {
         let decoder = generator.generate()
         for index in generator.indicesForAllConditions(DecoderGenerator.opcodeJalr) {
             let controlWord = decoder[index]
-            XCTAssertEqual((controlWord >> HLT) & 1, 0)
-            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0b10)
-            XCTAssertEqual(~(controlWord >> SelRightOpA) & 3, 0b01)
-            XCTAssertEqual((controlWord >> FI) & 1, 0)
-            XCTAssertEqual(~(controlWord >> C0) & 1, 0)
-            XCTAssertEqual(~(controlWord >> I0) & 7, 0b011)
-            XCTAssertEqual(~(controlWord >> RS0) & 3, 0b11)
-            XCTAssertEqual((controlWord >> J) & 1, 1)
-            XCTAssertEqual((controlWord >> JABS) & 1, 1)
-            XCTAssertEqual((controlWord >> MemLoad) & 1, 0)
-            XCTAssertEqual((controlWord >> MemStore) & 1, 0)
-            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 1)
-            XCTAssertEqual(~(controlWord >> WriteBackSrcFlag) & 1, 1)
-            XCTAssertEqual((controlWord >> WRL) & 1, 1)
-            XCTAssertEqual((controlWord >> WRH) & 1, 1)
-            XCTAssertEqual((controlWord >> WBEN) & 1, 1)
+            XCTAssertEqual((controlWord >> HLT) & 1, 1)
+            XCTAssertEqual((controlWord >> SelStoreOpA) & 3, 0b01)
+            XCTAssertEqual((controlWord >> SelRightOpA) & 3, 0b01)
+            XCTAssertEqual((controlWord >> FI) & 1, 1)
+            XCTAssertEqual((controlWord >> C0) & 1, 0)
+            XCTAssertEqual((controlWord >> I0) & 7, 0b011)
+            XCTAssertEqual((controlWord >> RS0) & 3, 0b11)
+            XCTAssertEqual((controlWord >> J) & 1, 0)
+            XCTAssertEqual((controlWord >> JABS) & 1, 0)
+            XCTAssertEqual((controlWord >> MemLoad) & 1, 1)
+            XCTAssertEqual((controlWord >> MemStore) & 1, 1)
+            XCTAssertEqual((controlWord >> AssertStoreOp) & 1, 0)
+            XCTAssertEqual(~(controlWord >> WriteBackSrcFlag) & 1, 0)
+            XCTAssertEqual((controlWord >> WRL) & 1, 0)
+            XCTAssertEqual((controlWord >> WRH) & 1, 0)
+            XCTAssertEqual((controlWord >> WBEN) & 1, 0)
         }
     }
     
@@ -668,10 +648,10 @@ class DecoderGeneratorTests: XCTestCase {
         for carry in bits {
             for ovf in bits {
                 let indexForFailCondition = generator.makeIndex(rst: 1, carry: carry, z: 0, ovf: ovf, opcode: DecoderGenerator.opcodeBeq)
-                XCTAssertEqual(decoder[indexForFailCondition], 0)
+                XCTAssertEqual(decoder[indexForFailCondition], ID.nopControlWord)
                 
                 let indexForPassCondition = generator.makeIndex(rst: 1, carry: carry, z: 1, ovf: ovf, opcode: DecoderGenerator.opcodeBeq)
-                let ctlHighZ = ~decoder[indexForPassCondition] & ((1<<21)-1)
+                let ctlHighZ = decoder[indexForPassCondition]
                 XCTAssertTrue(isRelativeJump(ctlHighZ))
             }
         }
@@ -685,10 +665,10 @@ class DecoderGeneratorTests: XCTestCase {
         for carry in bits {
             for ovf in bits {
                 let indexForFailCondition = generator.makeIndex(rst: 1, carry: carry, z: 1, ovf: ovf, opcode: DecoderGenerator.opcodeBne)
-                XCTAssertEqual(decoder[indexForFailCondition], 0)
+                XCTAssertEqual(decoder[indexForFailCondition], ID.nopControlWord)
                 
                 let indexForPassCondition = generator.makeIndex(rst: 1, carry: carry, z: 0, ovf: ovf, opcode: DecoderGenerator.opcodeBne)
-                let ctlHighZ = ~decoder[indexForPassCondition] & ((1<<21)-1)
+                let ctlHighZ = decoder[indexForPassCondition]
                 XCTAssertTrue(isRelativeJump(ctlHighZ))
             }
         }
@@ -702,10 +682,10 @@ class DecoderGeneratorTests: XCTestCase {
         for carry in bits {
             for z in bits {
                 let indexForFailCondition = generator.makeIndex(rst: 1, carry: carry, z: z, ovf: 0, opcode: DecoderGenerator.opcodeBlt)
-                XCTAssertEqual(decoder[indexForFailCondition], 0)
+                XCTAssertEqual(decoder[indexForFailCondition], ID.nopControlWord)
                 
                 let indexForPassCondition = generator.makeIndex(rst: 1, carry: carry, z: z, ovf: 1, opcode: DecoderGenerator.opcodeBlt)
-                let ctlHighZ = ~decoder[indexForPassCondition] & ((1<<21)-1)
+                let ctlHighZ = decoder[indexForPassCondition]
                 XCTAssertTrue(isRelativeJump(ctlHighZ))
             }
         }
@@ -719,10 +699,10 @@ class DecoderGeneratorTests: XCTestCase {
         for carry in bits {
             for z in bits {
                 let indexForFailCondition = generator.makeIndex(rst: 1, carry: carry, z: z, ovf: 1, opcode: DecoderGenerator.opcodeBge)
-                XCTAssertEqual(decoder[indexForFailCondition], 0)
+                XCTAssertEqual(decoder[indexForFailCondition], ID.nopControlWord)
                 
                 let indexForPassCondition = generator.makeIndex(rst: 1, carry: carry, z: z, ovf: 0, opcode: DecoderGenerator.opcodeBge)
-                let ctlHighZ = ~decoder[indexForPassCondition] & ((1<<21)-1)
+                let ctlHighZ = decoder[indexForPassCondition]
                 XCTAssertTrue(isRelativeJump(ctlHighZ))
             }
         }
@@ -736,10 +716,10 @@ class DecoderGeneratorTests: XCTestCase {
         for ovf in bits {
             for z in bits {
                 let indexForFailCondition = generator.makeIndex(rst: 1, carry: 0, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeBltu)
-                XCTAssertEqual(decoder[indexForFailCondition], 0)
+                XCTAssertEqual(decoder[indexForFailCondition], ID.nopControlWord)
                 
                 let indexForPassCondition = generator.makeIndex(rst: 1, carry: 1, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeBltu)
-                let ctlHighZ = ~decoder[indexForPassCondition] & ((1<<21)-1)
+                let ctlHighZ = decoder[indexForPassCondition]
                 XCTAssertTrue(isRelativeJump(ctlHighZ))
             }
         }
@@ -753,10 +733,10 @@ class DecoderGeneratorTests: XCTestCase {
         for ovf in bits {
             for z in bits {
                 let indexForFailCondition = generator.makeIndex(rst: 1, carry: 1, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeBgeu)
-                XCTAssertEqual(decoder[indexForFailCondition], 0)
+                XCTAssertEqual(decoder[indexForFailCondition], ID.nopControlWord)
                 
                 let indexForPassCondition = generator.makeIndex(rst: 1, carry: 0, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeBgeu)
-                let ctlHighZ = ~decoder[indexForPassCondition] & ((1<<21)-1)
+                let ctlHighZ = decoder[indexForPassCondition]
                 XCTAssertTrue(isRelativeJump(ctlHighZ))
             }
         }
@@ -770,7 +750,7 @@ class DecoderGeneratorTests: XCTestCase {
         for ovf in bits {
             for z in bits {
                 let indexForFailCondition = generator.makeIndex(rst: 1, carry: 0, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeAdc)
-                let controlWordFail = ~decoder[indexForFailCondition] & ((1<<21)-1)
+                let controlWordFail = decoder[indexForFailCondition]
                 XCTAssertEqual((controlWordFail >> HLT) & 1, 1)
                 XCTAssertEqual((controlWordFail >> SelStoreOpA) & 3, 0b11)
                 XCTAssertEqual((controlWordFail >> SelRightOpA) & 3, 0b00)
@@ -789,7 +769,7 @@ class DecoderGeneratorTests: XCTestCase {
                 XCTAssertEqual((controlWordFail >> WBEN) & 1, 0)
                 
                 let indexForPassCondition = generator.makeIndex(rst: 1, carry: 1, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeAdc)
-                let controlWordPass = ~decoder[indexForPassCondition] & ((1<<21)-1)
+                let controlWordPass = decoder[indexForPassCondition]
                 XCTAssertEqual((controlWordPass >> HLT) & 1, 1)
                 XCTAssertEqual((controlWordPass >> SelStoreOpA) & 3, 0b11)
                 XCTAssertEqual((controlWordPass >> SelRightOpA) & 3, 0b00)
@@ -818,7 +798,7 @@ class DecoderGeneratorTests: XCTestCase {
         for ovf in bits {
             for z in bits {
                 let indexForFailCondition = generator.makeIndex(rst: 1, carry: 0, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeSbc)
-                let controlWordFail = ~decoder[indexForFailCondition] & ((1<<21)-1)
+                let controlWordFail = decoder[indexForFailCondition]
                 XCTAssertEqual((controlWordFail >> HLT) & 1, 1)
                 XCTAssertEqual((controlWordFail >> SelStoreOpA) & 3, 0b11)
                 XCTAssertEqual((controlWordFail >> SelRightOpA) & 3, 0b00)
@@ -837,7 +817,7 @@ class DecoderGeneratorTests: XCTestCase {
                 XCTAssertEqual((controlWordFail >> WBEN) & 1, 0)
                 
                 let indexForPassCondition = generator.makeIndex(rst: 1, carry: 1, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeSbc)
-                let controlWordPass = ~decoder[indexForPassCondition] & ((1<<21)-1)
+                let controlWordPass = decoder[indexForPassCondition]
                 XCTAssertEqual((controlWordPass >> HLT) & 1, 1)
                 XCTAssertEqual((controlWordPass >> SelStoreOpA) & 3, 0b11)
                 XCTAssertEqual((controlWordPass >> SelRightOpA) & 3, 0b00)

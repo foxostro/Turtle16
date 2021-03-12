@@ -73,12 +73,18 @@ class IDTests: XCTestCase {
     
     func testOutputNopDuringResetRegardlessOfInstructionWord() throws {
         let id = ID()
+        let rst = 0
+        let index = UInt(rst << 8) | UInt(0b11111)
+        id.opcodeDecodeROM[Int(index)] = ID.nopControlWord
         let output = id.step(input: ID.Input(ins: 0xffff, rst: 0))
         XCTAssertEqual(output.ctl_EX, 0b111111111111111111111) // no active control lines
     }
     
     func testDecodeControlWordForNOP() throws {
         let id = ID()
+        let rst = 1
+        let index = UInt(rst << 8) | UInt(0)
+        id.opcodeDecodeROM[Int(index)] = ID.nopControlWord
         let output = id.step(input: ID.Input(ins: 0))
         XCTAssertEqual(output.ctl_EX, 0b111111111111111111111) // no active control lines
     }
@@ -100,10 +106,11 @@ class IDTests: XCTestCase {
     func testDecodeHaltInstruction() throws {
         let id = ID()
         let hltOpcode: UInt = 1
-        let entry: UInt = (1<<8) + hltOpcode
+        let rst = 1
+        let entry: UInt = UInt(rst << 8) + hltOpcode
         id.opcodeDecodeROM[Int(entry)] = 1
         let ins: UInt16 = UInt16(hltOpcode << 11)
         let output = id.step(input: ID.Input(ins: ins))
-        XCTAssertEqual(~output.ctl_EX & 1, 1) // HLT control line is active
+        XCTAssertEqual(output.ctl_EX & 1, 1) // HLT control line is active
     }
 }

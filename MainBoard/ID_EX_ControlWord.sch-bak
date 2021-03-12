@@ -3,15 +3,15 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 27 34
+Sheet 27 35
 Title "ID/EX Control Register"
 Date ""
 Rev ""
 Comp ""
 Comment1 ""
 Comment2 ""
-Comment3 "Note that all bits in Ctl_ID are inverted with respect to other pipeline stages."
-Comment4 "The ID/EX control register immediately resets to a NOP state on the STALL signal."
+Comment3 ""
+Comment4 ""
 $EndDescr
 $Comp
 L Device:C C?

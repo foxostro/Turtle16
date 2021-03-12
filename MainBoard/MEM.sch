@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 6 34
+Sheet 6 35
 Title "MEM"
 Date ""
 Rev ""
@@ -105,14 +105,10 @@ Wire Wire Line
 	2500 2400 2500 3250
 Wire Wire Line
 	3300 3050 3600 3050
-Text HLabel 3300 3050 0    50   Input ~ 0
-~RDY
+Text HLabel 1950 1400 0    50   Input ~ 0
+RDY
 Wire Wire Line
 	3300 3700 3600 3700
-Text HLabel 3300 3700 0    50   Input ~ 0
-~RDY
-Text HLabel 3300 4800 0    50   Input ~ 0
-~RDY
 Text Notes 2700 5750 0    50   ~ 0
 The ~RDY~ signal is an open-collector signal shared between all bus\ndevices. When a bus device takes this signal high, the CPU releases the\nsystem bus I/O lines, address lines, and control signals, putting them\ninto a high-Z state. This allows peripheral devices to drive the bus\nwhen needed.
 Wire Wire Line
@@ -204,6 +200,230 @@ Wire Bus Line
 	6600 3450 9250 3450
 Wire Bus Line
 	6600 3450 6600 3900
+$Comp
+L 74xx:74LS04 U?
+U 1 1 605061C0
+P 2600 1400
+AR Path="/5D8005AF/5D800744/605061C0" Ref="U?"  Part="6" 
+AR Path="/5D2C0720/605061C0" Ref="U?"  Part="2" 
+AR Path="/5FAED671/605061C0" Ref="U?"  Part="1" 
+AR Path="/60AF64DE/605061C0" Ref="U?"  Part="1" 
+F 0 "U?" H 2600 1717 50  0000 C CNN
+F 1 "74AHCT04" H 2600 1626 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 2600 1400 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 2600 1400 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H 2600 1400 50  0001 C CNN "Mouser"
+	1    2600 1400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1950 1400 2300 1400
+Wire Wire Line
+	2900 1400 3300 1400
+Wire Wire Line
+	3300 1400 3300 3050
+Wire Wire Line
+	3300 3700 3300 3050
+Connection ~ 3300 3050
+Wire Wire Line
+	3300 4800 3300 3700
+Connection ~ 3300 3700
+NoConn ~ -250 5250
+NoConn ~ -250 5750
+$Comp
+L 74xx:74LS04 U?
+U 7 1 605153B1
+P -850 6550
+AR Path="/5D2C0761/605153B1" Ref="U?"  Part="7" 
+AR Path="/5D2C0720/605153B1" Ref="U?"  Part="7" 
+AR Path="/5FAED671/605153B1" Ref="U?"  Part="7" 
+AR Path="/60AF64DE/605153B1" Ref="U?"  Part="7" 
+F 0 "U?" H -850 6600 50  0000 C CNN
+F 1 "74AHCT04" H -850 6500 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -850 6550 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -850 6550 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H -850 6550 50  0001 C CNN "Mouser"
+	7    -850 6550
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS04 U?
+U 6 1 605153B8
+P -550 5750
+AR Path="/5D8005AF/5D800744/605153B8" Ref="U?"  Part="6" 
+AR Path="/5D2C0720/605153B8" Ref="U?"  Part="6" 
+AR Path="/5FAED671/605153B8" Ref="U?"  Part="6" 
+AR Path="/60AF64DE/605153B8" Ref="U?"  Part="6" 
+F 0 "U?" H -550 6067 50  0000 C CNN
+F 1 "74AHCT04" H -550 5976 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -550 5750 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -550 5750 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H -550 5750 50  0001 C CNN "Mouser"
+	6    -550 5750
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS04 U?
+U 5 1 605153BF
+P -550 5250
+AR Path="/5D8005AF/5D800744/605153BF" Ref="U?"  Part="6" 
+AR Path="/5D2C0720/605153BF" Ref="U?"  Part="5" 
+AR Path="/5FAED671/605153BF" Ref="U?"  Part="5" 
+AR Path="/60AF64DE/605153BF" Ref="U?"  Part="5" 
+F 0 "U?" H -550 5567 50  0000 C CNN
+F 1 "74AHCT04" H -550 5476 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -550 5250 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -550 5250 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H -550 5250 50  0001 C CNN "Mouser"
+	5    -550 5250
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS04 U?
+U 4 1 605153C6
+P -550 4750
+AR Path="/5D8005AF/5D800744/605153C6" Ref="U?"  Part="6" 
+AR Path="/5D2C0720/605153C6" Ref="U?"  Part="4" 
+AR Path="/5FAED671/605153C6" Ref="U?"  Part="4" 
+AR Path="/60AF64DE/605153C6" Ref="U?"  Part="4" 
+F 0 "U?" H -550 5067 50  0000 C CNN
+F 1 "74AHCT04" H -550 4976 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -550 4750 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -550 4750 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H -550 4750 50  0001 C CNN "Mouser"
+	4    -550 4750
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS04 U?
+U 3 1 605153CD
+P -550 4250
+AR Path="/5D8005AF/5D800744/605153CD" Ref="U?"  Part="6" 
+AR Path="/5D2C0720/605153CD" Ref="U?"  Part="3" 
+AR Path="/5FAED671/605153CD" Ref="U?"  Part="3" 
+AR Path="/60AF64DE/605153CD" Ref="U?"  Part="3" 
+F 0 "U?" H -550 4567 50  0000 C CNN
+F 1 "74AHCT04" H -550 4476 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -550 4250 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -550 4250 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H -550 4250 50  0001 C CNN "Mouser"
+	3    -550 4250
+	1    0    0    -1  
+$EndComp
+NoConn ~ -250 4250
+NoConn ~ -250 4750
+$Comp
+L power:VCC #PWR?
+U 1 1 605153D5
+P -850 3200
+AR Path="/5D2C0761/605153D5" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C0720/605153D5" Ref="#PWR?"  Part="1" 
+AR Path="/5FAED671/605153D5" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/605153D5" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H -850 3050 50  0001 C CNN
+F 1 "VCC" H -833 3373 50  0000 C CNN
+F 2 "" H -850 3200 50  0001 C CNN
+F 3 "" H -850 3200 50  0001 C CNN
+	1    -850 3200
+	1    0    0    -1  
+$EndComp
+Connection ~ -850 4250
+Wire Wire Line
+	-850 4250 -850 4750
+Connection ~ -850 4750
+Wire Wire Line
+	-850 4750 -850 5250
+Connection ~ -850 5250
+Wire Wire Line
+	-850 5250 -850 5750
+$Comp
+L power:GND #PWR?
+U 1 1 605153E1
+P -850 7200
+AR Path="/5D2C0720/605153E1" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C0761/605153E1" Ref="#PWR?"  Part="1" 
+AR Path="/5FAED671/605153E1" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/605153E1" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H -850 6950 50  0001 C CNN
+F 1 "GND" H -845 7027 50  0000 C CNN
+F 2 "" H -850 7200 50  0001 C CNN
+F 3 "" H -850 7200 50  0001 C CNN
+	1    -850 7200
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	-850 7050 -850 7200
+Wire Wire Line
+	-850 5750 -850 6050
+Connection ~ -850 5750
+Connection ~ -850 3750
+Wire Wire Line
+	-850 3750 -850 4250
+Wire Wire Line
+	-850 3200 -850 3750
+$Comp
+L 74xx:74LS04 U?
+U 2 1 605153EE
+P -550 3750
+AR Path="/5D8005AF/5D800744/605153EE" Ref="U?"  Part="6" 
+AR Path="/5D2C0720/605153EE" Ref="U?"  Part="2" 
+AR Path="/5FAED671/605153EE" Ref="U?"  Part="2" 
+AR Path="/60AF64DE/605153EE" Ref="U?"  Part="2" 
+F 0 "U?" H -550 4067 50  0000 C CNN
+F 1 "74AHCT04" H -550 3976 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -550 3750 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -550 3750 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H -550 3750 50  0001 C CNN "Mouser"
+	2    -550 3750
+	1    0    0    -1  
+$EndComp
+NoConn ~ -250 3750
+$Comp
+L power:GND #PWR?
+U 1 1 605153F5
+P 900 7500
+AR Path="/5D2C0761/605153F5" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C0720/605153F5" Ref="#PWR?"  Part="1" 
+AR Path="/5FAED671/605153F5" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/605153F5" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 900 7250 50  0001 C CNN
+F 1 "GND" H 905 7327 50  0000 C CNN
+F 2 "" H 900 7500 50  0001 C CNN
+F 3 "" H 900 7500 50  0001 C CNN
+	1    900  7500
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:VCC #PWR?
+U 1 1 605153FB
+P 900 7200
+AR Path="/5D2C0761/605153FB" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C0720/605153FB" Ref="#PWR?"  Part="1" 
+AR Path="/5FAED671/605153FB" Ref="#PWR?"  Part="1" 
+AR Path="/60AF64DE/605153FB" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 900 7050 50  0001 C CNN
+F 1 "VCC" H 917 7373 50  0000 C CNN
+F 2 "" H 900 7200 50  0001 C CNN
+F 3 "" H 900 7200 50  0001 C CNN
+	1    900  7200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 60515402
+P 900 7350
+AR Path="/5D2C0761/60515402" Ref="C?"  Part="1" 
+AR Path="/5D2C0720/60515402" Ref="C?"  Part="1" 
+AR Path="/5FAED671/60515402" Ref="C?"  Part="1" 
+AR Path="/60AF64DE/60515402" Ref="C?"  Part="1" 
+F 0 "C?" H 1015 7396 50  0000 L CNN
+F 1 "100nF" H 1015 7305 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 938 7200 50  0001 C CNN
+F 3 "~" H 900 7350 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 900 7350 50  0001 C CNN "Mouser"
+	1    900  7350
+	1    0    0    -1  
+$EndComp
 Wire Bus Line
 	1950 2300 5900 2300
 $EndSCHEMATC

@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 35 34
+Sheet 34 35
 Title "IF/ID"
 Date ""
 Rev ""
@@ -1707,14 +1707,6 @@ Text HLabel 7300 4900 0    50   Input ~ 0
 Phi1
 Wire Wire Line
 	7350 5000 7300 5000
-Wire Bus Line
-	2000 1750 2000 4650
-Wire Bus Line
-	4000 1700 4000 4650
-Wire Bus Line
-	6850 1700 6850 4600
-Wire Bus Line
-	8850 1650 8850 4600
 $Comp
 L 74xx:74LS574 U?
 U 1 1 6045439C
@@ -2079,4 +2071,12 @@ F 3 "" H 7300 2950 50  0001 C CNN
 	1    7300 2950
 	0    1    1    0   
 $EndComp
+Wire Bus Line
+	2000 1750 2000 4650
+Wire Bus Line
+	4000 1700 4000 4650
+Wire Bus Line
+	6850 1700 6850 4600
+Wire Bus Line
+	8850 1650 8850 4600
 $EndSCHEMATC

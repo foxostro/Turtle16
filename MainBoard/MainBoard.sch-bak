@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 1 34
+Sheet 1 35
 Title "Turtle16: Main Board"
 Date ""
 Rev ""
@@ -63,7 +63,7 @@ U 5D2C0720
 F0 "Clock" 50
 F1 "Clock.sch" 50
 F2 "~HLT" I R 2250 1550 50 
-F3 "~RDY" I L 1700 1550 50 
+F3 "RDY" B L 1700 1550 50 
 $EndSheet
 $Comp
 L power:VCC #PWR?
@@ -202,7 +202,7 @@ F2 "IO[0..15]" T R 3250 3150 50
 F3 "Addr[0..15]" T R 3250 3050 50 
 F4 "~MemLoad" T R 3250 3250 50 
 F5 "~MemStore" T R 3250 3350 50 
-F6 "~RDY" O L 1500 3100 50 
+F6 "RDY" B L 1500 3100 50 
 $EndSheet
 Wire Bus Line
 	3250 4650 6050 4650
@@ -374,7 +374,7 @@ F6 "~MemStore" T R 3250 4150 50
 F7 "~MemLoad" T R 3250 4250 50 
 F8 "SystemBus[0..15]" T R 3250 4350 50 
 F9 "Addr[0..15]" T R 3250 4450 50 
-F10 "~RDY" I L 1500 4100 50 
+F10 "RDY" I L 1500 4100 50 
 F11 "SelC_WB[0..2]" O L 1500 4650 50 
 F12 "SelC_MEM[0..2]" I R 3250 4950 50 
 F13 "Ctl_WB[17..20]" O L 1500 4850 50 

@@ -44,7 +44,7 @@
   )
 
   (setup
-    (last_trace_width 0.1524)
+    (last_trace_width 0.3048)
     (user_trace_width 0.3048)
     (user_trace_width 1.27)
     (user_trace_width 2.54)
@@ -12903,7 +12903,7 @@
     (arrow2a (pts (xy 110.937 207.64) (xy 111.523421 206.513496)))
     (arrow2b (pts (xy 110.937 207.64) (xy 110.350579 206.513496)))
   )
-  (gr_text "Turtle16 © 2020-2021 Andrew Fox, Rev 1" (at 295.595 203.195) (layer F.SilkS) (tstamp 5FD59B56)
+  (gr_text "Turtle16 © 2021 Andrew Fox, Rev 1" (at 295.595 203.195) (layer F.SilkS) (tstamp 5FD59B56)
     (effects (font (size 1.5 1.5) (thickness 0.3)))
   )
   (gr_line (start 117.795 202.56) (end 117.795 59.685) (layer Edge.Cuts) (width 0.1) (tstamp 5FD5523C))

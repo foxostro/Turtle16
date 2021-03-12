@@ -74,10 +74,22 @@ public class DecoderGenerator: NSObject {
     public static let opcodeAdc = 30
     public static let opcodeSbc = 31
     
+    public enum SelStoreOpEnum {
+        case b, pc, imm, immShift
+        public func controlWord() -> UInt {
+            switch self {
+            case .b:        return 0b00
+            case .pc:       return 0b01
+            case .imm:      return 0b10
+            case .immShift: return 0b11
+            }
+        }
+    }
     public struct SelStoreOpTag {
         let tag: UInt
     }
-    public static func SelStoreOp(_ val: UInt) -> SelStoreOpTag {
+    public static func SelStoreOp(_ op: SelStoreOpEnum) -> SelStoreOpTag {
+        let val = op.controlWord()
         assert(val < 4)
         return SelStoreOpTag(tag: val & 3)
     }
@@ -159,14 +171,14 @@ public class DecoderGenerator: NSObject {
             DecoderGenerator.WBEN
         ])
         makeControlWord(&controlWords, DecoderGenerator.opcodeStore, [
-            DecoderGenerator.SelStoreOp(0b00),
+            DecoderGenerator.SelStoreOp(.b),
             DecoderGenerator.SelRightOp(.imm_10_8_1_0),
             DecoderGenerator.ALUControl(fn: .add, c0: 0),
             DecoderGenerator.MemStore,
             DecoderGenerator.AssertStoreOp
         ])
         makeControlWord(&controlWords, DecoderGenerator.opcodeLi, [
-            DecoderGenerator.SelStoreOp(0b10),
+            DecoderGenerator.SelStoreOp(.imm),
             DecoderGenerator.AssertStoreOp,
             DecoderGenerator.WriteBackSrc(.storeOp),
             DecoderGenerator.WRL,
@@ -174,7 +186,7 @@ public class DecoderGenerator: NSObject {
             DecoderGenerator.WBEN
         ])
         makeControlWord(&controlWords, DecoderGenerator.opcodeLui, [
-            DecoderGenerator.SelStoreOp(0b11),
+            DecoderGenerator.SelStoreOp(.immShift),
             DecoderGenerator.AssertStoreOp,
             DecoderGenerator.WriteBackSrc(.storeOp),
             DecoderGenerator.WRH,
@@ -303,7 +315,7 @@ public class DecoderGenerator: NSObject {
             DecoderGenerator.JABS
         ])
         makeControlWord(&controlWords, DecoderGenerator.opcodeJalr, [
-            DecoderGenerator.SelStoreOp(0b01),
+            DecoderGenerator.SelStoreOp(.pc),
             DecoderGenerator.SelRightOp(.imm_4_0),
             DecoderGenerator.ALUControl(fn: .add, c0: 0),
             DecoderGenerator.J,

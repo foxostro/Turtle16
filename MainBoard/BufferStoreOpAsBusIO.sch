@@ -48,8 +48,8 @@ AR Path="/60A71BBF/5FF19881" Ref="C?"  Part="1"
 AR Path="/60AF64DE/600805C3/5FF19881" Ref="C?"  Part="1" 
 AR Path="/60AF64DE/600D2600/5FF19881" Ref="C?"  Part="1" 
 AR Path="/60AF64DE/600D275E/5FF19881" Ref="C?"  Part="1" 
-AR Path="/60AF64DE/5FF1115C/5FF19881" Ref="C22"  Part="1" 
-F 0 "C22" H 1065 6896 50  0000 L CNN
+AR Path="/60AF64DE/5FF1115C/5FF19881" Ref="C20"  Part="1" 
+F 0 "C20" H 1065 6896 50  0000 L CNN
 F 1 "100nF" H 1065 6805 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 988 6700 50  0001 C CNN
 F 3 "~" H 950 6850 50  0001 C CNN
@@ -92,8 +92,8 @@ AR Path="/60A71BBF/5FF19887" Ref="C?"  Part="1"
 AR Path="/60AF64DE/600805C3/5FF19887" Ref="C?"  Part="1" 
 AR Path="/60AF64DE/600D2600/5FF19887" Ref="C?"  Part="1" 
 AR Path="/60AF64DE/600D275E/5FF19887" Ref="C?"  Part="1" 
-AR Path="/60AF64DE/5FF1115C/5FF19887" Ref="C23"  Part="1" 
-F 0 "C23" H 1565 6896 50  0000 L CNN
+AR Path="/60AF64DE/5FF1115C/5FF19887" Ref="C21"  Part="1" 
+F 0 "C21" H 1565 6896 50  0000 L CNN
 F 1 "100nF" H 1565 6805 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1488 6700 50  0001 C CNN
 F 3 "~" H 1450 6850 50  0001 C CNN
@@ -452,10 +452,10 @@ StoreOp_MEM15
 Text HLabel 8200 4600 2    50   Input ~ 0
 ~RDY
 $Comp
-L 74xx:74LS02 U21
+L 74xx:74LS02 U16
 U 1 2 5FCF097E
 P 7900 4500
-F 0 "U21" H 7900 4825 50  0000 C CNN
+F 0 "U16" H 7900 4825 50  0000 C CNN
 F 1 "74AHCT02" H 7900 4734 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 7900 4500 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct02" H 7900 4500 50  0001 C CNN
@@ -464,10 +464,10 @@ F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74AHCT02PWR?qs=RZS
 	-1   0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS02 U21
+L 74xx:74LS02 U16
 U 2 2 5FCFD79F
 P -900 4350
-F 0 "U21" H -900 4675 50  0000 C CNN
+F 0 "U16" H -900 4675 50  0000 C CNN
 F 1 "74AHCT02" H -900 4584 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -900 4350 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct02" H -900 4350 50  0001 C CNN
@@ -476,10 +476,10 @@ F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74AHCT02PWR?qs=RZS
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS02 U21
+L 74xx:74LS02 U16
 U 3 2 5FD014D9
 P -900 4900
-F 0 "U21" H -900 5225 50  0000 C CNN
+F 0 "U16" H -900 5225 50  0000 C CNN
 F 1 "74AHCT02" H -900 5134 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -900 4900 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct02" H -900 4900 50  0001 C CNN
@@ -488,10 +488,10 @@ F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74AHCT02PWR?qs=RZS
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS02 U21
+L 74xx:74LS02 U16
 U 4 2 5FD06B1B
 P -900 5450
-F 0 "U21" H -900 5775 50  0000 C CNN
+F 0 "U16" H -900 5775 50  0000 C CNN
 F 1 "74AHCT02" H -900 5684 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -900 5450 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct02" H -900 5450 50  0001 C CNN
@@ -500,10 +500,10 @@ F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74AHCT02PWR?qs=RZS
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS02 U21
+L 74xx:74LS02 U16
 U 5 2 5FD06B21
 P -1700 4950
-F 0 "U21" H -1642 4996 50  0000 L CNN
+F 0 "U16" H -1642 4996 50  0000 L CNN
 F 1 "74AHCT02" H -1642 4905 50  0000 L CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -1700 4950 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct02" H -1700 4950 50  0001 C CNN
@@ -695,8 +695,8 @@ AR Path="/60A71BBF/5FD21E1B" Ref="C?"  Part="1"
 AR Path="/60AF64DE/600805C3/5FD21E1B" Ref="C?"  Part="1" 
 AR Path="/60AF64DE/600D2600/5FD21E1B" Ref="C?"  Part="1" 
 AR Path="/60AF64DE/600D275E/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60AF64DE/5FF1115C/5FD21E1B" Ref="C24"  Part="1" 
-F 0 "C24" H 2065 6896 50  0000 L CNN
+AR Path="/60AF64DE/5FF1115C/5FD21E1B" Ref="C22"  Part="1" 
+F 0 "C22" H 2065 6896 50  0000 L CNN
 F 1 "100nF" H 2065 6805 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1988 6700 50  0001 C CNN
 F 3 "~" H 1950 6850 50  0001 C CNN
@@ -717,9 +717,9 @@ P 5850 2950
 AR Path="/60A71BBF/5FDDE478/5FE3C856" Ref="U?"  Part="1" 
 AR Path="/60A71BBF/5FDDE458/5FE3C856" Ref="U?"  Part="1" 
 AR Path="/60AF64DE/5FB90806/5FE3C856" Ref="U?"  Part="1" 
-AR Path="/60AF64DE/5FF1115C/5FE3C856" Ref="U22"  Part="1" 
+AR Path="/60AF64DE/5FF1115C/5FE3C856" Ref="U17"  Part="1" 
 AR Path="/5FE3C856" Ref="U?"  Part="1" 
-F 0 "U22" H 5550 3750 50  0000 C CNN
+F 0 "U17" H 5550 3750 50  0000 C CNN
 F 1 "74AHCT245" H 5550 3650 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 5850 2950 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHCT245A-1597455.pdf" H 5850 2950 50  0001 C CNN
@@ -734,9 +734,9 @@ P 5850 5050
 AR Path="/60A71BBF/5FDDE478/5FE401BC" Ref="U?"  Part="1" 
 AR Path="/60A71BBF/5FDDE458/5FE401BC" Ref="U?"  Part="1" 
 AR Path="/60AF64DE/5FB90806/5FE401BC" Ref="U?"  Part="1" 
-AR Path="/60AF64DE/5FF1115C/5FE401BC" Ref="U23"  Part="1" 
+AR Path="/60AF64DE/5FF1115C/5FE401BC" Ref="U18"  Part="1" 
 AR Path="/5FE401BC" Ref="U?"  Part="1" 
-F 0 "U23" H 5550 5850 50  0000 C CNN
+F 0 "U18" H 5550 5850 50  0000 C CNN
 F 1 "74AHCT245" H 5550 5750 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 5850 5050 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHCT245A-1597455.pdf" H 5850 5050 50  0001 C CNN

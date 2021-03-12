@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 14 35
+Sheet 15 35
 Title "EX"
 Date ""
 Rev ""
@@ -49,10 +49,10 @@ F 3 "" H 8450 4150 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS377 U32
+L 74xx:74LS377 U27
 U 1 1 5FE1ACC2
 P 8450 4950
-F 0 "U32" H 8150 5750 50  0000 C CNN
+F 0 "U27" H 8150 5750 50  0000 C CNN
 F 1 "74ABT377" H 8150 5650 50  0000 C CNN
 F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 8450 4950 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74abt377a" H 8450 4950 50  0001 C CNN
@@ -152,8 +152,8 @@ AR Path="/5FF41DF6/6005FCF2/600839BF" Ref="C?"  Part="1"
 AR Path="/5FF41DF6/6005FCFB/600839BF" Ref="C?"  Part="1" 
 AR Path="/5FF41DF6/6005FD06/600839BF" Ref="C?"  Part="1" 
 AR Path="/5FF41DF6/6005FD11/600839BF" Ref="C?"  Part="1" 
-AR Path="/60A71BBF/600839BF" Ref="C33"  Part="1" 
-F 0 "C33" H 1065 7446 50  0000 L CNN
+AR Path="/60A71BBF/600839BF" Ref="C31"  Part="1" 
+F 0 "C31" H 1065 7446 50  0000 L CNN
 F 1 "100nF" H 1065 7355 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 988 7250 50  0001 C CNN
 F 3 "~" H 950 7400 50  0001 C CNN

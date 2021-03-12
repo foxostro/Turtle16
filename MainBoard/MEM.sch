@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 6 35
+Sheet 7 35
 Title "MEM"
 Date ""
 Rev ""
@@ -207,8 +207,8 @@ P 2600 1400
 AR Path="/5D8005AF/5D800744/605061C0" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/605061C0" Ref="U?"  Part="2" 
 AR Path="/5FAED671/605061C0" Ref="U?"  Part="1" 
-AR Path="/60AF64DE/605061C0" Ref="U20"  Part="1" 
-F 0 "U20" H 2600 1717 50  0000 C CNN
+AR Path="/60AF64DE/605061C0" Ref="U15"  Part="1" 
+F 0 "U15" H 2600 1717 50  0000 C CNN
 F 1 "74AHCT04" H 2600 1626 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 2600 1400 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 2600 1400 50  0001 C CNN
@@ -237,8 +237,8 @@ P -850 6550
 AR Path="/5D2C0761/605153B1" Ref="U?"  Part="7" 
 AR Path="/5D2C0720/605153B1" Ref="U?"  Part="7" 
 AR Path="/5FAED671/605153B1" Ref="U?"  Part="7" 
-AR Path="/60AF64DE/605153B1" Ref="U20"  Part="7" 
-F 0 "U20" H -850 6600 50  0000 C CNN
+AR Path="/60AF64DE/605153B1" Ref="U15"  Part="7" 
+F 0 "U15" H -850 6600 50  0000 C CNN
 F 1 "74AHCT04" H -850 6500 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -850 6550 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -850 6550 50  0001 C CNN
@@ -253,8 +253,8 @@ P -550 5750
 AR Path="/5D8005AF/5D800744/605153B8" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/605153B8" Ref="U?"  Part="6" 
 AR Path="/5FAED671/605153B8" Ref="U?"  Part="6" 
-AR Path="/60AF64DE/605153B8" Ref="U20"  Part="6" 
-F 0 "U20" H -550 6067 50  0000 C CNN
+AR Path="/60AF64DE/605153B8" Ref="U15"  Part="6" 
+F 0 "U15" H -550 6067 50  0000 C CNN
 F 1 "74AHCT04" H -550 5976 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -550 5750 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -550 5750 50  0001 C CNN
@@ -269,8 +269,8 @@ P -550 5250
 AR Path="/5D8005AF/5D800744/605153BF" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/605153BF" Ref="U?"  Part="5" 
 AR Path="/5FAED671/605153BF" Ref="U?"  Part="5" 
-AR Path="/60AF64DE/605153BF" Ref="U20"  Part="5" 
-F 0 "U20" H -550 5567 50  0000 C CNN
+AR Path="/60AF64DE/605153BF" Ref="U15"  Part="5" 
+F 0 "U15" H -550 5567 50  0000 C CNN
 F 1 "74AHCT04" H -550 5476 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -550 5250 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -550 5250 50  0001 C CNN
@@ -285,8 +285,8 @@ P -550 4750
 AR Path="/5D8005AF/5D800744/605153C6" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/605153C6" Ref="U?"  Part="4" 
 AR Path="/5FAED671/605153C6" Ref="U?"  Part="4" 
-AR Path="/60AF64DE/605153C6" Ref="U20"  Part="4" 
-F 0 "U20" H -550 5067 50  0000 C CNN
+AR Path="/60AF64DE/605153C6" Ref="U15"  Part="4" 
+F 0 "U15" H -550 5067 50  0000 C CNN
 F 1 "74AHCT04" H -550 4976 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -550 4750 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -550 4750 50  0001 C CNN
@@ -301,8 +301,8 @@ P -550 4250
 AR Path="/5D8005AF/5D800744/605153CD" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/605153CD" Ref="U?"  Part="3" 
 AR Path="/5FAED671/605153CD" Ref="U?"  Part="3" 
-AR Path="/60AF64DE/605153CD" Ref="U20"  Part="3" 
-F 0 "U20" H -550 4567 50  0000 C CNN
+AR Path="/60AF64DE/605153CD" Ref="U15"  Part="3" 
+F 0 "U15" H -550 4567 50  0000 C CNN
 F 1 "74AHCT04" H -550 4476 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -550 4250 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -550 4250 50  0001 C CNN
@@ -368,8 +368,8 @@ P -550 3750
 AR Path="/5D8005AF/5D800744/605153EE" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/605153EE" Ref="U?"  Part="2" 
 AR Path="/5FAED671/605153EE" Ref="U?"  Part="2" 
-AR Path="/60AF64DE/605153EE" Ref="U20"  Part="2" 
-F 0 "U20" H -550 4067 50  0000 C CNN
+AR Path="/60AF64DE/605153EE" Ref="U15"  Part="2" 
+F 0 "U15" H -550 4067 50  0000 C CNN
 F 1 "74AHCT04" H -550 3976 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -550 3750 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -550 3750 50  0001 C CNN
@@ -415,8 +415,8 @@ P 900 7350
 AR Path="/5D2C0761/60515402" Ref="C?"  Part="1" 
 AR Path="/5D2C0720/60515402" Ref="C?"  Part="1" 
 AR Path="/5FAED671/60515402" Ref="C?"  Part="1" 
-AR Path="/60AF64DE/60515402" Ref="C21"  Part="1" 
-F 0 "C21" H 1015 7396 50  0000 L CNN
+AR Path="/60AF64DE/60515402" Ref="C19"  Part="1" 
+F 0 "C19" H 1015 7396 50  0000 L CNN
 F 1 "100nF" H 1015 7305 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 938 7200 50  0001 C CNN
 F 3 "~" H 900 7350 50  0001 C CNN

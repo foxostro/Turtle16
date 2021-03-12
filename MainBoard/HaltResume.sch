@@ -426,10 +426,10 @@ F 3 "" H -3750 6650 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS08 U10
+L 74xx:74LS08 U6
 U 1 1 60561032
 P 4600 5300
-F 0 "U10" H 4600 5625 50  0000 C CNN
+F 0 "U6" H 4600 5625 50  0000 C CNN
 F 1 "74AHCT08" H 4600 5534 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 4600 5300 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT08-1388970.pdf" H 4600 5300 50  0001 C CNN
@@ -438,10 +438,10 @@ F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT08PW118?qs=P62ublwmbi%2
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS04 U12
+L 74xx:74LS04 U8
 U 1 1 612E659B
 P 2500 5200
-F 0 "U12" H 2500 5517 50  0000 C CNN
+F 0 "U8" H 2500 5517 50  0000 C CNN
 F 1 "74AHCT04" H 2500 5426 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 2500 5200 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT04-1597573.pdf" H 2500 5200 50  0001 C CNN
@@ -454,20 +454,20 @@ L Timer:LM555xMM U?
 U 1 1 611BE4F4
 P 3700 3200
 AR Path="/5D2C0720/611BE4F4" Ref="U?"  Part="1" 
-AR Path="/5D2C0720/611B6311/611BE4F4" Ref="U13"  Part="1" 
-F 0 "U13" H 3400 3700 50  0000 C CNN
-F 1 "74AHCT04" H 3400 3600 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 4350 2800 50  0001 C CNN
-F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT04-1597573.pdf" H 4550 2800 50  0001 C CNN
+AR Path="/5D2C0720/611B6311/611BE4F4" Ref="U9"  Part="1" 
+F 0 "U9" H 3400 3700 50  0000 C CNN
+F 1 "LM555" H 3400 3600 50  0000 C CNN
+F 2 "Package_SO:VSSOP-8_3.0x3.0mm_P0.65mm" H 4350 2800 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Flm555" H 4550 2800 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/LM555CMMX-NOPB?qs=QbsRYf82W3FVBYo9S%2FC8bw%3D%3D" H 3700 3200 50  0001 C CNN "Mouser"
 	1    3700 3200
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS02 U11
+L 74xx:74LS02 U7
 U 1 1 60506B82
 P 8800 3200
-F 0 "U11" H 8800 3525 50  0000 C CNN
+F 0 "U7" H 8800 3525 50  0000 C CNN
 F 1 "74AHCT02" H 8800 3434 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 8800 3200 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT02-1597343.pdf" H 8800 3200 50  0001 C CNN
@@ -476,10 +476,10 @@ F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT02PW118?qs=P62ublwmbi%2
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS08 U10
+L 74xx:74LS08 U6
 U 5 1 6056104E
 P -3750 6000
-F 0 "U10" H -3520 6046 50  0000 L CNN
+F 0 "U6" H -3520 6046 50  0000 L CNN
 F 1 "74AHCT08" H -3520 5955 50  0000 L CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -3750 6000 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT08-1388970.pdf" H -3750 6000 50  0001 C CNN
@@ -488,10 +488,10 @@ F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT08PW118?qs=P62ublwmbi%2
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS08 U10
+L 74xx:74LS08 U6
 U 4 1 60561047
 P -3450 5300
-F 0 "U10" H -3450 5625 50  0000 C CNN
+F 0 "U6" H -3450 5625 50  0000 C CNN
 F 1 "74AHCT08" H -3450 5534 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -3450 5300 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT08-1388970.pdf" H -3450 5300 50  0001 C CNN
@@ -500,10 +500,10 @@ F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT08PW118?qs=P62ublwmbi%2
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS08 U10
+L 74xx:74LS08 U6
 U 3 1 60561040
 P 7900 3100
-F 0 "U10" H 7900 3425 50  0000 C CNN
+F 0 "U6" H 7900 3425 50  0000 C CNN
 F 1 "74AHCT08" H 7900 3334 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 7900 3100 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT08-1388970.pdf" H 7900 3100 50  0001 C CNN
@@ -512,10 +512,10 @@ F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT08PW118?qs=P62ublwmbi%2
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS08 U10
+L 74xx:74LS08 U6
 U 2 1 60561039
 P 6100 4500
-F 0 "U10" H 6100 4825 50  0000 C CNN
+F 0 "U6" H 6100 4825 50  0000 C CNN
 F 1 "74AHCT08" H 6100 4734 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 6100 4500 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT08-1388970.pdf" H 6100 4500 50  0001 C CNN
@@ -524,10 +524,10 @@ F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT08PW118?qs=P62ublwmbi%2
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS04 U12
+L 74xx:74LS04 U8
 U 5 1 612E52B1
 P 6950 3450
-F 0 "U12" H 6950 3767 50  0000 C CNN
+F 0 "U8" H 6950 3767 50  0000 C CNN
 F 1 "74AHCT04" H 6950 3676 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 6950 3450 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT04-1597573.pdf" H 6950 3450 50  0001 C CNN
@@ -536,10 +536,10 @@ F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H 6950 3450 50  0001 
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS04 U12
+L 74xx:74LS04 U8
 U 4 1 612E5866
 P 5300 5300
-F 0 "U12" H 5300 5617 50  0000 C CNN
+F 0 "U8" H 5300 5617 50  0000 C CNN
 F 1 "74AHCT04" H 5300 5526 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 5300 5300 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT04-1597573.pdf" H 5300 5300 50  0001 C CNN
@@ -548,10 +548,10 @@ F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H 5300 5300 50  0001 
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS04 U12
+L 74xx:74LS04 U8
 U 3 1 612E5D5B
 P 3800 5200
-F 0 "U12" H 3800 5517 50  0000 C CNN
+F 0 "U8" H 3800 5517 50  0000 C CNN
 F 1 "74AHCT04" H 3800 5426 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 3800 5200 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT04-1597573.pdf" H 3800 5200 50  0001 C CNN
@@ -560,10 +560,10 @@ F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H 3800 5200 50  0001 
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS04 U12
+L 74xx:74LS04 U8
 U 2 1 612E6178
 P 3150 5200
-F 0 "U12" H 3150 5517 50  0000 C CNN
+F 0 "U8" H 3150 5517 50  0000 C CNN
 F 1 "74AHCT04" H 3150 5426 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 3150 5200 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT04-1597573.pdf" H 3150 5200 50  0001 C CNN
@@ -572,10 +572,10 @@ F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H 3150 5200 50  0001 
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS04 U12
+L 74xx:74LS04 U8
 U 7 1 612E0CF5
 P -1550 6000
-F 0 "U12" H -1320 6046 50  0000 L CNN
+F 0 "U8" H -1320 6046 50  0000 L CNN
 F 1 "74AHCT04" H -1320 5955 50  0000 L CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -1550 6000 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT04-1597573.pdf" H -1550 6000 50  0001 C CNN
@@ -584,10 +584,10 @@ F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H -1550 6000 50  0001
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS04 U12
+L 74xx:74LS04 U8
 U 6 1 612DD2AD
 P -1250 5300
-F 0 "U12" H -1250 5617 50  0000 C CNN
+F 0 "U8" H -1250 5617 50  0000 C CNN
 F 1 "74AHCT04" H -1250 5526 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -1250 5300 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT04-1597573.pdf" H -1250 5300 50  0001 C CNN
@@ -596,10 +596,10 @@ F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H -1250 5300 50  0001
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS02 U11
+L 74xx:74LS02 U7
 U 2 1 60506B89
 P 8800 3900
-F 0 "U11" H 8800 4225 50  0000 C CNN
+F 0 "U7" H 8800 4225 50  0000 C CNN
 F 1 "74AHCT02" H 8800 4134 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 8800 3900 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT02-1597343.pdf" H 8800 3900 50  0001 C CNN
@@ -608,10 +608,10 @@ F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT02PW118?qs=P62ublwmbi%2
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS02 U11
+L 74xx:74LS02 U7
 U 3 1 60506B90
 P -2350 4750
-F 0 "U11" H -2350 5075 50  0000 C CNN
+F 0 "U7" H -2350 5075 50  0000 C CNN
 F 1 "74AHCT02" H -2350 4984 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -2350 4750 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT02-1597343.pdf" H -2350 4750 50  0001 C CNN
@@ -620,10 +620,10 @@ F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT02PW118?qs=P62ublwmbi%2
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS02 U11
+L 74xx:74LS02 U7
 U 4 1 60506B97
 P -2350 5300
-F 0 "U11" H -2350 5625 50  0000 C CNN
+F 0 "U7" H -2350 5625 50  0000 C CNN
 F 1 "74AHCT02" H -2350 5534 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -2350 5300 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT02-1597343.pdf" H -2350 5300 50  0001 C CNN
@@ -632,10 +632,10 @@ F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT02PW118?qs=P62ublwmbi%2
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS02 U11
+L 74xx:74LS02 U7
 U 5 1 60506B9E
 P -2650 6000
-F 0 "U11" H -2420 6046 50  0000 L CNN
+F 0 "U7" H -2420 6046 50  0000 L CNN
 F 1 "74AHCT02" H -2420 5955 50  0000 L CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -2650 6000 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT02-1597343.pdf" H -2650 6000 50  0001 C CNN
@@ -660,10 +660,10 @@ $EndComp
 Wire Wire Line
 	-4800 6500 -4800 6650
 $Comp
-L 74xx:74LS05 U14
+L 74xx:74LS05 U5
 U 1 1 605F9358
 P 9650 3900
-F 0 "U14" H 9650 4217 50  0000 C CNN
+F 0 "U5" H 9650 4217 50  0000 C CNN
 F 1 "74AHCT05" H 9650 4126 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 9650 3900 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/308/MM74HCT05-D-1811504.pdf" H 9650 3900 50  0001 C CNN
@@ -673,62 +673,62 @@ F 4 "https://www.mouser.com/ProductDetail/ON-Semiconductor-Fairchild/MM74HCT05MT
 $EndComp
 $Comp
 L 74xx:74LS05 U5
-U 1 1 605F935F
+U 2 1 605F935F
 P -4500 3250
 F 0 "U5" H -4500 3567 50  0000 C CNN
 F 1 "74AHCT05" H -4500 3476 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -4500 3250 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/308/MM74HCT05-D-1811504.pdf" H -4500 3250 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/ON-Semiconductor-Fairchild/MM74HCT05MTC?qs=7qg%2FUSZkK84HVNk73cLWQw%3D%3D" H -4500 3250 50  0001 C CNN "Mouser"
-	1    -4500 3250
+	2    -4500 3250
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS05 U6
-U 1 1 605F9366
+L 74xx:74LS05 U5
+U 3 1 605F9366
 P -4500 3750
-F 0 "U6" H -4500 4067 50  0000 C CNN
+F 0 "U5" H -4500 4067 50  0000 C CNN
 F 1 "74AHCT05" H -4500 3976 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -4500 3750 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/308/MM74HCT05-D-1811504.pdf" H -4500 3750 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/ON-Semiconductor-Fairchild/MM74HCT05MTC?qs=7qg%2FUSZkK84HVNk73cLWQw%3D%3D" H -4500 3750 50  0001 C CNN "Mouser"
-	1    -4500 3750
+	3    -4500 3750
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS05 U7
-U 1 1 605F936D
+L 74xx:74LS05 U5
+U 4 1 605F936D
 P -4500 4250
-F 0 "U7" H -4500 4567 50  0000 C CNN
+F 0 "U5" H -4500 4567 50  0000 C CNN
 F 1 "74AHCT05" H -4500 4476 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -4500 4250 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/308/MM74HCT05-D-1811504.pdf" H -4500 4250 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/ON-Semiconductor-Fairchild/MM74HCT05MTC?qs=7qg%2FUSZkK84HVNk73cLWQw%3D%3D" H -4500 4250 50  0001 C CNN "Mouser"
-	1    -4500 4250
+	4    -4500 4250
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS05 U8
-U 1 1 605F9374
+L 74xx:74LS05 U5
+U 5 1 605F9374
 P -4500 4800
-F 0 "U8" H -4500 5117 50  0000 C CNN
+F 0 "U5" H -4500 5117 50  0000 C CNN
 F 1 "74AHCT05" H -4500 5026 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -4500 4800 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/308/MM74HCT05-D-1811504.pdf" H -4500 4800 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/ON-Semiconductor-Fairchild/MM74HCT05MTC?qs=7qg%2FUSZkK84HVNk73cLWQw%3D%3D" H -4500 4800 50  0001 C CNN "Mouser"
-	1    -4500 4800
+	5    -4500 4800
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS05 U9
-U 1 1 605F937B
+L 74xx:74LS05 U5
+U 6 1 605F937B
 P -4500 5300
-F 0 "U9" H -4500 5617 50  0000 C CNN
+F 0 "U5" H -4500 5617 50  0000 C CNN
 F 1 "74AHCT05" H -4500 5526 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -4500 5300 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/308/MM74HCT05-D-1811504.pdf" H -4500 5300 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/ON-Semiconductor-Fairchild/MM74HCT05MTC?qs=7qg%2FUSZkK84HVNk73cLWQw%3D%3D" H -4500 5300 50  0001 C CNN "Mouser"
-	1    -4500 5300
+	6    -4500 5300
 	1    0    0    -1  
 $EndComp
 $Comp

@@ -8,6 +8,16 @@
 
 import Foundation
 
+public extension UInt {
+    func asBinaryString() -> String {
+        var result = String(self, radix: 2)
+        if result.count < 32 {
+            result = String(repeatElement("0", count: 32 - result.count)) + result
+        }
+        return "0b" + result
+    }
+}
+
 public class DecoderGenerator: NSObject {
     public static let HLT = 0
     public static let SelStoreOpA = 1
@@ -69,7 +79,7 @@ public class DecoderGenerator: NSObject {
     }
     public static func SelStoreOp(_ val: UInt) -> SelStoreOpTag {
         assert(val < 4)
-        return SelStoreOpTag(tag: (~val) & 3)
+        return SelStoreOpTag(tag: val & 3)
     }
     
     public struct SelRightOpTag {
@@ -77,7 +87,7 @@ public class DecoderGenerator: NSObject {
     }
     public static func SelRightOp(_ val: UInt) -> SelRightOpTag {
         assert(val < 4)
-        return SelRightOpTag(tag: (~val) & 3)
+        return SelRightOpTag(tag: val & 3)
     }
     
     public struct ALUITag {
@@ -85,7 +95,7 @@ public class DecoderGenerator: NSObject {
     }
     public static func ALUI(_ val: UInt) -> ALUITag {
         assert(val < 8)
-        return ALUITag(tag: (~val) & 7)
+        return ALUITag(tag: val & 7)
     }
     
     public enum WriteBackSrcEnum {
@@ -102,11 +112,11 @@ public class DecoderGenerator: NSObject {
         case .storeOp:
             tag = 1
         }
-        return WriteBackSrcTag(tag: (~tag)&1)
+        return WriteBackSrcTag(tag: tag & 1)
     }
     
     public func generate() -> [UInt] {
-        var controlWords = Array<UInt>(repeating: 0, count: 512)
+        var controlWords = Array<UInt>(repeating: ID.nopControlWord, count: 512)
         makeControlWord(&controlWords, DecoderGenerator.opcodeNop, [])
         makeControlWord(&controlWords, DecoderGenerator.opcodeHlt, [
             DecoderGenerator.HLT
@@ -361,25 +371,32 @@ public class DecoderGenerator: NSObject {
     
     public func makeControlWord(_ controlWords: inout [UInt], index: Int, signals: [Any]) {
         for signal_ in signals {
+            let next: UInt
+            let prev = controlWords[index]
             if let signal = signal_ as? Int {
-                controlWords[index] = controlWords[index] | (1 << signal)
+                next = prev & ~(1 << signal)
             }
             else if let signal = signal_ as? SelStoreOpTag {
-                controlWords[index] = controlWords[index] | (signal.tag << DecoderGenerator.SelStoreOpA)
+                next = (prev & ~(0b11 << DecoderGenerator.SelStoreOpA))
+                     | (signal.tag << DecoderGenerator.SelStoreOpA)
             }
             else if let signal = signal_ as? SelRightOpTag {
-                controlWords[index] = controlWords[index] | (signal.tag << DecoderGenerator.SelRightOpA)
+                next = (prev & ~(0b11 << DecoderGenerator.SelRightOpA))
+                     | (signal.tag << DecoderGenerator.SelRightOpA)
             }
             else if let signal = signal_ as? ALUITag {
-                controlWords[index] = controlWords[index] | (signal.tag << DecoderGenerator.I0)
+                next = (prev & ~(0b111 << DecoderGenerator.I0))
+                     | (signal.tag << DecoderGenerator.I0)
             }
             else if let signal = signal_ as? WriteBackSrcTag {
-                controlWords[index] = controlWords[index] | (signal.tag << DecoderGenerator.WriteBackSrcFlag)
+                next = (prev & ~(1 << DecoderGenerator.WriteBackSrcFlag))
+                     | (signal.tag << DecoderGenerator.WriteBackSrcFlag)
             }
             else {
                 assert(false)
                 abort()
             }
+            controlWords[index] = next
         }
     }
     

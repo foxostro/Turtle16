@@ -213,8 +213,6 @@ Text Label 7250 2150 0    50   ~ 0
 Ins_EX[0..10]
 Text Label 7250 2650 0    50   ~ 0
 Ctl_EX[0..20]
-Text Notes 3000 3750 0    50   ~ 0
-NOTE: control signals in Ctl_ID are inverted with respect\nto other pipeline stages. This allows us to represent a\nNOP as a zero control word here and also allow active-\nlow signals in the other pipeline stages.
 Wire Bus Line
 	2050 2150 5200 2150
 $EndSCHEMATC

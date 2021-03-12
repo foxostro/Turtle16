@@ -1747,8 +1747,16 @@ class SchematicLevelCPUModelTests: XCTestCase {
             0b0000100000000000, // HLT
         ]
         cpu.reset()
+        
+        let stepLimit = 15
+        var counter = 0
         while !cpu.isHalted {
             cpu.step()
+            counter = counter + 1
+            if counter > stepLimit {
+                XCTFail()
+                break
+            }
         }
         
         XCTAssertEqual(cpu.getRegister(7), 0)
@@ -1772,8 +1780,16 @@ class SchematicLevelCPUModelTests: XCTestCase {
             0b0000100000000000, // HLT
         ]
         cpu.reset()
+        
+        let stepLimit = 95
+        var counter = 0
         while !cpu.isHalted {
             cpu.step()
+            counter = counter + 1
+            if counter > stepLimit {
+                XCTFail()
+                break
+            }
         }
         
         XCTAssertEqual(cpu.getRegister(7), 9)
@@ -1800,8 +1816,16 @@ class SchematicLevelCPUModelTests: XCTestCase {
             0b0000100000000000, // HLT
         ]
         cpu.reset()
+        
+        let stepLimit = 98
+        var counter = 0
         while !cpu.isHalted {
             cpu.step()
+            counter = counter + 1
+            if counter > stepLimit {
+                XCTFail()
+                break
+            }
         }
         
         XCTAssertEqual(cpu.getRegister(2), 55)

@@ -9,6 +9,20 @@
 import XCTest
 import Turtle16SimulatorCore
 
+extension SchematicLevelCPUModel {
+    func run(stepLimit: UInt) {
+        var counter = 0
+        while !isHalted {
+            step()
+            counter = counter + 1
+            if counter > stepLimit {
+                XCTFail()
+                break
+            }
+        }
+    }
+}
+
 class SchematicLevelCPUModelTests: XCTestCase {
     func testStartsInResetState() {
         let cpu = SchematicLevelCPUModel()
@@ -1747,18 +1761,7 @@ class SchematicLevelCPUModelTests: XCTestCase {
             0b0000100000000000, // HLT
         ]
         cpu.reset()
-        
-        let stepLimit = 15
-        var counter = 0
-        while !cpu.isHalted {
-            cpu.step()
-            counter = counter + 1
-            if counter > stepLimit {
-                XCTFail()
-                break
-            }
-        }
-        
+        cpu.run(stepLimit: 15)
         XCTAssertEqual(cpu.getRegister(7), 0)
     }
     
@@ -1780,18 +1783,7 @@ class SchematicLevelCPUModelTests: XCTestCase {
             0b0000100000000000, // HLT
         ]
         cpu.reset()
-        
-        let stepLimit = 95
-        var counter = 0
-        while !cpu.isHalted {
-            cpu.step()
-            counter = counter + 1
-            if counter > stepLimit {
-                XCTFail()
-                break
-            }
-        }
-        
+        cpu.run(stepLimit: 95)
         XCTAssertEqual(cpu.getRegister(7), 9)
     }
     
@@ -1816,18 +1808,7 @@ class SchematicLevelCPUModelTests: XCTestCase {
             0b0000100000000000, // HLT
         ]
         cpu.reset()
-        
-        let stepLimit = 98
-        var counter = 0
-        while !cpu.isHalted {
-            cpu.step()
-            counter = counter + 1
-            if counter > stepLimit {
-                XCTFail()
-                break
-            }
-        }
-        
+        cpu.run(stepLimit: 98)
         XCTAssertEqual(cpu.getRegister(2), 55)
     }
 }

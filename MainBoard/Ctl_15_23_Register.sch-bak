@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 12 35
+Sheet 13 35
 Title "MEM/WB: Control Word Register"
 Date ""
 Rev ""
@@ -519,8 +519,8 @@ AR Path="/60A8EF0C/604D665C/6054961A" Ref="C?"  Part="1"
 AR Path="/5FF41DF6/6051F4DB/6054961A" Ref="C?"  Part="1" 
 AR Path="/5FF41DF6/60541846/6054961A" Ref="C?"  Part="1" 
 AR Path="/60B264DC/5FE6C11D/6054961A" Ref="C?"  Part="1" 
-AR Path="/60AF64DE/5FD643E5/6054961A" Ref="C30"  Part="1" 
-F 0 "C30" H 965 7246 50  0000 L CNN
+AR Path="/60AF64DE/5FD643E5/6054961A" Ref="C28"  Part="1" 
+F 0 "C28" H 965 7246 50  0000 L CNN
 F 1 "100nF" H 965 7155 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 888 7050 50  0001 C CNN
 F 3 "~" H 850 7200 50  0001 C CNN

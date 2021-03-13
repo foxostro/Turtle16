@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 12 35
+Sheet 13 35
 Title "MEM/WB: Control Word Register"
 Date ""
 Rev ""

@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 11 35
+Sheet 31 35
 Title ""
 Date ""
 Rev ""
@@ -1059,10 +1059,6 @@ F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT574PW112?qs=P62ublwmbi8
 	1    5850 2650
 	1    0    0    -1  
 $EndComp
-Wire Bus Line
-	4850 1900 4850 4800
-Wire Bus Line
-	6850 1850 6850 4800
 $Comp
 L 74xx:74LS574 U?
 U 1 1 5FCEA159
@@ -1158,4 +1154,8 @@ F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT574PW112?qs=P62ublwmbi8
 	1    5850 4700
 	1    0    0    -1  
 $EndComp
+Wire Bus Line
+	4850 1900 4850 4800
+Wire Bus Line
+	6850 1850 6850 4800
 $EndSCHEMATC

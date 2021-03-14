@@ -15,31 +15,29 @@ Comment4 "Peripheral devices on separate boards connect to the system bus here."
 $EndDescr
 Entry Wire Line
 	4850 4450 4750 4550
-Text Label 5100 4450 2    50   ~ 0
+Text Label 4900 4850 0    50   ~ 0
 Addr4
 Entry Wire Line
 	4850 4550 4750 4650
-Text Label 5100 4550 2    50   ~ 0
+Text Label 4900 4750 0    50   ~ 0
 Addr6
 Entry Wire Line
 	4850 4750 4750 4850
-Text Label 5100 4750 2    50   ~ 0
+Text Label 4900 4550 0    50   ~ 0
 Addr8
 Entry Wire Line
 	4850 4850 4750 4950
-Text Label 5150 4850 2    50   ~ 0
+Text Label 4900 4450 0    50   ~ 0
 Addr10
 Entry Wire Line
 	4850 5050 4750 5150
-Text Label 5150 5050 2    50   ~ 0
+Text Label 4900 4250 0    50   ~ 0
 Addr12
 Entry Wire Line
 	4850 5150 4750 5250
-Text Label 5150 5150 2    50   ~ 0
-Addr14
 Entry Wire Line
 	6750 5250 6650 5150
-Text Label 6600 5150 2    50   ~ 0
+Text Label 6600 4150 2    50   ~ 0
 Addr15
 Entry Wire Line
 	6750 5150 6650 5050
@@ -212,19 +210,19 @@ Wire Wire Line
 	6650 4550 6000 4550
 Wire Wire Line
 	6650 5050 6000 5050
-Text Label 6600 4150 2    50   ~ 0
+Text Label 6600 5150 2    50   ~ 0
 Addr1
-Text Label 6600 4250 2    50   ~ 0
-Addr3
-Text Label 6600 4450 2    50   ~ 0
-Addr5
-Text Label 6600 4550 2    50   ~ 0
-Addr7
-Text Label 6600 4750 2    50   ~ 0
-Addr9
-Text Label 6600 4850 2    50   ~ 0
-Addr11
 Text Label 6600 5050 2    50   ~ 0
+Addr3
+Text Label 6600 4850 2    50   ~ 0
+Addr5
+Text Label 6600 4750 2    50   ~ 0
+Addr7
+Text Label 6600 4550 2    50   ~ 0
+Addr9
+Text Label 6600 4450 2    50   ~ 0
+Addr11
+Text Label 6600 4250 2    50   ~ 0
 Addr13
 $Comp
 L power:GND #PWR?
@@ -286,13 +284,13 @@ Text HLabel 4500 4250 0    50   3State ~ 0
 Addr[0..15]
 Entry Wire Line
 	4850 4150 4750 4250
-Text Label 5100 4150 2    50   ~ 0
+Text Label 4900 5150 0    50   ~ 0
 Addr0
 Wire Wire Line
 	4850 4150 5500 4150
 Wire Wire Line
 	5500 4250 4850 4250
-Text Label 5100 4250 2    50   ~ 0
+Text Label 4900 5050 0    50   ~ 0
 Addr2
 Entry Wire Line
 	4850 4250 4750 4350
@@ -775,4 +773,6 @@ Wire Bus Line
 	6750 3050 6750 4050
 Wire Bus Line
 	4750 3050 4750 4050
+Text Label 4900 4150 0    50   ~ 0
+Addr14
 $EndSCHEMATC

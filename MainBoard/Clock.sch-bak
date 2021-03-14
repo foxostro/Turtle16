@@ -363,20 +363,6 @@ Wire Wire Line
 NoConn ~ -500 3600
 $Comp
 L Device:C C?
-U 1 1 5FDB0872
-P 2400 7450
-AR Path="/5D2C0761/5FDB0872" Ref="C?"  Part="1" 
-AR Path="/5D2C0720/5FDB0872" Ref="C5"  Part="1" 
-F 0 "C5" H 2515 7496 50  0000 L CNN
-F 1 "100nF" H 2515 7405 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 2438 7300 50  0001 C CNN
-F 3 "~" H 2400 7450 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 2400 7450 50  0001 C CNN "Mouser"
-	1    2400 7450
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:C C?
 U 1 1 5FDB9448
 P 1900 7450
 AR Path="/5D2C0761/5FDB9448" Ref="C?"  Part="1" 
@@ -389,12 +375,6 @@ F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 1900 7450 50  0
 	1    1900 7450
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	1900 7300 2400 7300
-Connection ~ 1900 7300
-Wire Wire Line
-	2400 7600 1900 7600
-Connection ~ 1900 7600
 $Comp
 L Device:C C?
 U 1 1 5FDB9452
@@ -413,22 +393,6 @@ Wire Wire Line
 	1400 7300 1900 7300
 Wire Wire Line
 	1900 7600 1400 7600
-$Comp
-L power:GND #PWR010
-U 1 1 5FE40656
-P -2100 6100
-AR Path="/5D2C0720/5FE40656" Ref="#PWR010"  Part="1" 
-AR Path="/5D2C0761/5FE40656" Ref="#PWR?"  Part="1" 
-F 0 "#PWR010" H -2100 5850 50  0001 C CNN
-F 1 "GND" H -2095 5927 50  0000 C CNN
-F 2 "" H -2100 6100 50  0001 C CNN
-F 3 "" H -2100 6100 50  0001 C CNN
-	1    -2100 6100
-	-1   0    0    -1  
-$EndComp
-NoConn ~ -1500 3600
-NoConn ~ -1500 4150
-NoConn ~ -1500 4700
 $Comp
 L Device:R_Small R2
 U 1 1 5FBCBDB2
@@ -728,7 +692,6 @@ Wire Wire Line
 Connection ~ 4200 5950
 Wire Wire Line
 	4200 5950 4800 5950
-NoConn ~ -1500 3050
 Wire Wire Line
 	900  7200 900  7300
 Connection ~ 900  7300
@@ -758,105 +721,24 @@ Text HLabel 8600 4950 2    50   BiDi ~ 0
 RDY
 Wire Wire Line
 	8400 4950 8600 4950
+Connection ~ 1900 7600
 Wire Wire Line
-	-2100 5950 -2100 6100
+	2400 7600 1900 7600
+Connection ~ 1900 7300
+Wire Wire Line
+	1900 7300 2400 7300
 $Comp
-L power:VCC #PWR?
-U 1 1 5FDF31EE
-P -2100 2700
-AR Path="/5D2C0761/5FDF31EE" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C0720/5FDF31EE" Ref="#PWR09"  Part="1" 
-F 0 "#PWR09" H -2100 2550 50  0001 C CNN
-F 1 "VCC" H -2083 2873 50  0000 C CNN
-F 2 "" H -2100 2700 50  0001 C CNN
-F 3 "" H -2100 2700 50  0001 C CNN
-	1    -2100 2700
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74xx:74LS32 U1
-U 5 1 5FDEE6B2
-P -2100 5450
-F 0 "U1" H -1870 5496 50  0000 L CNN
-F 1 "74AHCT32" H -1870 5405 50  0000 L CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -2100 5450 50  0001 C CNN
-F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT32-1318719.pdf" H -2100 5450 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT32PW112?qs=P62ublwmbi9OuNgjfqfmiw%3D%3D" H -2100 5450 50  0001 C CNN "Mouser"
-	5    -2100 5450
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	-2100 4800 -2100 4950
-Connection ~ -2100 4800
-Wire Wire Line
-	-2100 4600 -2100 4800
-Connection ~ -2100 4600
-$Comp
-L 74xx:74LS32 U1
-U 4 1 5FDECFEB
-P -1800 4700
-F 0 "U1" H -1800 5025 50  0000 C CNN
-F 1 "74AHCT32" H -1800 4934 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -1800 4700 50  0001 C CNN
-F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT32-1318719.pdf" H -1800 4700 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT32PW112?qs=P62ublwmbi9OuNgjfqfmiw%3D%3D" H -1800 4700 50  0001 C CNN "Mouser"
-	4    -1800 4700
-	1    0    0    -1  
-$EndComp
-Connection ~ -2100 4050
-Wire Wire Line
-	-2100 4250 -2100 4600
-Wire Wire Line
-	-2100 4050 -2100 4250
-Connection ~ -2100 4250
-$Comp
-L 74xx:74LS32 U1
-U 3 1 5FDEAA86
-P -1800 4150
-F 0 "U1" H -1800 4475 50  0000 C CNN
-F 1 "74AHCT32" H -1800 4384 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -1800 4150 50  0001 C CNN
-F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT32-1318719.pdf" H -1800 4150 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT32PW112?qs=P62ublwmbi9OuNgjfqfmiw%3D%3D" H -1800 4150 50  0001 C CNN "Mouser"
-	3    -1800 4150
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	-2100 3700 -2100 4050
-Connection ~ -2100 3700
-Wire Wire Line
-	-2100 3500 -2100 3700
-Connection ~ -2100 3500
-$Comp
-L 74xx:74LS32 U1
-U 2 1 5FDE8D5C
-P -1800 3600
-F 0 "U1" H -1800 3925 50  0000 C CNN
-F 1 "74AHCT32" H -1800 3834 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -1800 3600 50  0001 C CNN
-F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT32-1318719.pdf" H -1800 3600 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT32PW112?qs=P62ublwmbi9OuNgjfqfmiw%3D%3D" H -1800 3600 50  0001 C CNN "Mouser"
-	2    -1800 3600
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	-2100 3150 -2100 3500
-Connection ~ -2100 3150
-Wire Wire Line
-	-2100 2950 -2100 3150
-Wire Wire Line
-	-2100 2700 -2100 2950
-Connection ~ -2100 2950
-$Comp
-L 74xx:74LS32 U1
-U 1 1 5FC9AF04
-P -1800 3050
-F 0 "U1" H -1800 3375 50  0000 C CNN
-F 1 "74AHCT32" H -1800 3284 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -1800 3050 50  0001 C CNN
-F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT32-1318719.pdf" H -1800 3050 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT32PW112?qs=P62ublwmbi9OuNgjfqfmiw%3D%3D" H -1800 3050 50  0001 C CNN "Mouser"
-	1    -1800 3050
+L Device:C C?
+U 1 1 5FDB0872
+P 2400 7450
+AR Path="/5D2C0761/5FDB0872" Ref="C?"  Part="1" 
+AR Path="/5D2C0720/5FDB0872" Ref="C5"  Part="1" 
+F 0 "C5" H 2515 7496 50  0000 L CNN
+F 1 "100nF" H 2515 7405 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 2438 7300 50  0001 C CNN
+F 3 "~" H 2400 7450 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 2400 7450 50  0001 C CNN "Mouser"
+	1    2400 7450
 	1    0    0    -1  
 $EndComp
 $EndSCHEMATC

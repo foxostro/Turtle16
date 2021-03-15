@@ -163,18 +163,6 @@ Connection ~ 1700 6850
 Wire Wire Line
 	1450 7150 1700 7150
 Connection ~ 1700 7150
-$Comp
-L Connector:Conn_01x02_Male J1
-U 1 1 5FAC7F8A
-P 1150 6950
-F 0 "J1" H 1050 7250 50  0000 C CNN
-F 1 "Power Connector" H 1050 7150 50  0000 C CNN
-F 2 "Connector_Molex:Molex_Mini-Fit_Jr_5569-02A2_2x01_P4.20mm_Horizontal" H 1150 6950 50  0001 C CNN
-F 3 "~" H 1150 6950 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/538-172448-0002" H 1150 6950 50  0001 C CNN "Mouser"
-	1    1150 6950
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	3250 3350 3500 3350
 Wire Wire Line
@@ -493,4 +481,15 @@ Wire Bus Line
 	3250 4750 6050 4750
 Wire Bus Line
 	3250 4950 6050 4950
+$Comp
+L Connector:Screw_Terminal_01x02 J?
+U 1 1 60501CA1
+P 1150 7050
+F 0 "J?" H 1068 6725 50  0000 C CNN
+F 1 "Screw_Terminal_01x02" H 1068 6816 50  0000 C CNN
+F 2 "TerminalBlock_MetzConnect:TerminalBlock_MetzConnect_Type055_RT01502HDWU_1x02_P5.00mm_Horizontal" H 1150 7050 50  0001 C CNN
+F 3 "~" H 1150 7050 50  0001 C CNN
+	1    1150 7050
+	-1   0    0    1   
+$EndComp
 $EndSCHEMATC

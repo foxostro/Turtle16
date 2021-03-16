@@ -482,10 +482,10 @@ Wire Bus Line
 Wire Bus Line
 	3250 4950 6050 4950
 $Comp
-L Connector:Screw_Terminal_01x02 J?
+L Connector:Screw_Terminal_01x02 J1
 U 1 1 60501CA1
 P 1150 7050
-F 0 "J?" H 1068 6725 50  0000 C CNN
+F 0 "J1" H 1068 6725 50  0000 C CNN
 F 1 "Screw_Terminal_01x02" H 1068 6816 50  0000 C CNN
 F 2 "TerminalBlock_MetzConnect:TerminalBlock_MetzConnect_Type055_RT01502HDWU_1x02_P5.00mm_Horizontal" H 1150 7050 50  0001 C CNN
 F 3 "~" H 1150 7050 50  0001 C CNN

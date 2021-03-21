@@ -128,22 +128,13 @@ S 7350 3700 1600 400
 U 5FD56BFA
 F0 "sheet5FD56BF4" 50
 F1 "StoreOperandRegister3.sch" 50
-F2 "Phi1" I L 7350 3800 50 
-F3 "SystemBus[0..15]" I L 7350 3900 50 
-F4 "StoreOp_WB[0..15]" O R 8950 3900 50 
+F2 "SystemBus[0..15]" I L 7350 3900 50 
+F3 "StoreOp_WB[0..15]" O R 8950 3900 50 
 $EndSheet
-Wire Wire Line
-	7250 3800 7350 3800
-Text GLabel 7200 3700 0    50   Input ~ 0
-Phi1c
 Text HLabel 9250 3900 2    50   Output ~ 0
 StoreOp_WB[0..15]
 Wire Bus Line
 	9250 3900 8950 3900
-Wire Wire Line
-	7200 3700 7250 3700
-Wire Wire Line
-	7250 3700 7250 3800
 Text HLabel 9250 2500 2    50   Output ~ 0
 SelC_WB[0..2]
 Wire Bus Line
@@ -153,28 +144,19 @@ S 7200 2200 1750 400
 U 5FD643E5
 F0 "sheet5FD643DA" 50
 F1 "Ctl_15_23_Register.sch" 50
-F2 "Phi1" I L 7200 2300 50 
-F3 "SelC_MEM[0..2]" I L 7200 2500 50 
-F4 "SelC_WB[0..2]" O R 8950 2500 50 
-F5 "Ctl_WB[17..20]" O R 8950 2400 50 
-F6 "Ctl_MEM[17..20]" I L 7200 2400 50 
+F2 "SelC_MEM[0..2]" I L 7200 2500 50 
+F3 "SelC_WB[0..2]" O R 8950 2500 50 
+F4 "Ctl_WB[17..20]" O R 8950 2400 50 
+F5 "Ctl_MEM[17..20]" I L 7200 2400 50 
 $EndSheet
 Text HLabel 6750 2500 0    50   Input ~ 0
 SelC_MEM[0..2]
 Wire Bus Line
 	7200 2500 6750 2500
-Text GLabel 7000 2150 0    50   Input ~ 0
-Phi1c
 Text HLabel 9250 2400 2    50   Output ~ 0
 Ctl_WB[17..20]
 Wire Bus Line
 	8950 2400 9250 2400
-Wire Wire Line
-	7200 2300 7100 2300
-Wire Wire Line
-	7100 2300 7100 2150
-Wire Wire Line
-	7100 2150 7000 2150
 Text HLabel 9250 5600 2    50   Output ~ 0
 Y_WB[0..15]
 $Sheet
@@ -182,18 +164,13 @@ S 7350 5300 1350 400
 U 5FD9EFDB
 F0 "Sheet5FD9EFDA" 50
 F1 "ALUResultRegister_MEM_WB.sch" 50
-F2 "Phi1" I L 7350 5400 50 
-F3 "Y_MEM[0..15]" I L 7350 5600 50 
-F4 "Y_WB[0..15]" O R 8700 5600 50 
+F2 "Y_MEM[0..15]" I L 7350 5600 50 
+F3 "Y_WB[0..15]" O R 8700 5600 50 
 $EndSheet
-Text GLabel 7150 5400 0    50   Input ~ 0
-Phi1c
 Text HLabel 6750 5600 0    50   Input ~ 0
 Y_MEM[0..15]
 Wire Bus Line
 	6750 5600 7350 5600
-Wire Wire Line
-	7150 5400 7350 5400
 Wire Bus Line
 	9250 5600 8700 5600
 Wire Bus Line

@@ -268,25 +268,19 @@ F2 "Ctl_MEM[14..20]" O R 9500 1100 50
 F3 "Ctl_EX[14..20]" I L 7850 1100 50 
 F4 "SelC_EX[0..2]" I L 7850 2000 50 
 F5 "SelC_MEM[0..2]" O R 9500 2000 50 
-F6 "Phi1" I L 7850 1000 50 
 $EndSheet
 $Sheet
 S 7850 3350 1150 450 
 U 5FD8D713
 F0 "sheet5FD8D6EC" 50
 F1 "ALUResultRegister.sch" 50
-F2 "Phi1" I L 7850 3450 50 
-F3 "Y_EX[0..15]" I L 7850 3600 50 
-F4 "Y_MEM[0..15]" O R 9000 3600 50 
+F2 "Y_EX[0..15]" I L 7850 3600 50 
+F3 "Y_MEM[0..15]" O R 9000 3600 50 
 $EndSheet
 Text HLabel 9750 3600 2    50   Output ~ 0
 Y_MEM[0..15]
 Wire Bus Line
 	9750 3600 9000 3600
-Wire Wire Line
-	7550 1000 7850 1000
-Wire Wire Line
-	7550 3450 7850 3450
 Text HLabel 1250 1000 0    50   Input ~ 0
 Ctl_EX[0..20]
 Text HLabel 1250 4600 0    50   Input ~ 0
@@ -379,8 +373,6 @@ Text HLabel 1250 2000 0    50   Input ~ 0
 Ins_EX[0..10]
 Wire Bus Line
 	1250 2000 3850 2000
-Wire Wire Line
-	7550 2500 7850 2500
 Wire Bus Line
 	5300 2600 7850 2600
 Wire Bus Line
@@ -477,14 +469,8 @@ F4 "SelRightOpA" I L 3600 4300 50
 F5 "RightOp[0..15]" O R 5000 4700 50 
 F6 "SelRightOpB" I L 3600 4400 50 
 $EndSheet
-Text GLabel 7550 1000 0    50   Input ~ 0
-Phi1a
-Text GLabel 7550 2500 0    50   Input ~ 0
-Phi1a
-Text GLabel 7550 3450 0    50   Input ~ 0
-Phi1c
 Text GLabel 7800 5350 0    50   Input ~ 0
-Phi1a
+Phi1d
 Wire Wire Line
 	3600 4300 3150 4300
 Entry Wire Line
@@ -524,9 +510,8 @@ S 7850 2400 1650 450
 U 5FD8D6FE
 F0 "sheet5FD8D6EA" 50
 F1 "StoreOperandRegister2.sch" 50
-F2 "Phi1" I L 7850 2500 50 
-F3 "StoreOp_EX[0..15]" I L 7850 2600 50 
-F4 "StoreOp_MEM[0..15]" O R 9500 2600 50 
+F2 "StoreOp_EX[0..15]" I L 7850 2600 50 
+F3 "StoreOp_MEM[0..15]" O R 9500 2600 50 
 $EndSheet
 Text Label 2150 1100 3    50   ~ 0
 Ctl_EX13

@@ -33,8 +33,6 @@ Connection ~ 4750 3700
 Wire Bus Line
 	6300 4000 6550 4000
 Wire Wire Line
-	3050 3700 2700 3700
-Wire Wire Line
 	3050 3850 2700 3850
 Text HLabel 2700 4000 0    50   Input ~ 0
 Y_EX[0..15]
@@ -54,23 +52,16 @@ F3 "Ins_IF[0..15]" O R 6300 4000 50
 $EndSheet
 Text GLabel 2700 3850 0    50   Input ~ 0
 ~RST
-Text GLabel 2700 3700 0    50   Input ~ 0
-Phi1c
-Wire Wire Line
-	6550 3450 6450 3450
-Text GLabel 6450 3450 0    50   Input ~ 0
-Phi1b
 $Sheet
 S 3050 3600 1450 800 
 U 5FE3DA1C
 F0 "sheet5FE3DA15" 50
 F1 "Program Counter.sch" 50
-F2 "Phi1" I L 3050 3700 50 
-F3 "~RST" I L 3050 3850 50 
-F4 "~J" I L 3050 4100 50 
-F5 "PC[0..15]" O R 4500 3700 50 
-F6 "Y_EX[0..15]" I L 3050 4000 50 
-F7 "~JABS" I L 3050 4200 50 
+F2 "~RST" I L 3050 3850 50 
+F3 "~J" I L 3050 4100 50 
+F4 "PC[0..15]" O R 4500 3700 50 
+F5 "Y_EX[0..15]" I L 3050 4000 50 
+F6 "~JABS" I L 3050 4200 50 
 $EndSheet
 $Sheet
 S 6550 3350 1150 750 
@@ -81,7 +72,6 @@ F2 "PC[0..15]" I L 6550 3700 50
 F3 "PC_EX[0..15]" O R 7700 3700 50 
 F4 "Ins_IF[0..15]" I L 6550 4000 50 
 F5 "Ins_ID[0..15]" O R 7700 3450 50 
-F6 "Phi1" I L 6550 3450 50 
 $EndSheet
 Text HLabel 2700 4200 0    50   Input ~ 0
 ~JABS

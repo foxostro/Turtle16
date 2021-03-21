@@ -13,8 +13,6 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-Text HLabel 5050 3350 0    50   Input ~ 0
-Phi1
 $Comp
 L power:GND #PWR?
 U 1 1 604E0D58
@@ -962,8 +960,6 @@ Wire Wire Line
 	1350 7400 1350 7300
 Text HLabel 7550 2050 2    50   Output ~ 0
 Ctl_MEM[14..20]
-Text HLabel 5050 5400 0    50   Input ~ 0
-Phi1
 $Comp
 L power:GND #PWR?
 U 1 1 604E0DF6
@@ -1579,6 +1575,10 @@ F 3 "" H 5200 3150 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 NoConn ~ 6200 3150
+Text GLabel 5050 3350 0    50   Input ~ 0
+Phi1b
+Text GLabel 5050 5400 0    50   Input ~ 0
+Phi1b
 Wire Bus Line
 	4700 4400 4700 4600
 Wire Bus Line

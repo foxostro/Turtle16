@@ -105,8 +105,6 @@ F5 "OVF" I L 3000 3050 50
 F6 "~RST" I L 3000 3200 50 
 F7 "Ctl_ID[0..23]" O R 4250 2750 50 
 $EndSheet
-Wire Wire Line
-	5200 2650 5100 2650
 Text Label 2750 2150 2    50   ~ 0
 Ins_ID[0..10]
 Text HLabel 2050 2150 0    50   Input ~ 0
@@ -140,9 +138,8 @@ S 5200 2550 1400 400
 U 5FCFC706
 F0 "ID/EX ControlWord" 50
 F1 "ID_EX_ControlWord.sch" 50
-F2 "Phi1" I L 5200 2650 50 
-F3 "Ctl_ID[0..23]" I L 5200 2750 50 
-F4 "Ctl_EX[0..20]" O R 6600 2650 50 
+F2 "Ctl_ID[0..23]" I L 5200 2750 50 
+F3 "Ctl_EX[0..20]" O R 6600 2650 50 
 $EndSheet
 $Sheet
 S 5200 1950 1400 300 
@@ -151,7 +148,6 @@ F0 "ID/EX InstructionWord" 50
 F1 "ID_EX_InstructionWord.sch" 50
 F2 "Ins_ID[0..10]" I L 5200 2150 50 
 F3 "Ins_EX[0..10]" O R 6600 2150 50 
-F4 "Phi1" I L 5200 2050 50 
 $EndSheet
 $Sheet
 S 7250 5200 900  300 
@@ -160,41 +156,17 @@ F0 "ID/EX A" 50
 F1 "ID_EX_A.sch" 50
 F2 "AIn[0..15]" I L 7250 5400 50 
 F3 "A[0..15]" O R 8150 5400 50 
-F4 "Phi1" I L 7250 5300 50 
 $EndSheet
-Wire Wire Line
-	7250 5300 7150 5300
 Wire Bus Line
 	6750 5400 7250 5400
-$Sheet
-S 7250 5700 900  300 
-U 5FE24A39
-F0 "ID/EX B" 50
-F1 "ID_EX_B.sch" 50
-F2 "BIn[0..15]" I L 7250 5900 50 
-F3 "B[0..15]" O R 8150 5900 50 
-F4 "Phi1" I L 7250 5800 50 
-$EndSheet
-Wire Wire Line
-	7250 5800 7150 5800
 Wire Bus Line
 	6750 5900 7250 5900
-Wire Wire Line
-	5200 2050 5100 2050
 Text Notes 8200 5300 0    50   ~ 0
 The A port supplies the Left operand.
 Text Notes 8200 5800 0    50   ~ 0
 The B port supplies the Right operand.
 Text GLabel 2900 3200 0    50   Input ~ 0
 ~RST
-Text GLabel 7150 5300 0    50   Input ~ 0
-Phi1b
-Text GLabel 7150 5800 0    50   Input ~ 0
-Phi1b
-Text GLabel 5100 2650 0    50   Input ~ 0
-Phi1a
-Text GLabel 5100 2050 0    50   Input ~ 0
-Phi1b
 Text HLabel 3800 6400 0    50   Input ~ 0
 ~WBEN
 Wire Wire Line
@@ -213,6 +185,14 @@ Text Label 7250 2150 0    50   ~ 0
 Ins_EX[0..10]
 Text Label 7250 2650 0    50   ~ 0
 Ctl_EX[0..20]
+$Sheet
+S 7250 5700 900  300 
+U 5FE24A39
+F0 "ID/EX B" 50
+F1 "ID_EX_B.sch" 50
+F2 "BIn[0..15]" I L 7250 5900 50 
+F3 "B[0..15]" O R 8150 5900 50 
+$EndSheet
 Wire Bus Line
 	2050 2150 5200 2150
 $EndSCHEMATC

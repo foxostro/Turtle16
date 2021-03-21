@@ -13,8 +13,6 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-Text HLabel 4800 3000 0    50   Input ~ 0
-Phi1
 $Comp
 L power:GND #PWR?
 U 1 1 5FDAB412
@@ -1084,8 +1082,6 @@ F 3 "" H 1350 7400 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	1350 7400 1350 7300
-Text HLabel 4800 5050 0    50   Input ~ 0
-Phi1
 $Comp
 L power:GND #PWR?
 U 1 1 5FDAB488
@@ -1563,6 +1559,10 @@ F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74ABT574APWR?qs=0O
 $EndComp
 Text HLabel 7300 1800 2    50   Output ~ 0
 Y_WB[0..15]
+Text GLabel 4800 3000 0    50   Input ~ 0
+Phi1d
+Text GLabel 4800 5050 0    50   Input ~ 0
+Phi1d
 Wire Bus Line
 	4350 1850 4350 4750
 Wire Bus Line

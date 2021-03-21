@@ -237,10 +237,10 @@ F 3 "" H 6050 2100 50  0001 C CNN
 	1    6050 2100
 	1    0    0    -1  
 $EndComp
-Text HLabel 8200 4450 2    50   Input ~ 0
+Text HLabel 3900 4450 0    50   Input ~ 0
 ~RDY
 Wire Wire Line
-	8200 4450 7350 4450
+	3900 4450 4750 4450
 Entry Wire Line
 	7100 2400 7200 2300
 Wire Wire Line
@@ -1056,7 +1056,7 @@ F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 6050 2900 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHCT245A-1597455.pdf" H 6050 2900 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT245APWJ?qs=u4fy%2FsgLU9Nfcswc3zVmFw%3D%3D" H 6050 2900 50  0001 C CNN "Mouser"
 	1    6050 2900
-	-1   0    0    -1  
+	1    0    0    -1  
 $EndComp
 $Comp
 L MainBoard-rescue:74LS245-74xx U?
@@ -1073,38 +1073,38 @@ F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 6050 5000 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/916/74AHCT245A-1597455.pdf" H 6050 5000 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT245APWJ?qs=u4fy%2FsgLU9Nfcswc3zVmFw%3D%3D" H 6050 5000 50  0001 C CNN "Mouser"
 	1    6050 5000
-	-1   0    0    -1  
+	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	6550 3400 7350 3400
+	5550 3400 4750 3400
 Wire Wire Line
-	6550 5500 7350 5500
+	5550 5500 4750 5500
 Wire Wire Line
-	7350 3400 7350 4450
-Connection ~ 7350 4450
+	4750 3400 4750 4450
+Connection ~ 4750 4450
 Wire Wire Line
-	7350 4450 7350 5500
+	4750 4450 4750 5500
 $Comp
-L power:GND #PWR0139
-U 1 1 5FEBAF4B
-P 6550 3300
-F 0 "#PWR0139" H 6550 3050 50  0001 C CNN
-F 1 "GND" V 6555 3172 50  0000 R CNN
-F 2 "" H 6550 3300 50  0001 C CNN
-F 3 "" H 6550 3300 50  0001 C CNN
-	1    6550 3300
-	0    -1   -1   0   
+L power:VCC #PWR?
+U 1 1 60513493
+P 5550 3300
+F 0 "#PWR?" H 5550 3150 50  0001 C CNN
+F 1 "VCC" V 5565 3428 50  0000 L CNN
+F 2 "" H 5550 3300 50  0001 C CNN
+F 3 "" H 5550 3300 50  0001 C CNN
+	1    5550 3300
+	0    -1   1    0   
 $EndComp
 $Comp
-L power:GND #PWR0140
-U 1 1 5FEBB5D4
-P 6550 5400
-F 0 "#PWR0140" H 6550 5150 50  0001 C CNN
-F 1 "GND" V 6555 5272 50  0000 R CNN
-F 2 "" H 6550 5400 50  0001 C CNN
-F 3 "" H 6550 5400 50  0001 C CNN
-	1    6550 5400
-	0    -1   -1   0   
+L power:VCC #PWR?
+U 1 1 60513CBD
+P 5550 5400
+F 0 "#PWR?" H 5550 5250 50  0001 C CNN
+F 1 "VCC" V 5565 5528 50  0000 L CNN
+F 2 "" H 5550 5400 50  0001 C CNN
+F 3 "" H 5550 5400 50  0001 C CNN
+	1    5550 5400
+	0    -1   1    0   
 $EndComp
 Wire Bus Line
 	950  6850 5450 6850

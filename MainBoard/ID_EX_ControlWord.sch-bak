@@ -240,8 +240,6 @@ Connection ~ 900  7300
 Connection ~ 900  7600
 Connection ~ 1400 7300
 Connection ~ 1400 7600
-Text HLabel 3750 2300 0    50   Input ~ 0
-Phi1
 Wire Wire Line
 	3400 2100 3800 2100
 Entry Wire Line
@@ -933,12 +931,8 @@ NoConn ~ 4800 6100
 NoConn ~ 4800 6200
 Wire Wire Line
 	3750 2300 3800 2300
-Text HLabel 3750 4350 0    50   Input ~ 0
-Phi1
 Wire Wire Line
 	3750 4350 3800 4350
-Text HLabel 3750 6400 0    50   Input ~ 0
-Phi1
 Wire Wire Line
 	3750 6400 3800 6400
 Text HLabel 3100 1100 0    50   Input ~ 0
@@ -1397,6 +1391,12 @@ F 3 "" H 3750 6500 50  0001 C CNN
 	1    3750 6500
 	0    1    1    0   
 $EndComp
+Text GLabel 3750 2300 0    50   Input ~ 0
+Phi1c
+Text GLabel 3750 4350 0    50   Input ~ 0
+Phi1c
+Text GLabel 3750 6400 0    50   Input ~ 0
+Phi1b
 Wire Bus Line
 	5600 1100 5600 5800
 Wire Bus Line

@@ -410,8 +410,6 @@ Wire Wire Line
 	1500 5400 2550 5400
 Wire Wire Line
 	2550 5500 1500 5500
-Text HLabel 1500 4650 0    50   Input ~ 0
-Phi1
 NoConn ~ 2550 5800
 NoConn ~ 2550 5900
 NoConn ~ 2550 6100
@@ -736,6 +734,8 @@ F 3 "" H 4950 6100 50  0001 C CNN
 	0    1    -1   0   
 $EndComp
 NoConn ~ 2550 5700
+Text GLabel 1500 4650 0    50   Input ~ 0
+Phi1d
 Wire Bus Line
 	7850 1350 7850 3200
 Wire Bus Line

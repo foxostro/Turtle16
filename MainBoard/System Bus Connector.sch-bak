@@ -94,29 +94,9 @@ $EndComp
 Wire Wire Line
 	5450 2650 5500 2650
 Wire Wire Line
-	4850 4550 5500 4550
-Wire Wire Line
-	4850 5050 5500 5050
-Wire Wire Line
 	6650 5150 6000 5150
 Wire Wire Line
-	5500 5150 4850 5150
-Wire Wire Line
-	4850 4850 5500 4850
-Wire Wire Line
-	5500 4750 4850 4750
-Wire Wire Line
-	4850 4450 5500 4450
-Wire Wire Line
-	4850 2950 5500 2950
-Wire Wire Line
-	4850 3050 5500 3050
-Wire Wire Line
-	4850 3250 5500 3250
-Wire Wire Line
 	6800 2450 6000 2450
-Wire Wire Line
-	4700 2450 5500 2450
 Text HLabel 6800 2450 2    50   3State ~ 0
 ~MemLoad
 Text HLabel 4700 2450 0    50   3State ~ 0
@@ -286,18 +266,10 @@ Entry Wire Line
 	4850 4150 4750 4250
 Text Label 4900 5150 0    50   ~ 0
 Addr0
-Wire Wire Line
-	4850 4150 5500 4150
-Wire Wire Line
-	5500 4250 4850 4250
 Text Label 4900 5050 0    50   ~ 0
 Addr2
 Entry Wire Line
 	4850 4250 4750 4350
-Wire Wire Line
-	4850 3350 5500 3350
-Wire Wire Line
-	4750 2750 5500 2750
 Wire Wire Line
 	6000 2350 6050 2350
 Wire Wire Line
@@ -381,8 +353,6 @@ Wire Wire Line
 	3900 950  3900 1050
 Text Notes 1100 3050 0    50   ~ 0
 The bus connector has a shared open-drain active-high RDY signal.\nIf all bus devices are ready then they allow the line to remain high.\nIf any bus device is not ready then it drives the line low.\nWhen RDY is driven low, the CPU Phi1 clock stops and the CPU\ndisconnects from the bus, placing the lines in a high-Z mode.\n\nIf no bus devices are connected then the CPU is always ready.
-Wire Wire Line
-	4900 5350 5500 5350
 Text Label 4900 5350 0    50   ~ 0
 Bank1
 Wire Wire Line
@@ -423,8 +393,6 @@ F 3 "" H 5450 3150 50  0001 C CNN
 	1    5450 3150
 	0    1    1    0   
 $EndComp
-Wire Wire Line
-	5500 2550 3900 2550
 Wire Bus Line
 	4500 4250 4750 4250
 Text HLabel 7000 4250 2    50   3State ~ 0
@@ -586,32 +554,14 @@ Wire Wire Line
 	6000 3550 6650 3550
 Wire Wire Line
 	6000 3650 6650 3650
-Wire Wire Line
-	4850 3550 5500 3550
 Text Label 4900 3550 0    50   ~ 0
 IO8
 Text Label 4900 3650 0    50   ~ 0
 IO10
-Wire Wire Line
-	4850 3650 5500 3650
 Entry Wire Line
 	4850 3550 4750 3650
 Entry Wire Line
 	4850 3650 4750 3750
-$Comp
-L Connector_Generic:Conn_02x32_Odd_Even J?
-U 1 1 5FAF78E6
-P 5700 3850
-AR Path="/60AF64DE/5FAF78E6" Ref="J?"  Part="1" 
-AR Path="/5FAED671/5FAF78E6" Ref="J3"  Part="1" 
-F 0 "J3" H 5750 5600 50  0000 R CNN
-F 1 "71922-264LF" H 5950 5500 50  0000 R CNN
-F 2 "Connector_IDC:IDC-Header_2x32_P2.54mm_Horizontal" H 5700 3850 50  0001 C CNN
-F 3 "https://www.mouser.com/datasheet/2/18/71922-1363266.pdf" H 5700 3850 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Amphenol-FCI/71922-264LF?qs=yJYkLTYh576qGOVYzS69eQ%3D%3D" H 5700 3850 50  0001 C CNN "Mouser"
-	1    5700 3850
-	1    0    0    -1  
-$EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 5FDD5426
@@ -714,14 +664,10 @@ Wire Wire Line
 	6000 3850 6650 3850
 Wire Wire Line
 	6000 3950 6650 3950
-Wire Wire Line
-	4850 3850 5500 3850
 Text Label 4900 3850 0    50   ~ 0
 IO12
 Text Label 4900 3950 0    50   ~ 0
 IO14
-Wire Wire Line
-	4850 3950 5500 3950
 Entry Wire Line
 	4850 3850 4750 3950
 Entry Wire Line
@@ -765,6 +711,62 @@ Wire Wire Line
 	3900 1500 6800 1500
 Wire Wire Line
 	3900 1250 3900 1500
+Text Label 4900 4150 0    50   ~ 0
+Addr14
+Wire Wire Line
+	4900 5350 5500 5350
+Wire Wire Line
+	5500 2550 3900 2550
+Wire Wire Line
+	5500 5150 4850 5150
+Wire Wire Line
+	4850 5050 5500 5050
+Wire Wire Line
+	4850 4850 5500 4850
+Wire Wire Line
+	5500 4750 4850 4750
+Wire Wire Line
+	4850 4550 5500 4550
+Wire Wire Line
+	4850 4450 5500 4450
+Wire Wire Line
+	5500 4250 4850 4250
+Wire Wire Line
+	4700 2450 5500 2450
+Wire Wire Line
+	4850 4150 5500 4150
+Wire Wire Line
+	4850 3950 5500 3950
+Wire Wire Line
+	4850 3850 5500 3850
+Wire Wire Line
+	4850 3650 5500 3650
+Wire Wire Line
+	4850 3550 5500 3550
+Wire Wire Line
+	4850 3350 5500 3350
+Wire Wire Line
+	4850 3250 5500 3250
+Wire Wire Line
+	4850 3050 5500 3050
+Wire Wire Line
+	4850 2950 5500 2950
+Wire Wire Line
+	4750 2750 5500 2750
+$Comp
+L Connector_Generic:Conn_02x32_Odd_Even J?
+U 1 1 5FAF78E6
+P 5700 3950
+AR Path="/60AF64DE/5FAF78E6" Ref="J?"  Part="1" 
+AR Path="/5FAED671/5FAF78E6" Ref="J3"  Part="1" 
+F 0 "J3" H 5750 5700 50  0000 R CNN
+F 1 "71922-264LF" H 5950 5600 50  0000 R CNN
+F 2 "Connector_IDC:IDC-Header_2x32_P2.54mm_Horizontal" H 5700 3950 50  0001 C CNN
+F 3 "https://www.mouser.com/datasheet/2/18/71922-1363266.pdf" H 5700 3950 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Amphenol-FCI/71922-264LF?qs=yJYkLTYh576qGOVYzS69eQ%3D%3D" H 5700 3950 50  0001 C CNN "Mouser"
+	1    5700 3950
+	1    0    0    1   
+$EndComp
 Wire Bus Line
 	4750 4250 4750 5250
 Wire Bus Line
@@ -773,6 +775,4 @@ Wire Bus Line
 	6750 3050 6750 4050
 Wire Bus Line
 	4750 3050 4750 4050
-Text Label 4900 4150 0    50   ~ 0
-Addr14
 $EndSCHEMATC

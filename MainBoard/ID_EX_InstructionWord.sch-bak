@@ -668,11 +668,7 @@ Ins_ID9
 Text Label 4500 4650 0    50   ~ 0
 Ins_ID10
 Wire Wire Line
-	4250 3300 4850 3300
-Wire Wire Line
-	4250 3300 4250 5350
-Wire Wire Line
-	4250 5350 4850 5350
+	4750 3300 4850 3300
 Wire Wire Line
 	6250 4550 5850 4550
 Text Label 6200 2500 2    50   ~ 0
@@ -695,9 +691,6 @@ Text Label 6150 4550 2    50   ~ 0
 Ins_EX9
 Text Label 6150 4650 2    50   ~ 0
 Ins_EX10
-Wire Wire Line
-	4250 5350 4250 6350
-Connection ~ 4250 5350
 $Comp
 L Device:C C?
 U 1 1 5FD982B9
@@ -880,8 +873,6 @@ Text HLabel 4150 2150 0    50   Input ~ 0
 Ins_ID[0..10]
 Text HLabel 6500 2100 2    50   Output ~ 0
 Ins_EX[0..10]
-Text HLabel 4000 6350 0    50   Input ~ 0
-Phi1
 NoConn ~ 5850 4750
 NoConn ~ 5850 4850
 NoConn ~ 5850 4950
@@ -924,8 +915,6 @@ Wire Wire Line
 	4750 4850 4750 4950
 Wire Wire Line
 	4850 4950 4750 4950
-Wire Wire Line
-	4000 6350 4250 6350
 $Comp
 L 74xx:74LS574 U?
 U 1 1 5FCCE394
@@ -1114,8 +1103,14 @@ F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT574PW112?qs=P62ublwmbi8
 	1    5350 4950
 	1    0    0    -1  
 $EndComp
+Text GLabel 4750 3300 0    50   Input ~ 0
+Phi1b
+Wire Wire Line
+	4750 5350 4850 5350
 Wire Bus Line
 	4350 2150 4350 4550
 Wire Bus Line
 	6350 2100 6350 4550
+Text GLabel 4750 5350 0    50   Input ~ 0
+Phi1b
 $EndSCHEMATC

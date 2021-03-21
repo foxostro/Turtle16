@@ -478,8 +478,6 @@ F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT244PW112?qs=P62ublwmbi%
 $EndComp
 Text GLabel 6650 2750 2    50   Output ~ 0
 Phi1a
-Text GLabel 6650 2850 2    50   Output ~ 0
-Phi1b
 Text GLabel 6650 3150 2    50   Output ~ 0
 Phi2
 $Comp
@@ -500,8 +498,6 @@ Wire Wire Line
 	900  7300 1400 7300
 Wire Wire Line
 	1400 7600 900  7600
-Text GLabel 6650 2950 2    50   Output ~ 0
-Phi1c
 Wire Wire Line
 	3300 5950 3400 5950
 Wire Wire Line
@@ -512,10 +508,6 @@ Wire Wire Line
 	6500 3150 6650 3150
 Wire Wire Line
 	6650 2750 6450 2750
-Wire Wire Line
-	6450 2850 6650 2850
-Wire Wire Line
-	6650 2950 6450 2950
 Wire Wire Line
 	-1100 2700 -1100 3100
 Wire Wire Line
@@ -565,7 +557,6 @@ Wire Wire Line
 	5400 3350 5400 3450
 Wire Wire Line
 	5450 3150 5400 3150
-NoConn ~ 6450 3050
 Wire Wire Line
 	5400 2850 5400 2750
 Connection ~ 5400 2850
@@ -741,4 +732,16 @@ F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 2400 7450 50  0
 	1    2400 7450
 	1    0    0    -1  
 $EndComp
+Text GLabel 6650 2850 2    50   Output ~ 0
+Phi1b
+Wire Wire Line
+	6650 2850 6450 2850
+Text GLabel 6650 2950 2    50   Output ~ 0
+Phi1c
+Wire Wire Line
+	6650 2950 6450 2950
+Text GLabel 6650 3050 2    50   Output ~ 0
+Phi1d
+Wire Wire Line
+	6650 3050 6450 3050
 $EndSCHEMATC

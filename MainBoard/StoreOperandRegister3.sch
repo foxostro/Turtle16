@@ -13,8 +13,6 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-Text HLabel 4750 3000 0    50   Input ~ 0
-Phi1
 $Comp
 L power:GND #PWR?
 U 1 1 60531230
@@ -1074,8 +1072,6 @@ F 3 "" H 1300 7400 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	1300 7400 1300 7300
-Text HLabel 4750 5050 0    50   Input ~ 0
-Phi1
 $Comp
 L power:GND #PWR?
 U 1 1 605312A3
@@ -1553,4 +1549,8 @@ Wire Bus Line
 	4300 1850 4300 4750
 Wire Bus Line
 	6550 1800 6550 4750
+Text GLabel 4750 3000 0    50   Input ~ 0
+Phi1a
+Text GLabel 4750 5050 0    50   Input ~ 0
+Phi1a
 $EndSCHEMATC

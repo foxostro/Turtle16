@@ -680,12 +680,6 @@ BIn9
 Text Label 5000 4400 0    50   ~ 0
 BIn10
 Wire Wire Line
-	4750 3050 5350 3050
-Wire Wire Line
-	4750 3050 4750 5100
-Wire Wire Line
-	4750 5100 5350 5100
-Wire Wire Line
 	6750 4300 6350 4300
 Text Label 6700 2250 2    50   ~ 0
 B1
@@ -707,17 +701,10 @@ Text Label 6700 4300 2    50   ~ 0
 B9
 Text Label 6700 4400 2    50   ~ 0
 B10
-Wire Wire Line
-	4750 5100 4750 6100
-Connection ~ 4750 5100
 Text HLabel 4650 1900 0    50   Input ~ 0
 BIn[0..15]
 Text HLabel 7000 1850 2    50   Output ~ 0
 B[0..15]
-Text HLabel 4500 6100 0    50   Input ~ 0
-Phi1
-Wire Wire Line
-	4500 6100 4750 6100
 $Comp
 L Device:C C?
 U 1 1 5FE2A65C
@@ -1154,6 +1141,14 @@ F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT574PW112?qs=P62ublwmbi8
 	1    5850 4700
 	1    0    0    -1  
 $EndComp
+Text GLabel 5300 5100 0    50   Input ~ 0
+Phi1a
+Wire Wire Line
+	5350 5100 5300 5100
+Text GLabel 5300 3050 0    50   Input ~ 0
+Phi1a
+Wire Wire Line
+	5350 3050 5300 3050
 Wire Bus Line
 	4850 1900 4850 4800
 Wire Bus Line

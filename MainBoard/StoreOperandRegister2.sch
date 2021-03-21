@@ -13,8 +13,6 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-Text HLabel 5050 2900 0    50   Input ~ 0
-Phi1
 $Comp
 L power:GND #PWR?
 U 1 1 604C2470
@@ -1094,8 +1092,6 @@ F 3 "" H 1600 7300 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	1600 7300 1600 7200
-Text HLabel 5050 4950 0    50   Input ~ 0
-Phi1
 $Comp
 L power:GND #PWR?
 U 1 1 604C24E3
@@ -1577,6 +1573,10 @@ F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT574PW112?qs=P62ublwmbi8
 $EndComp
 Text HLabel 7550 1700 2    50   Output ~ 0
 StoreOp_MEM[0..15]
+Text GLabel 5050 2900 0    50   Input ~ 0
+Phi1c
+Text GLabel 5050 4950 0    50   Input ~ 0
+Phi1c
 Wire Bus Line
 	4550 1750 4550 4650
 Wire Bus Line

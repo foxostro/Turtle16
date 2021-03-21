@@ -13,8 +13,6 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-Text HLabel 4900 4250 0    50   Input ~ 0
-Phi1
 $Comp
 L power:GND #PWR?
 U 1 1 605495DF
@@ -800,6 +798,8 @@ F 3 "" H 5050 3750 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 NoConn ~ 6050 3750
+Text GLabel 4900 4250 0    50   Input ~ 0
+Phi1b
 Wire Bus Line
 	6750 3750 6750 3950
 Wire Bus Line

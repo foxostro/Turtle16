@@ -16,43 +16,43 @@ $EndDescr
 $Comp
 L power:VCC #PWR?
 U 1 1 5DEC3D20
-P 3600 3650
+P 7000 2900
 AR Path="/5D2C0761/5DEC3D20" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C0720/5DEC3D20" Ref="#PWR017"  Part="1" 
-F 0 "#PWR017" H 3600 3500 50  0001 C CNN
-F 1 "VCC" H 3617 3823 50  0000 C CNN
-F 2 "" H 3600 3650 50  0001 C CNN
-F 3 "" H 3600 3650 50  0001 C CNN
-	1    3600 3650
+F 0 "#PWR017" H 7000 2750 50  0001 C CNN
+F 1 "VCC" H 7017 3073 50  0000 C CNN
+F 2 "" H 7000 2900 50  0001 C CNN
+F 3 "" H 7000 2900 50  0001 C CNN
+	1    7000 2900
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:R_Small R1
 U 1 1 5DEC3D32
-P 3600 3800
+P 7000 3050
 AR Path="/5D2C0720/5DEC3D32" Ref="R1"  Part="1" 
 AR Path="/5D2C0761/5DEC3D32" Ref="R?"  Part="1" 
-F 0 "R1" H 3668 3846 50  0000 L CNN
-F 1 "1kΩ" H 3668 3755 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 3600 3800 50  0001 C CNN
-F 3 "~" H 3600 3800 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1001ELF" H 3600 3800 50  0001 C CNN "Mouser"
-	1    3600 3800
+F 0 "R1" H 7068 3096 50  0000 L CNN
+F 1 "1kΩ" H 7068 3005 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 7000 3050 50  0001 C CNN
+F 3 "~" H 7000 3050 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1001ELF" H 7000 3050 50  0001 C CNN "Mouser"
+	1    7000 3050
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	3600 5100 3600 5200
+	7000 4350 7000 4450
 $Comp
 L power:GND #PWR?
 U 1 1 5DEC3DB4
-P 3600 5200
+P 7000 4450
 AR Path="/5D2C0761/5DEC3DB4" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C0720/5DEC3DB4" Ref="#PWR018"  Part="1" 
-F 0 "#PWR018" H 3600 4950 50  0001 C CNN
-F 1 "GND" H 3605 5027 50  0000 C CNN
-F 2 "" H 3600 5200 50  0001 C CNN
-F 3 "" H 3600 5200 50  0001 C CNN
-	1    3600 5200
+F 0 "#PWR018" H 7000 4200 50  0001 C CNN
+F 1 "GND" H 7005 4277 50  0000 C CNN
+F 2 "" H 7000 4450 50  0001 C CNN
+F 3 "" H 7000 4450 50  0001 C CNN
+	1    7000 4450
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -81,20 +81,18 @@ F 3 "" H 900 7200 50  0001 C CNN
 	1    900  7200
 	1    0    0    -1  
 $EndComp
-NoConn ~ -500 4100
-NoConn ~ -500 4600
 $Comp
 L 74xx:74LS04 U?
 U 1 1 5DFDD475
-P 4550 3150
+P 2700 2500
 AR Path="/5D2C0761/5DFDD475" Ref="U?"  Part="3" 
 AR Path="/5D2C0720/5DFDD475" Ref="U2"  Part="1" 
-F 0 "U2" H 4550 2850 50  0000 C CNN
-F 1 "74AHCT04" H 4550 2950 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 4550 3150 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 4550 3150 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H 4550 3150 50  0001 C CNN "Mouser"
-	1    4550 3150
+F 0 "U2" H 2700 2200 50  0000 C CNN
+F 1 "74AHCT04" H 2700 2300 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 2700 2500 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 2700 2500 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H 2700 2500 50  0001 C CNN "Mouser"
+	1    2700 2500
 	1    0    0    1   
 $EndComp
 $Comp
@@ -114,142 +112,128 @@ $EndComp
 $Comp
 L 74xx:74LS04 U?
 U 6 1 5E326F07
-P -800 4600
+P 8100 4150
 AR Path="/5D8005AF/5D800744/5E326F07" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/5E326F07" Ref="U2"  Part="6" 
-F 0 "U2" H -800 4917 50  0000 C CNN
-F 1 "74AHCT04" H -800 4826 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -800 4600 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -800 4600 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H -800 4600 50  0001 C CNN "Mouser"
-	6    -800 4600
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74xx:74LS04 U?
-U 5 1 5E3CD911
-P -800 4100
-AR Path="/5D8005AF/5D800744/5E3CD911" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5E3CD911" Ref="U2"  Part="5" 
-F 0 "U2" H -800 4417 50  0000 C CNN
-F 1 "74AHCT04" H -800 4326 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -800 4100 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -800 4100 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H -800 4100 50  0001 C CNN "Mouser"
-	5    -800 4100
+F 0 "U2" H 8100 4467 50  0000 C CNN
+F 1 "74AHCT04" H 8100 4376 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 8100 4150 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 8100 4150 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H 8100 4150 50  0001 C CNN "Mouser"
+	6    8100 4150
 	1    0    0    -1  
 $EndComp
 $Comp
 L Switch:SW_Push SW?
 U 1 1 5DEC3DEA
-P 3500 4600
+P 6900 3850
 AR Path="/5D2C0761/5DEC3DEA" Ref="SW?"  Part="1" 
 AR Path="/5D2C0720/5DEC3DEA" Ref="SW1"  Part="1" 
-F 0 "SW1" V 3550 4900 50  0000 R CNN
-F 1 "Reset" V 3450 4950 50  0000 R CNN
-F 2 "Button_Switch_THT:SW_PUSH_6mm_H5mm" H 3500 4800 50  0001 C CNN
-F 3 "~" H 3500 4800 50  0001 C CNN
-	1    3500 4600
+F 0 "SW1" V 6950 4150 50  0000 R CNN
+F 1 "Reset" V 6850 4200 50  0000 R CNN
+F 2 "Button_Switch_THT:SW_PUSH_6mm_H5mm" H 6900 4050 50  0001 C CNN
+F 3 "~" H 6900 4050 50  0001 C CNN
+	1    6900 3850
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	3600 3650 3600 3700
-Text Label 7550 1750 2    50   ~ 0
+	7000 2900 7000 2950
+Text Label 5700 1100 2    50   ~ 0
 Phi1_0
 $Comp
 L power:GND #PWR026
 U 1 1 5E07A6CE
-P 7400 2200
-F 0 "#PWR026" H 7400 1950 50  0001 C CNN
-F 1 "GND" H 7405 2027 50  0000 C CNN
-F 2 "" H 7400 2200 50  0001 C CNN
-F 3 "" H 7400 2200 50  0001 C CNN
-	1    7400 2200
+P 5550 1550
+F 0 "#PWR026" H 5550 1300 50  0001 C CNN
+F 1 "GND" H 5555 1377 50  0000 C CNN
+F 2 "" H 5550 1550 50  0001 C CNN
+F 3 "" H 5550 1550 50  0001 C CNN
+	1    5550 1550
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	7550 2150 7400 2150
+	5700 1500 5550 1500
 Wire Wire Line
-	7400 2150 7400 2200
+	5550 1500 5550 1550
 $Comp
 L power:VCC #PWR025
 U 1 1 5E080807
-P 7300 2050
-F 0 "#PWR025" H 7300 1900 50  0001 C CNN
-F 1 "VCC" V 7318 2177 50  0000 L CNN
-F 2 "" H 7300 2050 50  0001 C CNN
-F 3 "" H 7300 2050 50  0001 C CNN
-	1    7300 2050
+P 5450 1400
+F 0 "#PWR025" H 5450 1250 50  0001 C CNN
+F 1 "VCC" V 5468 1527 50  0000 L CNN
+F 2 "" H 5450 1400 50  0001 C CNN
+F 3 "" H 5450 1400 50  0001 C CNN
+	1    5450 1400
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	7300 2050 7550 2050
+	5450 1400 5700 1400
 $Comp
 L Connector:Conn_01x05_Female J2
 U 1 1 5E00A594
-P 7750 1950
-F 0 "J2" H 7642 1525 50  0000 C CNN
-F 1 "External Clock" H 7642 1616 50  0000 C CNN
-F 2 "Connector_PinSocket_2.54mm:PinSocket_1x05_P2.54mm_Vertical" H 7750 1950 50  0001 C CNN
-F 3 "~" H 7750 1950 50  0001 C CNN
-	1    7750 1950
+P 5900 1300
+F 0 "J2" H 5792 875 50  0000 C CNN
+F 1 "External Clock" H 5792 966 50  0000 C CNN
+F 2 "Connector_PinSocket_2.54mm:PinSocket_1x05_P2.54mm_Vertical" H 5900 1300 50  0001 C CNN
+F 3 "~" H 5900 1300 50  0001 C CNN
+	1    5900 1300
 	1    0    0    1   
 $EndComp
 Wire Wire Line
-	3500 5100 3600 5100
+	6900 4350 7000 4350
 Wire Wire Line
-	3700 5000 3700 5100
+	7100 4250 7100 4350
 Wire Wire Line
-	3500 4800 3500 5100
+	6900 4050 6900 4350
 $Comp
 L Oscillator:ACO-xxxMHz OSC1
 U 1 1 5D387BCA
-P 3600 2750
-F 0 "OSC1" H 3350 2850 50  0000 R CNN
-F 1 "12MHz" H 3350 2750 50  0000 R CNN
-F 2 "Oscillator:Oscillator_DIP-14" H 4050 2400 50  0001 C CNN
-F 3 "https://www.mouser.com/datasheet/2/3/ACO-514121.pdf" H 3500 2750 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/ABRACON/ACO-12000MHZ-EK?qs=2xLVn2jvFuvTNNmW6JUIaw%3D%3D" H 3600 2750 50  0001 C CNN "Mouser"
-	1    3600 2750
+P 1750 2100
+F 0 "OSC1" H 1500 2200 50  0000 R CNN
+F 1 "12MHz" H 1500 2100 50  0000 R CNN
+F 2 "Oscillator:Oscillator_DIP-14" H 2200 1750 50  0001 C CNN
+F 3 "https://www.mouser.com/datasheet/2/3/ACO-514121.pdf" H 1650 2100 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/ABRACON/ACO-12000MHZ-EK?qs=2xLVn2jvFuvTNNmW6JUIaw%3D%3D" H 1750 2100 50  0001 C CNN "Mouser"
+	1    1750 2100
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	3600 2400 3600 2450
+	1750 1750 1750 1800
 $Comp
 L power:VCC #PWR015
 U 1 1 5E0F85C8
-P 3600 2400
-F 0 "#PWR015" H 3600 2250 50  0001 C CNN
-F 1 "VCC" H 3617 2573 50  0000 C CNN
-F 2 "" H 3600 2400 50  0001 C CNN
-F 3 "" H 3600 2400 50  0001 C CNN
-	1    3600 2400
+P 1750 1750
+F 0 "#PWR015" H 1750 1600 50  0001 C CNN
+F 1 "VCC" H 1767 1923 50  0000 C CNN
+F 2 "" H 1750 1750 50  0001 C CNN
+F 3 "" H 1750 1750 50  0001 C CNN
+	1    1750 1750
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR016
 U 1 1 5D888695
-P 3600 3100
-F 0 "#PWR016" H 3600 2850 50  0001 C CNN
-F 1 "GND" H 3605 2927 50  0000 C CNN
-F 2 "" H 3600 3100 50  0001 C CNN
-F 3 "" H 3600 3100 50  0001 C CNN
-	1    3600 3100
+P 1750 2450
+F 0 "#PWR016" H 1750 2200 50  0001 C CNN
+F 1 "GND" H 1755 2277 50  0000 C CNN
+F 2 "" H 1750 2450 50  0001 C CNN
+F 3 "" H 1750 2450 50  0001 C CNN
+	1    1750 2450
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	3600 3050 3600 3100
+	1750 2400 1750 2450
 $Comp
 L power:VCC #PWR?
 U 1 1 5FCD1869
-P -1100 2700
+P -1100 4750
 AR Path="/5D2C0761/5FCD1869" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C0720/5FCD1869" Ref="#PWR011"  Part="1" 
-F 0 "#PWR011" H -1100 2550 50  0001 C CNN
-F 1 "VCC" H -1083 2873 50  0000 C CNN
-F 2 "" H -1100 2700 50  0001 C CNN
-F 3 "" H -1100 2700 50  0001 C CNN
-	1    -1100 2700
+F 0 "#PWR011" H -1100 4600 50  0001 C CNN
+F 1 "VCC" H -1083 4923 50  0000 C CNN
+F 2 "" H -1100 4750 50  0001 C CNN
+F 3 "" H -1100 4750 50  0001 C CNN
+	1    -1100 4750
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -268,99 +252,89 @@ $EndComp
 Wire Wire Line
 	-1100 5800 -1100 5950
 Wire Wire Line
-	3500 4000 3500 4400
+	6900 3250 6900 3650
 Wire Wire Line
-	3600 3900 3600 4000
+	7000 3150 7000 3250
 Wire Wire Line
-	3700 4000 3700 4200
+	7100 3250 7100 3450
 $Comp
 L power:PWR_FLAG #FLG03
 U 1 1 5FC2FB0D
-P 3700 4000
-F 0 "#FLG03" H 3700 4075 50  0001 C CNN
-F 1 "PWR_FLAG" V 3700 4300 50  0000 C CNN
-F 2 "" H 3700 4000 50  0001 C CNN
-F 3 "~" H 3700 4000 50  0001 C CNN
-	1    3700 4000
+P 7100 3250
+F 0 "#FLG03" H 7100 3325 50  0001 C CNN
+F 1 "PWR_FLAG" V 7100 3550 50  0000 C CNN
+F 2 "" H 7100 3250 50  0001 C CNN
+F 3 "~" H 7100 3250 50  0001 C CNN
+	1    7100 3250
 	0    1    1    0   
 $EndComp
-Connection ~ 3700 4000
+Connection ~ 7100 3250
 Wire Wire Line
-	3500 4000 3600 4000
+	6900 3250 7000 3250
 $Comp
 L Power_Supervisor:MCP100-450D U?
 U 1 1 5DEC3D1A
-P 3800 4600
+P 7200 3850
 AR Path="/5D2C0761/5DEC3D1A" Ref="U?"  Part="1" 
 AR Path="/5D2C0720/5DEC3D1A" Ref="U3"  Part="1" 
-F 0 "U3" H 4050 5050 50  0000 R CNN
-F 1 "MCP100-450D" H 4300 4950 50  0000 R CNN
-F 2 "Package_TO_SOT_THT:TO-92" H 3400 4750 50  0001 C CNN
-F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/11187f.pdf" H 3500 4850 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Microchip-Technology/MCP100-450DI-TO?qs=wJ05WdDZ4qSqHToh7J2ZpQ%3D%3D" H 3800 4600 50  0001 C CNN "Mouser"
-	1    3800 4600
+F 0 "U3" H 7450 4300 50  0000 R CNN
+F 1 "MCP100-450D" H 7700 4200 50  0000 R CNN
+F 2 "Package_TO_SOT_THT:TO-92" H 6800 4000 50  0001 C CNN
+F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/11187f.pdf" H 6900 4100 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Microchip-Technology/MCP100-450DI-TO?qs=wJ05WdDZ4qSqHToh7J2ZpQ%3D%3D" H 7200 3850 50  0001 C CNN "Mouser"
+	1    7200 3850
 	1    0    0    -1  
 $EndComp
 $Comp
 L 74xx:74LS04 U?
 U 2 1 5E338851
-P 3700 5950
+P 1850 3000
 AR Path="/5D8005AF/5D800744/5E338851" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/5E338851" Ref="U2"  Part="2" 
-F 0 "U2" H 3700 6267 50  0000 C CNN
-F 1 "74AHCT04" H 3700 6176 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 3700 5950 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 3700 5950 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H 3700 5950 50  0001 C CNN "Mouser"
-	2    3700 5950
+F 0 "U2" H 1850 3317 50  0000 C CNN
+F 1 "74AHCT04" H 1850 3226 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 1850 3000 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 1850 3000 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H 1850 3000 50  0001 C CNN "Mouser"
+	2    1850 3000
 	1    0    0    -1  
 $EndComp
 $Comp
 L 74xx:74LS04 U?
 U 3 1 5E3CB33D
-P -800 3100
+P 8800 3600
 AR Path="/5D8005AF/5D800744/5E3CB33D" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/5E3CB33D" Ref="U2"  Part="3" 
-F 0 "U2" H -800 3417 50  0000 C CNN
-F 1 "74AHCT04" H -800 3326 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -800 3100 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -800 3100 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H -800 3100 50  0001 C CNN "Mouser"
-	3    -800 3100
+F 0 "U2" H 8800 3917 50  0000 C CNN
+F 1 "74AHCT04" H 8800 3826 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 8800 3600 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 8800 3600 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H 8800 3600 50  0001 C CNN "Mouser"
+	3    8800 3600
 	1    0    0    -1  
 $EndComp
-Connection ~ 3600 5100
+Connection ~ 7000 4350
 Wire Wire Line
-	3600 5100 3700 5100
+	7000 4350 7100 4350
 $Comp
 L 74xx:74LS04 U?
 U 4 1 5E3CC9AE
-P -800 3600
+P 8100 3600
 AR Path="/5D8005AF/5D800744/5E3CC9AE" Ref="U?"  Part="6" 
 AR Path="/5D2C0720/5E3CC9AE" Ref="U2"  Part="4" 
-F 0 "U2" H -800 3917 50  0000 C CNN
-F 1 "74AHCT04" H -800 3826 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -800 3600 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -800 3600 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H -800 3600 50  0001 C CNN "Mouser"
-	4    -800 3600
+F 0 "U2" H 8100 3917 50  0000 C CNN
+F 1 "74AHCT04" H 8100 3826 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 8100 3600 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 8100 3600 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H 8100 3600 50  0001 C CNN "Mouser"
+	4    8100 3600
 	1    0    0    -1  
 $EndComp
-Connection ~ 3600 4000
+Connection ~ 7000 3250
 Wire Wire Line
-	3600 4000 3700 4000
-Connection ~ -1100 4100
-Connection ~ -1100 4600
-Wire Wire Line
-	-1100 4600 -1100 4800
-Wire Wire Line
-	-1100 4100 -1100 4600
-Text HLabel 3300 5950 0    50   BiDi ~ 0
+	7000 3250 7100 3250
+Text HLabel 1450 3000 0    50   BiDi ~ 0
 RDY
-Connection ~ -1100 3600
-Wire Wire Line
-	-1100 3600 -1100 4100
-NoConn ~ -500 3600
 $Comp
 L Device:C C?
 U 1 1 5FDB9448
@@ -396,89 +370,88 @@ Wire Wire Line
 $Comp
 L Device:R_Small R2
 U 1 1 5FBCBDB2
-P 4750 6100
+P 2900 3150
 AR Path="/5D2C0720/5FBCBDB2" Ref="R2"  Part="1" 
 AR Path="/5D2C0761/5FBCBDB2" Ref="R?"  Part="1" 
-F 0 "R2" V 4850 6050 50  0000 L CNN
-F 1 "220Ω" V 4950 6000 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 4790 6090 50  0001 C CNN
-F 3 "~" H 4750 6100 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-2200ELF" V 4750 6100 50  0001 C CNN "Mouser"
-	1    4750 6100
+F 0 "R2" V 3000 3100 50  0000 L CNN
+F 1 "220Ω" V 3100 3050 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 2940 3140 50  0001 C CNN
+F 3 "~" H 2900 3150 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-2200ELF" V 2900 3150 50  0001 C CNN "Mouser"
+	1    2900 3150
 	0    -1   1    0   
 $EndComp
 Wire Wire Line
-	4650 6100 4550 6100
+	2800 3150 2700 3150
 Wire Wire Line
-	5000 6100 4850 6100
+	3150 3150 3000 3150
 Wire Wire Line
-	5000 6100 5000 6200
+	3150 3150 3150 3250
 $Comp
 L power:GND #PWR?
 U 1 1 5FBCBDC1
-P 5000 6200
+P 3150 3250
 AR Path="/5D2C0761/5FBCBDC1" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C0720/5FBCBDC1" Ref="#PWR019"  Part="1" 
-F 0 "#PWR019" H 5000 5950 50  0001 C CNN
-F 1 "GND" H 5005 6027 50  0000 C CNN
-F 2 "" H 5000 6200 50  0001 C CNN
-F 3 "" H 5000 6200 50  0001 C CNN
-	1    5000 6200
+F 0 "#PWR019" H 3150 3000 50  0001 C CNN
+F 1 "GND" H 3155 3077 50  0000 C CNN
+F 2 "" H 3150 3250 50  0001 C CNN
+F 3 "" H 3150 3250 50  0001 C CNN
+	1    3150 3250
 	1    0    0    -1  
 $EndComp
-NoConn ~ -500 3100
 $Comp
 L power:GND #PWR?
 U 1 1 5FD3DF8E
-P 5950 4050
+P 4100 3400
 AR Path="/60AF64DE/600805C3/5FD3DF8E" Ref="#PWR?"  Part="1" 
 AR Path="/60AF64DE/600D2600/5FD3DF8E" Ref="#PWR?"  Part="1" 
 AR Path="/60AF64DE/600D275E/5FD3DF8E" Ref="#PWR?"  Part="1" 
 AR Path="/60AF64DE/5FF1115C/5FD3DF8E" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C0720/5FD3DF8E" Ref="#PWR023"  Part="1" 
-F 0 "#PWR023" H 5950 3800 50  0001 C CNN
-F 1 "GND" H 5955 3877 50  0000 C CNN
-F 2 "" H 5950 4050 50  0001 C CNN
-F 3 "" H 5950 4050 50  0001 C CNN
-	1    5950 4050
+F 0 "#PWR023" H 4100 3150 50  0001 C CNN
+F 1 "GND" H 4105 3227 50  0000 C CNN
+F 2 "" H 4100 3400 50  0001 C CNN
+F 3 "" H 4100 3400 50  0001 C CNN
+	1    4100 3400
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:VCC #PWR?
 U 1 1 5FD3DF94
-P 5950 2450
+P 4100 1800
 AR Path="/60AF64DE/600805C3/5FD3DF94" Ref="#PWR?"  Part="1" 
 AR Path="/60AF64DE/600D2600/5FD3DF94" Ref="#PWR?"  Part="1" 
 AR Path="/60AF64DE/600D275E/5FD3DF94" Ref="#PWR?"  Part="1" 
 AR Path="/60AF64DE/5FF1115C/5FD3DF94" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C0720/5FD3DF94" Ref="#PWR022"  Part="1" 
-F 0 "#PWR022" H 5950 2300 50  0001 C CNN
-F 1 "VCC" H 5967 2623 50  0000 C CNN
-F 2 "" H 5950 2450 50  0001 C CNN
-F 3 "" H 5950 2450 50  0001 C CNN
-	1    5950 2450
+F 0 "#PWR022" H 4100 1650 50  0001 C CNN
+F 1 "VCC" H 4117 1973 50  0000 C CNN
+F 2 "" H 4100 1800 50  0001 C CNN
+F 3 "" H 4100 1800 50  0001 C CNN
+	1    4100 1800
 	1    0    0    -1  
 $EndComp
 $Comp
 L 74xx:74LS244 U?
 U 1 1 5FD3DF88
-P 5950 3250
+P 4100 2600
 AR Path="/60AF64DE/600805C3/5FD3DF88" Ref="U?"  Part="1" 
 AR Path="/60AF64DE/600D2600/5FD3DF88" Ref="U?"  Part="1" 
 AR Path="/60AF64DE/600D275E/5FD3DF88" Ref="U?"  Part="1" 
 AR Path="/60AF64DE/5FF1115C/5FD3DF88" Ref="U?"  Part="1" 
 AR Path="/5D2C0720/5FD3DF88" Ref="U4"  Part="1" 
-F 0 "U4" H 5700 4050 50  0000 C CNN
-F 1 "74AHCT244" H 5650 3950 50  0000 C CNN
-F 2 "Package_SO:TSSOP-20_4.4x5mm_P0.5mm" H 5950 3250 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct244-q1" H 5950 3250 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT244PW112?qs=P62ublwmbi%252BXn0q3CW1Zug%3D%3D" H 5950 3250 50  0001 C CNN "Mouser"
-	1    5950 3250
+F 0 "U4" H 3850 3400 50  0000 C CNN
+F 1 "74AHCT244" H 3800 3300 50  0000 C CNN
+F 2 "Package_SO:TSSOP-20_4.4x5mm_P0.5mm" H 4100 2600 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct244-q1" H 4100 2600 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT244PW112?qs=P62ublwmbi%252BXn0q3CW1Zug%3D%3D" H 4100 2600 50  0001 C CNN "Mouser"
+	1    4100 2600
 	1    0    0    -1  
 $EndComp
-Text GLabel 6650 2750 2    50   Output ~ 0
+Text GLabel 4800 2100 2    50   Output ~ 0
 Phi1a
-Text GLabel 6650 3150 2    50   Output ~ 0
+Text GLabel 4800 2500 2    50   Output ~ 0
 Phi2
 $Comp
 L Device:C C?
@@ -499,190 +472,154 @@ Wire Wire Line
 Wire Wire Line
 	1400 7600 900  7600
 Wire Wire Line
-	3300 5950 3400 5950
+	1450 3000 1550 3000
 Wire Wire Line
-	6450 3150 6500 3150
+	4600 2500 4650 2500
 Wire Wire Line
-	6450 3250 6500 3250
+	4600 2600 4650 2600
 Wire Wire Line
-	6500 3150 6650 3150
+	4650 2500 4800 2500
 Wire Wire Line
-	6650 2750 6450 2750
+	2050 2100 2350 2100
 Wire Wire Line
-	-1100 2700 -1100 3100
+	2400 2500 2350 2500
 Wire Wire Line
-	3900 2750 4200 2750
+	2350 2500 2350 2100
+Connection ~ 2350 2100
 Wire Wire Line
-	4250 3150 4200 3150
-Wire Wire Line
-	4200 3150 4200 2750
-Connection ~ 4200 2750
-Wire Wire Line
-	4200 2750 5400 2750
-Connection ~ -1100 3100
-Wire Wire Line
-	-1100 3100 -1100 3600
-Text Notes 6100 2500 0    50   ~ 0
+	2350 2100 3550 2100
+Text Notes 4250 1850 0    50   ~ 0
 In the wait state, the Phi1\nclock is stopped.
 Wire Wire Line
-	4250 6100 4200 6100
+	2400 3150 2350 3150
 Wire Wire Line
-	4200 6100 4200 5950
+	2350 3150 2350 3000
 $Comp
 L Device:LED D1
 U 1 1 5FBCBDB8
-P 4400 6100
+P 2550 3150
 AR Path="/5D2C0720/5FBCBDB8" Ref="D1"  Part="1" 
 AR Path="/5D2C0761/5FBCBDB8" Ref="D?"  Part="1" 
-F 0 "D1" H 4450 6000 50  0000 R CNN
-F 1 "Wait" H 4500 5900 50  0000 R CNN
-F 2 "LED_THT:LED_D5.0mm" H 4400 6100 50  0001 C CNN
-F 3 "~" H 4400 6100 50  0001 C CNN
-	1    4400 6100
+F 0 "D1" H 2600 3050 50  0000 R CNN
+F 1 "Wait" H 2650 2950 50  0000 R CNN
+F 2 "LED_THT:LED_D5.0mm" H 2550 3150 50  0001 C CNN
+F 3 "~" H 2550 3150 50  0001 C CNN
+	1    2550 3150
 	-1   0    0    -1  
 $EndComp
 Wire Wire Line
-	5450 2850 5400 2850
+	3600 2200 3550 2200
 Wire Wire Line
-	5400 2850 5400 2950
+	3550 2200 3550 2300
 Wire Wire Line
-	5450 2950 5400 2950
+	3600 2300 3550 2300
 Wire Wire Line
-	5450 3250 5400 3250
+	3600 2600 3550 2600
 Wire Wire Line
-	5400 3450 5450 3450
+	3550 2800 3600 2800
 Wire Wire Line
-	5450 3350 5400 3350
+	3600 2700 3550 2700
 Wire Wire Line
-	5400 3350 5400 3450
+	3550 2700 3550 2750
 Wire Wire Line
-	5450 3150 5400 3150
+	3600 2500 3550 2500
 Wire Wire Line
-	5400 2850 5400 2750
-Connection ~ 5400 2850
-Connection ~ 5400 2750
+	3550 2200 3550 2100
+Connection ~ 3550 2200
+Connection ~ 3550 2100
 Wire Wire Line
-	5400 2750 5450 2750
+	3550 2100 3600 2100
 Wire Wire Line
-	5400 3250 5400 3150
-Connection ~ 5400 3150
+	3550 2600 3550 2500
+Connection ~ 3550 2500
 Wire Wire Line
-	5400 3150 5000 3150
-Connection ~ 6500 3150
+	3550 2500 3150 2500
+Connection ~ 4650 2500
 Wire Wire Line
-	6500 3150 6500 3250
+	4650 2500 4650 2600
 Wire Wire Line
-	5350 3050 5450 3050
-$Comp
-L power:VCC #PWR?
-U 1 1 60E4B28F
-P 5350 3050
-AR Path="/5D2C0761/60E4B28F" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C0720/60E4B28F" Ref="#PWR020"  Part="1" 
-F 0 "#PWR020" H 5350 2900 50  0001 C CNN
-F 1 "VCC" V 5350 3250 50  0000 C CNN
-F 2 "" H 5350 3050 50  0001 C CNN
-F 3 "" H 5350 3050 50  0001 C CNN
-	1    5350 3050
-	0    -1   -1   0   
-$EndComp
-Wire Wire Line
-	5450 3750 5400 3750
+	3600 3100 3550 3100
 $Comp
 L power:GND #PWR?
 U 1 1 60CB8808
-P 5400 3750
+P 3550 3100
 AR Path="/5D2C0CA7/60CB8808" Ref="#PWR?"  Part="1" 
 AR Path="/5D29E36D/60CB8808" Ref="#PWR?"  Part="1" 
 AR Path="/5DAA13E6/60CB8808" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C0720/60CB8808" Ref="#PWR021"  Part="1" 
-F 0 "#PWR021" H 5400 3500 50  0001 C CNN
-F 1 "GND" V 5400 3550 50  0000 C CNN
-F 2 "" H 5400 3750 50  0001 C CNN
-F 3 "" H 5400 3750 50  0001 C CNN
-	1    5400 3750
+F 0 "#PWR021" H 3550 2850 50  0001 C CNN
+F 1 "GND" V 3550 2900 50  0000 C CNN
+F 2 "" H 3550 3100 50  0001 C CNN
+F 3 "" H 3550 3100 50  0001 C CNN
+	1    3550 3100
 	0    1    1    0   
 $EndComp
 $Comp
 L Device:R_Small R3
 U 1 1 5DEC3D7D
-P 6550 3900
+P 9200 4600
 AR Path="/5D2C0720/5DEC3D7D" Ref="R3"  Part="1" 
 AR Path="/5D2C0761/5DEC3D7D" Ref="R?"  Part="1" 
-F 0 "R3" H 6300 4000 50  0000 L CNN
-F 1 "220Ω" H 6250 3900 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 6590 3890 50  0001 C CNN
-F 3 "~" H 6550 3900 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-2200ELF" V 6550 3900 50  0001 C CNN "Mouser"
-	1    6550 3900
+F 0 "R3" H 8950 4700 50  0000 L CNN
+F 1 "220Ω" H 8900 4600 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 9240 4590 50  0001 C CNN
+F 3 "~" H 9200 4600 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-2200ELF" V 9200 4600 50  0001 C CNN "Mouser"
+	1    9200 4600
 	-1   0    0    -1  
 $EndComp
 $Comp
 L Device:LED D2
 U 1 1 5DEC3D83
-P 6550 3650
+P 9200 4350
 AR Path="/5D2C0720/5DEC3D83" Ref="D2"  Part="1" 
 AR Path="/5D2C0761/5DEC3D83" Ref="D?"  Part="1" 
-F 0 "D2" V 6600 3950 50  0000 R CNN
-F 1 "Power OK" V 6500 4100 50  0000 R CNN
-F 2 "LED_THT:LED_D5.0mm" H 6550 3650 50  0001 C CNN
-F 3 "~" H 6550 3650 50  0001 C CNN
-	1    6550 3650
+F 0 "D2" V 9250 4650 50  0000 R CNN
+F 1 "Power OK" V 9150 4800 50  0000 R CNN
+F 2 "LED_THT:LED_D5.0mm" H 9200 4350 50  0001 C CNN
+F 3 "~" H 9200 4350 50  0001 C CNN
+	1    9200 4350
 	0    1    -1   0   
 $EndComp
 Wire Wire Line
-	6550 3450 6550 3500
+	9200 4150 9200 4200
 Wire Wire Line
-	6550 3450 6450 3450
+	9200 4150 9100 4150
 Wire Wire Line
-	6550 4000 6550 4050
+	9200 4700 9200 4750
 $Comp
 L power:GND #PWR?
 U 1 1 604A0C28
-P 6550 4050
+P 9200 4750
 AR Path="/5D2C0761/604A0C28" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C0720/604A0C28" Ref="#PWR024"  Part="1" 
-F 0 "#PWR024" H 6550 3800 50  0001 C CNN
-F 1 "GND" H 6555 3877 50  0000 C CNN
-F 2 "" H 6550 4050 50  0001 C CNN
-F 3 "" H 6550 4050 50  0001 C CNN
-	1    6550 4050
+F 0 "#PWR024" H 9200 4500 50  0001 C CNN
+F 1 "GND" H 9205 4577 50  0000 C CNN
+F 2 "" H 9200 4750 50  0001 C CNN
+F 3 "" H 9200 4750 50  0001 C CNN
+	1    9200 4750
 	1    0    0    -1  
 $EndComp
-Text GLabel 6650 3350 2    50   Output ~ 0
+Text GLabel 9300 3600 2    50   Output ~ 0
 ~RST
 Wire Wire Line
-	6450 3350 6650 3350
+	9100 3600 9300 3600
 Wire Wire Line
-	4000 5950 4200 5950
-Wire Wire Line
-	5400 3450 4550 3450
-Wire Wire Line
-	4550 3450 4550 4600
-Wire Wire Line
-	4550 4600 4100 4600
-Connection ~ 5400 3450
-Text Label 7550 1850 2    50   ~ 0
+	2150 3000 2350 3000
+Text Label 5700 1200 2    50   ~ 0
 Phi2_0
 Wire Wire Line
-	5000 1850 5000 3150
+	3150 1200 3150 2500
 Wire Wire Line
-	5000 1850 7550 1850
-Connection ~ 5000 3150
+	3150 1200 5700 1200
+Connection ~ 3150 2500
 Wire Wire Line
-	5000 3150 4850 3150
+	3150 2500 3000 2500
 Wire Wire Line
-	4200 1750 4200 2750
+	2350 1100 2350 2100
 Wire Wire Line
-	4200 1750 7550 1750
-NoConn ~ 7550 1950
-Wire Wire Line
-	5450 3650 4800 3650
-Wire Wire Line
-	4800 3650 4800 5950
-Connection ~ 4200 5950
-Wire Wire Line
-	4200 5950 4800 5950
+	2350 1100 5700 1100
+Connection ~ 2350 3000
 Wire Wire Line
 	900  7200 900  7300
 Connection ~ 900  7300
@@ -692,26 +629,26 @@ Connection ~ 900  7600
 Connection ~ 1400 7300
 Connection ~ 1400 7600
 $Sheet
-S 7600 4850 800  400 
+S 2800 5200 800  400 
 U 611B6311
 F0 "HaltResume" 50
 F1 "HaltResume.sch" 50
-F2 "~RST" I L 7600 4950 50 
-F3 "RDY" B R 8400 4950 50 
-F4 "~HLT" I L 7600 5100 50 
+F2 "~RST" I L 2800 5300 50 
+F3 "RDY" B R 3600 5300 50 
+F4 "~HLT" I L 2800 5450 50 
 $EndSheet
-Text GLabel 7400 4950 0    50   Input ~ 0
+Text GLabel 2600 5300 0    50   Input ~ 0
 ~RST
 Wire Wire Line
-	7600 4950 7400 4950
+	2800 5300 2600 5300
 Wire Wire Line
-	7400 5100 7600 5100
-Text HLabel 7400 5100 0    50   Input ~ 0
+	2600 5450 2800 5450
+Text HLabel 2600 5450 0    50   Input ~ 0
 ~HLT
-Text HLabel 8600 4950 2    50   BiDi ~ 0
+Text HLabel 3800 5300 2    50   BiDi ~ 0
 RDY
 Wire Wire Line
-	8400 4950 8600 4950
+	3600 5300 3800 5300
 Connection ~ 1900 7600
 Wire Wire Line
 	2400 7600 1900 7600
@@ -732,16 +669,79 @@ F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 2400 7450 50  0
 	1    2400 7450
 	1    0    0    -1  
 $EndComp
-Text GLabel 6650 2850 2    50   Output ~ 0
+Wire Wire Line
+	3550 2300 3550 2400
+Wire Wire Line
+	3550 2400 3600 2400
+Connection ~ 3550 2300
+Wire Wire Line
+	-1100 4750 -1100 4800
+$Comp
+L 74xx:74LS04 U?
+U 5 1 5E3CD911
+P 8800 4150
+AR Path="/5D8005AF/5D800744/5E3CD911" Ref="U?"  Part="6" 
+AR Path="/5D2C0720/5E3CD911" Ref="U2"  Part="5" 
+F 0 "U2" H 8800 4467 50  0000 C CNN
+F 1 "74AHCT04" H 8800 4376 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 8800 4150 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 8800 4150 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H 8800 4150 50  0001 C CNN "Mouser"
+	5    8800 4150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8400 3600 8500 3600
+Wire Wire Line
+	8500 4150 8400 4150
+Wire Wire Line
+	3550 2750 3500 2750
+Wire Wire Line
+	7800 3600 7650 3600
+Wire Wire Line
+	7650 4150 7800 4150
+Wire Wire Line
+	7650 3600 7650 3850
+Wire Wire Line
+	7500 3850 7650 3850
+Connection ~ 7650 3850
+Wire Wire Line
+	7650 3850 7650 4150
+Wire Wire Line
+	2350 3000 3600 3000
+Connection ~ 3550 2750
+Wire Wire Line
+	3550 2750 3550 2800
+Text GLabel 5100 1300 0    50   Output ~ 0
+~RST
+Wire Wire Line
+	5700 1300 5100 1300
+NoConn ~ 4600 2400
+Wire Wire Line
+	4600 2100 4800 2100
+Text GLabel 4800 2200 2    50   Output ~ 0
 Phi1b
 Wire Wire Line
-	6650 2850 6450 2850
-Text GLabel 6650 2950 2    50   Output ~ 0
+	4600 2200 4800 2200
+Text GLabel 4800 2300 2    50   Output ~ 0
 Phi1c
 Wire Wire Line
-	6650 2950 6450 2950
-Text GLabel 6650 3050 2    50   Output ~ 0
-Phi1d
-Wire Wire Line
-	6650 3050 6450 3050
+	4600 2300 4800 2300
+NoConn ~ 4600 2700
+NoConn ~ 4600 2800
+$Comp
+L power:GND #PWR?
+U 1 1 605F0901
+P 3500 2750
+AR Path="/5D2C0CA7/605F0901" Ref="#PWR?"  Part="1" 
+AR Path="/5D29E36D/605F0901" Ref="#PWR?"  Part="1" 
+AR Path="/5DAA13E6/605F0901" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C0720/605F0901" Ref="#PWR0481"  Part="1" 
+F 0 "#PWR0481" H 3500 2500 50  0001 C CNN
+F 1 "GND" V 3500 2550 50  0000 C CNN
+F 2 "" H 3500 2750 50  0001 C CNN
+F 3 "" H 3500 2750 50  0001 C CNN
+	1    3500 2750
+	0    1    1    0   
+$EndComp
 $EndSCHEMATC

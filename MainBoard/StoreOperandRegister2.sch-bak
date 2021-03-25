@@ -1576,7 +1576,7 @@ StoreOp_MEM[0..15]
 Text GLabel 5050 2900 0    50   Input ~ 0
 Phi1c
 Text GLabel 5050 4950 0    50   Input ~ 0
-Phi1c
+Phi1b
 Wire Bus Line
 	4550 1750 4550 4650
 Wire Bus Line

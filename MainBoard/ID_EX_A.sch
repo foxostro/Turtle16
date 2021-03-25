@@ -1130,11 +1130,11 @@ F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT574PW112?qs=P62ublwmbi8
 	1    0    0    -1  
 $EndComp
 Text GLabel 5100 3000 0    50   Input ~ 0
-Phi1a
+Phi1c
 Wire Wire Line
 	5150 3000 5100 3000
 Text GLabel 5100 5050 0    50   Input ~ 0
-Phi1a
+Phi1c
 Wire Wire Line
 	5150 5050 5100 5050
 Wire Bus Line

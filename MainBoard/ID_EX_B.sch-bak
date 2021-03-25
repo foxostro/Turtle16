@@ -1146,7 +1146,7 @@ Phi1a
 Wire Wire Line
 	5350 5100 5300 5100
 Text GLabel 5300 3050 0    50   Input ~ 0
-Phi1a
+Phi1c
 Wire Wire Line
 	5350 3050 5300 3050
 Wire Bus Line

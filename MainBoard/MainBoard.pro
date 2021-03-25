@@ -1,4 +1,4 @@
-update=Sunday, March 21, 2021 at 04:08:05 PM
+update=Tuesday, March 23, 2021 at 02:11:47 PM
 version=1
 last_client=kicad
 [general]
@@ -32,16 +32,16 @@ AllowMicroVias=0
 AllowBlindVias=0
 RequireCourtyardDefinitions=0
 ProhibitOverlappingCourtyards=1
-MinTrackWidth=0.127
+MinTrackWidth=0.1524
 MinViaDiameter=0.4
 MinViaDrill=0.2
 MinMicroViaDiameter=0.452399
 MinMicroViaDrill=0.299999
-MinHoleToHole=0.3
-TrackWidth1=0.127
-TrackWidth2=0.254
-ViaDiameter1=0.4
-ViaDrill1=0.2
+MinHoleToHole=0.5
+TrackWidth1=0.1524
+TrackWidth2=0.3048
+ViaDiameter1=0.65
+ViaDrill1=0.3
 dPairWidth1=0.2
 dPairGap1=0.25
 dPairViaGap1=0.25
@@ -83,7 +83,7 @@ Type=0
 Enabled=1
 [pcbnew/Layer.In3.Cu]
 Name=In3.Cu
-Type=2
+Type=1
 Enabled=1
 [pcbnew/Layer.In4.Cu]
 Name=In4.Cu
@@ -238,10 +238,10 @@ Enabled=0
 [pcbnew/Netclasses]
 [pcbnew/Netclasses/Default]
 Name=Default
-Clearance=0.127
-TrackWidth=0.127
-ViaDiameter=0.4
-ViaDrill=0.2
+Clearance=0.1524
+TrackWidth=0.1524
+ViaDiameter=0.65
+ViaDrill=0.3
 uViaDiameter=0.452399
 uViaDrill=0.299999
 dPairWidth=0.2

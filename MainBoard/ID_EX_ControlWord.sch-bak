@@ -1392,11 +1392,11 @@ F 3 "" H 3750 6500 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 Text GLabel 3750 2300 0    50   Input ~ 0
-Phi1c
-Text GLabel 3750 4350 0    50   Input ~ 0
-Phi1c
-Text GLabel 3750 6400 0    50   Input ~ 0
 Phi1b
+Text GLabel 3750 4350 0    50   Input ~ 0
+Phi1b
+Text GLabel 3750 6400 0    50   Input ~ 0
+Phi1a
 Wire Bus Line
 	5600 1100 5600 5800
 Wire Bus Line

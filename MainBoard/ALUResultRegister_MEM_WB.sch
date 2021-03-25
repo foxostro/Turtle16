@@ -1560,9 +1560,9 @@ $EndComp
 Text HLabel 7300 1800 2    50   Output ~ 0
 Y_WB[0..15]
 Text GLabel 4800 3000 0    50   Input ~ 0
-Phi1d
+Phi1c
 Text GLabel 4800 5050 0    50   Input ~ 0
-Phi1d
+Phi1c
 Wire Bus Line
 	4350 1850 4350 4750
 Wire Bus Line

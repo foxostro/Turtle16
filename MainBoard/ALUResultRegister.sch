@@ -1576,9 +1576,9 @@ F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT574PW112?qs=P62ublwmbi8
 	1    0    0    -1  
 $EndComp
 Text GLabel 4900 3050 0    50   Input ~ 0
-Phi1d
+Phi1b
 Text GLabel 4900 5100 0    50   Input ~ 0
-Phi1d
+Phi1b
 Wire Bus Line
 	4550 1900 4550 4800
 Wire Bus Line

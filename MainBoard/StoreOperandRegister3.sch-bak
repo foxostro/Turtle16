@@ -1545,12 +1545,12 @@ F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74ABT574APWR?qs=0O
 $EndComp
 Text HLabel 7250 1800 2    50   Output ~ 0
 StoreOp_WB[0..15]
+Text GLabel 4750 3000 0    50   Input ~ 0
+Phi1c
+Text GLabel 4750 5050 0    50   Input ~ 0
+Phi1c
 Wire Bus Line
 	4300 1850 4300 4750
 Wire Bus Line
 	6550 1800 6550 4750
-Text GLabel 4750 3000 0    50   Input ~ 0
-Phi1a
-Text GLabel 4750 5050 0    50   Input ~ 0
-Phi1a
 $EndSCHEMATC

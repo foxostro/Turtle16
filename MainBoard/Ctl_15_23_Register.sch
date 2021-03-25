@@ -799,7 +799,7 @@ F 3 "" H 5050 3750 50  0001 C CNN
 $EndComp
 NoConn ~ 6050 3750
 Text GLabel 4900 4250 0    50   Input ~ 0
-Phi1b
+Phi1a
 Wire Bus Line
 	6750 3750 6750 3950
 Wire Bus Line

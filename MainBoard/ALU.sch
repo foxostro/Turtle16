@@ -5,8 +5,8 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 20 35
 Title "ALU"
-Date ""
-Rev ""
+Date "2021-03-25"
+Rev "A (ab2b266c)"
 Comp ""
 Comment1 ""
 Comment2 "are latched in registers in other parts of the circuit."

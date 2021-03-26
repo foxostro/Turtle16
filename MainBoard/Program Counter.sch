@@ -5,8 +5,8 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 34 35
 Title "Program Counter"
-Date ""
-Rev ""
+Date "2021-03-25"
+Rev "A (ab2b266c)"
 Comp ""
 Comment1 ""
 Comment2 ""

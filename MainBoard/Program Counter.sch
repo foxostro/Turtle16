@@ -202,7 +202,7 @@ AR Path="/5D2C07CD/5FBC5FF4" Ref="U?"  Part="1"
 AR Path="/5FE35007/5FE3DA1C/5FBC5FF4" Ref="U70"  Part="1" 
 F 0 "U70" H 6050 4000 50  0000 C CNN
 F 1 "IDT7381" H 6050 3900 50  0000 C CNN
-F 2 "Package_LCC:PLCC-68_SMD-Socket" H 6050 5200 50  0001 C CNN
+F 2 "componentsearchengine:846821B1RKTP" H 6050 5200 50  0001 C CNN
 F 3 "https://www.digchip.com/datasheets/download_datasheet.php?id=419696&part-number=IDT7381" H 6050 5200 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/3M-Electronic-Solutions-Division/8468-21B1-RK-TP?qs=WZRMhwwaLl%2FJN6Bcf7US3Q%3D%3D" H 6050 3950 50  0001 C CNN "Mouser"
 	1    6050 3950
@@ -627,7 +627,7 @@ AR Path="/5FE35007/5FD0D8DC/5FCC7BA1" Ref="U?"  Part="1"
 AR Path="/5FE35007/5FE3DA1C/5FCC7BA1" Ref="U69"  Part="1" 
 F 0 "U69" H 2700 6400 50  0000 C CNN
 F 1 "ATF22V10C-7PX" H 2700 6300 50  0000 C CNN
-F 2 "Package_DIP:DIP-24_W8.89mm_SMDSocket_LongPads" H 3900 5050 50  0001 C CNN
+F 2 "Package_DIP:DIP-24_W7.62mm_Socket" H 3900 5050 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/268/doc0735-1369018.pdf" H 3050 5800 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Microchip-Technology-Atmel/ATF22V10C-7PX?qs=%2Fha2pyFadugqFuTUlWvkuaZr7DXQ8Rnu3dOZcKuoHGuPC51te6MYUw%3D%3D" H 3050 5750 50  0001 C CNN "Mouser"
 F 5 "https://www.mouser.com/ProductDetail/575-4462401" H 3050 5750 50  0001 C CNN "Mouser2"

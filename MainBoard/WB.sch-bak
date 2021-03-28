@@ -5,8 +5,8 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 5 35
 Title "WB"
-Date ""
-Rev ""
+Date "2021-03-25"
+Rev "A (ab2b266c)"
 Comp ""
 Comment1 ""
 Comment2 "allowing instructions to set half of a sixteen-bit word without bitwise masks."

@@ -4,14 +4,14 @@ EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 33 35
-Title "Instruction RAM"
+Title "Instruction ROM"
 Date "2021-03-25"
 Rev "A (ab2b266c)"
 Comp ""
 Comment1 ""
 Comment2 ""
 Comment3 ""
-Comment4 "Instructions are stored in a 64k x 16 dual port RAM with one port exposed on the bus."
+Comment4 "Instructions are stored in a pair of EEPROMs in ZIF sockets."
 $EndDescr
 $Comp
 L Device:C C?

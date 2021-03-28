@@ -311,7 +311,7 @@ AR Path="/5FED3839/5FF028BF" Ref="U?"  Part="1"
 AR Path="/5FED3839/5FE73F43/5FF028BF" Ref="U55"  Part="1" 
 F 0 "U55" H 2500 4650 50  0000 C CNN
 F 1 "SST39SF010A-45-4I-NHE" H 2550 4550 50  0000 C CNN
-F 2 "Package_LCC:PLCC-32_SMD-Socket" H 3150 3550 50  0001 C CNN
+F 2 "componentsearchengine:843221B1RKTP" H 3150 3550 50  0001 C CNN
 F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/25022B.pdf" H 3150 3550 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Microchip-Technology/SST39SF010A-45-4I-NHE?qs=tIuBKjZQlcn4x3o3EE%252B3qw%3D%3D" H 3150 3250 50  0001 C CNN "Mouser"
 F 5 "https://www.mouser.com/ProductDetail/517-8432-21B1-RK-TP" H 3150 3250 50  0001 C CNN "Mouser2"
@@ -560,7 +560,7 @@ AR Path="/5FED3839/60132D7F" Ref="U?"  Part="1"
 AR Path="/5FED3839/5FE73F43/60132D7F" Ref="U56"  Part="1" 
 F 0 "U56" H 5300 4650 50  0000 C CNN
 F 1 "SST39SF010A-45-4I-NHE" H 5350 4550 50  0000 C CNN
-F 2 "Package_LCC:PLCC-32_SMD-Socket" H 5950 3550 50  0001 C CNN
+F 2 "componentsearchengine:843221B1RKTP" H 5950 3550 50  0001 C CNN
 F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/25022B.pdf" H 5950 3550 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Microchip-Technology/SST39SF010A-45-4I-NHE?qs=tIuBKjZQlcn4x3o3EE%252B3qw%3D%3D" H 5950 3250 50  0001 C CNN "Mouser"
 F 5 "https://www.mouser.com/ProductDetail/517-8432-21B1-RK-TP" H 5950 3250 50  0001 C CNN "Mouser2"
@@ -807,7 +807,7 @@ AR Path="/5FED3839/6013D3C3" Ref="U?"  Part="1"
 AR Path="/5FED3839/5FE73F43/6013D3C3" Ref="U57"  Part="1" 
 F 0 "U57" H 8100 4650 50  0000 C CNN
 F 1 "SST39SF010A-45-4I-NHE" H 8150 4550 50  0000 C CNN
-F 2 "Package_LCC:PLCC-32_SMD-Socket" H 8750 3550 50  0001 C CNN
+F 2 "componentsearchengine:843221B1RKTP" H 8750 3550 50  0001 C CNN
 F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/25022B.pdf" H 8750 3550 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Microchip-Technology/SST39SF010A-45-4I-NHE?qs=tIuBKjZQlcn4x3o3EE%252B3qw%3D%3D" H 8750 3250 50  0001 C CNN "Mouser"
 F 5 "https://www.mouser.com/ProductDetail/517-8432-21B1-RK-TP" H 8750 3250 50  0001 C CNN "Mouser2"

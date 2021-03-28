@@ -5,8 +5,8 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 32 35
 Title "IF"
-Date ""
-Rev ""
+Date "2021-03-25"
+Rev "A (ab2b266c)"
 Comp ""
 Comment1 "All jumps are PC-relative jumps which add an offset to the program counter."
 Comment2 "address space to allow the program to be modified."

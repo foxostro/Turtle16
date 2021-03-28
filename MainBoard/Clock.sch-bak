@@ -140,45 +140,6 @@ Wire Wire Line
 	7000 2900 7000 2950
 Text Label 5700 1100 2    50   ~ 0
 Phi1_0
-$Comp
-L power:GND #PWR026
-U 1 1 5E07A6CE
-P 5550 1650
-F 0 "#PWR026" H 5550 1400 50  0001 C CNN
-F 1 "GND" H 5555 1477 50  0000 C CNN
-F 2 "" H 5550 1650 50  0001 C CNN
-F 3 "" H 5550 1650 50  0001 C CNN
-	1    5550 1650
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5700 1600 5550 1600
-Wire Wire Line
-	5550 1600 5550 1650
-$Comp
-L power:VCC #PWR025
-U 1 1 5E080807
-P 5450 1500
-F 0 "#PWR025" H 5450 1350 50  0001 C CNN
-F 1 "VCC" V 5468 1627 50  0000 L CNN
-F 2 "" H 5450 1500 50  0001 C CNN
-F 3 "" H 5450 1500 50  0001 C CNN
-	1    5450 1500
-	0    -1   -1   0   
-$EndComp
-Wire Wire Line
-	5450 1500 5700 1500
-$Comp
-L Connector:Conn_01x06_Female J2
-U 1 1 5E00A594
-P 5900 1400
-F 0 "J2" H 6200 1050 50  0000 C CNN
-F 1 "External Clock" H 6200 1150 50  0000 C CNN
-F 2 "Connector_PinSocket_2.54mm:PinSocket_1x06_P2.54mm_Vertical" H 5900 1400 50  0001 C CNN
-F 3 "~" H 5900 1400 50  0001 C CNN
-	1    5900 1400
-	1    0    0    1   
-$EndComp
 Wire Wire Line
 	6900 4350 7000 4350
 Wire Wire Line
@@ -712,8 +673,6 @@ Wire Wire Line
 Connection ~ 3550 2750
 Wire Wire Line
 	3550 2750 3550 2800
-Text GLabel 5100 1300 0    50   Input ~ 0
-~RST
 Wire Wire Line
 	5700 1300 5100 1300
 NoConn ~ 4600 2400
@@ -744,8 +703,45 @@ F 3 "" H 3500 2750 50  0001 C CNN
 	1    3500 2750
 	0    1    1    0   
 $EndComp
-Text HLabel 5400 1400 0    50   BiDi ~ 0
-RDY
 Wire Wire Line
-	5400 1400 5700 1400
+	5450 1400 5700 1400
+$Comp
+L power:VCC #PWR025
+U 1 1 5E080807
+P 5450 1400
+F 0 "#PWR025" H 5450 1250 50  0001 C CNN
+F 1 "VCC" V 5468 1527 50  0000 L CNN
+F 2 "" H 5450 1400 50  0001 C CNN
+F 3 "" H 5450 1400 50  0001 C CNN
+	1    5450 1400
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	5550 1500 5550 1550
+Wire Wire Line
+	5700 1500 5550 1500
+$Comp
+L power:GND #PWR026
+U 1 1 5E07A6CE
+P 5550 1550
+F 0 "#PWR026" H 5550 1300 50  0001 C CNN
+F 1 "GND" H 5555 1377 50  0000 C CNN
+F 2 "" H 5550 1550 50  0001 C CNN
+F 3 "" H 5550 1550 50  0001 C CNN
+	1    5550 1550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x05_Female J2
+U 1 1 5E00A594
+P 5900 1300
+F 0 "J2" H 5792 875 50  0000 C CNN
+F 1 "External Clock" H 5792 966 50  0000 C CNN
+F 2 "Connector_PinSocket_2.54mm:PinSocket_1x05_P2.54mm_Vertical" H 5900 1300 50  0001 C CNN
+F 3 "~" H 5900 1300 50  0001 C CNN
+	1    5900 1300
+	1    0    0    1   
+$EndComp
+Text GLabel 5100 1300 0    50   Input ~ 0
+~RST
 $EndSCHEMATC

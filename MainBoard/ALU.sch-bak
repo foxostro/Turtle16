@@ -152,7 +152,7 @@ AR Path="/60A71BBF/5FCE1272" Ref="U?"  Part="1"
 AR Path="/60A71BBF/5FC6FE4B/5FCE1272" Ref="U41"  Part="1" 
 F 0 "U41" H 5600 4100 50  0000 C CNN
 F 1 "IDT7381" H 5600 4000 50  0000 C CNN
-F 2 "componentsearchengine:846821B1RKTP" H 5600 5300 50  0001 C CNN
+F 2 "Package_LCC:PLCC-68_24.2x24.2mm_P1.27mm" H 5600 5300 50  0001 C CNN
 F 3 "https://www.digchip.com/datasheets/download_datasheet.php?id=419696&part-number=IDT7381" H 5600 5300 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/3M-Electronic-Solutions-Division/8468-21B1-RK-TP?qs=WZRMhwwaLl%2FJN6Bcf7US3Q%3D%3D" H 5600 4050 50  0001 C CNN "Mouser"
 	1    5600 4050

@@ -6,7 +6,7 @@ encoding utf-8
 Sheet 1 3
 Title "Turtle16: Clock Prototype"
 Date "2021-03-29"
-Rev "A (ab2b266c)"
+Rev "A (d3581256)"
 Comp ""
 Comment1 ""
 Comment2 ""

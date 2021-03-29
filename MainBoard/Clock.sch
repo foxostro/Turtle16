@@ -744,4 +744,107 @@ F 3 "~" H 5900 1300 50  0001 C CNN
 $EndComp
 Text GLabel 5100 1400 0    50   Input ~ 0
 ~RST
+Text GLabel 7950 1000 0    50   Output ~ 0
+Phi1a
+Wire Wire Line
+	8150 1000 7950 1000
+Text GLabel 7950 1300 0    50   Output ~ 0
+Phi1b
+Wire Wire Line
+	8150 1300 7950 1300
+Text GLabel 7950 1600 0    50   Output ~ 0
+Phi1c
+Wire Wire Line
+	8150 1600 7950 1600
+$Comp
+L power:GND #PWR0303
+U 1 1 60624463
+P 9450 1750
+F 0 "#PWR0303" H 9450 1500 50  0001 C CNN
+F 1 "GND" H 9455 1577 50  0000 C CNN
+F 2 "" H 9450 1750 50  0001 C CNN
+F 3 "" H 9450 1750 50  0001 C CNN
+	1    9450 1750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9300 1600 9450 1600
+Wire Wire Line
+	9450 1600 9450 1750
+Wire Wire Line
+	9300 1300 9450 1300
+Wire Wire Line
+	9450 1300 9450 1600
+Connection ~ 9450 1600
+Wire Wire Line
+	9300 1000 9450 1000
+Wire Wire Line
+	9450 1000 9450 1300
+Connection ~ 9450 1300
+$Comp
+L Connector:TestPoint TP1
+U 1 1 6063280D
+P 8150 1000
+F 0 "TP1" V 8104 1188 50  0000 L CNN
+F 1 "Phi1a" V 8195 1188 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 8350 1000 50  0001 C CNN
+F 3 "~" H 8350 1000 50  0001 C CNN
+	1    8150 1000
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP2
+U 1 1 60646363
+P 8150 1300
+F 0 "TP2" V 8104 1488 50  0000 L CNN
+F 1 "Phi1b" V 8195 1488 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 8350 1300 50  0001 C CNN
+F 3 "~" H 8350 1300 50  0001 C CNN
+	1    8150 1300
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP3
+U 1 1 60646737
+P 8150 1600
+F 0 "TP3" V 8104 1788 50  0000 L CNN
+F 1 "Phi1c" V 8195 1788 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 8350 1600 50  0001 C CNN
+F 3 "~" H 8350 1600 50  0001 C CNN
+	1    8150 1600
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP4
+U 1 1 60646969
+P 9300 1000
+F 0 "TP4" V 9250 1350 50  0000 R CNN
+F 1 "GND" V 9350 1350 50  0000 R CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 9500 1000 50  0001 C CNN
+F 3 "~" H 9500 1000 50  0001 C CNN
+	1    9300 1000
+	0    -1   1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP5
+U 1 1 606474C6
+P 9300 1300
+F 0 "TP5" V 9250 1650 50  0000 R CNN
+F 1 "GND" V 9350 1650 50  0000 R CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 9500 1300 50  0001 C CNN
+F 3 "~" H 9500 1300 50  0001 C CNN
+	1    9300 1300
+	0    -1   1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP6
+U 1 1 60647827
+P 9300 1600
+F 0 "TP6" V 9250 1950 50  0000 R CNN
+F 1 "GND" V 9350 1950 50  0000 R CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 9500 1600 50  0001 C CNN
+F 3 "~" H 9500 1600 50  0001 C CNN
+	1    9300 1600
+	0    -1   1    0   
+$EndComp
 $EndSCHEMATC

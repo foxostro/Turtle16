@@ -6,7 +6,7 @@ encoding utf-8
 Sheet 2 3
 Title "Clock"
 Date "2021-03-25"
-Rev "A (ab2b266c)"
+Rev "A (d3581256)"
 Comp ""
 Comment1 "Includes logic for the HLT state and a Resume button."
 Comment2 "Includes the voltage supervisor which controls the reset cycle."

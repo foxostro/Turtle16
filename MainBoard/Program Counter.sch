@@ -634,8 +634,6 @@ F 5 "https://www.mouser.com/ProductDetail/575-4462401" H 3050 5750 50  0001 C CN
 	1    3050 5750
 	1    0    0    -1  
 $EndComp
-Text Notes 1950 6950 0    50   ~ 0
-TODO: The ATF22V10 data sheet suggests connecting\npins 1, 8, 15, and 22 for superior performance.
 Text HLabel 1500 5600 0    50   Input ~ 0
 ~JABS
 Wire Wire Line
@@ -654,8 +652,6 @@ F 3 "" H 3550 6300 50  0001 C CNN
 	1    3550 6300
 	0    -1   -1   0   
 $EndComp
-NoConn ~ 3550 6100
-NoConn ~ 2550 6000
 $Comp
 L power:GND #PWR?
 U 1 1 5FBC60A4
@@ -742,4 +738,32 @@ Wire Bus Line
 	4250 1350 4250 3200
 Wire Bus Line
 	4250 3300 4250 4900
+$Comp
+L power:GND #PWR?
+U 1 1 606289F2
+P 2550 6000
+AR Path="/60A71BBF/606289F2" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C07CD/606289F2" Ref="#PWR?"  Part="1" 
+AR Path="/5FE35007/5FE3DA1C/606289F2" Ref="#PWR0487"  Part="1" 
+F 0 "#PWR0487" H 2550 5750 50  0001 C CNN
+F 1 "GND" V 2555 5872 50  0000 R CNN
+F 2 "" H 2550 6000 50  0001 C CNN
+F 3 "" H 2550 6000 50  0001 C CNN
+	1    2550 6000
+	0    1    -1   0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 60629108
+P 3550 6100
+AR Path="/60A71BBF/60629108" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C07CD/60629108" Ref="#PWR?"  Part="1" 
+AR Path="/5FE35007/5FE3DA1C/60629108" Ref="#PWR0488"  Part="1" 
+F 0 "#PWR0488" H 3550 5850 50  0001 C CNN
+F 1 "GND" V 3555 5972 50  0000 R CNN
+F 2 "" H 3550 6100 50  0001 C CNN
+F 3 "" H 3550 6100 50  0001 C CNN
+	1    3550 6100
+	0    -1   -1   0   
+$EndComp
 $EndSCHEMATC

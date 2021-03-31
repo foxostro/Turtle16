@@ -428,7 +428,7 @@ NoConn ~ 2550 6300
 Text HLabel 1750 3300 0    50   Input ~ 0
 Y_EX[0..15]
 Text Notes 900  2450 0    50   ~ 0
-Configure the ALU for FTAB=0 and FTF=1. This causes the A and B registers\nto update on the clock. The F register is never updated.\n\nDuring reset, set the ALU to I2=0, I1=0, I0=0. This causes the ALU to\ncompute a zero and latch it in A on the rising edge of the clock regardless\nof then contents of the A and B registers. This resets the program counter\nto zero.\n\nWhen incrementing, set the ALU to RS1=0, RS0=1, I2=0, I1=1, I0=1, C0=1.\nThe ALU computes F = A + 0 + C0. Since output is wired to feedback to\ninput port A, this computes PC = PC + 1.\n\nWhen performing a relative jump, set the ALU to RS1=1, RS0=1, I2=0, I1=1,\nI0=1, C0=0. The ALU computes F = A + B. Since the B port gets its value\nfrom the EX result of the the EX stage, this computes PC = PC + offset.\n\nWhen performing an absolute jump, set the ALU to RS1=1, RS0=0, I2=0, I1=1,\nI0=1, C0=0. The ALU computes F = 0 + B. Since the B port gets its value\nfrom the EX result of the the EX stage, this computes PC = target.
+Configure the ALU for FTAB=1 and FTF=0. This causes the A and B registers\nto by bypassed entirely. The F output updates on the next rising edge of the\nclock.\n\nDuring reset, set the ALU to I2=0, I1=0, I0=0. This causes the ALU to\ncompute a zero and latch it in A on the rising edge of the clock regardless\nof the value of the A and B inputs. This resets the program counter\nto zero.\n\nWhen incrementing, set the ALU to RS1=0, RS0=1, I2=0, I1=1, I0=1, C0=1.\nThe ALU computes F = A + 0 + C0. Since output is wired to feedback to\ninput port A, this computes PC = PC + 1.\n\nWhen performing a relative jump, set the ALU to RS1=1, RS0=1, I2=0, I1=1,\nI0=1, C0=0. The ALU computes F = A + B. Since the B port gets its value\nfrom the Y result of the the EX stage, this computes PC = PC + offset.\n\nWhen performing an absolute jump, set the ALU to RS1=1, RS0=0, I2=0, I1=1,\nI0=1, C0=0. The ALU computes F = 0 + B. Since the B port gets its value\nfrom the Y result of the the EX stage, this computes PC = target.
 Text Label 4400 3500 0    50   ~ 0
 Y_EX0
 Text Label 4400 3600 0    50   ~ 0
@@ -664,21 +664,6 @@ F 3 "" H 3550 6300 50  0001 C CNN
 	1    3550 6300
 	0    -1   -1   0   
 $EndComp
-$Comp
-L power:GND #PWR?
-U 1 1 5FBC60A4
-P 4950 6000
-AR Path="/60A71BBF/5FBC60A4" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C07CD/5FBC60A4" Ref="#PWR?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/5FBC60A4" Ref="#PWR0458"  Part="1" 
-AR Path="/606491BC/5FBC60A4" Ref="#PWR0109"  Part="1" 
-F 0 "#PWR0109" H 4950 5750 50  0001 C CNN
-F 1 "GND" V 4955 5872 50  0000 R CNN
-F 2 "" H 4950 6000 50  0001 C CNN
-F 3 "" H 4950 6000 50  0001 C CNN
-	1    4950 6000
-	0    1    -1   0   
-$EndComp
 Wire Wire Line
 	2550 5300 2150 5300
 Wire Wire Line
@@ -688,64 +673,6 @@ Wire Wire Line
 Connection ~ 2150 4650
 Wire Wire Line
 	2150 5300 2150 4650
-$Comp
-L power:VCC #PWR?
-U 1 1 5FD56A6C
-P 7150 3550
-AR Path="/5D2C07CD/5FD56A6C" Ref="#PWR?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/5FD56A6C" Ref="#PWR0463"  Part="1" 
-AR Path="/606491BC/5FD56A6C" Ref="#PWR0110"  Part="1" 
-F 0 "#PWR0110" H 7150 3400 50  0001 C CNN
-F 1 "VCC" V 7165 3677 50  0000 L CNN
-F 2 "" H 7150 3550 50  0001 C CNN
-F 3 "" H 7150 3550 50  0001 C CNN
-	1    7150 3550
-	0    1    -1   0   
-$EndComp
-$Comp
-L power:GND #PWR?
-U 1 1 5FCE3FC1
-P 4950 5900
-AR Path="/60A71BBF/5FCE3FC1" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C07CD/5FCE3FC1" Ref="#PWR?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/5FCE3FC1" Ref="#PWR0457"  Part="1" 
-AR Path="/606491BC/5FCE3FC1" Ref="#PWR0111"  Part="1" 
-F 0 "#PWR0111" H 4950 5650 50  0001 C CNN
-F 1 "GND" V 4955 5772 50  0000 R CNN
-F 2 "" H 4950 5900 50  0001 C CNN
-F 3 "" H 4950 5900 50  0001 C CNN
-	1    4950 5900
-	0    1    -1   0   
-$EndComp
-$Comp
-L power:VCC #PWR?
-U 1 1 5FE5D391
-P 7150 3450
-AR Path="/5D2C07CD/5FE5D391" Ref="#PWR?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/5FE5D391" Ref="#PWR0462"  Part="1" 
-AR Path="/606491BC/5FE5D391" Ref="#PWR0112"  Part="1" 
-F 0 "#PWR0112" H 7150 3300 50  0001 C CNN
-F 1 "VCC" V 7165 3577 50  0000 L CNN
-F 2 "" H 7150 3450 50  0001 C CNN
-F 3 "" H 7150 3450 50  0001 C CNN
-	1    7150 3450
-	0    1    -1   0   
-$EndComp
-$Comp
-L power:GND #PWR?
-U 1 1 5FE653C9
-P 4950 6100
-AR Path="/60A71BBF/5FE653C9" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C07CD/5FE653C9" Ref="#PWR?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/5FE653C9" Ref="#PWR0459"  Part="1" 
-AR Path="/606491BC/5FE653C9" Ref="#PWR0113"  Part="1" 
-F 0 "#PWR0113" H 4950 5850 50  0001 C CNN
-F 1 "GND" V 4955 5972 50  0000 R CNN
-F 2 "" H 4950 6100 50  0001 C CNN
-F 3 "" H 4950 6100 50  0001 C CNN
-	1    4950 6100
-	0    1    -1   0   
-$EndComp
 NoConn ~ 2550 5700
 Text GLabel 1500 4650 0    50   Input ~ 0
 Phi1b
@@ -785,4 +712,76 @@ Wire Bus Line
 	4250 1350 4250 3200
 Wire Bus Line
 	4250 3300 4250 4900
+$Comp
+L power:VCC #PWR?
+U 1 1 6064FC75
+P 4950 5900
+AR Path="/5D2C07CD/6064FC75" Ref="#PWR?"  Part="1" 
+AR Path="/5FE35007/5FE3DA1C/6064FC75" Ref="#PWR?"  Part="1" 
+AR Path="/606491BC/6064FC75" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 4950 5750 50  0001 C CNN
+F 1 "VCC" V 4965 6027 50  0000 L CNN
+F 2 "" H 4950 5900 50  0001 C CNN
+F 3 "" H 4950 5900 50  0001 C CNN
+	1    4950 5900
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:VCC #PWR?
+U 1 1 606509C5
+P 4950 6000
+AR Path="/5D2C07CD/606509C5" Ref="#PWR?"  Part="1" 
+AR Path="/5FE35007/5FE3DA1C/606509C5" Ref="#PWR?"  Part="1" 
+AR Path="/606491BC/606509C5" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 4950 5850 50  0001 C CNN
+F 1 "VCC" V 4965 6127 50  0000 L CNN
+F 2 "" H 4950 6000 50  0001 C CNN
+F 3 "" H 4950 6000 50  0001 C CNN
+	1    4950 6000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:VCC #PWR?
+U 1 1 60650C8F
+P 4950 6100
+AR Path="/5D2C07CD/60650C8F" Ref="#PWR?"  Part="1" 
+AR Path="/5FE35007/5FE3DA1C/60650C8F" Ref="#PWR?"  Part="1" 
+AR Path="/606491BC/60650C8F" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 4950 5950 50  0001 C CNN
+F 1 "VCC" V 4965 6227 50  0000 L CNN
+F 2 "" H 4950 6100 50  0001 C CNN
+F 3 "" H 4950 6100 50  0001 C CNN
+	1    4950 6100
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 60651074
+P 7150 3550
+AR Path="/60A71BBF/60651074" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C07CD/60651074" Ref="#PWR?"  Part="1" 
+AR Path="/5FE35007/5FE3DA1C/60651074" Ref="#PWR?"  Part="1" 
+AR Path="/606491BC/60651074" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 7150 3300 50  0001 C CNN
+F 1 "GND" V 7155 3422 50  0000 R CNN
+F 2 "" H 7150 3550 50  0001 C CNN
+F 3 "" H 7150 3550 50  0001 C CNN
+	1    7150 3550
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 60651397
+P 7150 3450
+AR Path="/60A71BBF/60651397" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C07CD/60651397" Ref="#PWR?"  Part="1" 
+AR Path="/5FE35007/5FE3DA1C/60651397" Ref="#PWR?"  Part="1" 
+AR Path="/606491BC/60651397" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 7150 3200 50  0001 C CNN
+F 1 "GND" V 7155 3322 50  0000 R CNN
+F 2 "" H 7150 3450 50  0001 C CNN
+F 3 "" H 7150 3450 50  0001 C CNN
+	1    7150 3450
+	0    -1   -1   0   
+$EndComp
 $EndSCHEMATC

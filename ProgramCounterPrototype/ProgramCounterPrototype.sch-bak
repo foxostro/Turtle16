@@ -5,8 +5,8 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 1 2
 Title "Turtle16: Program Counter Prototype"
-Date "2021-03-25"
-Rev "A (ab2b266c)"
+Date "2021-03-31"
+Rev "A (fd678fbe)"
 Comp ""
 Comment1 ""
 Comment2 ""
@@ -460,12 +460,12 @@ F 3 "~" H 3150 5100 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	3550 5300 3350 5300
-Wire Bus Line
-	6600 3100 6600 4600
-Wire Bus Line
-	4150 3100 4150 4600
 Wire Wire Line
 	3350 5100 4700 5100
 Wire Wire Line
 	3350 5000 4700 5000
+Wire Bus Line
+	4150 3100 4150 4600
+Wire Bus Line
+	6600 3100 6600 4600
 $EndSCHEMATC

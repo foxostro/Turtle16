@@ -5,8 +5,8 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 21 35
 Title "Select Right Operand"
-Date "2021-03-31"
-Rev "A (d86d9981)"
+Date "2021-04-01"
+Rev "A (c15ecb9b)"
 Comp ""
 Comment1 ""
 Comment2 "from an immediate value contained in the instruction word."

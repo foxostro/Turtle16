@@ -5,8 +5,8 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 8 35
 Title "MEM: Buffer StoreOp"
-Date "2021-03-31"
-Rev "A (d86d9981)"
+Date "2021-04-01"
+Rev "A (c15ecb9b)"
 Comp ""
 Comment1 ""
 Comment2 ""

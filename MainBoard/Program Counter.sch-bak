@@ -418,7 +418,7 @@ NoConn ~ 2550 6300
 Text HLabel 1750 3300 0    50   Input ~ 0
 Y_EX[0..15]
 Text Notes 900  2450 0    50   ~ 0
-Configure the ALU for FTAB=0 and FTF=1. This causes the A and B registers\nto update on the clock. The F register is never updated.\n\nDuring reset, set the ALU to I2=0, I1=0, I0=0. This causes the ALU to\ncompute a zero and latch it in A on the rising edge of the clock regardless\nof then contents of the A and B registers. This resets the program counter\nto zero.\n\nWhen incrementing, set the ALU to RS1=0, RS0=1, I2=0, I1=1, I0=1, C0=1.\nThe ALU computes F = A + 0 + C0. Since output is wired to feedback to\ninput port A, this computes PC = PC + 1.\n\nWhen performing a relative jump, set the ALU to RS1=1, RS0=1, I2=0, I1=1,\nI0=1, C0=0. The ALU computes F = A + B. Since the B port gets its value\nfrom the EX result of the the EX stage, this computes PC = PC + offset.\n\nWhen performing an absolute jump, set the ALU to RS1=1, RS0=0, I2=0, I1=1,\nI0=1, C0=0. The ALU computes F = 0 + B. Since the B port gets its value\nfrom the EX result of the the EX stage, this computes PC = target.
+Configure the ALU for FTAB=1 and FTF=0. This causes the A and B registers\nto by bypassed entirely. The F output updates on the next rising edge of the\nclock.\n\nDuring reset, set the ALU to I2=0, I1=0, I0=0. This causes the ALU to\ncompute a zero and latch it in A on the rising edge of the clock regardless\nof the value of the A and B inputs. This resets the program counter\nto zero.\n\nWhen incrementing, set the ALU to RS1=0, RS0=1, I2=0, I1=1, I0=1, C0=1.\nThe ALU computes F = A + 0 + C0. Since output is wired to feedback to\ninput port A, this computes PC = PC + 1.\n\nWhen performing a relative jump, set the ALU to RS1=1, RS0=1, I2=0, I1=1,\nI0=1, C0=0. The ALU computes F = A + B. Since the B port gets its value\nfrom the Y result of the the EX stage, this computes PC = PC + offset.\n\nWhen performing an absolute jump, set the ALU to RS1=1, RS0=0, I2=0, I1=1,\nI0=1, C0=0. The ALU computes F = 0 + B. Since the B port gets its value\nfrom the Y result of the the EX stage, this computes PC = target.
 Text Label 4400 3500 0    50   ~ 0
 Y_EX0
 Text Label 4400 3600 0    50   ~ 0
@@ -705,12 +705,6 @@ F 3 "" H 3550 6100 50  0001 C CNN
 	1    3550 6100
 	0    -1   -1   0   
 $EndComp
-Wire Bus Line
-	7850 1350 7850 3200
-Wire Bus Line
-	4250 1350 4250 3200
-Wire Bus Line
-	4250 3300 4250 4900
 $Comp
 L power:VCC #PWR?
 U 1 1 60653810
@@ -765,4 +759,10 @@ F 3 "" H 7150 3450 50  0001 C CNN
 	1    7150 3450
 	0    -1   -1   0   
 $EndComp
+Wire Bus Line
+	7850 1350 7850 3200
+Wire Bus Line
+	4250 1350 4250 3200
+Wire Bus Line
+	4250 3300 4250 4900
 $EndSCHEMATC

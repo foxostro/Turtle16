@@ -899,7 +899,7 @@ Wire Wire Line
 Wire Wire Line
 	1300 3500 1300 5900
 Text HLabel 3250 1350 1    50   Input ~ 0
-Ins_EX[0..15]
+Ins_EX[0..10]
 Wire Wire Line
 	3550 3550 3550 5850
 Wire Wire Line
@@ -1012,7 +1012,7 @@ F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/74AHCT16245DLRG4?qs=
 	1    0    0    -1  
 $EndComp
 Text HLabel 7700 1350 1    50   Input ~ 0
-Ins_EX[0..15]
+Ins_EX[0..10]
 $Comp
 L power:VCC #PWR0237
 U 1 1 61718285
@@ -1957,7 +1957,7 @@ Entry Wire Line
 Text Label 3350 3100 0    50   ~ 0
 Ins_EX4
 Text HLabel 5500 1350 1    50   Input ~ 0
-Ins_EX[0..15]
+Ins_EX[0..10]
 $Comp
 L power:VCC #PWR0258
 U 1 1 5FE0F640

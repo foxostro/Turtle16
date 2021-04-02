@@ -290,17 +290,17 @@ Entry Wire Line
 Wire Wire Line
 	3400 3000 3750 3000
 Wire Wire Line
-	3400 5700 3800 5700
+	3400 6000 3800 6000
 Entry Wire Line
-	3300 5600 3400 5700
+	3300 5900 3400 6000
 Wire Wire Line
-	3400 5600 3800 5600
+	3400 5900 3800 5900
 Entry Wire Line
-	3300 5500 3400 5600
+	3300 5800 3400 5900
 Wire Wire Line
-	3400 5500 3800 5500
+	3400 5800 3800 5800
 Entry Wire Line
-	3300 5400 3400 5500
+	3300 5700 3400 5800
 $Comp
 L power:GND #PWR?
 U 1 1 5FD1EFA8
@@ -481,34 +481,20 @@ F 3 "" H 4300 5200 50  0001 C CNN
 	1    4300 5200
 	1    0    0    -1  
 $EndComp
-Text Label 3450 5500 0    50   ~ 0
-Ctl_ID16
-Text Label 3450 5600 0    50   ~ 0
-Ctl_ID17
-Text Label 3450 5700 0    50   ~ 0
-Ctl_ID18
 Text Label 3450 6200 0    50   ~ 0
-Ctl_ID23
+Ctl_ID16
 Text Label 3450 6100 0    50   ~ 0
-Ctl_ID22
+Ctl_ID17
 Text Label 3450 6000 0    50   ~ 0
-Ctl_ID21
-Text Label 3450 5900 0    50   ~ 0
-Ctl_ID20
+Ctl_ID18
+Text Label 3450 5500 0    50   ~ 0
+Ctl_ID23
+Text Label 3450 5600 0    50   ~ 0
+Ctl_ID22
 Text Label 3450 5800 0    50   ~ 0
+Ctl_ID20
+Text Label 3450 5900 0    50   ~ 0
 Ctl_ID19
-Entry Wire Line
-	3300 5700 3400 5800
-Wire Wire Line
-	3400 5800 3800 5800
-Entry Wire Line
-	3300 5800 3400 5900
-Wire Wire Line
-	3400 5900 3800 5900
-Entry Wire Line
-	3300 5900 3400 6000
-Wire Wire Line
-	3400 6000 3800 6000
 Entry Wire Line
 	3300 6000 3400 6100
 Wire Wire Line
@@ -517,26 +503,35 @@ Entry Wire Line
 	3300 6100 3400 6200
 Wire Wire Line
 	3400 6200 3800 6200
-NoConn ~ 4800 6000
-NoConn ~ 4800 6100
-NoConn ~ 4800 6200
+Entry Wire Line
+	3300 5600 3400 5700
+Wire Wire Line
+	3400 5700 3800 5700
+Entry Wire Line
+	3300 5500 3400 5600
+Wire Wire Line
+	3400 5600 3800 5600
+Entry Wire Line
+	3300 5400 3400 5500
+Wire Wire Line
+	3400 5500 3800 5500
 Wire Wire Line
 	3750 6400 3800 6400
 Text HLabel 3100 1100 0    50   Input ~ 0
 Ctl_ID[0..23]
 Wire Wire Line
 	3750 6500 3800 6500
-Text Label 5450 5900 2    50   ~ 0
+Text Label 5500 5800 2    50   ~ 0
 Ctl_EX20
-Text Label 5450 5800 2    50   ~ 0
+Text Label 5500 5900 2    50   ~ 0
 Ctl_EX19
 Text HLabel 5850 1100 2    50   Output ~ 0
 Ctl_EX[0..20]
-Text Label 5450 5700 2    50   ~ 0
+Text Label 5500 6000 2    50   ~ 0
 Ctl_EX18
-Text Label 5450 5600 2    50   ~ 0
+Text Label 5500 6100 2    50   ~ 0
 Ctl_EX17
-Text Label 5450 5500 2    50   ~ 0
+Text Label 5500 6200 2    50   ~ 0
 Ctl_EX16
 Text Label 5500 3000 2    50   ~ 0
 Ctl_EX15
@@ -1013,15 +1008,15 @@ Wire Wire Line
 Wire Wire Line
 	5500 2600 4850 2600
 Wire Wire Line
-	5500 5700 4800 5700
+	5500 6000 4800 6000
 Wire Wire Line
-	5500 5600 4800 5600
-Wire Wire Line
-	5500 5500 4800 5500
+	5500 5900 4800 5900
 Wire Wire Line
 	5500 5800 4800 5800
 Wire Wire Line
-	5500 5900 4800 5900
+	5500 6100 4800 6100
+Wire Wire Line
+	5500 6200 4800 6200
 Entry Wire Line
 	5600 2100 5500 2200
 Entry Wire Line
@@ -1051,17 +1046,22 @@ Entry Wire Line
 Entry Wire Line
 	5600 2500 5500 2600
 Entry Wire Line
-	5600 5600 5500 5700
+	5600 5900 5500 6000
 Entry Wire Line
-	5600 5500 5500 5600
-Entry Wire Line
-	5600 5400 5500 5500
+	5600 5800 5500 5900
 Entry Wire Line
 	5600 5700 5500 5800
 Entry Wire Line
-	5600 5800 5500 5900
+	5600 6000 5500 6100
+Entry Wire Line
+	5600 6100 5500 6200
+Text Label 3450 5700 0    50   ~ 0
+Ctl_ID21
+NoConn ~ 4800 5700
+NoConn ~ 4800 5600
+NoConn ~ 4800 5500
 Wire Bus Line
-	5600 1100 5600 5800
+	5600 1100 5600 6100
 Wire Bus Line
 	3300 1100 3300 6100
 $EndSCHEMATC

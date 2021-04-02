@@ -1472,7 +1472,7 @@ F 3 "" H 3550 3600 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 Text HLabel 3100 1600 1    50   Input ~ 0
-B[0..15]
+PC_EX[0..15]
 Wire Wire Line
 	5300 2600 4800 2600
 Entry Wire Line
@@ -1861,7 +1861,7 @@ F 3 "" H 5950 3550 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 Text HLabel 5500 1550 1    50   Input ~ 0
-B[0..15]
+Ins_EX[0..10]
 Wire Wire Line
 	7700 2550 7200 2550
 Entry Wire Line
@@ -2246,7 +2246,7 @@ F 3 "" H 8350 3600 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 Text HLabel 7900 1600 1    50   Input ~ 0
-B[0..15]
+Ins_EX[0..10]
 Wire Wire Line
 	10100 2600 9600 2600
 Entry Wire Line

@@ -5,8 +5,8 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 29 35
 Title ""
-Date "2021-03-31"
-Rev "A (d86d9981)"
+Date "2021-04-01"
+Rev "A (c15ecb9b)"
 Comp ""
 Comment1 ""
 Comment2 ""
@@ -1107,10 +1107,10 @@ Text GLabel 4750 3300 0    50   Input ~ 0
 Phi1a
 Wire Wire Line
 	4750 5350 4850 5350
+Text GLabel 4750 5350 0    50   Input ~ 0
+Phi1a
 Wire Bus Line
 	4350 2150 4350 4550
 Wire Bus Line
 	6350 2100 6350 4550
-Text GLabel 4750 5350 0    50   Input ~ 0
-Phi1a
 $EndSCHEMATC

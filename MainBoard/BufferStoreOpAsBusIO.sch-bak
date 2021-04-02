@@ -5,8 +5,8 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 8 35
 Title "MEM: Buffer StoreOp"
-Date "2021-03-31"
-Rev "A (d86d9981)"
+Date "2021-04-01"
+Rev "A (c15ecb9b)"
 Comp ""
 Comment1 ""
 Comment2 ""
@@ -198,270 +198,240 @@ Connection ~ 950  7000
 $Comp
 L power:GND #PWR?
 U 1 1 5FF198A4
-P 5850 3750
+P 5500 5950
 AR Path="/60AF64DE/600805C3/5FF198A4" Ref="#PWR?"  Part="1" 
 AR Path="/60AF64DE/600D2600/5FF198A4" Ref="#PWR?"  Part="1" 
 AR Path="/60AF64DE/600D275E/5FF198A4" Ref="#PWR?"  Part="1" 
 AR Path="/60AF64DE/5FF1115C/5FF198A4" Ref="#PWR098"  Part="1" 
-F 0 "#PWR098" H 5850 3500 50  0001 C CNN
-F 1 "GND" H 5855 3577 50  0000 C CNN
-F 2 "" H 5850 3750 50  0001 C CNN
-F 3 "" H 5850 3750 50  0001 C CNN
-	1    5850 3750
+F 0 "#PWR098" H 5500 5700 50  0001 C CNN
+F 1 "GND" H 5505 5777 50  0000 C CNN
+F 2 "" H 5500 5950 50  0001 C CNN
+F 3 "" H 5500 5950 50  0001 C CNN
+	1    5500 5950
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:VCC #PWR?
 U 1 1 5FF198AA
-P 5850 2150
+P 5400 3350
 AR Path="/60AF64DE/600805C3/5FF198AA" Ref="#PWR?"  Part="1" 
 AR Path="/60AF64DE/600D2600/5FF198AA" Ref="#PWR?"  Part="1" 
 AR Path="/60AF64DE/600D275E/5FF198AA" Ref="#PWR?"  Part="1" 
 AR Path="/60AF64DE/5FF1115C/5FF198AA" Ref="#PWR097"  Part="1" 
-F 0 "#PWR097" H 5850 2000 50  0001 C CNN
-F 1 "VCC" H 5867 2323 50  0000 C CNN
-F 2 "" H 5850 2150 50  0001 C CNN
-F 3 "" H 5850 2150 50  0001 C CNN
-	1    5850 2150
+F 0 "#PWR097" H 5400 3200 50  0001 C CNN
+F 1 "VCC" H 5417 3523 50  0000 C CNN
+F 2 "" H 5400 3350 50  0001 C CNN
+F 3 "" H 5400 3350 50  0001 C CNN
+	1    5400 3350
 	1    0    0    -1  
 $EndComp
-Text HLabel 8200 4400 2    50   Input ~ 0
+Text HLabel 2600 5550 0    50   Input ~ 0
 ~AssertStoreOp
 Entry Wire Line
-	6900 2450 7000 2350
+	6550 3700 6650 3600
 Wire Wire Line
-	6900 2450 6350 2450
-Text Label 6900 2450 2    50   ~ 0
+	6550 3700 6000 3700
+Text Label 6550 3700 2    50   ~ 0
 SystemBus0
 Entry Wire Line
-	6900 2550 7000 2450
+	6550 3800 6650 3700
 Wire Wire Line
-	6900 2550 6350 2550
-Text Label 6900 2550 2    50   ~ 0
+	6550 3800 6000 3800
+Text Label 6550 3800 2    50   ~ 0
 SystemBus1
 Entry Wire Line
-	6900 2650 7000 2550
+	6550 3900 6650 3800
 Wire Wire Line
-	6900 2650 6350 2650
-Text Label 6900 2650 2    50   ~ 0
+	6550 3900 6000 3900
+Text Label 6550 3900 2    50   ~ 0
 SystemBus2
 Entry Wire Line
-	6900 2750 7000 2650
+	6550 4000 6650 3900
 Wire Wire Line
-	6900 2750 6350 2750
-Text Label 6900 2750 2    50   ~ 0
+	6550 4000 6000 4000
+Text Label 6550 4000 2    50   ~ 0
 SystemBus3
 Entry Wire Line
-	6900 2850 7000 2750
+	6550 4100 6650 4000
 Wire Wire Line
-	6900 2850 6350 2850
-Text Label 6900 2850 2    50   ~ 0
+	6550 4100 6000 4100
+Text Label 6550 4100 2    50   ~ 0
 SystemBus4
 Entry Wire Line
-	6900 2950 7000 2850
+	6550 4200 6650 4100
 Wire Wire Line
-	6900 2950 6350 2950
-Text Label 6900 2950 2    50   ~ 0
+	6550 4200 6000 4200
+Text Label 6550 4200 2    50   ~ 0
 SystemBus5
 Entry Wire Line
-	6900 3050 7000 2950
+	6550 4300 6650 4200
 Wire Wire Line
-	6900 3050 6350 3050
-Text Label 6900 3050 2    50   ~ 0
+	6550 4300 6000 4300
+Text Label 6550 4300 2    50   ~ 0
 SystemBus6
 Entry Wire Line
-	6900 3150 7000 3050
+	6550 4400 6650 4300
 Wire Wire Line
-	6900 3150 6350 3150
-Text Label 6900 3150 2    50   ~ 0
+	6550 4400 6000 4400
+Text Label 6550 4400 2    50   ~ 0
 SystemBus7
 Entry Wire Line
-	4800 2450 4700 2350
+	4250 3700 4150 3600
 Wire Wire Line
-	4800 2450 5350 2450
-Text Label 4800 2450 0    50   ~ 0
+	4250 3700 4800 3700
+Text Label 4250 3700 0    50   ~ 0
 StoreOp_MEM0
 Entry Wire Line
-	4800 2550 4700 2450
+	4250 3800 4150 3700
 Wire Wire Line
-	4800 2550 5350 2550
-Text Label 4800 2550 0    50   ~ 0
+	4250 3800 4800 3800
+Text Label 4250 3800 0    50   ~ 0
 StoreOp_MEM1
 Entry Wire Line
-	4800 2650 4700 2550
+	4250 3900 4150 3800
 Wire Wire Line
-	4800 2650 5350 2650
-Text Label 4800 2650 0    50   ~ 0
+	4250 3900 4800 3900
+Text Label 4250 3900 0    50   ~ 0
 StoreOp_MEM2
 Entry Wire Line
-	4800 2750 4700 2650
+	4250 4000 4150 3900
 Wire Wire Line
-	4800 2750 5350 2750
-Text Label 4800 2750 0    50   ~ 0
+	4250 4000 4800 4000
+Text Label 4250 4000 0    50   ~ 0
 StoreOp_MEM3
 Entry Wire Line
-	4800 2850 4700 2750
+	4250 4100 4150 4000
 Wire Wire Line
-	4800 2850 5350 2850
-Text Label 4800 2850 0    50   ~ 0
+	4250 4100 4800 4100
+Text Label 4250 4100 0    50   ~ 0
 StoreOp_MEM4
 Entry Wire Line
-	4800 2950 4700 2850
+	4250 4200 4150 4100
 Wire Wire Line
-	4800 2950 5350 2950
-Text Label 4800 2950 0    50   ~ 0
+	4250 4200 4800 4200
+Text Label 4250 4200 0    50   ~ 0
 StoreOp_MEM5
 Entry Wire Line
-	4800 3050 4700 2950
+	4250 4300 4150 4200
 Wire Wire Line
-	4800 3050 5350 3050
-Text Label 4800 3050 0    50   ~ 0
+	4250 4300 4800 4300
+Text Label 4250 4300 0    50   ~ 0
 StoreOp_MEM6
 Entry Wire Line
-	4800 3150 4700 3050
+	4250 4400 4150 4300
 Wire Wire Line
-	4800 3150 5350 3150
-Text Label 4800 3150 0    50   ~ 0
+	4250 4400 4800 4400
+Text Label 4250 4400 0    50   ~ 0
 StoreOp_MEM7
 Wire Bus Line
-	7000 2200 7700 2200
-Text HLabel 7700 2200 2    50   3State ~ 0
+	6650 3450 7350 3450
+Text HLabel 7350 3450 2    50   3State ~ 0
 SystemBus[0..15]
-Text HLabel 3650 2200 0    50   Input ~ 0
+Text HLabel 3100 3450 0    50   Input ~ 0
 StoreOp_MEM[0..15]
 Wire Bus Line
-	4700 2200 3650 2200
-$Comp
-L power:GND #PWR?
-U 1 1 5FF198F1
-P 5850 5850
-AR Path="/60AF64DE/600805C3/5FF198F1" Ref="#PWR?"  Part="1" 
-AR Path="/60AF64DE/600D2600/5FF198F1" Ref="#PWR?"  Part="1" 
-AR Path="/60AF64DE/600D275E/5FF198F1" Ref="#PWR?"  Part="1" 
-AR Path="/60AF64DE/5FF1115C/5FF198F1" Ref="#PWR0100"  Part="1" 
-F 0 "#PWR0100" H 5850 5600 50  0001 C CNN
-F 1 "GND" H 5855 5677 50  0000 C CNN
-F 2 "" H 5850 5850 50  0001 C CNN
-F 3 "" H 5850 5850 50  0001 C CNN
-	1    5850 5850
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:VCC #PWR?
-U 1 1 5FF198F7
-P 5850 4250
-AR Path="/60AF64DE/600805C3/5FF198F7" Ref="#PWR?"  Part="1" 
-AR Path="/60AF64DE/600D2600/5FF198F7" Ref="#PWR?"  Part="1" 
-AR Path="/60AF64DE/600D275E/5FF198F7" Ref="#PWR?"  Part="1" 
-AR Path="/60AF64DE/5FF1115C/5FF198F7" Ref="#PWR099"  Part="1" 
-F 0 "#PWR099" H 5850 4100 50  0001 C CNN
-F 1 "VCC" H 5867 4423 50  0000 C CNN
-F 2 "" H 5850 4250 50  0001 C CNN
-F 3 "" H 5850 4250 50  0001 C CNN
-	1    5850 4250
-	1    0    0    -1  
-$EndComp
+	4150 3450 3100 3450
 Entry Wire Line
-	6900 4550 7000 4450
+	6550 4500 6650 4400
 Wire Wire Line
-	6900 4550 6350 4550
-Text Label 6900 4550 2    50   ~ 0
+	6550 4500 6000 4500
+Text Label 6550 4500 2    50   ~ 0
 SystemBus8
 Entry Wire Line
-	6900 4650 7000 4550
+	6550 4600 6650 4500
 Wire Wire Line
-	6900 4650 6350 4650
-Text Label 6900 4650 2    50   ~ 0
+	6550 4600 6000 4600
+Text Label 6550 4600 2    50   ~ 0
 SystemBus9
 Entry Wire Line
-	6900 4750 7000 4650
+	6550 4700 6650 4600
 Wire Wire Line
-	6900 4750 6350 4750
-Text Label 6900 4750 2    50   ~ 0
+	6550 4700 6000 4700
+Text Label 6550 4700 2    50   ~ 0
 SystemBus10
 Entry Wire Line
-	6900 4850 7000 4750
+	6550 4800 6650 4700
 Wire Wire Line
-	6900 4850 6350 4850
-Text Label 6900 4850 2    50   ~ 0
+	6550 4800 6000 4800
+Text Label 6550 4800 2    50   ~ 0
 SystemBus11
 Entry Wire Line
-	6900 4950 7000 4850
+	6550 4900 6650 4800
 Wire Wire Line
-	6900 4950 6350 4950
-Text Label 6900 4950 2    50   ~ 0
+	6550 4900 6000 4900
+Text Label 6550 4900 2    50   ~ 0
 SystemBus12
 Entry Wire Line
-	6900 5050 7000 4950
+	6550 5000 6650 4900
 Wire Wire Line
-	6900 5050 6350 5050
-Text Label 6900 5050 2    50   ~ 0
+	6550 5000 6000 5000
+Text Label 6550 5000 2    50   ~ 0
 SystemBus13
 Entry Wire Line
-	6900 5150 7000 5050
+	6550 5100 6650 5000
 Wire Wire Line
-	6900 5150 6350 5150
-Text Label 6900 5150 2    50   ~ 0
+	6550 5100 6000 5100
+Text Label 6550 5100 2    50   ~ 0
 SystemBus14
 Entry Wire Line
-	6900 5250 7000 5150
+	6550 5200 6650 5100
 Wire Wire Line
-	6900 5250 6350 5250
-Text Label 6900 5250 2    50   ~ 0
+	6550 5200 6000 5200
+Text Label 6550 5200 2    50   ~ 0
 SystemBus15
 Wire Wire Line
-	4800 4550 5350 4550
-Text Label 4800 4550 0    50   ~ 0
+	4250 4500 4800 4500
+Text Label 4250 4500 0    50   ~ 0
 StoreOp_MEM8
 Wire Wire Line
-	4800 4650 5350 4650
-Text Label 4800 4650 0    50   ~ 0
+	4250 4600 4800 4600
+Text Label 4250 4600 0    50   ~ 0
 StoreOp_MEM9
 Wire Wire Line
-	4800 4750 5350 4750
-Text Label 4800 4750 0    50   ~ 0
+	4250 4700 4800 4700
+Text Label 4250 4700 0    50   ~ 0
 StoreOp_MEM10
 Wire Wire Line
-	4800 4850 5350 4850
-Text Label 4800 4850 0    50   ~ 0
+	4250 4800 4800 4800
+Text Label 4250 4800 0    50   ~ 0
 StoreOp_MEM11
 Entry Wire Line
-	4800 4950 4700 4850
+	4250 4900 4150 4800
 Wire Wire Line
-	4800 4950 5350 4950
-Text Label 4800 4950 0    50   ~ 0
+	4250 4900 4800 4900
+Text Label 4250 4900 0    50   ~ 0
 StoreOp_MEM12
 Entry Wire Line
-	4800 5050 4700 4950
+	4250 5000 4150 4900
 Wire Wire Line
-	4800 5050 5350 5050
-Text Label 4800 5050 0    50   ~ 0
+	4250 5000 4800 5000
+Text Label 4250 5000 0    50   ~ 0
 StoreOp_MEM13
 Entry Wire Line
-	4800 5150 4700 5050
+	4250 5100 4150 5000
 Wire Wire Line
-	4800 5150 5350 5150
-Text Label 4800 5150 0    50   ~ 0
+	4250 5100 4800 5100
+Text Label 4250 5100 0    50   ~ 0
 StoreOp_MEM14
 Entry Wire Line
-	4800 5250 4700 5150
+	4250 5200 4150 5100
 Wire Wire Line
-	4800 5250 5350 5250
-Text Label 4800 5250 0    50   ~ 0
+	4250 5200 4800 5200
+Text Label 4250 5200 0    50   ~ 0
 StoreOp_MEM15
-Text HLabel 8200 4600 2    50   Input ~ 0
+Text HLabel 2600 5750 0    50   Input ~ 0
 ~RDY
 $Comp
 L 74xx:74LS02 U16
 U 1 2 5FCF097E
-P 7900 4500
-F 0 "U16" H 7900 4825 50  0000 C CNN
-F 1 "74AHCT02" H 7900 4734 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 7900 4500 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct02" H 7900 4500 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74AHCT02PWR?qs=RZS%252BpEsUn7rWIaj83GtmCw%3D%3D" H 7900 4500 50  0001 C CNN "Mouser"
-	1    7900 4500
-	-1   0    0    -1  
+P 2900 5650
+F 0 "U16" H 2900 5975 50  0000 C CNN
+F 1 "74AHCT02" H 2900 5884 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 2900 5650 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct02" H 2900 5650 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74AHCT02PWR?qs=RZS%252BpEsUn7rWIaj83GtmCw%3D%3D" H 2900 5650 50  0001 C CNN "Mouser"
+	1    2900 5650
+	1    0    0    -1  
 $EndComp
 $Comp
 L 74xx:74LS02 U16
@@ -660,133 +630,125 @@ Wire Wire Line
 NoConn ~ -600 4350
 NoConn ~ -600 4900
 NoConn ~ -600 5450
+Text Notes 1650 6250 0    50   ~ 0
+Assert the StoreOp when we’re doing a Store\nAND the CPU is in a Ready state. That is, a\nperipheral device has not halted the CPU\nby taking ~RDY~ high.
+Entry Wire Line
+	4250 4800 4150 4700
+Entry Wire Line
+	4250 4700 4150 4600
+Entry Wire Line
+	4250 4600 4150 4500
+Entry Wire Line
+	4250 4500 4150 4400
 $Comp
-L Device:C C?
-U 1 1 5FD21E1B
-P 1950 6850
-AR Path="/5D8005AF/5D833E4B/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/5FE21410/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/5FE8EB3D/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60153F0B/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60906BCD/5FBDE54D/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60906BCD/5FC2B5F4/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60906BCD/5FC56568/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60153F0B/5FCDD090/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60153F0B/5FD148F1/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60153F0B/5FD202DF/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60153F0B/5FD2B946/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD447EB/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD44E3D/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD45108/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD45557/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD45834/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60A72859/5FD47CBA/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/600400AF/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/60040306/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/60040791/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/60044374/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/6004437C/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60A8EF0C/6004F414/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/5FF41DF6/6005FCF2/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/5FF41DF6/6005FCFB/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/5FF41DF6/6005FD06/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/5FF41DF6/6005FD11/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60A71BBF/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60AF64DE/600805C3/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60AF64DE/600D2600/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60AF64DE/600D275E/5FD21E1B" Ref="C?"  Part="1" 
-AR Path="/60AF64DE/5FF1115C/5FD21E1B" Ref="C22"  Part="1" 
-F 0 "C22" H 2065 6896 50  0000 L CNN
-F 1 "100nF" H 2065 6805 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1988 6700 50  0001 C CNN
-F 3 "~" H 1950 6850 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 1950 6850 50  0001 C CNN "Mouser"
-	1    1950 6850
+L 74xx:74AHCT16245 U7
+U 1 1 60678411
+P 5400 4650
+F 0 "U7" H 5400 4750 50  0000 C CNN
+F 1 "74AHCT16245" H 5400 4650 50  0000 C CNN
+F 2 "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm" H 5400 4750 50  0001 C CNN
+F 3 "https://www.ti.com/lit/ds/symlink/sn74ahct16245.pdf?HQS=dis-mous-null-mousermode-dsf-pf-null-wwe&ts=1617319205092" H 5400 4750 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/74AHCT16245DLRG4?qs=%2Fha2pyFaduixTLlQ%252B3rIFW8KDPMe6E5CxoQ2Fc519Y9S5BWJ%252B%2FVWeIYQshP1VtN3&utm_source=octopart&utm_medium=aggregator&utm_campaign=595-74AHCT16245DLRG4&utm_content=Texas%20Instruments" H 5400 4650 50  0001 C CNN "Mouser"
+	1    5400 4650
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	1450 6700 1950 6700
+	5250 3500 5250 3450
 Wire Wire Line
-	1950 7000 1450 7000
-Text Notes 9150 5100 2    50   ~ 0
-Assert the StoreOp when we’re doing a Store\nAND the CPU is in a Ready state. That is, a\nperipheral device has not halted the CPU\nby taking ~RDY~ high.
+	5250 3450 5350 3450
+Wire Wire Line
+	5400 3450 5400 3350
+Wire Wire Line
+	5350 3500 5350 3450
+Connection ~ 5350 3450
+Wire Wire Line
+	5350 3450 5400 3450
+Wire Wire Line
+	5400 3450 5450 3450
+Wire Wire Line
+	5450 3450 5450 3500
+Connection ~ 5400 3450
+Wire Wire Line
+	5450 3450 5550 3450
+Wire Wire Line
+	5550 3450 5550 3500
+Connection ~ 5450 3450
+Wire Wire Line
+	4800 5450 4750 5450
+Wire Wire Line
+	4750 5450 4750 5400
+Wire Wire Line
+	4750 5350 4800 5350
+Wire Wire Line
+	4750 5400 4600 5400
+Wire Wire Line
+	4750 5650 3200 5650
+Connection ~ 4750 5400
+Wire Wire Line
+	4750 5400 4750 5350
+Wire Wire Line
+	5150 5850 5150 5900
+Wire Wire Line
+	5150 5900 5250 5900
+Wire Wire Line
+	5850 5900 5850 5850
+Wire Wire Line
+	5750 5850 5750 5900
+Connection ~ 5750 5900
+Wire Wire Line
+	5750 5900 5850 5900
+Wire Wire Line
+	5650 5850 5650 5900
+Connection ~ 5650 5900
+Wire Wire Line
+	5650 5900 5750 5900
+Wire Wire Line
+	5550 5850 5550 5900
+Connection ~ 5550 5900
+Wire Wire Line
+	5550 5900 5650 5900
+Wire Wire Line
+	5450 5850 5450 5900
+Connection ~ 5450 5900
+Wire Wire Line
+	5450 5900 5500 5900
+Wire Wire Line
+	5350 5850 5350 5900
+Connection ~ 5350 5900
+Wire Wire Line
+	5350 5900 5450 5900
+Wire Wire Line
+	5250 5850 5250 5900
+Connection ~ 5250 5900
+Wire Wire Line
+	5250 5900 5350 5900
+Wire Wire Line
+	5500 5900 5500 5950
+Connection ~ 5500 5900
+Wire Wire Line
+	5500 5900 5550 5900
 $Comp
-L MainBoard-rescue:74LS245-74xx U?
-U 1 1 5FE3C856
-P 5850 2950
-AR Path="/60A71BBF/5FDDE478/5FE3C856" Ref="U?"  Part="1" 
-AR Path="/60A71BBF/5FDDE458/5FE3C856" Ref="U?"  Part="1" 
-AR Path="/60AF64DE/5FB90806/5FE3C856" Ref="U?"  Part="1" 
-AR Path="/60AF64DE/5FF1115C/5FE3C856" Ref="U17"  Part="1" 
-AR Path="/5FE3C856" Ref="U?"  Part="1" 
-F 0 "U17" H 5550 3750 50  0000 C CNN
-F 1 "74AHCT245" H 5550 3650 50  0000 C CNN
-F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 5850 2950 50  0001 C CNN
-F 3 "https://www.mouser.com/datasheet/2/916/74AHCT245A-1597455.pdf" H 5850 2950 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT245APWJ?qs=u4fy%2FsgLU9Nfcswc3zVmFw%3D%3D" H 5850 2950 50  0001 C CNN "Mouser"
-	1    5850 2950
-	-1   0    0    -1  
-$EndComp
-$Comp
-L MainBoard-rescue:74LS245-74xx U?
-U 1 1 5FE401BC
-P 5850 5050
-AR Path="/60A71BBF/5FDDE478/5FE401BC" Ref="U?"  Part="1" 
-AR Path="/60A71BBF/5FDDE458/5FE401BC" Ref="U?"  Part="1" 
-AR Path="/60AF64DE/5FB90806/5FE401BC" Ref="U?"  Part="1" 
-AR Path="/60AF64DE/5FF1115C/5FE401BC" Ref="U18"  Part="1" 
-AR Path="/5FE401BC" Ref="U?"  Part="1" 
-F 0 "U18" H 5550 5850 50  0000 C CNN
-F 1 "74AHCT245" H 5550 5750 50  0000 C CNN
-F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 5850 5050 50  0001 C CNN
-F 3 "https://www.mouser.com/datasheet/2/916/74AHCT245A-1597455.pdf" H 5850 5050 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT245APWJ?qs=u4fy%2FsgLU9Nfcswc3zVmFw%3D%3D" H 5850 5050 50  0001 C CNN "Mouser"
-	1    5850 5050
-	-1   0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR0101
-U 1 1 5FE868E9
-P 6350 3350
-F 0 "#PWR0101" H 6350 3100 50  0001 C CNN
-F 1 "GND" V 6355 3222 50  0000 R CNN
-F 2 "" H 6350 3350 50  0001 C CNN
-F 3 "" H 6350 3350 50  0001 C CNN
-	1    6350 3350
+L power:VCC #PWR0101
+U 1 1 606D0F99
+P 4600 5400
+F 0 "#PWR0101" H 4600 5250 50  0001 C CNN
+F 1 "VCC" V 4615 5528 50  0000 L CNN
+F 2 "" H 4600 5400 50  0001 C CNN
+F 3 "" H 4600 5400 50  0001 C CNN
+	1    4600 5400
 	0    -1   1    0   
 $EndComp
-$Comp
-L power:GND #PWR0102
-U 1 1 5FE86F8A
-P 6350 5450
-F 0 "#PWR0102" H 6350 5200 50  0001 C CNN
-F 1 "GND" V 6355 5322 50  0000 R CNN
-F 2 "" H 6350 5450 50  0001 C CNN
-F 3 "" H 6350 5450 50  0001 C CNN
-	1    6350 5450
-	0    -1   1    0   
-$EndComp
-Entry Wire Line
-	4800 4850 4700 4750
-Entry Wire Line
-	4800 4750 4700 4650
-Entry Wire Line
-	4800 4650 4700 4550
-Entry Wire Line
-	4800 4550 4700 4450
 Wire Wire Line
-	7100 4500 7600 4500
+	4800 5600 4750 5600
 Wire Wire Line
-	6350 3450 7100 3450
+	4750 5600 4750 5650
 Wire Wire Line
-	6350 5550 7100 5550
-Connection ~ 7100 4500
+	4750 5650 4750 5700
 Wire Wire Line
-	7100 4500 7100 5550
-Wire Wire Line
-	7100 3450 7100 4500
+	4750 5700 4800 5700
 Wire Bus Line
-	4700 2200 4700 5150
+	4150 3450 4150 5100
 Wire Bus Line
-	7000 2200 7000 5150
+	6650 3450 6650 5100
+Connection ~ 4750 5650
 $EndSCHEMATC

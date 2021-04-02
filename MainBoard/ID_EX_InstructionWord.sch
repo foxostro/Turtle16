@@ -1107,10 +1107,10 @@ Text GLabel 4750 3300 0    50   Input ~ 0
 Phi1a
 Wire Wire Line
 	4750 5350 4850 5350
+Text GLabel 4750 5350 0    50   Input ~ 0
+Phi1a
 Wire Bus Line
 	4350 2150 4350 4550
 Wire Bus Line
 	6350 2100 6350 4550
-Text GLabel 4750 5350 0    50   Input ~ 0
-Phi1a
 $EndSCHEMATC

@@ -481,9 +481,9 @@ F 3 "" H 4300 5200 50  0001 C CNN
 	1    4300 5200
 	1    0    0    -1  
 $EndComp
-Text Label 3450 5500 0    50   ~ 0
+Text Label 3450 5900 0    50   ~ 0
 Ctl_ID16
-Text Label 3450 5600 0    50   ~ 0
+Text Label 3450 5800 0    50   ~ 0
 Ctl_ID17
 Text Label 3450 5700 0    50   ~ 0
 Ctl_ID18
@@ -491,11 +491,9 @@ Text Label 3450 6200 0    50   ~ 0
 Ctl_ID23
 Text Label 3450 6100 0    50   ~ 0
 Ctl_ID22
-Text Label 3450 6000 0    50   ~ 0
-Ctl_ID21
-Text Label 3450 5900 0    50   ~ 0
+Text Label 3450 5500 0    50   ~ 0
 Ctl_ID20
-Text Label 3450 5800 0    50   ~ 0
+Text Label 3450 5600 0    50   ~ 0
 Ctl_ID19
 Entry Wire Line
 	3300 5700 3400 5800
@@ -526,17 +524,17 @@ Text HLabel 3100 1100 0    50   Input ~ 0
 Ctl_ID[0..23]
 Wire Wire Line
 	3750 6500 3800 6500
-Text Label 5450 5900 2    50   ~ 0
+Text Label 5500 5500 2    50   ~ 0
 Ctl_EX20
-Text Label 5450 5800 2    50   ~ 0
+Text Label 5500 5600 2    50   ~ 0
 Ctl_EX19
 Text HLabel 5850 1100 2    50   Output ~ 0
 Ctl_EX[0..20]
-Text Label 5450 5700 2    50   ~ 0
+Text Label 5500 5700 2    50   ~ 0
 Ctl_EX18
-Text Label 5450 5600 2    50   ~ 0
+Text Label 5500 5800 2    50   ~ 0
 Ctl_EX17
-Text Label 5450 5500 2    50   ~ 0
+Text Label 5500 5900 2    50   ~ 0
 Ctl_EX16
 Text Label 5500 3000 2    50   ~ 0
 Ctl_EX15
@@ -1064,4 +1062,6 @@ Wire Bus Line
 	5600 1100 5600 5800
 Wire Bus Line
 	3300 1100 3300 6100
+Text Label 3450 6000 0    50   ~ 0
+Ctl_ID21
 $EndSCHEMATC

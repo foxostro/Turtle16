@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 30 36
+Sheet 30 38
 Title ""
 Date "2021-04-01"
 Rev "A (c15ecb9b)"
@@ -42,7 +42,7 @@ Wire Wire Line
 Entry Wire Line
 	4150 2750 4250 2850
 Text Label 4300 2750 0    50   ~ 0
-AIn0
+A_ID0
 Wire Wire Line
 	4250 2750 4650 2750
 Entry Wire Line
@@ -108,25 +108,25 @@ Wire Wire Line
 Entry Wire Line
 	6250 3450 6150 3550
 Text Label 4300 2850 0    50   ~ 0
-AIn1
+A_ID1
 Text Label 4300 2950 0    50   ~ 0
-AIn2
+A_ID2
 Text Label 4300 3050 0    50   ~ 0
-AIn3
+A_ID3
 Text Label 4300 3150 0    50   ~ 0
-AIn4
+A_ID4
 Text Label 4300 3250 0    50   ~ 0
-AIn5
+A_ID5
 Text Label 4300 3350 0    50   ~ 0
-AIn6
+A_ID6
 Text Label 4300 3450 0    50   ~ 0
-AIn7
+A_ID7
 Text Label 4300 3550 0    50   ~ 0
-AIn8
+A_ID8
 Text Label 4300 3650 0    50   ~ 0
-AIn9
+A_ID9
 Text Label 4300 3750 0    50   ~ 0
-AIn10
+A_ID10
 Wire Wire Line
 	6150 3650 5750 3650
 Text Label 6100 2850 2    50   ~ 0
@@ -150,7 +150,7 @@ A9
 Text Label 6100 3750 2    50   ~ 0
 A10
 Text HLabel 3950 2500 0    50   Input ~ 0
-AIn[0..15]
+A_ID[0..15]
 Text HLabel 6400 2450 2    50   Output ~ 0
 A[0..15]
 Wire Wire Line
@@ -166,11 +166,11 @@ Wire Wire Line
 Entry Wire Line
 	4150 3750 4250 3850
 Text Label 4300 3850 0    50   ~ 0
-AIn11
+A_ID11
 Text Label 4300 3950 0    50   ~ 0
-AIn12
+A_ID12
 Text Label 4300 4050 0    50   ~ 0
-AIn13
+A_ID13
 Wire Wire Line
 	4250 4250 4650 4250
 Entry Wire Line
@@ -180,9 +180,9 @@ Wire Wire Line
 Entry Wire Line
 	4150 4050 4250 4150
 Text Label 4300 4150 0    50   ~ 0
-AIn14
+A_ID14
 Text Label 4300 4250 0    50   ~ 0
-AIn15
+A_ID15
 Wire Wire Line
 	6150 4050 5750 4050
 Entry Wire Line

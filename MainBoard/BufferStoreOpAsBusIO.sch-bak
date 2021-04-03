@@ -198,16 +198,16 @@ Connection ~ 950  7000
 $Comp
 L power:GND #PWR?
 U 1 1 5FF198A4
-P 5500 5950
+P 5300 5950
 AR Path="/60AF64DE/600805C3/5FF198A4" Ref="#PWR?"  Part="1" 
 AR Path="/60AF64DE/600D2600/5FF198A4" Ref="#PWR?"  Part="1" 
 AR Path="/60AF64DE/600D275E/5FF198A4" Ref="#PWR?"  Part="1" 
 AR Path="/60AF64DE/5FF1115C/5FF198A4" Ref="#PWR098"  Part="1" 
-F 0 "#PWR098" H 5500 5700 50  0001 C CNN
-F 1 "GND" H 5505 5777 50  0000 C CNN
-F 2 "" H 5500 5950 50  0001 C CNN
-F 3 "" H 5500 5950 50  0001 C CNN
-	1    5500 5950
+F 0 "#PWR098" H 5300 5700 50  0001 C CNN
+F 1 "GND" H 5305 5777 50  0000 C CNN
+F 2 "" H 5300 5950 50  0001 C CNN
+F 3 "" H 5300 5950 50  0001 C CNN
+	1    5300 5950
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -225,7 +225,7 @@ F 3 "" H 5400 3350 50  0001 C CNN
 	1    5400 3350
 	1    0    0    -1  
 $EndComp
-Text HLabel 2600 5550 0    50   Input ~ 0
+Text HLabel 8050 5550 2    50   Input ~ 0
 ~AssertStoreOp
 Entry Wire Line
 	6550 3700 6650 3600
@@ -419,19 +419,19 @@ Wire Wire Line
 	4250 5200 4800 5200
 Text Label 4250 5200 0    50   ~ 0
 StoreOp_MEM15
-Text HLabel 2600 5750 0    50   Input ~ 0
+Text HLabel 8050 5750 2    50   Input ~ 0
 ~RDY
 $Comp
 L 74xx:74LS02 U16
 U 1 2 5FCF097E
-P 2900 5650
-F 0 "U16" H 2900 5975 50  0000 C CNN
-F 1 "74AHCT02" H 2900 5884 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 2900 5650 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct02" H 2900 5650 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74AHCT02PWR?qs=RZS%252BpEsUn7rWIaj83GtmCw%3D%3D" H 2900 5650 50  0001 C CNN "Mouser"
-	1    2900 5650
-	1    0    0    -1  
+P 7750 5650
+F 0 "U16" H 7750 5975 50  0000 C CNN
+F 1 "74AHCT02" H 7750 5884 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 7750 5650 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct02" H 7750 5650 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74AHCT02PWR?qs=RZS%252BpEsUn7rWIaj83GtmCw%3D%3D" H 7750 5650 50  0001 C CNN "Mouser"
+	1    7750 5650
+	-1   0    0    -1  
 $EndComp
 $Comp
 L 74xx:74LS02 U16
@@ -630,7 +630,7 @@ Wire Wire Line
 NoConn ~ -600 4350
 NoConn ~ -600 4900
 NoConn ~ -600 5450
-Text Notes 1650 6250 0    50   ~ 0
+Text Notes 9000 6250 2    50   ~ 0
 Assert the StoreOp when we’re doing a Store\nAND the CPU is in a Ready state. That is, a\nperipheral device has not halted the CPU\nby taking ~RDY~ high.
 Entry Wire Line
 	4250 4800 4150 4700
@@ -650,7 +650,7 @@ F 2 "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm" H 5400 4750 50  0001 C CNN
 F 3 "https://www.ti.com/lit/ds/symlink/sn74ahct16245.pdf?HQS=dis-mous-null-mousermode-dsf-pf-null-wwe&ts=1617319205092" H 5400 4750 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/74AHCT16245DLRG4?qs=%2Fha2pyFaduixTLlQ%252B3rIFW8KDPMe6E5CxoQ2Fc519Y9S5BWJ%252B%2FVWeIYQshP1VtN3&utm_source=octopart&utm_medium=aggregator&utm_campaign=595-74AHCT16245DLRG4&utm_content=Texas%20Instruments" H 5400 4650 50  0001 C CNN "Mouser"
 	1    5400 4650
-	1    0    0    -1  
+	-1   0    0    -1  
 $EndComp
 Wire Wire Line
 	5250 3500 5250 3450
@@ -674,34 +674,11 @@ Wire Wire Line
 	5550 3450 5550 3500
 Connection ~ 5450 3450
 Wire Wire Line
-	4800 5450 4750 5450
+	4950 5850 4950 5900
 Wire Wire Line
-	4750 5450 4750 5400
+	4950 5900 5050 5900
 Wire Wire Line
-	4750 5350 4800 5350
-Wire Wire Line
-	4750 5400 4600 5400
-Wire Wire Line
-	4750 5650 3200 5650
-Connection ~ 4750 5400
-Wire Wire Line
-	4750 5400 4750 5350
-Wire Wire Line
-	5150 5850 5150 5900
-Wire Wire Line
-	5150 5900 5250 5900
-Wire Wire Line
-	5850 5900 5850 5850
-Wire Wire Line
-	5750 5850 5750 5900
-Connection ~ 5750 5900
-Wire Wire Line
-	5750 5900 5850 5900
-Wire Wire Line
-	5650 5850 5650 5900
-Connection ~ 5650 5900
-Wire Wire Line
-	5650 5900 5750 5900
+	5650 5900 5650 5850
 Wire Wire Line
 	5550 5850 5550 5900
 Connection ~ 5550 5900
@@ -711,7 +688,7 @@ Wire Wire Line
 	5450 5850 5450 5900
 Connection ~ 5450 5900
 Wire Wire Line
-	5450 5900 5500 5900
+	5450 5900 5550 5900
 Wire Wire Line
 	5350 5850 5350 5900
 Connection ~ 5350 5900
@@ -721,32 +698,53 @@ Wire Wire Line
 	5250 5850 5250 5900
 Connection ~ 5250 5900
 Wire Wire Line
-	5250 5900 5350 5900
+	5250 5900 5300 5900
 Wire Wire Line
-	5500 5900 5500 5950
-Connection ~ 5500 5900
+	5150 5850 5150 5900
+Connection ~ 5150 5900
 Wire Wire Line
-	5500 5900 5550 5900
+	5150 5900 5250 5900
+Wire Wire Line
+	5050 5850 5050 5900
+Connection ~ 5050 5900
+Wire Wire Line
+	5050 5900 5150 5900
+Wire Wire Line
+	5300 5900 5300 5950
+Connection ~ 5300 5900
+Wire Wire Line
+	5300 5900 5350 5900
 $Comp
-L power:VCC #PWR0101
-U 1 1 606D0F99
-P 4600 5400
-F 0 "#PWR0101" H 4600 5250 50  0001 C CNN
-F 1 "VCC" V 4615 5528 50  0000 L CNN
-F 2 "" H 4600 5400 50  0001 C CNN
-F 3 "" H 4600 5400 50  0001 C CNN
-	1    4600 5400
-	0    -1   1    0   
+L power:GND #PWR?
+U 1 1 607263D8
+P 6050 5400
+F 0 "#PWR?" H 6050 5150 50  0001 C CNN
+F 1 "GND" V 6055 5272 50  0000 R CNN
+F 2 "" H 6050 5400 50  0001 C CNN
+F 3 "" H 6050 5400 50  0001 C CNN
+	1    6050 5400
+	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	4800 5600 4750 5600
+	6000 5350 6050 5350
 Wire Wire Line
-	4750 5600 4750 5650
+	6050 5350 6050 5400
 Wire Wire Line
-	4750 5650 4750 5700
+	6050 5400 6050 5450
 Wire Wire Line
-	4750 5700 4800 5700
-Connection ~ 4750 5650
+	6050 5450 6000 5450
+Connection ~ 6050 5400
+Wire Wire Line
+	6000 5600 6050 5600
+Wire Wire Line
+	6050 5700 6000 5700
+Wire Wire Line
+	6050 5600 6050 5650
+Connection ~ 6050 5650
+Wire Wire Line
+	6050 5650 6050 5700
+Wire Wire Line
+	6050 5650 7450 5650
 Wire Bus Line
 	4150 3450 4150 5100
 Wire Bus Line

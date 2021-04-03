@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 10 35
+Sheet 10 36
 Title "MEM: Buffer ALUResult"
 Date "2021-04-01"
 Rev "A (c15ecb9b)"
@@ -151,10 +151,10 @@ F 3 "" H 9450 6250 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	9450 6250 9450 6150
-Text HLabel 4450 4750 0    50   Input ~ 0
+Text HLabel 6550 4750 2    50   Input ~ 0
 ~RDY
 Wire Wire Line
-	4450 4750 4850 4750
+	6550 4750 6150 4750
 Entry Wire Line
 	6650 2800 6750 2700
 Wire Wire Line
@@ -921,60 +921,49 @@ F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 5550 7550 50  
 	1    5550 7550
 	1    0    0    -1  
 $EndComp
-$Comp
-L power:VCC #PWR0139
-U 1 1 60513493
-P 4800 4500
-F 0 "#PWR0139" H 4800 4350 50  0001 C CNN
-F 1 "VCC" V 4815 4628 50  0000 L CNN
-F 2 "" H 4800 4500 50  0001 C CNN
-F 3 "" H 4800 4500 50  0001 C CNN
-	1    4800 4500
-	0    -1   1    0   
-$EndComp
 Wire Wire Line
-	4850 4800 4900 4800
+	6150 4800 6100 4800
 Wire Wire Line
-	4900 4700 4850 4700
-Connection ~ 5950 5000
+	6100 4700 6150 4700
+Connection ~ 5750 5000
 Wire Wire Line
-	5950 5050 5950 5000
+	5750 5050 5750 5000
 Wire Wire Line
-	5350 5000 5450 5000
-Connection ~ 5350 5000
+	5150 5000 5250 5000
+Connection ~ 5150 5000
 Wire Wire Line
-	5350 4950 5350 5000
-Wire Wire Line
-	5450 5000 5550 5000
-Connection ~ 5450 5000
-Wire Wire Line
-	5450 4950 5450 5000
+	5150 4950 5150 5000
 Wire Wire Line
 	5250 5000 5350 5000
+Connection ~ 5250 5000
+Wire Wire Line
+	5250 4950 5250 5000
+Wire Wire Line
+	5050 5000 5150 5000
+Connection ~ 5350 5000
+Wire Wire Line
+	5350 5000 5350 4950
+Wire Wire Line
+	5450 5000 5350 5000
+Connection ~ 5450 5000
+Wire Wire Line
+	5450 5000 5450 4950
+Wire Wire Line
+	5550 5000 5450 5000
+Wire Wire Line
+	5550 5000 5650 5000
 Connection ~ 5550 5000
+Wire Wire Line
+	5650 5000 5750 5000
+Wire Wire Line
+	5650 5000 5650 4950
+Connection ~ 5650 5000
 Wire Wire Line
 	5550 5000 5550 4950
 Wire Wire Line
-	5650 5000 5550 5000
-Connection ~ 5650 5000
-Wire Wire Line
-	5650 5000 5650 4950
-Wire Wire Line
-	5750 5000 5650 5000
-Wire Wire Line
-	5750 5000 5850 5000
-Connection ~ 5750 5000
-Wire Wire Line
-	5850 5000 5950 5000
-Wire Wire Line
-	5850 5000 5850 4950
-Connection ~ 5850 5000
-Wire Wire Line
 	5750 5000 5750 4950
 Wire Wire Line
-	5950 5000 5950 4950
-Wire Wire Line
-	5250 4950 5250 5000
+	5050 4950 5050 5000
 Wire Wire Line
 	5550 2550 5650 2550
 Connection ~ 5550 2550
@@ -997,9 +986,9 @@ Wire Wire Line
 Wire Wire Line
 	5350 2600 5350 2550
 Wire Wire Line
-	4850 4550 4900 4550
+	6150 4550 6100 4550
 Wire Wire Line
-	4900 4450 4850 4450
+	6100 4450 6150 4450
 $Comp
 L 74xx:74AHCT16245 U?
 U 1 1 6219D879
@@ -1012,12 +1001,12 @@ F 2 "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm" H 5500 4350 50  0001 C CNN
 F 3 "https://www.ti.com/lit/ds/symlink/sn74ahct16245.pdf?HQS=dis-mous-null-mousermode-dsf-pf-null-wwe&ts=1617319205092" H 5500 3950 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/74AHCT16245DLRG4?qs=%2Fha2pyFaduixTLlQ%252B3rIFW8KDPMe6E5CxoQ2Fc519Y9S5BWJ%252B%2FVWeIYQshP1VtN3&utm_source=octopart&utm_medium=aggregator&utm_campaign=595-74AHCT16245DLRG4&utm_content=Texas%20Instruments" H 5500 4250 50  0001 C CNN "Mouser"
 	1    5500 3750
-	1    0    0    -1  
+	-1   0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 6219D87F
-P 5950 5050
+P 5750 5050
 AR Path="/60906BCD/6219D87F" Ref="#PWR?"  Part="1" 
 AR Path="/60906BCD/5FC2B5F4/6219D87F" Ref="#PWR?"  Part="1" 
 AR Path="/60906BCD/5FC56568/6219D87F" Ref="#PWR?"  Part="1" 
@@ -1097,11 +1086,11 @@ AR Path="/60906BCD/5FDE580B/6219D87F" Ref="#PWR?"  Part="1"
 AR Path="/5FED3839/5FC16B08/6219D87F" Ref="#PWR?"  Part="1" 
 AR Path="/60A71BBF/5FDDE478/6219D87F" Ref="#PWR?"  Part="1" 
 AR Path="/60AF64DE/5FB92C55/6219D87F" Ref="#PWR0214"  Part="1" 
-F 0 "#PWR0214" H 5950 4800 50  0001 C CNN
-F 1 "GND" H 5955 4877 50  0000 C CNN
-F 2 "" H 5950 5050 50  0001 C CNN
-F 3 "" H 5950 5050 50  0001 C CNN
-	1    5950 5050
+F 0 "#PWR0214" H 5750 4800 50  0001 C CNN
+F 1 "GND" H 5755 4877 50  0000 C CNN
+F 2 "" H 5750 5050 50  0001 C CNN
+F 3 "" H 5750 5050 50  0001 C CNN
+	1    5750 5050
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1195,21 +1184,32 @@ F 3 "" H 5500 2500 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4850 4450 4850 4500
+	6150 4450 6150 4500
 Wire Wire Line
-	4850 4700 4850 4750
+	6150 4700 6150 4750
 Wire Wire Line
-	4800 4500 4850 4500
-Connection ~ 4850 4500
+	6200 4500 6150 4500
+Connection ~ 6150 4500
 Wire Wire Line
-	4850 4500 4850 4550
-Connection ~ 4850 4750
+	6150 4500 6150 4550
+Connection ~ 6150 4750
 Wire Wire Line
-	4850 4750 4850 4800
+	6150 4750 6150 4800
 Wire Bus Line
 	950  6850 5450 6850
 Wire Bus Line
 	6750 2550 6750 4200
 Wire Bus Line
 	4250 2550 4250 4200
+$Comp
+L power:GND #PWR0139
+U 1 1 60746ADB
+P 6200 4500
+F 0 "#PWR0139" H 6200 4250 50  0001 C CNN
+F 1 "GND" V 6205 4372 50  0000 R CNN
+F 2 "" H 6200 4500 50  0001 C CNN
+F 3 "" H 6200 4500 50  0001 C CNN
+	1    6200 4500
+	0    -1   -1   0   
+$EndComp
 $EndSCHEMATC

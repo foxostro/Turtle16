@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 1 35
+Sheet 1 36
 Title "Turtle16: Main Board"
 Date "2021-04-01"
 Rev "A (c15ecb9b)"
@@ -228,9 +228,9 @@ Wire Bus Line
 Wire Bus Line
 	7400 4450 8750 4450
 Wire Bus Line
-	6050 1550 5100 1550
+	6050 1650 5100 1650
 Wire Bus Line
-	5100 1550 5100 4450
+	5100 1650 5100 4450
 Wire Bus Line
 	5100 4450 6050 4450
 Wire Wire Line
@@ -248,11 +248,11 @@ The program counter value\nPC skips ahead a pipeline\nstage so EX can work with\
 Wire Wire Line
 	6050 4350 5200 4350
 Wire Wire Line
-	6050 1650 5200 1650
+	6050 1750 5200 1750
 Wire Wire Line
 	1700 1550 1400 1550
 Wire Wire Line
-	5200 1650 5200 4350
+	5200 1750 5200 4350
 $Comp
 L power:GND #PWR06
 U 1 1 5D9DB4FF
@@ -436,7 +436,7 @@ Wire Wire Line
 Wire Wire Line
 	6050 4250 5300 4250
 Wire Wire Line
-	5300 1750 6050 1750
+	5300 1850 6050 1850
 $Sheet
 S 8750 1450 1350 4750
 U 5FED3839
@@ -455,6 +455,10 @@ F11 "SelC_WB[0..2]" I L 8750 6100 50
 F12 "A[0..15]" O L 8750 4250 50 
 F13 "B[0..15]" O L 8750 4350 50 
 F14 "~WBEN" I L 8750 5800 50 
+F15 "~J" I L 8750 3400 50 
+F16 "STALL" O R 10100 1550 50 
+F17 "SelC_MEM[0..2]" I L 8750 5150 50 
+F18 "Ctl_MEM[14..20]" I L 8750 5250 50 
 $EndSheet
 Wire Bus Line
 	7350 1550 8750 1550
@@ -471,16 +475,17 @@ F0 "IF" 50
 F1 "IF.sch" 50
 F2 "Ins_ID[0..15]" O R 7350 1550 50 
 F3 "PC_EX[0..15]" O R 7350 1650 50 
-F4 "Y_EX[0..15]" I L 6050 1550 50 
-F5 "~J" I L 6050 1750 50 
-F6 "~JABS" I L 6050 1650 50 
+F4 "Y_EX[0..15]" I L 6050 1650 50 
+F5 "~J" I L 6050 1850 50 
+F6 "~JABS" I L 6050 1750 50 
+F7 "STALL" I L 6050 1550 50 
 $EndSheet
 Wire Wire Line
-	5300 1750 5300 4250
+	5300 1850 5300 3400
 Wire Bus Line
-	3250 4750 6050 4750
+	3250 4750 5700 4750
 Wire Bus Line
-	3250 4950 6050 4950
+	3250 4950 5800 4950
 $Comp
 L Connector:Screw_Terminal_01x02 J1
 U 1 1 60501CA1
@@ -492,4 +497,33 @@ F 3 "~" H 1150 7050 50  0001 C CNN
 	1    1150 7050
 	-1   0    0    1   
 $EndComp
+Wire Wire Line
+	8750 3400 5300 3400
+Connection ~ 5300 3400
+Wire Wire Line
+	5300 3400 5300 4250
+Wire Wire Line
+	10100 1550 10250 1550
+Wire Wire Line
+	10250 1550 10250 1250
+Wire Wire Line
+	10250 1250 5900 1250
+Wire Wire Line
+	5900 1250 5900 1550
+Wire Wire Line
+	5900 1550 6050 1550
+Wire Bus Line
+	8750 5150 5800 5150
+Wire Bus Line
+	5800 5150 5800 4950
+Connection ~ 5800 4950
+Wire Bus Line
+	5800 4950 6050 4950
+Wire Bus Line
+	8750 5250 5700 5250
+Wire Bus Line
+	5700 5250 5700 4750
+Connection ~ 5700 4750
+Wire Bus Line
+	5700 4750 6050 4750
 $EndSCHEMATC

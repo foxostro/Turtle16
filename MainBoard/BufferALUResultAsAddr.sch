@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 10 35
+Sheet 10 36
 Title "MEM: Buffer ALUResult"
 Date "2021-04-01"
 Rev "A (c15ecb9b)"
@@ -1202,10 +1202,10 @@ Wire Bus Line
 Wire Bus Line
 	4250 2550 4250 4200
 $Comp
-L power:GND #PWR?
+L power:GND #PWR0139
 U 1 1 60746ADB
 P 6200 4500
-F 0 "#PWR?" H 6200 4250 50  0001 C CNN
+F 0 "#PWR0139" H 6200 4250 50  0001 C CNN
 F 1 "GND" V 6205 4372 50  0000 R CNN
 F 2 "" H 6200 4500 50  0001 C CNN
 F 3 "" H 6200 4500 50  0001 C CNN

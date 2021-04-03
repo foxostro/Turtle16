@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 32 35
+Sheet 33 36
 Title "IF"
 Date "2021-04-01"
 Rev "A (c15ecb9b)"
@@ -22,14 +22,13 @@ Wire Bus Line
 Wire Bus Line
 	7700 3450 8000 3450
 Wire Bus Line
-	4500 3700 4750 3700
+	4500 4000 4750 4000
 Wire Bus Line
 	4850 4000 4750 4000
 Wire Bus Line
 	4750 4000 4750 3700
 Wire Bus Line
 	4750 3700 6550 3700
-Connection ~ 4750 3700
 Wire Bus Line
 	6300 4000 6550 4000
 Wire Wire Line
@@ -43,12 +42,13 @@ Wire Wire Line
 Wire Bus Line
 	2700 4000 3050 4000
 $Sheet
-S 4850 3900 1450 200 
+S 4850 3900 1450 300 
 U 5FD0D8DC
 F0 "Instruction Memory" 50
 F1 "InstructionRAM.sch" 50
 F2 "PC[0..15]" I L 4850 4000 50 
 F3 "Ins_IF[0..15]" O R 6300 4000 50 
+F4 "FLUSH_IF" I L 4850 4100 50 
 $EndSheet
 Text GLabel 2700 3850 0    50   Input ~ 0
 ~RST
@@ -59,9 +59,11 @@ F0 "sheet5FE3DA15" 50
 F1 "Program Counter.sch" 50
 F2 "~RST" I L 3050 3850 50 
 F3 "~J" I L 3050 4100 50 
-F4 "PC[0..15]" O R 4500 3700 50 
+F4 "PC[0..15]" O R 4500 4000 50 
 F5 "Y_EX[0..15]" I L 3050 4000 50 
 F6 "~JABS" I L 3050 4200 50 
+F7 "STALL" I L 3050 4300 50 
+F8 "FLUSH_IF" O R 4500 4100 50 
 $EndSheet
 $Sheet
 S 6550 3350 1150 750 
@@ -77,4 +79,11 @@ Text HLabel 2700 4200 0    50   Input ~ 0
 ~JABS
 Wire Wire Line
 	3050 4200 2700 4200
+Wire Wire Line
+	4850 4100 4500 4100
+Connection ~ 4750 4000
+Text HLabel 2700 4300 0    50   Input ~ 0
+STALL
+Wire Wire Line
+	3050 4300 2700 4300
 $EndSCHEMATC

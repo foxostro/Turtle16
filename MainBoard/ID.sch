@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 23 35
+Sheet 23 36
 Title "ID"
 Date "2021-04-01"
 Rev "A (c15ecb9b)"
@@ -13,6 +13,42 @@ Comment2 "effect conditional instructions."
 Comment3 "The decoder takes the condition code from the flags register into account to"
 Comment4 "The instruction decoder turns a 5-bit opcode into an array of control signals."
 $EndDescr
+Text HLabel 4700 4050 0    50   Input ~ 0
+~J
+Wire Wire Line
+	5550 4050 4700 4050
+Text HLabel 7550 4150 2    50   Output ~ 0
+STALL
+Wire Bus Line
+	5550 4450 4900 4450
+Wire Bus Line
+	5550 4550 4900 4550
+Text Label 4900 4450 0    50   ~ 0
+SelA[0..2]
+Text Label 4900 4550 0    50   ~ 0
+SelB[0..2]
+Text HLabel 4700 4650 0    50   Input ~ 0
+SelC_MEM[0..2]
+Wire Bus Line
+	4700 4650 5550 4650
+Text HLabel 4700 4350 0    50   Input ~ 0
+Ctl_MEM[14..20]
+Wire Bus Line
+	4700 4350 5550 4350
+Wire Bus Line
+	5550 4250 4900 4250
+Text Label 4900 4250 0    50   ~ 0
+Ctl_EX[0..20]
+Wire Wire Line
+	6750 4150 7550 4150
+Wire Bus Line
+	5550 4150 4900 4150
+Text Label 5450 4150 2    50   ~ 0
+Ins_ID[11..15]
+Wire Bus Line
+	4700 4750 5550 4750
+Text HLabel 4700 4750 0    50   Input ~ 0
+Ins_EX[0..10]
 Text HLabel 8300 2650 2    50   Output ~ 0
 Ctl_EX[0..20]
 Text Notes 1700 7900 0    50   ~ 0
@@ -31,8 +67,8 @@ Text HLabel 3800 6100 0    50   Input ~ 0
 SelC_WB[0..2]
 $Sheet
 S 5550 5300 1200 1300
-U 5FC16AA6
-F0 "sheet5FC16A8C" 50
+U 60693BAE
+F0 "sheet60693B94" 50
 F1 "RegisterFile.sch" 50
 F2 "~WRH" I L 5550 6200 50 
 F3 "~WRL" I L 5550 6300 50 
@@ -54,8 +90,8 @@ Wire Wire Line
 	3800 6300 5550 6300
 $Sheet
 S 3450 5300 1150 200 
-U 5FC16AC7
-F0 "sheet5FC16A8E" 50
+U 60693BB6
+F0 "sheet60693B95" 50
 F1 "SplitOutSelA.sch" 50
 F2 "Ins_ID[0..15]" I L 3450 5400 50 
 F3 "SelA[0..2]" O R 4600 5400 50 
@@ -64,8 +100,8 @@ Wire Bus Line
 	3450 5800 3300 5800
 $Sheet
 S 3450 5700 1150 200 
-U 5FC16AD1
-F0 "sheet5FC16A8F" 50
+U 60693BBB
+F0 "sheet60693B96" 50
 F1 "SplitOutSelB.sch" 50
 F2 "Ins_ID[0..15]" I L 3450 5800 50 
 F3 "SelB[0..2]" O R 4600 5800 50 
@@ -94,16 +130,17 @@ Connection ~ 3300 5600
 Wire Bus Line
 	3300 5600 3300 5800
 $Sheet
-S 3000 2650 1250 650 
-U 5FE73F43
-F0 "Instruction Decoder" 50
+S 3000 2650 1250 750 
+U 60693BCF
+F0 "sheet60693B97" 50
 F1 "InstructionDecoder.sch" 50
 F2 "Carry" I L 3000 2850 50 
 F3 "Z" I L 3000 2950 50 
 F4 "Ins_ID[11..15]" I L 3000 2750 50 
 F5 "OVF" I L 3000 3050 50 
 F6 "~RST" I L 3000 3200 50 
-F7 "Ctl_ID[0..23]" O R 4250 2750 50 
+F7 "Ctl_ID[0..20]" O R 4250 2750 50 
+F8 "FLUSH" I L 3000 3300 50 
 $EndSheet
 Text Label 2750 2150 2    50   ~ 0
 Ins_ID[0..10]
@@ -135,24 +172,24 @@ Wire Bus Line
 	6600 2150 8300 2150
 $Sheet
 S 5200 2550 1400 400 
-U 5FCFC706
-F0 "ID/EX ControlWord" 50
+U 60693BE1
+F0 "sheet60693B98" 50
 F1 "ID_EX_ControlWord.sch" 50
 F2 "Ctl_ID[0..23]" I L 5200 2750 50 
 F3 "Ctl_EX[0..20]" O R 6600 2650 50 
 $EndSheet
 $Sheet
 S 5200 1950 1400 300 
-U 5FD8C8F4
-F0 "ID/EX InstructionWord" 50
+U 60693BE5
+F0 "sheet60693B99" 50
 F1 "ID_EX_InstructionWord.sch" 50
 F2 "Ins_ID[0..10]" I L 5200 2150 50 
 F3 "Ins_EX[0..10]" O R 6600 2150 50 
 $EndSheet
 $Sheet
 S 7250 5200 900  300 
-U 5FE081C3
-F0 "ID/EX A" 50
+U 60693BE9
+F0 "sheet60693B9A" 50
 F1 "ID_EX_A.sch" 50
 F2 "AIn[0..15]" I L 7250 5400 50 
 F3 "A[0..15]" O R 8150 5400 50 
@@ -171,14 +208,12 @@ Text HLabel 3800 6400 0    50   Input ~ 0
 ~WBEN
 Wire Wire Line
 	3800 6400 5550 6400
-Text Notes 800  7900 0    50   ~ 0
-#   Mnemonic\n——————————\n0  /HLT\n1   SelStoreOpA\n2   SelStoreOpB\n3   SelRightOpA\n4   SelRightOpB\n5   /FI\n6   CarryIn\n7   I0\n8   I1\n9   I2\n10  RS0\n11  RS1\n12  /J\n13  /JABS\n14  /MemLoad\n15  /MemStore\n16  /AssertStoreOp\n17  WriteBackSrc\n18  /WRL\n19  /WRH\n20  /WBEN
 Text Label 4850 5400 0    50   ~ 0
 SelA[0..2]
 Text Label 4850 5800 0    50   ~ 0
 SelB[0..2]
 Text Label 4300 2750 0    50   ~ 0
-Ctl_ID[0..23]
+Ctl_ID[0..20]
 Wire Bus Line
 	4250 2750 5200 2750
 Text Label 7250 2150 0    50   ~ 0
@@ -187,12 +222,40 @@ Text Label 7250 2650 0    50   ~ 0
 Ctl_EX[0..20]
 $Sheet
 S 7250 5700 900  300 
-U 5FE24A39
-F0 "ID/EX B" 50
+U 60693BFB
+F0 "sheet60693B9B" 50
 F1 "ID_EX_B.sch" 50
 F2 "BIn[0..15]" I L 7250 5900 50 
 F3 "B[0..15]" O R 8150 5900 50 
 $EndSheet
+Text Notes 800  7900 0    50   ~ 0
+#   Mnemonic\n——————————\n0  /HLT\n1   SelStoreOpA\n2   SelStoreOpB\n3   SelRightOpA\n4   SelRightOpB\n5   /FI\n6   CarryIn\n7   I0\n8   I1\n9   I2\n10  RS0\n11  RS1\n12  /J\n13  /JABS\n14  /MemLoad\n15  /MemStore\n16  /AssertStoreOp\n17  WriteBackSrc\n18  /WRL\n19  /WRH\n20  /WBEN
+$Sheet
+S 5550 3950 1200 900 
+U 5FDA967F
+F0 "Hazard Control" 50
+F1 "HazardControl.sch" 50
+F2 "SelC_MEM[0..2]" I L 5550 4650 50 
+F3 "SelA[0..2]" I L 5550 4450 50 
+F4 "SelB[0..2]" I L 5550 4550 50 
+F5 "Ins_EX[0..10]" I L 5550 4750 50 
+F6 "Ctl_MEM[14..20]" I L 5550 4350 50 
+F7 "Ctl_EX[0..20]" I L 5550 4250 50 
+F8 "~J" I L 5550 4050 50 
+F9 "Ins_ID[11..15]" I L 5550 4150 50 
+F10 "STALL" O R 6750 4150 50 
+F11 "FLUSH" O R 6750 4050 50 
+$EndSheet
+Wire Wire Line
+	6750 4050 6900 4050
+Wire Wire Line
+	6900 4050 6900 3600
+Wire Wire Line
+	6900 3600 2900 3600
+Wire Wire Line
+	2900 3600 2900 3300
+Wire Wire Line
+	2900 3300 3000 3300
 Wire Bus Line
 	2050 2150 5200 2150
 $EndSCHEMATC

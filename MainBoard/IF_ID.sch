@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 36 36
+Sheet 38 38
 Title "IF/ID"
 Date "2021-04-01"
 Rev "A (c15ecb9b)"
@@ -1166,11 +1166,11 @@ Wire Wire Line
 	5850 4050 5900 4050
 Connection ~ 5850 4000
 Wire Bus Line
-	2950 2050 2950 3700
+	7500 2400 7500 5350
 Wire Bus Line
 	5400 2050 5400 3700
 Wire Bus Line
 	5050 2400 5050 5350
 Wire Bus Line
-	7500 2400 7500 5350
+	2950 2050 2950 3700
 $EndSCHEMATC

@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 27 36
+Sheet 27 38
 Title "Instruction Decoder"
 Date "2021-04-01"
 Rev "A (c15ecb9b)"
@@ -352,7 +352,7 @@ Wire Wire Line
 Wire Wire Line
 	4100 2750 3750 2750
 Text HLabel 9950 5250 2    50   Output ~ 0
-Ctl_ID[0..23]
+Ctl_ID[0..20]
 Text HLabel 5200 2550 0    50   Input ~ 0
 Carry
 Text HLabel 5200 2650 0    50   Input ~ 0

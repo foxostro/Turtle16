@@ -67,7 +67,7 @@ public class SchematicLevelCPUModel: NSObject {
     public let stageWB = WB()
     
     public var outputIF = IF.Output(ins: 0, pc: 0)
-    public var outputID = ID.Output(ctl_EX: 0b111111111111111111111, a: 0, b: 0, ins: 0)
+    public var outputID = ID.Output(stall: 0, ctl_EX: 0b111111111111111111111, a: 0, b: 0, ins: 0)
     public var outputEX = EX.Output(carry: 0, z: 0, ovf: 0, j: 1, jabs: 1, y: 0, hlt: 1, storeOp: 0, ctl: 0b111111111111111111111, selC: 0)
     public var outputMEM = MEM.Output(y: 0, storeOp: 0, selC: 0, ctl: 0b111111111111111111111)
     public var outputWB = WB.Output(c: 0, wrl: 1, wrh: 1, wben: 1)
@@ -129,6 +129,13 @@ public class SchematicLevelCPUModel: NSObject {
         
         // ID
         let inputID = ID.Input(ins: outputIF.ins,
+                               y_EX: outputEX.y,
+                               y_MEM: outputMEM.y,
+                               ins_EX: outputID.ins,
+                               ctl_EX: inputEX.ctl,
+                               selC_MEM: inputMEM.selC,
+                               ctl_MEM: inputMEM.ctl,
+                               j: (inputEX.ctl>>12)&1,
                                ovf: ovf,
                                z: z,
                                carry: carry,
@@ -143,7 +150,8 @@ public class SchematicLevelCPUModel: NSObject {
         }
         
         // IF
-        let inputIF = IF.Input(y: outputEX.y,
+        let inputIF = IF.Input(stall: outputID.stall,
+                               y: outputEX.y,
                                jabs: outputEX.jabs,
                                j: outputEX.j,
                                rst: rst)

@@ -18,6 +18,16 @@ public extension UInt {
     }
 }
 
+public extension UInt16 {
+    func asBinaryString() -> String {
+        var result = String(self, radix: 2)
+        if result.count < 16 {
+            result = String(repeatElement("0", count: 16 - result.count)) + result
+        }
+        return "0b" + result
+    }
+}
+
 public class DecoderGenerator: NSObject {
     public static let HLT = 0
     public static let SelStoreOpA = 1

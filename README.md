@@ -16,13 +16,17 @@ The CPU uses a Load/Store architecture based on the classic RISC pipeline. There
 
 ### Pipeline Stages
 
-1. IF — Fetch an instruction from Instruction Memory via the Program Counter
+1. IF — Fetch an instruction from Instruction Memory via the Program Counter. This stage is split into a Program Counter part and an Instruction Memory part and takes two clock cycles to complete. This is sometimes written in diagrams as two pipeline stages, PC and IF.
 2. ID — Decode instruction and read the register file. This also performs hazard control on decoding the instruction.
 3. EX — Marshal operands and perform a computation
 4. MEM — Either read or write to memory
 5. WB — Write results back to the register file
 
-The control unit implements primitive branch prediction which always predicts the branch is not taken and then flushes the pipeline when it ever actually is, thus avoiding the need for branch delay slots. A delay slot between the ALU's computation of flags and the Instruction Decode stage's use of flags is avoided by having the control unit stall the CPU for one cycle. Read-After-Write hazards are also avoided by stalling the CPU until the hazard has passed.
+The control unit implements primitive branch prediction which always predicts the branch is not taken and then flushes the pipeline when it ever actually is, thus avoiding the need for branch delay slots.
+
+The control unit will take care to resolve various hazards automatically. Hazards involving CPU Flags are resolved by stalling the CPU until the hazard has passed. Several types of Read-after-write hazards are resolved by forwarding the desired operand from a subsequent pipeline stage back into Instruction Decode. If the desired result is in the store operand then this is not possible and the pipeline stalls.
+
+(Forwarding of the store operand is left as a possible improvement for a future hardware revision.)
 
 The register file is implemented in two dual port SRAMs operating in parallel. This allows for a triple-port register file with one write port and two read ports. With careful design, a write in the write-back stage can be assured to be committed before a register file read in the same cycle. Due to space limitations in the instruction word, only three bits can be devoted to the register index. The register can only provide eight homogeneous, general-purpose registers.
 
@@ -62,8 +66,6 @@ The instruction decoder in the ID stage of the CPU pipeline decode the five-bit 
 19. /WRH — Write the upper byte in the register file's write port
 20. /WBEN — Enable write back to register file
 
-For the sake of simplicity, there is no hazard control logic in the CPU. It is the responsibility of the programmer to avoid hazards such as RAW hazards, Flags hazards, and issues related to branch delay slots.
-
 
 
 ## Opcodes
@@ -102,6 +104,7 @@ The ID stage uses a ROM to decode a five-bit opcode into an array of control sig
 29. bgeu
 30. adc
 31. sbc
+
 
 
 ## Instruction Encoding

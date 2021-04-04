@@ -14,12 +14,14 @@ import Foundation
 // following naming conventions and organization that matches the schematics.
 public class IF: NSObject {
     public struct Input {
+        public let stall: UInt
         public let y: UInt16
         public let jabs: UInt
         public let j: UInt
         public let rst: UInt
         
-        public init(y: UInt16, jabs: UInt, j: UInt, rst: UInt) {
+        public init(stall: UInt, y: UInt16, jabs: UInt, j: UInt, rst: UInt) {
+            self.stall = stall
             self.y = y
             self.jabs = jabs
             self.j = j
@@ -38,17 +40,22 @@ public class IF: NSObject {
     }
     
     public var alu = IDT7831()
-    public var prevOutput: UInt16 = 0
+    public var prevPC: UInt16 = 0
+    public var prevIns: UInt16 = 0
     
     public var load: (UInt16) -> UInt16 = {(addr: UInt16) in
         return 0xffff // bogus
     }
     
     public func step(input: Input) -> Output {
+        // The ALU's F register updates on the clock so the IF stage takes two
+        // clock cycles to complete.
         let aluOutput = alu.step(input: driveALU(input: input))
-        let pc = aluOutput.f!
-        let ins = load(pc)
-        prevOutput = pc
+        let pc = (input.stall==0) ? aluOutput.f! : prevPC
+        let nextIns = (input.j==0) ? 0 : load(prevPC)
+        let ins = (input.stall==0) ? nextIns : prevIns
+        prevPC = pc
+        prevIns = ins
         return Output(ins: ins, pc: pc)
     }
     
@@ -63,7 +70,7 @@ public class IF: NSObject {
         let rs1: UInt = ~input.j & 1
         let rs0: UInt = input.jabs & 1
         
-        let aluInput = IDT7831.Input(a: prevOutput,
+        let aluInput = IDT7831.Input(a: prevPC,
                                      b: input.y,
                                      c0: c0,
                                      i0: i0,
@@ -73,7 +80,7 @@ public class IF: NSObject {
                                      rs1: rs1,
                                      ena: 0,
                                      enb: 0,
-                                     enf: 1,
+                                     enf: input.stall & 1,
                                      ftab: 0,
                                      ftf: 1,
                                      oe: 0)

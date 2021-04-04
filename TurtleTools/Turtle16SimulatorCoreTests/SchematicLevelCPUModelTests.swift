@@ -2014,4 +2014,28 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.run(stepLimit: 89)
         XCTAssertEqual(cpu.getRegister(2), 55)
     }
+    
+    func testFibonacci_avoid_storeOp_dependencies() {
+        // Write the fibonacci program in a way that avoids depending on the
+        // storeOperand of a previous instruction. This means replacing LI
+        // instructions with a combination of XOR and ADDI. Doing this avoids
+        // stalls and saves a couple of cycles.
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [
+            0b0101100000000000, // XOR r0, r0, r0
+            0b0101100100100100, // XOR r1, r1, r1
+            0b0111000100100001, // ADDI r1, r1, #1
+            0b0101111111111100, // XOR r7, r7, r7
+            0b0011101000000100, // ADD r2, r0, r1
+            0b0111000000100000, // ADDI r0, r1, #0
+            0b0111011111100001, // ADDI r7, r7, #1
+            0b0111000101000000, // ADDI r1, r2, #0
+            0b0110100011101001, // CMPI r7, #9
+            0b1101011111111001, // BLT #-7
+            0b0000100000000000, // HLT
+        ]
+        cpu.reset()
+        cpu.run(stepLimit: 87)
+        XCTAssertEqual(cpu.getRegister(2), 55)
+    }
 }

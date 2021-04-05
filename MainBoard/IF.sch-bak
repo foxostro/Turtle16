@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 33 38
+Sheet 35 38
 Title "IF"
 Date "2021-04-01"
 Rev "A (c15ecb9b)"
@@ -26,9 +26,9 @@ Wire Bus Line
 Wire Bus Line
 	4850 4000 4750 4000
 Wire Bus Line
-	4750 4000 4750 3700
+	4750 4000 4750 3550
 Wire Bus Line
-	4750 3700 6550 3700
+	4750 3550 6550 3550
 Wire Bus Line
 	6300 4000 6550 4000
 Wire Wire Line
@@ -70,10 +70,11 @@ S 6550 3350 1150 750
 U 5FCE2082
 F0 "sheet5FCE207B" 50
 F1 "IF_ID.sch" 50
-F2 "PC[0..15]" I L 6550 3700 50 
+F2 "PC[0..15]" I L 6550 3550 50 
 F3 "PC_EX[0..15]" O R 7700 3700 50 
 F4 "Ins_IF[0..15]" I L 6550 4000 50 
 F5 "Ins_ID[0..15]" O R 7700 3450 50 
+F6 "STALL" I L 6550 3450 50 
 $EndSheet
 Text HLabel 2700 4200 0    50   Input ~ 0
 ~JABS
@@ -86,4 +87,8 @@ Text HLabel 2700 4300 0    50   Input ~ 0
 STALL
 Wire Wire Line
 	3050 4300 2700 4300
+Text HLabel 6200 3450 0    50   Input ~ 0
+STALL
+Wire Wire Line
+	6550 3450 6200 3450
 $EndSCHEMATC

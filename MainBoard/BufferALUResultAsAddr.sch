@@ -1195,12 +1195,6 @@ Wire Wire Line
 Connection ~ 6150 4750
 Wire Wire Line
 	6150 4750 6150 4800
-Wire Bus Line
-	950  6850 5450 6850
-Wire Bus Line
-	6750 2550 6750 4200
-Wire Bus Line
-	4250 2550 4250 4200
 $Comp
 L power:GND #PWR0139
 U 1 1 60746ADB
@@ -1212,4 +1206,10 @@ F 3 "" H 6200 4500 50  0001 C CNN
 	1    6200 4500
 	0    -1   -1   0   
 $EndComp
+Wire Bus Line
+	950  6850 5450 6850
+Wire Bus Line
+	6750 2550 6750 4200
+Wire Bus Line
+	4250 2550 4250 4200
 $EndSCHEMATC

@@ -1193,8 +1193,6 @@ Wire Wire Line
 	9950 2300 10150 2300
 Wire Wire Line
 	10150 2300 10150 6650
-Text Notes 7650 950  0    50   ~ 0
-TODO: Need to forward the store operand from EX and MEM too.\nChoose to use either Y or StoreOp based on the WB control signals.
 Wire Wire Line
 	5300 1950 5300 4750
 Wire Wire Line
@@ -1231,6 +1229,8 @@ Wire Wire Line
 	4900 1450 6650 1450
 Text Label 4900 1450 0    50   ~ 0
 Ctl_MEM17
+Entry Wire Line
+	4900 1650 4800 1550
 Wire Bus Line
 	4800 1050 4800 1250
 Wire Bus Line
@@ -1249,6 +1249,4 @@ Wire Bus Line
 	7150 5350 7150 5650
 Wire Bus Line
 	7150 4500 7150 4800
-Entry Wire Line
-	4900 1650 4800 1550
 $EndSCHEMATC

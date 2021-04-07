@@ -60,24 +60,14 @@ public class IF: NSObject {
     }
     
     public func driveALU(input: Input) -> IDT7831.Input {
-        // The ALU control logic is written in this awkward way so that there is
-        // a close correspondence between this simulator code and the HDL used
-        // for U73, an ATF22V10.
-        let c0: UInt = input.j & 1
-        let i2: UInt = 0
-        let i1: UInt = input.rst & 1
-        let i0: UInt = input.rst & 1
-        let rs1: UInt = ~input.j & 1
-        let rs0: UInt = input.jabs & 1
-        
         let aluInput = IDT7831.Input(a: prevPC,
                                      b: input.y,
-                                     c0: c0,
-                                     i0: i0,
-                                     i1: i1,
-                                     i2: i2,
-                                     rs0: rs0,
-                                     rs1: rs1,
+                                     c0: input.j & 1,
+                                     i0: input.rst & 1,
+                                     i1: input.rst & 1,
+                                     i2: 0,
+                                     rs0: input.jabs & 1,
+                                     rs1: ~input.j & 1,
                                      ena: 0,
                                      enb: 0,
                                      enf: input.stall & 1,

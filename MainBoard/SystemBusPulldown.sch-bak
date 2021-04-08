@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 9 38
+Sheet 9 39
 Title "MEM: System Bus Pull-down Resistors"
 Date "2021-04-01"
 Rev "A (c15ecb9b)"

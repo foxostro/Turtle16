@@ -32,7 +32,15 @@ public class OutputLogicMacroCell: NSObject {
         let ar: UInt
         let sp: UInt
         
-        public init(inputs: [UInt], feedback: [UInt] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], ar: UInt = 0, sp: UInt = 0) {
+        public init(inputs: [UInt], ar: UInt = 0, sp: UInt = 0) {
+            assert(inputs.count == 24)
+            self.inputs = inputs.map({ (val) -> UInt in val & 1 })
+            self.feedback = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            self.ar = ar & 1
+            self.sp = sp & 1
+        }
+        
+        public init(inputs: [UInt], feedback: [UInt], ar: UInt = 0, sp: UInt = 0) {
             assert(inputs.count == 24)
             assert(feedback.count == 10)
             self.inputs = inputs.map({ (val) -> UInt in val & 1 })

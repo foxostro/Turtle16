@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 22 38
+Sheet 22 39
 Title "EX/MEM: Store Operand Register"
 Date "2021-04-01"
 Rev "A (c15ecb9b)"

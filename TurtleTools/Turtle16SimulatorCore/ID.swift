@@ -214,114 +214,19 @@ public class ID: NSObject {
     
     public var registerFile = Array<UInt16>(repeating: 0, count: 8)
     public var opcodeDecodeROM = Array<UInt>(repeating: 0, count: 512)
+    let hazardControlUnit: HazardControl = HazardControlMockup()
     
     public func step(input: Input) -> Output {
-        let hazardControl = generateHazardControlSignals(input: input)
-        let ctl_EX: UInt = ((hazardControl.flush & 1)==1) ? ID.nopControlWord : decodeOpcode(input: input)
-        let a = forwardA(input, hazardControl)
-        let b = forwardB(input, hazardControl)
+        let hazardControlSignals = hazardControlUnit.step(input: input)
+        let ctl_EX: UInt = ((hazardControlSignals.flush & 1)==1) ? ID.nopControlWord : decodeOpcode(input: input)
+        let a = forwardA(input, hazardControlSignals)
+        let b = forwardB(input, hazardControlSignals)
         let ins = UInt(input.ins & 0x07ff)
-        return Output(stall: hazardControl.stall & 1,
+        return Output(stall: hazardControlSignals.stall & 1,
                       ctl_EX: ctl_EX,
                       a: a,
                       b: b,
                       ins: ins)
-    }
-    
-    fileprivate struct HazardControlSignals {
-        public let flush: UInt
-        public let stall: UInt
-        public let fwd_a: UInt
-        public let fwd_ex_to_a: UInt
-        public let fwd_mem_to_a: UInt
-        public let fwd_b: UInt
-        public let fwd_ex_to_b: UInt
-        public let fwd_mem_to_b: UInt
-    }
-    
-    fileprivate func generateHazardControlSignals(input: Input) -> HazardControlSignals {
-        // The hazard control logic is written in this awkward way so that there
-        // is a close correspondence between this simulator code and the HDL
-        // used in U73, a ATF22V10, in the actual hardware.
-        
-        let selA = splitOutSelA(input: input)
-        let selB = splitOutSelB(input: input)
-        let selC_EX: UInt = (input.ins_EX >> 8) & 0b111
-        let selC_MEM: UInt = input.selC_MEM
-        let writeBackSrc_EX: UInt = (input.ctl_EX >> 17) & 1
-        let writeBackSrc_MEM: UInt = (input.ctl_MEM >> 17) & 1
-        let wben_EX: UInt = (input.ctl_EX >> 20) & 1
-        let wben_MEM: UInt = (input.ctl_MEM >> 20) & 1
-        let j: UInt = input.j & 1
-        
-        // The hardware has an array of identity comparators to generate these
-        // signals.
-        let sel_a_matches_sel_c_ex: UInt  = (selA == selC_EX)  ? 0 : 1
-        let sel_b_matches_sel_c_ex: UInt  = (selB == selC_EX)  ? 0 : 1
-        let sel_a_matches_sel_c_mem: UInt = (selA == selC_MEM) ? 0 : 1
-        let sel_b_matches_sel_c_mem: UInt = (selB == selC_MEM) ? 0 : 1
-        
-        // For `fwd_a', we really want an expression like the following:
-        //   let fwd_a = ~((sel_a_matches_sel_c_ex | wben_EX | writeBackSrc_EX) & (sel_a_matches_sel_c_mem | wben_MEM | writeBackSrc_MEM)) & 1
-        // However, the ATF22V10 (equivalent to the venerable GAL22V10) is very
-        // particular about the way we program it. All equations must be defined
-        // as a series of terms ANDed together, and that list of terms is ORed
-        // together. There is support for taking the inverted value of the
-        // output, or of any individual input.
-        //
-        // The Swift compiler demands that we split this expression
-        // into separate subexpressions. We can't do this on the GAL.
-        let a: UInt = (sel_a_matches_sel_c_ex & sel_a_matches_sel_c_mem) | (sel_a_matches_sel_c_ex & wben_MEM) | (sel_a_matches_sel_c_ex & writeBackSrc_MEM)
-        let b: UInt = (wben_EX & sel_a_matches_sel_c_mem) | (wben_EX & wben_MEM) | (wben_EX & writeBackSrc_MEM)
-        let c: UInt = (writeBackSrc_EX & sel_a_matches_sel_c_mem) | (writeBackSrc_EX & wben_MEM) | (writeBackSrc_EX & writeBackSrc_MEM)
-        let fwd_a = ~(a | b | c) & 1
-        
-        // For `fwd_b', we really want an expression like the following:
-        //   let fwd_b = ~((sel_b_matches_sel_c_ex | wben_EX | writeBackSrc_EX) & (sel_b_matches_sel_c_mem | wben_MEM | writeBackSrc_MEM)) & 1
-        // However, we can't write it that way for the same reasons as `fwd_a'.
-        //
-        // The Swift compiler demands that we split this expression
-        // into separate subexpressions. We can't do this on the GAL.
-        let d: UInt = (sel_b_matches_sel_c_ex & sel_b_matches_sel_c_mem) | (sel_b_matches_sel_c_ex & wben_MEM) | (sel_b_matches_sel_c_ex & writeBackSrc_MEM)
-        let e: UInt = (wben_EX & sel_b_matches_sel_c_mem) | (wben_EX & wben_MEM) | (wben_EX & writeBackSrc_MEM)
-        let f: UInt = (writeBackSrc_EX & sel_b_matches_sel_c_mem) | (writeBackSrc_EX & wben_MEM) | (writeBackSrc_EX & writeBackSrc_MEM)
-        let fwd_b = ~(d | e | f) & 1
-        
-        let fwd_ex_to_a: UInt = (sel_a_matches_sel_c_ex | wben_EX | writeBackSrc_EX) & 1
-        let fwd_ex_to_b: UInt = (sel_b_matches_sel_c_ex | wben_EX | writeBackSrc_EX) & 1
-        
-        let fwd_mem_to_a: UInt = (sel_a_matches_sel_c_mem | wben_MEM | writeBackSrc_MEM) & 1
-        let fwd_mem_to_b: UInt = (sel_b_matches_sel_c_mem | wben_MEM | writeBackSrc_MEM) & 1
-        
-        // Determine whether the given opcode specifies an instruction that
-        // depends on the ALU flags. This depends on the order of opcodes. The
-        // last eight opcodes must be the ones which use the flags.
-        // This is written in an awkward way so there is a close correspondence
-        // between this code and the HDL used for U73, an ATF22V10.
-        let opcode3: UInt = UInt(input.ins) >> 14
-        let opcode4: UInt = UInt(input.ins) >> 15
-        let areFlagsNeeded: UInt = opcode3 & opcode4
-        let ctl_EX5: UInt = (input.ctl_EX >> 5) & 1
-        let isFlagsHazard: UInt = (areFlagsNeeded & ~ctl_EX5) & 1
-        
-        // The Swift compiler demands that we split this expression
-        // into separate subexpressions. We can't do this on the GAL.
-        let need_to_forward_storeOp_EX_to_a: UInt = (sel_a_matches_sel_c_ex | wben_EX | ~writeBackSrc_EX) & 1
-        let need_to_forward_storeOp_MEM_to_a: UInt = (sel_a_matches_sel_c_mem | wben_MEM | ~writeBackSrc_MEM) & 1
-        let need_to_forward_storeOp_EX_to_b: UInt = (sel_b_matches_sel_c_ex | wben_EX | ~writeBackSrc_EX) & 1
-        let need_to_forward_storeOp_MEM_to_b: UInt = (sel_b_matches_sel_c_mem | wben_MEM | ~writeBackSrc_MEM) & 1
-        let flush: UInt = ~(j & ~isFlagsHazard & need_to_forward_storeOp_EX_to_a & need_to_forward_storeOp_MEM_to_a & need_to_forward_storeOp_EX_to_b & need_to_forward_storeOp_MEM_to_b) & 1
-        
-        let stall = ~(~isFlagsHazard & need_to_forward_storeOp_EX_to_a & need_to_forward_storeOp_MEM_to_a & need_to_forward_storeOp_EX_to_b & need_to_forward_storeOp_MEM_to_b) & 1
-        
-        return HazardControlSignals(flush: flush,
-                                    stall: stall,
-                                    fwd_a: fwd_a,
-                                    fwd_ex_to_a: fwd_ex_to_a,
-                                    fwd_mem_to_a: fwd_mem_to_a,
-                                    fwd_b: fwd_b,
-                                    fwd_ex_to_b: fwd_ex_to_b,
-                                    fwd_mem_to_b: fwd_mem_to_b)
     }
     
     public func decodeOpcode(input: Input) -> UInt {
@@ -335,28 +240,28 @@ public class ID: NSObject {
         return ctl_EX
     }
     
-    fileprivate func forwardA(_ input: ID.Input, _ hazardControl: HazardControlSignals) -> UInt16 {
-        if hazardControl.fwd_a == 0 && hazardControl.fwd_ex_to_a != 0 && hazardControl.fwd_mem_to_a != 0 {
+    fileprivate func forwardA(_ input: ID.Input, _ hzd: HazardControl.Output) -> UInt16 {
+        if hzd.fwd_a == 0 && hzd.fwd_ex_to_a != 0 && hzd.fwd_mem_to_a != 0 {
             return readRegisterA(input: input)
         }
-        if hazardControl.fwd_a != 0 && hazardControl.fwd_ex_to_a == 0 && hazardControl.fwd_mem_to_a != 0 {
+        if hzd.fwd_a != 0 && hzd.fwd_ex_to_a == 0 && hzd.fwd_mem_to_a != 0 {
             return input.y_EX
         }
-        if hazardControl.fwd_a != 0 && hazardControl.fwd_ex_to_a != 0 && hazardControl.fwd_mem_to_a == 0 {
+        if hzd.fwd_a != 0 && hzd.fwd_ex_to_a != 0 && hzd.fwd_mem_to_a == 0 {
             return input.y_MEM
         }
         assert(false)
         return 0
     }
     
-    fileprivate func forwardB(_ input: ID.Input, _ hazardControl: HazardControlSignals) -> UInt16 {
-        if hazardControl.fwd_b == 0 && hazardControl.fwd_ex_to_b != 0 && hazardControl.fwd_mem_to_b != 0 {
+    fileprivate func forwardB(_ input: ID.Input, _ hzd: HazardControl.Output) -> UInt16 {
+        if hzd.fwd_b == 0 && hzd.fwd_ex_to_b != 0 && hzd.fwd_mem_to_b != 0 {
             return readRegisterB(input: input)
         }
-        if hazardControl.fwd_b != 0 && hazardControl.fwd_ex_to_b == 0 && hazardControl.fwd_mem_to_b != 0 {
+        if hzd.fwd_b != 0 && hzd.fwd_ex_to_b == 0 && hzd.fwd_mem_to_b != 0 {
             return input.y_EX
         }
-        if hazardControl.fwd_b != 0 && hazardControl.fwd_ex_to_b != 0 && hazardControl.fwd_mem_to_b == 0 {
+        if hzd.fwd_b != 0 && hzd.fwd_ex_to_b != 0 && hzd.fwd_mem_to_b == 0 {
             return input.y_MEM
         }
         assert(false)

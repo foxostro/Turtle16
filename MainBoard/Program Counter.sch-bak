@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 37 38
+Sheet 37 39
 Title "Program Counter"
 Date "2021-04-01"
 Rev "A (c15ecb9b)"
@@ -623,8 +623,8 @@ U 7 1 606F182D
 P -1150 7350
 AR Path="/5D2C0761/606F182D" Ref="U?"  Part="7" 
 AR Path="/5D2C0720/606F182D" Ref="U?"  Part="7" 
-AR Path="/5FE35007/5FE3DA1C/606F182D" Ref="U?"  Part="7" 
-F 0 "U?" H -1150 7400 50  0000 C CNN
+AR Path="/5FE35007/5FE3DA1C/606F182D" Ref="U56"  Part="7" 
+F 0 "U56" H -1150 7400 50  0000 C CNN
 F 1 "74AHCT04" H -1150 7300 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -1150 7350 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -1150 7350 50  0001 C CNN
@@ -638,8 +638,8 @@ U 1 1 606F1833
 P -1150 3700
 AR Path="/5D2C0761/606F1833" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C0720/606F1833" Ref="#PWR?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/606F1833" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H -1150 3550 50  0001 C CNN
+AR Path="/5FE35007/5FE3DA1C/606F1833" Ref="#PWR0385"  Part="1" 
+F 0 "#PWR0385" H -1150 3550 50  0001 C CNN
 F 1 "VCC" H -1133 3873 50  0000 C CNN
 F 2 "" H -1150 3700 50  0001 C CNN
 F 3 "" H -1150 3700 50  0001 C CNN
@@ -652,8 +652,8 @@ U 1 1 606F1839
 P -1150 7900
 AR Path="/5D2C0720/606F1839" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C0761/606F1839" Ref="#PWR?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/606F1839" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H -1150 7650 50  0001 C CNN
+AR Path="/5FE35007/5FE3DA1C/606F1839" Ref="#PWR0386"  Part="1" 
+F 0 "#PWR0386" H -1150 7650 50  0001 C CNN
 F 1 "GND" H -1145 7727 50  0000 C CNN
 F 2 "" H -1150 7900 50  0001 C CNN
 F 3 "" H -1150 7900 50  0001 C CNN
@@ -670,8 +670,8 @@ U 2 1 606FE21F
 P -850 4550
 AR Path="/5D2C0761/606FE21F" Ref="U?"  Part="7" 
 AR Path="/5D2C0720/606FE21F" Ref="U?"  Part="7" 
-AR Path="/5FE35007/5FE3DA1C/606FE21F" Ref="U?"  Part="2" 
-F 0 "U?" H -850 4850 50  0000 C CNN
+AR Path="/5FE35007/5FE3DA1C/606FE21F" Ref="U56"  Part="2" 
+F 0 "U56" H -850 4850 50  0000 C CNN
 F 1 "74AHCT04" H -850 4750 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -850 4550 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -850 4550 50  0001 C CNN
@@ -689,8 +689,8 @@ U 3 1 607073BC
 P -850 5100
 AR Path="/5D2C0761/607073BC" Ref="U?"  Part="7" 
 AR Path="/5D2C0720/607073BC" Ref="U?"  Part="7" 
-AR Path="/5FE35007/5FE3DA1C/607073BC" Ref="U?"  Part="3" 
-F 0 "U?" H -850 5400 50  0000 C CNN
+AR Path="/5FE35007/5FE3DA1C/607073BC" Ref="U56"  Part="3" 
+F 0 "U56" H -850 5400 50  0000 C CNN
 F 1 "74AHCT04" H -850 5300 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -850 5100 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -850 5100 50  0001 C CNN
@@ -705,8 +705,8 @@ U 4 1 6070B365
 P -850 5650
 AR Path="/5D2C0761/6070B365" Ref="U?"  Part="7" 
 AR Path="/5D2C0720/6070B365" Ref="U?"  Part="7" 
-AR Path="/5FE35007/5FE3DA1C/6070B365" Ref="U?"  Part="4" 
-F 0 "U?" H -850 5950 50  0000 C CNN
+AR Path="/5FE35007/5FE3DA1C/6070B365" Ref="U56"  Part="4" 
+F 0 "U56" H -850 5950 50  0000 C CNN
 F 1 "74AHCT04" H -850 5850 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -850 5650 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -850 5650 50  0001 C CNN
@@ -721,8 +721,8 @@ U 5 1 6070EECA
 P -850 6200
 AR Path="/5D2C0761/6070EECA" Ref="U?"  Part="7" 
 AR Path="/5D2C0720/6070EECA" Ref="U?"  Part="7" 
-AR Path="/5FE35007/5FE3DA1C/6070EECA" Ref="U?"  Part="5" 
-F 0 "U?" H -850 6500 50  0000 C CNN
+AR Path="/5FE35007/5FE3DA1C/6070EECA" Ref="U56"  Part="5" 
+F 0 "U56" H -850 6500 50  0000 C CNN
 F 1 "74AHCT04" H -850 6400 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -850 6200 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -850 6200 50  0001 C CNN
@@ -737,8 +737,8 @@ U 1 1 60715C9B
 P 2950 5800
 AR Path="/5D2C0761/60715C9B" Ref="U?"  Part="7" 
 AR Path="/5D2C0720/60715C9B" Ref="U?"  Part="7" 
-AR Path="/5FE35007/5FE3DA1C/60715C9B" Ref="U?"  Part="1" 
-F 0 "U?" H 2950 6100 50  0000 C CNN
+AR Path="/5FE35007/5FE3DA1C/60715C9B" Ref="U56"  Part="1" 
+F 0 "U56" H 2950 6100 50  0000 C CNN
 F 1 "74AHCT04" H 2950 6000 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 2950 5800 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 2950 5800 50  0001 C CNN
@@ -762,8 +762,8 @@ U 6 1 60721233
 P -850 6750
 AR Path="/5D2C0761/60721233" Ref="U?"  Part="7" 
 AR Path="/5D2C0720/60721233" Ref="U?"  Part="7" 
-AR Path="/5FE35007/5FE3DA1C/60721233" Ref="U?"  Part="6" 
-F 0 "U?" H -850 7050 50  0000 C CNN
+AR Path="/5FE35007/5FE3DA1C/60721233" Ref="U56"  Part="6" 
+F 0 "U56" H -850 7050 50  0000 C CNN
 F 1 "74AHCT04" H -850 6950 50  0000 C CNN
 F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H -850 6750 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H -850 6750 50  0001 C CNN
@@ -793,10 +793,10 @@ Text HLabel 4600 5500 0    50   Input ~ 0
 ~RST
 Wire Wire Line
 	4600 5500 4950 5500
-Text HLabel 4600 5600 0    50   Input ~ 0
+Text HLabel 4600 5400 0    50   Input ~ 0
 ~RST
 Wire Wire Line
-	4600 5600 4950 5600
+	4600 5400 4950 5400
 Wire Wire Line
 	3600 6050 3450 6050
 Wire Wire Line
@@ -807,19 +807,19 @@ Wire Wire Line
 $Comp
 L power:GND #PWR?
 U 1 1 60776392
-P 4900 5400
+P 4900 5600
 AR Path="/60A71BBF/60776392" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C07CD/60776392" Ref="#PWR?"  Part="1" 
-AR Path="/5FE35007/5FE3DA1C/60776392" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 4900 5150 50  0001 C CNN
-F 1 "GND" V 4905 5272 50  0000 R CNN
-F 2 "" H 4900 5400 50  0001 C CNN
-F 3 "" H 4900 5400 50  0001 C CNN
-	1    4900 5400
+AR Path="/5FE35007/5FE3DA1C/60776392" Ref="#PWR0418"  Part="1" 
+F 0 "#PWR0418" H 4900 5350 50  0001 C CNN
+F 1 "GND" V 4905 5472 50  0000 R CNN
+F 2 "" H 4900 5600 50  0001 C CNN
+F 3 "" H 4900 5600 50  0001 C CNN
+	1    4900 5600
 	0    1    -1   0   
 $EndComp
 Wire Wire Line
-	4950 5400 4900 5400
+	4950 5600 4900 5600
 Wire Wire Line
 	3450 5800 4950 5800
 Wire Bus Line

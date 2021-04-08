@@ -118,9 +118,33 @@ public class ATF22V10: NSObject {
     }
     
     public func step(inputs: [UInt]) -> [UInt?] {
+//        let si = inputs.map({ (el) -> String in "\(el)" }).joined()
+//        print("inputs: \(si)")
+        
+//        _ = stepOneIteration(inputs: inputs)
+        let results = stepOneIteration(inputs: inputs)
+        
+//        let so = results.map({ (el) -> String in
+//            if let el = el {
+//                return "\(el)"
+//            } else {
+//                return "-"
+//            }
+//        }).joined()
+//        print("outputs: \(so)\n")
+        
+        return results
+    }
+    
+    fileprivate func stepOneIteration(inputs: [UInt]) -> [UInt?] {
         let feedback = outputLogicMacroCells.map({ (olmc) -> UInt in olmc.feedback })
-        return outputLogicMacroCells.map({(olmc) -> UInt? in
+        
+//        let sf = feedback.map({ (el) -> String in "\(el)" }).joined()
+//        print("feedback: \(sf)")
+        
+        let results = outputLogicMacroCells.map({(olmc) -> UInt? in
             olmc.step(OutputLogicMacroCell.Input(inputs: inputs, feedback: feedback))
         })
+        return results
     }
 }

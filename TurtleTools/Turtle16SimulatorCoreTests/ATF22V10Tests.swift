@@ -85,7 +85,7 @@ class ATF22V10Tests: XCTestCase {
             let a = UInt(row[0])
             let b = UInt(row[1])
             let y = UInt(row[2])
-            let output = gal.step(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, b, a])
+            let output = gal.step(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, b, a])
             XCTAssertEqual(output[0], y)
         }
     }
@@ -110,13 +110,13 @@ class ATF22V10Tests: XCTestCase {
         
         let gal = ATF22V10(fuseList: fuseList)
         
-        let step0 = gal.step(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+        let step0 = gal.step(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil])
         XCTAssertEqual(step0[0], 1)
-        let step1 = gal.step(inputs: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+        let step1 = gal.step(inputs: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil])
         XCTAssertEqual(step1[0], 0)
-        let step2 = gal.step(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+        let step2 = gal.step(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil])
         XCTAssertEqual(step2[0], 0)
-        let step3 = gal.step(inputs: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+        let step3 = gal.step(inputs: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil])
         XCTAssertEqual(step3[0], 1)
     }
     
@@ -141,8 +141,8 @@ Device:         GAL22V10
         
         var results: [[UInt?]] = []
         
-        results.append(gal.step(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
-        results.append(gal.step(inputs: [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
+        results.append(gal.step(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil]))
+        results.append(gal.step(inputs: [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil]))
     }
     
     func testSimpleJEDECFile_TestAgainstConstant() throws {
@@ -182,7 +182,7 @@ Device:         GAL22V10
             let d2 = (UInt(i) >> 2) & 1
             let d1 = (UInt(i) >> 1) & 1
             let d0 =  UInt(i) & 1
-            results.append(gal.step(inputs: [0, 0, d0, d1, d2, d3, d4, d5, d6, d7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
+            results.append(gal.step(inputs: [0, 0, d0, d1, d2, d3, d4, d5, d6, d7, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil]))
         }
         
         XCTAssertTrue(doesExactlyOneIndexMatch(results, 0b100000000, 0b11001000, 2))
@@ -278,7 +278,7 @@ Device:         GAL22V10
             let d2 = (UInt(i) >> 2) & 1
             let d1 = (UInt(i) >> 1) & 1
             let d0 =  UInt(i) & 1
-            results.append(gal.step(inputs: [0, 0, d0, d1, d2, d3, d4, d5, d6, d7, d8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
+            results.append(gal.step(inputs: [0, 0, d0, d1, d2, d3, d4, d5, d6, d7, d8, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil]))
         }
         
         XCTAssertTrue(doesExactlyOneIndexMatch(results, 0b100000000, 0b11001000, 2))
@@ -311,14 +311,14 @@ Device:         GAL22V10
         
         var results: [[UInt?]] = []
         
-        results.append(gal.step(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
-        results.append(gal.step(inputs: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
-        results.append(gal.step(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
-        results.append(gal.step(inputs: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
-        results.append(gal.step(inputs: [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
-        results.append(gal.step(inputs: [0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
-        results.append(gal.step(inputs: [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
-        results.append(gal.step(inputs: [0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
+        results.append(gal.step(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil]))
+        results.append(gal.step(inputs: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil]))
+        results.append(gal.step(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil]))
+        results.append(gal.step(inputs: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil]))
+        results.append(gal.step(inputs: [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil]))
+        results.append(gal.step(inputs: [0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil]))
+        results.append(gal.step(inputs: [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil]))
+        results.append(gal.step(inputs: [0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil]))
         
         let generateLineDiagram = {(index: Int) in
             results.map({ (row) -> String in
@@ -416,8 +416,8 @@ Device:         GAL22V10
             let d2 = (UInt(i) >> 2) & 1
             let d1 = (UInt(i) >> 1) & 1
             let d0 =  UInt(i) & 1
-            _ = gal.step(inputs: [0, 0, d0, d1, d2, d3, d4, d5, d6, d7, d8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-            results.append(gal.step(inputs: [0, 1, d0, d1, d2, d3, d4, d5, d6, d7, d8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
+            _ = gal.step(inputs: [0, 0, d0, d1, d2, d3, d4, d5, d6, d7, d8, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil])
+            results.append(gal.step(inputs: [0, 1, d0, d1, d2, d3, d4, d5, d6, d7, d8, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil]))
         }
         
         XCTAssertTrue(doesExactlyOneIndexMatch(results, 0b100001000, 0b011001000, 2))

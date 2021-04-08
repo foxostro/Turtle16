@@ -1,8 +1,8 @@
 GAL22V10     ; Second stage of logic to detect and resolve pipeline hazards
 HazardControl2
         
-NC    OP3    OP4    FI    J     FSXTA    FSMTA    FSXTB    FSMTB    FHZD     NC       GND
-NC    NC     NC     NC    NC    NC       NC       NC       NC       FLUSH    STALL    VCC
+NC    OP3    OP4    FI    J     FSXTA    FSMTA    FSXTB    FSMTB    NC       NC       GND
+NC    NC     NC     NC    NC    NC       NC       NC       FHZD     FLUSH    STALL    VCC
 
 ; HIGH indicates that the ID pipeline stage should flush
 /FLUSH = J * /FHZD * FSXTA * FSMTA * FSXTB * FSMTB
@@ -11,7 +11,7 @@ NC    NC     NC     NC    NC    NC       NC       NC       NC       FLUSH    STA
 /STALL = /FHZD * FSXTA * FSMTA * FSXTB * FSMTB
 
 ; HIGH indicates that this is a flags hazard.
-;FHZD = OP3 * OP4 * /FI
+FHZD = OP3 * OP4 * /FI
 
 
 DESCRIPTION

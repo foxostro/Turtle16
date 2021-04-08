@@ -49,16 +49,16 @@ public class HazardControlGAL: HazardControl {
             0,
             0,
             0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
+            nil,
+            nil,
+            nil,
+            nil,
+            nil,
+            nil,
+            nil,
+            nil,
+            nil,
+            nil,
         ])
         
         let fwd_mem_to_a: UInt = outputs[0]!
@@ -85,9 +85,6 @@ public class HazardControlGAL: HazardControl {
     }
     
     public override func generatedHazardControlSignalsStageTwo(input: StageTwoInput) -> StageTwoOutput {
-        // TODO: `isFlagsHazard' needs to be calculated in the GAL. Not here. REMOVE ME.
-        let isFlagsHazard: UInt = (input.opcode3 & input.opcode4 & ~input.ctl_EX5) & 1
-        
         let outputs = stageTwoGAL.step(inputs: [
             0,
             0,
@@ -99,20 +96,20 @@ public class HazardControlGAL: HazardControl {
             input.need_to_forward_storeOp_MEM_to_a,
             input.need_to_forward_storeOp_EX_to_b,
             input.need_to_forward_storeOp_MEM_to_b,
-            isFlagsHazard,
             0,
             0,
             0,
             0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
+            nil,
+            nil,
+            nil,
+            nil,
+            nil,
+            nil,
+            nil,
+            nil,
+            nil,
+            nil,
         ])
         
         let stall: UInt = outputs[0]!

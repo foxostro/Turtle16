@@ -117,31 +117,17 @@ public class ATF22V10: NSObject {
         })
     }
     
-    public func step(inputs: [UInt]) -> [UInt?] {
-//        let si = inputs.map({ (el) -> String in "\(el)" }).joined()
-//        print("inputs: \(si)")
-        
-//        _ = stepOneIteration(inputs: inputs)
+    // An input which is nil represents a pin which is not being actively
+    // driven, e.g., output pins. This effects how feedback is applied to
+    // combinatorial pins.
+    public func step(inputs: [UInt?]) -> [UInt?] {
+        _ = stepOneIteration(inputs: inputs)
         let results = stepOneIteration(inputs: inputs)
-        
-//        let so = results.map({ (el) -> String in
-//            if let el = el {
-//                return "\(el)"
-//            } else {
-//                return "-"
-//            }
-//        }).joined()
-//        print("outputs: \(so)\n")
-        
         return results
     }
     
-    fileprivate func stepOneIteration(inputs: [UInt]) -> [UInt?] {
+    fileprivate func stepOneIteration(inputs: [UInt?]) -> [UInt?] {
         let feedback = outputLogicMacroCells.map({ (olmc) -> UInt in olmc.feedback })
-        
-//        let sf = feedback.map({ (el) -> String in "\(el)" }).joined()
-//        print("feedback: \(sf)")
-        
         let results = outputLogicMacroCells.map({(olmc) -> UInt? in
             olmc.step(OutputLogicMacroCell.Input(inputs: inputs, feedback: feedback))
         })

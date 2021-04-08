@@ -27,23 +27,21 @@ public class OutputLogicMacroCell: NSObject {
     }
     
     public struct Input {
-        let inputs: [UInt]
+        let inputs: [UInt?]
         let feedback: [UInt]
         let ar: UInt
         let sp: UInt
         
-        public init(inputs: [UInt], ar: UInt = 0, sp: UInt = 0) {
-            assert(inputs.count == 24)
-            self.inputs = inputs.map({ (val) -> UInt in val & 1 })
-            self.feedback = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            self.ar = ar & 1
-            self.sp = sp & 1
-        }
-        
-        public init(inputs: [UInt], feedback: [UInt], ar: UInt = 0, sp: UInt = 0) {
+        public init(inputs: [UInt?], feedback: [UInt] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], ar: UInt = 0, sp: UInt = 0) {
             assert(inputs.count == 24)
             assert(feedback.count == 10)
-            self.inputs = inputs.map({ (val) -> UInt in val & 1 })
+            self.inputs = inputs.map({ (val) -> UInt? in
+                if let val = val {
+                    return val & 1
+                } else {
+                    return nil
+                }
+            })
             self.feedback = feedback.map({ (val) -> UInt in val & 1 })
             self.ar = ar & 1
             self.sp = sp & 1
@@ -63,7 +61,7 @@ public class OutputLogicMacroCell: NSObject {
     
     public func step(_ input: Input) -> UInt? {
         let isRisingEdgeOfClock = (prevClock == 0 && input.inputs[1] != 0)
-        prevClock = input.inputs[1]
+        prevClock = input.inputs[1] ?? 1
         
         let sumTerm: UInt = evaluateSumTerm(input)
         
@@ -88,7 +86,7 @@ public class OutputLogicMacroCell: NSObject {
         
         prevResult = result
         
-        let oe = outputEnableProductTermFuseMap.evaluate(input.inputs).reduce(1, { (x, y) -> UInt in
+        let oe = outputEnableProductTermFuseMap.evaluate(input.inputs.map({ (el) -> UInt in el ?? 1 })).reduce(1, { (x, y) -> UInt in
             x & y
         })
         if oe == 0 {
@@ -99,11 +97,21 @@ public class OutputLogicMacroCell: NSObject {
     }
     
     fileprivate func configureCombinatorialInputs(_ input: Input) -> [UInt] {
-        // This doesn't really support the dynamic I/O configuration of the
-        // GAL very well, but that's not an issue right now.
+        var modified = input.inputs
         
         if s1 == 0 {
-            var modified = input.inputs
+            // Registered pin
+            // It is an error to attempt to actively, externally drive a registered output pin.
+            assert(input.inputs[23] == nil)
+            assert(input.inputs[22] == nil)
+            assert(input.inputs[21] == nil)
+            assert(input.inputs[20] == nil)
+            assert(input.inputs[19] == nil)
+            assert(input.inputs[18] == nil)
+            assert(input.inputs[17] == nil)
+            assert(input.inputs[16] == nil)
+            assert(input.inputs[15] == nil)
+            assert(input.inputs[14] == nil)
             modified[23] = input.feedback[0] & 1
             modified[22] = input.feedback[1] & 1
             modified[21] = input.feedback[2] & 1
@@ -114,10 +122,21 @@ public class OutputLogicMacroCell: NSObject {
             modified[16] = input.feedback[7] & 1
             modified[15] = input.feedback[8] & 1
             modified[14] = input.feedback[9] & 1
-            return modified
+        } else {
+            // Combinatorial pin
+            modified[23] = input.inputs[23] ?? input.feedback[0]
+            modified[22] = input.inputs[22] ?? input.feedback[1]
+            modified[21] = input.inputs[21] ?? input.feedback[2]
+            modified[20] = input.inputs[20] ?? input.feedback[3]
+            modified[19] = input.inputs[19] ?? input.feedback[4]
+            modified[18] = input.inputs[18] ?? input.feedback[5]
+            modified[17] = input.inputs[17] ?? input.feedback[6]
+            modified[16] = input.inputs[16] ?? input.feedback[7]
+            modified[15] = input.inputs[15] ?? input.feedback[8]
+            modified[14] = input.inputs[14] ?? input.feedback[9]
         }
         
-        return input.inputs
+        return modified.map({ (maybe) -> UInt in maybe! })
     }
     
     public func evaluateSumTerm(_ input: Input) -> UInt {

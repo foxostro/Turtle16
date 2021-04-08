@@ -46,11 +46,11 @@ class OutputLogicMacroCellTests: XCTestCase {
                                         s0: 1,
                                         s1: 0)
         
-        let step0 = cell.step(Input(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
+        let step0 = cell.step(Input(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil]))
         XCTAssertEqual(step0, 1)
         XCTAssertEqual(cell.flipFlopState, step0)
         
-        let step1 = cell.step(Input(inputs: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
+        let step1 = cell.step(Input(inputs: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil]))
         XCTAssertEqual(step1, 0)
         XCTAssertEqual(cell.flipFlopState, step1)
     }
@@ -63,27 +63,27 @@ class OutputLogicMacroCellTests: XCTestCase {
                                         s0: 1,
                                         s1: 0)
         
-        let step0 = cell.step(Input(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        let step0 = cell.step(Input(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil],
                                     feedback: [cell.flipFlopState, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
         XCTAssertEqual(step0, 1)
         
-        let step1 = cell.step(Input(inputs: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        let step1 = cell.step(Input(inputs: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil],
                                     feedback: [cell.flipFlopState, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
         XCTAssertEqual(step1, 0)
         
-        let step2 = cell.step(Input(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        let step2 = cell.step(Input(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil],
                                     feedback: [cell.flipFlopState, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
         XCTAssertEqual(step2, 0)
         
-        let step3 = cell.step(Input(inputs: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        let step3 = cell.step(Input(inputs: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil],
                                     feedback: [cell.flipFlopState, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
         XCTAssertEqual(step3, 1)
         
-        let step4 = cell.step(Input(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        let step4 = cell.step(Input(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil],
                                     feedback: [cell.flipFlopState, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
         XCTAssertEqual(step4, 1)
         
-        let step5 = cell.step(Input(inputs: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        let step5 = cell.step(Input(inputs: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil],
                                     feedback: [cell.flipFlopState, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
         XCTAssertEqual(step5, 0)
     }
@@ -93,7 +93,7 @@ class OutputLogicMacroCellTests: XCTestCase {
                                         productTermFuseMaps: [ProductTermFuseMap(fuseListBitmap: 0b11110111111111111111111111111111111111111111)],
                                         s0: 1,
                                         s1: 0)
-        let result = cell.step(Input(inputs: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], ar: 1))
+        let result = cell.step(Input(inputs: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil], ar: 1))
         XCTAssertEqual(result, 0)
         XCTAssertEqual(cell.flipFlopState, result)
     }
@@ -103,7 +103,7 @@ class OutputLogicMacroCellTests: XCTestCase {
                                         productTermFuseMaps: [ProductTermFuseMap(fuseListBitmap: 0b11110111111111111111111111111111111111111111)],
                                         s0: 0,
                                         s1: 0)
-        let result = cell.step(Input(inputs: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], ar: 1))
+        let result = cell.step(Input(inputs: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil], ar: 1))
         XCTAssertEqual(result, 1)
         XCTAssertEqual(cell.flipFlopState, 0)
     }
@@ -114,15 +114,15 @@ class OutputLogicMacroCellTests: XCTestCase {
                                         s0: 1,
                                         s1: 0)
         
-        let step0 = cell.step(Input(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], ar: 1))
+        let step0 = cell.step(Input(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil], ar: 1))
         XCTAssertEqual(step0, 0)
         XCTAssertEqual(cell.flipFlopState, step0)
         
-        let step1 = cell.step(Input(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sp: 1))
+        let step1 = cell.step(Input(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil], sp: 1))
         XCTAssertEqual(step1, 0)
         XCTAssertEqual(cell.flipFlopState, step1)
         
-        let step2 = cell.step(Input(inputs: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sp: 1))
+        let step2 = cell.step(Input(inputs: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil], sp: 1))
         XCTAssertEqual(step2, 1)
         XCTAssertEqual(cell.flipFlopState, step2)
     }
@@ -133,15 +133,15 @@ class OutputLogicMacroCellTests: XCTestCase {
                                         s0: 0,
                                         s1: 0)
         
-        let step0 = cell.step(Input(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], ar: 1))
+        let step0 = cell.step(Input(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil], ar: 1))
         XCTAssertEqual(step0, 1)
         XCTAssertEqual(cell.flipFlopState, 0)
         
-        let step1 = cell.step(Input(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sp: 1))
+        let step1 = cell.step(Input(inputs: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil], sp: 1))
         XCTAssertEqual(step1, 1)
         XCTAssertEqual(cell.flipFlopState, 0)
         
-        let step2 = cell.step(Input(inputs: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sp: 1))
+        let step2 = cell.step(Input(inputs: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil], sp: 1))
         XCTAssertEqual(step2, 0)
         XCTAssertEqual(cell.flipFlopState, 1)
     }

@@ -210,7 +210,7 @@ Wire Wire Line
 Text Notes 600  2050 0    50   ~ 0
 Hazard Control detects several types of hazards and resolves each one\neither by stalling the pipeline, or by forwarding an operand from a later\npipeline stage.\n\nOn a jump, the program counter must be allowed to load a new value. At the\nsame time, the ID and IF stages must both be flushed.\n\nIf the instruction in EX wants to update the Flags register, and the opcode in\nID is determined to be one that wants to make use of the flags, then there is\na Flags hazard. In this case, stall the pipeline for one cycle.\n\nIf the Ra or Rb registers refer to the destination register in the EX or MEM\nstage, and the instructions in the EX or MEM stage want to write back to that\nregister, then there is a RAW error. In this case, forward an operand from a\nlater pipeline stage to supply the EX stage on the next clock cycle.\n\nThere’s no path to forward the store operand. Cases involving this operand\nmust be resolved by stalling the pipeline.
 Wire Wire Line
-	9350 3400 9500 3400
+	9350 3300 9500 3300
 Text HLabel 7550 3300 0    50   Input ~ 0
 Ins_ID[11..15]
 Entry Wire Line
@@ -296,17 +296,17 @@ Text Label 4500 3400 0    50   ~ 0
 WBEN_EX
 Text HLabel 7550 3700 0    50   Input ~ 0
 ~J
-Text HLabel 9500 3400 2    50   Output ~ 0
+Text HLabel 9500 3300 2    50   Output ~ 0
 STALL
 Wire Wire Line
-	9350 3500 9500 3500
-Text HLabel 9500 3500 2    50   Output ~ 0
+	9350 3400 9500 3400
+Text HLabel 9500 3400 2    50   Output ~ 0
 FLUSH
-Text HLabel 6200 3200 2    50   Output ~ 0
+Text HLabel 6200 3400 2    50   Output ~ 0
 FWD_A
 Text HLabel 6200 3300 2    50   Output ~ 0
 FWD_EX_TO_A
-Text HLabel 6200 3400 2    50   Output ~ 0
+Text HLabel 6200 3200 2    50   Output ~ 0
 FWD_MEM_TO_A
 Text HLabel 6200 3500 2    50   Output ~ 0
 FWD_B
@@ -403,52 +403,52 @@ Wire Wire Line
 $Comp
 L MainBoard-rescue:ATF22V10C-Logic_Programmable U?
 U 1 1 607B2A04
-P 8850 3850
+P 8850 3750
 AR Path="/5FED3839/607B2A04" Ref="U?"  Part="1" 
 AR Path="/5D2C07CD/607B2A04" Ref="U?"  Part="1" 
 AR Path="/5FE35007/607B2A04" Ref="U?"  Part="1" 
 AR Path="/5FE35007/5FD0D8DC/607B2A04" Ref="U?"  Part="1" 
 AR Path="/5FE35007/5FE3DA1C/607B2A04" Ref="U?"  Part="1" 
 AR Path="/5FED3839/5FDA967F/607B2A04" Ref="U44"  Part="1" 
-F 0 "U44" H 8500 4500 50  0000 C CNN
-F 1 "ATF22V10C-7PX" H 8500 4400 50  0000 C CNN
-F 2 "Package_DIP:DIP-24_W7.62mm_SMDSocket_SmallPads" H 9700 3150 50  0001 C CNN
-F 3 "https://www.mouser.com/datasheet/2/268/doc0735-1369018.pdf" H 8850 3900 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Microchip-Technology-Atmel/ATF22V10C-7PX?qs=%2Fha2pyFadugqFuTUlWvkuaZr7DXQ8Rnu3dOZcKuoHGuPC51te6MYUw%3D%3D" H 8850 3850 50  0001 C CNN "Mouser"
-F 5 "https://www.mouser.com/ProductDetail/575-4462401" H 8850 3850 50  0001 C CNN "Mouser2"
-	1    8850 3850
+F 0 "U44" H 8500 4400 50  0000 C CNN
+F 1 "ATF22V10C-7PX" H 8500 4300 50  0000 C CNN
+F 2 "Package_DIP:DIP-24_W7.62mm_SMDSocket_SmallPads" H 9700 3050 50  0001 C CNN
+F 3 "https://www.mouser.com/datasheet/2/268/doc0735-1369018.pdf" H 8850 3800 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Microchip-Technology-Atmel/ATF22V10C-7PX?qs=%2Fha2pyFadugqFuTUlWvkuaZr7DXQ8Rnu3dOZcKuoHGuPC51te6MYUw%3D%3D" H 8850 3750 50  0001 C CNN "Mouser"
+F 5 "https://www.mouser.com/ProductDetail/575-4462401" H 8850 3750 50  0001 C CNN "Mouser2"
+	1    8850 3750
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:VCC #PWR?
 U 1 1 607B37F4
-P 8850 3200
+P 8850 3100
 AR Path="/5D2C0B92/607B37F4" Ref="#PWR?"  Part="1" 
 AR Path="/5FED3839/607B37F4" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C07CD/607B37F4" Ref="#PWR?"  Part="1" 
 AR Path="/5FE35007/5FE3DA1C/607B37F4" Ref="#PWR?"  Part="1" 
 AR Path="/5FED3839/5FDA967F/607B37F4" Ref="#PWR09"  Part="1" 
-F 0 "#PWR09" H 8850 3050 50  0001 C CNN
-F 1 "VCC" H 8867 3373 50  0000 C CNN
-F 2 "" H 8850 3200 50  0001 C CNN
-F 3 "" H 8850 3200 50  0001 C CNN
-	1    8850 3200
+F 0 "#PWR09" H 8850 2950 50  0001 C CNN
+F 1 "VCC" H 8867 3273 50  0000 C CNN
+F 2 "" H 8850 3100 50  0001 C CNN
+F 3 "" H 8850 3100 50  0001 C CNN
+	1    8850 3100
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 607B41C4
-P 8850 4600
+P 8850 4500
 AR Path="/5D2C0B92/607B41C4" Ref="#PWR?"  Part="1" 
 AR Path="/5FED3839/607B41C4" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C07CD/607B41C4" Ref="#PWR?"  Part="1" 
 AR Path="/5FE35007/5FE3DA1C/607B41C4" Ref="#PWR?"  Part="1" 
 AR Path="/5FED3839/5FDA967F/607B41C4" Ref="#PWR010"  Part="1" 
-F 0 "#PWR010" H 8850 4350 50  0001 C CNN
-F 1 "GND" H 8855 4427 50  0000 C CNN
-F 2 "" H 8850 4600 50  0001 C CNN
-F 3 "" H 8850 4600 50  0001 C CNN
-	1    8850 4600
+F 0 "#PWR010" H 8850 4250 50  0001 C CNN
+F 1 "GND" H 8855 4327 50  0000 C CNN
+F 2 "" H 8850 4500 50  0001 C CNN
+F 3 "" H 8850 4500 50  0001 C CNN
+	1    8850 4500
 	1    0    0    -1  
 $EndComp
 NoConn ~ 9350 3600
@@ -459,10 +459,10 @@ NoConn ~ 9350 4000
 NoConn ~ 9350 4100
 NoConn ~ 9350 4200
 NoConn ~ 9350 4300
-NoConn ~ 9350 4400
+NoConn ~ 9350 3500
 NoConn ~ 8350 4200
 NoConn ~ 8350 4300
-NoConn ~ 8350 4400
+NoConn ~ 8350 3300
 Wire Wire Line
 	6050 3800 8350 3800
 Wire Wire Line

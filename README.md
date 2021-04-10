@@ -1,6 +1,6 @@
 # Turtle16
 
-Turtle16 is a sixteen-bit microcomputer built from discrete logic ICs and other simple parts. This repo contains the Kicad project and other files necesary to build the hardware. The toolchain and software is provided in a separate repo.
+Turtle16 is a sixteen-bit microcomputer built from discrete logic ICs and other simple parts. This repo contains the Kicad project, and other files necesary to build the hardware, as well as the toolchain and simulator.
 
 
 
@@ -28,7 +28,7 @@ The control unit will take care to resolve various hazards automatically. Hazard
 
 (Forwarding of the store operand is left as a possible improvement for a future hardware revision.)
 
-The register file is implemented in two dual port SRAMs operating in parallel. This allows for a triple-port register file with one write port and two read ports. With careful design, a write in the write-back stage can be assured to be committed before a register file read in the same cycle. Due to space limitations in the instruction word, only three bits can be devoted to the register index. The register can only provide eight homogeneous, general-purpose registers.
+The register file is implemented in two dual port SRAMs operating in parallel. This allows for a triple-port register file with one write port and two read ports. With careful design, a write in the write-back stage can be assured to be committed before a register file read in the same cycle. Due to space limitations in the instruction word, only three bits can be devoted to the register index. The register file can only provide eight homogeneous, general-purpose registers.
 
 The ALU is built around an IDT 7831. This is a monolithic, sixteen-bit ALU IC that was produced in the early 90's.
 
@@ -70,7 +70,7 @@ The instruction decoder in the ID stage of the CPU pipeline decode the five-bit 
 
 ## Opcodes
 
-The ID stage uses a ROM to decode a five-bit opcode into an array of control signals. The opcodes are as follows. Though, this is definitely something that can be redefined by flashing different data to the chips.
+The ID stage uses a ROM to decode a five-bit opcode into an array of control signals. The opcodes are as follows.
 
 0. nop
 1. hlt

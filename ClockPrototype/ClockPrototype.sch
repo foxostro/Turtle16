@@ -5,8 +5,8 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 1 3
 Title "Turtle16: Clock Prototype"
-Date "2021-03-29"
-Rev "A (d3581256)"
+Date "2021-04-10"
+Rev "B (xxxxxxxx)"
 Comp ""
 Comment1 ""
 Comment2 ""

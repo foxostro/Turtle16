@@ -404,7 +404,7 @@ AR Path="/60AF64DE/5FF1115C/5FD3DF88" Ref="U?"  Part="1"
 AR Path="/5D2C0720/5FD3DF88" Ref="U4"  Part="1" 
 F 0 "U4" H 3850 3400 50  0000 C CNN
 F 1 "74AHCT244" H 3800 3300 50  0000 C CNN
-F 2 "Package_SO:TSSOP-20_4.4x5mm_P0.5mm" H 4100 2600 50  0001 C CNN
+F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 4100 2600 50  0001 C CNN
 F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct244-q1" H 4100 2600 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Nexperia/74AHCT244PW112?qs=P62ublwmbi%252BXn0q3CW1Zug%3D%3D" H 4100 2600 50  0001 C CNN "Mouser"
 	1    4100 2600

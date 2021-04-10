@@ -60,7 +60,7 @@ F 1 "ATF22V10C-7PX" H 5200 4200 50  0000 C CNN
 F 2 "Package_DIP:DIP-24_W7.62mm_SMDSocket_SmallPads" H 6400 2950 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/268/doc0735-1369018.pdf" H 5550 3700 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Microchip-Technology-Atmel/ATF22V10C-7PX?qs=%2Fha2pyFadugqFuTUlWvkuaZr7DXQ8Rnu3dOZcKuoHGuPC51te6MYUw%3D%3D" H 5550 3650 50  0001 C CNN "Mouser"
-F 5 "https://www.mouser.com/ProductDetail/575-4462401" H 5550 3650 50  0001 C CNN "Mouser2"
+F 5 "https://www.mouser.com/ProductDetail/Preci-dip/114-87-324-41-117101?qs=%2Fha2pyFaduioVyNMD%252B7NH1l4mktK6muqQMloVdbh7x8%3D" H 5550 3650 50  0001 C CNN "Mouser2"
 	1    5550 3650
 	1    0    0    -1  
 $EndComp
@@ -415,7 +415,7 @@ F 1 "ATF22V10C-7PX" H 8500 4300 50  0000 C CNN
 F 2 "Package_DIP:DIP-24_W7.62mm_SMDSocket_SmallPads" H 9700 3050 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/268/doc0735-1369018.pdf" H 8850 3800 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Microchip-Technology-Atmel/ATF22V10C-7PX?qs=%2Fha2pyFadugqFuTUlWvkuaZr7DXQ8Rnu3dOZcKuoHGuPC51te6MYUw%3D%3D" H 8850 3750 50  0001 C CNN "Mouser"
-F 5 "https://www.mouser.com/ProductDetail/575-4462401" H 8850 3750 50  0001 C CNN "Mouser2"
+F 5 "https://www.mouser.com/ProductDetail/Preci-dip/114-87-324-41-117101?qs=%2Fha2pyFaduioVyNMD%252B7NH1l4mktK6muqQMloVdbh7x8%3D" H 8850 3750 50  0001 C CNN "Mouser2"
 	1    8850 3750
 	1    0    0    -1  
 $EndComp

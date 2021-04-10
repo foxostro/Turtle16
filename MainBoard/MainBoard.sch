@@ -486,17 +486,6 @@ Wire Wire Line
 	5300 1850 5300 3400
 Wire Bus Line
 	3250 4750 5600 4750
-$Comp
-L Connector:Screw_Terminal_01x02 J1
-U 1 1 60501CA1
-P 1150 7450
-F 0 "J1" H 1068 7125 50  0000 C CNN
-F 1 "Screw_Terminal_01x02" H 1068 7216 50  0000 C CNN
-F 2 "TerminalBlock_MetzConnect:TerminalBlock_MetzConnect_Type055_RT01502HDWU_1x02_P5.00mm_Horizontal" H 1150 7450 50  0001 C CNN
-F 3 "~" H 1150 7450 50  0001 C CNN
-	1    1150 7450
-	-1   0    0    1   
-$EndComp
 Wire Wire Line
 	8750 3400 5300 3400
 Connection ~ 5300 3400
@@ -542,4 +531,16 @@ Wire Bus Line
 Connection ~ 5500 4450
 Wire Bus Line
 	5500 4450 6050 4450
+$Comp
+L Connector:Conn_01x02_Male J1
+U 1 1 6076D993
+P 1150 7350
+F 0 "J1" H 1258 7531 50  0000 C CNN
+F 1 "Power" H 1258 7440 50  0000 C CNN
+F 2 "componentsearchengine:1724470002" H 1150 7350 50  0001 C CNN
+F 3 "https://www.mouser.com/datasheet/2/276/1/1724470002_PCB_HEADERS-704283.pdf" H 1150 7350 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Molex/172447-0002?qs=%2Fha2pyFaduixh%252B4jsiB7slUXUNAA80hvehmHOZIFpAANTxSXnfDI7A%3D%3D" H 1150 7350 50  0001 C CNN "Mouser"
+	1    1150 7350
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

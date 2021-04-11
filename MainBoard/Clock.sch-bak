@@ -742,7 +742,7 @@ F 3 "~" H 5900 1300 50  0001 C CNN
 	1    5900 1300
 	1    0    0    1   
 $EndComp
-Text GLabel 5100 1400 0    50   Input ~ 0
+Text GLabel 5100 1400 0    50   Output ~ 0
 ~RST
 Text GLabel 7950 1000 0    50   Output ~ 0
 Phi1a

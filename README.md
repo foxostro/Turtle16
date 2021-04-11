@@ -17,7 +17,7 @@ The CPU uses a Load/Store architecture based on the classic RISC pipeline. There
 ### Pipeline Stages
 
 1. IF — Fetch an instruction from Instruction Memory via the Program Counter. This stage is split into a Program Counter part and an Instruction Memory part and takes two clock cycles to complete. This is sometimes written in diagrams as two pipeline stages, PC and IF.
-2. ID — Decode instruction and read the register file. This also performs hazard control on decoding the instruction.
+2. ID — Decode instruction and read the register file. This also performs hazard control on decoding the instruction, and operand forwarding / bypassing.
 3. EX — Marshal operands and perform a computation
 4. MEM — Either read or write to memory
 5. WB — Write results back to the register file
@@ -321,4 +321,10 @@ NPC := PC + Imm
 
 # TurtleTools
 
-TurtleTools is a toolchain for the Turtle16 microcomputer hardware. This includes a computer Simulator, Assembler, and a compiler for a new high-level language targeting the hardware.
+TurtleTools is a toolchain for the Turtle16 microcomputer hardware. This includes a computer Simulator, Assembler, and a Compiler for a new high-level language targeting the hardware.
+
+This is very much a work in progress. Changes are being made to add support for the Turtle16 hardware to the assembler, compiler, and simulator. The software currently supports the TurtleTTL hardware I designed for an earlier project.
+
+There is a compiler for a new high-level language called Snap. Currently, this can compile code to an IR which implements a bunch of memory-to-memory instructions that are kind of a mismatch for the Turtle16 CPU. The IR compiler can only compile those instructions to TurtleTTL machine code and cannot compile to Turtle16 machine code. So, there's a lot of work to do here to port the Snap language to Turtle16.
+
+The simulator app currently simulates only TurtleTTL hardware and peripherals. There's a work-in-progress framework to implement a new simulator core which can simulate the Turtle16 hardware. This attempts to accurately model all the individual pieces of hardware, including compiling and emulating GAL HDL code. So, this sacrifices performance in favor of a model which will be useful in debugging the actual hardware.

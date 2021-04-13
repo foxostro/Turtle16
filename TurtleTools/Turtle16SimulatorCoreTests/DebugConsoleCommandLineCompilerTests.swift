@@ -164,6 +164,13 @@ class DebugConsoleCommandLineCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [.help(.reg)])
     }
     
+    func testHelpWithInfo() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("h info")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.help(.info)])
+    }
+    
     func testHelpWithX() throws {
         let compiler = DebugConsoleCommandLineCompiler()
         compiler.compile("h x")
@@ -375,5 +382,28 @@ class DebugConsoleCommandLineCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.errors.count, 1)
         XCTAssertEqual(compiler.errors.first?.message, "not enough bits to represent the passed value: `writemem'")
         XCTAssertEqual(compiler.errors.first?.context, "\twritemem -100000 0\n\t         ^~~~~~~")
+    }
+    
+    func testInfoWithZeroParameters() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("info")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.info(nil)])
+    }
+    
+    func testInfoWithOneParameter() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("info cpu")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.info("cpu")])
+    }
+    
+    func testInfoWithMoreThanOneParameter() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("info a b")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "instruction takes zero or one parameters: `info'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tinfo a b\n\t       ^")
     }
 }

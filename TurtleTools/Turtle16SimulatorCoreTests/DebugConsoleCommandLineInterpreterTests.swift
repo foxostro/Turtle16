@@ -67,7 +67,8 @@ cpu is halted
 """)
     }
     
-    func testPrintRegisters() throws {let computer = Turtle16Computer(SchematicLevelCPUModel())
+    func testPrintRegisters() throws {
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
         computer.setRegister(0, 0x0000)
         computer.setRegister(1, 0x0001)
         computer.setRegister(2, 0x0002)
@@ -80,6 +81,47 @@ cpu is halted
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .reg)
         XCTAssertEqual(interpreter.stdout as! String, """
+r0: 0x0000\tr4: 0x0004
+r1: 0x0001\tr5: 0x0005
+r2: 0x0002\tr6: 0x0006
+r3: 0x0003\tr7: 0x0007
+pc: 0xabcd
+
+""")
+    }
+    
+    func testPrintInfoOnUnrecognizedDevice() throws {
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.runOne(instruction: .info("asdf"))
+        XCTAssertEqual(interpreter.stdout as! String, """
+Show detailed information for a specified device.
+
+Devices:
+\tcpu -- Show detailed information on the state of the CPU.
+
+Syntax: info cpu
+
+""")
+    }
+    
+    func testPrintInfoOnCPU() throws {
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        computer.setRegister(0, 0x0000)
+        computer.setRegister(1, 0x0001)
+        computer.setRegister(2, 0x0002)
+        computer.setRegister(3, 0x0003)
+        computer.setRegister(4, 0x0004)
+        computer.setRegister(5, 0x0005)
+        computer.setRegister(6, 0x0006)
+        computer.setRegister(7, 0x0007)
+        computer.pc = 0xabcd
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.runOne(instruction: .info("cpu"))
+        XCTAssertEqual(interpreter.stdout as! String, """
+isHalted: false
+isResetting: true
+
 r0: 0x0000\tr4: 0x0004
 r1: 0x0001\tr5: 0x0005
 r2: 0x0002\tr6: 0x0006
@@ -113,6 +155,7 @@ Debugger commands:
 \treset    -- Reset the computer.
 \tstep     -- Single step the simulation, executing for one or more clock cycles.
 \treg      -- Show CPU register contents.
+\tinfo     -- Show detailed information for a specified device.
 \tx        -- Read from memory.
 \twritemem -- Write to memory.
 
@@ -165,6 +208,21 @@ Syntax: reset
 Single step the simulation, executing for one or more clock cycles.
 
 Syntax: step [<cycle-count>]
+
+""")
+    }
+    
+    func testHelpInfo() throws {
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.runOne(instruction: .help(.info))
+        XCTAssertEqual(interpreter.stdout as! String, """
+Show detailed information for a specified device.
+
+Devices:
+\tcpu -- Show detailed information on the state of the CPU.
+
+Syntax: info cpu
 
 """)
     }

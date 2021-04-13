@@ -23,6 +23,10 @@ public class Turtle16Computer: NSObject {
         cpu.isHalted
     }
     
+    public var isResetting: Bool {
+        cpu.isResetting
+    }
+    
     public var pc: UInt16 {
         set(pc) {
             cpu.pc = pc

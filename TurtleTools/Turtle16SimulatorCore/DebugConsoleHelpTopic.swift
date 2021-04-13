@@ -9,18 +9,20 @@
 import Foundation
 
 public enum DebugConsoleHelpTopic: Equatable, CaseIterable {
-    case help, quit, reset, step, reg, info, readMemory, writeMemory
+    case help, quit, reset, step, reg, info, readMemory, writeMemory, readInstructions, writeInstructions
     
     public var name: String {
         switch self {
-        case .help:        return "help"
-        case .quit:        return "quit"
-        case .reset:       return "reset"
-        case .step:        return "step"
-        case .reg:         return "reg"
-        case .info:        return "info"
-        case .readMemory:  return "x"
-        case .writeMemory: return "writemem"
+        case .help:              return "help"
+        case .quit:              return "quit"
+        case .reset:             return "reset"
+        case .step:              return "step"
+        case .reg:               return "reg"
+        case .info:              return "info"
+        case .readMemory:        return "x"
+        case .writeMemory:       return "writemem"
+        case .readInstructions:  return "xi"
+        case .writeInstructions: return "writememi"
         }
     }
     
@@ -49,6 +51,12 @@ public enum DebugConsoleHelpTopic: Equatable, CaseIterable {
             
         case .writeMemory:
             return "Write to memory."
+            
+        case .readInstructions:
+            return "Read from instruction memory."
+            
+        case .writeInstructions:
+            return "Write to instruction memory."
         }
     }
     
@@ -118,6 +126,22 @@ Syntax: x [/<count>] <address>
 \(shortHelp)
 
 Syntax: writemem <address> <word> [<word>...]
+
+"""
+        
+        case .readInstructions:
+            return """
+\(shortHelp)
+
+Syntax: xi [/<count>] <address>
+
+"""
+            
+        case .writeInstructions:
+            return """
+\(shortHelp)
+
+Syntax: writememi <address> <word> [<word>...]
 
 """
         }

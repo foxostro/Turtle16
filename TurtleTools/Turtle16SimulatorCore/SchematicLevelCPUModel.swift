@@ -26,7 +26,7 @@ public class SchematicLevelCPUModel: NSObject, CPU {
     
     public var pc: UInt16 = 0
     
-    public var instructions: [UInt16] = []
+    public var instructions: [UInt16] = Array<UInt16>(repeating: 0, count: 65535)
     
     public var carry: UInt = 0
     public var z: UInt = 0

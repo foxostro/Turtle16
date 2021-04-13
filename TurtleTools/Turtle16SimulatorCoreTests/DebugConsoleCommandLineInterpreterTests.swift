@@ -90,6 +90,21 @@ pc: 0xabcd
 """)
     }
     
+    func testPrintInfoOnNil() throws {
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.runOne(instruction: .info(nil))
+        XCTAssertEqual(interpreter.stdout as! String, """
+Show detailed information for a specified device.
+
+Devices:
+\tcpu -- Show detailed information on the state of the CPU.
+
+Syntax: info cpu
+
+""")
+    }
+    
     func testPrintInfoOnUnrecognizedDevice() throws {
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
@@ -150,14 +165,16 @@ pc: 0xabcd
         interpreter.runOne(instruction: .help(.none))
         XCTAssertEqual(interpreter.stdout as! String, """
 Debugger commands:
-\thelp     -- Show a list of all debugger commands, or give details about a specific command.
-\tquit     -- Quit the debugger.
-\treset    -- Reset the computer.
-\tstep     -- Single step the simulation, executing for one or more clock cycles.
-\treg      -- Show CPU register contents.
-\tinfo     -- Show detailed information for a specified device.
-\tx        -- Read from memory.
-\twritemem -- Write to memory.
+\thelp      -- Show a list of all debugger commands, or give details about a specific command.
+\tquit      -- Quit the debugger.
+\treset     -- Reset the computer.
+\tstep      -- Single step the simulation, executing for one or more clock cycles.
+\treg       -- Show CPU register contents.
+\tinfo      -- Show detailed information for a specified device.
+\tx         -- Read from memory.
+\twritemem  -- Write to memory.
+\txi        -- Read from instruction memory.
+\twritememi -- Write to instruction memory.
 
 For more information on any command, type `help <command-name>'.
 
@@ -270,5 +287,50 @@ Syntax: writemem <address> <word> [<word>...]
         interpreter.runOne(instruction: .writeMemory(base: 0x1000, words: [0xaaaa, 0xbbbb]))
         XCTAssertEqual(computer.ram[0x1000], 0xaaaa)
         XCTAssertEqual(computer.ram[0x1001], 0xbbbb)
+    }
+    
+    func testReadInstructions() throws {
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        computer.reset()
+        computer.instructions[0] = ~UInt16(0)
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.runOne(instruction: .readInstructions(base: 0, count: 2))
+        XCTAssertEqual(interpreter.stdout as! String, """
+0x0000: 0xffff 0x0000
+
+""")
+    }
+    
+    func testWriteInstructions() throws {
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        computer.reset()
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.runOne(instruction: .writeInstructions(base: 0x1000, words: [0xaaaa, 0xbbbb]))
+        XCTAssertEqual(computer.instructions[0x1000], 0xaaaa)
+        XCTAssertEqual(computer.instructions[0x1001], 0xbbbb)
+    }
+    
+    func testHelpReadInstructions() throws {
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.runOne(instruction: .help(.readInstructions))
+        XCTAssertEqual(interpreter.stdout as! String, """
+Read from instruction memory.
+
+Syntax: xi [/<count>] <address>
+
+""")
+    }
+    
+    func testHelpWriteInstructions() throws {
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.runOne(instruction: .help(.writeInstructions))
+        XCTAssertEqual(interpreter.stdout as! String, """
+Write to instruction memory.
+
+Syntax: writememi <address> <word> [<word>...]
+
+""")
     }
 }

@@ -34,11 +34,20 @@ public class DebugConsoleCommandLineInterpreter: NSObject {
         case .reg:
             printRegisters()
             
+        case .info(let device):
+            printInfo(device: device)
+            
         case .readMemory(let base, let count):
             printMemoryContents(base: base, count: count)
             
         case .writeMemory(let base, let words):
             writeMemory(base: base, words: words)
+            
+        case .readInstructions(let base, let count):
+            printInstructionMemoryContents(base: base, count: count)
+            
+        case .writeInstructions(let base, let words):
+            writeInstructionMemory(base: base, words: words)
         }
     }
     
@@ -88,17 +97,51 @@ pc: \(pc)
 """)
     }
     
-    fileprivate func printMemoryContents(base: UInt16, count: UInt) {
+    fileprivate func printInfo(device: String?) {
+        guard let device = device else {
+            printHelp(.info)
+            return
+        }
+        guard device == "cpu" else {
+            printHelp(.info)
+            return
+        }
+        stdout.write("""
+isHalted: \(computer.isHalted)
+isResetting: \(computer.isResetting)
+
+
+""")
+        printRegisters()
+    }
+    
+    fileprivate func printMemoryContents(array: [UInt16], base: UInt16, count: UInt) {
         let baseStr = String(format: "0x%04x", base)
         let hexDump = (0..<count).map({idx in
-            String(format: "0x%04x", Int(computer.ram[Int(base) + Int(idx)]))
+            String(format: "0x%04x", Int(array[Int(base) + Int(idx)]))
         }).joined(separator: " ")
         stdout.write("\(baseStr): \(hexDump)\n")
     }
     
-    fileprivate func writeMemory(base: UInt16, words: [UInt16]) {
+    fileprivate func printMemoryContents(base: UInt16, count: UInt) {
+        printMemoryContents(array: computer.ram, base: base, count: count)
+    }
+    
+    fileprivate func printInstructionMemoryContents(base: UInt16, count: UInt) {
+        printMemoryContents(array: computer.instructions, base: base, count: count)
+    }
+    
+    fileprivate func writeMemory(array: inout [UInt16], base: UInt16, words: [UInt16]) {
         for idx in 0..<words.count {
-            computer.ram[Int(base) + idx] = words[idx]
+            array[Int(base) + idx] = words[idx]
         }
+    }
+    
+    fileprivate func writeMemory(base: UInt16, words: [UInt16]) {
+        writeMemory(array: &computer.ram, base: base, words: words)
+    }
+    
+    fileprivate func writeInstructionMemory(base: UInt16, words: [UInt16]) {
+        writeMemory(array: &computer.instructions, base: base, words: words)
     }
 }

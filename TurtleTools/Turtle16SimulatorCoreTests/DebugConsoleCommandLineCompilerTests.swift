@@ -185,6 +185,20 @@ class DebugConsoleCommandLineCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [.help(.writeMemory)])
     }
     
+    func testHelpWithXi() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("h xi")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.help(.readInstructions)])
+    }
+    
+    func testHelpWithWritememi() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("h writememi")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.help(.writeInstructions)])
+    }
+    
     func testQuit() throws {
         let compiler = DebugConsoleCommandLineCompiler()
         compiler.compile("q")
@@ -294,6 +308,38 @@ class DebugConsoleCommandLineCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [.readMemory(base: 0x1000, count: 4)])
     }
     
+    func testReadMemoryWithNonNumericAddress() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("x /4 foo")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "expected a number for the memory address: `x'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tx /4 foo\n\t     ^~~")
+    }
+    
+    func testReadMemoryWithAddressTooLarge() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("x /4 0x100000")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "not enough bits to represent the passed value: `x'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tx /4 0x100000\n\t     ^~~~~~~~")
+    }
+    
+    func testReadMemoryWithNegativeAddress() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("x /4 -65536")
+        XCTAssertEqual(compiler.errors.first?.message, "not enough bits to represent the passed value: `x'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tx /4 -65536\n\t     ^~~~~~")
+    }
+    
+    func testReadMemoryWithTooBigNegativeAddress() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("x /4 -1")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.readMemory(base: 0xffff, count: 4)])
+    }
+    
     func testWriteMemoryWithZeroParameters() throws {
         let compiler = DebugConsoleCommandLineCompiler()
         compiler.compile("writemem")
@@ -324,6 +370,14 @@ class DebugConsoleCommandLineCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.errors.count, 1)
         XCTAssertEqual(compiler.errors.first?.message, "expected a number for the data word: `writemem'")
         XCTAssertEqual(compiler.errors.first?.context, "\twritemem 0 0xffff foo\n\t                  ^~~")
+    }
+    
+    func testWriteMemoryWithBadBaseAddress2() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("writemem foo 0xffff")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "expected a number for the memory address: `writemem'")
+        XCTAssertEqual(compiler.errors.first?.context, "\twritemem foo 0xffff\n\t         ^~~")
     }
     
     func testWriteMemoryWithBadDataWord_TooBig() throws {
@@ -405,5 +459,135 @@ class DebugConsoleCommandLineCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.errors.count, 1)
         XCTAssertEqual(compiler.errors.first?.message, "instruction takes zero or one parameters: `info'")
         XCTAssertEqual(compiler.errors.first?.context, "\tinfo a b\n\t       ^")
+    }
+    
+    func testReadInstructionMemoryWithX_ExpectsAtLeastOneParameter() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("xi")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "expected at least one parameter for the memory address: `xi'")
+        XCTAssertEqual(compiler.errors.first?.context, "\txi\n\t^~")
+    }
+    
+    func testReadInstructionMemoryWithX_WithAddress() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("xi 0x1000")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.readInstructions(base: 0x1000, count: 1)])
+    }
+    
+    func testReadInstructionMemoryWithX_WithLengthAndNoAddress() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("xi /1")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "expected a number for the memory address: `xi'")
+        XCTAssertEqual(compiler.errors.first?.context, "\txi /1\n\t   ^~")
+    }
+    
+    func testReadInstructionMemoryWithX_WithAddressAndBadLength() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("xi /foo 0x1000")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "expected a number for the length: `xi'")
+        XCTAssertEqual(compiler.errors.first?.context, "\txi /foo 0x1000\n\t   ^~~~")
+    }
+    
+    func testReadInstructionMemoryWithX_WithLengthAndSomeAddress() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("xi /4 0x1000")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.readInstructions(base: 0x1000, count: 4)])
+    }
+    
+    func testWriteInstructionMemoryWithZeroParameters() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("writememi")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "expected a memory address and data words: `writememi'")
+        XCTAssertEqual(compiler.errors.first?.context, "\twritememi\n\t^~~~~~~~~")
+    }
+    
+    func testWriteInstructionMemoryWithBadBaseAddress() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("writememi foo")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "expected a memory address and data words: `writememi'")
+        XCTAssertEqual(compiler.errors.first?.context, "\twritememi foo\n\t          ^~~")
+    }
+    
+    func testWriteInstructionMemoryWithBadDataWord1() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("writememi 0 foo")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "expected a number for the data word: `writememi'")
+        XCTAssertEqual(compiler.errors.first?.context, "\twritememi 0 foo\n\t            ^~~")
+    }
+    
+    func testWriteInstructionMemoryWithBadDataWord2() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("writememi 0 0xffff foo")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "expected a number for the data word: `writememi'")
+        XCTAssertEqual(compiler.errors.first?.context, "\twritememi 0 0xffff foo\n\t                   ^~~")
+    }
+    
+    func testWriteInstructionMemoryWithBadDataWord_TooBig() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("writememi 0 0x10000")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "not enough bits to represent the passed value: `writememi'")
+        XCTAssertEqual(compiler.errors.first?.context, "\twritememi 0 0x10000\n\t            ^~~~~~~")
+    }
+    
+    func testWriteInstructionMemoryWithOneDataWord() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("writememi 0 0")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.writeInstructions(base: 0, words: [0])])
+    }
+    
+    func testWriteInstructionMemoryWithNegativeDataWord() throws {
+        // A negative number of treated as the sixteen-bit unsigned, twos complement equivalent.
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("writememi 0 -1")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.writeInstructions(base: 0, words: [0xffff])])
+    }
+    
+    func testWriteInstructionMemoryWithTooBigNegativeDataWord() throws {
+        // A negative number of treated as the sixteen-bit unsigned, twos complement equivalent.
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("writememi 0 -100000")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "not enough bits to represent the passed value: `writememi'")
+        XCTAssertEqual(compiler.errors.first?.context, "\twritememi 0 -100000\n\t            ^~~~~~~")
+    }
+    
+    func testWriteInstructionMemoryWithNegativeAddress() throws {
+        // A negative number of treated as the sixteen-bit unsigned, twos complement equivalent.
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("writememi -1 0")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.writeInstructions(base: 0xffff, words: [0])])
+    }
+    
+    func testWriteInstructionMemoryWithTooBigAddress() throws {
+        // A negative number of treated as the sixteen-bit unsigned, twos complement equivalent.
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("writememi 1000000 0")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "not enough bits to represent the passed value: `writememi'")
+        XCTAssertEqual(compiler.errors.first?.context, "\twritememi 1000000 0\n\t          ^~~~~~~")
+    }
+    
+    func testWriteInstructionMemoryWithTooBigNegativeAddress() throws {
+        // A negative number of treated as the sixteen-bit unsigned, twos complement equivalent.
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("writememi -100000 0")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "not enough bits to represent the passed value: `writememi'")
+        XCTAssertEqual(compiler.errors.first?.context, "\twritememi -100000 0\n\t          ^~~~~~~")
     }
 }

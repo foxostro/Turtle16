@@ -66,6 +66,118 @@ class DebugConsoleCommandLineCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.errors.first?.context, "\ts asdf\n\t  ^~~~")
     }
     
+    func testHelpWithZeroParameters() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("help")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.help(nil)])
+    }
+    
+    func testHelpWithZeroParameters_h() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("h")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.help(nil)])
+    }
+    
+    func testHelpWithUnexpectedNumberParameter() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("h 123")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.help(nil)])
+    }
+    
+    func testHelpWithUnexpectedTopicIdentifier() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("h foo")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.help(nil)])
+    }
+    
+    func testHelpWithHelp() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("h help")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.help(.help)])
+    }
+    
+    func testHelpWithQuit() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("h quit")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.help(.quit)])
+    }
+    
+    func testHelpWithQuit_q() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("h q")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.help(.quit)])
+    }
+    
+    func testHelpWithReset() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("h reset")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.help(.reset)])
+    }
+    
+    func testHelpWithStep() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("h step")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.help(.step)])
+    }
+    
+    func testHelpWithStep_s() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("h s")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.help(.step)])
+    }
+    
+    func testHelpWithReg() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("h reg")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.help(.reg)])
+    }
+    
+    func testHelpWithReg_r() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("h r")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.help(.reg)])
+    }
+    
+    func testHelpWithReg_regs() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("h regs")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.help(.reg)])
+    }
+    
+    func testHelpWithReg_registers() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("h registers")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.help(.reg)])
+    }
+    
+    func testHelpWithX() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("h x")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.help(.readMemory)])
+    }
+    
+    func testHelpWithWritemem() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("h writemem")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.help(.writeMemory)])
+    }
+    
     func testQuit() throws {
         let compiler = DebugConsoleCommandLineCompiler()
         compiler.compile("q")

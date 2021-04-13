@@ -9,7 +9,7 @@
 import Foundation
 
 public enum DebugConsoleHelpTopic: Equatable, CaseIterable {
-    case help, quit, reset, step, reg, readMemory, writeMemory
+    case help, quit, reset, step, reg, info, readMemory, writeMemory
     
     public var name: String {
         switch self {
@@ -18,6 +18,7 @@ public enum DebugConsoleHelpTopic: Equatable, CaseIterable {
         case .reset:       return "reset"
         case .step:        return "step"
         case .reg:         return "reg"
+        case .info:        return "info"
         case .readMemory:  return "x"
         case .writeMemory: return "writemem"
         }
@@ -39,6 +40,9 @@ public enum DebugConsoleHelpTopic: Equatable, CaseIterable {
             
         case .reg:
             return "Show CPU register contents."
+            
+        case .info:
+            return "Show detailed information for a specified device."
             
         case .readMemory:
             return "Read from memory."
@@ -87,6 +91,17 @@ Syntax: step [<cycle-count>]
 \(shortHelp)
 
 Syntax: reg
+
+"""
+            
+        case .info:
+            return """
+\(shortHelp)
+
+Devices:
+\tcpu -- Show detailed information on the state of the CPU.
+
+Syntax: info cpu
 
 """
             

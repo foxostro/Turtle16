@@ -73,12 +73,12 @@ public class DebugConsoleCommandLineCompiler: NSObject {
     
     fileprivate func acceptHelp(_ node: InstructionNode) {
         guard node.parameters.elements.count > 0 else {
-            errors.append(CompilerError(sourceAnchor: node.parameters.sourceAnchor, message: "help expects a topic"))
+            instructions.append(.help(nil))
             return
         }
         
         guard let topic = node.parameters.elements[0] as? ParameterIdentifier else {
-            errors.append(CompilerError(sourceAnchor: node.parameters.sourceAnchor, message: "help expects a topic"))
+            instructions.append(.help(nil))
             return
         }
         
@@ -87,22 +87,25 @@ public class DebugConsoleCommandLineCompiler: NSObject {
             instructions.append(.help(.help))
         
         case "q", "quit":
-            abort() // instructions.append(.help(.quit))
+            instructions.append(.help(.quit))
             
         case "reset":
-            abort() // instructions.append(.help(.reset))
+            instructions.append(.help(.reset))
         
         case "s", "step":
-            abort() // instructions.append(.help(.step))
+            instructions.append(.help(.step))
             
         case "r", "reg", "regs", "registers":
-            abort() // instructions.append(.help(.reg))
+            instructions.append(.help(.reg))
             
         case "x":
-            abort() // instructions.append(.help(.readMemory))
+            instructions.append(.help(.readMemory))
+            
+        case "writemem":
+            instructions.append(.help(.writeMemory))
             
         default:
-            errors.append(CompilerError(sourceAnchor: topic.sourceAnchor, message: "unrecognized help topic: `\(topic.value)'"))
+            instructions.append(.help(nil))
         }
     }
     

@@ -69,6 +69,41 @@
 		6F38F9062471C8D400B5296D /* TokenNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F5231F63E0003E7C7F /* TokenNumber.swift */; };
 		6F41B66824762D2F0043A8D7 /* TokenOperator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F41B66724762D2F0043A8D7 /* TokenOperator.swift */; };
 		6F41B66C2476D6130043A8D7 /* TokenOperatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F41B66B2476D6130043A8D7 /* TokenOperatorTests.swift */; };
+		6F4527392623BE05003732B3 /* DebugConsoleCommandLineParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4527382623BE05003732B3 /* DebugConsoleCommandLineParser.swift */; };
+		6F45274B2623BE15003732B3 /* DebugConsoleCommandLineParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F45274A2623BE15003732B3 /* DebugConsoleCommandLineParserTests.swift */; };
+		6F45279D2623D110003732B3 /* DebugConsoleCommandLineLexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F45279C2623D110003732B3 /* DebugConsoleCommandLineLexer.swift */; };
+		6F4527AF2623D118003732B3 /* DebugConsoleCommandLineLexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4527AE2623D118003732B3 /* DebugConsoleCommandLineLexerTests.swift */; };
+		6F4528012623E059003732B3 /* SourceAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4528002623E059003732B3 /* SourceAnchor.swift */; };
+		6F4528132623E064003732B3 /* SourceAnchorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4528122623E064003732B3 /* SourceAnchorTests.swift */; };
+		6F4528252623E0A7003732B3 /* SourceLineRangeMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4528242623E0A7003732B3 /* SourceLineRangeMapper.swift */; };
+		6F4528372623E0B2003732B3 /* SourceLineRangeMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4528362623E0B2003732B3 /* SourceLineRangeMapperTests.swift */; };
+		6F4528492623E148003732B3 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4528482623E148003732B3 /* Token.swift */; };
+		6F45285B2623E150003732B3 /* TokenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F45285A2623E150003732B3 /* TokenTests.swift */; };
+		6F45286D2623E1A8003732B3 /* CompilerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F45286C2623E1A8003732B3 /* CompilerError.swift */; };
+		6F45287F2623E1BF003732B3 /* CompilerErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F45287E2623E1BF003732B3 /* CompilerErrorTests.swift */; };
+		6F4528912623E64A003732B3 /* Lexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4528902623E64A003732B3 /* Lexer.swift */; };
+		6F4528A32623E65B003732B3 /* LexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4528A22623E65B003732B3 /* LexerTests.swift */; };
+		6F4528B52623E809003732B3 /* ScannerExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4528B42623E809003732B3 /* ScannerExtensionsTests.swift */; };
+		6F4528C72623E811003732B3 /* ScannerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4528C62623E811003732B3 /* ScannerExtensions.swift */; };
+		6F4528D92623E9C1003732B3 /* ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4528D82623E9C1003732B3 /* ParserTests.swift */; };
+		6F4528EB2623E9C9003732B3 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4528EA2623E9C9003732B3 /* Parser.swift */; };
+		6F4528FD2623EA5F003732B3 /* AbstractSyntaxTreeNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4528FC2623EA5F003732B3 /* AbstractSyntaxTreeNode.swift */; };
+		6F45290F2623EA7D003732B3 /* AbstractSyntaxTreeNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F45290E2623EA7D003732B3 /* AbstractSyntaxTreeNodeTests.swift */; };
+		6F4529412623EACF003732B3 /* TopLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4529402623EACF003732B3 /* TopLevel.swift */; };
+		6F4529532623EAEC003732B3 /* TopLevelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4529522623EAEC003732B3 /* TopLevelTests.swift */; };
+		6F4529652623ED81003732B3 /* CommandNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4529642623ED81003732B3 /* CommandNodeTests.swift */; };
+		6F4529772623ED8C003732B3 /* InstructionNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4529762623ED8C003732B3 /* InstructionNode.swift */; };
+		6F4529992623EDE0003732B3 /* ParameterList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4529982623EDE0003732B3 /* ParameterList.swift */; };
+		6F4529AB2623EE04003732B3 /* ParameterListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4529AA2623EE04003732B3 /* ParameterListTests.swift */; };
+		6F4529BD2623EFB5003732B3 /* ParameterNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4529BC2623EFB5003732B3 /* ParameterNumber.swift */; };
+		6F4529F12623F023003732B3 /* ParameterIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4529F02623F023003732B3 /* ParameterIdentifier.swift */; };
+		6F452A032623F39E003732B3 /* DebugConsoleCommandLineCompiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F452A022623F39E003732B3 /* DebugConsoleCommandLineCompiler.swift */; };
+		6F452A152623F3AC003732B3 /* DebugConsoleCommandLineCompilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F452A142623F3AC003732B3 /* DebugConsoleCommandLineCompilerTests.swift */; };
+		6F452ADB2624DE2A003732B3 /* ParameterSlashed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F452ADA2624DE2A003732B3 /* ParameterSlashed.swift */; };
+		6F452AFD2624ECAF003732B3 /* DebugConsoleCommandLineInterpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F452AFC2624ECAF003732B3 /* DebugConsoleCommandLineInterpreter.swift */; };
+		6F452B0F2624ECB9003732B3 /* DebugConsoleCommandLineInterpreterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F452B0E2624ECB9003732B3 /* DebugConsoleCommandLineInterpreterTests.swift */; };
+		6F452B21262516AE003732B3 /* DebugConsoleHelpTopic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F452B20262516AE003732B3 /* DebugConsoleHelpTopic.swift */; };
+		6F452B3326258694003732B3 /* DebugConsoleInstruction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F452B3226258694003732B3 /* DebugConsoleInstruction.swift */; };
 		6F47D8AF261CC129008EFFF2 /* FuseListMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F47D8AE261CC129008EFFF2 /* FuseListMaker.swift */; };
 		6F47D8C1261CC135008EFFF2 /* FuseListMakerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F47D8C0261CC135008EFFF2 /* FuseListMakerTests.swift */; };
 		6F47D8F3261CC6F2008EFFF2 /* JEDECFuseFileParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F47D8F2261CC6F2008EFFF2 /* JEDECFuseFileParser.swift */; };
@@ -85,6 +120,9 @@
 		6F4F7B50254D21CE0030E3CB /* PopGlobalOptimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F7B4F254D21CE0030E3CB /* PopGlobalOptimizer.swift */; };
 		6F4F7B60254D226E0030E3CB /* PopConstantPropagationOptimizationPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F7B5F254D226E0030E3CB /* PopConstantPropagationOptimizationPass.swift */; };
 		6F4F7B70254D22E10030E3CB /* PopConstantPropagationOptimizationPassTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F7B6F254D22E10030E3CB /* PopConstantPropagationOptimizationPassTests.swift */; };
+		6F52BEC826239185003C9CC3 /* CPU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F52BEC726239185003C9CC3 /* CPU.swift */; };
+		6F52BF402623942D003C9CC3 /* Turtle16Computer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F52BF3F2623942D003C9CC3 /* Turtle16Computer.swift */; };
+		6F52BFA4262394E7003C9CC3 /* Turtle16ComputerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F52BFA3262394E7003C9CC3 /* Turtle16ComputerTests.swift */; };
 		6F5337252474BC7700CFD33C /* ConstantDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D27E24709373003B5D5C /* ConstantDeclaration.swift */; };
 		6F5337262474BC7700CFD33C /* InstructionNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088074230F5D8F00AB2339 /* InstructionNode.swift */; };
 		6F5337272474BC7700CFD33C /* ParameterList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD8FA002360CAF1005A1856 /* ParameterList.swift */; };
@@ -809,6 +847,41 @@
 		6F41B66B2476D6130043A8D7 /* TokenOperatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenOperatorTests.swift; sourceTree = "<group>"; };
 		6F41B69524784B230043A8D7 /* RvalueExpressionCompiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RvalueExpressionCompiler.swift; sourceTree = "<group>"; };
 		6F41B69724784B680043A8D7 /* RvalueExpressionCompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RvalueExpressionCompilerTests.swift; sourceTree = "<group>"; };
+		6F4527382623BE05003732B3 /* DebugConsoleCommandLineParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugConsoleCommandLineParser.swift; sourceTree = "<group>"; };
+		6F45274A2623BE15003732B3 /* DebugConsoleCommandLineParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugConsoleCommandLineParserTests.swift; sourceTree = "<group>"; };
+		6F45279C2623D110003732B3 /* DebugConsoleCommandLineLexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugConsoleCommandLineLexer.swift; sourceTree = "<group>"; };
+		6F4527AE2623D118003732B3 /* DebugConsoleCommandLineLexerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugConsoleCommandLineLexerTests.swift; sourceTree = "<group>"; };
+		6F4528002623E059003732B3 /* SourceAnchor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceAnchor.swift; sourceTree = "<group>"; };
+		6F4528122623E064003732B3 /* SourceAnchorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceAnchorTests.swift; sourceTree = "<group>"; };
+		6F4528242623E0A7003732B3 /* SourceLineRangeMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceLineRangeMapper.swift; sourceTree = "<group>"; };
+		6F4528362623E0B2003732B3 /* SourceLineRangeMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceLineRangeMapperTests.swift; sourceTree = "<group>"; };
+		6F4528482623E148003732B3 /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
+		6F45285A2623E150003732B3 /* TokenTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenTests.swift; sourceTree = "<group>"; };
+		6F45286C2623E1A8003732B3 /* CompilerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerError.swift; sourceTree = "<group>"; };
+		6F45287E2623E1BF003732B3 /* CompilerErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerErrorTests.swift; sourceTree = "<group>"; };
+		6F4528902623E64A003732B3 /* Lexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lexer.swift; sourceTree = "<group>"; };
+		6F4528A22623E65B003732B3 /* LexerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LexerTests.swift; sourceTree = "<group>"; };
+		6F4528B42623E809003732B3 /* ScannerExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerExtensionsTests.swift; sourceTree = "<group>"; };
+		6F4528C62623E811003732B3 /* ScannerExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerExtensions.swift; sourceTree = "<group>"; };
+		6F4528D82623E9C1003732B3 /* ParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParserTests.swift; sourceTree = "<group>"; };
+		6F4528EA2623E9C9003732B3 /* Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
+		6F4528FC2623EA5F003732B3 /* AbstractSyntaxTreeNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbstractSyntaxTreeNode.swift; sourceTree = "<group>"; };
+		6F45290E2623EA7D003732B3 /* AbstractSyntaxTreeNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbstractSyntaxTreeNodeTests.swift; sourceTree = "<group>"; };
+		6F4529402623EACF003732B3 /* TopLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopLevel.swift; sourceTree = "<group>"; };
+		6F4529522623EAEC003732B3 /* TopLevelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopLevelTests.swift; sourceTree = "<group>"; };
+		6F4529642623ED81003732B3 /* CommandNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandNodeTests.swift; sourceTree = "<group>"; };
+		6F4529762623ED8C003732B3 /* InstructionNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionNode.swift; sourceTree = "<group>"; };
+		6F4529982623EDE0003732B3 /* ParameterList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterList.swift; sourceTree = "<group>"; };
+		6F4529AA2623EE04003732B3 /* ParameterListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterListTests.swift; sourceTree = "<group>"; };
+		6F4529BC2623EFB5003732B3 /* ParameterNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterNumber.swift; sourceTree = "<group>"; };
+		6F4529F02623F023003732B3 /* ParameterIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterIdentifier.swift; sourceTree = "<group>"; };
+		6F452A022623F39E003732B3 /* DebugConsoleCommandLineCompiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugConsoleCommandLineCompiler.swift; sourceTree = "<group>"; };
+		6F452A142623F3AC003732B3 /* DebugConsoleCommandLineCompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugConsoleCommandLineCompilerTests.swift; sourceTree = "<group>"; };
+		6F452ADA2624DE2A003732B3 /* ParameterSlashed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterSlashed.swift; sourceTree = "<group>"; };
+		6F452AFC2624ECAF003732B3 /* DebugConsoleCommandLineInterpreter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugConsoleCommandLineInterpreter.swift; sourceTree = "<group>"; };
+		6F452B0E2624ECB9003732B3 /* DebugConsoleCommandLineInterpreterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugConsoleCommandLineInterpreterTests.swift; sourceTree = "<group>"; };
+		6F452B20262516AE003732B3 /* DebugConsoleHelpTopic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugConsoleHelpTopic.swift; sourceTree = "<group>"; };
+		6F452B3226258694003732B3 /* DebugConsoleInstruction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugConsoleInstruction.swift; sourceTree = "<group>"; };
 		6F47D8AE261CC129008EFFF2 /* FuseListMaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuseListMaker.swift; sourceTree = "<group>"; };
 		6F47D8C0261CC135008EFFF2 /* FuseListMakerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuseListMakerTests.swift; sourceTree = "<group>"; };
 		6F47D8F2261CC6F2008EFFF2 /* JEDECFuseFileParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JEDECFuseFileParser.swift; sourceTree = "<group>"; };
@@ -829,6 +902,9 @@
 		6F4F7B5F254D226E0030E3CB /* PopConstantPropagationOptimizationPass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopConstantPropagationOptimizationPass.swift; sourceTree = "<group>"; };
 		6F4F7B6F254D22E10030E3CB /* PopConstantPropagationOptimizationPassTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopConstantPropagationOptimizationPassTests.swift; sourceTree = "<group>"; };
 		6F50DB0D247F5F9500643DAC /* SymbolTableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolTableTests.swift; sourceTree = "<group>"; };
+		6F52BEC726239185003C9CC3 /* CPU.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPU.swift; sourceTree = "<group>"; };
+		6F52BF3F2623942D003C9CC3 /* Turtle16Computer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Turtle16Computer.swift; sourceTree = "<group>"; };
+		6F52BFA3262394E7003C9CC3 /* Turtle16ComputerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Turtle16ComputerTests.swift; sourceTree = "<group>"; };
 		6F5337342474BE7D00CFD33C /* VarDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VarDeclarationTests.swift; sourceTree = "<group>"; };
 		6F5462F2253C0560005DDAB6 /* TraitDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraitDeclaration.swift; sourceTree = "<group>"; };
 		6F546310253D3B5F005DDAB6 /* ImplFor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImplFor.swift; sourceTree = "<group>"; };
@@ -1239,6 +1315,30 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		6F52BF612623946B003C9CC3 /* Pipeline */ = {
+			isa = PBXGroup;
+			children = (
+				6FA5D28A2593F6F300044B17 /* IF.swift */,
+				6F889D31259D308000EB647C /* ID.swift */,
+				6F7C14E9259A94C30034C7D0 /* EX.swift */,
+				6F7343DC25932FD100B7E43F /* MEM.swift */,
+				6F7343582593283D00B7E43F /* WB.swift */,
+			);
+			path = Pipeline;
+			sourceTree = "<group>";
+		};
+		6F52BF7226239485003C9CC3 /* Pipeline */ = {
+			isa = PBXGroup;
+			children = (
+				6FA5D29C2593F7E900044B17 /* IFTests.swift */,
+				6F889D43259D308B00EB647C /* IDTests.swift */,
+				6F7C14FB259A94E40034C7D0 /* EXTests.swift */,
+				6F7343EE25932FEE00B7E43F /* MEMTests.swift */,
+				6F73436A2593289400B7E43F /* WBTests.swift */,
+			);
+			path = Pipeline;
+			sourceTree = "<group>";
+		};
 		6F53372A2474BCDE00CFD33C /* AST */ = {
 			isa = PBXGroup;
 			children = (
@@ -1333,22 +1433,40 @@
 		6F734332259327D400B7E43F /* Turtle16SimulatorCore */ = {
 			isa = PBXGroup;
 			children = (
-				6FA5D2CE2593FAAA00044B17 /* IDT7831.swift */,
-				6FA5D28A2593F6F300044B17 /* IF.swift */,
-				6F889D31259D308000EB647C /* ID.swift */,
-				6F7C14E9259A94C30034C7D0 /* EX.swift */,
-				6F7343DC25932FD100B7E43F /* MEM.swift */,
-				6F7343582593283D00B7E43F /* WB.swift */,
-				6F889D55259D494900EB647C /* SchematicLevelCPUModel.swift */,
-				6F47D8AE261CC129008EFFF2 /* FuseListMaker.swift */,
+				6F52BF612623946B003C9CC3 /* Pipeline */,
+				6F4528FC2623EA5F003732B3 /* AbstractSyntaxTreeNode.swift */,
+				6FAE8EA5261BC4FD00A8A23D /* ATF22V10.swift */,
+				6F4529762623ED8C003732B3 /* InstructionNode.swift */,
+				6F45286C2623E1A8003732B3 /* CompilerError.swift */,
+				6F452AFC2624ECAF003732B3 /* DebugConsoleCommandLineInterpreter.swift */,
+				6F452A022623F39E003732B3 /* DebugConsoleCommandLineCompiler.swift */,
+				6F45279C2623D110003732B3 /* DebugConsoleCommandLineLexer.swift */,
+				6F4527382623BE05003732B3 /* DebugConsoleCommandLineParser.swift */,
+				6F452B20262516AE003732B3 /* DebugConsoleHelpTopic.swift */,
+				6F452B3226258694003732B3 /* DebugConsoleInstruction.swift */,
+				6F52BEC726239185003C9CC3 /* CPU.swift */,
 				6FAC109425A25E9300BB3836 /* DecoderGenerator.swift */,
+				6F47D8AE261CC129008EFFF2 /* FuseListMaker.swift */,
 				6F87A545261E23A40093750D /* HazardControl.swift */,
 				6F87A5CF261E47140093750D /* HazardControlGAL.swift */,
 				6F87A557261E26F40093750D /* HazardControlMockup.swift */,
+				6FA5D2CE2593FAAA00044B17 /* IDT7831.swift */,
 				6F47D8F2261CC6F2008EFFF2 /* JEDECFuseFileParser.swift */,
-				6FAE8E31261BA6F500A8A23D /* ProductTermFuseMap.swift */,
-				6FAE8EA5261BC4FD00A8A23D /* ATF22V10.swift */,
+				6F4528902623E64A003732B3 /* Lexer.swift */,
 				6FAE8DFD261B943600A8A23D /* OutputLogicMacroCell.swift */,
+				6F4529F02623F023003732B3 /* ParameterIdentifier.swift */,
+				6F4529982623EDE0003732B3 /* ParameterList.swift */,
+				6F4529BC2623EFB5003732B3 /* ParameterNumber.swift */,
+				6F452ADA2624DE2A003732B3 /* ParameterSlashed.swift */,
+				6F4528EA2623E9C9003732B3 /* Parser.swift */,
+				6FAE8E31261BA6F500A8A23D /* ProductTermFuseMap.swift */,
+				6F4528C62623E811003732B3 /* ScannerExtensions.swift */,
+				6F889D55259D494900EB647C /* SchematicLevelCPUModel.swift */,
+				6F4528002623E059003732B3 /* SourceAnchor.swift */,
+				6F4528242623E0A7003732B3 /* SourceLineRangeMapper.swift */,
+				6F4528482623E148003732B3 /* Token.swift */,
+				6F4529402623EACF003732B3 /* TopLevel.swift */,
+				6F52BF3F2623942D003C9CC3 /* Turtle16Computer.swift */,
 				6F734333259327D400B7E43F /* Turtle16SimulatorCore.h */,
 				6F87A5F1261E4D080093750D /* HazardControl1.pld */,
 				6F87A6E5261E69740093750D /* HazardControl2.pld */,
@@ -1360,21 +1478,33 @@
 		6F73433D259327D400B7E43F /* Turtle16SimulatorCoreTests */ = {
 			isa = PBXGroup;
 			children = (
-				6FA5D2E02593FAB500044B17 /* IDT7831Tests.swift */,
-				6FA5D29C2593F7E900044B17 /* IFTests.swift */,
-				6F889D43259D308B00EB647C /* IDTests.swift */,
-				6F7C14FB259A94E40034C7D0 /* EXTests.swift */,
-				6F7343EE25932FEE00B7E43F /* MEMTests.swift */,
-				6F73436A2593289400B7E43F /* WBTests.swift */,
+				6F52BF7226239485003C9CC3 /* Pipeline */,
+				6F45290E2623EA7D003732B3 /* AbstractSyntaxTreeNodeTests.swift */,
+				6FAE8EB7261BC50F00A8A23D /* ATF22V10Tests.swift */,
+				6F4529642623ED81003732B3 /* CommandNodeTests.swift */,
+				6F45287E2623E1BF003732B3 /* CompilerErrorTests.swift */,
+				6F452B0E2624ECB9003732B3 /* DebugConsoleCommandLineInterpreterTests.swift */,
+				6F452A142623F3AC003732B3 /* DebugConsoleCommandLineCompilerTests.swift */,
+				6F4527AE2623D118003732B3 /* DebugConsoleCommandLineLexerTests.swift */,
+				6F45274A2623BE15003732B3 /* DebugConsoleCommandLineParserTests.swift */,
 				6FAC10A625A25EA600BB3836 /* DecoderGeneratorTests.swift */,
 				6F47D8C0261CC135008EFFF2 /* FuseListMakerTests.swift */,
-				6F87A569261E2B390093750D /* HazardControlMockupTests.swift */,
 				6F87A5BD261E46DC0093750D /* HazardControlGALTests.swift */,
+				6F87A569261E2B390093750D /* HazardControlMockupTests.swift */,
+				6FA5D2E02593FAB500044B17 /* IDT7831Tests.swift */,
 				6F47D904261CC6FC008EFFF2 /* JEDECFuseFileParserTests.swift */,
-				6FAE8E43261BA70100A8A23D /* ProductTermFuseMapTests.swift */,
-				6FAE8EB7261BC50F00A8A23D /* ATF22V10Tests.swift */,
+				6F4528A22623E65B003732B3 /* LexerTests.swift */,
 				6FAE8E0F261B944A00A8A23D /* OutputLogicMacroCellTests.swift */,
+				6F4529AA2623EE04003732B3 /* ParameterListTests.swift */,
+				6F4528D82623E9C1003732B3 /* ParserTests.swift */,
+				6FAE8E43261BA70100A8A23D /* ProductTermFuseMapTests.swift */,
+				6F4528B42623E809003732B3 /* ScannerExtensionsTests.swift */,
 				6F889D67259D495400EB647C /* SchematicLevelCPUModelTests.swift */,
+				6F4528122623E064003732B3 /* SourceAnchorTests.swift */,
+				6F4528362623E0B2003732B3 /* SourceLineRangeMapperTests.swift */,
+				6F45285A2623E150003732B3 /* TokenTests.swift */,
+				6F4529522623EAEC003732B3 /* TopLevelTests.swift */,
+				6F52BFA3262394E7003C9CC3 /* Turtle16ComputerTests.swift */,
 				6F734340259327D400B7E43F /* Info.plist */,
 			);
 			path = Turtle16SimulatorCoreTests;
@@ -2431,6 +2561,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F452B21262516AE003732B3 /* DebugConsoleHelpTopic.swift in Sources */,
+				6F4529992623EDE0003732B3 /* ParameterList.swift in Sources */,
 				6F87A5D0261E47140093750D /* HazardControlGAL.swift in Sources */,
 				6FA5D2CF2593FAAA00044B17 /* IDT7831.swift in Sources */,
 				6FAE8EA6261BC4FD00A8A23D /* ATF22V10.swift in Sources */,
@@ -2438,12 +2570,32 @@
 				6F7343592593283D00B7E43F /* WB.swift in Sources */,
 				6FAE8DFE261B943600A8A23D /* OutputLogicMacroCell.swift in Sources */,
 				6F47D8F3261CC6F2008EFFF2 /* JEDECFuseFileParser.swift in Sources */,
+				6F4528252623E0A7003732B3 /* SourceLineRangeMapper.swift in Sources */,
 				6F889D32259D308000EB647C /* ID.swift in Sources */,
+				6F4529412623EACF003732B3 /* TopLevel.swift in Sources */,
+				6F452B3326258694003732B3 /* DebugConsoleInstruction.swift in Sources */,
 				6F87A546261E23A40093750D /* HazardControl.swift in Sources */,
+				6F4528C72623E811003732B3 /* ScannerExtensions.swift in Sources */,
 				6F87A558261E26F40093750D /* HazardControlMockup.swift in Sources */,
+				6F4528012623E059003732B3 /* SourceAnchor.swift in Sources */,
+				6F45279D2623D110003732B3 /* DebugConsoleCommandLineLexer.swift in Sources */,
+				6F452AFD2624ECAF003732B3 /* DebugConsoleCommandLineInterpreter.swift in Sources */,
+				6F4529772623ED8C003732B3 /* InstructionNode.swift in Sources */,
+				6F4529F12623F023003732B3 /* ParameterIdentifier.swift in Sources */,
 				6F7343DD25932FD100B7E43F /* MEM.swift in Sources */,
+				6F52BEC826239185003C9CC3 /* CPU.swift in Sources */,
+				6F4527392623BE05003732B3 /* DebugConsoleCommandLineParser.swift in Sources */,
 				6F7C14EA259A94C30034C7D0 /* EX.swift in Sources */,
+				6F52BF402623942D003C9CC3 /* Turtle16Computer.swift in Sources */,
 				6FAE8E32261BA6F500A8A23D /* ProductTermFuseMap.swift in Sources */,
+				6F4528912623E64A003732B3 /* Lexer.swift in Sources */,
+				6F45286D2623E1A8003732B3 /* CompilerError.swift in Sources */,
+				6F4528492623E148003732B3 /* Token.swift in Sources */,
+				6F4529BD2623EFB5003732B3 /* ParameterNumber.swift in Sources */,
+				6F4528EB2623E9C9003732B3 /* Parser.swift in Sources */,
+				6F452A032623F39E003732B3 /* DebugConsoleCommandLineCompiler.swift in Sources */,
+				6F4528FD2623EA5F003732B3 /* AbstractSyntaxTreeNode.swift in Sources */,
+				6F452ADB2624DE2A003732B3 /* ParameterSlashed.swift in Sources */,
 				6F47D8AF261CC129008EFFF2 /* FuseListMaker.swift in Sources */,
 				6FAC109525A25E9300BB3836 /* DecoderGenerator.swift in Sources */,
 				6FA5D28B2593F6F300044B17 /* IF.swift in Sources */,
@@ -2455,20 +2607,36 @@
 			buildActionMask = 2147483647;
 			files = (
 				6F889D68259D495400EB647C /* SchematicLevelCPUModelTests.swift in Sources */,
+				6F4529652623ED81003732B3 /* CommandNodeTests.swift in Sources */,
 				6FA5D2E12593FAB500044B17 /* IDT7831Tests.swift in Sources */,
 				6F73436B2593289400B7E43F /* WBTests.swift in Sources */,
 				6F889D44259D308B00EB647C /* IDTests.swift in Sources */,
+				6F4529AB2623EE04003732B3 /* ParameterListTests.swift in Sources */,
+				6F4527AF2623D118003732B3 /* DebugConsoleCommandLineLexerTests.swift in Sources */,
+				6F45274B2623BE15003732B3 /* DebugConsoleCommandLineParserTests.swift in Sources */,
+				6F45285B2623E150003732B3 /* TokenTests.swift in Sources */,
+				6F45287F2623E1BF003732B3 /* CompilerErrorTests.swift in Sources */,
 				6F87A5BE261E46DC0093750D /* HazardControlGALTests.swift in Sources */,
 				6F7C14FC259A94E40034C7D0 /* EXTests.swift in Sources */,
 				6F87A56A261E2B390093750D /* HazardControlMockupTests.swift in Sources */,
+				6F452A152623F3AC003732B3 /* DebugConsoleCommandLineCompilerTests.swift in Sources */,
 				6F47D905261CC6FC008EFFF2 /* JEDECFuseFileParserTests.swift in Sources */,
+				6F45290F2623EA7D003732B3 /* AbstractSyntaxTreeNodeTests.swift in Sources */,
+				6F4528D92623E9C1003732B3 /* ParserTests.swift in Sources */,
 				6FAE8E44261BA70100A8A23D /* ProductTermFuseMapTests.swift in Sources */,
 				6FA5D29D2593F7E900044B17 /* IFTests.swift in Sources */,
 				6FAC10A725A25EA600BB3836 /* DecoderGeneratorTests.swift in Sources */,
+				6F4529532623EAEC003732B3 /* TopLevelTests.swift in Sources */,
 				6F7343EF25932FEE00B7E43F /* MEMTests.swift in Sources */,
+				6F452B0F2624ECB9003732B3 /* DebugConsoleCommandLineInterpreterTests.swift in Sources */,
 				6F47D8C1261CC135008EFFF2 /* FuseListMakerTests.swift in Sources */,
 				6FAE8E10261B944A00A8A23D /* OutputLogicMacroCellTests.swift in Sources */,
 				6FAE8EB8261BC50F00A8A23D /* ATF22V10Tests.swift in Sources */,
+				6F4528A32623E65B003732B3 /* LexerTests.swift in Sources */,
+				6F4528B52623E809003732B3 /* ScannerExtensionsTests.swift in Sources */,
+				6F4528132623E064003732B3 /* SourceAnchorTests.swift in Sources */,
+				6F4528372623E0B2003732B3 /* SourceLineRangeMapperTests.swift in Sources */,
+				6F52BFA4262394E7003C9CC3 /* Turtle16ComputerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

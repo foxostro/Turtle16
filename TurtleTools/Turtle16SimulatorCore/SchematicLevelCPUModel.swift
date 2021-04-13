@@ -11,7 +11,7 @@ import Foundation
 // Models the Turtle16 CPU. Please refer to MainBoard.sch for details.
 // Classes in the simulator intentionally model specific pieces of hardware,
 // following naming conventions and organization that matches the schematics.
-public class SchematicLevelCPUModel: NSObject {
+public class SchematicLevelCPUModel: NSObject, CPU {
     public static let kNumberOfResetCycles: UInt = 100 // fake, but whatever
     
     public var resetCounter: UInt = kNumberOfResetCycles
@@ -32,13 +32,15 @@ public class SchematicLevelCPUModel: NSObject {
     public var z: UInt = 0
     public var ovf: UInt = 0
     
+    public let numberOfRegisters = 7
+    
     public func setRegister(_ idx: Int, _ val: UInt16) {
-        assert(idx >= 0 && idx <= 7)
+        assert(idx >= 0 && idx <= numberOfRegisters)
         stageID.registerFile[idx] = val
     }
     
     public func getRegister(_ idx: Int) -> UInt16 {
-        assert(idx >= 0 && idx <= 7)
+        assert(idx >= 0 && idx <= numberOfRegisters)
         return stageID.registerFile[idx]
     }
     

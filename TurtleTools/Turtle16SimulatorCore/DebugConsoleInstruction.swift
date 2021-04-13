@@ -9,5 +9,14 @@
 import Foundation
 
 public enum DebugConsoleInstruction: Equatable {
-    case help(DebugConsoleHelpTopic?), quit, reset, step(count: Int), reg, readMemory(base: UInt16, count: UInt), writeMemory(base: UInt16, words: [UInt16])
+    case help(DebugConsoleHelpTopic?)
+    case quit
+    case reset
+    case step(count: Int)
+    case reg
+    case info(String?)
+    case readMemory(base: UInt16, count: UInt)
+    case writeMemory(base: UInt16, words: [UInt16])
+    case readInstructions(base: UInt16, count: UInt)
+    case writeInstructions(base: UInt16, words: [UInt16])
 }

@@ -73,6 +73,10 @@ public class Turtle16Computer: NSObject {
         cpu.reset()
     }
     
+    public func run() {
+        cpu.run()
+    }
+    
     public func step() {
         cpu.step()
     }

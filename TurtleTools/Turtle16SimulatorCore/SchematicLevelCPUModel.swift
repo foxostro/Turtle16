@@ -97,6 +97,12 @@ public class SchematicLevelCPUModel: NSObject, CPU {
         }
     }
     
+    public func run() {
+        while !isHalted {
+            step()
+        }
+    }
+    
     public func step() {
         let rst: UInt = isResetting ? 0 : 1
         

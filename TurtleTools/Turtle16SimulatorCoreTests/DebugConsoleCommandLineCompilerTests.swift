@@ -590,4 +590,20 @@ class DebugConsoleCommandLineCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.errors.first?.message, "not enough bits to represent the passed value: `writememi'")
         XCTAssertEqual(compiler.errors.first?.context, "\twritememi -100000 0\n\t          ^~~~~~~")
     }
+    
+    func testContinue() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("c")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.run])
+    }
+    
+    func testContinueTakesNoParameters() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("continue a")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "instruction takes no parameters: `continue'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tcontinue a\n\t         ^")
+    }
 }

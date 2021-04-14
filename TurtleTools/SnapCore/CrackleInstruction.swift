@@ -7,7 +7,6 @@
 //
 
 import TurtleCore
-import TurtleCompilerToolbox
 
 // An instruction in the "Crackle" intermediate language.
 // This is basically a three-address code IR with a somewhat low-level focus.

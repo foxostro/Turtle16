@@ -7,7 +7,6 @@
 //
 
 import TurtleCore
-import TurtleCompilerToolbox
 
 // Compiles a program in the Crackle IR language to the Pop IR language.
 public class CrackleToPopCompiler: NSObject {

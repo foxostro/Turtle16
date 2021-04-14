@@ -8,6 +8,7 @@
 
 import XCTest
 import Turtle16SimulatorCore
+import TurtleCore
 
 class DebugConsoleCommandLineCompilerTests: XCTestCase {
     func testEmptyString() throws {

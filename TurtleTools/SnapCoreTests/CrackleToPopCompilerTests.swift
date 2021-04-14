@@ -9,7 +9,6 @@
 import XCTest
 import SnapCore
 import TurtleSimulatorCore
-import TurtleCompilerToolbox
 import TurtleCore
 
 class CrackleToPopCompilerTests: XCTestCase {

@@ -8,6 +8,7 @@
 
 import XCTest
 import Turtle16SimulatorCore
+import TurtleCore
 
 class DebugConsoleCommandLineParserTests: XCTestCase {
     func parse(_ text: String) -> DebugConsoleCommandLineParser {

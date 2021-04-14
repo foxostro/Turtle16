@@ -6,7 +6,7 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-import TurtleCompilerToolbox
+import TurtleCore
 
 // Takes an expression and generates intermediate code which can be more easily
 // compiled to machine code. (see also CrackleToTurtleMachineCodeCompiler)

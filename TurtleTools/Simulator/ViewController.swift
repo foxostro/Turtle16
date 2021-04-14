@@ -9,9 +9,7 @@
 import Cocoa
 import TurtleSimulatorCore
 import SnapCore
-import TurtleAssemblerCore
 import TurtleCore
-import TurtleCompilerToolbox
 import Carbon // for key codes
 
 class ViewController: NSViewController {

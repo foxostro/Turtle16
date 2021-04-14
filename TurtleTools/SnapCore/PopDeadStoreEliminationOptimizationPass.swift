@@ -6,7 +6,7 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-import TurtleCompilerToolbox
+import TurtleSimulatorCore
 
 public class PopDeadStoreEliminationOptimizationPass: NSObject {
     public var unoptimizedProgram = PopBasicBlock()

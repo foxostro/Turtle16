@@ -7,8 +7,6 @@
 //
 
 import TurtleCore
-import TurtleAssemblerCore
-import TurtleCompilerToolbox
 
 // Useful for building Traces of programs in unit test.
 public class TraceUtils: NSObject {

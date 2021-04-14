@@ -7,11 +7,12 @@
 //
 
 import Foundation
+import TurtleCore
 
 public class DebugConsoleCommandLineInterpreter: NSObject {
     public let computer: Turtle16Computer
     public var shouldQuit = false
-    public var stdout: TextOutputStream = String()
+    public var logger: Logger = StringLogger()
     
     public init(_ computer: Turtle16Computer) {
         self.computer = computer
@@ -65,28 +66,28 @@ public class DebugConsoleCommandLineInterpreter: NSObject {
     
     fileprivate func printHelp(_ topic: DebugConsoleHelpTopic?) {
         if let topic = topic {
-            stdout.write(topic.longHelp)
+            logger.append(topic.longHelp)
         } else {
-            stdout.write("Debugger commands:\n")
+            logger.append("Debugger commands:\n")
             let topics = DebugConsoleHelpTopic.allCases
             let maxLength = topics.map({ $0.name.count }).reduce(0, { max($0, $1) })
             for topic in topics {
                 let left = topic.name + String(repeating: " ", count: maxLength - topic.name.count)
-                stdout.write("\t\(left) -- \(topic.shortHelp)\n")
+                logger.append("\t\(left) -- \(topic.shortHelp)\n")
             }
-            stdout.write("\nFor more information on any command, type `help <command-name>'.\n")
+            logger.append("\nFor more information on any command, type `help <command-name>'.\n")
         }
     }
     
     fileprivate func run() {
         computer.run()
-        stdout.write("cpu is halted\n")
+        logger.append("cpu is halted\n")
     }
     
     fileprivate func step(count: Int) {
         for _ in 0..<count {
             if computer.isHalted {
-                stdout.write("cpu is halted\n")
+                logger.append("cpu is halted\n")
                 return
             } else {
                 computer.step()
@@ -104,7 +105,7 @@ public class DebugConsoleCommandLineInterpreter: NSObject {
         let r6 = String(format: "0x%04x", computer.getRegister(6))
         let r7 = String(format: "0x%04x", computer.getRegister(7))
         let pc = String(format: "0x%04x", computer.pc)
-        stdout.write("""
+        logger.append("""
 r0: \(r0)\tr4: \(r4)
 r1: \(r1)\tr5: \(r5)
 r2: \(r2)\tr6: \(r6)
@@ -123,7 +124,7 @@ pc: \(pc)
             printHelp(.info)
             return
         }
-        stdout.write("""
+        logger.append("""
 isHalted: \(computer.isHalted)
 isResetting: \(computer.isResetting)
 
@@ -137,7 +138,7 @@ isResetting: \(computer.isResetting)
         let hexDump = (0..<count).map({idx in
             String(format: "0x%04x", Int(array[Int(base) + Int(idx)]))
         }).joined(separator: " ")
-        stdout.write("\(baseStr): \(hexDump)\n")
+        logger.append("\(baseStr): \(hexDump)\n")
     }
     
     fileprivate func printMemoryContents(base: UInt16, count: UInt) {
@@ -164,7 +165,7 @@ isResetting: \(computer.isResetting)
     
     fileprivate func load(_ url: URL) {
         guard let data: Data = try? Data(contentsOf: url) else {
-            stdout.write("failed to load file: `\(url.path)'\n")
+            logger.append("failed to load file: `\(url.relativePath)'\n")
             return
         }
         let words = data.withUnsafeBytes { (pointer: UnsafeRawBufferPointer) -> [UInt16] in

@@ -7,7 +7,6 @@
 //
 
 import TurtleCore
-import TurtleCompilerToolbox
 
 public class SnapDebugInfo: ProgramDebugInfo {
     public var mapCrackleInstructionToSource: [SourceAnchor?] = []

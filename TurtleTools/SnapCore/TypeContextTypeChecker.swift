@@ -6,8 +6,6 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-import TurtleCompilerToolbox
-
 // Evaluates the expression type in a Type context.
 public class TypeContextTypeChecker: RvalueExpressionTypeChecker {
     public override func check(identifier expr: Expression.Identifier) throws -> SymbolType {

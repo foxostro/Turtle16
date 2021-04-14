@@ -6,7 +6,7 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-import TurtleCompilerToolbox
+import TurtleCore
 
 // Evaluates the expression type in an lvalue context.
 public class LvalueExpressionTypeChecker: NSObject {

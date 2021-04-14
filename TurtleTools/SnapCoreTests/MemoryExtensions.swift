@@ -8,6 +8,7 @@
 
 import TurtleCore
 import SnapCore
+import TurtleSimulatorCore
 
 extension Memory {
     public func loadValue(ofType elementType: SymbolType, from address: Int) -> Int {

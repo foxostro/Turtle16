@@ -1,15 +1,13 @@
 //
 //  AssemblerCommandLineDriver.swift
-//  TurtleAssemblerCore
+//  TurtleAssembler
 //
 //  Created by Andrew Fox on 8/1/19.
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
 import TurtleSimulatorCore
-import TurtleAssemblerCore
 import TurtleCore
-import TurtleCompilerToolbox
 
 // Provides an interface for driving the assembler from the command-line.
 public class AssemblerCommandLineDriver: NSObject {

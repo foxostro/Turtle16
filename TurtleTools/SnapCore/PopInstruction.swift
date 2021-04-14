@@ -7,7 +7,7 @@
 //
 
 import TurtleCore
-import TurtleCompilerToolbox
+import TurtleSimulatorCore
 
 // An instruction in the "Pop" intermediate language.
 // This is basically a thin veneer over the actual low-level machine code

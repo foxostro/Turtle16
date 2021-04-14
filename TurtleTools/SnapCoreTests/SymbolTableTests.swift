@@ -8,7 +8,7 @@
 
 import XCTest
 import SnapCore
-import TurtleCompilerToolbox
+import TurtleCore
 
 class SymbolTableTests: XCTestCase {
     func testEquatableSymbols() {

@@ -6,7 +6,6 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-import TurtleCompilerToolbox
 import TurtleCore
 
 // Accepts a Match statement and produces an AST which implements it in terms

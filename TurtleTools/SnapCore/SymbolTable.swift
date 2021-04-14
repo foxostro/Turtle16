@@ -6,7 +6,6 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-import TurtleCompilerToolbox
 import TurtleCore
 
 public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TurtleCore
 
 public class DebugConsoleCommandLineCompiler: NSObject {
     public var syntaxTree: TopLevel! = nil

@@ -150,4 +150,13 @@ class DebugConsoleCommandLineLexerTests: XCTestCase {
             TokenEOF(sourceAnchor: lineMapper.anchor(13, 13))
         ])
     }
+    
+    func testTokenizeQuotedLiteralString() {
+        let text = "\"test\""
+        let lineMapper = SourceLineRangeMapper(text: text)
+        let tokenizer = DebugConsoleCommandLineLexer(text)
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenLiteralString(sourceAnchor: lineMapper.anchor(0, 6), literal: "test"),
+                                          TokenEOF(sourceAnchor: lineMapper.anchor(6, 6))])
+    }
 }

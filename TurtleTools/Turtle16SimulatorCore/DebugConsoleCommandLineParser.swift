@@ -46,6 +46,8 @@ public class DebugConsoleCommandLineParser: Parser {
         switch nextToken {
         case is TokenForwardSlash:
             parameters += [try consumeParameterSlashed()]
+        case is TokenLiteralString:
+            parameters += [try consumeParameterString()]
         case is TokenNumber:
             parameters += [try consumeParameterNumber()]
         case is TokenIdentifier:
@@ -103,6 +105,12 @@ public class DebugConsoleCommandLineParser: Parser {
                                            instruction: previous?.lexeme ?? "unknown")
         }
         return ParameterSlashed(sourceAnchor: slash.sourceAnchor?.union(parameter.sourceAnchor), child: parameter)
+    }
+    
+    func consumeParameterString() throws -> Parameter {
+        let error = operandTypeMismatchError(sourceAnchor: peek()?.sourceAnchor, instruction: peek()?.lexeme ?? "unknown")
+        let token = try expect(type: TokenLiteralString.self, error: error) as! TokenLiteralString
+        return ParameterString(sourceAnchor: token.sourceAnchor, value: token.literal)
     }
     
     func consumeParameterNumber() throws -> Parameter {

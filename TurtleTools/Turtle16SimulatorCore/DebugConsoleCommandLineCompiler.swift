@@ -74,6 +74,9 @@ public class DebugConsoleCommandLineCompiler: NSObject {
                 case "writememi":
                     acceptWriteInstructions(node)
                     
+                case "load":
+                    acceptLoad(node)
+                    
                 default:
                     errors.append(CompilerError(sourceAnchor: child.sourceAnchor, message: "unrecognized instruction: `\(node.instruction)'"))
                 }
@@ -279,5 +282,22 @@ public class DebugConsoleCommandLineCompiler: NSObject {
         }
         
         return (baseAddr, words)
+    }
+    
+    fileprivate func acceptLoad(_ node: InstructionNode) {
+        guard node.parameters.elements.count != 0 else {
+            errors.append(CompilerError(sourceAnchor: node.sourceAnchor, message: "expected one parameter for the file path: `\(node.instruction)'"))
+            return
+        }
+        guard node.parameters.elements.count == 1 else {
+            errors.append(CompilerError(sourceAnchor: node.parameters.elements[1].sourceAnchor, message: "expected one parameter for the file path: `\(node.instruction)'"))
+            return
+        }
+        guard let parameter = node.parameters.elements.first as? ParameterString else {
+            errors.append(CompilerError(sourceAnchor: node.parameters.elements.first?.sourceAnchor, message: "expected a string for the file path: `\(node.instruction)'"))
+            return
+        }
+        let url = URL(fileURLWithPath: parameter.value)
+        instructions.append(.load(url))
     }
 }

@@ -175,6 +175,7 @@ Debugger commands:
 \twritemem  -- Write to memory.
 \txi        -- Read from instruction memory.
 \twritememi -- Write to instruction memory.
+\tload      -- Load a program from file.
 
 For more information on any command, type `help <command-name>'.
 
@@ -280,6 +281,18 @@ Syntax: writemem <address> <word> [<word>...]
 """)
     }
     
+    func testHelpLoad() throws {
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.runOne(instruction: .help(.load))
+        XCTAssertEqual(interpreter.stdout as! String, """
+Load a program from file.
+
+Syntax: load <path>
+
+""")
+    }
+    
     func testWriteMemory() throws {
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         computer.reset()
@@ -362,6 +375,42 @@ Syntax: writememi <address> <word> [<word>...]
                 0b1101011111111001, // BLT #-7
                 0b0000100000000000, // HLT
             ]),
+            .run,
+            .info("cpu")
+        ])
+        XCTAssertEqual(interpreter.stdout as! String, """
+isHalted: true
+isResetting: false
+
+r0: 0x0022\tr4: 0x0000
+r1: 0x0037\tr5: 0x0000
+r2: 0x0037\tr6: 0x0000
+r3: 0x0000\tr7: 0x0009
+pc: 0x000d
+
+""")
+    }
+    
+    func testFailToLoadProgramBecauseFileDoesNotExist() throws {
+        let url = URL(fileURLWithPath: "doesnotexistdoesnotexistdoesnotexistdoesnotexist")
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.run(instructions:[
+            .load(url)
+        ])
+        XCTAssertEqual(interpreter.stdout as! String, """
+failed to load file: `/private/tmp/doesnotexistdoesnotexistdoesnotexistdoesnotexist'
+
+""")
+    }
+    
+    func testLoadFibonacciProgramFromFileAndRunIt() throws {
+        let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.run(instructions:[
+            .reset,
+            .load(url),
             .run,
             .info("cpu")
         ])

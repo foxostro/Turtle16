@@ -57,6 +57,9 @@ public class DebugConsoleCommandLineInterpreter: NSObject {
             
         case .writeInstructions(let base, let words):
             writeInstructionMemory(base: base, words: words)
+            
+        case .load(let url):
+            load(url)
         }
     }
     
@@ -157,5 +160,18 @@ isResetting: \(computer.isResetting)
     
     fileprivate func writeInstructionMemory(base: UInt16, words: [UInt16]) {
         writeMemory(array: &computer.instructions, base: base, words: words)
+    }
+    
+    fileprivate func load(_ url: URL) {
+        guard let data: Data = try? Data(contentsOf: url) else {
+            stdout.write("failed to load file: `\(url.path)'\n")
+            return
+        }
+        let words = data.withUnsafeBytes { (pointer: UnsafeRawBufferPointer) -> [UInt16] in
+            let buffer = pointer.bindMemory(to: UInt16.self)
+            return buffer.map { UInt16(bigEndian: $0) }
+        }
+        computer.instructions = Array<UInt16>(repeating: 0, count: 65535)
+        writeInstructionMemory(base: 0, words: words)
     }
 }

@@ -9,7 +9,6 @@
 import XCTest
 import SnapCore
 import TurtleCore
-import TurtleCompilerToolbox
 
 class PopCompilerTests: XCTestCase {
     fileprivate func makeListing(_ compiler: PopCompiler) -> String {

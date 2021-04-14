@@ -8,7 +8,7 @@
 
 import XCTest
 import SnapCore
-import TurtleCompilerToolbox
+import TurtleCore
 
 class LvalueExpressionCompilerTests: XCTestCase {
     let t0 = SnapCompilerMetrics.kTemporaryStorageStartAddress + 0

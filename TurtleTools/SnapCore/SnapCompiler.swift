@@ -6,12 +6,8 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-import TurtleCompilerToolbox
 import TurtleCore
-
-public protocol SandboxAccessManager {
-    func requestAccess(url: URL?)
-}
+import TurtleSimulatorCore
 
 public class SnapCompiler: NSObject {
     public var isUsingStandardLibrary = false

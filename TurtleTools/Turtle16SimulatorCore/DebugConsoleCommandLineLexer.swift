@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TurtleCore
 
 public class DebugConsoleCommandLineLexer: Lexer {
     public required init(_ string: String, _ url: URL? = nil) {

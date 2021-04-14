@@ -7,6 +7,7 @@
 //
 
 import TurtleCore
+import TurtleSimulatorCore
 
 public class AssemblyListingMaker: NSObject {
     public static func makeListing(_ base: Int, _ instructions: [Instruction], _ programDebugInfo: SnapDebugInfo?) -> String {

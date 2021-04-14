@@ -7,8 +7,9 @@
 //
 
 import TurtleSimulatorCore
+import TurtleCore
 
-final class ConcreteToneGenerator: AudioRenderer, ToneGenerator {
+public final class ConcreteToneGenerator: AudioRenderer, ToneGenerator {
     private var _directDrive = 0.0
     public var directDrive: Double {
         get {
@@ -124,7 +125,7 @@ final class ConcreteToneGenerator: AudioRenderer, ToneGenerator {
     private var triangleWaveTheta = 0.0
     private var pulseWaveTheta = 0.0
     
-    override func render(_ inNumberFrames: UInt32, _ samples: UnsafeMutableBufferPointer<Float>) {
+    final public override func render(_ inNumberFrames: UInt32, _ samples: UnsafeMutableBufferPointer<Float>) {
         lock.lock()
         defer { lock.unlock() }
         

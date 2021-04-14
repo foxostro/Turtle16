@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import TurtleCore
 
 public class DebugConsoleCommandLineParser: Parser {
     public final override func consumeStatement() throws -> [AbstractSyntaxTreeNode] {

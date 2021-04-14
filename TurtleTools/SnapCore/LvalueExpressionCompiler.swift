@@ -6,8 +6,6 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-import TurtleCompilerToolbox
-
 // Compiles an expression in an lvalue context. This results in code which
 // pushes a destination address to the stack. (or else a type error)
 public class LvalueExpressionCompiler: BaseExpressionCompiler {

@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import TurtleCore
 import Turtle16SimulatorCore
 
 class DebugConsoleCommandLineInterpreterTests: XCTestCase {
@@ -61,7 +62,7 @@ class DebugConsoleCommandLineInterpreterTests: XCTestCase {
         computer.instructions = [ins]
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .step(count: 5))
-        XCTAssertEqual(interpreter.stdout as! String, """
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 cpu is halted
 
 """)
@@ -80,7 +81,7 @@ cpu is halted
         computer.pc = 0xabcd
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .reg)
-        XCTAssertEqual(interpreter.stdout as! String, """
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 r0: 0x0000\tr4: 0x0004
 r1: 0x0001\tr5: 0x0005
 r2: 0x0002\tr6: 0x0006
@@ -94,7 +95,7 @@ pc: 0xabcd
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .info(nil))
-        XCTAssertEqual(interpreter.stdout as! String, """
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 Show detailed information for a specified device.
 
 Devices:
@@ -109,7 +110,7 @@ Syntax: info cpu
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .info("asdf"))
-        XCTAssertEqual(interpreter.stdout as! String, """
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 Show detailed information for a specified device.
 
 Devices:
@@ -133,7 +134,7 @@ Syntax: info cpu
         computer.pc = 0xabcd
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .info("cpu"))
-        XCTAssertEqual(interpreter.stdout as! String, """
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 isHalted: false
 isResetting: true
 
@@ -153,7 +154,7 @@ pc: 0xabcd
         computer.ram[0x1000] = 0xaaaa
         computer.ram[0x1001] = 0xbbbb
         interpreter.runOne(instruction: .readMemory(base: 0x1000, count: 2))
-        XCTAssertEqual(interpreter.stdout as! String, """
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 0x1000: 0xaaaa 0xbbbb
 
 """)
@@ -163,7 +164,7 @@ pc: 0xabcd
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.none))
-        XCTAssertEqual(interpreter.stdout as! String, """
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 Debugger commands:
 \thelp      -- Show a list of all debugger commands, or give details about a specific command.
 \tquit      -- Quit the debugger.
@@ -186,7 +187,7 @@ For more information on any command, type `help <command-name>'.
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.help))
-        XCTAssertEqual(interpreter.stdout as! String, """
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 Show a list of all debugger commands, or give details about a specific command.
 
 Syntax: help [<topic>]
@@ -198,7 +199,7 @@ Syntax: help [<topic>]
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.quit))
-        XCTAssertEqual(interpreter.stdout as! String, """
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 Quit the debugger.
 
 Syntax: quit
@@ -210,7 +211,7 @@ Syntax: quit
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.reset))
-        XCTAssertEqual(interpreter.stdout as! String, """
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 Reset the computer.
 
 Syntax: reset
@@ -222,7 +223,7 @@ Syntax: reset
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.step))
-        XCTAssertEqual(interpreter.stdout as! String, """
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 Single step the simulation, executing for one or more clock cycles.
 
 Syntax: step [<cycle-count>]
@@ -234,7 +235,7 @@ Syntax: step [<cycle-count>]
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.info))
-        XCTAssertEqual(interpreter.stdout as! String, """
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 Show detailed information for a specified device.
 
 Devices:
@@ -249,7 +250,7 @@ Syntax: info cpu
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.reg))
-        XCTAssertEqual(interpreter.stdout as! String, """
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 Show CPU register contents.
 
 Syntax: reg
@@ -261,7 +262,7 @@ Syntax: reg
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.readMemory))
-        XCTAssertEqual(interpreter.stdout as! String, """
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 Read from memory.
 
 Syntax: x [/<count>] <address>
@@ -273,7 +274,7 @@ Syntax: x [/<count>] <address>
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.writeMemory))
-        XCTAssertEqual(interpreter.stdout as! String, """
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 Write to memory.
 
 Syntax: writemem <address> <word> [<word>...]
@@ -285,7 +286,7 @@ Syntax: writemem <address> <word> [<word>...]
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.load))
-        XCTAssertEqual(interpreter.stdout as! String, """
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 Load a program from file.
 
 Syntax: load <path>
@@ -308,7 +309,7 @@ Syntax: load <path>
         computer.instructions[0] = ~UInt16(0)
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .readInstructions(base: 0, count: 2))
-        XCTAssertEqual(interpreter.stdout as! String, """
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 0x0000: 0xffff 0x0000
 
 """)
@@ -327,7 +328,7 @@ Syntax: load <path>
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.readInstructions))
-        XCTAssertEqual(interpreter.stdout as! String, """
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 Read from instruction memory.
 
 Syntax: xi [/<count>] <address>
@@ -339,7 +340,7 @@ Syntax: xi [/<count>] <address>
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.writeInstructions))
-        XCTAssertEqual(interpreter.stdout as! String, """
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 Write to instruction memory.
 
 Syntax: writememi <address> <word> [<word>...]
@@ -378,7 +379,7 @@ Syntax: writememi <address> <word> [<word>...]
             .run,
             .info("cpu")
         ])
-        XCTAssertEqual(interpreter.stdout as! String, """
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 isHalted: true
 isResetting: false
 
@@ -398,8 +399,8 @@ pc: 0x000d
         interpreter.run(instructions:[
             .load(url)
         ])
-        XCTAssertEqual(interpreter.stdout as! String, """
-failed to load file: `/private/tmp/doesnotexistdoesnotexistdoesnotexistdoesnotexist'
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
+failed to load file: `doesnotexistdoesnotexistdoesnotexistdoesnotexist'
 
 """)
     }
@@ -414,7 +415,7 @@ failed to load file: `/private/tmp/doesnotexistdoesnotexistdoesnotexistdoesnotex
             .run,
             .info("cpu")
         ])
-        XCTAssertEqual(interpreter.stdout as! String, """
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 isHalted: true
 isResetting: false
 

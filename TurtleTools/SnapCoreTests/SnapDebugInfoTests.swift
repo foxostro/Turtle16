@@ -8,7 +8,6 @@
 
 import XCTest
 import SnapCore
-import TurtleCompilerToolbox
 
 class SnapDebugInfoTests: XCTestCase {
 }

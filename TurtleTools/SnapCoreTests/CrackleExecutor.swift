@@ -8,7 +8,6 @@
 
 import SnapCore
 import TurtleCore
-import TurtleCompilerToolbox
 import TurtleSimulatorCore
 
 // Simulates execution of a program written in the intermediate language.

@@ -8,7 +8,6 @@
 
 import XCTest
 import SnapCore
-import TurtleCompilerToolbox
 
 class CrackleInstructionTests: XCTestCase {
     func testDescription() {

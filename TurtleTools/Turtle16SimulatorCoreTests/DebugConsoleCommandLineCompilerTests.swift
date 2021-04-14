@@ -606,4 +606,35 @@ class DebugConsoleCommandLineCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.errors.first?.message, "instruction takes no parameters: `continue'")
         XCTAssertEqual(compiler.errors.first?.context, "\tcontinue a\n\t         ^")
     }
+    
+    func testLoadWithNoParameters() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("load")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "expected one parameter for the file path: `load'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tload\n\t^~~~")
+    }
+    
+    func testLoadWithTooManyParameters() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("load \"\" 12")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "expected one parameter for the file path: `load'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tload \"\" 12\n\t        ^~")
+    }
+    
+    func testLoadWithIncorrectTypeForParameter() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("load 12")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "expected a string for the file path: `load'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tload 12\n\t     ^~")
+    }
+    
+    func testLoad() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("load \"foo\"")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.load(URL(fileURLWithPath: "foo"))])
+    }
 }

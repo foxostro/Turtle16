@@ -104,6 +104,8 @@
 		6F452B0F2624ECB9003732B3 /* DebugConsoleCommandLineInterpreterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F452B0E2624ECB9003732B3 /* DebugConsoleCommandLineInterpreterTests.swift */; };
 		6F452B21262516AE003732B3 /* DebugConsoleHelpTopic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F452B20262516AE003732B3 /* DebugConsoleHelpTopic.swift */; };
 		6F452B3326258694003732B3 /* DebugConsoleInstruction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F452B3226258694003732B3 /* DebugConsoleInstruction.swift */; };
+		6F452B8726261704003732B3 /* fib.bin in Resources */ = {isa = PBXBuildFile; fileRef = 6F452B8626261704003732B3 /* fib.bin */; };
+		6F452BB92626227D003732B3 /* ParameterString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F452BB82626227D003732B3 /* ParameterString.swift */; };
 		6F47D8AF261CC129008EFFF2 /* FuseListMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F47D8AE261CC129008EFFF2 /* FuseListMaker.swift */; };
 		6F47D8C1261CC135008EFFF2 /* FuseListMakerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F47D8C0261CC135008EFFF2 /* FuseListMakerTests.swift */; };
 		6F47D8F3261CC6F2008EFFF2 /* JEDECFuseFileParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F47D8F2261CC6F2008EFFF2 /* JEDECFuseFileParser.swift */; };
@@ -882,6 +884,8 @@
 		6F452B0E2624ECB9003732B3 /* DebugConsoleCommandLineInterpreterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugConsoleCommandLineInterpreterTests.swift; sourceTree = "<group>"; };
 		6F452B20262516AE003732B3 /* DebugConsoleHelpTopic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugConsoleHelpTopic.swift; sourceTree = "<group>"; };
 		6F452B3226258694003732B3 /* DebugConsoleInstruction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugConsoleInstruction.swift; sourceTree = "<group>"; };
+		6F452B8626261704003732B3 /* fib.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = fib.bin; sourceTree = "<group>"; };
+		6F452BB82626227D003732B3 /* ParameterString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterString.swift; sourceTree = "<group>"; };
 		6F47D8AE261CC129008EFFF2 /* FuseListMaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuseListMaker.swift; sourceTree = "<group>"; };
 		6F47D8C0261CC135008EFFF2 /* FuseListMakerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuseListMakerTests.swift; sourceTree = "<group>"; };
 		6F47D8F2261CC6F2008EFFF2 /* JEDECFuseFileParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JEDECFuseFileParser.swift; sourceTree = "<group>"; };
@@ -1458,6 +1462,7 @@
 				6F4529982623EDE0003732B3 /* ParameterList.swift */,
 				6F4529BC2623EFB5003732B3 /* ParameterNumber.swift */,
 				6F452ADA2624DE2A003732B3 /* ParameterSlashed.swift */,
+				6F452BB82626227D003732B3 /* ParameterString.swift */,
 				6F4528EA2623E9C9003732B3 /* Parser.swift */,
 				6FAE8E31261BA6F500A8A23D /* ProductTermFuseMap.swift */,
 				6F4528C62623E811003732B3 /* ScannerExtensions.swift */,
@@ -1505,6 +1510,7 @@
 				6F45285A2623E150003732B3 /* TokenTests.swift */,
 				6F4529522623EAEC003732B3 /* TopLevelTests.swift */,
 				6F52BFA3262394E7003C9CC3 /* Turtle16ComputerTests.swift */,
+				6F452B8626261704003732B3 /* fib.bin */,
 				6F734340259327D400B7E43F /* Info.plist */,
 			);
 			path = Turtle16SimulatorCoreTests;
@@ -2447,6 +2453,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F452B8726261704003732B3 /* fib.bin in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2568,6 +2575,7 @@
 				6FAE8EA6261BC4FD00A8A23D /* ATF22V10.swift in Sources */,
 				6F889D56259D494900EB647C /* SchematicLevelCPUModel.swift in Sources */,
 				6F7343592593283D00B7E43F /* WB.swift in Sources */,
+				6F452BB92626227D003732B3 /* ParameterString.swift in Sources */,
 				6FAE8DFE261B943600A8A23D /* OutputLogicMacroCell.swift in Sources */,
 				6F47D8F3261CC6F2008EFFF2 /* JEDECFuseFileParser.swift in Sources */,
 				6F4528252623E0A7003732B3 /* SourceLineRangeMapper.swift in Sources */,

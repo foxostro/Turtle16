@@ -91,4 +91,12 @@ class DebugConsoleCommandLineParserTests: XCTestCase {
         XCTAssertEqual(ast.children.first, InstructionNode(instruction: "x",
                                                            parameters: ParameterList(parameters: [ParameterSlashed(child: ParameterIdentifier(value: "foo")), ParameterNumber(value: 0x1000)])))
     }
+    
+    func testLoad() throws {
+        let parser = parse("load \"foo\"")
+        let ast = parser.syntaxTree!
+        XCTAssertEqual(ast.children.count, 1)
+        XCTAssertEqual(ast.children.first, InstructionNode(instruction: "load",
+                                                           parameters: ParameterList(parameters: [ParameterString(value: "foo")])))
+    }
 }

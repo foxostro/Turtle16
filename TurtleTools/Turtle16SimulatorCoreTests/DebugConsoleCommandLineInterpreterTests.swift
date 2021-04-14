@@ -333,4 +333,48 @@ Syntax: writememi <address> <word> [<word>...]
 
 """)
     }
+    
+    func testContinue() throws {
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        computer.reset()
+        let hltOpcode: UInt = 1
+        let ins: UInt16 = UInt16(hltOpcode << 11)
+        computer.instructions = [ins]
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.runOne(instruction: .run)
+        XCTAssertTrue(computer.cpu.isHalted)
+    }
+    
+    func testInputFibonacciProgramAndRunIt() throws {
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.run(instructions:[
+            .reset,
+            .writeInstructions(base: 0, words: [
+                0b0010000000000000, // LI r0, #0
+                0b0010000100000001, // LI r1, #1
+                0b0010011100000000, // LI r7, #0
+                0b0011101000000100, // ADD r2, r0, r1
+                0b0111000000100000, // ADDI r0, r1, #0
+                0b0111011111100001, // ADDI r7, r7, #1
+                0b0111000101000000, // ADDI r1, r2, #0
+                0b0110100011101001, // CMPI r7, #9
+                0b1101011111111001, // BLT #-7
+                0b0000100000000000, // HLT
+            ]),
+            .run,
+            .info("cpu")
+        ])
+        XCTAssertEqual(interpreter.stdout as! String, """
+isHalted: true
+isResetting: false
+
+r0: 0x0022\tr4: 0x0000
+r1: 0x0037\tr5: 0x0000
+r2: 0x0037\tr6: 0x0000
+r3: 0x0000\tr7: 0x0009
+pc: 0x000d
+
+""")
+    }
 }

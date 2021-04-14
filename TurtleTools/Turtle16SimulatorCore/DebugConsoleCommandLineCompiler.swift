@@ -49,6 +49,9 @@ public class DebugConsoleCommandLineCompiler: NSObject {
                     
                 case "reset":
                     acceptReset(node)
+                    
+                case "c", "continue":
+                    acceptContinue(node)
                 
                 case "s", "step":
                     acceptStep(node)
@@ -140,6 +143,14 @@ public class DebugConsoleCommandLineCompiler: NSObject {
             errors.append(CompilerError(sourceAnchor: node.parameters.elements.first?.sourceAnchor, message: "instruction takes no parameters: `\(node.instruction)'"))
         } else {
             instructions.append(.reset)
+        }
+    }
+    
+    fileprivate func acceptContinue(_ node: InstructionNode) {
+        if node.parameters.elements.count != 0 {
+            errors.append(CompilerError(sourceAnchor: node.parameters.elements.first?.sourceAnchor, message: "instruction takes no parameters: `\(node.instruction)'"))
+        } else {
+            instructions.append(.run)
         }
     }
     

@@ -12,6 +12,7 @@ public enum DebugConsoleInstruction: Equatable {
     case help(DebugConsoleHelpTopic?)
     case quit
     case reset
+    case run
     case step(count: Int)
     case reg
     case info(String?)

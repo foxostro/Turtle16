@@ -17,6 +17,12 @@ public class DebugConsoleCommandLineInterpreter: NSObject {
         self.computer = computer
     }
     
+    public func run(instructions: [DebugConsoleInstruction]) {
+        for ins in instructions {
+            runOne(instruction: ins)
+        }
+    }
+    
     public func runOne(instruction: DebugConsoleInstruction) {
         switch instruction {
         case .help(let topic):
@@ -27,6 +33,9 @@ public class DebugConsoleCommandLineInterpreter: NSObject {
             
         case .reset:
             computer.reset()
+            
+        case .run:
+            computer.run()
             
         case .step(let count):
             step(count: count)
@@ -64,6 +73,11 @@ public class DebugConsoleCommandLineInterpreter: NSObject {
             }
             stdout.write("\nFor more information on any command, type `help <command-name>'.\n")
         }
+    }
+    
+    fileprivate func run() {
+        computer.run()
+        stdout.write("cpu is halted\n")
     }
     
     fileprivate func step(count: Int) {

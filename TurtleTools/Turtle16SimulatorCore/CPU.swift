@@ -26,5 +26,6 @@ public protocol CPU: NSObject {
     func getRegister(_ idx: Int) -> UInt16
     
     func reset()
+    func run()
     func step()
 }

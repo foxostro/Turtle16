@@ -10,6 +10,15 @@ import Foundation
 import TurtleCore
 
 public class DebugConsole: NSObject {
+    public var sandboxAccessManager: SandboxAccessManager? {
+        set(value) {
+            interpreter.sandboxAccessManager = value
+        }
+        get {
+            interpreter.sandboxAccessManager
+        }
+    }
+    
     public var shouldQuit: Bool {
         set(value) {
             interpreter.shouldQuit = value
@@ -27,8 +36,8 @@ public class DebugConsole: NSObject {
         }
     }
     public let computer: Turtle16Computer
-    let interpreter: DebugConsoleCommandLineInterpreter
-    let compiler: DebugConsoleCommandLineCompiler
+    public let interpreter: DebugConsoleCommandLineInterpreter
+    public let compiler: DebugConsoleCommandLineCompiler
     
     public init(computer: Turtle16Computer) {
         self.computer = computer
@@ -38,13 +47,14 @@ public class DebugConsole: NSObject {
     
     public func eval(_ text: String) {
         assert(!shouldQuit)
+        logger.append("> \(text)\n")
         compiler.compile(text)
         if compiler.hasError {
             if compiler.errors.count == 1 {
                 logger.append(compiler.errors.first!.message)
             } else {
                 let error = CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors)
-                logger.append(error.message)
+                logger.append(error.message + "\n")
             }
         } else {
             interpreter.run(instructions: compiler.instructions)

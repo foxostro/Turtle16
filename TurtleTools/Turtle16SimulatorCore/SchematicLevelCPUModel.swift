@@ -14,6 +14,7 @@ import Foundation
 public class SchematicLevelCPUModel: NSObject, CPU {
     public static let kNumberOfResetCycles: UInt = 100 // fake, but whatever
     
+    public var timeStamp: UInt = 0
     public var resetCounter: UInt = kNumberOfResetCycles
     
     public var isResetting: Bool {
@@ -95,6 +96,7 @@ public class SchematicLevelCPUModel: NSObject, CPU {
         while isResetting {
             step()
         }
+        timeStamp = 0
     }
     
     public func run() {
@@ -169,5 +171,7 @@ public class SchematicLevelCPUModel: NSObject, CPU {
         if resetCounter > 0 {
             resetCounter = resetCounter - 1
         }
+        
+        timeStamp = timeStamp + 1
     }
 }

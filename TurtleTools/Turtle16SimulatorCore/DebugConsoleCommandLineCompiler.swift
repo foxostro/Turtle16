@@ -298,7 +298,8 @@ public class DebugConsoleCommandLineCompiler: NSObject {
             errors.append(CompilerError(sourceAnchor: node.parameters.elements.first?.sourceAnchor, message: "expected a string for the file path: `\(node.instruction)'"))
             return
         }
-        let url = URL(fileURLWithPath: parameter.value)
+        let path = NSString(string: parameter.value).expandingTildeInPath
+        let url = URL(fileURLWithPath: path)
         instructions.append(.load(url))
     }
 }

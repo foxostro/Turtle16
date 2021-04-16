@@ -57,7 +57,7 @@ public class ConcreteSandboxAccessManager: NSObject, SandboxAccessManager {
         }
         let openPanel = NSOpenPanel()
         openPanel.title = "Grant access"
-        openPanel.message = "Grant access to modules directory"
+        openPanel.message = "Grant access"
         openPanel.prompt = "Grant access"
         openPanel.directoryURL = url
         openPanel.allowsMultipleSelection = false

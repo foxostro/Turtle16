@@ -150,6 +150,8 @@
 		6F4B5CB22471DE2D000C57EB /* SnapCommandLineDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4B5CB12471DE2D000C57EB /* SnapCommandLineDriver.swift */; };
 		6F4B5CB42471DE33000C57EB /* SnapCompiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4B5CB32471DE33000C57EB /* SnapCompiler.swift */; };
 		6F4B5CBD2471DF2A000C57EB /* SnapCompilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4B5CBC2471DF2A000C57EB /* SnapCompilerTests.swift */; };
+		6F4BCFA22629135700BA4775 /* RegisterTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4BCFA12629135700BA4775 /* RegisterTableViewDataSource.swift */; };
+		6F4BCFB32629139300BA4775 /* RegisterTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4BCFB22629139300BA4775 /* RegisterTableViewDelegate.swift */; };
 		6F4F3C43249EAEB30018BBBC /* FunctionDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F3C42249EAEB30018BBBC /* FunctionDeclaration.swift */; };
 		6F4F3C45249EAF700018BBBC /* FunctionDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F3C44249EAF700018BBBC /* FunctionDeclarationTests.swift */; };
 		6F4F3C47249EBC3A0018BBBC /* TokenType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F3C46249EBC3A0018BBBC /* TokenType.swift */; };
@@ -727,6 +729,8 @@
 		6F4B5CB12471DE2D000C57EB /* SnapCommandLineDriver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapCommandLineDriver.swift; sourceTree = "<group>"; };
 		6F4B5CB32471DE33000C57EB /* SnapCompiler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapCompiler.swift; sourceTree = "<group>"; };
 		6F4B5CBC2471DF2A000C57EB /* SnapCompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapCompilerTests.swift; sourceTree = "<group>"; };
+		6F4BCFA12629135700BA4775 /* RegisterTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterTableViewDataSource.swift; sourceTree = "<group>"; };
+		6F4BCFB22629139300BA4775 /* RegisterTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterTableViewDelegate.swift; sourceTree = "<group>"; };
 		6F4BE175230D2E31008C2329 /* CompilerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerError.swift; sourceTree = "<group>"; };
 		6F4F3C42249EAEB30018BBBC /* FunctionDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionDeclaration.swift; sourceTree = "<group>"; };
 		6F4F3C44249EAF700018BBBC /* FunctionDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionDeclarationTests.swift; sourceTree = "<group>"; };
@@ -1096,6 +1100,8 @@
 			children = (
 				6F1698AC262897ED00C96D07 /* AppDelegate.swift */,
 				6F1698AE262897ED00C96D07 /* Simulator16ViewController.swift */,
+				6F4BCFA12629135700BA4775 /* RegisterTableViewDataSource.swift */,
+				6F4BCFB22629139300BA4775 /* RegisterTableViewDelegate.swift */,
 				6F1698B0262897ED00C96D07 /* Assets.xcassets */,
 				6F1698B2262897ED00C96D07 /* Main.storyboard */,
 				6F35B4B22628AFED004EA0AB /* example.bin */,
@@ -2271,6 +2277,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F4BCFA22629135700BA4775 /* RegisterTableViewDataSource.swift in Sources */,
+				6F4BCFB32629139300BA4775 /* RegisterTableViewDelegate.swift in Sources */,
 				6F1698AF262897ED00C96D07 /* Simulator16ViewController.swift in Sources */,
 				6F1698AD262897ED00C96D07 /* AppDelegate.swift in Sources */,
 			);

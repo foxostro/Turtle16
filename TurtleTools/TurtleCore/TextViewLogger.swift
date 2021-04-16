@@ -7,20 +7,20 @@
 //
 
 import Cocoa
-import TurtleCore
 
-final class TextViewLogger: NSObject, Logger {
+public class TextViewLogger: NSObject, Logger {
     let textView:NSTextView
     let viewUpdateQueue:ThrottledQueue
     let queue = DispatchQueue(label: "com.foxostro.TextViewLogger")
     var pendingLines:[String] = []
+    public var appendTrailingNewline = true
     
-    init(textView:NSTextView) {
+    public init(textView:NSTextView) {
         self.textView = textView
         viewUpdateQueue = ThrottledQueue(queue: DispatchQueue.main, maxInterval: 1.0 / 30.0)
     }
     
-    func append(_ format: String, _ args: CVarArg...) {
+    public func append(_ format: String, _ args: CVarArg...) {
         queue.sync {
             let line = String(format:format, arguments:args)
             pendingLines.append(line)
@@ -35,7 +35,11 @@ final class TextViewLogger: NSObject, Logger {
             textStorage.beginEditing()
             queue.sync {
                 for line in pendingLines {
-                    textStorage.mutableString.append(line + "\n")
+                    if appendTrailingNewline {
+                        textStorage.mutableString.append(line + "\n")
+                    } else {
+                        textStorage.mutableString.append(line)
+                    }
                 }
                 pendingLines = []
             }
@@ -44,7 +48,7 @@ final class TextViewLogger: NSObject, Logger {
         }
     }
     
-    func clear() {
+    public func clear() {
         queue.sync {
             self.pendingLines = []
             DispatchQueue.main.async {

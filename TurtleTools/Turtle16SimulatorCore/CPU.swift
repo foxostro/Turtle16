@@ -10,6 +10,7 @@ import Foundation
 
 // Provides an abstract interface to a model of the Turtle16 CPU.
 public protocol CPU: NSObject {
+    var timeStamp: UInt { get }
     var isResetting: Bool { get }
     var isHalted: Bool { get }
     var pc: UInt16 { get set }

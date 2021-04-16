@@ -13,6 +13,7 @@ public class DebugConsoleCommandLineInterpreter: NSObject {
     public let computer: Turtle16Computer
     public var shouldQuit = false
     public var logger: Logger = StringLogger()
+    public var sandboxAccessManager: SandboxAccessManager? = nil
     
     public init(_ computer: Turtle16Computer) {
         self.computer = computer
@@ -163,9 +164,27 @@ isResetting: \(computer.isResetting)
         writeMemory(array: &computer.instructions, base: base, words: words)
     }
     
+    fileprivate func loadDataFile(_ url: URL) -> Data? {
+        do {
+            return try Data(contentsOf: url)
+        }
+        catch let error as NSError {
+            if error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoPermissionError {
+                sandboxAccessManager?.requestAccess(url: url)
+                if let data: Data = try? Data(contentsOf: url) {
+                    return data
+                }
+            } else {
+                logger.append("failed to load file: `\(url.relativePath)'\n")
+                logger.append(error.localizedFailureReason ?? "")
+            }
+            
+            return nil
+        }
+    }
+    
     fileprivate func load(_ url: URL) {
-        guard let data: Data = try? Data(contentsOf: url) else {
-            logger.append("failed to load file: `\(url.relativePath)'\n")
+        guard let data: Data = loadDataFile(url) else {
             return
         }
         let words = data.withUnsafeBytes { (pointer: UnsafeRawBufferPointer) -> [UInt16] in
@@ -174,5 +193,6 @@ isResetting: \(computer.isResetting)
         }
         computer.instructions = Array<UInt16>(repeating: 0, count: 65535)
         writeInstructionMemory(base: 0, words: words)
+        logger.append("Wrote \(words.count) words to instruction memory.\n")
     }
 }

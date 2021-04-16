@@ -14,6 +14,10 @@ public class Turtle16Computer: NSObject {
     public let cpu: CPU
     public var ram: [UInt16]
     
+    public var timeStamp: UInt {
+        cpu.timeStamp
+    }
+    
     public init(_ cpu: CPU) {
         self.cpu = cpu
         self.ram = Array<UInt16>(repeating: 0, count: 65535)

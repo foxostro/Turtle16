@@ -20,5 +20,6 @@ public enum DebugConsoleInstruction: Equatable {
     case writeMemory(base: UInt16, words: [UInt16])
     case readInstructions(base: UInt16, count: UInt)
     case writeInstructions(base: UInt16, words: [UInt16])
-    case load(URL)
+    case loadProgram(URL)
+    case loadData(URL)
 }

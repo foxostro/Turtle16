@@ -610,32 +610,39 @@ class DebugConsoleCommandLineCompilerTests: XCTestCase {
     
     func testLoadWithNoParameters() throws {
         let compiler = DebugConsoleCommandLineCompiler()
-        compiler.compile("load")
+        compiler.compile("load-program")
         XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "expected one parameter for the file path: `load'")
-        XCTAssertEqual(compiler.errors.first?.context, "\tload\n\t^~~~")
+        XCTAssertEqual(compiler.errors.first?.message, "expected one parameter for the file path: `load-program'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tload-program\n\t^~~~~~~~~~~~")
     }
     
     func testLoadWithTooManyParameters() throws {
         let compiler = DebugConsoleCommandLineCompiler()
-        compiler.compile("load \"\" 12")
+        compiler.compile("load-program \"\" 12")
         XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "expected one parameter for the file path: `load'")
-        XCTAssertEqual(compiler.errors.first?.context, "\tload \"\" 12\n\t        ^~")
+        XCTAssertEqual(compiler.errors.first?.message, "expected one parameter for the file path: `load-program'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tload-program \"\" 12\n\t                ^~")
     }
     
     func testLoadWithIncorrectTypeForParameter() throws {
         let compiler = DebugConsoleCommandLineCompiler()
-        compiler.compile("load 12")
+        compiler.compile("load-program 12")
         XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "expected a string for the file path: `load'")
-        XCTAssertEqual(compiler.errors.first?.context, "\tload 12\n\t     ^~")
+        XCTAssertEqual(compiler.errors.first?.message, "expected a string for the file path: `load-program'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tload-program 12\n\t             ^~")
     }
     
-    func testLoad() throws {
+    func testLoadProgram() throws {
         let compiler = DebugConsoleCommandLineCompiler()
-        compiler.compile("load \"foo\"")
+        compiler.compile("load-program \"foo\"")
         XCTAssertFalse(compiler.hasError)
-        XCTAssertEqual(compiler.instructions, [.load(URL(fileURLWithPath: "foo"))])
+        XCTAssertEqual(compiler.instructions, [.loadProgram(URL(fileURLWithPath: "foo"))])
+    }
+    
+    func testLoadData() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("load-data \"foo\"")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.loadData(URL(fileURLWithPath: "foo"))])
     }
 }

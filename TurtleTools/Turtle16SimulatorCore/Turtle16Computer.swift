@@ -20,7 +20,7 @@ public class Turtle16Computer: NSObject {
     
     public init(_ cpu: CPU) {
         self.cpu = cpu
-        self.ram = Array<UInt16>(repeating: 0, count: 65535)
+        self.ram = Array<UInt16>(repeating: 0, count: Int(UInt16.max)+1)
     }
     
     public var isHalted: Bool {

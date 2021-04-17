@@ -166,17 +166,18 @@ pc: 0xabcd
         interpreter.runOne(instruction: .help(.none))
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 Debugger commands:
-\thelp      -- Show a list of all debugger commands, or give details about a specific command.
-\tquit      -- Quit the debugger.
-\treset     -- Reset the computer.
-\tstep      -- Single step the simulation, executing for one or more clock cycles.
-\treg       -- Show CPU register contents.
-\tinfo      -- Show detailed information for a specified device.
-\tx         -- Read from memory.
-\twritemem  -- Write to memory.
-\txi        -- Read from instruction memory.
-\twritememi -- Write to instruction memory.
-\tload      -- Load a program from file.
+\thelp         -- Show a list of all debugger commands, or give details about a specific command.
+\tquit         -- Quit the debugger.
+\treset        -- Reset the computer.
+\tstep         -- Single step the simulation, executing for one or more clock cycles.
+\treg          -- Show CPU register contents.
+\tinfo         -- Show detailed information for a specified device.
+\tx            -- Read from memory.
+\twritemem     -- Write to memory.
+\txi           -- Read from instruction memory.
+\twritememi    -- Write to instruction memory.
+\tload-program -- Load a program from file.
+\tload-data    -- Load data from file.
 
 For more information on any command, type `help <command-name>'.
 
@@ -282,14 +283,26 @@ Syntax: writemem <address> <word> [<word>...]
 """)
     }
     
-    func testHelpLoad() throws {
+    func testHelpLoadProgram() throws {
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
-        interpreter.runOne(instruction: .help(.load))
+        interpreter.runOne(instruction: .help(.loadProgram))
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 Load a program from file.
 
-Syntax: load <path>
+Syntax: load-program "<path>"
+
+""")
+    }
+    
+    func testHelpLoadData() throws {
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.runOne(instruction: .help(.loadData))
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
+Load data from file.
+
+Syntax: load-data "<path>"
 
 """)
     }
@@ -397,10 +410,11 @@ pc: 0x000d
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
-            .load(url)
+            .loadProgram(url)
         ])
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 failed to load file: `doesnotexistdoesnotexistdoesnotexistdoesnotexist'
+The file doesn’t exist.
 
 """)
     }
@@ -411,11 +425,12 @@ failed to load file: `doesnotexistdoesnotexistdoesnotexistdoesnotexist'
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
             .reset,
-            .load(url),
+            .loadProgram(url),
             .run,
             .info("cpu")
         ])
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
+Wrote 10 words to instruction memory.
 isHalted: true
 isResetting: false
 
@@ -426,5 +441,15 @@ r3: 0x0000\tr7: 0x0009
 pc: 0x000d
 
 """)
+    }
+    
+    func testLoadDataFromFile() throws {
+        let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.run(instructions:[
+            .loadData(url)
+        ])
+        XCTAssertEqual(computer.ram[0], 0x2000)
     }
 }

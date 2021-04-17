@@ -30,7 +30,7 @@ class RegisterTableViewDataSource: NSObject, NSTableViewDataSource {
             
         case kHexIdentifier:
             let value = (row == kNumberOfRows-1) ? computer.pc : computer.getRegister(row)
-            return String(format: "0x%04x", value)
+            return String(format: "%04x", value)
             
         case kDecIdentifier:
             let value = (row == kNumberOfRows-1) ? computer.pc : computer.getRegister(row)

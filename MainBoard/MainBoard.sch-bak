@@ -538,8 +538,8 @@ P 1150 7350
 F 0 "J1" H 1258 7531 50  0000 C CNN
 F 1 "Power" H 1258 7440 50  0000 C CNN
 F 2 "componentsearchengine:1724480002" H 1150 7350 50  0001 C CNN
-F 3 "https://www.mouser.com/datasheet/2/276/1/1724470002_PCB_HEADERS-704283.pdf" H 1150 7350 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Molex/172447-0002?qs=%2Fha2pyFaduixh%252B4jsiB7slUXUNAA80hvehmHOZIFpAANTxSXnfDI7A%3D%3D" H 1150 7350 50  0001 C CNN "Mouser"
+F 3 "https://www.mouser.com/datasheet/2/276/1/1724480002_PCB_HEADERS-706270.pdf" H 1150 7350 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/538-172448-0002" H 1150 7350 50  0001 C CNN "Mouser"
 	1    1150 7350
 	1    0    0    -1  
 $EndComp

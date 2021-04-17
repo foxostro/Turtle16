@@ -75,8 +75,11 @@ public class DebugConsoleCommandLineCompiler: NSObject {
                 case "writememi":
                     acceptWriteInstructions(node)
                     
-                case "load":
-                    acceptLoad(node)
+                case "load-program":
+                    acceptLoadProgram(node)
+                    
+                case "load-data":
+                    acceptLoadData(node)
                     
                 default:
                     errors.append(CompilerError(sourceAnchor: child.sourceAnchor, message: "unrecognized instruction: `\(node.instruction)'"))
@@ -128,6 +131,12 @@ public class DebugConsoleCommandLineCompiler: NSObject {
             
         case "writememi":
             instructions.append(.help(.writeInstructions))
+            
+        case "load-program":
+            instructions.append(.help(.loadProgram))
+            
+        case "load-data":
+            instructions.append(.help(.loadData))
             
         default:
             instructions.append(.help(nil))
@@ -285,7 +294,7 @@ public class DebugConsoleCommandLineCompiler: NSObject {
         return (baseAddr, words)
     }
     
-    fileprivate func acceptLoad(_ node: InstructionNode) {
+    fileprivate func acceptLoadProgram(_ node: InstructionNode) {
         guard node.parameters.elements.count != 0 else {
             errors.append(CompilerError(sourceAnchor: node.sourceAnchor, message: "expected one parameter for the file path: `\(node.instruction)'"))
             return
@@ -300,6 +309,24 @@ public class DebugConsoleCommandLineCompiler: NSObject {
         }
         let path = NSString(string: parameter.value).expandingTildeInPath
         let url = URL(fileURLWithPath: path)
-        instructions.append(.load(url))
+        instructions.append(.loadProgram(url))
+    }
+    
+    fileprivate func acceptLoadData(_ node: InstructionNode) {
+        guard node.parameters.elements.count != 0 else {
+            errors.append(CompilerError(sourceAnchor: node.sourceAnchor, message: "expected one parameter for the file path: `\(node.instruction)'"))
+            return
+        }
+        guard node.parameters.elements.count == 1 else {
+            errors.append(CompilerError(sourceAnchor: node.parameters.elements[1].sourceAnchor, message: "expected one parameter for the file path: `\(node.instruction)'"))
+            return
+        }
+        guard let parameter = node.parameters.elements.first as? ParameterString else {
+            errors.append(CompilerError(sourceAnchor: node.parameters.elements.first?.sourceAnchor, message: "expected a string for the file path: `\(node.instruction)'"))
+            return
+        }
+        let path = NSString(string: parameter.value).expandingTildeInPath
+        let url = URL(fileURLWithPath: path)
+        instructions.append(.loadData(url))
     }
 }

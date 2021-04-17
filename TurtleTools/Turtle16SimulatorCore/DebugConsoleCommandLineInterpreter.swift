@@ -52,7 +52,7 @@ public class DebugConsoleCommandLineInterpreter: NSObject {
             printMemoryContents(base: base, count: count)
             
         case .writeMemory(let base, let words):
-            writeMemory(base: base, words: words)
+            writeDataMemory(base: base, words: words)
             
         case .readInstructions(let base, let count):
             printInstructionMemoryContents(base: base, count: count)
@@ -60,8 +60,11 @@ public class DebugConsoleCommandLineInterpreter: NSObject {
         case .writeInstructions(let base, let words):
             writeInstructionMemory(base: base, words: words)
             
-        case .load(let url):
-            load(url)
+        case .loadProgram(let url):
+            loadProgram(url)
+            
+        case .loadData(let url):
+            loadData(url)
         }
     }
     
@@ -151,12 +154,12 @@ isResetting: \(computer.isResetting)
     }
     
     fileprivate func writeMemory(array: inout [UInt16], base: UInt16, words: [UInt16]) {
-        for idx in 0..<words.count {
+        for idx in 0..<min(words.count, Int(UInt16.max)+1) {
             array[Int(base) + idx] = words[idx]
         }
     }
     
-    fileprivate func writeMemory(base: UInt16, words: [UInt16]) {
+    fileprivate func writeDataMemory(base: UInt16, words: [UInt16]) {
         writeMemory(array: &computer.ram, base: base, words: words)
     }
     
@@ -176,14 +179,14 @@ isResetting: \(computer.isResetting)
                 }
             } else {
                 logger.append("failed to load file: `\(url.relativePath)'\n")
-                logger.append(error.localizedFailureReason ?? "")
+                logger.append((error.localizedFailureReason ?? "") + "\n")
             }
             
             return nil
         }
     }
     
-    fileprivate func load(_ url: URL) {
+    fileprivate func loadProgram(_ url: URL) {
         guard let data: Data = loadDataFile(url) else {
             return
         }
@@ -191,8 +194,21 @@ isResetting: \(computer.isResetting)
             let buffer = pointer.bindMemory(to: UInt16.self)
             return buffer.map { UInt16(bigEndian: $0) }
         }
-        computer.instructions = Array<UInt16>(repeating: 0, count: 65535)
+        computer.instructions = Array<UInt16>(repeating: 0, count: Int(UInt16.max)+1)
         writeInstructionMemory(base: 0, words: words)
         logger.append("Wrote \(words.count) words to instruction memory.\n")
+    }
+    
+    fileprivate func loadData(_ url: URL) {
+        guard let data: Data = loadDataFile(url) else {
+            return
+        }
+        let words = data.withUnsafeBytes { (pointer: UnsafeRawBufferPointer) -> [UInt16] in
+            let buffer = pointer.bindMemory(to: UInt16.self)
+            return buffer.map { UInt16(bigEndian: $0) }
+        }
+        computer.ram = Array<UInt16>(repeating: 0, count: Int(UInt16.max)+1)
+        writeDataMemory(base: 0, words: words)
+        logger.append("Wrote \(words.count) words to data memory.\n")
     }
 }

@@ -9,7 +9,7 @@
 import Foundation
 
 public enum DebugConsoleHelpTopic: Equatable, CaseIterable {
-    case help, quit, reset, step, reg, info, readMemory, writeMemory, readInstructions, writeInstructions, load
+    case help, quit, reset, step, reg, info, readMemory, writeMemory, readInstructions, writeInstructions, loadProgram, loadData
     
     public var name: String {
         switch self {
@@ -23,7 +23,8 @@ public enum DebugConsoleHelpTopic: Equatable, CaseIterable {
         case .writeMemory:       return "writemem"
         case .readInstructions:  return "xi"
         case .writeInstructions: return "writememi"
-        case .load:              return "load"
+        case .loadProgram:       return "load-program"
+        case .loadData:          return "load-data"
         }
     }
     
@@ -59,8 +60,11 @@ public enum DebugConsoleHelpTopic: Equatable, CaseIterable {
         case .writeInstructions:
             return "Write to instruction memory."
             
-        case .load:
+        case .loadProgram:
             return "Load a program from file."
+            
+        case .loadData:
+            return "Load data from file."
         }
     }
     
@@ -149,11 +153,19 @@ Syntax: writememi <address> <word> [<word>...]
 
 """
         
-        case .load:
+        case .loadProgram:
             return """
 \(shortHelp)
 
-Syntax: load <path>
+Syntax: load-program "<path>"
+
+"""
+        
+        case .loadData:
+            return """
+\(shortHelp)
+
+Syntax: load-data "<path>"
 
 """
         }

@@ -28,7 +28,7 @@ public class DebugConsoleCommandLineLexer: Lexer {
             Rule(pattern: "\".*\"") {[weak self] in
                 TokenLiteralString(sourceAnchor: $0, literal: self!.interpretQuotedString(lexeme: String($0.text)))
             },
-            Rule(pattern: "[_a-zA-Z][_a-zA-Z0-9]*\\b") {
+            Rule(pattern: "[_a-zA-Z][\\-_a-zA-Z0-9]*\\b") {
                 TokenIdentifier(sourceAnchor: $0)
             },
             Rule(pattern: "[-]{0,1}[0-9]+\\b") {

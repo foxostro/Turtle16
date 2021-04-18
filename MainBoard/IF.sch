@@ -6,7 +6,7 @@ encoding utf-8
 Sheet 36 39
 Title "IF"
 Date "2021-04-18"
-Rev "A (ff236685)"
+Rev "A (34c8551e)"
 Comp ""
 Comment1 "All jumps are PC-relative jumps which add an offset to the program counter."
 Comment2 "address space to allow the program to be modified."

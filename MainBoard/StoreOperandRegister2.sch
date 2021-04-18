@@ -6,7 +6,7 @@ encoding utf-8
 Sheet 22 39
 Title "EX/MEM: Store Operand Register"
 Date "2021-04-18"
-Rev "A (ff236685)"
+Rev "A (34c8551e)"
 Comp ""
 Comment1 ""
 Comment2 ""

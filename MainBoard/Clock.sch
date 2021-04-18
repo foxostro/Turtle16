@@ -590,13 +590,14 @@ Connection ~ 900  7600
 Connection ~ 1400 7300
 Connection ~ 1400 7600
 $Sheet
-S 2800 5200 800  400 
+S 2800 5200 800  550 
 U 611B6311
 F0 "HaltResume" 50
 F1 "HaltResume.sch" 50
 F2 "~RST" I L 2800 5300 50 
 F3 "RDY" B R 3600 5300 50 
 F4 "~HLT" I L 2800 5450 50 
+F5 "Phi1_0" I L 2800 5600 50 
 $EndSheet
 Text GLabel 2600 5300 0    50   Input ~ 0
 ~RST
@@ -847,4 +848,8 @@ F 3 "~" H 9500 1600 50  0001 C CNN
 	1    9300 1600
 	0    -1   1    0   
 $EndComp
+Text Label 2600 5600 2    50   ~ 0
+Phi1_0
+Wire Wire Line
+	2800 5600 2600 5600
 $EndSCHEMATC

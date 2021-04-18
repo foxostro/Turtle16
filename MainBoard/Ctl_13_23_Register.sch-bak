@@ -590,7 +590,7 @@ F 3 "" H 5200 4700 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 Text GLabel 6500 4700 2    50   Input ~ 0
-Phi1a
+Phi1c
 $Comp
 L power:VCC #PWR?
 U 1 1 607352FF

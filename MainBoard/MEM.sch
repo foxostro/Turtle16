@@ -5,8 +5,8 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 7 39
 Title "MEM"
-Date "2021-04-01"
-Rev "A (c15ecb9b)"
+Date "2021-04-18"
+Rev "A (ff236685)"
 Comp ""
 Comment1 "place bus lines into tristate and halt the Phi1 clock."
 Comment2 "Devices on the bus may take the open-collector ~RDY~ signal high to force the CPU to"

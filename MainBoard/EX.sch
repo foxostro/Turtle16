@@ -470,7 +470,7 @@ F5 "RightOp[0..15]" O R 5000 4700 50
 F6 "SelRightOpB" I L 3600 4400 50 
 $EndSheet
 Text GLabel 7800 5350 0    50   Input ~ 0
-Phi1b
+Phi1a
 Wire Wire Line
 	3600 4300 3150 4300
 Entry Wire Line

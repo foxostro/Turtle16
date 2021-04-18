@@ -6,7 +6,7 @@ encoding utf-8
 Sheet 23 39
 Title "ID"
 Date "2021-04-18"
-Rev "A (ff236685)"
+Rev "A (34c8551e)"
 Comp ""
 Comment1 "Simultaneously, read the register file using indices extracted from the instruction word."
 Comment2 "effect conditional instructions."

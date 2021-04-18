@@ -6,7 +6,7 @@ encoding utf-8
 Sheet 5 39
 Title "WB"
 Date "2021-04-18"
-Rev "A (ff236685)"
+Rev "A (34c8551e)"
 Comp ""
 Comment1 ""
 Comment2 "allowing instructions to set half of a sixteen-bit word without bitwise masks."

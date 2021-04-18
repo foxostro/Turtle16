@@ -334,9 +334,9 @@ L 74xx:74LS574 U58
 U 1 1 607D640B
 P 3700 4300
 F 0 "U58" H 3950 5100 50  0000 C CNN
-F 1 "74AHCT08" H 3950 5000 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 3700 4300 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct08" H 3700 4300 50  0001 C CNN
+F 1 "74AHCT574" H 3950 5000 50  0000 C CNN
+F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 3700 4300 50  0001 C CNN
+F 3 "https://www.mouser.com/datasheet/2/916/74AHC_AHCT574-1597535.pdf" H 3700 4300 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/771-AHCT5PW112" H 3700 4300 50  0001 C CNN "Mouser"
 	1    3700 4300
 	1    0    0    -1  

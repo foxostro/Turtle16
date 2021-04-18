@@ -6,7 +6,7 @@ encoding utf-8
 Sheet 8 39
 Title "MEM: Buffer StoreOp"
 Date "2021-04-18"
-Rev "A (ff236685)"
+Rev "A (34c8551e)"
 Comp ""
 Comment1 ""
 Comment2 ""

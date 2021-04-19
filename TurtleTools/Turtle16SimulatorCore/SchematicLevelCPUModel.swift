@@ -29,6 +29,10 @@ public class SchematicLevelCPUModel: NSObject, CPU {
     
     public var instructions: [UInt16] = Array<UInt16>(repeating: 0, count: 65535)
     
+    public var opcodeDecodeROM: [UInt] {
+        return stageID.opcodeDecodeROM
+    }
+    
     public var carry: UInt = 0
     public var z: UInt = 0
     public var ovf: UInt = 0

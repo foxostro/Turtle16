@@ -24,7 +24,10 @@ public class HexDataTableViewDataSource: NSObject, NSTableViewDataSource {
         fatalError("numberOfRows has not been implemented")
     }
     
-    let kWordFormat = "%04x"
+    public var wordFormat: String {
+        return "%04x"
+    }
+    
     let kAddressFormat = "%04x"
     
     let kColumnIdentifierAddress = NSUserInterfaceItemIdentifier("Address")
@@ -58,52 +61,52 @@ public class HexDataTableViewDataSource: NSObject, NSTableViewDataSource {
             return String(format: kAddressFormat, row*16)
             
         case kColumnIdentifierZero:
-            return String(format: kWordFormat, load(address: row*16+0))
+            return String(format: wordFormat, load(address: row*16+0))
             
         case kColumnIdentifierOne:
-            return String(format: kWordFormat, load(address: row*16+1))
+            return String(format: wordFormat, load(address: row*16+1))
             
         case kColumnIdentifierTwo:
-            return String(format: kWordFormat, load(address: row*16+2))
+            return String(format: wordFormat, load(address: row*16+2))
             
         case kColumnIdentifierThree:
-            return String(format: kWordFormat, load(address: row*16+3))
+            return String(format: wordFormat, load(address: row*16+3))
             
         case kColumnIdentifierFour:
-            return String(format: kWordFormat, load(address: row*16+4))
+            return String(format: wordFormat, load(address: row*16+4))
             
         case kColumnIdentifierFive:
-            return String(format: kWordFormat, load(address: row*16+5))
+            return String(format: wordFormat, load(address: row*16+5))
             
         case kColumnIdentifierSix:
-            return String(format: kWordFormat, load(address: row*16+6))
+            return String(format: wordFormat, load(address: row*16+6))
             
         case kColumnIdentifierSeven:
-            return String(format: kWordFormat, load(address: row*16+7))
+            return String(format: wordFormat, load(address: row*16+7))
             
         case kColumnIdentifierEight:
-            return String(format: kWordFormat, load(address: row*16+8))
+            return String(format: wordFormat, load(address: row*16+8))
             
         case kColumnIdentifierNine:
-            return String(format: kWordFormat, load(address: row*16+9))
+            return String(format: wordFormat, load(address: row*16+9))
             
         case kColumnIdentifierA:
-            return String(format: kWordFormat, load(address: row*16+10))
+            return String(format: wordFormat, load(address: row*16+10))
             
         case kColumnIdentifierB:
-            return String(format: kWordFormat, load(address: row*16+11))
+            return String(format: wordFormat, load(address: row*16+11))
             
         case kColumnIdentifierC:
-            return String(format: kWordFormat, load(address: row*16+12))
+            return String(format: wordFormat, load(address: row*16+12))
             
         case kColumnIdentifierD:
-            return String(format: kWordFormat, load(address: row*16+13))
+            return String(format: wordFormat, load(address: row*16+13))
             
         case kColumnIdentifierE:
-            return String(format: kWordFormat, load(address: row*16+14))
+            return String(format: wordFormat, load(address: row*16+14))
             
         case kColumnIdentifierF:
-            return String(format: kWordFormat, load(address: row*16+15))
+            return String(format: wordFormat, load(address: row*16+15))
             
         case kColumnIdentifierText:
             let words = ((row*16)..<(row*16+16)).map { load(address: $0) }

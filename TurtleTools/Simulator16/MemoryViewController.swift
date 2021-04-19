@@ -18,6 +18,9 @@ class MemoryViewController: NSViewController {
     
     let kInstructionMemoryIdentifier = NSUserInterfaceItemIdentifier("InstructionMemory")
     let kDataMemoryIdentifier = NSUserInterfaceItemIdentifier("DataMemory")
+    let kInstructionROMU25Identifier = NSUserInterfaceItemIdentifier("U25")
+    let kInstructionROMU26Identifier = NSUserInterfaceItemIdentifier("U26")
+    let kInstructionROMU33Identifier = NSUserInterfaceItemIdentifier("U33")
     
     public required init(debugger: DebugConsole) {
         self.debugger = debugger
@@ -35,12 +38,21 @@ class MemoryViewController: NSViewController {
                        dataSource: InstructionMemoryTableViewDataSource(computer: debugger.computer))
         addHexDataView(identifier: kDataMemoryIdentifier,
                        dataSource: DataMemoryTableViewDataSource(computer: debugger.computer))
+        addHexDataView(identifier: kInstructionROMU25Identifier,
+                       dataSource: OpcodeDecodeROMU25(computer: debugger.computer))
+        addHexDataView(identifier: kInstructionROMU26Identifier,
+                       dataSource: OpcodeDecodeROMU26(computer: debugger.computer))
+        addHexDataView(identifier: kInstructionROMU33Identifier,
+                       dataSource: OpcodeDecodeROMU33(computer: debugger.computer))
         
         syncMemoryTabView()
     }
     
     fileprivate func addHexDataView(identifier: NSUserInterfaceItemIdentifier, dataSource: NSTableViewDataSource) {
         let indexOfTab = memoryTabView.indexOfTabViewItem(withIdentifier: identifier)
+        guard indexOfTab != NSNotFound else {
+            fatalError("XIB does not contain tab with expected identifier: \(identifier)")
+        }
         let tabViewItem = memoryTabView.tabViewItem(at: indexOfTab)
         let hexDataViewController = HexDataViewController(dataSource, debugger.computer)
         guard let tabViewItemView = tabViewItem.view else {

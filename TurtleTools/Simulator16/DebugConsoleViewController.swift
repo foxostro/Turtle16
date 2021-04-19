@@ -25,6 +25,7 @@ class DebugConsoleViewController: NSViewController {
     public required init(debugger: DebugConsole) {
         self.debugger = debugger
         super.init(nibName: NSNib.Name("DebugConsoleViewController"), bundle: Bundle(for: type(of: self)))
+        NotificationCenter.default.addObserver(self, selector: #selector(self.virtualMachineStateDidChange(notification:)), name:  .virtualMachineStateDidChange, object: debugger.computer)
     }
     
     required init?(coder: NSCoder) {
@@ -44,11 +45,18 @@ class DebugConsoleViewController: NSViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(self.windowDidBecomeKey(notification:)), name: NSWindow.didBecomeKeyNotification, object: self.view.window)
         debuggerInput.becomeFirstResponder()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(self.virtualMachineStateDidChange(notification:)), name:  Turtle16Computer.kVirtualMachineStateDidChange, object: debugger.computer)
-        NotificationCenter.default.post(name: Turtle16Computer.kVirtualMachineStateDidChange, object: debugger.computer)
+        reload()
+    }
+    
+    @objc func windowDidBecomeKey(notification: Notification) {
+        debuggerInput.becomeFirstResponder()
     }
     
     @objc func virtualMachineStateDidChange(notification: Notification) {
+        reload()
+    }
+    
+    fileprivate func reload() {
         let computer = debugger.computer
         halted.isHidden = !computer.isHalted
         resetting.isHidden = !computer.isResetting
@@ -58,10 +66,6 @@ class DebugConsoleViewController: NSViewController {
         c0.isHidden = (computer.carry == 0)
     }
     
-    @objc func windowDidBecomeKey(notification: Notification) {
-        debuggerInput.becomeFirstResponder()
-    }
-    
     @IBAction func submitCommandLine(_ sender: Any) {
         debugger.eval(debuggerInput.stringValue)
         if debugger.shouldQuit {
@@ -69,6 +73,5 @@ class DebugConsoleViewController: NSViewController {
         }
         debugger.logger.append("\n")
         debuggerInput.stringValue = ""
-        NotificationCenter.default.post(name: Turtle16Computer.kVirtualMachineStateDidChange, object: debugger.computer)
     }
 }

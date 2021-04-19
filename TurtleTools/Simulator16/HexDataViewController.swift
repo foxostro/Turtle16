@@ -1,5 +1,5 @@
 //
-//  RegistersViewController.swift
+//  HexDataViewController.swift
 //  Simulator16
 //
 //  Created by Andrew Fox on 4/18/21.
@@ -9,15 +9,16 @@
 import Cocoa
 import Turtle16SimulatorCore
 
-class RegistersViewController: NSViewController {
-    @IBOutlet var registerTableView: NSTableView!
+class HexDataViewController: NSViewController {
+    @IBOutlet var tableView: NSTableView!
     
-    public var registerTableViewDataSource: RegisterTableViewDataSource!
+    public let tableViewDataSource: NSTableViewDataSource
     public let computer: Turtle16Computer
     
-    public required init(computer: Turtle16Computer) {
+    public required init(_ tableViewDataSource: NSTableViewDataSource, _ computer: Turtle16Computer) {
+        self.tableViewDataSource = tableViewDataSource
         self.computer = computer
-        super.init(nibName: NSNib.Name("RegistersViewController"), bundle: Bundle(for: type(of: self)))
+        super.init(nibName: NSNib.Name("HexDataViewController"), bundle: Bundle(for: type(of: self)))
         NotificationCenter.default.addObserver(self, selector: #selector(self.virtualMachineStateDidChange(notification:)), name:  .virtualMachineStateDidChange, object: computer)
     }
     
@@ -27,15 +28,10 @@ class RegistersViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        registerTableViewDataSource = RegisterTableViewDataSource(computer: computer)
-        registerTableView.dataSource = registerTableViewDataSource
+        tableView.dataSource = tableViewDataSource
     }
     
     @objc func virtualMachineStateDidChange(notification: Notification) {
-        reload()
-    }
-    
-    fileprivate func reload() {
-        registerTableView.reloadData()
+        tableView.reloadData()
     }
 }

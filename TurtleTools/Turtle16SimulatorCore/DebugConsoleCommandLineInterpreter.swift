@@ -66,11 +66,8 @@ public class DebugConsoleCommandLineInterpreter: NSObject {
         case .writeInstructions(let base, let words):
             writeInstructionMemory(base: base, words: words)
             
-        case .loadProgram(let url):
-            loadProgram(url)
-            
-        case .loadData(let url):
-            loadData(url)
+        case .load(let what, let url):
+            load(what, url)
         }
     }
     
@@ -192,29 +189,78 @@ isResetting: \(computer.isResetting)
         }
     }
     
-    fileprivate func loadProgram(_ url: URL) {
+    fileprivate func load(_ what: String, _ url: URL) {
+        let validDestinations: Set<String> = ["program", "data", "U25", "U26", "U33"]
+        guard validDestinations.contains(what) else {
+            printHelp(.load)
+            return
+        }
         guard let data: Data = loadDataFile(url) else {
             return
         }
-        let words = data.withUnsafeBytes { (pointer: UnsafeRawBufferPointer) -> [UInt16] in
-            let buffer = pointer.bindMemory(to: UInt16.self)
-            return buffer.map { UInt16(bigEndian: $0) }
+        switch what {
+        case "program":
+            let words = data.withUnsafeBytes { (pointer: UnsafeRawBufferPointer) -> [UInt16] in
+                let buffer = pointer.bindMemory(to: UInt16.self)
+                return buffer.map { UInt16(bigEndian: $0) }
+            }
+            computer.instructions = Array<UInt16>(repeating: 0, count: Int(UInt16.max)+1)
+            writeInstructionMemory(base: 0, words: words)
+            logger.append("Wrote \(words.count) words to instruction memory.\n")
+            
+        case "data":
+            let words = data.withUnsafeBytes { (pointer: UnsafeRawBufferPointer) -> [UInt16] in
+                let buffer = pointer.bindMemory(to: UInt16.self)
+                return buffer.map { UInt16(bigEndian: $0) }
+            }
+            computer.ram = Array<UInt16>(repeating: 0, count: Int(UInt16.max)+1)
+            writeDataMemory(base: 0, words: words)
+            logger.append("Wrote \(words.count) words to data memory.\n")
+            
+        case "U25":
+            let words = data.withUnsafeBytes { (pointer: UnsafeRawBufferPointer) -> [UInt8] in
+                let buffer = pointer.bindMemory(to: UInt8.self)
+                return buffer.map { UInt8(bigEndian: $0) }
+            }
+            for i in 0..<512 {
+                if i >= words.count {
+                    computer.opcodeDecodeROM[i] = 0
+                } else {
+                    computer.opcodeDecodeROM[i] = (computer.opcodeDecodeROM[i] & ~0xff) | UInt(words[i])
+                }
+            }
+            logger.append("Wrote 512 words to opcode decode ROM U25.\n")
+            
+        case "U26":
+            let words = data.withUnsafeBytes { (pointer: UnsafeRawBufferPointer) -> [UInt8] in
+                let buffer = pointer.bindMemory(to: UInt8.self)
+                return buffer.map { UInt8(bigEndian: $0) }
+            }
+            for i in 0..<512 {
+                if i >= words.count {
+                    computer.opcodeDecodeROM[i] = 0
+                } else {
+                    computer.opcodeDecodeROM[i] = (computer.opcodeDecodeROM[i] & ~0xff00) | (UInt(words[i])<<8)
+                }
+            }
+            logger.append("Wrote 512 words to opcode decode ROM U26.\n")
+            
+        case "U33":
+            let words = data.withUnsafeBytes { (pointer: UnsafeRawBufferPointer) -> [UInt8] in
+                let buffer = pointer.bindMemory(to: UInt8.self)
+                return buffer.map { UInt8(bigEndian: $0) }
+            }
+            for i in 0..<512 {
+                if i >= words.count {
+                    computer.opcodeDecodeROM[i] = 0
+                } else {
+                    computer.opcodeDecodeROM[i] = (computer.opcodeDecodeROM[i] & ~0x1f0000) | ((UInt(words[i])&0x1f)<<16)
+                }
+            }
+            logger.append("Wrote 512 words to opcode decode ROM U25.\n")
+        
+        default:
+            abort()
         }
-        computer.instructions = Array<UInt16>(repeating: 0, count: Int(UInt16.max)+1)
-        writeInstructionMemory(base: 0, words: words)
-        logger.append("Wrote \(words.count) words to instruction memory.\n")
-    }
-    
-    fileprivate func loadData(_ url: URL) {
-        guard let data: Data = loadDataFile(url) else {
-            return
-        }
-        let words = data.withUnsafeBytes { (pointer: UnsafeRawBufferPointer) -> [UInt16] in
-            let buffer = pointer.bindMemory(to: UInt16.self)
-            return buffer.map { UInt16(bigEndian: $0) }
-        }
-        computer.ram = Array<UInt16>(repeating: 0, count: Int(UInt16.max)+1)
-        writeDataMemory(base: 0, words: words)
-        logger.append("Wrote \(words.count) words to data memory.\n")
     }
 }

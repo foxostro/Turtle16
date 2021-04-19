@@ -18,9 +18,9 @@ class MemoryViewController: NSViewController {
     
     let kInstructionMemoryIdentifier = NSUserInterfaceItemIdentifier("InstructionMemory")
     let kDataMemoryIdentifier = NSUserInterfaceItemIdentifier("DataMemory")
-    let kInstructionROMU25Identifier = NSUserInterfaceItemIdentifier("U25")
-    let kInstructionROMU26Identifier = NSUserInterfaceItemIdentifier("U26")
-    let kInstructionROMU33Identifier = NSUserInterfaceItemIdentifier("U33")
+    let kOpcodeDecodeROMU25Identifier = NSUserInterfaceItemIdentifier("U25")
+    let kOpcodeDecodeROMU26Identifier = NSUserInterfaceItemIdentifier("U26")
+    let kOpcodeDecodeROMU33Identifier = NSUserInterfaceItemIdentifier("U33")
     
     public required init(debugger: DebugConsole) {
         self.debugger = debugger
@@ -38,11 +38,11 @@ class MemoryViewController: NSViewController {
                        dataSource: InstructionMemoryTableViewDataSource(computer: debugger.computer))
         addHexDataView(identifier: kDataMemoryIdentifier,
                        dataSource: DataMemoryTableViewDataSource(computer: debugger.computer))
-        addHexDataView(identifier: kInstructionROMU25Identifier,
+        addHexDataView(identifier: kOpcodeDecodeROMU25Identifier,
                        dataSource: OpcodeDecodeROMU25(computer: debugger.computer))
-        addHexDataView(identifier: kInstructionROMU26Identifier,
+        addHexDataView(identifier: kOpcodeDecodeROMU26Identifier,
                        dataSource: OpcodeDecodeROMU26(computer: debugger.computer))
-        addHexDataView(identifier: kInstructionROMU33Identifier,
+        addHexDataView(identifier: kOpcodeDecodeROMU33Identifier,
                        dataSource: OpcodeDecodeROMU33(computer: debugger.computer))
         
         syncMemoryTabView()
@@ -101,33 +101,36 @@ class MemoryViewController: NSViewController {
     }
     
     @IBAction func loadMemory(_ sender: Any) {
-        if memoryTabSelector.selectedItem?.identifier == kInstructionMemoryIdentifier {
-            let panel = NSOpenPanel()
-            panel.begin { [weak self] (response: NSApplication.ModalResponse) in
-                if (response == NSApplication.ModalResponse.OK) {
-                    if let url = panel.url {
-                        self?.loadProgram(url)
-                    }
-                }
-            }
-        }
-        else if memoryTabSelector.selectedItem?.identifier == kDataMemoryIdentifier {
-            let panel = NSOpenPanel()
-            panel.begin { [weak self] (response: NSApplication.ModalResponse) in
-                if (response == NSApplication.ModalResponse.OK) {
-                    if let url = panel.url {
-                        self?.loadData(url)
-                    }
+        let identifier: NSUserInterfaceItemIdentifier = memoryTabSelector.selectedItem!.identifier!
+        let panel = NSOpenPanel()
+        panel.begin { [weak self] (response: NSApplication.ModalResponse) in
+            if (response == NSApplication.ModalResponse.OK) {
+                if let url = panel.url {
+                    self?.loadMemory(identifier, url)
                 }
             }
         }
     }
     
-    fileprivate func loadProgram(_ url: URL) {
-        debugger.interpreter.runOne(instruction: .loadProgram(url))
-    }
-    
-    fileprivate func loadData(_ url: URL) {
-        debugger.interpreter.runOne(instruction: .loadData(url))
+    fileprivate func loadMemory(_ identifier: NSUserInterfaceItemIdentifier, _ url: URL) {
+        switch identifier {
+        case kInstructionMemoryIdentifier:
+            debugger.interpreter.runOne(instruction: .load("program", url))
+            
+        case kDataMemoryIdentifier:
+            debugger.interpreter.runOne(instruction: .load("data", url))
+            
+        case kOpcodeDecodeROMU25Identifier:
+            debugger.interpreter.runOne(instruction: .load("U25", url))
+            
+        case kOpcodeDecodeROMU26Identifier:
+            debugger.interpreter.runOne(instruction: .load("U26", url))
+            
+        case kOpcodeDecodeROMU33Identifier:
+            debugger.interpreter.runOne(instruction: .load("U33", url))
+        
+        default:
+            NSSound.beep()
+        }
     }
 }

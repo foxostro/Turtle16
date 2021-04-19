@@ -78,6 +78,8 @@ public class DebugConsoleCommandLineParser: Parser {
         switch nextToken {
         case is TokenForwardSlash:
             parameters += [try consumeParameterSlashed()]
+        case is TokenLiteralString:
+            parameters += [try consumeParameterString()]
         case is TokenNumber:
             parameters += [try consumeParameterNumber()]
         case is TokenIdentifier:

@@ -18,7 +18,12 @@ public class Turtle16Computer: NSObject {
     public let cpu: CPU
     public var ram: [UInt16]
     public var opcodeDecodeROM: [UInt] {
-        return cpu.opcodeDecodeROM
+        set(value) {
+            cpu.opcodeDecodeROM = value
+        }
+        get {
+            cpu.opcodeDecodeROM
+        }
     }
     
     public var timeStamp: UInt {

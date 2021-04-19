@@ -166,18 +166,17 @@ pc: 0xabcd
         interpreter.runOne(instruction: .help(.none))
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 Debugger commands:
-\thelp         -- Show a list of all debugger commands, or give details about a specific command.
-\tquit         -- Quit the debugger.
-\treset        -- Reset the computer.
-\tstep         -- Single step the simulation, executing for one or more clock cycles.
-\treg          -- Show CPU register contents.
-\tinfo         -- Show detailed information for a specified device.
-\tx            -- Read from memory.
-\twritemem     -- Write to memory.
-\txi           -- Read from instruction memory.
-\twritememi    -- Write to instruction memory.
-\tload-program -- Load a program from file.
-\tload-data    -- Load data from file.
+\thelp      -- Show a list of all debugger commands, or give details about a specific command.
+\tquit      -- Quit the debugger.
+\treset     -- Reset the computer.
+\tstep      -- Single step the simulation, executing for one or more clock cycles.
+\treg       -- Show CPU register contents.
+\tinfo      -- Show detailed information for a specified device.
+\tx         -- Read from memory.
+\twritemem  -- Write to memory.
+\txi        -- Read from instruction memory.
+\twritememi -- Write to instruction memory.
+\tload      -- Load contents of memory from file.
 
 For more information on any command, type `help <command-name>'.
 
@@ -283,26 +282,22 @@ Syntax: writemem <address> <word> [<word>...]
 """)
     }
     
-    func testHelpLoadProgram() throws {
+    func testHelpLoad() throws {
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
-        interpreter.runOne(instruction: .help(.loadProgram))
+        interpreter.runOne(instruction: .help(.load))
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
-Load a program from file.
+Load contents of memory from file.
 
-Syntax: load-program "<path>"
+Destination:
+\tprogram -- Instruction memory
+\tdata -- RAM
+\tprogram -- Instruction memory
+\tU25 -- Opcode Decode ROM U25
+\tU26 -- Opcode Decode ROM U26
+\tU33 -- Opcode Decode ROM U33
 
-""")
-    }
-    
-    func testHelpLoadData() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
-        let interpreter = DebugConsoleCommandLineInterpreter(computer)
-        interpreter.runOne(instruction: .help(.loadData))
-        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
-Load data from file.
-
-Syntax: load-data "<path>"
+Syntax: load <destination> "<path>"
 
 """)
     }
@@ -410,7 +405,7 @@ pc: 0x000d
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
-            .loadProgram(url)
+            .load("program", url)
         ])
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 failed to load file: `doesnotexistdoesnotexistdoesnotexistdoesnotexist'
@@ -425,7 +420,7 @@ The file doesn’t exist.
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
             .reset,
-            .loadProgram(url),
+            .load("program", url),
             .run,
             .info("cpu")
         ])
@@ -448,8 +443,61 @@ pc: 0x000d
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
-            .loadData(url)
+            .load("data", url)
         ])
         XCTAssertEqual(computer.ram[0], 0x2000)
+    }
+    
+    func testFailToLoadFromInvalidDestination() throws {
+        let url = URL(fileURLWithPath: "doesnotexistdoesnotexistdoesnotexistdoesnotexist")
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.run(instructions:[
+            .load("asdf", url)
+        ])
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
+Load contents of memory from file.
+
+Destination:
+\tprogram -- Instruction memory
+\tdata -- RAM
+\tprogram -- Instruction memory
+\tU25 -- Opcode Decode ROM U25
+\tU26 -- Opcode Decode ROM U26
+\tU33 -- Opcode Decode ROM U33
+
+Syntax: load <destination> "<path>"
+
+""")
+    }
+    
+    func testLoadDataFromFileForU25() throws {
+        let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.run(instructions:[
+            .load("U25", url)
+        ])
+        XCTAssertEqual(computer.opcodeDecodeROM[0] & 0xff, 0x20)
+    }
+    
+    func testLoadDataFromFileForU26() throws {
+        let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.run(instructions:[
+            .load("U26", url)
+        ])
+        XCTAssertEqual((computer.opcodeDecodeROM[0]>>8) & 0xff, 0x20)
+    }
+    
+    func testLoadDataFromFileForU33() throws {
+        let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.run(instructions:[
+            .load("U26", url)
+        ])
+        XCTAssertEqual((computer.opcodeDecodeROM[0]>>16) & 0x1f, 0x1f)
     }
 }

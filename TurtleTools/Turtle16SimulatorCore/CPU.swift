@@ -18,7 +18,7 @@ public protocol CPU: NSObject {
     var carry: UInt { get }
     var z: UInt { get }
     var ovf: UInt { get }
-    var opcodeDecodeROM: [UInt] { get }
+    var opcodeDecodeROM: [UInt] { get set }
     
     var load: (UInt16) -> UInt16 { get set }
     var store: (UInt16, UInt16) -> Void { get set }

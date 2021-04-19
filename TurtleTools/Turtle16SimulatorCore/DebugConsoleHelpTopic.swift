@@ -9,7 +9,7 @@
 import Foundation
 
 public enum DebugConsoleHelpTopic: Equatable, CaseIterable {
-    case help, quit, reset, step, reg, info, readMemory, writeMemory, readInstructions, writeInstructions, loadProgram, loadData
+    case help, quit, reset, step, reg, info, readMemory, writeMemory, readInstructions, writeInstructions, load
     
     public var name: String {
         switch self {
@@ -23,8 +23,7 @@ public enum DebugConsoleHelpTopic: Equatable, CaseIterable {
         case .writeMemory:       return "writemem"
         case .readInstructions:  return "xi"
         case .writeInstructions: return "writememi"
-        case .loadProgram:       return "load-program"
-        case .loadData:          return "load-data"
+        case .load:              return "load"
         }
     }
     
@@ -60,11 +59,8 @@ public enum DebugConsoleHelpTopic: Equatable, CaseIterable {
         case .writeInstructions:
             return "Write to instruction memory."
             
-        case .loadProgram:
-            return "Load a program from file."
-            
-        case .loadData:
-            return "Load data from file."
+        case .load:
+            return "Load contents of memory from file."
         }
     }
     
@@ -153,19 +149,19 @@ Syntax: writememi <address> <word> [<word>...]
 
 """
         
-        case .loadProgram:
+        case .load:
             return """
 \(shortHelp)
 
-Syntax: load-program "<path>"
+Destination:
+\tprogram -- Instruction memory
+\tdata -- RAM
+\tprogram -- Instruction memory
+\tU25 -- Opcode Decode ROM U25
+\tU26 -- Opcode Decode ROM U26
+\tU33 -- Opcode Decode ROM U33
 
-"""
-        
-        case .loadData:
-            return """
-\(shortHelp)
-
-Syntax: load-data "<path>"
+Syntax: load <destination> "<path>"
 
 """
         }

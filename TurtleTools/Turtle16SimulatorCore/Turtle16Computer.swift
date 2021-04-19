@@ -11,6 +11,8 @@ import Foundation
 // Models the Turtle16 Computer as a whole.
 // This is where we simulate memory mapping and integration with peripherals.
 public class Turtle16Computer: NSObject {
+    public static let kVirtualMachineStateDidChange = Notification.Name("VirtualMachineStateDidChange")
+    
     public let cpu: CPU
     public var ram: [UInt16]
     

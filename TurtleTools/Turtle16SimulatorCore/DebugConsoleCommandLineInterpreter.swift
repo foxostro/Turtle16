@@ -21,11 +21,17 @@ public class DebugConsoleCommandLineInterpreter: NSObject {
     
     public func run(instructions: [DebugConsoleInstruction]) {
         for ins in instructions {
-            runOne(instruction: ins)
+            internalRunOne(instruction: ins)
         }
+        NotificationCenter.default.post(name: .virtualMachineStateDidChange, object: self.computer)
     }
     
     public func runOne(instruction: DebugConsoleInstruction) {
+        internalRunOne(instruction: instruction)
+        NotificationCenter.default.post(name: .virtualMachineStateDidChange, object: self.computer)
+    }
+    
+    public func internalRunOne(instruction: DebugConsoleInstruction) {
         switch instruction {
         case .help(let topic):
             printHelp(topic)

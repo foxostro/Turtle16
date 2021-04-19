@@ -12,13 +12,12 @@ import Turtle16SimulatorCore
 class MemoryViewController: NSViewController {
     @IBOutlet var memoryTabSelector: NSPopUpButton!
     @IBOutlet var memoryTabView: NSTabView!
-    @IBOutlet var instructionMemoryTableView: NSTableView!
-    @IBOutlet var dataMemoryTableView: NSTableView!
-    
-    public var instructionMemoryTableViewDataSource: InstructionMemoryTableViewDataSource!
-    public var dataMemoryTableViewDataSource: DataMemoryTableViewDataSource!
     
     public let debugger: DebugConsole
+    public var hexDataViewControllers: [HexDataViewController] = []
+    
+    let kInstructionMemoryIdentifier = NSUserInterfaceItemIdentifier("InstructionMemory")
+    let kDataMemoryIdentifier = NSUserInterfaceItemIdentifier("DataMemory")
     
     public required init(debugger: DebugConsole) {
         self.debugger = debugger
@@ -32,24 +31,57 @@ class MemoryViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        instructionMemoryTableViewDataSource = InstructionMemoryTableViewDataSource(computer: debugger.computer)
-        dataMemoryTableViewDataSource = DataMemoryTableViewDataSource(computer: debugger.computer)
-        
-        instructionMemoryTableView.dataSource = instructionMemoryTableViewDataSource
-        dataMemoryTableView.dataSource = dataMemoryTableViewDataSource
+        addHexDataView(identifier: kInstructionMemoryIdentifier,
+                       dataSource: InstructionMemoryTableViewDataSource(computer: debugger.computer))
+        addHexDataView(identifier: kDataMemoryIdentifier,
+                       dataSource: DataMemoryTableViewDataSource(computer: debugger.computer))
         
         syncMemoryTabView()
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(self.virtualMachineStateDidChange(notification:)), name:  Turtle16Computer.kVirtualMachineStateDidChange, object: debugger.computer)
+    }
+    
+    fileprivate func addHexDataView(identifier: NSUserInterfaceItemIdentifier, dataSource: NSTableViewDataSource) {
+        let indexOfTab = memoryTabView.indexOfTabViewItem(withIdentifier: identifier)
+        let tabViewItem = memoryTabView.tabViewItem(at: indexOfTab)
+        let hexDataViewController = HexDataViewController(dataSource, debugger.computer)
+        guard let tabViewItemView = tabViewItem.view else {
+            return;
+        }
+        tabViewItemView.addSubview(hexDataViewController.view)
+        tabViewItemView.addConstraints([
+            NSLayoutConstraint(item: hexDataViewController.view,
+                               attribute: .left,
+                               relatedBy: .equal,
+                               toItem: tabViewItem.view,
+                               attribute: .left,
+                               multiplier: 1,
+                               constant: 0),
+            NSLayoutConstraint(item: hexDataViewController.view,
+                               attribute: .right,
+                               relatedBy: .equal,
+                               toItem: tabViewItem.view,
+                               attribute: .right,
+                               multiplier: 1,
+                               constant: 0),
+            NSLayoutConstraint(item: hexDataViewController.view,
+                               attribute: .top,
+                               relatedBy: .equal,
+                               toItem: tabViewItem.view,
+                               attribute: .top,
+                               multiplier: 1,
+                               constant: 0),
+            NSLayoutConstraint(item: hexDataViewController.view,
+                               attribute: .bottom,
+                               relatedBy: .equal,
+                               toItem: tabViewItem.view,
+                               attribute: .bottom,
+                               multiplier: 1,
+                               constant: 0)
+        ])
+        hexDataViewControllers.append(hexDataViewController)
     }
     
     fileprivate func syncMemoryTabView() {
         memoryTabView.selectTabViewItem(withIdentifier: memoryTabSelector.selectedItem?.identifier ?? NSUserInterfaceItemIdentifier(""))
-    }
-    
-    @objc func virtualMachineStateDidChange(notification: Notification) {
-        instructionMemoryTableView.reloadData()
-        dataMemoryTableView.reloadData()
     }
     
     @IBAction func chooseVisibleAddressSpace(_ sender: Any) {
@@ -57,7 +89,7 @@ class MemoryViewController: NSViewController {
     }
     
     @IBAction func loadMemory(_ sender: Any) {
-        if memoryTabSelector.selectedItem?.identifier == NSUserInterfaceItemIdentifier("InstructionMemory") {
+        if memoryTabSelector.selectedItem?.identifier == kInstructionMemoryIdentifier {
             let panel = NSOpenPanel()
             panel.begin { [weak self] (response: NSApplication.ModalResponse) in
                 if (response == NSApplication.ModalResponse.OK) {
@@ -67,7 +99,7 @@ class MemoryViewController: NSViewController {
                 }
             }
         }
-        else if memoryTabSelector.selectedItem?.identifier == NSUserInterfaceItemIdentifier("DataMemory") {
+        else if memoryTabSelector.selectedItem?.identifier == kDataMemoryIdentifier {
             let panel = NSOpenPanel()
             panel.begin { [weak self] (response: NSApplication.ModalResponse) in
                 if (response == NSApplication.ModalResponse.OK) {
@@ -81,13 +113,9 @@ class MemoryViewController: NSViewController {
     
     fileprivate func loadProgram(_ url: URL) {
         debugger.interpreter.runOne(instruction: .loadProgram(url))
-        instructionMemoryTableView.reloadData()
-        dataMemoryTableView.reloadData()
     }
     
     fileprivate func loadData(_ url: URL) {
         debugger.interpreter.runOne(instruction: .loadData(url))
-        instructionMemoryTableView.reloadData()
-        dataMemoryTableView.reloadData()
     }
 }

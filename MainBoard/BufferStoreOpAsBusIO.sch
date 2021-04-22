@@ -616,7 +616,7 @@ F 0 "U7" H 5400 4750 50  0000 C CNN
 F 1 "74AHCT16245" H 5400 4650 50  0000 C CNN
 F 2 "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm" H 5400 4750 50  0001 C CNN
 F 3 "https://www.ti.com/lit/ds/symlink/sn74ahct16245.pdf?HQS=dis-mous-null-mousermode-dsf-pf-null-wwe&ts=1617319205092" H 5400 4750 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/74AHCT16245DLRG4?qs=%2Fha2pyFaduixTLlQ%252B3rIFW8KDPMe6E5CxoQ2Fc519Y9S5BWJ%252B%2FVWeIYQshP1VtN3&utm_source=octopart&utm_medium=aggregator&utm_campaign=595-74AHCT16245DLRG4&utm_content=Texas%20Instruments" H 5400 4650 50  0001 C CNN "Mouser"
+F 4 "https://www.mouser.com/ProductDetail/595-74AHCT16245DGGR" H 5400 4650 50  0001 C CNN "Mouser"
 	1    5400 4650
 	-1   0    0    -1  
 $EndComp

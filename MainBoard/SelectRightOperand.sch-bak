@@ -6,7 +6,7 @@ encoding utf-8
 Sheet 21 39
 Title "Select Right Operand"
 Date "2021-04-18"
-Rev "A (ff236685)"
+Rev "A (34c8551e)"
 Comp ""
 Comment1 ""
 Comment2 "from an immediate value contained in the instruction word."
@@ -812,7 +812,7 @@ F 0 "U18" H 2050 2550 50  0000 C CNN
 F 1 "74AHCT16245" H 2050 2450 50  0000 C CNN
 F 2 "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm" H 2050 3100 50  0001 C CNN
 F 3 "https://www.ti.com/lit/ds/symlink/sn74ahct16245.pdf?HQS=dis-mous-null-mousermode-dsf-pf-null-wwe&ts=1617319205092" H 2050 2700 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/74AHCT16245DLRG4?qs=%2Fha2pyFaduixTLlQ%252B3rIFW8KDPMe6E5CxoQ2Fc519Y9S5BWJ%252B%2FVWeIYQshP1VtN3&utm_source=octopart&utm_medium=aggregator&utm_campaign=595-74AHCT16245DLRG4&utm_content=Texas%20Instruments" H 2050 3000 50  0001 C CNN "Mouser"
+F 4 "https://www.mouser.com/ProductDetail/595-74AHCT16245DGGR" H 2050 3000 50  0001 C CNN "Mouser"
 	1    2050 2500
 	1    0    0    -1  
 $EndComp
@@ -1007,7 +1007,7 @@ F 0 "U32" H 8750 2600 50  0000 C CNN
 F 1 "74AHCT16245" H 8750 2500 50  0000 C CNN
 F 2 "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm" H 8750 3150 50  0001 C CNN
 F 3 "https://www.ti.com/lit/ds/symlink/sn74ahct16245.pdf?HQS=dis-mous-null-mousermode-dsf-pf-null-wwe&ts=1617319205092" H 8750 2750 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/74AHCT16245DLRG4?qs=%2Fha2pyFaduixTLlQ%252B3rIFW8KDPMe6E5CxoQ2Fc519Y9S5BWJ%252B%2FVWeIYQshP1VtN3&utm_source=octopart&utm_medium=aggregator&utm_campaign=595-74AHCT16245DLRG4&utm_content=Texas%20Instruments" H 8750 3050 50  0001 C CNN "Mouser"
+F 4 "https://www.mouser.com/ProductDetail/595-74AHCT16245DGGR" H 8750 3050 50  0001 C CNN "Mouser"
 	1    8750 2550
 	1    0    0    -1  
 $EndComp
@@ -1390,7 +1390,7 @@ F 0 "U19" H 4300 2600 50  0000 C CNN
 F 1 "74AHCT16245" H 4300 2500 50  0000 C CNN
 F 2 "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm" H 4300 3150 50  0001 C CNN
 F 3 "https://www.ti.com/lit/ds/symlink/sn74ahct16245.pdf?HQS=dis-mous-null-mousermode-dsf-pf-null-wwe&ts=1617319205092" H 4300 2750 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/74AHCT16245DLRG4?qs=%2Fha2pyFaduixTLlQ%252B3rIFW8KDPMe6E5CxoQ2Fc519Y9S5BWJ%252B%2FVWeIYQshP1VtN3&utm_source=octopart&utm_medium=aggregator&utm_campaign=595-74AHCT16245DLRG4&utm_content=Texas%20Instruments" H 4300 3050 50  0001 C CNN "Mouser"
+F 4 "https://www.mouser.com/ProductDetail/595-74AHCT16245DGGR" H 4300 3050 50  0001 C CNN "Mouser"
 	1    4300 2550
 	1    0    0    -1  
 $EndComp
@@ -1760,7 +1760,7 @@ F 0 "U20" H 6550 2600 50  0000 C CNN
 F 1 "74AHCT16245" H 6550 2500 50  0000 C CNN
 F 2 "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm" H 6550 3150 50  0001 C CNN
 F 3 "https://www.ti.com/lit/ds/symlink/sn74ahct16245.pdf?HQS=dis-mous-null-mousermode-dsf-pf-null-wwe&ts=1617319205092" H 6550 2750 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/74AHCT16245DLRG4?qs=%2Fha2pyFaduixTLlQ%252B3rIFW8KDPMe6E5CxoQ2Fc519Y9S5BWJ%252B%2FVWeIYQshP1VtN3&utm_source=octopart&utm_medium=aggregator&utm_campaign=595-74AHCT16245DLRG4&utm_content=Texas%20Instruments" H 6550 3050 50  0001 C CNN "Mouser"
+F 4 "https://www.mouser.com/ProductDetail/595-74AHCT16245DGGR" H 6550 3050 50  0001 C CNN "Mouser"
 	1    6550 2550
 	1    0    0    -1  
 $EndComp

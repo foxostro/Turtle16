@@ -6,7 +6,7 @@ encoding utf-8
 Sheet 15 39
 Title "EX"
 Date "2021-04-18"
-Rev "A (ff236685)"
+Rev "A (34c8551e)"
 Comp ""
 Comment1 ""
 Comment2 "ID stage of the CPU pipeline."

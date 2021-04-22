@@ -130,7 +130,7 @@ F0 "U" 0 50 50 H V C CNN
 F1 "74xx_74AHCT16245" 0 -50 50 H V C CNN
 F2 "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm" -100 600 50 H I C CNN
 F3 "" 100 200 50 H I C CNN
-F4 "https://www.mouser.com/ProductDetail/595-74AHCT16245DGGR" -100 500 50 H I C CNN "Mouser"
+F4 "https://www.mouser.com/ProductDetail/Texas-Instruments/74AHCT16245DLRG4?qs=%2Fha2pyFaduixTLlQ%252B3rIFW8KDPMe6E5CxoQ2Fc519Y9S5BWJ%252B%2FVWeIYQshP1VtN3&utm_source=octopart&utm_medium=aggregator&utm_campaign=595-74AHCT16245DLRG4&utm_content=Texas%20Instruments" -100 500 50 H I C CNN "Mouser"
 DRAW
 S -500 1050 500 -1100 0 1 0 f
 X 1DIR 1 -600 -700 100 R 50 50 1 1 I

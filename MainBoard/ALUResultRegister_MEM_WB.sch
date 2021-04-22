@@ -771,20 +771,6 @@ Wire Wire Line
 Connection ~ 5450 5300
 Wire Wire Line
 	5450 5300 5550 5300
-$Comp
-L 74xx:74ABT16374 U?
-U 1 1 607623C9
-P 5700 3950
-AR Path="/5FE35007/5FCE2082/607623C9" Ref="U?"  Part="1" 
-AR Path="/60AF64DE/5FD9EFDB/607623C9" Ref="U29"  Part="1" 
-F 0 "U29" H 5700 3950 50  0000 C CNN
-F 1 "74ABT16374" H 5700 3850 50  0000 C CNN
-F 2 "Package_SO:TSSOP-48_8x12.5mm_P0.5mm" H 5750 3750 50  0001 C CNN
-F 3 "https://www.ti.com/lit/ds/symlink/sn74abt16374a.pdf?HQS=dis-mous-null-mousermode-dsf-pf-null-wwe&ts=1617318801237" H 6150 3300 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74ABT16374ADGGR?qs=%2Fha2pyFadui8Wf%2F61v2joCyY9bOa3peBR5btn0VUHs8%3D" H 5700 3650 50  0001 C CNN "Mouser"
-	1    5700 3950
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	6250 4750 6300 4750
 Wire Wire Line
@@ -807,4 +793,18 @@ Wire Bus Line
 	4550 2850 4550 4500
 Wire Bus Line
 	6900 2800 6900 4500
+$Comp
+L 74xx:74ABT16374 U?
+U 1 1 607623C9
+P 5700 3950
+AR Path="/5FE35007/5FCE2082/607623C9" Ref="U?"  Part="1" 
+AR Path="/60AF64DE/5FD9EFDB/607623C9" Ref="U29"  Part="1" 
+F 0 "U29" H 5700 3950 50  0000 C CNN
+F 1 "74ABT16374" H 5700 3850 50  0000 C CNN
+F 2 "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm" H 5750 3750 50  0001 C CNN
+F 3 "https://www.ti.com/lit/ds/symlink/sn74abt16374a.pdf?HQS=dis-mous-null-mousermode-dsf-pf-null-wwe&ts=1617318801237" H 6150 3300 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74ABT16374ADGGR?qs=%2Fha2pyFadui8Wf%2F61v2joCyY9bOa3peBR5btn0VUHs8%3D" H 5700 3650 50  0001 C CNN "Mouser"
+	1    5700 3950
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

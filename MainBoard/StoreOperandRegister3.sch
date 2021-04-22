@@ -776,7 +776,7 @@ AR Path="/5FE35007/5FCE2082/6075D7E8" Ref="U?"  Part="1"
 AR Path="/60AF64DE/5FD56BFA/6075D7E8" Ref="U28"  Part="1" 
 F 0 "U28" H 5600 4150 50  0000 C CNN
 F 1 "74ABT16374" H 5600 4050 50  0000 C CNN
-F 2 "Package_SO:TSSOP-48_8x12.5mm_P0.5mm" H 5650 3950 50  0001 C CNN
+F 2 "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm" H 5650 3950 50  0001 C CNN
 F 3 "https://www.ti.com/lit/ds/symlink/sn74abt16374a.pdf?HQS=dis-mous-null-mousermode-dsf-pf-null-wwe&ts=1617318801237" H 6050 3500 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74ABT16374ADGGR?qs=%2Fha2pyFadui8Wf%2F61v2joCyY9bOa3peBR5btn0VUHs8%3D" H 5600 3850 50  0001 C CNN "Mouser"
 	1    5600 4150

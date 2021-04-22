@@ -941,7 +941,7 @@ U 1 1 607314CE
 P 4000 3150
 F 0 "U37" H 4000 3200 50  0000 C CNN
 F 1 "74ABT16374" H 4000 3100 50  0000 C CNN
-F 2 "Package_SO:TSSOP-48_8x12.5mm_P0.5mm" H 4050 2950 50  0001 C CNN
+F 2 "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm" H 4050 2950 50  0001 C CNN
 F 3 "https://www.ti.com/lit/ds/symlink/sn74abt16374a.pdf?HQS=dis-mous-null-mousermode-dsf-pf-null-wwe&ts=1617318801237" H 4450 2500 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74ABT16374ADGGR?qs=%2Fha2pyFadui8Wf%2F61v2joCyY9bOa3peBR5btn0VUHs8%3D" H 4000 2850 50  0001 C CNN "Mouser"
 	1    4000 3150
@@ -1134,7 +1134,7 @@ U 1 1 6075DD7A
 P 6450 3150
 F 0 "U38" H 6450 3150 50  0000 C CNN
 F 1 "74ABT16374" H 6450 3050 50  0000 C CNN
-F 2 "Package_SO:TSSOP-48_8x12.5mm_P0.5mm" H 6500 2950 50  0001 C CNN
+F 2 "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm" H 6500 2950 50  0001 C CNN
 F 3 "https://www.ti.com/lit/ds/symlink/sn74abt16374a.pdf?HQS=dis-mous-null-mousermode-dsf-pf-null-wwe&ts=1617318801237" H 6900 2500 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Texas-Instruments/SN74ABT16374ADGGR?qs=%2Fha2pyFadui8Wf%2F61v2joCyY9bOa3peBR5btn0VUHs8%3D" H 6450 2850 50  0001 C CNN "Mouser"
 	1    6450 3150

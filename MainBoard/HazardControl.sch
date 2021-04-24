@@ -210,7 +210,7 @@ Wire Wire Line
 Text Notes 600  2050 0    50   ~ 0
 Hazard Control detects several types of hazards and resolves each one\neither by stalling the pipeline, or by forwarding an operand from a later\npipeline stage.\n\nOn a jump, the program counter must be allowed to load a new value. At the\nsame time, the ID and IF stages must both be flushed.\n\nIf the instruction in EX wants to update the Flags register, and the opcode in\nID is determined to be one that wants to make use of the flags, then there is\na Flags hazard. In this case, stall the pipeline for one cycle.\n\nIf the Ra or Rb registers refer to the destination register in the EX or MEM\nstage, and the instructions in the EX or MEM stage want to write back to that\nregister, then there is a RAW error. In this case, forward an operand from a\nlater pipeline stage to supply the EX stage on the next clock cycle.\n\nThere’s no path to forward the store operand. Cases involving this operand\nmust be resolved by stalling the pipeline.
 Wire Wire Line
-	9350 3300 9500 3300
+	9350 3300 10100 3300
 Text HLabel 7550 3300 0    50   Input ~ 0
 Ins_ID[11..15]
 Entry Wire Line
@@ -296,11 +296,11 @@ Text Label 4500 3400 0    50   ~ 0
 WBEN_EX
 Text HLabel 7550 3700 0    50   Input ~ 0
 ~J
-Text HLabel 9500 3300 2    50   Output ~ 0
+Text HLabel 10100 3300 2    50   Output ~ 0
 STALL
 Wire Wire Line
-	9350 3400 9500 3400
-Text HLabel 9500 3400 2    50   Output ~ 0
+	9350 3400 10100 3400
+Text HLabel 10100 3400 2    50   Output ~ 0
 FLUSH
 Text HLabel 6200 3400 2    50   Output ~ 0
 FWD_A
@@ -535,6 +535,92 @@ F 3 "" H 4450 3200 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	5050 3200 4450 3200
+Wire Wire Line
+	7850 1300 7650 1300
+$Comp
+L power:GND #PWR?
+U 1 1 6084ED53
+P 9150 1450
+AR Path="/5D2C0720/6084ED53" Ref="#PWR?"  Part="1" 
+AR Path="/5FED3839/5FDA967F/6084ED53" Ref="#PWR0433"  Part="1" 
+F 0 "#PWR0433" H 9150 1200 50  0001 C CNN
+F 1 "GND" H 9155 1277 50  0000 C CNN
+F 2 "" H 9150 1450 50  0001 C CNN
+F 3 "" H 9150 1450 50  0001 C CNN
+	1    9150 1450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9000 1300 9150 1300
+Wire Wire Line
+	9150 1300 9150 1450
+Wire Wire Line
+	9150 1000 9150 1300
+Connection ~ 9150 1300
+$Comp
+L Connector:TestPoint TP?
+U 1 1 6084ED5D
+P 7850 1300
+AR Path="/5D2C0720/6084ED5D" Ref="TP?"  Part="1" 
+AR Path="/5FED3839/5FDA967F/6084ED5D" Ref="TP14"  Part="1" 
+F 0 "TP14" V 7804 1488 50  0000 L CNN
+F 1 "FLUSH" V 7895 1488 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 8050 1300 50  0001 C CNN
+F 3 "~" H 8050 1300 50  0001 C CNN
+	1    7850 1300
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP?
+U 1 1 6084ED63
+P 9000 1300
+AR Path="/5D2C0720/6084ED63" Ref="TP?"  Part="1" 
+AR Path="/5FED3839/5FDA967F/6084ED63" Ref="TP16"  Part="1" 
+F 0 "TP16" V 8950 1650 50  0000 R CNN
+F 1 "GND" V 9050 1650 50  0000 R CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 9200 1300 50  0001 C CNN
+F 3 "~" H 9200 1300 50  0001 C CNN
+	1    9000 1300
+	0    -1   1    0   
+$EndComp
+Wire Wire Line
+	7850 1000 7650 1000
+Wire Wire Line
+	9000 1000 9150 1000
+$Comp
+L Connector:TestPoint TP?
+U 1 1 60851A0E
+P 7850 1000
+AR Path="/5D2C0720/60851A0E" Ref="TP?"  Part="1" 
+AR Path="/5FED3839/5FDA967F/60851A0E" Ref="TP13"  Part="1" 
+F 0 "TP13" V 7804 1188 50  0000 L CNN
+F 1 "STALL" V 7895 1188 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 8050 1000 50  0001 C CNN
+F 3 "~" H 8050 1000 50  0001 C CNN
+	1    7850 1000
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP?
+U 1 1 60851A14
+P 9000 1000
+AR Path="/5D2C0720/60851A14" Ref="TP?"  Part="1" 
+AR Path="/5FED3839/5FDA967F/60851A14" Ref="TP15"  Part="1" 
+F 0 "TP15" V 8950 1350 50  0000 R CNN
+F 1 "GND" V 9050 1350 50  0000 R CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 9200 1000 50  0001 C CNN
+F 3 "~" H 9200 1000 50  0001 C CNN
+	1    9000 1000
+	0    -1   1    0   
+$EndComp
 Wire Bus Line
 	3200 3100 3200 3300
+Text Label 9450 3300 0    50   ~ 0
+STALL
+Text Label 9450 3400 0    50   ~ 0
+FLUSH
+Text Label 7650 1000 0    50   ~ 0
+STALL
+Text Label 7650 1300 0    50   ~ 0
+FLUSH
 $EndSCHEMATC

@@ -5,8 +5,8 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 13 39
 Title "MEM/WB: Control Word Register"
-Date "2021-04-18"
-Rev "A (34c8551e)"
+Date "2021-04-22"
+Rev "A (4274ea32)"
 Comp ""
 Comment1 ""
 Comment2 ""

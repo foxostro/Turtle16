@@ -5,8 +5,8 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 23 39
 Title "ID"
-Date "2021-04-18"
-Rev "A (34c8551e)"
+Date "2021-04-22"
+Rev "A (4274ea32)"
 Comp ""
 Comment1 "Simultaneously, read the register file using indices extracted from the instruction word."
 Comment2 "effect conditional instructions."
@@ -352,6 +352,129 @@ Wire Wire Line
 	6700 6200 7250 6200
 Text Notes 7250 4300 0    50   ~ 0
 Operands from subsequent pipeline\nstages feed back to the ID stage\nand may be selected for use now to\nresolve a RAW hazard.
+Wire Wire Line
+	1300 2700 1100 2700
+Wire Wire Line
+	2450 2700 2600 2700
+$Comp
+L Connector:TestPoint TP?
+U 1 1 6085C0DC
+P 1300 2700
+AR Path="/5D2C0720/6085C0DC" Ref="TP?"  Part="1" 
+AR Path="/5FE35007/6085C0DC" Ref="TP?"  Part="1" 
+AR Path="/5FED3839/6085C0DC" Ref="TP18"  Part="1" 
+F 0 "TP18" V 1254 2888 50  0000 L CNN
+F 1 "Z" V 1345 2888 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 1500 2700 50  0001 C CNN
+F 3 "~" H 1500 2700 50  0001 C CNN
+	1    1300 2700
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP?
+U 1 1 6085C0E2
+P 2450 2700
+AR Path="/5D2C0720/6085C0E2" Ref="TP?"  Part="1" 
+AR Path="/5FE35007/6085C0E2" Ref="TP?"  Part="1" 
+AR Path="/5FED3839/6085C0E2" Ref="TP21"  Part="1" 
+F 0 "TP21" V 2400 3050 50  0000 R CNN
+F 1 "GND" V 2500 3050 50  0000 R CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 2650 2700 50  0001 C CNN
+F 3 "~" H 2650 2700 50  0001 C CNN
+	1    2450 2700
+	0    -1   1    0   
+$EndComp
+Wire Wire Line
+	1300 3000 1100 3000
+$Comp
+L power:GND #PWR?
+U 1 1 6085C0EA
+P 2600 3150
+AR Path="/5D2C0720/6085C0EA" Ref="#PWR?"  Part="1" 
+AR Path="/5FE35007/6085C0EA" Ref="#PWR?"  Part="1" 
+AR Path="/5FED3839/6085C0EA" Ref="#PWR0434"  Part="1" 
+F 0 "#PWR0434" H 2600 2900 50  0001 C CNN
+F 1 "GND" H 2605 2977 50  0000 C CNN
+F 2 "" H 2600 3150 50  0001 C CNN
+F 3 "" H 2600 3150 50  0001 C CNN
+	1    2600 3150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2450 3000 2600 3000
+Wire Wire Line
+	2600 3000 2600 3150
+Wire Wire Line
+	2600 2700 2600 3000
+Connection ~ 2600 3000
+$Comp
+L Connector:TestPoint TP?
+U 1 1 6085C0F4
+P 1300 3000
+AR Path="/5D2C0720/6085C0F4" Ref="TP?"  Part="1" 
+AR Path="/5FE35007/6085C0F4" Ref="TP?"  Part="1" 
+AR Path="/5FED3839/6085C0F4" Ref="TP19"  Part="1" 
+F 0 "TP19" V 1254 3188 50  0000 L CNN
+F 1 "OVF" V 1345 3188 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 1500 3000 50  0001 C CNN
+F 3 "~" H 1500 3000 50  0001 C CNN
+	1    1300 3000
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP?
+U 1 1 6085C0FA
+P 2450 3000
+AR Path="/5D2C0720/6085C0FA" Ref="TP?"  Part="1" 
+AR Path="/5FE35007/6085C0FA" Ref="TP?"  Part="1" 
+AR Path="/5FED3839/6085C0FA" Ref="TP22"  Part="1" 
+F 0 "TP22" V 2400 3350 50  0000 R CNN
+F 1 "GND" V 2500 3350 50  0000 R CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 2650 3000 50  0001 C CNN
+F 3 "~" H 2650 3000 50  0001 C CNN
+	1    2450 3000
+	0    -1   1    0   
+$EndComp
+Wire Wire Line
+	1300 2400 1100 2400
+Wire Wire Line
+	2450 2400 2600 2400
+$Comp
+L Connector:TestPoint TP?
+U 1 1 6085DF61
+P 1300 2400
+AR Path="/5D2C0720/6085DF61" Ref="TP?"  Part="1" 
+AR Path="/5FE35007/6085DF61" Ref="TP?"  Part="1" 
+AR Path="/5FED3839/6085DF61" Ref="TP17"  Part="1" 
+F 0 "TP17" V 1254 2588 50  0000 L CNN
+F 1 "Carry" V 1345 2588 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 1500 2400 50  0001 C CNN
+F 3 "~" H 1500 2400 50  0001 C CNN
+	1    1300 2400
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP?
+U 1 1 6085DF67
+P 2450 2400
+AR Path="/5D2C0720/6085DF67" Ref="TP?"  Part="1" 
+AR Path="/5FE35007/6085DF67" Ref="TP?"  Part="1" 
+AR Path="/5FED3839/6085DF67" Ref="TP20"  Part="1" 
+F 0 "TP20" V 2400 2750 50  0000 R CNN
+F 1 "GND" V 2500 2750 50  0000 R CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 2650 2400 50  0001 C CNN
+F 3 "~" H 2650 2400 50  0001 C CNN
+	1    2450 2400
+	0    -1   1    0   
+$EndComp
+Wire Wire Line
+	2600 2400 2600 2700
 Wire Bus Line
 	2050 950  5200 950 
+Text HLabel 1100 2400 0    50   Input ~ 0
+Carry
+Text HLabel 1100 2700 0    50   Input ~ 0
+Z
+Text HLabel 1100 3000 0    50   Input ~ 0
+OVF
 $EndSCHEMATC

@@ -5,8 +5,8 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 2 39
 Title "Clock"
-Date "2021-04-18"
-Rev "A (34c8551e)"
+Date "2021-04-22"
+Rev "A (4274ea32)"
 Comp ""
 Comment1 "Includes logic for the HLT state and a Resume button."
 Comment2 "Includes the voltage supervisor which controls the reset cycle."
@@ -757,26 +757,10 @@ Text GLabel 7950 1600 0    50   Output ~ 0
 Phi1c
 Wire Wire Line
 	8150 1600 7950 1600
-$Comp
-L power:GND #PWR0303
-U 1 1 60624463
-P 9450 1750
-F 0 "#PWR0303" H 9450 1500 50  0001 C CNN
-F 1 "GND" H 9455 1577 50  0000 C CNN
-F 2 "" H 9450 1750 50  0001 C CNN
-F 3 "" H 9450 1750 50  0001 C CNN
-	1    9450 1750
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	9300 1600 9450 1600
-Wire Wire Line
-	9450 1600 9450 1750
 Wire Wire Line
 	9300 1300 9450 1300
 Wire Wire Line
 	9450 1300 9450 1600
-Connection ~ 9450 1600
 Wire Wire Line
 	9300 1000 9450 1000
 Wire Wire Line
@@ -852,4 +836,51 @@ Text Label 2600 5600 2    50   ~ 0
 Phi1_0
 Wire Wire Line
 	2800 5600 2600 5600
+Wire Wire Line
+	8150 1900 7950 1900
+$Comp
+L power:GND #PWR0303
+U 1 1 6083A6E4
+P 9450 2050
+F 0 "#PWR0303" H 9450 1800 50  0001 C CNN
+F 1 "GND" H 9455 1877 50  0000 C CNN
+F 2 "" H 9450 2050 50  0001 C CNN
+F 3 "" H 9450 2050 50  0001 C CNN
+	1    9450 2050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9300 1900 9450 1900
+Wire Wire Line
+	9450 1900 9450 2050
+Wire Wire Line
+	9450 1600 9450 1900
+Connection ~ 9450 1900
+$Comp
+L Connector:TestPoint TP7
+U 1 1 6083A6EE
+P 8150 1900
+F 0 "TP7" V 8104 2088 50  0000 L CNN
+F 1 "~HLT" V 8195 2088 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 8350 1900 50  0001 C CNN
+F 3 "~" H 8350 1900 50  0001 C CNN
+	1    8150 1900
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP8
+U 1 1 6083A6F4
+P 9300 1900
+F 0 "TP8" V 9250 2250 50  0000 R CNN
+F 1 "GND" V 9350 2250 50  0000 R CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 9500 1900 50  0001 C CNN
+F 3 "~" H 9500 1900 50  0001 C CNN
+	1    9300 1900
+	0    -1   1    0   
+$EndComp
+Text HLabel 7950 1900 0    50   Input ~ 0
+~HLT
+Wire Wire Line
+	9450 1600 9300 1600
+Connection ~ 9450 1600
 $EndSCHEMATC

@@ -91,4 +91,86 @@ Text HLabel 6200 3450 0    50   Input ~ 0
 STALL
 Wire Wire Line
 	6550 3450 6200 3450
+Wire Wire Line
+	2800 5200 2600 5200
+Wire Wire Line
+	3950 5200 4100 5200
+$Comp
+L Connector:TestPoint TP?
+U 1 1 6084902E
+P 2800 5200
+AR Path="/5D2C0720/6084902E" Ref="TP?"  Part="1" 
+AR Path="/5FE35007/6084902E" Ref="TP9"  Part="1" 
+F 0 "TP9" V 2754 5388 50  0000 L CNN
+F 1 "~J" V 2845 5388 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 3000 5200 50  0001 C CNN
+F 3 "~" H 3000 5200 50  0001 C CNN
+	1    2800 5200
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP?
+U 1 1 60849034
+P 3950 5200
+AR Path="/5D2C0720/60849034" Ref="TP?"  Part="1" 
+AR Path="/5FE35007/60849034" Ref="TP11"  Part="1" 
+F 0 "TP11" V 3900 5550 50  0000 R CNN
+F 1 "GND" V 4000 5550 50  0000 R CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 4150 5200 50  0001 C CNN
+F 3 "~" H 4150 5200 50  0001 C CNN
+	1    3950 5200
+	0    -1   1    0   
+$EndComp
+Text HLabel 2600 5200 0    50   Input ~ 0
+~J
+Wire Wire Line
+	2800 5500 2600 5500
+$Comp
+L power:GND #PWR?
+U 1 1 60849966
+P 4100 5650
+AR Path="/5D2C0720/60849966" Ref="#PWR?"  Part="1" 
+AR Path="/5FE35007/60849966" Ref="#PWR0432"  Part="1" 
+F 0 "#PWR0432" H 4100 5400 50  0001 C CNN
+F 1 "GND" H 4105 5477 50  0000 C CNN
+F 2 "" H 4100 5650 50  0001 C CNN
+F 3 "" H 4100 5650 50  0001 C CNN
+	1    4100 5650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3950 5500 4100 5500
+Wire Wire Line
+	4100 5500 4100 5650
+Wire Wire Line
+	4100 5200 4100 5500
+Connection ~ 4100 5500
+$Comp
+L Connector:TestPoint TP?
+U 1 1 60849970
+P 2800 5500
+AR Path="/5D2C0720/60849970" Ref="TP?"  Part="1" 
+AR Path="/5FE35007/60849970" Ref="TP10"  Part="1" 
+F 0 "TP10" V 2754 5688 50  0000 L CNN
+F 1 "~JABS" V 2845 5688 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 3000 5500 50  0001 C CNN
+F 3 "~" H 3000 5500 50  0001 C CNN
+	1    2800 5500
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP?
+U 1 1 60849976
+P 3950 5500
+AR Path="/5D2C0720/60849976" Ref="TP?"  Part="1" 
+AR Path="/5FE35007/60849976" Ref="TP12"  Part="1" 
+F 0 "TP12" V 3900 5850 50  0000 R CNN
+F 1 "GND" V 4000 5850 50  0000 R CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 4150 5500 50  0001 C CNN
+F 3 "~" H 4150 5500 50  0001 C CNN
+	1    3950 5500
+	0    -1   1    0   
+$EndComp
+Text HLabel 2600 5500 0    50   Input ~ 0
+~JABS
 $EndSCHEMATC

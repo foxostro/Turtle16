@@ -5,8 +5,8 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 24 39
 Title "Register File"
-Date "2021-04-18"
-Rev "A (34c8551e)"
+Date "2021-04-22"
+Rev "A (4274ea32)"
 Comp ""
 Comment1 ""
 Comment2 ""
@@ -158,11 +158,11 @@ Wire Wire Line
 Text Label 4650 3200 2    50   ~ 0
 SelA2
 Wire Wire Line
-	1250 7600 1000 7600
+	5900 7650 5650 7650
 $Comp
 L power:GND #PWR?
 U 1 1 5FB3291A
-P 1000 7700
+P 5650 7750
 AR Path="/5D2C0761/5FB3291A" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C0B92/5FB3291A" Ref="#PWR?"  Part="1" 
 AR Path="/5FED3839/5FB3291A" Ref="#PWR?"  Part="1" 
@@ -170,17 +170,17 @@ AR Path="/60906BCD/5FAA7AE7/5FB3291A" Ref="#PWR?"  Part="1"
 AR Path="/5FED3839/5FC16AA6/5FB3291A" Ref="#PWR0298"  Part="1" 
 AR Path="/5FED3839/5FE73F43/5FF028A0/5FB3291A" Ref="#PWR?"  Part="1" 
 AR Path="/5FED3839/60693BAE/5FB3291A" Ref="#PWR0158"  Part="1" 
-F 0 "#PWR0158" H 1000 7450 50  0001 C CNN
-F 1 "GND" H 1005 7527 50  0000 C CNN
-F 2 "" H 1000 7700 50  0001 C CNN
-F 3 "" H 1000 7700 50  0001 C CNN
-	1    1000 7700
+F 0 "#PWR0158" H 5650 7500 50  0001 C CNN
+F 1 "GND" H 5655 7577 50  0000 C CNN
+F 2 "" H 5650 7750 50  0001 C CNN
+F 3 "" H 5650 7750 50  0001 C CNN
+	1    5650 7750
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:C C?
 U 1 1 5FB3292C
-P 1250 7450
+P 5900 7500
 AR Path="/5D2C0761/5FB3292C" Ref="C?"  Part="1" 
 AR Path="/5D2C0B92/5FB3292C" Ref="C?"  Part="1" 
 AR Path="/5FED3839/5FB3292C" Ref="C?"  Part="1" 
@@ -188,18 +188,18 @@ AR Path="/60906BCD/5FAA7AE7/5FB3292C" Ref="C?"  Part="1"
 AR Path="/5FED3839/5FC16AA6/5FB3292C" Ref="C58"  Part="1" 
 AR Path="/5FED3839/5FE73F43/5FF028A0/5FB3292C" Ref="C?"  Part="1" 
 AR Path="/5FED3839/60693BAE/5FB3292C" Ref="C11"  Part="1" 
-F 0 "C11" H 1365 7496 50  0000 L CNN
-F 1 "100nF" H 1365 7405 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1288 7300 50  0001 C CNN
-F 3 "~" H 1250 7450 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 1250 7450 50  0001 C CNN "Mouser"
-	1    1250 7450
+F 0 "C11" H 6015 7546 50  0000 L CNN
+F 1 "100nF" H 6015 7455 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 5938 7350 50  0001 C CNN
+F 3 "~" H 5900 7500 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 5900 7500 50  0001 C CNN "Mouser"
+	1    5900 7500
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:C C?
 U 1 1 5FB32932
-P 750 7450
+P 5400 7500
 AR Path="/5D2C0761/5FB32932" Ref="C?"  Part="1" 
 AR Path="/5D2C0B92/5FB32932" Ref="C?"  Part="1" 
 AR Path="/5FED3839/5FB32932" Ref="C?"  Part="1" 
@@ -207,20 +207,20 @@ AR Path="/60906BCD/5FAA7AE7/5FB32932" Ref="C?"  Part="1"
 AR Path="/5FED3839/5FC16AA6/5FB32932" Ref="C57"  Part="1" 
 AR Path="/5FED3839/5FE73F43/5FF028A0/5FB32932" Ref="C?"  Part="1" 
 AR Path="/5FED3839/60693BAE/5FB32932" Ref="C10"  Part="1" 
-F 0 "C10" H 865 7496 50  0000 L CNN
-F 1 "100nF" H 865 7405 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 788 7300 50  0001 C CNN
-F 3 "~" H 750 7450 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 750 7450 50  0001 C CNN "Mouser"
-	1    750  7450
+F 0 "C10" H 5515 7546 50  0000 L CNN
+F 1 "100nF" H 5515 7455 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 5438 7350 50  0001 C CNN
+F 3 "~" H 5400 7500 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 5400 7500 50  0001 C CNN "Mouser"
+	1    5400 7500
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	750  7300 1000 7300
+	5400 7350 5650 7350
 $Comp
 L power:VCC #PWR?
 U 1 1 5FB32939
-P 1000 7200
+P 5650 7250
 AR Path="/5D2C0761/5FB32939" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C0B92/5FB32939" Ref="#PWR?"  Part="1" 
 AR Path="/5FED3839/5FB32939" Ref="#PWR?"  Part="1" 
@@ -228,23 +228,23 @@ AR Path="/60906BCD/5FAA7AE7/5FB32939" Ref="#PWR?"  Part="1"
 AR Path="/5FED3839/5FC16AA6/5FB32939" Ref="#PWR0297"  Part="1" 
 AR Path="/5FED3839/5FE73F43/5FF028A0/5FB32939" Ref="#PWR?"  Part="1" 
 AR Path="/5FED3839/60693BAE/5FB32939" Ref="#PWR0159"  Part="1" 
-F 0 "#PWR0159" H 1000 7050 50  0001 C CNN
-F 1 "VCC" H 1017 7373 50  0000 C CNN
-F 2 "" H 1000 7200 50  0001 C CNN
-F 3 "" H 1000 7200 50  0001 C CNN
-	1    1000 7200
+F 0 "#PWR0159" H 5650 7100 50  0001 C CNN
+F 1 "VCC" H 5667 7423 50  0000 C CNN
+F 2 "" H 5650 7250 50  0001 C CNN
+F 3 "" H 5650 7250 50  0001 C CNN
+	1    5650 7250
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	1000 7200 1000 7300
-Connection ~ 1000 7300
+	5650 7250 5650 7350
+Connection ~ 5650 7350
 Wire Wire Line
-	1000 7300 1250 7300
+	5650 7350 5900 7350
 Wire Wire Line
-	1000 7700 1000 7600
-Connection ~ 1000 7600
+	5650 7750 5650 7650
+Connection ~ 5650 7650
 Wire Wire Line
-	1000 7600 750  7600
+	5650 7650 5400 7650
 Wire Wire Line
 	2250 5100 2550 5100
 Entry Wire Line
@@ -1287,7 +1287,7 @@ F 3 "" H 8600 2800 50  0001 C CNN
 	1    8600 2800
 	0    -1   1    0   
 $EndComp
-Text Notes 2550 7250 0    50   ~ 0
+Text Notes 4250 1050 0    50   ~ 0
 Both dual port SRAMs are configured in Slave mode. This disables the\non board contention arbitration logic. Per application note, AN-91, a\nsimultaneous read and write to the same cell will flow through from one\nport to another after a short delay.
 Wire Wire Line
 	3350 1650 3350 1600
@@ -1429,6 +1429,351 @@ Wire Wire Line
 	4350 5700 4850 5700
 Wire Wire Line
 	4350 5800 4850 5800
+Entry Wire Line
+	1100 7100 1200 7200
+Entry Wire Line
+	1100 7200 1200 7300
+Wire Wire Line
+	1200 7300 1500 7300
+Entry Wire Line
+	1100 7300 1200 7400
+Wire Wire Line
+	1200 7400 1500 7400
+Entry Wire Line
+	1100 7400 1200 7500
+Wire Wire Line
+	1200 7500 1500 7500
+Entry Wire Line
+	1100 7500 1200 7600
+Wire Wire Line
+	1200 7600 1500 7600
+Entry Wire Line
+	1100 7600 1200 7700
+Wire Wire Line
+	1200 7700 1500 7700
+Entry Wire Line
+	1100 7700 1200 7800
+Wire Wire Line
+	1200 7800 1500 7800
+Entry Wire Line
+	1100 7800 1200 7900
+Wire Wire Line
+	1200 7900 1500 7900
+Wire Wire Line
+	1200 7200 1500 7200
+Entry Wire Line
+	1100 6300 1200 6400
+Entry Wire Line
+	1100 6400 1200 6500
+Wire Wire Line
+	1200 6500 1500 6500
+Entry Wire Line
+	1100 6500 1200 6600
+Wire Wire Line
+	1200 6600 1500 6600
+Entry Wire Line
+	1100 6600 1200 6700
+Wire Wire Line
+	1200 6700 1500 6700
+Entry Wire Line
+	1100 6700 1200 6800
+Wire Wire Line
+	1200 6800 1500 6800
+Entry Wire Line
+	1100 6800 1200 6900
+Wire Wire Line
+	1200 6900 1500 6900
+Entry Wire Line
+	1100 6900 1200 7000
+Wire Wire Line
+	1200 7000 1500 7000
+Entry Wire Line
+	1100 7000 1200 7100
+Wire Wire Line
+	1200 7100 1500 7100
+Wire Bus Line
+	950  6300 1100 6300
+Text HLabel 950  6300 0    50   Input ~ 0
+C[0..15]
+Text Label 1200 6400 0    50   ~ 0
+C0
+Text Label 1200 6500 0    50   ~ 0
+C1
+Text Label 1200 6600 0    50   ~ 0
+C2
+Text Label 1200 6700 0    50   ~ 0
+C3
+Text Label 1200 6800 0    50   ~ 0
+C4
+Text Label 1200 6900 0    50   ~ 0
+C5
+Text Label 1200 7000 0    50   ~ 0
+C6
+Text Label 1200 7100 0    50   ~ 0
+C7
+Text Label 1200 7200 0    50   ~ 0
+C8
+Text Label 1200 7300 0    50   ~ 0
+C9
+Text Label 1200 7400 0    50   ~ 0
+C10
+Text Label 1200 7500 0    50   ~ 0
+C11
+Text Label 1200 7600 0    50   ~ 0
+C12
+Text Label 1200 7700 0    50   ~ 0
+C13
+Text Label 1200 7800 0    50   ~ 0
+C14
+Text Label 1200 7900 0    50   ~ 0
+C15
+Wire Wire Line
+	1200 6400 1500 6400
+$Comp
+L Connector:TestPoint TP?
+U 1 1 6088F35F
+P 1500 6400
+F 0 "TP?" V 1500 6600 50  0000 L CNN
+F 1 "C0" V 1500 6800 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 1700 6400 50  0001 C CNN
+F 3 "~" H 1700 6400 50  0001 C CNN
+	1    1500 6400
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP?
+U 1 1 608989C1
+P 1500 6500
+F 0 "TP?" V 1500 6700 50  0000 L CNN
+F 1 "C1" V 1500 6900 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 1700 6500 50  0001 C CNN
+F 3 "~" H 1700 6500 50  0001 C CNN
+	1    1500 6500
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP?
+U 1 1 60898B8A
+P 1500 6600
+F 0 "TP?" V 1500 6800 50  0000 L CNN
+F 1 "C2" V 1500 7000 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 1700 6600 50  0001 C CNN
+F 3 "~" H 1700 6600 50  0001 C CNN
+	1    1500 6600
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP?
+U 1 1 60898D40
+P 1500 6700
+F 0 "TP?" V 1500 6900 50  0000 L CNN
+F 1 "C3" V 1500 7100 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 1700 6700 50  0001 C CNN
+F 3 "~" H 1700 6700 50  0001 C CNN
+	1    1500 6700
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP?
+U 1 1 60898EF6
+P 1500 6800
+F 0 "TP?" V 1500 7000 50  0000 L CNN
+F 1 "C4" V 1500 7200 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 1700 6800 50  0001 C CNN
+F 3 "~" H 1700 6800 50  0001 C CNN
+	1    1500 6800
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP?
+U 1 1 60899081
+P 1500 6900
+F 0 "TP?" V 1500 7100 50  0000 L CNN
+F 1 "C5" V 1500 7300 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 1700 6900 50  0001 C CNN
+F 3 "~" H 1700 6900 50  0001 C CNN
+	1    1500 6900
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP?
+U 1 1 608992A0
+P 1500 7000
+F 0 "TP?" V 1500 7200 50  0000 L CNN
+F 1 "C6" V 1500 7400 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 1700 7000 50  0001 C CNN
+F 3 "~" H 1700 7000 50  0001 C CNN
+	1    1500 7000
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP?
+U 1 1 60899468
+P 1500 7100
+F 0 "TP?" V 1500 7300 50  0000 L CNN
+F 1 "C7" V 1500 7500 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 1700 7100 50  0001 C CNN
+F 3 "~" H 1700 7100 50  0001 C CNN
+	1    1500 7100
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP?
+U 1 1 60899622
+P 1500 7200
+F 0 "TP?" V 1500 7400 50  0000 L CNN
+F 1 "C8" V 1500 7600 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 1700 7200 50  0001 C CNN
+F 3 "~" H 1700 7200 50  0001 C CNN
+	1    1500 7200
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP?
+U 1 1 608997F0
+P 1500 7300
+F 0 "TP?" V 1500 7500 50  0000 L CNN
+F 1 "C9" V 1500 7700 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 1700 7300 50  0001 C CNN
+F 3 "~" H 1700 7300 50  0001 C CNN
+	1    1500 7300
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP?
+U 1 1 60899941
+P 1500 7400
+F 0 "TP?" V 1500 7600 50  0000 L CNN
+F 1 "C10" V 1500 7800 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 1700 7400 50  0001 C CNN
+F 3 "~" H 1700 7400 50  0001 C CNN
+	1    1500 7400
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP?
+U 1 1 60899AB3
+P 1500 7500
+F 0 "TP?" V 1500 7700 50  0000 L CNN
+F 1 "C11" V 1500 7900 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 1700 7500 50  0001 C CNN
+F 3 "~" H 1700 7500 50  0001 C CNN
+	1    1500 7500
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP?
+U 1 1 60899DD3
+P 1500 7600
+F 0 "TP?" V 1500 7800 50  0000 L CNN
+F 1 "C12" V 1500 8000 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 1700 7600 50  0001 C CNN
+F 3 "~" H 1700 7600 50  0001 C CNN
+	1    1500 7600
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP?
+U 1 1 60899F6B
+P 1500 7700
+F 0 "TP?" V 1500 7900 50  0000 L CNN
+F 1 "C13" V 1500 8100 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 1700 7700 50  0001 C CNN
+F 3 "~" H 1700 7700 50  0001 C CNN
+	1    1500 7700
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP?
+U 1 1 6089A12E
+P 1500 7800
+F 0 "TP?" V 1500 8000 50  0000 L CNN
+F 1 "C14" V 1500 8200 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 1700 7800 50  0001 C CNN
+F 3 "~" H 1700 7800 50  0001 C CNN
+	1    1500 7800
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP?
+U 1 1 6089A31D
+P 1500 7900
+F 0 "TP?" V 1500 8100 50  0000 L CNN
+F 1 "C15" V 1500 8300 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 1700 7900 50  0001 C CNN
+F 3 "~" H 1700 7900 50  0001 C CNN
+	1    1500 7900
+	0    1    1    0   
+$EndComp
+Text HLabel 2750 7350 0    50   Input ~ 0
+~WRH
+Text HLabel 2750 7250 0    50   Input ~ 0
+~WRL
+Wire Wire Line
+	3300 7250 2750 7250
+Wire Wire Line
+	3300 7350 2750 7350
+Text HLabel 2750 7150 0    50   Input ~ 0
+~WBEN
+Wire Wire Line
+	3300 7150 2750 7150
+$Comp
+L Connector:TestPoint TP?
+U 1 1 608DA063
+P 3300 7150
+F 0 "TP?" V 3300 7350 50  0000 L CNN
+F 1 "~WBEN" V 3300 7550 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 3500 7150 50  0001 C CNN
+F 3 "~" H 3500 7150 50  0001 C CNN
+	1    3300 7150
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP?
+U 1 1 608DA738
+P 3300 7250
+F 0 "TP?" V 3300 7450 50  0000 L CNN
+F 1 "~WRL" V 3300 7650 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 3500 7250 50  0001 C CNN
+F 3 "~" H 3500 7250 50  0001 C CNN
+	1    3300 7250
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP?
+U 1 1 608DA9F0
+P 3300 7350
+F 0 "TP?" V 3300 7550 50  0000 L CNN
+F 1 "~WRH" V 3300 7750 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 3500 7350 50  0001 C CNN
+F 3 "~" H 3500 7350 50  0001 C CNN
+	1    3300 7350
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint TP?
+U 1 1 608EECB7
+P 4600 7150
+F 0 "TP?" V 4600 7350 50  0000 L CNN
+F 1 "GND" V 4600 7550 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 4800 7150 50  0001 C CNN
+F 3 "~" H 4800 7150 50  0001 C CNN
+	1    4600 7150
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 608F0672
+P 4850 7150
+F 0 "#PWR?" H 4850 6900 50  0001 C CNN
+F 1 "GND" V 4855 7022 50  0000 R CNN
+F 2 "" H 4850 7150 50  0001 C CNN
+F 3 "" H 4850 7150 50  0001 C CNN
+	1    4850 7150
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	4850 7150 4600 7150
 Wire Bus Line
 	2000 2900 2000 3100
 Wire Bus Line
@@ -1445,4 +1790,6 @@ Wire Bus Line
 	6400 4200 6400 5700
 Wire Bus Line
 	9200 4200 9200 5700
+Wire Bus Line
+	1100 6300 1100 7800
 $EndSCHEMATC

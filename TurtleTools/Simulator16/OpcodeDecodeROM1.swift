@@ -1,5 +1,5 @@
 //
-//  OpcodeDecodeROMU33.swift
+//  OpcodeDecodeROM1.swift
 //  Simulator16
 //
 //  Created by Andrew Fox on 4/19/21.
@@ -9,9 +9,9 @@
 import Cocoa
 import Turtle16SimulatorCore
 
-class OpcodeDecodeROMU33: HexDataTableViewDataSource {
+class OpcodeDecodeROM1: HexDataTableViewDataSource {
     public override func load(address: Int) -> Int {
-        Int((computer.opcodeDecodeROM[address] >> 16) & 0x1f)
+        Int(computer.opcodeDecodeROM[address] & 0xff)
     }
     
     public override var numberOfRows: Int {

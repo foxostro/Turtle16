@@ -18,9 +18,9 @@ class MemoryViewController: NSViewController {
     
     let kInstructionMemoryIdentifier = NSUserInterfaceItemIdentifier("InstructionMemory")
     let kDataMemoryIdentifier = NSUserInterfaceItemIdentifier("DataMemory")
-    let kOpcodeDecodeROMU25Identifier = NSUserInterfaceItemIdentifier("U25")
-    let kOpcodeDecodeROMU26Identifier = NSUserInterfaceItemIdentifier("U26")
-    let kOpcodeDecodeROMU33Identifier = NSUserInterfaceItemIdentifier("U33")
+    let kOpcodeDecodeROM1Identifier = NSUserInterfaceItemIdentifier("kOpcodeDecodeROM1Identifier")
+    let kOpcodeDecodeROM2Identifier = NSUserInterfaceItemIdentifier("kOpcodeDecodeROM2Identifier")
+    let kOpcodeDecodeROM3Identifier = NSUserInterfaceItemIdentifier("kOpcodeDecodeROM3Identifier")
     
     public required init(debugger: DebugConsole) {
         self.debugger = debugger
@@ -38,12 +38,12 @@ class MemoryViewController: NSViewController {
                        dataSource: InstructionMemoryTableViewDataSource(computer: debugger.computer))
         addHexDataView(identifier: kDataMemoryIdentifier,
                        dataSource: DataMemoryTableViewDataSource(computer: debugger.computer))
-        addHexDataView(identifier: kOpcodeDecodeROMU25Identifier,
-                       dataSource: OpcodeDecodeROMU25(computer: debugger.computer))
-        addHexDataView(identifier: kOpcodeDecodeROMU26Identifier,
-                       dataSource: OpcodeDecodeROMU26(computer: debugger.computer))
-        addHexDataView(identifier: kOpcodeDecodeROMU33Identifier,
-                       dataSource: OpcodeDecodeROMU33(computer: debugger.computer))
+        addHexDataView(identifier: kOpcodeDecodeROM1Identifier,
+                       dataSource: OpcodeDecodeROM1(computer: debugger.computer))
+        addHexDataView(identifier: kOpcodeDecodeROM2Identifier,
+                       dataSource: OpcodeDecodeROM2(computer: debugger.computer))
+        addHexDataView(identifier: kOpcodeDecodeROM3Identifier,
+                       dataSource: OpcodeDecodeROM3(computer: debugger.computer))
         
         syncMemoryTabView()
     }
@@ -120,14 +120,14 @@ class MemoryViewController: NSViewController {
         case kDataMemoryIdentifier:
             debugger.interpreter.runOne(instruction: .load("data", url))
             
-        case kOpcodeDecodeROMU25Identifier:
-            debugger.interpreter.runOne(instruction: .load("U25", url))
+        case kOpcodeDecodeROM1Identifier:
+            debugger.interpreter.runOne(instruction: .load("OpcodeDecodeROM1", url))
             
-        case kOpcodeDecodeROMU26Identifier:
-            debugger.interpreter.runOne(instruction: .load("U26", url))
+        case kOpcodeDecodeROM2Identifier:
+            debugger.interpreter.runOne(instruction: .load("OpcodeDecodeROM2", url))
             
-        case kOpcodeDecodeROMU33Identifier:
-            debugger.interpreter.runOne(instruction: .load("U33", url))
+        case kOpcodeDecodeROM3Identifier:
+            debugger.interpreter.runOne(instruction: .load("OPcodeDecodeROM3", url))
         
         default:
             NSSound.beep()

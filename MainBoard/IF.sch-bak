@@ -5,8 +5,8 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 36 39
 Title "IF"
-Date "2021-04-22"
-Rev "A (4274ea32)"
+Date "2021-04-24"
+Rev "A (ad8706e6)"
 Comp ""
 Comment1 "All jumps are PC-relative jumps which add an offset to the program counter."
 Comment2 "address space to allow the program to be modified."
@@ -100,8 +100,8 @@ L Connector:TestPoint TP?
 U 1 1 6084902E
 P 2800 5200
 AR Path="/5D2C0720/6084902E" Ref="TP?"  Part="1" 
-AR Path="/5FE35007/6084902E" Ref="TP9"  Part="1" 
-F 0 "TP9" V 2754 5388 50  0000 L CNN
+AR Path="/5FE35007/6084902E" Ref="TP39"  Part="1" 
+F 0 "TP39" V 2754 5388 50  0000 L CNN
 F 1 "~J" V 2845 5388 50  0000 L CNN
 F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 3000 5200 50  0001 C CNN
 F 3 "~" H 3000 5200 50  0001 C CNN
@@ -113,8 +113,8 @@ L Connector:TestPoint TP?
 U 1 1 60849034
 P 3950 5200
 AR Path="/5D2C0720/60849034" Ref="TP?"  Part="1" 
-AR Path="/5FE35007/60849034" Ref="TP11"  Part="1" 
-F 0 "TP11" V 3900 5550 50  0000 R CNN
+AR Path="/5FE35007/60849034" Ref="TP41"  Part="1" 
+F 0 "TP41" V 3900 5550 50  0000 R CNN
 F 1 "GND" V 4000 5550 50  0000 R CNN
 F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 4150 5200 50  0001 C CNN
 F 3 "~" H 4150 5200 50  0001 C CNN
@@ -130,8 +130,8 @@ L power:GND #PWR?
 U 1 1 60849966
 P 4100 5650
 AR Path="/5D2C0720/60849966" Ref="#PWR?"  Part="1" 
-AR Path="/5FE35007/60849966" Ref="#PWR0432"  Part="1" 
-F 0 "#PWR0432" H 4100 5400 50  0001 C CNN
+AR Path="/5FE35007/60849966" Ref="#PWR0425"  Part="1" 
+F 0 "#PWR0425" H 4100 5400 50  0001 C CNN
 F 1 "GND" H 4105 5477 50  0000 C CNN
 F 2 "" H 4100 5650 50  0001 C CNN
 F 3 "" H 4100 5650 50  0001 C CNN
@@ -150,8 +150,8 @@ L Connector:TestPoint TP?
 U 1 1 60849970
 P 2800 5500
 AR Path="/5D2C0720/60849970" Ref="TP?"  Part="1" 
-AR Path="/5FE35007/60849970" Ref="TP10"  Part="1" 
-F 0 "TP10" V 2754 5688 50  0000 L CNN
+AR Path="/5FE35007/60849970" Ref="TP40"  Part="1" 
+F 0 "TP40" V 2754 5688 50  0000 L CNN
 F 1 "~JABS" V 2845 5688 50  0000 L CNN
 F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 3000 5500 50  0001 C CNN
 F 3 "~" H 3000 5500 50  0001 C CNN
@@ -163,8 +163,8 @@ L Connector:TestPoint TP?
 U 1 1 60849976
 P 3950 5500
 AR Path="/5D2C0720/60849976" Ref="TP?"  Part="1" 
-AR Path="/5FE35007/60849976" Ref="TP12"  Part="1" 
-F 0 "TP12" V 3900 5850 50  0000 R CNN
+AR Path="/5FE35007/60849976" Ref="TP42"  Part="1" 
+F 0 "TP42" V 3900 5850 50  0000 R CNN
 F 1 "GND" V 4000 5850 50  0000 R CNN
 F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 4150 5500 50  0001 C CNN
 F 3 "~" H 4150 5500 50  0001 C CNN

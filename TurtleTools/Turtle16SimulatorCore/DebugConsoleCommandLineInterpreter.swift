@@ -190,7 +190,7 @@ isResetting: \(computer.isResetting)
     }
     
     fileprivate func load(_ what: String, _ url: URL) {
-        let validDestinations: Set<String> = ["program", "data", "U25", "U26", "U33"]
+        let validDestinations: Set<String> = ["program", "data", "OpcodeDecodeROM1", "OpcodeDecodeROM2", "OpcodeDecodeROM3"]
         guard validDestinations.contains(what) else {
             printHelp(.load)
             return
@@ -217,7 +217,7 @@ isResetting: \(computer.isResetting)
             writeDataMemory(base: 0, words: words)
             logger.append("Wrote \(words.count) words to data memory.\n")
             
-        case "U25":
+        case "OpcodeDecodeROM1":
             let words = data.withUnsafeBytes { (pointer: UnsafeRawBufferPointer) -> [UInt8] in
                 let buffer = pointer.bindMemory(to: UInt8.self)
                 return buffer.map { UInt8(bigEndian: $0) }
@@ -226,12 +226,12 @@ isResetting: \(computer.isResetting)
                 if i >= words.count {
                     computer.opcodeDecodeROM[i] = 0
                 } else {
-                    computer.opcodeDecodeROM[i] = (computer.opcodeDecodeROM[i] & ~0xff) | UInt(words[i])
+                    computer.opcodeDecodeROM[i] = (computer.opcodeDecodeROM[i] & ~0x0000ff) | UInt(words[i])
                 }
             }
-            logger.append("Wrote 512 words to opcode decode ROM U25.\n")
+            logger.append("Wrote 512 words to opcode decode ROM 1.\n")
             
-        case "U26":
+        case "OpcodeDecodeROM2":
             let words = data.withUnsafeBytes { (pointer: UnsafeRawBufferPointer) -> [UInt8] in
                 let buffer = pointer.bindMemory(to: UInt8.self)
                 return buffer.map { UInt8(bigEndian: $0) }
@@ -240,12 +240,12 @@ isResetting: \(computer.isResetting)
                 if i >= words.count {
                     computer.opcodeDecodeROM[i] = 0
                 } else {
-                    computer.opcodeDecodeROM[i] = (computer.opcodeDecodeROM[i] & ~0xff00) | (UInt(words[i])<<8)
+                    computer.opcodeDecodeROM[i] = (computer.opcodeDecodeROM[i] & ~0x00ff00) | (UInt(words[i])<<8)
                 }
             }
-            logger.append("Wrote 512 words to opcode decode ROM U26.\n")
+            logger.append("Wrote 512 words to opcode decode ROM 2.\n")
             
-        case "U33":
+        case "OpcodeDecodeROM3":
             let words = data.withUnsafeBytes { (pointer: UnsafeRawBufferPointer) -> [UInt8] in
                 let buffer = pointer.bindMemory(to: UInt8.self)
                 return buffer.map { UInt8(bigEndian: $0) }
@@ -254,10 +254,10 @@ isResetting: \(computer.isResetting)
                 if i >= words.count {
                     computer.opcodeDecodeROM[i] = 0
                 } else {
-                    computer.opcodeDecodeROM[i] = (computer.opcodeDecodeROM[i] & ~0x1f0000) | ((UInt(words[i])&0x1f)<<16)
+                    computer.opcodeDecodeROM[i] = (computer.opcodeDecodeROM[i] & ~0xff0000) | (UInt(words[i])<<16)
                 }
             }
-            logger.append("Wrote 512 words to opcode decode ROM U25.\n")
+            logger.append("Wrote 512 words to opcode decode ROM 3.\n")
         
         default:
             abort()

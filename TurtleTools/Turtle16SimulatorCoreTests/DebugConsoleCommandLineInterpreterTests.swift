@@ -290,12 +290,12 @@ Syntax: writemem <address> <word> [<word>...]
 Load contents of memory from file.
 
 Destination:
-\tprogram -- Instruction memory
-\tdata -- RAM
-\tprogram -- Instruction memory
-\tU25 -- Opcode Decode ROM U25
-\tU26 -- Opcode Decode ROM U26
-\tU33 -- Opcode Decode ROM U33
+\tprogram          -- Instruction memory
+\tdata             -- RAM
+\tprogram          -- Instruction memory
+\tOpcodeDecodeROM1 -- Opcode Decode ROM 1 (U37)
+\tOpcodeDecodeROM2 -- Opcode Decode ROM 2 (U38)
+\tOpcodeDecodeROM3 -- Opcode Decode ROM 3 (U39)
 
 Syntax: load <destination> "<path>"
 
@@ -459,45 +459,45 @@ pc: 0x000d
 Load contents of memory from file.
 
 Destination:
-\tprogram -- Instruction memory
-\tdata -- RAM
-\tprogram -- Instruction memory
-\tU25 -- Opcode Decode ROM U25
-\tU26 -- Opcode Decode ROM U26
-\tU33 -- Opcode Decode ROM U33
+\tprogram          -- Instruction memory
+\tdata             -- RAM
+\tprogram          -- Instruction memory
+\tOpcodeDecodeROM1 -- Opcode Decode ROM 1 (U37)
+\tOpcodeDecodeROM2 -- Opcode Decode ROM 2 (U38)
+\tOpcodeDecodeROM3 -- Opcode Decode ROM 3 (U39)
 
 Syntax: load <destination> "<path>"
 
 """)
     }
     
-    func testLoadDataFromFileForU25() throws {
+    func testLoadDataFromFileForOpcodeDecodeROM1() throws {
         let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
-            .load("U25", url)
+            .load("OpcodeDecodeROM1", url)
         ])
         XCTAssertEqual(computer.opcodeDecodeROM[0] & 0xff, 0x20)
     }
     
-    func testLoadDataFromFileForU26() throws {
+    func testLoadDataFromFileForOpcodeDecodeROM2() throws {
         let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
-            .load("U26", url)
+            .load("OpcodeDecodeROM2", url)
         ])
         XCTAssertEqual((computer.opcodeDecodeROM[0]>>8) & 0xff, 0x20)
     }
     
-    func testLoadDataFromFileForU33() throws {
+    func testLoadDataFromFileForOpcodeDecodeROM3() throws {
         let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
-            .load("U26", url)
+            .load("OpcodeDecodeROM3", url)
         ])
-        XCTAssertEqual((computer.opcodeDecodeROM[0]>>16) & 0x1f, 0x1f)
+        XCTAssertEqual((computer.opcodeDecodeROM[0]>>16) & 0xff, 0x20)
     }
 }

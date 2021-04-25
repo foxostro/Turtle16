@@ -141,9 +141,9 @@
 		6F3EEBDA262D3CF300688D12 /* HexDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3EEBD8262D3CF300688D12 /* HexDataViewController.swift */; };
 		6F3EEBDB262D3CF300688D12 /* HexDataViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F3EEBD9262D3CF300688D12 /* HexDataViewController.xib */; };
 		6F3EEBFB262D4C7500688D12 /* HexDataTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3EEBFA262D4C7500688D12 /* HexDataTableViewDataSource.swift */; };
-		6F3EEC0C262DD42A00688D12 /* OpcodeDecodeROMU26.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3EEC0B262DD42A00688D12 /* OpcodeDecodeROMU26.swift */; };
-		6F3EEC1D262DD51200688D12 /* OpcodeDecodeROMU25.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3EEC1C262DD51200688D12 /* OpcodeDecodeROMU25.swift */; };
-		6F3EEC2E262DD53600688D12 /* OpcodeDecodeROMU33.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3EEC2D262DD53600688D12 /* OpcodeDecodeROMU33.swift */; };
+		6F3EEC0C262DD42A00688D12 /* OpcodeDecodeROM2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3EEC0B262DD42A00688D12 /* OpcodeDecodeROM2.swift */; };
+		6F3EEC1D262DD51200688D12 /* OpcodeDecodeROM1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3EEC1C262DD51200688D12 /* OpcodeDecodeROM1.swift */; };
+		6F3EEC2E262DD53600688D12 /* OpcodeDecodeROM3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3EEC2D262DD53600688D12 /* OpcodeDecodeROM3.swift */; };
 		6F4527392623BE05003732B3 /* DebugConsoleCommandLineParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4527382623BE05003732B3 /* DebugConsoleCommandLineParser.swift */; };
 		6F45274B2623BE15003732B3 /* DebugConsoleCommandLineParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F45274A2623BE15003732B3 /* DebugConsoleCommandLineParserTests.swift */; };
 		6F45279D2623D110003732B3 /* DebugConsoleCommandLineLexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F45279C2623D110003732B3 /* DebugConsoleCommandLineLexer.swift */; };
@@ -724,9 +724,9 @@
 		6F3EEBD8262D3CF300688D12 /* HexDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexDataViewController.swift; sourceTree = "<group>"; };
 		6F3EEBD9262D3CF300688D12 /* HexDataViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HexDataViewController.xib; sourceTree = "<group>"; };
 		6F3EEBFA262D4C7500688D12 /* HexDataTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexDataTableViewDataSource.swift; sourceTree = "<group>"; };
-		6F3EEC0B262DD42A00688D12 /* OpcodeDecodeROMU26.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpcodeDecodeROMU26.swift; sourceTree = "<group>"; };
-		6F3EEC1C262DD51200688D12 /* OpcodeDecodeROMU25.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpcodeDecodeROMU25.swift; sourceTree = "<group>"; };
-		6F3EEC2D262DD53600688D12 /* OpcodeDecodeROMU33.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpcodeDecodeROMU33.swift; sourceTree = "<group>"; };
+		6F3EEC0B262DD42A00688D12 /* OpcodeDecodeROM2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpcodeDecodeROM2.swift; sourceTree = "<group>"; };
+		6F3EEC1C262DD51200688D12 /* OpcodeDecodeROM1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpcodeDecodeROM1.swift; sourceTree = "<group>"; };
+		6F3EEC2D262DD53600688D12 /* OpcodeDecodeROM3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpcodeDecodeROM3.swift; sourceTree = "<group>"; };
 		6F41B66724762D2F0043A8D7 /* TokenOperator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenOperator.swift; sourceTree = "<group>"; };
 		6F41B66B2476D6130043A8D7 /* TokenOperatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenOperatorTests.swift; sourceTree = "<group>"; };
 		6F41B69524784B230043A8D7 /* RvalueExpressionCompiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RvalueExpressionCompiler.swift; sourceTree = "<group>"; };
@@ -1130,9 +1130,9 @@
 				6F3EEBA4262D333700688D12 /* RegistersViewController.xib */,
 				6F1E5C5B262A1E8D0038F966 /* InstructionMemoryTableViewDataSource.swift */,
 				6FFABC3A262A423B00372BF9 /* DataMemoryTableViewDataSource.swift */,
-				6F3EEC1C262DD51200688D12 /* OpcodeDecodeROMU25.swift */,
-				6F3EEC0B262DD42A00688D12 /* OpcodeDecodeROMU26.swift */,
-				6F3EEC2D262DD53600688D12 /* OpcodeDecodeROMU33.swift */,
+				6F3EEC1C262DD51200688D12 /* OpcodeDecodeROM1.swift */,
+				6F3EEC0B262DD42A00688D12 /* OpcodeDecodeROM2.swift */,
+				6F3EEC2D262DD53600688D12 /* OpcodeDecodeROM3.swift */,
 				6F3EEBFA262D4C7500688D12 /* HexDataTableViewDataSource.swift */,
 				6F3EEBD8262D3CF300688D12 /* HexDataViewController.swift */,
 				6F3EEBD9262D3CF300688D12 /* HexDataViewController.xib */,
@@ -2325,14 +2325,14 @@
 				6F3EEBFB262D4C7500688D12 /* HexDataTableViewDataSource.swift in Sources */,
 				6F3EEBDA262D3CF300688D12 /* HexDataViewController.swift in Sources */,
 				6F3EEB83262D22B400688D12 /* MemoryViewController.swift in Sources */,
-				6F3EEC2E262DD53600688D12 /* OpcodeDecodeROMU33.swift in Sources */,
-				6F3EEC0C262DD42A00688D12 /* OpcodeDecodeROMU26.swift in Sources */,
+				6F3EEC2E262DD53600688D12 /* OpcodeDecodeROM3.swift in Sources */,
+				6F3EEC0C262DD42A00688D12 /* OpcodeDecodeROM2.swift in Sources */,
 				6F1E5C5C262A1E8D0038F966 /* InstructionMemoryTableViewDataSource.swift in Sources */,
 				6FFABC3B262A423B00372BF9 /* DataMemoryTableViewDataSource.swift in Sources */,
 				6F1698AF262897ED00C96D07 /* Simulator16ViewController.swift in Sources */,
 				6F1698AD262897ED00C96D07 /* AppDelegate.swift in Sources */,
 				6F3EEBA5262D333700688D12 /* RegistersViewController.swift in Sources */,
-				6F3EEC1D262DD51200688D12 /* OpcodeDecodeROMU25.swift in Sources */,
+				6F3EEC1D262DD51200688D12 /* OpcodeDecodeROM1.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

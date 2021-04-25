@@ -26,7 +26,7 @@
                             <tabViewItems>
                                 <tabViewItem label="Instruction Memory" identifier="InstructionMemory" id="RYa-mP-oEq">
                                     <view key="view" id="4l3-2N-6Mg">
-                                        <rect key="frame" x="0.0" y="0.0" width="390" height="137"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="436" height="137"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     </view>
                                 </tabViewItem>
@@ -36,19 +36,19 @@
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     </view>
                                 </tabViewItem>
-                                <tabViewItem label="Opcode Decode ROM U25" identifier="U25" id="epn-rb-quV">
+                                <tabViewItem label="Opcode Decode ROM 1" identifier="kOpcodeDecodeROM1Identifier" id="epn-rb-quV" userLabel="Opcode Decode ROM 1">
                                     <view key="view" id="UBP-uA-Smn">
-                                        <rect key="frame" x="0.0" y="0.0" width="390" height="137"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="436" height="137"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     </view>
                                 </tabViewItem>
-                                <tabViewItem label="Opcode Decode ROM U26" identifier="U26" id="cqS-vU-vZu" userLabel="Opcode Decode ROM U26">
+                                <tabViewItem label="Opcode Decode ROM 2" identifier="kOpcodeDecodeROM2Identifier" id="cqS-vU-vZu" userLabel="Opcode Decode ROM 2">
                                     <view key="view" id="0vQ-D1-yNb">
-                                        <rect key="frame" x="0.0" y="0.0" width="390" height="137"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="436" height="137"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     </view>
                                 </tabViewItem>
-                                <tabViewItem label="Opcode Decode ROM U33" identifier="U33" id="qa9-Jw-x66" userLabel="Opcode Decode ROM U33">
+                                <tabViewItem label="Opcode Decode ROM 3" identifier="kOpcodeDecodeROM3Identifier" id="qa9-Jw-x66" userLabel="Opcode Decode ROM 3">
                                     <view key="view" id="a6b-PR-wja">
                                         <rect key="frame" x="0.0" y="0.0" width="436" height="137"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -57,10 +57,10 @@
                             </tabViewItems>
                         </tabView>
                         <customView translatesAutoresizingMaskIntoConstraints="NO" id="vFF-qF-lJH">
-                            <rect key="frame" x="4" y="141" width="412" height="21"/>
+                            <rect key="frame" x="4" y="141" width="395" height="21"/>
                             <subviews>
                                 <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5FJ-ax-EGo">
-                                    <rect key="frame" x="0.0" y="0.0" width="412" height="21"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="395" height="21"/>
                                     <subviews>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="ZHx-jq-cdP">
                                             <rect key="frame" x="-2" y="3" width="99" height="16"/>
@@ -71,7 +71,7 @@
                                             </textFieldCell>
                                         </textField>
                                         <popUpButton verticalHuggingPriority="750" horizontalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="KBZ-Vs-zXT">
-                                            <rect key="frame" x="100" y="-3" width="200" height="25"/>
+                                            <rect key="frame" x="100" y="-3" width="183" height="25"/>
                                             <popUpButtonCell key="cell" type="push" title="Instruction Memory" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="fmx-sg-RjX" id="o9d-Oo-pTs">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="menu"/>
@@ -79,9 +79,9 @@
                                                     <items>
                                                         <menuItem title="Instruction Memory" state="on" tag="1" identifier="InstructionMemory" id="fmx-sg-RjX" userLabel="Instruction Memory"/>
                                                         <menuItem title="Data Memory" tag="2" identifier="DataMemory" id="4tU-nn-xa7" userLabel="Data Memory"/>
-                                                        <menuItem title="Opcode Decode ROM U25" tag="2" identifier="U25" id="KZs-Hf-1D8"/>
-                                                        <menuItem title="Opcode Decode ROM U26" tag="2" identifier="U26" id="whZ-dG-heQ" userLabel="Opcode Decode ROM U26"/>
-                                                        <menuItem title="Opcode Decode ROM U33" tag="2" identifier="U33" id="hw7-P4-Aeo" userLabel="Opcode Decode ROM U33"/>
+                                                        <menuItem title="Opcode Decode ROM 1" tag="2" identifier="kOpcodeDecodeROM1Identifier" id="KZs-Hf-1D8"/>
+                                                        <menuItem title="Opcode Decode ROM 2" tag="2" identifier="kOpcodeDecodeROM2Identifier" id="whZ-dG-heQ"/>
+                                                        <menuItem title="Opcode Decode ROM 3" tag="2" identifier="kOpcodeDecodeROM3Identifier" id="hw7-P4-Aeo"/>
                                                     </items>
                                                 </menu>
                                             </popUpButtonCell>
@@ -90,7 +90,7 @@
                                             </connections>
                                         </popUpButton>
                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="LRv-PM-dx0">
-                                            <rect key="frame" x="297" y="-6" width="64" height="32"/>
+                                            <rect key="frame" x="280" y="-6" width="64" height="32"/>
                                             <buttonCell key="cell" type="push" title="Load" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="oO6-D3-QH0">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
@@ -100,7 +100,7 @@
                                             </connections>
                                         </button>
                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wbz-YJ-kFS" userLabel="Save">
-                                            <rect key="frame" x="355" y="-6" width="64" height="32"/>
+                                            <rect key="frame" x="338" y="-6" width="64" height="32"/>
                                             <buttonCell key="cell" type="push" title="Save" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="7Ty-j5-bc2">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>

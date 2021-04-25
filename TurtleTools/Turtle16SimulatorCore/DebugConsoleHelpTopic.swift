@@ -154,12 +154,12 @@ Syntax: writememi <address> <word> [<word>...]
 \(shortHelp)
 
 Destination:
-\tprogram -- Instruction memory
-\tdata -- RAM
-\tprogram -- Instruction memory
-\tU25 -- Opcode Decode ROM U25
-\tU26 -- Opcode Decode ROM U26
-\tU33 -- Opcode Decode ROM U33
+\tprogram          -- Instruction memory
+\tdata             -- RAM
+\tprogram          -- Instruction memory
+\tOpcodeDecodeROM1 -- Opcode Decode ROM 1 (U37)
+\tOpcodeDecodeROM2 -- Opcode Decode ROM 2 (U38)
+\tOpcodeDecodeROM3 -- Opcode Decode ROM 3 (U39)
 
 Syntax: load <destination> "<path>"
 

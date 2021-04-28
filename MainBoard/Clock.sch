@@ -5,8 +5,8 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 2 39
 Title "Clock"
-Date "2021-04-24"
-Rev "A (ad8706e6)"
+Date "2021-04-28"
+Rev "A (c8cebf3f)"
 Comp ""
 Comment1 "Includes logic for the HLT state and a Resume button."
 Comment2 "Includes the voltage supervisor which controls the reset cycle."

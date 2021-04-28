@@ -5,8 +5,8 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 9 39
 Title "MEM: System Bus Pull-down Resistors"
-Date "2021-04-24"
-Rev "A (ad8706e6)"
+Date "2021-04-28"
+Rev "A (c8cebf3f)"
 Comp ""
 Comment1 ""
 Comment2 ""

@@ -700,10 +700,10 @@ AR Path="/5D2C0761/60868D2D" Ref="C?"  Part="1"
 AR Path="/5D2C0720/60868D2D" Ref="C?"  Part="1" 
 AR Path="/5D2C0720/611B6311/60868D2D" Ref="C8"  Part="1" 
 F 0 "C8" H 2015 4296 50  0000 L CNN
-F 1 "100nF" H 2015 4205 50  0000 L CNN
+F 1 "1uF" H 2015 4205 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" H 1938 4100 50  0001 C CNN
-F 3 "~" H 1900 4250 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT" H 1900 4250 50  0001 C CNN "Mouser"
+F 3 "https://www.mouser.com/datasheet/2/585/MLCC-1837944.pdf" H 1900 4250 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/Samsung-Electro-Mechanics/CL10A105KA8NFNC?qs=%252B6g0mu59x7ItvV%2F7DV9Lig%3D%3D" H 1900 4250 50  0001 C CNN "Mouser"
 	1    1900 4250
 	1    0    0    -1  
 $EndComp
@@ -732,10 +732,10 @@ AR Path="/5D2C0720/60870647" Ref="R?"  Part="1"
 AR Path="/5FAED671/60870647" Ref="R?"  Part="1" 
 AR Path="/5D2C0720/611B6311/60870647" Ref="R5"  Part="1" 
 F 0 "R5" V 1450 3750 50  0000 L CNN
-F 1 "10kΩ" V 1550 3700 50  0000 L CNN
+F 1 "1kΩ" V 1550 3700 50  0000 L CNN
 F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 1650 3800 50  0001 C CNN
 F 3 "~" H 1650 3800 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 1650 3800 50  0001 C CNN "Mouser"
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1001ELF" H 1650 3800 50  0001 C CNN "Mouser"
 	1    1650 3800
 	0    1    1    0   
 $EndComp

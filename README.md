@@ -2,7 +2,7 @@
 
 Turtle16 is a sixteen-bit microcomputer built from discrete logic ICs and other simple parts. This repo contains the Kicad project, and other files necesary to build the hardware, as well as the toolchain and simulator.
 
-![3D Render of Turtle16 CPU](Generated/Turtle16_Main_Board_Rev_A_ad8706e6/Turtle16_Main_Board_Rev_A_Render_Front_ad8706e6.png?raw=true "3D Render of Turtle16 CPU")
+![3D Render of Turtle16 CPU](Generated/Turtle16_Main_Board_Rev_A_c8cebf3f/Render_Front.png?raw=true "3D Render of Turtle16 CPU")
 
 
 

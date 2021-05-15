@@ -78,6 +78,9 @@ public class DebugConsoleCommandLineCompiler: NSObject {
                 case "load":
                     acceptLoad(node)
                     
+                case "save":
+                    acceptSave(node)
+                    
                 default:
                     errors.append(CompilerError(sourceAnchor: child.sourceAnchor, message: "unrecognized instruction: `\(node.instruction)'"))
                 }
@@ -131,6 +134,9 @@ public class DebugConsoleCommandLineCompiler: NSObject {
             
         case "load":
             instructions.append(.help(.load))
+            
+        case "save":
+            instructions.append(.help(.save))
             
         default:
             instructions.append(.help(nil))
@@ -305,5 +311,24 @@ public class DebugConsoleCommandLineCompiler: NSObject {
         let path = NSString(string: parameterPath.value).expandingTildeInPath
         let url = URL(fileURLWithPath: path)
         instructions.append(.load(parameterDestination.value, url))
+    }
+    
+    fileprivate func acceptSave(_ node: InstructionNode) {
+        guard node.parameters.elements.count == 2 else {
+            let sourceAnchor = (node.parameters.elements.last?.sourceAnchor) ?? node.sourceAnchor
+            errors.append(CompilerError(sourceAnchor: sourceAnchor, message: "expected one parameter for the source and one parameter for the file path: `\(node.instruction)'"))
+            return
+        }
+        guard let parameterDestination = node.parameters.elements[0] as? ParameterIdentifier else {
+            errors.append(CompilerError(sourceAnchor: node.parameters.elements.first?.sourceAnchor, message: "expected an identifier for the source: `\(node.instruction)'"))
+            return
+        }
+        guard let parameterPath = node.parameters.elements[1] as? ParameterString else {
+            errors.append(CompilerError(sourceAnchor: node.parameters.elements[1].sourceAnchor, message: "expected a string for the file path: `\(node.instruction)'"))
+            return
+        }
+        let path = NSString(string: parameterPath.value).expandingTildeInPath
+        let url = URL(fileURLWithPath: path)
+        instructions.append(.save(parameterDestination.value, url))
     }
 }

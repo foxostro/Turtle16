@@ -68,6 +68,9 @@ public class DebugConsoleCommandLineInterpreter: NSObject {
             
         case .load(let what, let url):
             load(what, url)
+            
+        case .save(let what, let url):
+            save(what, url)
         }
     }
     
@@ -222,45 +225,98 @@ isResetting: \(computer.isResetting)
                 let buffer = pointer.bindMemory(to: UInt8.self)
                 return buffer.map { UInt8(bigEndian: $0) }
             }
-            for i in 0..<512 {
+            for i in 0..<kDecoderTableSize {
                 if i >= words.count {
                     computer.opcodeDecodeROM[i] = 0
                 } else {
                     computer.opcodeDecodeROM[i] = (computer.opcodeDecodeROM[i] & ~0x0000ff) | UInt(words[i])
                 }
             }
-            logger.append("Wrote 512 words to opcode decode ROM 1.\n")
+            logger.append("Wrote \(kDecoderTableSize) words to opcode decode ROM 1.\n")
             
         case "OpcodeDecodeROM2":
             let words = data.withUnsafeBytes { (pointer: UnsafeRawBufferPointer) -> [UInt8] in
                 let buffer = pointer.bindMemory(to: UInt8.self)
                 return buffer.map { UInt8(bigEndian: $0) }
             }
-            for i in 0..<512 {
+            for i in 0..<kDecoderTableSize {
                 if i >= words.count {
                     computer.opcodeDecodeROM[i] = 0
                 } else {
                     computer.opcodeDecodeROM[i] = (computer.opcodeDecodeROM[i] & ~0x00ff00) | (UInt(words[i])<<8)
                 }
             }
-            logger.append("Wrote 512 words to opcode decode ROM 2.\n")
+            logger.append("Wrote \(kDecoderTableSize) words to opcode decode ROM 2.\n")
             
         case "OpcodeDecodeROM3":
             let words = data.withUnsafeBytes { (pointer: UnsafeRawBufferPointer) -> [UInt8] in
                 let buffer = pointer.bindMemory(to: UInt8.self)
                 return buffer.map { UInt8(bigEndian: $0) }
             }
-            for i in 0..<512 {
+            for i in 0..<kDecoderTableSize {
                 if i >= words.count {
                     computer.opcodeDecodeROM[i] = 0
                 } else {
                     computer.opcodeDecodeROM[i] = (computer.opcodeDecodeROM[i] & ~0xff0000) | (UInt(words[i])<<16)
                 }
             }
-            logger.append("Wrote 512 words to opcode decode ROM 3.\n")
+            logger.append("Wrote \(kDecoderTableSize) words to opcode decode ROM 3.\n")
         
         default:
             abort()
         }
+    }
+    
+    let kEEPROMSize = 1<<17
+    let kDecoderTableSize = 512
+    
+    fileprivate func save(_ what: String, _ url: URL) {
+        var data: Data
+        switch what {
+        case "program":
+            data = Data(count: kEEPROMSize)
+            for i in 0..<computer.instructions.count {
+                let word = computer.instructions[i]
+                data[i*2+0] = UInt8((word & 0xff00) >> 8)
+                data[i*2+1] = UInt8( word & 0x00ff      )
+            }
+            logger.append("Wrote contents of instruction memory to file: \"\(url.path)\"\n")
+            
+        case "data":
+            data = Data(capacity: computer.ram.count / MemoryLayout<UInt16>.size)
+            for word in computer.ram {
+                data.append(UInt8((word & 0xff00) >> 8))
+                data.append(UInt8( word & 0x00ff      ))
+            }
+            logger.append("Wrote contents of data memory to file: \"\(url.path)\"\n")
+            
+        case "OpcodeDecodeROM1":
+            data = Data(count: kEEPROMSize)
+            for i in 0..<kDecoderTableSize {
+                let word = computer.opcodeDecodeROM[i] & 0x0000ff
+                data[i] = UInt8(word)
+            }
+            logger.append("Wrote contents of opcode decode ROM 1 to file: \"\(url.path)\"\n")
+            
+        case "OpcodeDecodeROM2":
+            data = Data(count: kEEPROMSize)
+            for i in 0..<kDecoderTableSize {
+                let word = (computer.opcodeDecodeROM[i] & 0x00ff00) >> 8
+                data[i] = UInt8(word)
+            }
+            logger.append("Wrote contents of opcode decode ROM 2 to file: \"\(url.path)\"\n")
+            
+        case "OpcodeDecodeROM3":
+            data = Data(count: kEEPROMSize)
+            for i in 0..<kDecoderTableSize {
+                let word = (computer.opcodeDecodeROM[i] & 0xff0000) >> 16
+                data[i] = UInt8(word)
+            }
+            logger.append("Wrote contents of opcode decode ROM 3 to file: \"\(url.path)\"\n")
+        
+        default:
+            abort()
+        }
+        try! data.write(to: url)
     }
 }

@@ -177,6 +177,7 @@ Debugger commands:
 \txi        -- Read from instruction memory.
 \twritememi -- Write to instruction memory.
 \tload      -- Load contents of memory from file.
+\tsave      -- Save contents of memory to file.
 
 For more information on any command, type `help <command-name>'.
 
@@ -499,5 +500,115 @@ Syntax: load <destination> "<path>"
             .load("OpcodeDecodeROM3", url)
         ])
         XCTAssertEqual((computer.opcodeDecodeROM[0]>>16) & 0xff, 0x20)
+    }
+    
+    func testSaveProgram() throws {
+        let tempUrl = NSURL.fileURL(withPathComponents: [NSTemporaryDirectory(), NSUUID().uuidString])!
+        defer {
+            try? FileManager.default.removeItem(at: tempUrl)
+        }
+        let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.run(instructions:[
+            .reset,
+            .load("program", url),
+            .save("program", tempUrl)
+        ])
+        let data1 = try! Data(contentsOf: url)
+        guard let data2 = try? Data(contentsOf: tempUrl) else {
+            XCTFail()
+            return
+        }
+        XCTAssertEqual(data1, data2.subdata(in: 0..<data1.count))
+        XCTAssertEqual(data2.subdata(in: data1.count..<data2.count), Data(count: data2.count - data1.count))
+    }
+    
+    func testSaveData() throws {
+        let tempUrl = NSURL.fileURL(withPathComponents: [NSTemporaryDirectory(), NSUUID().uuidString])!
+        defer {
+            try? FileManager.default.removeItem(at: tempUrl)
+        }
+        let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.run(instructions:[
+            .reset,
+            .load("data", url),
+            .save("data", tempUrl)
+        ])
+        let data1 = try! Data(contentsOf: url)
+        guard let data2 = try? Data(contentsOf: tempUrl) else {
+            XCTFail()
+            return
+        }
+        XCTAssertEqual(data1, data2.subdata(in: 0..<data1.count))
+        XCTAssertEqual(data2.subdata(in: data1.count..<data2.count), Data(count: data2.count - data1.count))
+    }
+    
+    func testSaveOpcodeDecodeROM1() throws {
+        let tempUrl = NSURL.fileURL(withPathComponents: [NSTemporaryDirectory(), NSUUID().uuidString])!
+        defer {
+            try? FileManager.default.removeItem(at: tempUrl)
+        }
+        let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.run(instructions:[
+            .reset,
+            .load("OpcodeDecodeROM1", url),
+            .save("OpcodeDecodeROM1", tempUrl)
+        ])
+        let data1 = try! Data(contentsOf: url)
+        guard let data2 = try? Data(contentsOf: tempUrl) else {
+            XCTFail()
+            return
+        }
+        XCTAssertEqual(data1, data2.subdata(in: 0..<data1.count))
+        XCTAssertEqual(data2.subdata(in: data1.count..<data2.count), Data(count: data2.count - data1.count))
+    }
+    
+    func testSaveOpcodeDecodeROM2() throws {
+        let tempUrl = NSURL.fileURL(withPathComponents: [NSTemporaryDirectory(), NSUUID().uuidString])!
+        defer {
+            try? FileManager.default.removeItem(at: tempUrl)
+        }
+        let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.run(instructions:[
+            .reset,
+            .load("OpcodeDecodeROM2", url),
+            .save("OpcodeDecodeROM2", tempUrl)
+        ])
+        let data1 = try! Data(contentsOf: url)
+        guard let data2 = try? Data(contentsOf: tempUrl) else {
+            XCTFail()
+            return
+        }
+        XCTAssertEqual(data1, data2.subdata(in: 0..<data1.count))
+        XCTAssertEqual(data2.subdata(in: data1.count..<data2.count), Data(count: data2.count - data1.count))
+    }
+    
+    func testSaveOpcodeDecodeROM3() throws {
+        let tempUrl = NSURL.fileURL(withPathComponents: [NSTemporaryDirectory(), NSUUID().uuidString])!
+        defer {
+            try? FileManager.default.removeItem(at: tempUrl)
+        }
+        let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.run(instructions:[
+            .reset,
+            .load("OpcodeDecodeROM3", url),
+            .save("OpcodeDecodeROM3", tempUrl)
+        ])
+        let data1 = try! Data(contentsOf: url)
+        guard let data2 = try? Data(contentsOf: tempUrl) else {
+            XCTFail()
+            return
+        }
+        XCTAssertEqual(data1, data2.subdata(in: 0..<data1.count))
+        XCTAssertEqual(data2.subdata(in: data1.count..<data2.count), Data(count: data2.count - data1.count))
     }
 }

@@ -127,7 +127,41 @@ class MemoryViewController: NSViewController {
             debugger.interpreter.runOne(instruction: .load("OpcodeDecodeROM2", url))
             
         case kOpcodeDecodeROM3Identifier:
-            debugger.interpreter.runOne(instruction: .load("OPcodeDecodeROM3", url))
+            debugger.interpreter.runOne(instruction: .load("OpcodeDecodeROM3", url))
+        
+        default:
+            NSSound.beep()
+        }
+    }
+    
+    @IBAction func saveMemory(_ sender: Any) {
+        let identifier: NSUserInterfaceItemIdentifier = memoryTabSelector.selectedItem!.identifier!
+        let panel = NSSavePanel()
+        panel.begin { [weak self] (response: NSApplication.ModalResponse) in
+            if (response == NSApplication.ModalResponse.OK) {
+                if let url = panel.url {
+                    self?.saveMemory(identifier, url)
+                }
+            }
+        }
+    }
+    
+    fileprivate func saveMemory(_ identifier: NSUserInterfaceItemIdentifier, _ url: URL) {
+        switch identifier {
+        case kInstructionMemoryIdentifier:
+            debugger.interpreter.runOne(instruction: .save("program", url))
+            
+        case kDataMemoryIdentifier:
+            debugger.interpreter.runOne(instruction: .save("data", url))
+            
+        case kOpcodeDecodeROM1Identifier:
+            debugger.interpreter.runOne(instruction: .save("OpcodeDecodeROM1", url))
+            
+        case kOpcodeDecodeROM2Identifier:
+            debugger.interpreter.runOne(instruction: .save("OpcodeDecodeROM2", url))
+            
+        case kOpcodeDecodeROM3Identifier:
+            debugger.interpreter.runOne(instruction: .save("OpcodeDecodeROM3", url))
         
         default:
             NSSound.beep()

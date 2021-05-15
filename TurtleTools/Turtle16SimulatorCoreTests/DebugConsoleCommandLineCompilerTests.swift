@@ -653,4 +653,50 @@ class DebugConsoleCommandLineCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [.load("data", URL(fileURLWithPath: "foo"))])
     }
+    
+    func testSaveWithNoParameters() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("save")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "expected one parameter for the source and one parameter for the file path: `save'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tsave\n\t^~~~")
+    }
+    
+    func testSaveWithTooFewParameters() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("save program")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "expected one parameter for the source and one parameter for the file path: `save'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tsave program\n\t     ^~~~~~~")
+    }
+    
+    func testSaveWithTooManyParameters() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("save program \"\" 12")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "expected one parameter for the source and one parameter for the file path: `save'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tsave program \"\" 12\n\t                ^~")
+    }
+    
+    func testSaveWithIncorrectTypeForParameter() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("save program 12")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "expected a string for the file path: `save'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tsave program 12\n\t             ^~")
+    }
+    
+    func testSaveProgram() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("save program \"foo\"")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.save("program", URL(fileURLWithPath: "foo"))])
+    }
+    
+    func testSaveData() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("save data \"foo\"")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.save("data", URL(fileURLWithPath: "foo"))])
+    }
 }

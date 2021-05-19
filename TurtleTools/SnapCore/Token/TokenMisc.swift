@@ -12,8 +12,6 @@ public class TokenCurlyLeft : Token {}
 public class TokenCurlyRight : Token {}
 public class TokenSquareBracketLeft : Token {}
 public class TokenSquareBracketRight : Token {}
-public class TokenParenLeft : Token {}
-public class TokenParenRight : Token {}
 public class TokenUnderscore : Token {}
 public class TokenArrow : Token {}
 public class TokenElse: Token {}

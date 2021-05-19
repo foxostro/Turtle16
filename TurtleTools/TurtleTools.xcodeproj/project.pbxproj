@@ -64,7 +64,6 @@
 		6F000D932626C41600C5DFDE /* TurtleTTLInstructionNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088074230F5D8F00AB2339 /* TurtleTTLInstructionNode.swift */; };
 		6F000D942626C41600C5DFDE /* ConstantDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D27E24709373003B5D5C /* ConstantDeclaration.swift */; };
 		6F000D952626C41600C5DFDE /* ParameterRegister.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7F357124D492DA00BA8E37 /* ParameterRegister.swift */; };
-		6F000D962626C41600C5DFDE /* LabelDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08807A230F5DBF00AB2339 /* LabelDeclaration.swift */; };
 		6F000DB32626C41A00C5DFDE /* TokenRegister.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F3231F63BB003E7C7F /* TokenRegister.swift */; };
 		6F000DC22626C43100C5DFDE /* AssemblerCodeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088092230F85FF00AB2339 /* AssemblerCodeGenerator.swift */; };
 		6F000DC32626C43100C5DFDE /* AssemblerLexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F615170230CAF4A00282B12 /* AssemblerLexer.swift */; };
@@ -75,7 +74,6 @@
 		6F000DE42626C45400C5DFDE /* AssemblerLexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F615172230CAF5600282B12 /* AssemblerLexerTests.swift */; };
 		6F000DE52626C45400C5DFDE /* AssemblerFrontEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A8AEB230A7726000046C2 /* AssemblerFrontEndTests.swift */; };
 		6F000E022626C47400C5DFDE /* TurtleTTLInstructionNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08808A230F6E4F00AB2339 /* TurtleTTLInstructionNodeTests.swift */; };
-		6F000E032626C47400C5DFDE /* LabelDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088090230F6E6A00AB2339 /* LabelDeclarationTests.swift */; };
 		6F000E042626C47400C5DFDE /* ConstantDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D2802470937D003B5D5C /* ConstantDeclarationTests.swift */; };
 		6F000E212626C47800C5DFDE /* TokenRegisterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A0121231F7271003E7C7F /* TokenRegisterTests.swift */; };
 		6F0D519B2506D0B100AB1C7E /* TypeContextTypeChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0D519A2506D0B100AB1C7E /* TypeContextTypeChecker.swift */; };
@@ -152,6 +150,9 @@
 		6F42B8E726531605004A7B12 /* AssemblerCodeGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F42B8E626531605004A7B12 /* AssemblerCodeGeneratorTests.swift */; };
 		6F42B8E926531EC9004A7B12 /* AssemblerSingleInstructionCodeGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F42B8E826531EC9004A7B12 /* AssemblerSingleInstructionCodeGeneratorTests.swift */; };
 		6F42B8EB26531EDB004A7B12 /* AssemblerSingleInstructionCodeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F42B8EA26531EDB004A7B12 /* AssemblerSingleInstructionCodeGenerator.swift */; };
+		6F42B8ED26558B6B004A7B12 /* ParameterAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F42B8EC26558B6B004A7B12 /* ParameterAddress.swift */; };
+		6F42B8EE2659CBB4004A7B12 /* LabelDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08807A230F5DBF00AB2339 /* LabelDeclaration.swift */; };
+		6F42B8EF2659CBF7004A7B12 /* LabelDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088090230F6E6A00AB2339 /* LabelDeclarationTests.swift */; };
 		6F4527392623BE05003732B3 /* DebugConsoleCommandLineParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4527382623BE05003732B3 /* DebugConsoleCommandLineParser.swift */; };
 		6F45274B2623BE15003732B3 /* DebugConsoleCommandLineParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F45274A2623BE15003732B3 /* DebugConsoleCommandLineParserTests.swift */; };
 		6F45279D2623D110003732B3 /* DebugConsoleCommandLineLexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F45279C2623D110003732B3 /* DebugConsoleCommandLineLexer.swift */; };
@@ -747,6 +748,7 @@
 		6F42B8E626531605004A7B12 /* AssemblerCodeGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCodeGeneratorTests.swift; sourceTree = "<group>"; };
 		6F42B8E826531EC9004A7B12 /* AssemblerSingleInstructionCodeGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerSingleInstructionCodeGeneratorTests.swift; sourceTree = "<group>"; };
 		6F42B8EA26531EDB004A7B12 /* AssemblerSingleInstructionCodeGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerSingleInstructionCodeGenerator.swift; sourceTree = "<group>"; };
+		6F42B8EC26558B6B004A7B12 /* ParameterAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterAddress.swift; sourceTree = "<group>"; };
 		6F4527382623BE05003732B3 /* DebugConsoleCommandLineParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugConsoleCommandLineParser.swift; sourceTree = "<group>"; };
 		6F45274A2623BE15003732B3 /* DebugConsoleCommandLineParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugConsoleCommandLineParserTests.swift; sourceTree = "<group>"; };
 		6F45279C2623D110003732B3 /* DebugConsoleCommandLineLexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugConsoleCommandLineLexer.swift; sourceTree = "<group>"; };
@@ -1235,7 +1237,6 @@
 			children = (
 				6FB0D27E24709373003B5D5C /* ConstantDeclaration.swift */,
 				6F088074230F5D8F00AB2339 /* TurtleTTLInstructionNode.swift */,
-				6F08807A230F5DBF00AB2339 /* LabelDeclaration.swift */,
 				6F7F357124D492DA00BA8E37 /* ParameterRegister.swift */,
 			);
 			path = AST;
@@ -1246,7 +1247,6 @@
 			children = (
 				6FB0D2802470937D003B5D5C /* ConstantDeclarationTests.swift */,
 				6F08808A230F6E4F00AB2339 /* TurtleTTLInstructionNodeTests.swift */,
-				6F088090230F6E6A00AB2339 /* LabelDeclarationTests.swift */,
 			);
 			path = AST;
 			sourceTree = "<group>";
@@ -1386,7 +1386,9 @@
 			children = (
 				6F8F22E62471CB5100AFD574 /* AbstractSyntaxTreeNode.swift */,
 				6F4529762623ED8C003732B3 /* InstructionNode.swift */,
+				6F08807A230F5DBF00AB2339 /* LabelDeclaration.swift */,
 				6F7F357324D492F000BA8E37 /* Parameter.swift */,
+				6F42B8EC26558B6B004A7B12 /* ParameterAddress.swift */,
 				6F01449F24D4941900071EC0 /* ParameterIdentifier.swift */,
 				6FD8FA002360CAF1005A1856 /* ParameterList.swift */,
 				6F0144A124D4943D00071EC0 /* ParameterNumber.swift */,
@@ -1509,6 +1511,7 @@
 		6FA1A718249A82E300D2DB57 /* AST */ = {
 			isa = PBXGroup;
 			children = (
+				6F088090230F6E6A00AB2339 /* LabelDeclarationTests.swift */,
 				6FD8F9FE2360CAC5005A1856 /* ParameterListTests.swift */,
 				6FA1A714249A817F00D2DB57 /* TopLevelTests.swift */,
 			);
@@ -2584,12 +2587,14 @@
 				6F000A35262661EA00C5DFDE /* ParameterIdentifier.swift in Sources */,
 				6F000C032626A4EA00C5DFDE /* ParameterString.swift in Sources */,
 				6FB0D2A524710CED003B5D5C /* ScannerExtension.swift in Sources */,
+				6F42B8EE2659CBB4004A7B12 /* LabelDeclaration.swift in Sources */,
 				6F000A34262661EA00C5DFDE /* ParameterNumber.swift in Sources */,
 				6FA6B5B224DE77F500695BFB /* SourceAnchor.swift in Sources */,
 				6FB0D2A424710CED003B5D5C /* AtomicBooleanFlag.swift in Sources */,
 				6F000A0F262661AD00C5DFDE /* TokenNumber.swift in Sources */,
 				6F000B922626A49300C5DFDE /* InstructionNode.swift in Sources */,
 				6F0009EB262661A400C5DFDE /* AbstractSyntaxTreeNode.swift in Sources */,
+				6F42B8ED26558B6B004A7B12 /* ParameterAddress.swift in Sources */,
 				6FA6B5B024DE77C700695BFB /* ProgramDebugInfo.swift in Sources */,
 				6FB0D2CE247111BB003B5D5C /* Logger.swift in Sources */,
 				6FB0D2CC247111BB003B5D5C /* ConsoleLogger.swift in Sources */,
@@ -2623,6 +2628,7 @@
 				6F000ABF2626631700C5DFDE /* TokenEOFTests.swift in Sources */,
 				6F000ABC2626631700C5DFDE /* TokenBooleanTests.swift in Sources */,
 				6F000AAA2626631100C5DFDE /* TopLevelTests.swift in Sources */,
+				6F42B8EF2659CBF7004A7B12 /* LabelDeclarationTests.swift in Sources */,
 				6FB0D2A824710CF3003B5D5C /* AtomicBooleanFlagTests.swift in Sources */,
 				6F000B01262663D200C5DFDE /* ParameterListTests.swift in Sources */,
 				6F000ABB2626631700C5DFDE /* TokenOperatorTests.swift in Sources */,
@@ -2655,7 +2661,6 @@
 				6FB0D38924711A4E003B5D5C /* TraceProfiler.swift in Sources */,
 				6F000CDA2626C13100C5DFDE /* Instruction.swift in Sources */,
 				6F000DC22626C43100C5DFDE /* AssemblerCodeGenerator.swift in Sources */,
-				6F000D962626C41600C5DFDE /* LabelDeclaration.swift in Sources */,
 				6FB0D37C24711A4E003B5D5C /* CPUStateSnapshot.swift in Sources */,
 				6FB0D38724711A4E003B5D5C /* Computer.swift in Sources */,
 				6FB0D38224711A4E003B5D5C /* InterpretingVM.swift in Sources */,
@@ -2707,7 +2712,6 @@
 				6FB0D36C24711A3B003B5D5C /* ALUTests.swift in Sources */,
 				6F000D092626C15800C5DFDE /* MicrocodeGeneratorTests.swift in Sources */,
 				6F000E212626C47800C5DFDE /* TokenRegisterTests.swift in Sources */,
-				6F000E032626C47400C5DFDE /* LabelDeclarationTests.swift in Sources */,
 				6FB0D36424711A3B003B5D5C /* VirtualMachineTests.swift in Sources */,
 				6FB0D37124711A3B003B5D5C /* TraceProfilerTests.swift in Sources */,
 				6FB0D37324711A3B003B5D5C /* InterpreterTests.swift in Sources */,

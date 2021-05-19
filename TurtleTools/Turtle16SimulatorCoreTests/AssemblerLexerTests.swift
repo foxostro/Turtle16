@@ -6,8 +6,10 @@
 //  Copyright © 2021 Andrew Fox. All rights reserved.
 //
 
-import Cocoa
+import XCTest
+import TurtleCore
+import Turtle16SimulatorCore
 
 class AssemblerLexerTests: XCTestCase {
-
+    // nothing to test that isn't already covered in the super class
 }

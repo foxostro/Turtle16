@@ -6,8 +6,5 @@
 //  Copyright © 2021 Andrew Fox. All rights reserved.
 //
 
-import Cocoa
-
-class AssemblerLexer: Lexer {
-
+public class AssemblerLexer: DebugConsoleCommandLineLexer {
 }

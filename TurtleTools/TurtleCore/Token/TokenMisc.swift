@@ -13,4 +13,6 @@ public class TokenEqual: Token {}
 public class TokenIdentifier : Token {}
 public class TokenLet: Token {}
 public class TokenForwardSlash : Token {}
+public class TokenParenLeft : Token {}
+public class TokenParenRight : Token {}
 

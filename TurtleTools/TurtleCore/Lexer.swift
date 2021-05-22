@@ -236,4 +236,23 @@ open class Lexer: NSObject {
             nil
         }
     }
+    
+    public func makeCommentRule() -> Lexer.Rule {
+        return Rule(pattern: "((#)|(//))") {[weak self] _ in
+            self!.advanceToNewline()
+            return nil
+        }
+    }
+    
+    public func makeParenLeftRule() -> Lexer.Rule {
+        return Rule(pattern: "\\(") {
+            TokenParenLeft(sourceAnchor: $0)
+        }
+    }
+    
+    public func makeParenRightRule() -> Lexer.Rule {
+        return Rule(pattern: "\\)") {
+            TokenParenRight(sourceAnchor: $0)
+        }
+    }
 }

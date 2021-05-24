@@ -1,0 +1,29 @@
+
+
+                                GAL22V10
+
+                          -------\___/-------
+                       NC |  1           24 | VCC
+                          |                 |
+                  WBSRCEX |  2           23 | FMETA
+                          |                 |
+                   WBENEX |  3           22 | FEXTA
+                          |                 |
+                  WBSRCME |  4           21 | FWDA
+                          |                 |
+                   WBENME |  5           20 | FWDB
+                          |                 |
+                   AEQCEX |  6           19 | FEXTB
+                          |                 |
+                   BEQCEX |  7           18 | FMETB
+                          |                 |
+                   AEQCME |  8           17 | FSXTA
+                          |                 |
+                   BEQCME |  9           16 | FSMTA
+                          |                 |
+                       NC | 10           15 | FSXTB
+                          |                 |
+                       NC | 11           14 | FSMTB
+                          |                 |
+                      GND | 12           13 | NC
+                          -------------------

@@ -160,7 +160,6 @@ Syntax: writememi <address> <word> [<word>...]
 Destination:
 \tprogram          -- Instruction memory
 \tdata             -- RAM
-\tprogram          -- Instruction memory
 \tOpcodeDecodeROM1 -- Opcode Decode ROM 1 (U37)
 \tOpcodeDecodeROM2 -- Opcode Decode ROM 2 (U38)
 \tOpcodeDecodeROM3 -- Opcode Decode ROM 3 (U39)
@@ -176,7 +175,6 @@ Syntax: load <destination> "<path>"
 Destination:
 \tprogram          -- Instruction memory
 \tdata             -- RAM
-\tprogram          -- Instruction memory
 \tOpcodeDecodeROM1 -- Opcode Decode ROM 1 (U37)
 \tOpcodeDecodeROM2 -- Opcode Decode ROM 2 (U38)
 \tOpcodeDecodeROM3 -- Opcode Decode ROM 3 (U39)

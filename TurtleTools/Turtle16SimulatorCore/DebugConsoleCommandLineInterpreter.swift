@@ -193,7 +193,7 @@ isResetting: \(computer.isResetting)
     }
     
     fileprivate func load(_ what: String, _ url: URL) {
-        let validDestinations: Set<String> = ["program", "data", "OpcodeDecodeROM1", "OpcodeDecodeROM2", "OpcodeDecodeROM3"]
+        let validDestinations: Set<String> = ["program", "program_hi", "program_lo", "data", "OpcodeDecodeROM1", "OpcodeDecodeROM2", "OpcodeDecodeROM3"]
         guard validDestinations.contains(what) else {
             printHelp(.load)
             return
@@ -210,6 +210,22 @@ isResetting: \(computer.isResetting)
             computer.instructions = Array<UInt16>(repeating: 0, count: Int(UInt16.max)+1)
             writeInstructionMemory(base: 0, words: words)
             logger.append("Wrote \(words.count) words to instruction memory.\n")
+            
+        case "program_hi":
+            let count = min(data.count, computer.instructions.count)
+            for i in 0..<count {
+                let hi = UInt16(data[i])
+                computer.instructions[i] = (computer.instructions[i] & 0x00ff) | (hi << 8)
+            }
+            logger.append("Modified the high bytes of \(count) words of instruction memory.\n")
+            
+        case "program_lo":
+            let count = min(data.count, computer.instructions.count)
+            for i in 0..<count {
+                let lo = UInt16(data[i])
+                computer.instructions[i] = (computer.instructions[i] & 0xff00) | lo
+            }
+            logger.append("Modified the low bytes of \(count) words of instruction memory.\n")
             
         case "data":
             let words = data.withUnsafeBytes { (pointer: UnsafeRawBufferPointer) -> [UInt16] in
@@ -281,6 +297,22 @@ isResetting: \(computer.isResetting)
                 data[i*2+1] = UInt8( word & 0x00ff      )
             }
             logger.append("Wrote contents of instruction memory to file: \"\(url.path)\"\n")
+            
+        case "program_hi":
+            data = Data(count: kEEPROMSize)
+            for i in 0..<computer.instructions.count {
+                let word = computer.instructions[i]
+                data[i] = UInt8((word & 0xff00) >> 8)
+            }
+            logger.append("Wrote upper bytes of instruction memory to file: \"\(url.path)\"\n")
+            
+        case "program_lo":
+            data = Data(count: kEEPROMSize)
+            for i in 0..<computer.instructions.count {
+                let word = computer.instructions[i]
+                data[i] = UInt8(word & 0x00ff)
+            }
+            logger.append("Wrote lower bytes of instruction memory to file: \"\(url.path)\"\n")
             
         case "data":
             data = Data(capacity: computer.ram.count / MemoryLayout<UInt16>.size)

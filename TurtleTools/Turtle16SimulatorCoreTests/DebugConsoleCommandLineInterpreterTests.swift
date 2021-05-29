@@ -292,6 +292,8 @@ Load contents of memory from file.
 
 Destination:
 \tprogram          -- Instruction memory
+\tprogram_lo       -- Instruction memory, low byte (U57)
+\tprogram_hi       -- Instruction memory, high byte (U58)
 \tdata             -- RAM
 \tOpcodeDecodeROM1 -- Opcode Decode ROM 1 (U37)
 \tOpcodeDecodeROM2 -- Opcode Decode ROM 2 (U38)
@@ -438,6 +440,36 @@ pc: 0x000d
 """)
     }
     
+    func testLoadProgramHi() throws {
+        let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.run(instructions:[
+            .reset,
+            .load("program_hi", url)
+        ])
+        let gold = try! Data(contentsOf: url)
+        for i in 0..<min(gold.count, computer.instructions.count) {
+            let hi = UInt8((computer.instructions[i] & 0xff00) >> 8)
+            XCTAssertEqual(hi, gold[i])
+        }
+    }
+    
+    func testLoadProgramLo() throws {
+        let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.run(instructions:[
+            .reset,
+            .load("program_lo", url)
+        ])
+        let gold = try! Data(contentsOf: url)
+        for i in 0..<min(gold.count, computer.instructions.count) {
+            let hi = UInt8(computer.instructions[i] & 0x00ff)
+            XCTAssertEqual(hi, gold[i])
+        }
+    }
+    
     func testLoadDataFromFile() throws {
         let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
         let computer = Turtle16Computer(SchematicLevelCPUModel())
@@ -460,6 +492,8 @@ Load contents of memory from file.
 
 Destination:
 \tprogram          -- Instruction memory
+\tprogram_lo       -- Instruction memory, low byte (U57)
+\tprogram_hi       -- Instruction memory, high byte (U58)
 \tdata             -- RAM
 \tOpcodeDecodeROM1 -- Opcode Decode ROM 1 (U37)
 \tOpcodeDecodeROM2 -- Opcode Decode ROM 2 (U38)
@@ -520,6 +554,52 @@ Syntax: load <destination> "<path>"
         }
         XCTAssertEqual(data1, data2.subdata(in: 0..<data1.count))
         XCTAssertEqual(data2.subdata(in: data1.count..<data2.count), Data(count: data2.count - data1.count))
+    }
+    
+    func testSaveProgramHi() throws {
+        let tempUrl = NSURL.fileURL(withPathComponents: [NSTemporaryDirectory(), NSUUID().uuidString])!
+        defer {
+            try? FileManager.default.removeItem(at: tempUrl)
+        }
+        let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.run(instructions:[
+            .reset,
+            .load("program", url),
+            .save("program_hi", tempUrl)
+        ])
+        let data1 = try! Data(contentsOf: url)
+        guard let data2 = try? Data(contentsOf: tempUrl) else {
+            XCTFail()
+            return
+        }
+        for i in 0..<min(data1.count/2, data2.count) {
+            XCTAssertEqual(data1[i*2], data2[i])
+        }
+    }
+    
+    func testSaveProgramLo() throws {
+        let tempUrl = NSURL.fileURL(withPathComponents: [NSTemporaryDirectory(), NSUUID().uuidString])!
+        defer {
+            try? FileManager.default.removeItem(at: tempUrl)
+        }
+        let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.run(instructions:[
+            .reset,
+            .load("program", url),
+            .save("program_lo", tempUrl)
+        ])
+        let data1 = try! Data(contentsOf: url)
+        guard let data2 = try? Data(contentsOf: tempUrl) else {
+            XCTFail()
+            return
+        }
+        for i in 0..<min(data1.count/2, data2.count) {
+            XCTAssertEqual(data1[i*2+1], data2[i])
+        }
     }
     
     func testSaveData() throws {

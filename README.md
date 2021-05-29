@@ -342,6 +342,12 @@ Ideally, you could also program the GALs using `minipro` on Mac and Linux. Unfor
 * HazardControl1.jed --> U51
 * HazardControl2.jed --> U52
 
+## Using what firmware?
+
+The contents of the decoder EEPROMs are included in the repo under the Generated/ directory. Ditto the .jed files for the Hazard Control GALs.
+
+Alternatively, use the Simulator16 app to dump the contents of the simulated computer's EEPROMs to file.
+
 
 # TurtleTools
 

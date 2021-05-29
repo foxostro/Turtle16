@@ -17,6 +17,8 @@ class MemoryViewController: NSViewController {
     public var hexDataViewControllers: [HexDataViewController] = []
     
     let kInstructionMemoryIdentifier = NSUserInterfaceItemIdentifier("InstructionMemory")
+    let kInstructionMemoryHiIdentifier = NSUserInterfaceItemIdentifier("InstructionMemoryHi")
+    let kInstructionMemoryLoIdentifier = NSUserInterfaceItemIdentifier("InstructionMemoryLo")
     let kDataMemoryIdentifier = NSUserInterfaceItemIdentifier("DataMemory")
     let kOpcodeDecodeROM1Identifier = NSUserInterfaceItemIdentifier("kOpcodeDecodeROM1Identifier")
     let kOpcodeDecodeROM2Identifier = NSUserInterfaceItemIdentifier("kOpcodeDecodeROM2Identifier")
@@ -36,6 +38,10 @@ class MemoryViewController: NSViewController {
         
         addHexDataView(identifier: kInstructionMemoryIdentifier,
                        dataSource: InstructionMemoryTableViewDataSource(computer: debugger.computer))
+        addHexDataView(identifier: kInstructionMemoryLoIdentifier,
+                       dataSource: InstructionMemoryLoTableViewDataSource(computer: debugger.computer))
+        addHexDataView(identifier: kInstructionMemoryHiIdentifier,
+                       dataSource: InstructionMemoryHiTableViewDataSource(computer: debugger.computer))
         addHexDataView(identifier: kDataMemoryIdentifier,
                        dataSource: DataMemoryTableViewDataSource(computer: debugger.computer))
         addHexDataView(identifier: kOpcodeDecodeROM1Identifier,
@@ -117,6 +123,12 @@ class MemoryViewController: NSViewController {
         case kInstructionMemoryIdentifier:
             debugger.interpreter.runOne(instruction: .load("program", url))
             
+        case kInstructionMemoryHiIdentifier:
+            debugger.interpreter.runOne(instruction: .load("program_hi", url))
+            
+        case kInstructionMemoryLoIdentifier:
+            debugger.interpreter.runOne(instruction: .load("program_lo", url))
+            
         case kDataMemoryIdentifier:
             debugger.interpreter.runOne(instruction: .load("data", url))
             
@@ -150,6 +162,12 @@ class MemoryViewController: NSViewController {
         switch identifier {
         case kInstructionMemoryIdentifier:
             debugger.interpreter.runOne(instruction: .save("program", url))
+            
+        case kInstructionMemoryHiIdentifier:
+            debugger.interpreter.runOne(instruction: .save("program_hi", url))
+            
+        case kInstructionMemoryLoIdentifier:
+            debugger.interpreter.runOne(instruction: .save("program_lo", url))
             
         case kDataMemoryIdentifier:
             debugger.interpreter.runOne(instruction: .save("data", url))

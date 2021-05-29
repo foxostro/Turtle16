@@ -159,6 +159,8 @@ Syntax: writememi <address> <word> [<word>...]
 
 Destination:
 \tprogram          -- Instruction memory
+\tprogram_lo       -- Instruction memory, low byte (U57)
+\tprogram_hi       -- Instruction memory, high byte (U58)
 \tdata             -- RAM
 \tOpcodeDecodeROM1 -- Opcode Decode ROM 1 (U37)
 \tOpcodeDecodeROM2 -- Opcode Decode ROM 2 (U38)

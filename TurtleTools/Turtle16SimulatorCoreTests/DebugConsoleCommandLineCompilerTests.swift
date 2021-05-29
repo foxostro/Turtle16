@@ -647,6 +647,20 @@ class DebugConsoleCommandLineCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [.load("program", URL(fileURLWithPath: "foo"))])
     }
     
+    func testLoadProgramHi() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("load program_hi \"foo\"")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.load("program_hi", URL(fileURLWithPath: "foo"))])
+    }
+    
+    func testLoadProgramLo() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("load program_lo \"foo\"")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.load("program_lo", URL(fileURLWithPath: "foo"))])
+    }
+    
     func testLoadData() throws {
         let compiler = DebugConsoleCommandLineCompiler()
         compiler.compile("load data \"foo\"")
@@ -691,6 +705,20 @@ class DebugConsoleCommandLineCompilerTests: XCTestCase {
         compiler.compile("save program \"foo\"")
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [.save("program", URL(fileURLWithPath: "foo"))])
+    }
+    
+    func testSaveProgramHi() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("save program_hi \"foo\"")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.save("program_hi", URL(fileURLWithPath: "foo"))])
+    }
+    
+    func testSaveProgramLo() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("save program_lo \"foo\"")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.save("program_lo", URL(fileURLWithPath: "foo"))])
     }
     
     func testSaveData() throws {

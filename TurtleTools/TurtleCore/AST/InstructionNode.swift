@@ -12,6 +12,10 @@ public class InstructionNode: AbstractSyntaxTreeNode {
     public let instruction: String
     public let parameters: ParameterList
     
+    public convenience init(instruction: String) {
+        self.init(sourceAnchor: nil, instruction: instruction, parameters: ParameterList(parameters: []))
+    }
+    
     public convenience init(instruction: String, parameters: ParameterList) {
         self.init(sourceAnchor: nil, instruction: instruction, parameters: parameters)
     }

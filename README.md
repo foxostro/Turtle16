@@ -117,11 +117,11 @@ Format | Encoding scheme
 ------ | ---------------
 RRR    | `0bkkkk'kccc'aaab'bbxx`
 RRI    | `0bkkkk'kccc'aaai'iiii`
-RII    | `0bkkkk'kccc'iiii'iiii`
+RII    | `0bkkkk'kccc'iiii'iiii`
 XRI    | `0bkkkk'kxxx'aaai'iiii`
 IRR    | `0bkkkk'kiii'aaab'bbii`
 III    | `0bkkkk'kiii'iiii'iiii`
-X      | `0bkkkk'kxxx'xxxx'xxxx`
+X      | `0bkkkk'kxxx'xxxx'xxxx`
 
 where 'k' is a 5-bit opcode, 'c' is the index of the register to select in the write back stage, 'a' is the index of the register to select for the ALU left operand, 'b' is the index of the register to select for the ALU right operand, and 'i' is an immediate value.
 

@@ -94,6 +94,8 @@ public class HazardControl: NSObject {
                                           wben_EX: (input.ctl_EX >> 20) & 1,
                                           wben_MEM: (input.ctl_MEM >> 20) & 1)
         let stageOneOutput = generatedHazardControlSignalsStageOne(input: stageOneInput)
+        assert(stageOneOutput.fwd_a + stageOneOutput.fwd_ex_to_a + stageOneOutput.fwd_mem_to_a == 2)
+        assert(stageOneOutput.fwd_b + stageOneOutput.fwd_ex_to_b + stageOneOutput.fwd_mem_to_b == 2)
         
         let stageTwoInput = StageTwoInput(j: input.j,
                                           opcode3: (UInt(input.ins) >> 14) & 1,

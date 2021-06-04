@@ -40,24 +40,29 @@ public class HazardControlMockup: HazardControl {
         let fwd_ex_to_a: UInt = (input.sel_a_matches_sel_c_ex | input.wben_EX | input.writeBackSrc_EX)
         let fwd_ex_to_b: UInt = (input.sel_b_matches_sel_c_ex | input.wben_EX | input.writeBackSrc_EX)
         
-        let fwd_mem_to_a: UInt = (input.sel_a_matches_sel_c_mem | input.wben_MEM | input.writeBackSrc_MEM)
-        let fwd_mem_to_b: UInt = (input.sel_b_matches_sel_c_mem | input.wben_MEM | input.writeBackSrc_MEM)
+        let fwd_mem_to_a: UInt = (input.sel_a_matches_sel_c_mem | input.wben_MEM | input.writeBackSrc_MEM) | (~input.sel_a_matches_sel_c_ex & ~input.wben_EX & ~input.writeBackSrc_EX)
+        let fwd_mem_to_b: UInt = (input.sel_b_matches_sel_c_mem | input.wben_MEM | input.writeBackSrc_MEM) | (~input.sel_b_matches_sel_c_ex & ~input.wben_EX & ~input.writeBackSrc_EX)
         
         let need_to_forward_storeOp_EX_to_a: UInt = (input.sel_a_matches_sel_c_ex | input.wben_EX | ~input.writeBackSrc_EX)
         let need_to_forward_storeOp_MEM_to_a: UInt = (input.sel_a_matches_sel_c_mem | input.wben_MEM | ~input.writeBackSrc_MEM)
         let need_to_forward_storeOp_EX_to_b: UInt = (input.sel_b_matches_sel_c_ex | input.wben_EX | ~input.writeBackSrc_EX)
         let need_to_forward_storeOp_MEM_to_b: UInt = (input.sel_b_matches_sel_c_mem | input.wben_MEM | ~input.writeBackSrc_MEM)
         
-        return StageOneOutput(fwd_a: fwd_a & 1,
-                              fwd_b: fwd_b & 1,
-                              fwd_ex_to_a: fwd_ex_to_a & 1,
-                              fwd_ex_to_b: fwd_ex_to_b & 1,
-                              fwd_mem_to_a: fwd_mem_to_a & 1,
-                              fwd_mem_to_b: fwd_mem_to_b & 1,
-                              need_to_forward_storeOp_EX_to_a: need_to_forward_storeOp_EX_to_a & 1,
-                              need_to_forward_storeOp_MEM_to_a: need_to_forward_storeOp_MEM_to_a & 1,
-                              need_to_forward_storeOp_EX_to_b: need_to_forward_storeOp_EX_to_b & 1,
-                              need_to_forward_storeOp_MEM_to_b: need_to_forward_storeOp_MEM_to_b & 1)
+        let result = StageOneOutput(fwd_a: fwd_a & 1,
+                                    fwd_b: fwd_b & 1,
+                                    fwd_ex_to_a: fwd_ex_to_a & 1,
+                                    fwd_ex_to_b: fwd_ex_to_b & 1,
+                                    fwd_mem_to_a: fwd_mem_to_a & 1,
+                                    fwd_mem_to_b: fwd_mem_to_b & 1,
+                                    need_to_forward_storeOp_EX_to_a: need_to_forward_storeOp_EX_to_a & 1,
+                                    need_to_forward_storeOp_MEM_to_a: need_to_forward_storeOp_MEM_to_a & 1,
+                                    need_to_forward_storeOp_EX_to_b: need_to_forward_storeOp_EX_to_b & 1,
+                                    need_to_forward_storeOp_MEM_to_b: need_to_forward_storeOp_MEM_to_b & 1)
+        
+        assert(result.fwd_a + result.fwd_ex_to_a + result.fwd_mem_to_a == 2)
+        assert(result.fwd_b + result.fwd_ex_to_b + result.fwd_mem_to_b == 2)
+        
+        return result
     }
     
     public override func generatedHazardControlSignalsStageTwo(input: StageTwoInput) -> StageTwoOutput {

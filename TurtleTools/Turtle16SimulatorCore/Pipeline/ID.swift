@@ -250,8 +250,7 @@ public class ID: NSObject {
         if hzd.fwd_a != 0 && hzd.fwd_ex_to_a != 0 && hzd.fwd_mem_to_a == 0 {
             return input.y_MEM
         }
-        assert(false)
-        return 0
+        fatalError("illegal hazard resolution")
     }
     
     fileprivate func forwardB(_ input: ID.Input, _ hzd: HazardControl.Output) -> UInt16 {
@@ -264,8 +263,7 @@ public class ID: NSObject {
         if hzd.fwd_b != 0 && hzd.fwd_ex_to_b != 0 && hzd.fwd_mem_to_b == 0 {
             return input.y_MEM
         }
-        assert(false)
-        return 0
+        fatalError("illegal hazard resolution")
     }
     
     public func readRegisterA(input: Input) -> UInt16 {

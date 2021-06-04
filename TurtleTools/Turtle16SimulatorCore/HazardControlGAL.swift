@@ -72,16 +72,21 @@ public class HazardControlGAL: HazardControl {
         let need_to_forward_storeOp_EX_to_b: UInt = outputs[8]!
         let need_to_forward_storeOp_MEM_to_b: UInt = outputs[9]!
         
-        return StageOneOutput(fwd_a: fwd_a & 1,
-                              fwd_b: fwd_b & 1,
-                              fwd_ex_to_a: fwd_ex_to_a & 1,
-                              fwd_ex_to_b: fwd_ex_to_b & 1,
-                              fwd_mem_to_a: fwd_mem_to_a & 1,
-                              fwd_mem_to_b: fwd_mem_to_b & 1,
-                              need_to_forward_storeOp_EX_to_a: need_to_forward_storeOp_EX_to_a & 1,
-                              need_to_forward_storeOp_MEM_to_a: need_to_forward_storeOp_MEM_to_a & 1,
-                              need_to_forward_storeOp_EX_to_b: need_to_forward_storeOp_EX_to_b & 1,
-                              need_to_forward_storeOp_MEM_to_b: need_to_forward_storeOp_MEM_to_b & 1)
+        let result = StageOneOutput(fwd_a: fwd_a & 1,
+                                    fwd_b: fwd_b & 1,
+                                    fwd_ex_to_a: fwd_ex_to_a & 1,
+                                    fwd_ex_to_b: fwd_ex_to_b & 1,
+                                    fwd_mem_to_a: fwd_mem_to_a & 1,
+                                    fwd_mem_to_b: fwd_mem_to_b & 1,
+                                    need_to_forward_storeOp_EX_to_a: need_to_forward_storeOp_EX_to_a & 1,
+                                    need_to_forward_storeOp_MEM_to_a: need_to_forward_storeOp_MEM_to_a & 1,
+                                    need_to_forward_storeOp_EX_to_b: need_to_forward_storeOp_EX_to_b & 1,
+                                    need_to_forward_storeOp_MEM_to_b: need_to_forward_storeOp_MEM_to_b & 1)
+        
+        assert(result.fwd_a + result.fwd_ex_to_a + result.fwd_mem_to_a == 2)
+        assert(result.fwd_b + result.fwd_ex_to_b + result.fwd_mem_to_b == 2)
+        
+        return result
     }
     
     public override func generatedHazardControlSignalsStageTwo(input: StageTwoInput) -> StageTwoOutput {

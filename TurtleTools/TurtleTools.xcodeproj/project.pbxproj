@@ -253,8 +253,6 @@
 		6FA6B5B024DE77C700695BFB /* ProgramDebugInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA6B5AF24DE77C700695BFB /* ProgramDebugInfo.swift */; };
 		6FA6B5B124DE77F500695BFB /* SourceLineRangeMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7F356F24D33CC800BA8E37 /* SourceLineRangeMapper.swift */; };
 		6FA6B5B224DE77F500695BFB /* SourceAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7F356D24D33C7700BA8E37 /* SourceAnchor.swift */; };
-		6FA90CE623FE67C800E9AF1D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA90CE523FE67C800E9AF1D /* main.swift */; };
-		6FA90CEB23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA90CEA23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift */; };
 		6FAABCA125318CDB00A66FAF /* TestDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FAABCA025318CDB00A66FAF /* TestDeclaration.swift */; };
 		6FAC109525A25E9300BB3836 /* DecoderGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FAC109425A25E9300BB3836 /* DecoderGenerator.swift */; };
 		6FAC10A725A25EA600BB3836 /* DecoderGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FAC10A625A25EA600BB3836 /* DecoderGeneratorTests.swift */; };
@@ -545,20 +543,6 @@
 			remoteGlobalIDString = 6FB0D34B24711A23003B5D5C;
 			remoteInfo = TurtleSimulatorCore;
 		};
-		6FB0D39924711AD6003B5D5C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6FB0D34B24711A23003B5D5C;
-			remoteInfo = TurtleSimulatorCore;
-		};
-		6FB0D3A424711C79003B5D5C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
-			remoteInfo = TurtleCore;
-		};
 		6FB28F6E2512C9D5001F5D12 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
@@ -612,15 +596,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		6F9201D72471DA22009E1410 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-		};
-		6FA90CE123FE67C800E9AF1D /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = /usr/share/man/man1/;
@@ -927,9 +902,6 @@
 		6FA5D2CE2593FAAA00044B17 /* IDT7831.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDT7831.swift; sourceTree = "<group>"; };
 		6FA5D2E02593FAB500044B17 /* IDT7831Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDT7831Tests.swift; sourceTree = "<group>"; };
 		6FA6B5AF24DE77C700695BFB /* ProgramDebugInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramDebugInfo.swift; sourceTree = "<group>"; };
-		6FA90CE323FE67C800E9AF1D /* TurtleVMBenchmark */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TurtleVMBenchmark; sourceTree = BUILT_PRODUCTS_DIR; };
-		6FA90CE523FE67C800E9AF1D /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		6FA90CEA23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TurtleVMBenchmarkDriver.swift; sourceTree = "<group>"; };
 		6FAABCA025318CDB00A66FAF /* TestDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDeclaration.swift; sourceTree = "<group>"; };
 		6FAC109425A25E9300BB3836 /* DecoderGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecoderGenerator.swift; sourceTree = "<group>"; };
 		6FAC10A625A25EA600BB3836 /* DecoderGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecoderGeneratorTests.swift; sourceTree = "<group>"; };
@@ -1083,13 +1055,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				6F9201EE2471DAC7009E1410 /* SnapCore.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6FA90CE023FE67C800E9AF1D /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1544,15 +1509,6 @@
 			path = AST;
 			sourceTree = "<group>";
 		};
-		6FA90CE423FE67C800E9AF1D /* TurtleVMBenchmark */ = {
-			isa = PBXGroup;
-			children = (
-				6FA90CEA23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift */,
-				6FA90CE523FE67C800E9AF1D /* main.swift */,
-			);
-			path = TurtleVMBenchmark;
-			sourceTree = "<group>";
-		};
 		6FB0D28C24710C26003B5D5C /* TurtleCore */ = {
 			isa = PBXGroup;
 			children = (
@@ -1718,7 +1674,6 @@
 				6FB0D35824711A23003B5D5C /* TurtleSimulatorCoreTests */,
 				6FB0D28C24710C26003B5D5C /* TurtleCore */,
 				6FB0D29724710C26003B5D5C /* TurtleCoreTests */,
-				6FA90CE423FE67C800E9AF1D /* TurtleVMBenchmark */,
 				6F734332259327D400B7E43F /* Turtle16SimulatorCore */,
 				6F73433D259327D400B7E43F /* Turtle16SimulatorCoreTests */,
 				6F300DC1266A906F00BFBAC4 /* Turtle16Assembler */,
@@ -1732,7 +1687,6 @@
 			children = (
 				6FF1995322ECB36F00C255A2 /* Simulator.app */,
 				6FF1996522ECB37000C255A2 /* SimulatorTests.xctest */,
-				6FA90CE323FE67C800E9AF1D /* TurtleVMBenchmark */,
 				6FB0D28B24710C26003B5D5C /* TurtleCore.framework */,
 				6FB0D29324710C26003B5D5C /* TurtleCoreTests.xctest */,
 				6FB0D34C24711A23003B5D5C /* TurtleSimulatorCore.framework */,
@@ -1986,25 +1940,6 @@
 			productReference = 6F9201ED2471DAC7009E1410 /* SnapCoreTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		6FA90CE223FE67C800E9AF1D /* TurtleVMBenchmark */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 6FA90CE923FE67C800E9AF1D /* Build configuration list for PBXNativeTarget "TurtleVMBenchmark" */;
-			buildPhases = (
-				6FA90CDF23FE67C800E9AF1D /* Sources */,
-				6FA90CE023FE67C800E9AF1D /* Frameworks */,
-				6FA90CE123FE67C800E9AF1D /* CopyFiles */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				6FB0D39A24711AD6003B5D5C /* PBXTargetDependency */,
-				6FB0D3A524711C79003B5D5C /* PBXTargetDependency */,
-			);
-			name = TurtleVMBenchmark;
-			productName = TurtleVMBenchmark;
-			productReference = 6FA90CE323FE67C800E9AF1D /* TurtleVMBenchmark */;
-			productType = "com.apple.product-type.tool";
-		};
 		6FB0D28A24710C26003B5D5C /* TurtleCore */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6FB0D29C24710C26003B5D5C /* Build configuration list for PBXNativeTarget "TurtleCore" */;
@@ -2182,9 +2117,6 @@
 						CreatedOnToolsVersion = 11.3.1;
 						LastSwiftMigration = 1130;
 					};
-					6FA90CE223FE67C800E9AF1D = {
-						CreatedOnToolsVersion = 11.3.1;
-					};
 					6FB0D28A24710C26003B5D5C = {
 						CreatedOnToolsVersion = 11.3.1;
 						LastSwiftMigration = 1130;
@@ -2238,7 +2170,6 @@
 				6F9201EC2471DAC7009E1410 /* SnapCoreTests */,
 				6FB0D28A24710C26003B5D5C /* TurtleCore */,
 				6FB0D29224710C26003B5D5C /* TurtleCoreTests */,
-				6FA90CE223FE67C800E9AF1D /* TurtleVMBenchmark */,
 				6FB28F642512C50B001F5D12 /* SnapBenchmark */,
 				6F734330259327D400B7E43F /* Turtle16SimulatorCore */,
 				6F734338259327D400B7E43F /* Turtle16SimulatorCoreTests */,
@@ -2595,15 +2526,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6FA90CDF23FE67C800E9AF1D /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6FA90CEB23FE67F200E9AF1D /* TurtleVMBenchmarkDriver.swift in Sources */,
-				6FA90CE623FE67C800E9AF1D /* main.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		6FB0D28724710C26003B5D5C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2918,16 +2840,6 @@
 			isa = PBXTargetDependency;
 			target = 6FB0D34B24711A23003B5D5C /* TurtleSimulatorCore */;
 			targetProxy = 6FB0D39124711AAC003B5D5C /* PBXContainerItemProxy */;
-		};
-		6FB0D39A24711AD6003B5D5C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6FB0D34B24711A23003B5D5C /* TurtleSimulatorCore */;
-			targetProxy = 6FB0D39924711AD6003B5D5C /* PBXContainerItemProxy */;
-		};
-		6FB0D3A524711C79003B5D5C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
-			targetProxy = 6FB0D3A424711C79003B5D5C /* PBXContainerItemProxy */;
 		};
 		6FB28F6F2512C9D5001F5D12 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -3341,32 +3253,6 @@
 					"@loader_path/../Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.SnapCoreTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-			};
-			name = Release;
-		};
-		6FA90CE723FE67C800E9AF1D /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = TZ9N52W5SU;
-				ENABLE_HARDENED_RUNTIME = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleVMBenchmark;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-			};
-			name = Debug;
-		};
-		6FA90CE823FE67C800E9AF1D /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = TZ9N52W5SU;
-				ENABLE_HARDENED_RUNTIME = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleVMBenchmark;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -3875,15 +3761,6 @@
 			buildConfigurations = (
 				6F9201FA2471DAC7009E1410 /* Debug */,
 				6F9201FB2471DAC7009E1410 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		6FA90CE923FE67C800E9AF1D /* Build configuration list for PBXNativeTarget "TurtleVMBenchmark" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				6FA90CE723FE67C800E9AF1D /* Debug */,
-				6FA90CE823FE67C800E9AF1D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

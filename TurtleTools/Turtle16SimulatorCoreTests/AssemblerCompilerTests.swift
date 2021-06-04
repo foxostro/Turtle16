@@ -1098,31 +1098,18 @@ class AssemblerCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [])
     }
     
-    func testCompileJMPWithLabel_ZeroOffset() throws {
-        let compiler = AssemblerCompiler()
-        compiler.compile(ast: [
-            LabelDeclaration(identifier: "foo"),
-            InstructionNode(instruction: "JMP", parameters: ParameterList(parameters: [ParameterIdentifier(value: "foo")]))
-        ])
-        XCTAssertFalse(compiler.hasError)
-        XCTAssertEqual(compiler.errors.count, 0)
-        XCTAssertEqual(compiler.instructions, [
-            0b1010000000000000
-        ])
-    }
-    
     func testCompileJMPWithLabel_ForwardJump() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
             InstructionNode(instruction: "JMP", parameters: ParameterList(parameters: [ParameterIdentifier(value: "foo")])),
-            InstructionNode(instruction: "NOP"),
-            LabelDeclaration(identifier: "foo")
+            LabelDeclaration(identifier: "foo"),
+            InstructionNode(instruction: "HLT")
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
         XCTAssertEqual(compiler.instructions, [
-            0b1010000000000010,
-            0b0000000000000000
+            0b1010011111111111,
+            0b0000100000000000
         ])
     }
     
@@ -1139,7 +1126,7 @@ class AssemblerCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [
             0b0000000000000000,
             0b0000000000000000,
-            0b1010011111111110
+            0b1010011111111100
         ])
     }
     
@@ -1275,7 +1262,7 @@ class AssemblerCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
         XCTAssertEqual(compiler.instructions, [
-            0b1100000000000000
+            0b1100011111111110
         ])
     }
     
@@ -1310,7 +1297,7 @@ class AssemblerCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
         XCTAssertEqual(compiler.instructions, [
-            0b1100100000000000
+            0b1100111111111110
         ])
     }
     
@@ -1345,7 +1332,7 @@ class AssemblerCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
         XCTAssertEqual(compiler.instructions, [
-            0b1101000000000000
+            0b1101011111111110
         ])
     }
     
@@ -1380,7 +1367,7 @@ class AssemblerCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
         XCTAssertEqual(compiler.instructions, [
-            0b1101100000000000
+            0b1101111111111110
         ])
     }
     
@@ -1415,7 +1402,7 @@ class AssemblerCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
         XCTAssertEqual(compiler.instructions, [
-            0b1110000000000000
+            0b1110011111111110
         ])
     }
     
@@ -1450,7 +1437,7 @@ class AssemblerCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
         XCTAssertEqual(compiler.instructions, [
-            0b1110100000000000
+            0b1110111111111110
         ])
     }
     

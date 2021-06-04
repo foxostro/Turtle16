@@ -30,8 +30,9 @@ public class AssemblerCodeGenerator: NSObject {
         public let identifier: String
         public let lowerLimit: Int
         public let upperLimit: Int
-        public let mask: Int
+        public let mask: UInt16
         public let shift: Int
+        public let offset: Int
     }
     public private(set) var patcherActions: [PatcherAction] = []
     
@@ -46,14 +47,16 @@ public class AssemblerCodeGenerator: NSObject {
             guard let value = symbols[action.identifier] else {
                 throw CompilerError(sourceAnchor: sourceAnchor, message: "use of unresolved identifier: `\(action.identifier)'")
             }
-            let offset = value - action.index
+            let offset: Int = value - action.index + action.offset
             if offset > action.upperLimit {
                 throw CompilerError(sourceAnchor: sourceAnchor, message: "offset exceeds positive limit of \(action.upperLimit): `\(offset)'")
             }
             if offset < action.lowerLimit {
                 throw CompilerError(sourceAnchor: sourceAnchor, message: "offset exceeds negative limit of \(action.lowerLimit): `\(offset)'")
             }
-            let ins = UInt16(instructions[action.index]) | UInt16((offset & action.mask) >> action.shift)
+            let twosComplementOffset: UInt16 = UInt16(UInt(bitPattern: offset) & 0xffff)
+            let finalOffset = UInt16((twosComplementOffset & action.mask) >> action.shift)
+            let ins = UInt16(instructions[action.index]) | finalOffset
             instructions[action.index] = ins
         }
     }
@@ -222,9 +225,10 @@ public class AssemblerCodeGenerator: NSObject {
     
     fileprivate func branch(_ name: String, _ doBranch: (Int) throws -> UInt16) throws {
         assert(isAssembling)
+        let kBranchPipelineOffset = -2
         let offset: Int
         if let value = symbols[name] {
-            offset = value - instructions.count
+            offset = value - instructions.count + kBranchPipelineOffset
         } else {
             offset = 0
             let action = PatcherAction(index: instructions.count,
@@ -232,8 +236,9 @@ public class AssemblerCodeGenerator: NSObject {
                                        identifier: name,
                                        lowerLimit: -1024,
                                        upperLimit: 1023,
-                                       mask: ~0,
-                                       shift: 0)
+                                       mask: 0x07ff,
+                                       shift: 0,
+                                       offset: kBranchPipelineOffset)
             patcherActions.append(action)
         }
         instructions.append(try doBranch(offset))
@@ -284,14 +289,16 @@ public class AssemblerCodeGenerator: NSObject {
                               lowerLimit: 0,
                               upperLimit: 0xffff,
                               mask: 0x00ff,
-                              shift: 0),
+                              shift: 0,
+                              offset: 0),
                 PatcherAction(index: instructions.count+1,
                               sourceAnchor: sourceAnchor,
                               identifier: name,
                               lowerLimit: 0,
                               upperLimit: 0xffff,
                               mask: 0xff00,
-                              shift: 8)
+                              shift: 8,
+                              offset: 0)
             ]
         }
         instructions.append(try gen.liu(destination, lo))

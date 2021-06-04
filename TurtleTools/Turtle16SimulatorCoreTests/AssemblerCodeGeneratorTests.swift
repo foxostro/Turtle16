@@ -427,7 +427,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     
     func testJmpToLabelWithNoPatching_ZeroOffset() throws {
         let codeGen = AssemblerCodeGenerator()
-        codeGen.symbols["foo"] = 0
+        codeGen.symbols["foo"] = 2
         codeGen.begin()
         XCTAssertNoThrow(try codeGen.jmp("foo"))
         XCTAssertEqual(codeGen.instructions.count, 1)
@@ -436,7 +436,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     
     func testJmpToLabelWithNoPatching_ForwardJump() throws {
         let codeGen = AssemblerCodeGenerator()
-        codeGen.symbols["foo"] = 1
+        codeGen.symbols["foo"] = 3
         codeGen.begin()
         XCTAssertNoThrow(try codeGen.jmp("foo"))
         XCTAssertEqual(codeGen.instructions.count, 1)
@@ -445,7 +445,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     
     func testJmpToLabelWithNoPatching_BackwardJump() throws {
         let codeGen = AssemblerCodeGenerator()
-        codeGen.symbols["foo"] = 0
+        codeGen.symbols["foo"] = 2
         codeGen.begin()
         codeGen.nop()
         XCTAssertNoThrow(try codeGen.jmp("foo"))
@@ -460,13 +460,13 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         XCTAssertNoThrow(try codeGen.label("foo"))
         XCTAssertNoThrow(try codeGen.end())
         XCTAssertEqual(codeGen.instructions.count, 1)
-        XCTAssertEqual(codeGen.instructions.first, 0b1010000000000001) // JMP 1
+        XCTAssertEqual(codeGen.instructions.first, 0b1010011111111111) // JMP -1
     }
     
     func testJmpToLabelWithPatching_ExceedingNegativeLimit() throws {
         let codeGen = AssemblerCodeGenerator()
         codeGen.begin()
-        for _ in 0..<2000 {
+        for _ in 0..<1998 {
             codeGen.nop()
         }
         XCTAssertNoThrow(try codeGen.jmp("foo"))
@@ -497,7 +497,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         XCTAssertNoThrow(try codeGen.label("foo"))
         XCTAssertThrowsError(try codeGen.end()) {
             let compilerError = $0 as? CompilerError
-            XCTAssertEqual(compilerError?.message, "offset exceeds positive limit of 1023: `2001'")
+            XCTAssertEqual(compilerError?.message, "offset exceeds positive limit of 1023: `1999'")
         }
     }
     
@@ -510,13 +510,13 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         }
         XCTAssertThrowsError(try codeGen.jmp("foo")) {
             let compilerError = $0 as? CompilerError
-            XCTAssertEqual(compilerError?.message, "offset exceeds negative limit of -1024: `-2000'")
+            XCTAssertEqual(compilerError?.message, "offset exceeds negative limit of -1024: `-2002'")
         }
     }
     
     func testBeqToLabel() throws {
         let codeGen = AssemblerCodeGenerator()
-        codeGen.symbols["foo"] = 0
+        codeGen.symbols["foo"] = 2
         codeGen.begin()
         XCTAssertNoThrow(try codeGen.beq("foo"))
         XCTAssertEqual(codeGen.instructions.count, 1)
@@ -525,7 +525,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     
     func testBneToLabel() throws {
         let codeGen = AssemblerCodeGenerator()
-        codeGen.symbols["foo"] = 0
+        codeGen.symbols["foo"] = 2
         codeGen.begin()
         XCTAssertNoThrow(try codeGen.bne("foo"))
         XCTAssertEqual(codeGen.instructions.count, 1)
@@ -534,7 +534,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     
     func testBltToLabel() throws {
         let codeGen = AssemblerCodeGenerator()
-        codeGen.symbols["foo"] = 0
+        codeGen.symbols["foo"] = 2
         codeGen.begin()
         XCTAssertNoThrow(try codeGen.blt("foo"))
         XCTAssertEqual(codeGen.instructions.count, 1)
@@ -543,7 +543,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     
     func testBgeToLabel() throws {
         let codeGen = AssemblerCodeGenerator()
-        codeGen.symbols["foo"] = 0
+        codeGen.symbols["foo"] = 2
         codeGen.begin()
         XCTAssertNoThrow(try codeGen.bge("foo"))
         XCTAssertEqual(codeGen.instructions.count, 1)
@@ -552,7 +552,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     
     func testBltuToLabel() throws {
         let codeGen = AssemblerCodeGenerator()
-        codeGen.symbols["foo"] = 0
+        codeGen.symbols["foo"] = 2
         codeGen.begin()
         XCTAssertNoThrow(try codeGen.bltu("foo"))
         XCTAssertEqual(codeGen.instructions.count, 1)
@@ -561,7 +561,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     
     func testBgeuToLabel() throws {
         let codeGen = AssemblerCodeGenerator()
-        codeGen.symbols["foo"] = 0
+        codeGen.symbols["foo"] = 2
         codeGen.begin()
         XCTAssertNoThrow(try codeGen.bgeu("foo"))
         XCTAssertEqual(codeGen.instructions.count, 1)

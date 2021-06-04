@@ -703,6 +703,42 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(1028, cpu.pc)
     }
     
+    func testJmpForwardLikeAnExpensiveNop() {
+        // A JMP instruction with an offset of -1 is effectively an expensive
+        // NOP. Take the offset of -1 and add to it the static offset of 2 to
+        // get the final offset of the next instruction: +1. So, the JMP will
+        // branch to the instruction immediately following the JMP.
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [
+            0b1010011111111111, // JMP -1
+            0b0111000000000001, // ADDI r0, r0, 1
+            0b0111000000000001, // ADDI r0, r0, 1
+            0b0111000000000001, // ADDI r0, r0, 1
+            0b0000000000000000, // NOP (allow CPU a cycle to write back result of ADDI)
+            0b0000100000000000, // HLT
+        ]
+        cpu.reset()
+        cpu.run(stepLimit: 11)
+        XCTAssertEqual(cpu.getRegister(0), 3)
+    }
+    
+    func testJmpForever() {
+        // A JMP instruction with an offset of -2 will effectively loop forever.
+        // Take the offset of -2 and add to it the static offset of 2 to get the
+        // final offset of the next instruction: +0. So, the JMP will branch to
+        // itself and execute again.
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [
+            0b1010011111111110, // JMP -2
+        ]
+        cpu.reset()
+        cpu.step()
+        cpu.step()
+        cpu.step()
+        cpu.step()
+        XCTAssertEqual(cpu.pc, 1)
+    }
+    
     func testJmp_backward() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [

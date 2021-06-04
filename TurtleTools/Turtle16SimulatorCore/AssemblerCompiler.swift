@@ -49,6 +49,10 @@ public class AssemblerCompiler: NSObject {
     public private(set) var errors: [CompilerError] = []
     public private(set) var instructions: [UInt16] = []
     
+    public func compile(_ topLevel: TopLevel) {
+        compile(ast: topLevel.children)
+    }
+    
     public func compile(ast: [AbstractSyntaxTreeNode]) {
         codeGenerator.begin()
         

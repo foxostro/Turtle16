@@ -125,6 +125,8 @@
 		6F2E5AFE251A591A00928DD1 /* Typealias.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2E5AFD251A591A00928DD1 /* Typealias.swift */; };
 		6F2E5B0E251AA46B00928DD1 /* Match.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2E5B0D251AA46B00928DD1 /* Match.swift */; };
 		6F2E5B1E251AFB5700928DD1 /* MatchCompiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2E5B1D251AFB5700928DD1 /* MatchCompiler.swift */; };
+		6F300DB926689B6800BFBAC4 /* Assembler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F300DB826689B6800BFBAC4 /* Assembler.swift */; };
+		6F300DBB26689B9200BFBAC4 /* AssemblerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F300DBA26689B9200BFBAC4 /* AssemblerTests.swift */; };
 		6F330D9C24E8A346005C4BE5 /* MemoryExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F330D9B24E8A346005C4BE5 /* MemoryExtensions.swift */; };
 		6F35B4362628ABF6004EA0AB /* DebugConsole.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F35B4352628ABF6004EA0AB /* DebugConsole.swift */; };
 		6F35B4552628AC80004EA0AB /* TextViewLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AEA22EEE6C400B38267 /* TextViewLogger.swift */; };
@@ -722,6 +724,8 @@
 		6F2E5B1D251AFB5700928DD1 /* MatchCompiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchCompiler.swift; sourceTree = "<group>"; };
 		6F2EE664240C9D1D001FE46E /* SerialInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialInput.swift; sourceTree = "<group>"; };
 		6F2EE666240C9D38001FE46E /* SerialInputTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialInputTests.swift; sourceTree = "<group>"; };
+		6F300DB826689B6800BFBAC4 /* Assembler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assembler.swift; sourceTree = "<group>"; };
+		6F300DBA26689B9200BFBAC4 /* AssemblerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerTests.swift; sourceTree = "<group>"; };
 		6F330D9B24E8A346005C4BE5 /* MemoryExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryExtensions.swift; sourceTree = "<group>"; };
 		6F35B4352628ABF6004EA0AB /* DebugConsole.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugConsole.swift; sourceTree = "<group>"; };
 		6F35B4B22628AFED004EA0AB /* example.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = example.bin; sourceTree = "<group>"; };
@@ -1330,6 +1334,7 @@
 			children = (
 				6F52BF612623946B003C9CC3 /* Pipeline */,
 				6FAE8EA5261BC4FD00A8A23D /* ATF22V10.swift */,
+				6F300DB826689B6800BFBAC4 /* Assembler.swift */,
 				6F42B8E4265315E4004A7B12 /* AssemblerCodeGenerator.swift */,
 				6F1EC33F265EB66800465075 /* AssemblerCompiler.swift */,
 				6F42B8DC2651EE64004A7B12 /* AssemblerLexer.swift */,
@@ -1368,6 +1373,7 @@
 				6F52BF7226239485003C9CC3 /* Pipeline */,
 				6F45290E2623EA7D003732B3 /* AbstractSyntaxTreeNodeTests.swift */,
 				6FAE8EB7261BC50F00A8A23D /* ATF22V10Tests.swift */,
+				6F300DBA26689B9200BFBAC4 /* AssemblerTests.swift */,
 				6F42B8E626531605004A7B12 /* AssemblerCodeGeneratorTests.swift */,
 				6F982BDF265EB6BE0029ED5F /* AssemblerCompilerTests.swift */,
 				6F42B8E226531532004A7B12 /* AssemblerLexerTests.swift */,
@@ -2413,6 +2419,7 @@
 				6F42B8EB26531EDB004A7B12 /* AssemblerSingleInstructionCodeGenerator.swift in Sources */,
 				6F87A546261E23A40093750D /* HazardControl.swift in Sources */,
 				6F35B4362628ABF6004EA0AB /* DebugConsole.swift in Sources */,
+				6F300DB926689B6800BFBAC4 /* Assembler.swift in Sources */,
 				6F87A558261E26F40093750D /* HazardControlMockup.swift in Sources */,
 				6F45279D2623D110003732B3 /* DebugConsoleCommandLineLexer.swift in Sources */,
 				6F452AFD2624ECAF003732B3 /* DebugConsoleCommandLineInterpreter.swift in Sources */,
@@ -2436,6 +2443,7 @@
 			files = (
 				6F889D68259D495400EB647C /* SchematicLevelCPUModelTests.swift in Sources */,
 				6F982BE0265EB6BE0029ED5F /* AssemblerCompilerTests.swift in Sources */,
+				6F300DBB26689B9200BFBAC4 /* AssemblerTests.swift in Sources */,
 				6F42B8E12651F01B004A7B12 /* AssemblerParserTests.swift in Sources */,
 				6FA5D2E12593FAB500044B17 /* IDT7831Tests.swift in Sources */,
 				6F42B8E326531532004A7B12 /* AssemblerLexerTests.swift in Sources */,

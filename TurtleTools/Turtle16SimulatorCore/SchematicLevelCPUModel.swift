@@ -25,6 +25,10 @@ public class SchematicLevelCPUModel: NSObject, CPU {
         outputEX.hlt == 0
     }
     
+    public var isStalling: Bool {
+        outputID.stall & 1 != 0
+    }
+    
     public var pc: UInt16 = 0
     
     public var instructions: [UInt16] = Array<UInt16>(repeating: 0, count: 65535)

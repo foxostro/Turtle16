@@ -13,6 +13,7 @@ public protocol CPU: NSObject {
     var timeStamp: UInt { get }
     var isResetting: Bool { get }
     var isHalted: Bool { get }
+    var isStalling: Bool { get }
     var pc: UInt16 { get set }
     var instructions: [UInt16] { get set }
     var carry: UInt { get }

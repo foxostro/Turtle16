@@ -135,6 +135,7 @@ Syntax: info cpu
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .info("cpu"))
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
+isStalling: false
 isHalted: false
 isResetting: true
 
@@ -390,6 +391,7 @@ Syntax: writememi <address> <word> [<word>...]
             .info("cpu")
         ])
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
+isStalling: false
 isHalted: true
 isResetting: false
 
@@ -428,6 +430,7 @@ The file doesn’t exist.
         ])
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 Wrote 10 words to instruction memory.
+isStalling: false
 isHalted: true
 isResetting: false
 

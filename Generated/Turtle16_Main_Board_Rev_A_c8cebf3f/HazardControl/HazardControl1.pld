@@ -5,7 +5,7 @@ NC    WBSRCEX    WBENEX    WBSRCME    WBENME    AEQCEX    BEQCEX    AEQCME    BE
 NC    FSMTB      FSXTB     FSMTA      FSXTA     FMETB     FEXTB     FWDB      FWDA      FEXTA    FMETA   VCC
 
 ; LOW indicates that Y_MEM should be forwarded to the EX stage for operand A.
-FMETA = AEQCME + WBSRCME + WBSRCME
+FMETA = AEQCME + WBSRCME + WBSRCME + /AEQCEX * /WBENEX * /WBSRCEX
 
 ; LOW indicates that Y_EX should be forwarded to the EX stage for operand A.
 FEXTA = AEQCEX + WBENEX + WBSRCEX
@@ -20,7 +20,7 @@ FEXTA = AEQCEX + WBENEX + WBSRCEX
 FEXTB = BEQCEX + WBENEX + WBSRCEX
 
 ; LOW indicates that Y_MEM should be forwarded to the EX stage for operand B.
-FMETB = BEQCME + WBSRCME + WBSRCME
+FMETB = BEQCME + WBSRCME + WBSRCME + /BEQCEX * /WBENEX * /WBSRCEX
 
 ; LOW indicates that this is a case where we would need to forward storeOp_EX, if we could, to operand A.
 FSXTA = AEQCEX + WBENEX + /WBSRCEX

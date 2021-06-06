@@ -8,7 +8,7 @@ Pin 23 = FMETA        S0 = 1   S1 = 0
   2  ---- ---- ---- ---- ---- ---- ---- x--- ---- ---- ----
   3  ---- ---- ---- x--- ---- ---- ---- ---- ---- ---- ----
   4  ---- ---- ---- x--- ---- ---- ---- ---- ---- ---- ----
-  5  xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
+  5  ---- -x-- -x-- ---- ---- -x-- ---- ---- ---- ---- ----
   6  xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
   7  xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
   8  xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
@@ -83,7 +83,7 @@ Pin 18 = FMETB        S0 = 1   S1 = 0
  67  ---- ---- ---- ---- ---- ---- ---- ---- x--- ---- ----
  68  ---- ---- ---- x--- ---- ---- ---- ---- ---- ---- ----
  69  ---- ---- ---- x--- ---- ---- ---- ---- ---- ---- ----
- 70  xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
+ 70  ---- -x-- -x-- ---- ---- ---- -x-- ---- ---- ---- ----
  71  xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
  72  xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
  73  xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx

@@ -135,6 +135,7 @@ pc: \(pc)
             return
         }
         logger.append("""
+isStalling: \(computer.isStalling)
 isHalted: \(computer.isHalted)
 isResetting: \(computer.isResetting)
 

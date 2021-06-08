@@ -152,10 +152,29 @@ public class DebugConsoleCommandLineCompiler: NSObject {
     }
     
     fileprivate func acceptReset(_ node: InstructionNode) {
-        if node.parameters.elements.count != 0 {
-            errors.append(CompilerError(sourceAnchor: node.parameters.elements.first?.sourceAnchor, message: "instruction takes no parameters: `\(node.instruction)'"))
+        if node.parameters.elements.count > 1 {
+            errors.append(CompilerError(sourceAnchor: node.parameters.elements[1].sourceAnchor, message: "instruction takes zero or one parameters: `\(node.instruction)'"))
         } else {
-            instructions.append(.reset)
+            if let parameter = node.parameters.elements.first {
+                if let parameterIdentifier = parameter as? ParameterIdentifier {
+                    switch parameterIdentifier.value {
+                    case "hard":
+                        instructions.append(.reset(type: .hard))
+                        
+                    case "soft":
+                        instructions.append(.reset(type: .soft))
+                        
+                    default:
+                        errors.append(CompilerError(sourceAnchor: parameterIdentifier.sourceAnchor, message: "expected parameter to specify either a `soft' or `hard' reset: `\(parameterIdentifier.value)'"))
+                    }
+                }
+                else {
+                    errors.append(CompilerError(sourceAnchor: parameter.sourceAnchor, message: "expected parameter to specify either a `soft' or `hard' reset: `\(parameter)'"))
+                }
+            }
+            else {
+                instructions.append(.reset(type: .soft))
+            }
         }
     }
     

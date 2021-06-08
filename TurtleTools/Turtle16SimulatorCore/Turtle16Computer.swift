@@ -8,6 +8,10 @@
 
 import Foundation
 
+public enum ResetType {
+    case soft, hard
+}
+
 public extension Notification.Name {
     static let virtualMachineStateDidChange = Notification.Name("VirtualMachineStateDidChange")
 }
@@ -89,8 +93,17 @@ public class Turtle16Computer: NSObject {
         cpu.getRegister(idx)
     }
     
-    public func reset() {
-        cpu.reset()
+    public func reset(_ type: ResetType = .soft) {
+        switch type {
+        case .soft:
+            cpu.reset()
+            
+        case .hard:
+            cpu.reset()
+            for i in 0..<numberOfRegisters {
+                setRegister(i, 0)
+            }
+        }
     }
     
     public func run() {

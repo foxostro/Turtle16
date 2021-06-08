@@ -11,7 +11,7 @@ import Foundation
 public enum DebugConsoleInstruction: Equatable {
     case help(DebugConsoleHelpTopic?)
     case quit
-    case reset
+    case reset(type: ResetType)
     case run
     case step(count: Int)
     case reg

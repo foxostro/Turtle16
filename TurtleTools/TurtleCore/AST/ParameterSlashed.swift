@@ -34,5 +34,9 @@ public class ParameterSlashed: Parameter {
         hasher.combine(super.hash)
         return hasher.finalize()
     }
+    
+    public override var description: String {
+        return "/\(child)"
+    }
 }
 

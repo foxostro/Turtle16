@@ -38,5 +38,9 @@ public class ParameterAddress: Parameter {
         hasher.combine(super.hash)
         return hasher.finalize()
     }
+    
+    public override var description: String {
+        return "\(offset)(\(identifier))"
+    }
 }
 

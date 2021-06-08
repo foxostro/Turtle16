@@ -12,10 +12,12 @@ import Turtle16SimulatorCore
 
 class Simulator16ViewController: NSViewController {
     @IBOutlet var registersContainerView: NSView!
+    @IBOutlet var disassemblyContainerView: NSView!
     @IBOutlet var memoryContainerView: NSView!
     @IBOutlet var debugConsoleContainerView: NSView!
     
     public var registersViewController: RegistersViewController!
+    public var disassemblyViewController: DisassemblyViewController!
     public var memoryViewController: MemoryViewController!
     public var debugConsoleViewController: DebugConsoleViewController!
     
@@ -70,6 +72,39 @@ class Simulator16ViewController: NSViewController {
                                attribute: .bottom,
                                relatedBy: .equal,
                                toItem: registersContainerView,
+                               attribute: .bottom,
+                               multiplier: 1,
+                               constant: 0)
+        ])
+        
+        disassemblyViewController = DisassemblyViewController(debugger.computer)
+        disassemblyContainerView.addSubview(disassemblyViewController.view)
+        view.addConstraints([
+            NSLayoutConstraint(item: disassemblyViewController.view,
+                               attribute: .left,
+                               relatedBy: .equal,
+                               toItem: disassemblyContainerView,
+                               attribute: .left,
+                               multiplier: 1,
+                               constant: 0),
+                NSLayoutConstraint(item: disassemblyViewController.view,
+                                   attribute: .right,
+                                   relatedBy: .equal,
+                                   toItem: disassemblyContainerView,
+                                   attribute: .right,
+                                   multiplier: 1,
+                                   constant: 0),
+            NSLayoutConstraint(item: disassemblyViewController.view,
+                               attribute: .top,
+                               relatedBy: .equal,
+                               toItem: disassemblyContainerView,
+                               attribute: .top,
+                               multiplier: 1,
+                               constant: 0),
+            NSLayoutConstraint(item: disassemblyViewController.view,
+                               attribute: .bottom,
+                               relatedBy: .equal,
+                               toItem: disassemblyContainerView,
                                attribute: .bottom,
                                multiplier: 1,
                                constant: 0)

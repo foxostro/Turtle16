@@ -1,4 +1,5 @@
 # Turtle16 program to compute fibonacci numbers.
+NOP # We must start a program with a single NOP instruction.
 LI r0, 0
 LI r1, 1
 LI r7, 0

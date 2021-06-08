@@ -375,7 +375,10 @@ Syntax: writememi <address> <word> [<word>...]
         computer.reset()
         let hltOpcode: UInt = 1
         let ins: UInt16 = UInt16(hltOpcode << 11)
-        computer.instructions = [ins]
+        computer.instructions = [
+            0b0000000000000000, // NOP
+            ins
+        ]
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .run)
         XCTAssertTrue(computer.cpu.isHalted)
@@ -387,15 +390,16 @@ Syntax: writememi <address> <word> [<word>...]
         interpreter.run(instructions:[
             .reset(type: .soft),
             .writeInstructions(base: 0, words: [
-                0b0010000000000000, // LI r0, #0
-                0b0010000100000001, // LI r1, #1
-                0b0010011100000000, // LI r7, #0
+                0b0000000000000000, // NOP
+                0b0010000000000000, // LI r0, 0
+                0b0010000100000001, // LI r1, 1
+                0b0010011100000000, // LI r7, 0
                 0b0011101000000100, // ADD r2, r0, r1
-                0b0111000000100000, // ADDI r0, r1, #0
-                0b0111011111100001, // ADDI r7, r7, #1
-                0b0111000101000000, // ADDI r1, r2, #0
-                0b0110100011101001, // CMPI r7, #9
-                0b1101011111111001, // BLT #-7
+                0b0111000000100000, // ADDI r0, r1, 0
+                0b0111011111100001, // ADDI r7, r7, 1
+                0b0111000101000000, // ADDI r1, r2, 0
+                0b0110100011101001, // CMPI r7, 9
+                0b1101011111111001, // BLT -7
                 0b0000100000000000, // HLT
             ]),
             .run,
@@ -440,7 +444,7 @@ The file doesn’t exist.
             .info("cpu")
         ])
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
-Wrote 10 words to instruction memory.
+Wrote 65536 words to instruction memory.
 isStalling: false
 isHalted: true
 isResetting: false
@@ -491,7 +495,7 @@ pc: 0x000d
         interpreter.run(instructions:[
             .load("data", url)
         ])
-        XCTAssertEqual(computer.ram[0], 0x2000)
+        XCTAssertEqual(computer.ram[1], 0x2000)
     }
     
     func testFailToLoadFromInvalidDestination() throws {
@@ -525,7 +529,7 @@ Syntax: load <destination> "<path>"
         interpreter.run(instructions:[
             .load("OpcodeDecodeROM1", url)
         ])
-        XCTAssertEqual(computer.opcodeDecodeROM[0] & 0xff, 0x20)
+        XCTAssertEqual(computer.opcodeDecodeROM[2] & 0xff, 0x20)
     }
     
     func testLoadDataFromFileForOpcodeDecodeROM2() throws {
@@ -535,7 +539,7 @@ Syntax: load <destination> "<path>"
         interpreter.run(instructions:[
             .load("OpcodeDecodeROM2", url)
         ])
-        XCTAssertEqual((computer.opcodeDecodeROM[0]>>8) & 0xff, 0x20)
+        XCTAssertEqual((computer.opcodeDecodeROM[2]>>8) & 0xff, 0x20)
     }
     
     func testLoadDataFromFileForOpcodeDecodeROM3() throws {
@@ -545,7 +549,7 @@ Syntax: load <destination> "<path>"
         interpreter.run(instructions:[
             .load("OpcodeDecodeROM3", url)
         ])
-        XCTAssertEqual((computer.opcodeDecodeROM[0]>>16) & 0xff, 0x20)
+        XCTAssertEqual((computer.opcodeDecodeROM[2]>>16) & 0xff, 0x20)
     }
     
     func testSaveProgram() throws {

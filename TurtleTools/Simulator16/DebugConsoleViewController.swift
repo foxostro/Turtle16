@@ -15,6 +15,7 @@ class DebugConsoleViewController: NSViewController {
     @IBOutlet var debuggerInput: NSTextField!
     @IBOutlet var halted: NSTextField!
     @IBOutlet var resetting: NSTextField!
+    @IBOutlet var stall: NSTextField!
     @IBOutlet var timeStamp: NSTextField!
     @IBOutlet var ovf: NSTextField!
     @IBOutlet var z: NSTextField!
@@ -60,6 +61,7 @@ class DebugConsoleViewController: NSViewController {
         let computer = debugger.computer
         halted.isHidden = !computer.isHalted
         resetting.isHidden = !computer.isResetting
+        stall.isHidden = !computer.isStalling
         timeStamp.stringValue = "t=\(computer.timeStamp)"
         ovf.isHidden = (computer.ovf == 0)
         z.isHidden = (computer.z == 0)

@@ -368,12 +368,12 @@ This bug is documented by the testDemonstrateBugInHazardControlStallingOnStoreOp
 
 TurtleTools is a toolchain for the Turtle16 microcomputer hardware. This includes a computer Simulator, Assembler, and a Compiler for a new high-level language targeting the hardware.
 
-This is very much a work in progress. Changes are being made to add support for the Turtle16 hardware to the assembler, compiler, and simulator.
+The assembler command line tool compiles a single file of assembly source code to a single instruction memory image.
 
-The assembler currently only supports the TurtleTTL hardware I designed for an earlier project.
+The Simulator app allows simulation of program execution. The interactive debugger allows careful inspection of computer state at each clock tick. There is a view to show disassembly of code in instruction memory. There are views to display the contents of memory in the computer's various address spaces.
 
-There is a compiler for a new high-level language called Snap. Currently, this can compile code to an IR which implements a bunch of memory-to-memory instructions that are kind of a mismatch for the Turtle16 CPU. The IR compiler can only compile those instructions to TurtleTTL machine code and cannot compile to Turtle16 machine code. So, there's a lot of work to do here to port the Snap language to Turtle16.
-
-The Simulator16 app provides a Turtle16 simulator and debugger. This attempts to accurately model all the individual pieces of hardware, including compiling and emulating GAL HDL code. So, this sacrifices performance in favor of a model which will be useful in debugging the actual hardware.
+The current implementation of the Simulator app attempts to accurately model all the individual pieces of hardware, including compiling and emulating GAL HDL code. The implementation sacrifices performance in favor of a model which will be useful in debugging the actual hardware. A faster interpreter, or even a JIT, is a project that could be attempted in the future.
 
 ![Simulator16 Screen Shot](TurtleTools/ScreenShots/Simulator16.png?raw=true "Simulator16 Screen Shot")
+
+There is also a compiler for a new high-level language called Snap. Currently, this can compile code to an IR which implements a bunch of memory-to-memory instructions that are kind of a mismatch for the Turtle16 CPU. The IR compiler can only compile those instructions to TurtleTTL machine code and cannot compile to Turtle16 machine code. So, there's a lot of work to do here to port the Snap language to Turtle16.

@@ -16,19 +16,19 @@ public class AssemblerSingleInstructionCodeGenerator: NSObject {
     public let kOperandShiftA = 5
     public let kOperandShiftB = 2
     
-    public enum Register {
+    public enum Register: Int {
         case r0, r1, r2, r3, r4, r5, r6, r7
         
-        public var value: Int {
+        public var description: String {
             switch self {
-            case .r0: return 0
-            case .r1: return 1
-            case .r2: return 2
-            case .r3: return 3
-            case .r4: return 4
-            case .r5: return 5
-            case .r6: return 6
-            case .r7: return 7
+            case .r0: return "r0"
+            case .r1: return "r1"
+            case .r2: return "r2"
+            case .r3: return "r3"
+            case .r4: return "r4"
+            case .r5: return "r5"
+            case .r6: return "r6"
+            case .r7: return "r7"
             }
         }
     }
@@ -39,9 +39,9 @@ public class AssemblerSingleInstructionCodeGenerator: NSObject {
     
     fileprivate func makeInstructionRRR(opcode: Int, c: Register, a: Register, b: Register) throws -> UInt16 {
         let partOpcode = UInt16((opcode & 0b11111) << kOpcodeShift)
-        let partC = UInt16((c.value & 0b111) << kOperandShiftC)
-        let partA = UInt16((a.value & 0b111) << kOperandShiftA)
-        let partB = UInt16((b.value & 0b111) << kOperandShiftB)
+        let partC = UInt16((c.rawValue & 0b111) << kOperandShiftC)
+        let partA = UInt16((a.rawValue & 0b111) << kOperandShiftA)
+        let partB = UInt16((b.rawValue & 0b111) << kOperandShiftB)
         return partOpcode | partC | partA | partB
     }
     
@@ -53,8 +53,8 @@ public class AssemblerSingleInstructionCodeGenerator: NSObject {
             throw CompilerError(sourceAnchor: sourceAnchor, message: "offset exceeds negative limit of -16: `\(imm)'")
         }
         let partOpcode = UInt16((opcode & 0b11111) << kOpcodeShift)
-        let partC = UInt16((c.value & 0b111) << kOperandShiftC)
-        let partA = UInt16((a.value & 0b111) << kOperandShiftA)
+        let partC = UInt16((c.rawValue & 0b111) << kOperandShiftC)
+        let partA = UInt16((a.rawValue & 0b111) << kOperandShiftA)
         let partImm = UInt16(imm & 0b11111)
         return partOpcode | partC | partA | partImm
     }
@@ -67,7 +67,7 @@ public class AssemblerSingleInstructionCodeGenerator: NSObject {
             throw CompilerError(sourceAnchor: sourceAnchor, message: "offset exceeds negative limit of -128: `\(imm)'")
         }
         let partOpcode = UInt16((opcode & 0b11111) << kOpcodeShift)
-        let partC = UInt16((c.value & 0b111) << kOperandShiftC)
+        let partC = UInt16((c.rawValue & 0b111) << kOperandShiftC)
         let partImm = UInt16(imm & 0b11111111)
         return partOpcode | partC | partImm
     }
@@ -81,7 +81,7 @@ public class AssemblerSingleInstructionCodeGenerator: NSObject {
         }
         
         let partOpcode = UInt16((opcode & 0b11111) << kOpcodeShift)
-        let partC = UInt16((c.value & 0b111) << kOperandShiftC)
+        let partC = UInt16((c.rawValue & 0b111) << kOperandShiftC)
         let partImm = UInt16(imm & 0b11111111)
         return partOpcode | partC | partImm
     }
@@ -95,8 +95,8 @@ public class AssemblerSingleInstructionCodeGenerator: NSObject {
         }
         let partOpcode = UInt16((opcode & 0b11111) << kOpcodeShift)
         let partImmHi = UInt16(((imm & 0b11100) >> 2) << kOperandShiftC)
-        let partA = UInt16((a.value & 0b111) << kOperandShiftA)
-        let partB = UInt16((b.value & 0b111) << kOperandShiftB)
+        let partA = UInt16((a.rawValue & 0b111) << kOperandShiftA)
+        let partB = UInt16((b.rawValue & 0b111) << kOperandShiftB)
         let partImmLo = UInt16(imm & 0b11)
         return partOpcode | partImmHi | partA | partB | partImmLo
     }

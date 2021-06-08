@@ -91,10 +91,8 @@ public class SchematicLevelCPUModel: NSObject, CPU {
     public override init() {
         super.init()
         stageIF.load = {[weak self] (addr: UInt16) in
-            if addr < 1 {
-                return 0
-            } else if (addr-1) < self!.instructions.count {
-                return self!.instructions[Int(addr-1)]
+            if addr < self!.instructions.count {
+                return self!.instructions[Int(addr)]
             } else {
                 return 0
             }

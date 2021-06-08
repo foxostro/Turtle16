@@ -99,7 +99,25 @@ public class Disassembler: NSObject {
         DecoderGenerator.opcodeNot
     ]
     
+    public private(set) var labels: [Int : String] = [:]
+    
+    func labelForTarget(_ target: Int) -> String {
+        if let label = labels[target] {
+            return label
+        }
+        else {
+            let nextLabelIndex = (labels.keys.max() ?? -1) + 1
+            let nextLabel = "L\(nextLabelIndex)"
+            labels[target] = nextLabel
+            return nextLabel
+        }
+    }
+    
     public func disassembleOne(_ ins: UInt16) -> String? {
+        return disassembleOne(pc: nil, ins: ins)
+    }
+    
+    public func disassembleOne(pc maybeProgramCounter: Int?, ins: UInt16) -> String? {
         let opcode: Int = Int((ins & 0b1111100000000000) >> 11)
         let c = Int((ins & 0b0000011100000000) >> 8)
         let regC = Register(rawValue: c)!.description
@@ -115,7 +133,10 @@ public class Disassembler: NSObject {
         let tcImm7_0: Int = (imm7_0 > 127) ? (((~0 >> 8) << 8) | imm7_0) : imm7_0
         let imm10_0 = Int(ins & 0b0000011111111111)
         let tcImm10_0: Int = (imm10_0 > 1023) ? (((~0 >> 11) << 11) | imm10_0) : imm10_0
-        let mnemonic = mnemonics[opcode]!
+        
+        guard let mnemonic = mnemonics[opcode] else {
+            return nil
+        }
         
         if formatX.contains(opcode) {
             return mnemonic
@@ -138,7 +159,14 @@ public class Disassembler: NSObject {
             return "\(mnemonic) \(regC), \(regA), \(regB)"
         }
         else if formatIII.contains(opcode) {
-            return "\(mnemonic) \(tcImm10_0)"
+            if let pc = maybeProgramCounter {
+                let target = pc + tcImm10_0 + 2
+                let label = labelForTarget(target)
+                return "\(mnemonic) \(label)"
+            }
+            else {
+                return "\(mnemonic) \(tcImm10_0)"
+            }
         }
         else if formatXRI.contains(opcode) {
             return "\(mnemonic) \(regA), \(tcImm5_0)"
@@ -150,7 +178,17 @@ public class Disassembler: NSObject {
             return "\(mnemonic) \(regC), \(regA)"
         }
         else {
-            return nil
+            fatalError("unimplemented")
         }
+    }
+    
+    public func disassemble(_ program: [UInt16]) -> [String] {
+        var result: [String] = []
+        for pc in 0..<program.count {
+            let ins = program[pc]
+            let oneLine = disassembleOne(pc: pc, ins: ins) ?? ""
+            result.append(oneLine)
+        }
+        return result
     }
 }

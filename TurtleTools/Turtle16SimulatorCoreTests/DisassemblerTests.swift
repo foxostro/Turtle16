@@ -159,4 +159,142 @@ class DisassemblerTests: XCTestCase {
         let disassembler = Disassembler()
         XCTAssertEqual(disassembler.disassembleOne(0b1101001111111111), "BLT 1023")
     }
+    
+    func testCreateLabelForJumpInstruction1() throws {
+        let disassembler = Disassembler()
+        XCTAssertEqual(disassembler.disassembleOne(pc: 0, ins: 0b1010011111111110), "JMP L0")
+        XCTAssertEqual(disassembler.labels, [
+            0 : "L0"
+        ])
+    }
+    
+    func testCreateLabelForJumpInstruction2() throws {
+        let disassembler = Disassembler()
+        XCTAssertEqual(disassembler.disassembleOne(pc: 0, ins: 0b1010011111111110), "JMP L0")
+        XCTAssertEqual(disassembler.disassembleOne(pc: 1, ins: 0b1010011111111101), "JMP L0")
+        XCTAssertEqual(disassembler.labels, [
+            0 : "L0"
+        ])
+    }
+    
+    func testCreateLabelForJumpInstruction3() throws {
+        let disassembler = Disassembler()
+        XCTAssertEqual(disassembler.disassembleOne(pc: 0, ins: 0b1010011111111110), "JMP L0")
+        XCTAssertEqual(disassembler.disassembleOne(pc: 1, ins: 0b1010011111111110), "JMP L1")
+        XCTAssertEqual(disassembler.disassembleOne(pc: 2, ins: 0b1010011111111110), "JMP L2")
+        XCTAssertEqual(disassembler.labels, [
+            0 : "L0",
+            1 : "L1",
+            2 : "L2"
+        ])
+    }
+    
+    func testCreateLabelForJumpInstruction4() throws {
+        let disassembler = Disassembler()
+        XCTAssertEqual(disassembler.disassembleOne(pc: 0, ins: 0b1010011111111110), "JMP L0")
+        XCTAssertEqual(disassembler.disassembleOne(pc: 1, ins: 0b1010011111111110), "JMP L1")
+        XCTAssertEqual(disassembler.disassembleOne(pc: 2, ins: 0b1010011111111101), "JMP L1")
+        XCTAssertEqual(disassembler.labels, [
+            0 : "L0",
+            1 : "L1"
+        ])
+    }
+    
+    func testDisassembleSeveralInstructions() throws {
+        let disassembler = Disassembler()
+        let program: [UInt16] = [
+            0b0010000000000000, // LI r0, 0
+            0b0010000100000001, // LI r1, 1
+            0b0010011100000000, // LI r7, 0
+            0b0011101000000100, // ADD r2, r0, r1
+            0b0111000000100000, // ADDI r0, r1, 0
+            0b0111011111100001, // ADDI r7, r7, 1
+            0b0111000101000000, // ADDI r1, r2, 0
+            0b0110100011101001, // CMPI r7, 9
+            0b0000100000000000, // HLT
+        ]
+        let result = disassembler.disassemble(program).joined(separator: "\n")
+        XCTAssertEqual(result, """
+LI r0, 0
+LI r1, 1
+LI r7, 0
+ADD r2, r0, r1
+ADDI r0, r1, 0
+ADDI r7, r7, 1
+ADDI r1, r2, 0
+CMPI r7, 9
+HLT
+""")
+        XCTAssertEqual(disassembler.labels, [:])
+    }
+    
+    func testDisassembleSeveralInstructionsWithLabels() throws {
+        let disassembler = Disassembler()
+        let program: [UInt16] = [
+            0b0010000000000000, // LI r0, 0
+            0b0010000100000001, // LI r1, 1
+            0b0010011100000000, // LI r7, 0
+            0b0011101000000100, // ADD r2, r0, r1
+            0b0111000000100000, // ADDI r0, r1, 0
+            0b0111011111100001, // ADDI r7, r7, 1
+            0b0111000101000000, // ADDI r1, r2, 0
+            0b0110100011101001, // CMPI r7, 9
+            0b1101011111111001, // BLT -7
+            0b0000100000000000, // HLT
+        ]
+        let result = disassembler.disassemble(program).joined(separator: "\n")
+        XCTAssertEqual(result, """
+LI r0, 0
+LI r1, 1
+LI r7, 0
+ADD r2, r0, r1
+ADDI r0, r1, 0
+ADDI r7, r7, 1
+ADDI r1, r2, 0
+CMPI r7, 9
+BLT L0
+HLT
+""")
+        XCTAssertEqual(disassembler.labels, [
+            3 : "L0"
+        ])
+    }
+    
+    func testDisassembleBadInstruction_Opcode19() throws {
+        let disassembler = Disassembler()
+        XCTAssertEqual(disassembler.disassembleOne(0b1001101111111111), nil)
+    }
+    
+    func testDisassembleBadInstruction_Opcode23() throws {
+        let disassembler = Disassembler()
+        XCTAssertEqual(disassembler.disassembleOne(0b1011101111111111), nil)
+    }
+    
+    func testDisassembleSeveralInstructionsWithBadInstruction() throws {
+        let disassembler = Disassembler()
+        let program: [UInt16] = [
+            0b0010000000000000, // LI r0, 0
+            0b0010000100000001, // LI r1, 1
+            0b0010011100000000, // LI r7, 0
+            0b0011101000000100, // ADD r2, r0, r1
+            0b0111000000100000, // ADDI r0, r1, 0
+            0b0111011111100001, // ADDI r7, r7, 1
+            0b0111000101000000, // ADDI r1, r2, 0
+            0b1011101111111111, // 0xBBFF
+            0b0000100000000000, // HLT
+        ]
+        let result = disassembler.disassemble(program).joined(separator: "\n")
+        XCTAssertEqual(result, """
+LI r0, 0
+LI r1, 1
+LI r7, 0
+ADD r2, r0, r1
+ADDI r0, r1, 0
+ADDI r7, r7, 1
+ADDI r1, r2, 0
+
+HLT
+""")
+        XCTAssertEqual(disassembler.labels, [:])
+    }
 }

@@ -18,13 +18,24 @@ class DebugConsoleCommandLineInterpreterTests: XCTestCase {
         XCTAssertTrue(interpreter.shouldQuit)
     }
     
-    func testReset() throws {
+    func testResetSoft() throws {
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         computer.reset()
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         computer.cpu.pc = 1000
-        interpreter.runOne(instruction: .reset)
+        interpreter.runOne(instruction: .reset(type: .soft))
         XCTAssertEqual(computer.cpu.pc, 0)
+    }
+    
+    func testResetHard() throws {
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        computer.reset()
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        computer.cpu.pc = 1000
+        computer.setRegister(0, 0xffff)
+        interpreter.runOne(instruction: .reset(type: .hard))
+        XCTAssertEqual(computer.cpu.pc, 0)
+        XCTAssertEqual(computer.cpu.getRegister(0), 0)
     }
     
     func testStepOnce() throws {
@@ -374,7 +385,7 @@ Syntax: writememi <address> <word> [<word>...]
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
-            .reset,
+            .reset(type: .soft),
             .writeInstructions(base: 0, words: [
                 0b0010000000000000, // LI r0, #0
                 0b0010000100000001, // LI r1, #1
@@ -423,7 +434,7 @@ The file doesn’t exist.
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
-            .reset,
+            .reset(type: .soft),
             .load("program", url),
             .run,
             .info("cpu")
@@ -448,7 +459,7 @@ pc: 0x000d
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
-            .reset,
+            .reset(type: .soft),
             .load("program_hi", url)
         ])
         let gold = try! Data(contentsOf: url)
@@ -463,7 +474,7 @@ pc: 0x000d
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
-            .reset,
+            .reset(type: .soft),
             .load("program_lo", url)
         ])
         let gold = try! Data(contentsOf: url)
@@ -546,7 +557,7 @@ Syntax: load <destination> "<path>"
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
-            .reset,
+            .reset(type: .soft),
             .load("program", url),
             .save("program", tempUrl)
         ])
@@ -568,7 +579,7 @@ Syntax: load <destination> "<path>"
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
-            .reset,
+            .reset(type: .soft),
             .load("program", url),
             .save("program_hi", tempUrl)
         ])
@@ -591,7 +602,7 @@ Syntax: load <destination> "<path>"
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
-            .reset,
+            .reset(type: .soft),
             .load("program", url),
             .save("program_lo", tempUrl)
         ])
@@ -614,7 +625,7 @@ Syntax: load <destination> "<path>"
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
-            .reset,
+            .reset(type: .soft),
             .load("data", url),
             .save("data", tempUrl)
         ])
@@ -636,7 +647,7 @@ Syntax: load <destination> "<path>"
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
-            .reset,
+            .reset(type: .soft),
             .load("OpcodeDecodeROM1", url),
             .save("OpcodeDecodeROM1", tempUrl)
         ])
@@ -658,7 +669,7 @@ Syntax: load <destination> "<path>"
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
-            .reset,
+            .reset(type: .soft),
             .load("OpcodeDecodeROM2", url),
             .save("OpcodeDecodeROM2", tempUrl)
         ])
@@ -680,7 +691,7 @@ Syntax: load <destination> "<path>"
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
-            .reset,
+            .reset(type: .soft),
             .load("OpcodeDecodeROM3", url),
             .save("OpcodeDecodeROM3", tempUrl)
         ])

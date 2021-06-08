@@ -46,15 +46,15 @@ public class SchematicLevelCPUModel: NSObject, CPU {
     public var z: UInt = 0
     public var ovf: UInt = 0
     
-    public let numberOfRegisters = 7
+    public let numberOfRegisters = 8
     
     public func setRegister(_ idx: Int, _ val: UInt16) {
-        assert(idx >= 0 && idx <= numberOfRegisters)
+        assert(idx >= 0 && idx < numberOfRegisters)
         stageID.registerFile[idx] = val
     }
     
     public func getRegister(_ idx: Int) -> UInt16 {
-        assert(idx >= 0 && idx <= numberOfRegisters)
+        assert(idx >= 0 && idx < numberOfRegisters)
         return stageID.registerFile[idx]
     }
     

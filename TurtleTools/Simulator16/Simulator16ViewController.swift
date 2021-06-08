@@ -34,7 +34,7 @@ class Simulator16ViewController: NSViewController {
     fileprivate func loadExampleProgram() {
         let url = Bundle(for: type(of: self)).url(forResource: "example", withExtension: "bin")!
         debugger.interpreter.run(instructions: [
-            .reset,
+            .reset(type: .soft),
             .load("program", url)
         ])
     }

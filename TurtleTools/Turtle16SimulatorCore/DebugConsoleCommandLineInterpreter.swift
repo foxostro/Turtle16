@@ -39,8 +39,8 @@ public class DebugConsoleCommandLineInterpreter: NSObject {
         case .quit:
             shouldQuit = true
             
-        case .reset:
-            computer.reset()
+        case .reset(let type):
+            computer.reset(type)
             
         case .run:
             computer.run()

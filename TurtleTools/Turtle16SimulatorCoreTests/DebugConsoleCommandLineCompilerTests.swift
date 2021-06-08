@@ -220,16 +220,48 @@ class DebugConsoleCommandLineCompilerTests: XCTestCase {
         let compiler = DebugConsoleCommandLineCompiler()
         compiler.compile("reset")
         XCTAssertFalse(compiler.hasError)
-        XCTAssertEqual(compiler.instructions, [.reset])
+        XCTAssertEqual(compiler.instructions, [.reset(type: .soft)])
     }
     
-    func testResetTakesNoParameters() throws {
+    func testResetTakesZeroOrOneParameter() throws {
         let compiler = DebugConsoleCommandLineCompiler()
-        compiler.compile("reset abcd")
+        compiler.compile("reset abcd efgh")
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "instruction takes no parameters: `reset'")
-        XCTAssertEqual(compiler.errors.first?.context, "\treset abcd\n\t      ^~~~")
+        XCTAssertEqual(compiler.errors.first?.message, "instruction takes zero or one parameters: `reset'")
+        XCTAssertEqual(compiler.errors.first?.context, "\treset abcd efgh\n\t           ^~~~")
+    }
+    
+    func testResetSoft() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("reset soft")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.reset(type: .soft)])
+    }
+    
+    func testResetHard() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("reset hard")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.reset(type: .hard)])
+    }
+    
+    func testResetOtherIdentifier() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("reset foo")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "expected parameter to specify either a `soft' or `hard' reset: `foo'")
+        XCTAssertEqual(compiler.errors.first?.context, "\treset foo\n\t      ^~~")
+    }
+    
+    func testResetOtherTypeOfParameter() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("reset 1")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "expected parameter to specify either a `soft' or `hard' reset: `1'")
+        XCTAssertEqual(compiler.errors.first?.context, "\treset 1\n\t      ^")
     }
     
     func testRegisters_R_TakesNoParameters() throws {

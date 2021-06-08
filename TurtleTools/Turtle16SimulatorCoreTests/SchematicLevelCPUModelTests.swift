@@ -2190,4 +2190,47 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.run(stepLimit: 87)
         XCTAssertEqual(cpu.getRegister(2), 55)
     }
+    
+    func testDemonstrateBugInHazardControlStallingOnStoreOp_LI() {
+        // There is a bug in the hazard control unit where an instruction will
+        // be incorrectly determined to introduce a RAW hazard in the StoreOp
+        // case. The issue is that the hazard control unit will always assume
+        // the instruction's A and B bit fields are used to indicate register
+        // indices, but this is only sometimes true. For example, ALU
+        // instructions which use an immediate operand, such as ADDI will reuse
+        // the bits of the B field to specify an immediate value. Likewise, the
+        // LI instruction will reuse the bits of the A and B fields to specify
+        // an immediate value.
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [
+            0b0000000000000000, // NOP
+            0b0010000000000000, // LI r0, 0
+            0b0000000000000000, // NOP
+            0b0010011100000000, // LI r7, 0
+        ]
+        cpu.reset()
+        cpu.step()
+        cpu.step()
+        cpu.step()
+        cpu.step()
+        XCTAssertTrue(cpu.isStalling)
+    }
+    
+    func testDemonstrateBugInHazardControlStallingOnStoreOp_ADDI() {
+        // See comment in testDemonstrateBugInHazardControlStallingOnStoreOp_LI
+        // for detailed description of this hardware bug.
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [
+            0b0000000000000000, // NOP
+            0b0010000000000000, // LI r0, 0
+            0b0000000000000000, // NOP
+            0b0111000000100000, // ADDI r0, r1, 0
+        ]
+        cpu.reset()
+        cpu.step()
+        cpu.step()
+        cpu.step()
+        cpu.step()
+        XCTAssertTrue(cpu.isStalling)
+    }
 }

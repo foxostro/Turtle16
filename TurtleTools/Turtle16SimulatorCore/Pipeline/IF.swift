@@ -32,16 +32,26 @@ public class IF: NSObject {
     public struct Output {
         public let ins: UInt16
         public let pc: UInt16
+        public let associatedPC: UInt16?
         
-        public init(ins: UInt16, pc: UInt16) {
+        public init(ins: UInt16, pc: UInt16, associatedPC: UInt16? = nil) {
             self.ins = ins
             self.pc = pc
+            self.associatedPC = associatedPC
+        }
+        
+        public var description: String {
+            let strIns = String(format: "%04x", ins)
+            let strPC = String(format: "%04x", pc)
+            return "ins: \(strIns), pc: \(strPC)"
         }
     }
     
     public var alu = IDT7831()
     public var prevPC: UInt16 = 0
     public var prevIns: UInt16 = 0
+    public var prevAssociatedPC: UInt16? = nil
+    public var associatedPC: UInt16? = nil
     
     public var load: (UInt16) -> UInt16 = {(addr: UInt16) in
         return 0xffff // bogus
@@ -54,9 +64,21 @@ public class IF: NSObject {
         let pc = (input.stall==0) ? aluOutput.f! : prevPC
         let nextIns = (input.j==0) ? 0 : load(prevPC)
         let ins = (input.stall==0) ? nextIns : prevIns
+        
+        if input.j == 0 {
+            associatedPC = nil
+        }
+        else if input.stall == 1 {
+            associatedPC = prevAssociatedPC
+        }
+        else {
+            associatedPC = prevPC
+        }
+        
         prevPC = pc
         prevIns = ins
-        return Output(ins: ins, pc: pc)
+        prevAssociatedPC = associatedPC
+        return Output(ins: ins, pc: pc, associatedPC: associatedPC)
     }
     
     public func driveALU(input: Input) -> IDT7831.Input {

@@ -92,11 +92,6 @@ public class DebugConsoleCommandLineInterpreter: NSObject {
         }
     }
     
-    fileprivate func run() {
-        computer.run()
-        logger.append("cpu is halted\n")
-    }
-    
     fileprivate func step(count: Int) {
         for _ in 0..<count {
             if computer.isHalted {
@@ -105,6 +100,14 @@ public class DebugConsoleCommandLineInterpreter: NSObject {
             } else {
                 computer.step()
             }
+        }
+    }
+    
+    fileprivate func printPipelineStatus() {
+        for i in 0..<computer.cpu.numberOfPipelineStages {
+            let info = computer.cpu.getPipelineStageInfo(i)
+            let pc = String(format: "%04x", info.pc ?? 0)
+            logger.append("\(info.name)\t\(pc)\t\(info.status)\n")
         }
     }
     
@@ -144,7 +147,12 @@ isResetting: \(computer.isResetting)
 
 
 """)
+        
+        printPipelineStatus()
+        logger.append("\n")
+        
         printRegisters()
+        logger.append("\n")
     }
     
     fileprivate func printMemoryContents(array: [UInt16], base: UInt16, count: UInt) {

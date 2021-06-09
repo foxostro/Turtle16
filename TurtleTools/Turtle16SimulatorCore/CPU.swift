@@ -8,6 +8,12 @@
 
 import Foundation
 
+public struct PipelineStageInfo {
+    public let name: String
+    public let pc: UInt16?
+    public let status: String
+}
+
 // Provides an abstract interface to a model of the Turtle16 CPU.
 public protocol CPU: NSObject {
     var timeStamp: UInt { get }
@@ -27,6 +33,9 @@ public protocol CPU: NSObject {
     var numberOfRegisters: Int { get }
     func setRegister(_ idx: Int, _ val: UInt16)
     func getRegister(_ idx: Int) -> UInt16
+    
+    var numberOfPipelineStages: Int { get }
+    func getPipelineStageInfo(_ idx: Int) -> PipelineStageInfo
     
     func reset()
     func run()

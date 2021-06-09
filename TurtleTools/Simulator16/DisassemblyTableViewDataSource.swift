@@ -11,7 +11,6 @@ import Turtle16SimulatorCore
 
 class DisassemblyTableViewDataSource: NSObject, NSTableViewDataSource {
     public let computer: Turtle16Computer
-    public private(set) var disassembly: [Disassembler.Entry] = []
     
     let kNumberOfRows = 65535
     let kAddressIdentifier = NSUserInterfaceItemIdentifier("Address")
@@ -22,7 +21,6 @@ class DisassemblyTableViewDataSource: NSObject, NSTableViewDataSource {
     public init(computer: Turtle16Computer) {
         self.computer = computer
         super.init()
-        regenerateDisassembly()
     }
     
     public func tableView(_ tableView: NSTableView,
@@ -36,13 +34,15 @@ class DisassemblyTableViewDataSource: NSObject, NSTableViewDataSource {
             return String(format: "%04x", computer.instructions[row])
             
         case kLabelIdentifier:
-            if row < disassembly.count, let label = disassembly[row].label {
+            let entries = computer.disassembly.entries
+            if row < entries.count, let label = entries[row].label {
                 return label + ":"
             }
             return ""
             
         case kMnemonicIdentifier:
-            if row < disassembly.count, let mnemonic = disassembly[row].mnemonic {
+            let entries = computer.disassembly.entries
+            if row < entries.count, let mnemonic = entries[row].mnemonic {
                 return mnemonic
             }
             return ""
@@ -54,10 +54,5 @@ class DisassemblyTableViewDataSource: NSObject, NSTableViewDataSource {
     
     func numberOfRows(in tableView: NSTableView) -> Int {
         return kNumberOfRows
-    }
-    
-    func regenerateDisassembly() {
-        let disassembler = Disassembler()
-        disassembly = disassembler.disassemble(computer.instructions)
     }
 }

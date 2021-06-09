@@ -13,12 +13,15 @@ import Foundation
 // Classes in the simulator intentionally model specific pieces of hardware,
 // following naming conventions and organization that matches the schematics.
 public class EX: NSObject {
+    public var associatedPC: UInt16? = nil
+    
     public struct Input {
         public let pc: UInt16
         public let ctl: UInt
         public let a: UInt16
         public let b: UInt16
         public let ins: UInt
+        public let associatedPC: UInt16?
         
         public init(ins: UInt) {
             self.pc = 0
@@ -26,6 +29,7 @@ public class EX: NSObject {
             self.a = 0
             self.b = 0
             self.ins = ins
+            self.associatedPC = nil
         }
         
         public init(ins: UInt, b: UInt16, ctl: UInt) {
@@ -34,6 +38,7 @@ public class EX: NSObject {
             self.a = 0
             self.b = b
             self.ins = ins
+            self.associatedPC = nil
         }
         
         public init(ins: UInt, b: UInt16, pc: UInt16, ctl: UInt) {
@@ -42,6 +47,7 @@ public class EX: NSObject {
             self.a = 0
             self.b = b
             self.ins = ins
+            self.associatedPC = nil
         }
         
         public init(ctl: UInt) {
@@ -50,6 +56,7 @@ public class EX: NSObject {
             self.a = 0
             self.b = 0
             self.ins = 0
+            self.associatedPC = nil
         }
         
         public init(a: UInt16, b: UInt16, ctl: UInt) {
@@ -58,14 +65,16 @@ public class EX: NSObject {
             self.a = a
             self.b = b
             self.ins = 0
+            self.associatedPC = nil
         }
         
-        public init(pc: UInt16, ctl: UInt, a: UInt16, b: UInt16, ins: UInt) {
+        public init(pc: UInt16, ctl: UInt, a: UInt16, b: UInt16, ins: UInt, associatedPC: UInt16? = nil) {
             self.pc = pc
             self.ctl = ctl
             self.a = a
             self.b = b
             self.ins = ins
+            self.associatedPC = associatedPC
         }
     }
     
@@ -80,8 +89,9 @@ public class EX: NSObject {
         public let storeOp: UInt16
         public let ctl: UInt
         public let selC: UInt
+        public let associatedPC: UInt16?
         
-        public init(carry: UInt, z: UInt, ovf: UInt, j: UInt, jabs: UInt, y: UInt16, hlt: UInt, storeOp: UInt16, ctl: UInt, selC: UInt) {
+        public init(carry: UInt, z: UInt, ovf: UInt, j: UInt, jabs: UInt, y: UInt16, hlt: UInt, storeOp: UInt16, ctl: UInt, selC: UInt, associatedPC: UInt16? = nil) {
             self.carry = carry
             self.z = z
             self.ovf = ovf
@@ -92,6 +102,17 @@ public class EX: NSObject {
             self.storeOp = storeOp
             self.ctl = ctl
             self.selC = selC
+            self.associatedPC = associatedPC
+        }
+        
+        public var description: String {
+            let c = (self.carry==0) ? "c" : "C"
+            let z = (self.z==0) ? "z" : "Z"
+            let o = (self.ovf==0) ? "o" : "O"
+            let j = (self.j==0) ? "J" : "j"
+            let a = (self.jabs==0) ? "A" : "a"
+            let h = (self.hlt==0) ? "H" : "h"
+            return "\(c)\(z)\(o)\(j)\(a)\(h), y: \(String(format: "%04x", y)), storeOp: \(String(format: "%04x", storeOp)), ctl: \(String(format: "%x", ctl)), selC: \(selC)"
         }
     }
     
@@ -122,6 +143,7 @@ public class EX: NSObject {
                                                       ftf: 1,
                                                       oe: 0))
         let storeOp = selectStoreOperand(input: input)
+        associatedPC = input.associatedPC
         return Output(carry: aluOutput.c16,
                       z: aluOutput.z,
                       ovf: aluOutput.ovf,
@@ -131,7 +153,8 @@ public class EX: NSObject {
                       hlt: hlt,
                       storeOp: storeOp,
                       ctl: input.ctl,
-                      selC: splitOutSelC(input: input))
+                      selC: splitOutSelC(input: input),
+                      associatedPC: associatedPC)
     }
     
     public func splitOutSelC(input: Input) -> UInt {
@@ -162,8 +185,8 @@ public class EX: NSObject {
             }
             return val
         default:
-            assert(false) // unreachable
-            abort()
+            assert(false)
+            fatalError("unreachable")
         }
     }
     
@@ -181,14 +204,11 @@ public class EX: NSObject {
             }
             return val
         case 0b11:
-            var val = UInt16(UInt16(input.ins & 0xff) << 8) & 0xffff
-            if (val & (1<<7)) != 0 {
-                val = val | 0b1111111100000000
-            }
+            let val = UInt16(UInt16(input.ins & 0xff) << 8) & 0xff00
             return val
         default:
             assert(false) // unreachable
-            abort()
+            fatalError("unreachable")
         }
     }
 }

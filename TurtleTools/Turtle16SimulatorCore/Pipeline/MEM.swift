@@ -13,19 +13,23 @@ import Foundation
 // Classes in the simulator intentionally model specific pieces of hardware,
 // following naming conventions and organization that matches the schematics.
 public class MEM: NSObject {
+    public var associatedPC: UInt16? = nil
+    
     public struct Input {
         public let rdy: UInt
         public let y: UInt16
         public let storeOp: UInt16
         public let selC: UInt
         public let ctl: UInt
+        public let associatedPC: UInt16?
         
-        public init(rdy: UInt, y: UInt16, storeOp: UInt16, selC: UInt, ctl: UInt) {
+        public init(rdy: UInt, y: UInt16, storeOp: UInt16, selC: UInt, ctl: UInt, associatedPC: UInt16? = nil) {
             self.rdy = rdy
             self.y = y
             self.storeOp = storeOp
             self.selC = selC
             self.ctl = ctl
+            self.associatedPC = associatedPC
         }
     }
     
@@ -34,6 +38,19 @@ public class MEM: NSObject {
         public let storeOp: UInt16
         public let selC: UInt
         public let ctl: UInt
+        public let associatedPC: UInt16?
+        
+        public init(y: UInt16, storeOp: UInt16, selC: UInt, ctl: UInt, associatedPC: UInt16? = nil) {
+            self.y = y
+            self.storeOp = storeOp
+            self.selC = selC
+            self.ctl = ctl
+            self.associatedPC = associatedPC
+        }
+        
+        public var description: String {
+            return "y: \(String(format: "%04x", y)), storeOp: \(String(format: "%04x", storeOp)), selC: \(selC), ctl: \(String(format: "%x", ctl))"
+        }
     }
     
     public var load: (UInt16) -> UInt16 = {(addr: UInt16) in
@@ -61,6 +78,7 @@ public class MEM: NSObject {
                 storeOp = load(input.y)
             }
         }
-        return Output(y: input.y, storeOp: storeOp, selC: input.selC, ctl: input.ctl)
+        associatedPC = input.associatedPC
+        return Output(y: input.y, storeOp: storeOp, selC: input.selC, ctl: input.ctl, associatedPC: associatedPC)
     }
 }

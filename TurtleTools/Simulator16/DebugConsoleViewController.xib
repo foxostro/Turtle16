@@ -96,7 +96,7 @@
                     </beginningViews>
                     <middleViews>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3bZ-u0-aAL">
-                            <rect key="frame" x="226" y="0.0" width="41" height="10"/>
+                            <rect key="frame" x="225" y="0.0" width="41" height="10"/>
                             <textFieldCell key="cell" lineBreakMode="clipping" title="t=12345" id="ENq-h1-xqA">
                                 <font key="font" metaFont="miniSystem"/>
                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>

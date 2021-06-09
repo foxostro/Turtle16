@@ -63,6 +63,7 @@ public class Turtle16Computer: NSObject {
     public var instructions: [UInt16] {
         set(instructions) {
             cpu.instructions = instructions
+            cachedDisassembly = nil
         }
         get {
             cpu.instructions
@@ -112,5 +113,22 @@ public class Turtle16Computer: NSObject {
     
     public func step() {
         cpu.step()
+    }
+    
+    public struct Disassembly {
+        public let labels: [Int : String]
+        public let entries: [Disassembler.Entry]
+    }
+    
+    fileprivate var cachedDisassembly: Disassembly? = nil
+    
+    public var disassembly: Disassembly {
+        if nil == cachedDisassembly {
+            let disassembler = Disassembler()
+            let entries = disassembler.disassemble(cpu.instructions)
+            let labels = disassembler.labels
+            cachedDisassembly = Disassembly(labels: labels, entries: entries)
+        }
+        return cachedDisassembly!
     }
 }

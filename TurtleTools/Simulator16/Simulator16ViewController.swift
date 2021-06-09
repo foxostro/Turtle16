@@ -12,11 +12,13 @@ import Turtle16SimulatorCore
 
 class Simulator16ViewController: NSViewController {
     @IBOutlet var registersContainerView: NSView!
+    @IBOutlet var pipelineContainerView: NSView!
     @IBOutlet var disassemblyContainerView: NSView!
     @IBOutlet var memoryContainerView: NSView!
     @IBOutlet var debugConsoleContainerView: NSView!
     
     public var registersViewController: RegistersViewController!
+    public var pipelineViewController: PipelineViewController!
     public var disassemblyViewController: DisassemblyViewController!
     public var memoryViewController: MemoryViewController!
     public var debugConsoleViewController: DebugConsoleViewController!
@@ -72,6 +74,39 @@ class Simulator16ViewController: NSViewController {
                                attribute: .bottom,
                                relatedBy: .equal,
                                toItem: registersContainerView,
+                               attribute: .bottom,
+                               multiplier: 1,
+                               constant: 0)
+        ])
+        
+        pipelineViewController = PipelineViewController(computer: debugger.computer)
+        pipelineContainerView.addSubview(pipelineViewController.view)
+        view.addConstraints([
+            NSLayoutConstraint(item: pipelineViewController.view,
+                               attribute: .left,
+                               relatedBy: .equal,
+                               toItem: pipelineContainerView,
+                               attribute: .left,
+                               multiplier: 1,
+                               constant: 0),
+                NSLayoutConstraint(item: pipelineViewController.view,
+                                   attribute: .right,
+                                   relatedBy: .equal,
+                                   toItem: pipelineContainerView,
+                                   attribute: .right,
+                                   multiplier: 1,
+                                   constant: 0),
+            NSLayoutConstraint(item: pipelineViewController.view,
+                               attribute: .top,
+                               relatedBy: .equal,
+                               toItem: pipelineContainerView,
+                               attribute: .top,
+                               multiplier: 1,
+                               constant: 0),
+            NSLayoutConstraint(item: pipelineViewController.view,
+                               attribute: .bottom,
+                               relatedBy: .equal,
+                               toItem: pipelineContainerView,
                                attribute: .bottom,
                                multiplier: 1,
                                constant: 0)
@@ -190,6 +225,10 @@ class Simulator16ViewController: NSViewController {
         registersContainerView.isHidden = !registersContainerView.isHidden
     }
     
+    @IBAction func togglePipeline(_ sender: Any) {
+        pipelineContainerView.isHidden = !pipelineContainerView.isHidden
+    }
+    
     @IBAction func toggleDisassembly(_ sender: Any) {
         disassemblyContainerView.isHidden = !disassemblyContainerView.isHidden
     }
@@ -206,15 +245,19 @@ class Simulator16ViewController: NSViewController {
             
         case #selector(toggleRegisters):
             menuItem.state = registersContainerView.isHidden ? .off : .on
-            return !(disassemblyContainerView.isHidden && memoryContainerView.isHidden)
+            return !(pipelineContainerView.isHidden && disassemblyContainerView.isHidden && memoryContainerView.isHidden)
+            
+        case #selector(togglePipeline):
+            menuItem.state = pipelineContainerView.isHidden ? .off : .on
+            return !(registersContainerView.isHidden && disassemblyContainerView.isHidden && memoryContainerView.isHidden)
         
         case #selector(toggleDisassembly):
             menuItem.state = disassemblyContainerView.isHidden ? .off : .on
-            return !(registersContainerView.isHidden && memoryContainerView.isHidden)
+            return !(pipelineContainerView.isHidden && registersContainerView.isHidden && memoryContainerView.isHidden)
         
         case #selector(toggleMemory):
             menuItem.state = memoryContainerView.isHidden ? .off : .on
-            return !(registersContainerView.isHidden && disassemblyContainerView.isHidden)
+            return !(pipelineContainerView.isHidden && registersContainerView.isHidden && disassemblyContainerView.isHidden)
         
         default:
             return true

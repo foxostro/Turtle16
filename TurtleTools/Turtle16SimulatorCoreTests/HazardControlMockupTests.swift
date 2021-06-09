@@ -19,7 +19,7 @@ class HazardControlMockupTests: XCTestCase {
         let ins: UInt16 = UInt16(hltOpcode << 11)
         let unit = makeHazardControl()
         let output = unit.step(input: ID.Input(ins: ins, j: 0))
-        XCTAssertEqual(output.stall, 0)
+        XCTAssertEqual(output.flush, 1)
     }
     
     func testOperandForwarding_Forward_Y_EX_Instead_Of_rA() throws {

@@ -370,12 +370,17 @@
                                                 <action selector="toggleRegisters:" target="Ady-hI-5gd" id="7AN-cp-h9c"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Show Disassembly" state="on" keyEquivalent="2" id="9g8-nR-Jqy">
+                                        <menuItem title="Show Pipeline" state="on" keyEquivalent="2" id="6Xh-PS-FJn">
+                                            <connections>
+                                                <action selector="togglePipeline:" target="Ady-hI-5gd" id="WFO-dF-mmm"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Show Disassembly" state="on" keyEquivalent="3" id="9g8-nR-Jqy">
                                             <connections>
                                                 <action selector="toggleDisassembly:" target="Ady-hI-5gd" id="uNY-MY-bo1"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Show Memory" state="on" keyEquivalent="3" id="YJ0-Hg-JVx">
+                                        <menuItem title="Show Memory" state="on" keyEquivalent="4" id="YJ0-Hg-JVx">
                                             <connections>
                                                 <action selector="toggleMemory:" target="Ady-hI-5gd" id="kBx-Ul-FaU"/>
                                             </connections>
@@ -476,19 +481,24 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <subviews>
                                             <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hRa-6l-xqw" userLabel="Registers Container View">
-                                                <rect key="frame" x="0.0" y="0.0" width="141" height="199"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="173" height="199"/>
                                                 <autoresizingMask key="autoresizingMask"/>
+                                            </customView>
+                                            <customView fixedFrame="YES" id="Eid-hn-Nze">
+                                                <rect key="frame" x="174" y="0.0" width="149" height="199"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             </customView>
                                             <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uNi-Ec-F1Q">
-                                                <rect key="frame" x="142" y="0.0" width="121" height="199"/>
+                                                <rect key="frame" x="324" y="0.0" width="148" height="199"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </customView>
-                                            <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OZK-Aq-xAC" userLabel="Memory Container View">
-                                                <rect key="frame" x="264" y="0.0" width="209" height="199"/>
+                                            <customView hidden="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OZK-Aq-xAC" userLabel="Memory Container View">
+                                                <rect key="frame" x="350" y="0.0" width="123" height="199"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </customView>
                                         </subviews>
                                         <holdingPriorities>
+                                            <real value="250"/>
                                             <real value="250"/>
                                             <real value="250"/>
                                             <real value="250"/>
@@ -516,6 +526,7 @@
                         <outlet property="debugConsoleContainerView" destination="NIV-bv-NUl" id="wlV-94-QrO"/>
                         <outlet property="disassemblyContainerView" destination="uNi-Ec-F1Q" id="CRB-q6-qVQ"/>
                         <outlet property="memoryContainerView" destination="OZK-Aq-xAC" id="Ctc-t2-VZF"/>
+                        <outlet property="pipelineContainerView" destination="Eid-hn-Nze" id="fT2-Yg-CNf"/>
                         <outlet property="registersContainerView" destination="hRa-6l-xqw" id="yLv-dw-4kt"/>
                     </connections>
                 </viewController>

@@ -150,11 +150,18 @@ isStalling: false
 isHalted: false
 isResetting: true
 
+IF\t0000\tins: 0000, pc: 0000
+ID\t0000\tstall: 0, ctl_EX: 1fffff, a: 0000, b: 0000, ins: 0000
+EX\t0000\tczojah, y: 0000, storeOp: 0000, ctl: 1fffff, selC: 0
+MEM\t0000\ty: 0000, storeOp: 0000, selC: 0, ctl: 1fffff
+WB\t0000\tc: 0000, wrl: 1, wrh: 1, wben: 1
+
 r0: 0x0000\tr4: 0x0004
 r1: 0x0001\tr5: 0x0005
 r2: 0x0002\tr6: 0x0006
 r3: 0x0003\tr7: 0x0007
 pc: 0xabcd
+
 
 """)
     }
@@ -444,11 +451,18 @@ isStalling: false
 isHalted: true
 isResetting: false
 
+IF\t000c\tins: 0000, pc: 000d
+ID\t000b\tstall: 0, ctl_EX: 1fffff, a: 0022, b: 0022, ins: 0000
+EX\t000a\tczOjaH, y: ffff, storeOp: 0000, ctl: 1ffffe, selC: 0
+MEM\t0009\ty: ffff, storeOp: 0000, selC: 7, ctl: 1fffff
+WB\t0000\tc: 0000, wrl: 1, wrh: 1, wben: 1
+
 r0: 0x0022\tr4: 0x0000
 r1: 0x0037\tr5: 0x0000
 r2: 0x0037\tr6: 0x0000
 r3: 0x0000\tr7: 0x0009
 pc: 0x000d
+
 
 """)
     }
@@ -483,11 +497,18 @@ isStalling: false
 isHalted: true
 isResetting: false
 
+IF\t000c\tins: 0000, pc: 000d
+ID\t000b\tstall: 0, ctl_EX: 1fffff, a: 0022, b: 0022, ins: 0000
+EX\t000a\tczOjaH, y: ffff, storeOp: 0000, ctl: 1ffffe, selC: 0
+MEM\t0009\ty: ffff, storeOp: 0000, selC: 7, ctl: 1fffff
+WB\t0000\tc: 0000, wrl: 1, wrh: 1, wben: 1
+
 r0: 0x0022\tr4: 0x0000
 r1: 0x0037\tr5: 0x0000
 r2: 0x0037\tr6: 0x0000
 r3: 0x0000\tr7: 0x0009
 pc: 0x000d
+
 
 """)
     }

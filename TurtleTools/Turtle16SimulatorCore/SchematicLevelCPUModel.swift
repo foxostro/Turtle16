@@ -30,6 +30,7 @@ public class SchematicLevelCPUModel: NSObject, CPU {
     }
     
     public var pc: UInt16 = 0
+    var prevPC: UInt16 = 0
     
     public var instructions: [UInt16] = Array<UInt16>(repeating: 0, count: 65535)
     
@@ -75,6 +76,32 @@ public class SchematicLevelCPUModel: NSObject, CPU {
             stageMEM.store = newValue
         }
     }
+    
+    public let numberOfPipelineStages = 5
+    
+    public func getPipelineStageInfo(_ idx: Int) -> PipelineStageInfo {
+        assert(idx >= 0 && idx < numberOfPipelineStages)
+        switch idx {
+        case 0: return PipelineStageInfo(name: "IF",
+                                         pc: stageIF.associatedPC,
+                                         status: outputIF.description)
+        case 1: return PipelineStageInfo(name: "ID",
+                                         pc: stageID.associatedPC,
+                                         status: outputID.description)
+        case 2: return PipelineStageInfo(name: "EX",
+                                         pc: stageEX.associatedPC,
+                                         status: outputEX.description)
+        case 3: return PipelineStageInfo(name: "MEM",
+                                         pc: stageMEM.associatedPC,
+                                         status: outputMEM.description)
+        case 4: return PipelineStageInfo(name: "WB",
+                                         pc: stageWB.associatedPC,
+                                         status: outputWB.description)
+        default:
+            assert(false)
+            fatalError("unreachable")
+        }
+    }
 
     public let stageIF = IF()
     public let stageID = ID()
@@ -93,9 +120,8 @@ public class SchematicLevelCPUModel: NSObject, CPU {
         stageIF.load = {[weak self] (addr: UInt16) in
             if addr < self!.instructions.count {
                 return self!.instructions[Int(addr)]
-            } else {
-                return 0
             }
+            return 0
         }
         
         let decoder = DecoderGenerator().generate()
@@ -122,7 +148,8 @@ public class SchematicLevelCPUModel: NSObject, CPU {
         // WB
         let inputWB = WB.Input(y: outputMEM.y,
                                storeOp: outputMEM.storeOp,
-                               ctl: outputMEM.ctl)
+                               ctl: outputMEM.ctl,
+                               associatedPC: outputMEM.associatedPC)
         outputWB = stageWB.step(input: inputWB)
         
         let inputWriteBack = ID.WriteBackInput(c: outputWB.c,
@@ -137,7 +164,8 @@ public class SchematicLevelCPUModel: NSObject, CPU {
                                  y: outputEX.y,
                                  storeOp: outputEX.storeOp,
                                  selC: outputEX.selC,
-                                 ctl: outputEX.ctl)
+                                 ctl: outputEX.ctl,
+                                 associatedPC: outputEX.associatedPC)
         outputMEM = stageMEM.step(input: inputMEM)
         
         // EX
@@ -145,7 +173,8 @@ public class SchematicLevelCPUModel: NSObject, CPU {
                                ctl: outputID.ctl_EX,
                                a: outputID.a,
                                b: outputID.b,
-                               ins: outputID.ins)
+                               ins: outputID.ins,
+                               associatedPC: outputID.associatedPC)
         outputEX = stageEX.step(input: inputEX)
         
         // ID
@@ -160,7 +189,8 @@ public class SchematicLevelCPUModel: NSObject, CPU {
                                ovf: ovf,
                                z: z,
                                carry: carry,
-                               rst: rst)
+                               rst: rst,
+                               associatedPC: outputIF.associatedPC)
         outputID = stageID.step(input: inputID)
         
         // Only update flags if the appropriate bit in the control word is set.
@@ -177,6 +207,7 @@ public class SchematicLevelCPUModel: NSObject, CPU {
                                j: outputEX.j,
                                rst: rst)
         outputIF = stageIF.step(input: inputIF)
+        prevPC = pc
         pc = outputIF.pc
         
         if resetCounter > 0 {

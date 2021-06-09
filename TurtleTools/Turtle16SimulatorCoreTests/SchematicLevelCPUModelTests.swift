@@ -50,6 +50,23 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertFalse(cpu.isHalted)
     }
     
+    func testSetAndGetMemoryAccessClosures() {
+        let cpu = SchematicLevelCPUModel()
+        var count = 0
+        let load: (UInt16) -> UInt16 = {(addr: UInt16) in
+            count += 1
+            return 0 // do nothing
+        }
+        let store: (UInt16, UInt16) -> Void = {(value: UInt16, addr: UInt16) in
+            count += 1
+        }
+        cpu.load = load
+        cpu.store = store
+        _ = cpu.load(0)
+        cpu.store(0, 0)
+        XCTAssertEqual(count, 2)
+    }
+    
     func testNoStoresOrLoadsDuringReset() {
         let cpu = SchematicLevelCPUModel()
         cpu.load = {(addr: UInt16) in

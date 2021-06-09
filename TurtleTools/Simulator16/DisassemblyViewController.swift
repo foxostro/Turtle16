@@ -34,7 +34,6 @@ class DisassemblyViewController: NSViewController {
     }
     
     @objc func virtualMachineStateDidChange(notification: Notification) {
-        tableViewDataSource.regenerateDisassembly()
         tableView.reloadData()
         tableView.selectRowIndexes(IndexSet(integer: Int(computer.pc)), byExtendingSelection: false)
     }

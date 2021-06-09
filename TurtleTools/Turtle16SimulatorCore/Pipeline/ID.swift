@@ -59,6 +59,7 @@ public class ID: NSObject {
         public let z: UInt
         public let carry: UInt
         public let rst: UInt
+        public let associatedPC: UInt16?
         
         public init(ins: UInt16) {
             self.ins = ins
@@ -73,6 +74,7 @@ public class ID: NSObject {
             self.z = 0
             self.carry = 0
             self.rst = 1
+            self.associatedPC = nil
         }
         
         public init(ins: UInt16, rst: UInt) {
@@ -88,6 +90,7 @@ public class ID: NSObject {
             self.z = 0
             self.carry = 0
             self.rst = rst
+            self.associatedPC = nil
         }
         
         public init(ins: UInt16, j: UInt) {
@@ -103,6 +106,7 @@ public class ID: NSObject {
             self.z = 0
             self.carry = 0
             self.rst = 1
+            self.associatedPC = nil
         }
         
         public init(ins: UInt16, ctl_EX: UInt) {
@@ -118,6 +122,7 @@ public class ID: NSObject {
             self.z = 0
             self.carry = 0
             self.rst = 1
+            self.associatedPC = nil
         }
         
         public init(ins: UInt16, ins_EX: UInt, ctl_EX: UInt, y_EX: UInt16) {
@@ -133,6 +138,7 @@ public class ID: NSObject {
             self.z = 0
             self.carry = 0
             self.rst = 1
+            self.associatedPC = nil
         }
         
         public init(ins: UInt16, selC_MEM: UInt, ctl_MEM: UInt, y_MEM: UInt16) {
@@ -148,21 +154,7 @@ public class ID: NSObject {
             self.z = 0
             self.carry = 0
             self.rst = 1
-        }
-        
-        public init(ins: UInt16, selC_MEM: UInt, ctl_MEM: UInt) {
-            self.ins = ins
-            self.y_EX = 0
-            self.y_MEM = 0
-            self.ins_EX = 0
-            self.ctl_EX = ID.nopControlWord
-            self.selC_MEM = selC_MEM
-            self.ctl_MEM = ctl_MEM
-            self.j = 1
-            self.ovf = 0
-            self.z = 0
-            self.carry = 0
-            self.rst = 1
+            self.associatedPC = nil
         }
         
         public init(ins: UInt16,
@@ -176,7 +168,8 @@ public class ID: NSObject {
                     ovf: UInt,
                     z: UInt,
                     carry: UInt,
-                    rst: UInt) {
+                    rst: UInt,
+                    associatedPC: UInt16? = nil) {
             self.ins = ins
             self.y_EX = y_EX
             self.y_MEM = y_MEM
@@ -189,6 +182,7 @@ public class ID: NSObject {
             self.z = z
             self.carry = carry
             self.rst = rst
+            self.associatedPC = associatedPC
         }
     }
     
@@ -198,27 +192,37 @@ public class ID: NSObject {
         public let a: UInt16
         public let b: UInt16
         public let ins: UInt
+        public let associatedPC: UInt16?
         
         public init(stall: UInt,
                     ctl_EX: UInt,
                     a: UInt16,
                     b: UInt16,
-                    ins: UInt) {
+                    ins: UInt,
+                    associatedPC: UInt16? = nil) {
             self.stall = stall
             self.ctl_EX = ctl_EX
             self.a = a
             self.b = b
             self.ins = ins
+            self.associatedPC = associatedPC
+        }
+        
+        public var description: String {
+            return "stall: \(stall), ctl_EX: \(String(format: "%x", ctl_EX)), a: \(String(format: "%04x", a)), b: \(String(format: "%04x", b)), ins: \(String(format: "%04x", ins))"
         }
     }
     
     public var registerFile = Array<UInt16>(repeating: 0, count: 8)
     public var opcodeDecodeROM = Array<UInt>(repeating: 0, count: 512)
+    public var associatedPC: UInt16?
     let hazardControlUnit: HazardControl = HazardControlMockup()
     
     public func step(input: Input) -> Output {
         let hazardControlSignals = hazardControlUnit.step(input: input)
-        let ctl_EX: UInt = ((hazardControlSignals.flush & 1)==1) ? ID.nopControlWord : decodeOpcode(input: input)
+        let flush = (hazardControlSignals.flush & 1)==1
+        associatedPC = flush ? nil : input.associatedPC
+        let ctl_EX: UInt = flush ? ID.nopControlWord : decodeOpcode(input: input)
         let a = forwardA(input, hazardControlSignals)
         let b = forwardB(input, hazardControlSignals)
         let ins = UInt(input.ins & 0x07ff)
@@ -226,7 +230,8 @@ public class ID: NSObject {
                       ctl_EX: ctl_EX,
                       a: a,
                       b: b,
-                      ins: ins)
+                      ins: ins,
+                      associatedPC: associatedPC)
     }
     
     public func decodeOpcode(input: Input) -> UInt {

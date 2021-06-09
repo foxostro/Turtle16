@@ -10,8 +10,28 @@ import XCTest
 import Turtle16SimulatorCore
 
 class Turtle16ComputerTests: XCTestCase {
-    func testExample() throws {
+    func testFlagsAreZeroAfterREset() throws {
         let cpu = SchematicLevelCPUModel()
-        let _ = Turtle16Computer(cpu)
+        let computer = Turtle16Computer(cpu)
+        computer.reset()
+        XCTAssertEqual(computer.timeStamp, 0)
+        XCTAssertEqual(computer.carry, 0)
+        XCTAssertEqual(computer.z, 0)
+        XCTAssertEqual(computer.ovf, 0)
+    }
+    
+    func testDisassemblyOfInstructionMemory() throws {
+        let cpu = SchematicLevelCPUModel()
+        let computer = Turtle16Computer(cpu)
+        
+        computer.instructions = [
+            0b1010011111111110, // JMP -2
+        ]
+        XCTAssertEqual(computer.disassembly.entries, [Disassembler.Entry(address: 0x0000, word: 0b1010011111111110, label: "L0", mnemonic: "JMP L0")])
+        
+        computer.instructions = [
+            0x0000, // NOP
+        ]
+        XCTAssertEqual(computer.disassembly.entries, [Disassembler.Entry(address: 0x0000, word: 0x0000, label: nil, mnemonic: "NOP")])
     }
 }

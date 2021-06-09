@@ -182,11 +182,18 @@ public class Disassembler: NSObject {
         }
     }
     
-    public struct Entry {
+    public struct Entry: Equatable {
         public let address: Int
         public let word: UInt16
         public let label: String?
         public let mnemonic: String?
+        
+        public init(address: Int, word: UInt16, label: String?, mnemonic: String?) {
+            self.address = address
+            self.word = word
+            self.label = label
+            self.mnemonic = mnemonic
+        }
     }
     
     public func disassemble(_ program: [UInt16]) -> [Entry] {

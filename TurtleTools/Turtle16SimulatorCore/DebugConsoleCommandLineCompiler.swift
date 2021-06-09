@@ -40,52 +40,52 @@ public class DebugConsoleCommandLineCompiler: NSObject {
         
         // Walk the tree and generate commands for nodes.
         for child in syntaxTree.children {
-            if let node = child as? InstructionNode {
-                switch node.instruction {
-                case "h", "help":
-                    acceptHelp(node)
-                    
-                case "q", "quit":
-                    acceptQuit(node)
-                    
-                case "reset":
-                    acceptReset(node)
-                    
-                case "c", "continue":
-                    acceptContinue(node)
+            let node = child as! InstructionNode
+            switch node.instruction {
+            case "h", "help":
+                acceptHelp(node)
                 
-                case "s", "step":
-                    acceptStep(node)
-                    
-                case "r", "reg", "regs", "registers":
-                    acceptReg(node)
-                    
-                case "info":
-                    acceptInfo(node)
-                    
-                case "x":
-                    acceptReadMemory(node)
-                    
-                case "writemem":
-                    acceptWriteMemory(node)
-                    
-                case "xi":
-                    acceptReadInstructions(node)
-                    
-                case "writememi":
-                    acceptWriteInstructions(node)
-                    
-                case "load":
-                    acceptLoad(node)
-                    
-                case "save":
-                    acceptSave(node)
-                    
-                default:
-                    errors.append(CompilerError(sourceAnchor: child.sourceAnchor, message: "unrecognized instruction: `\(node.instruction)'"))
-                }
-            } else {
-                errors.append(CompilerError(sourceAnchor: child.sourceAnchor, message: "expected instruction"))
+            case "q", "quit":
+                acceptQuit(node)
+                
+            case "reset":
+                acceptReset(node)
+                
+            case "c", "continue":
+                acceptContinue(node)
+            
+            case "s", "step":
+                acceptStep(node)
+                
+            case "r", "reg", "regs", "registers":
+                acceptReg(node)
+                
+            case "info":
+                acceptInfo(node)
+                
+            case "x":
+                acceptReadMemory(node)
+                
+            case "writemem":
+                acceptWriteMemory(node)
+                
+            case "xi":
+                acceptReadInstructions(node)
+                
+            case "writememi":
+                acceptWriteInstructions(node)
+                
+            case "load":
+                acceptLoad(node)
+                
+            case "save":
+                acceptSave(node)
+                
+            case "disassemble":
+                acceptDisassemble(node)
+                
+            default:
+                errors.append(CompilerError(sourceAnchor: child.sourceAnchor, message: "unrecognized instruction: `\(node.instruction)'"))
             }
         }
     }
@@ -137,6 +137,9 @@ public class DebugConsoleCommandLineCompiler: NSObject {
             
         case "save":
             instructions.append(.help(.save))
+            
+        case "disassemble":
+            instructions.append(.help(.disassemble))
             
         default:
             instructions.append(.help(nil))
@@ -241,8 +244,8 @@ public class DebugConsoleCommandLineCompiler: NSObject {
                 return (UInt16(base.value), 1)
             } else {
                 errors.append(CompilerError(sourceAnchor: node.parameters.elements.first?.sourceAnchor, message: "expected a number for the memory address: `\(node.instruction)'"))
-                return nil
             }
+            return nil
         } else if node.parameters.elements.count == 2 {
             guard let length = (node.parameters.elements[0] as? ParameterSlashed)?.child as? ParameterNumber else {
                 errors.append(CompilerError(sourceAnchor: node.parameters.elements[0].sourceAnchor, message: "expected a number for the length: `\(node.instruction)'"))
@@ -260,8 +263,9 @@ public class DebugConsoleCommandLineCompiler: NSObject {
             return (baseAddr, UInt(length.value))
         } else {
             errors.append(CompilerError(sourceAnchor: node.sourceAnchor, message: "expected at least one parameter for the memory address: `\(node.instruction)'"))
-            return nil
         }
+        
+        return nil
     }
     
     fileprivate func validateParameterUInt16(_ node: InstructionNode, _ param: ParameterNumber) -> UInt16? {
@@ -349,5 +353,80 @@ public class DebugConsoleCommandLineCompiler: NSObject {
         let path = NSString(string: parameterPath.value).expandingTildeInPath
         let url = URL(fileURLWithPath: path)
         instructions.append(.save(parameterDestination.value, url))
+    }
+    
+    fileprivate func acceptDisassemble(_ node: InstructionNode) {
+        switch node.parameters.elements.count {
+        case 0:
+            instructions.append(.disassemble(.unspecified))
+            
+        case 1:
+            switch node.parameters.elements[0] {
+            case let parameterBase as ParameterNumber:
+                guard parameterBase.value >= 0 else {
+                    errors.append(CompilerError(sourceAnchor: parameterBase.sourceAnchor, message: "base address must not be negative: `\(node.instruction)'"))
+                    return
+                }
+                guard parameterBase.value < 65536 else {
+                    errors.append(CompilerError(sourceAnchor: parameterBase.sourceAnchor, message: "base address must be less than 65536: `\(node.instruction)'"))
+                    return
+                }
+                instructions.append(.disassemble(.base(UInt16(parameterBase.value))))
+            
+            case let parameterIdentifier as ParameterIdentifier:
+                instructions.append(.disassemble(.identifier(parameterIdentifier.value)))
+            
+            default:
+                errors.append(CompilerError(sourceAnchor: node.parameters.elements[0].sourceAnchor, message: "expected an identifier or number for the base address: `\(node.instruction)'"))
+            }
+            
+        case 2:
+            switch node.parameters.elements[0] {
+            case let parameterBase as ParameterNumber:
+                guard parameterBase.value >= 0 else {
+                    errors.append(CompilerError(sourceAnchor: parameterBase.sourceAnchor, message: "base address must not be negative: `\(node.instruction)'"))
+                    return
+                }
+                guard parameterBase.value < Int(UInt16.max)+1 else {
+                    errors.append(CompilerError(sourceAnchor: parameterBase.sourceAnchor, message: "base address must be less than \(Int(UInt16.max)+1): `\(node.instruction)'"))
+                    return
+                }
+                guard let parameterCount = node.parameters.elements[1] as? ParameterNumber else {
+                    errors.append(CompilerError(sourceAnchor: node.parameters.elements[1].sourceAnchor, message: "expected a number for the count: `\(node.instruction)'"))
+                    return
+                }
+                guard parameterCount.value >= 0 else {
+                    errors.append(CompilerError(sourceAnchor: parameterCount.sourceAnchor, message: "count must not be negative: `\(node.instruction)'"))
+                    return
+                }
+                guard parameterCount.value < Int(UInt16.max)+1 else {
+                    errors.append(CompilerError(sourceAnchor: parameterCount.sourceAnchor, message: "count must be less than \(Int(UInt16.max)+1): `\(node.instruction)'"))
+                    return
+                }
+                instructions.append(.disassemble(.baseCount(UInt16(parameterBase.value), UInt(parameterCount.value))))
+            
+            case let parameterIdentifier as ParameterIdentifier:
+                guard let parameterCount = node.parameters.elements[1] as? ParameterNumber else {
+                    errors.append(CompilerError(sourceAnchor: node.parameters.elements[1].sourceAnchor, message: "expected a number for the count: `\(node.instruction)'"))
+                    return
+                }
+                guard parameterCount.value >= 0 else {
+                    errors.append(CompilerError(sourceAnchor: parameterCount.sourceAnchor, message: "count must not be negative: `\(node.instruction)'"))
+                    return
+                }
+                guard parameterCount.value < Int(UInt16.max)+1 else {
+                    errors.append(CompilerError(sourceAnchor: parameterCount.sourceAnchor, message: "count must be less than \(Int(UInt16.max)+1): `\(node.instruction)'"))
+                    return
+                }
+                instructions.append(.disassemble(.identifierCount(parameterIdentifier.value, UInt(parameterCount.value))))
+            
+            default:
+                errors.append(CompilerError(sourceAnchor: node.parameters.elements[0].sourceAnchor, message: "expected an identifier or number for the base address: `\(node.instruction)'"))
+            }
+        
+        default:
+            let sourceAnchor = node.parameters.elements.last?.sourceAnchor
+            errors.append(CompilerError(sourceAnchor: sourceAnchor, message: "expected zero, one, or two parameters: `\(node.instruction)'"))
+        }
     }
 }

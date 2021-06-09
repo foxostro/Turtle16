@@ -213,7 +213,7 @@ class DisassemblerTests: XCTestCase {
             0b0110100011101001, // CMPI r7, 9
             0b0000100000000000, // HLT
         ]
-        let result = disassembler.disassemble(program).joined(separator: "\n")
+        let result = disassembler.disassemble(program).map({ $0.mnemonic ?? "" }).joined(separator: "\n")
         XCTAssertEqual(result, """
 LI r0, 0
 LI r1, 1
@@ -242,7 +242,7 @@ HLT
             0b1101011111111001, // BLT -7
             0b0000100000000000, // HLT
         ]
-        let result = disassembler.disassemble(program).joined(separator: "\n")
+        let result = disassembler.disassemble(program).map({ $0.mnemonic ?? "" }).joined(separator: "\n")
         XCTAssertEqual(result, """
 LI r0, 0
 LI r1, 1
@@ -283,7 +283,7 @@ HLT
             0b1011101111111111, // 0xBBFF
             0b0000100000000000, // HLT
         ]
-        let result = disassembler.disassemble(program).joined(separator: "\n")
+        let result = disassembler.disassemble(program).map({ $0.mnemonic ?? "" }).joined(separator: "\n")
         XCTAssertEqual(result, """
 LI r0, 0
 LI r1, 1

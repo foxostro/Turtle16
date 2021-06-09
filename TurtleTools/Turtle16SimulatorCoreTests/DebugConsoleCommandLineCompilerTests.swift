@@ -200,6 +200,27 @@ class DebugConsoleCommandLineCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [.help(.writeInstructions)])
     }
     
+    func testHelpWithLoad() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("h load")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.help(.load)])
+    }
+    
+    func testHelpWithSave() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("h save")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.help(.save)])
+    }
+    
+    func testHelpWithDisassemble() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("h disassemble")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.help(.disassemble)])
+    }
+    
     func testQuit() throws {
         let compiler = DebugConsoleCommandLineCompiler()
         compiler.compile("q")
@@ -664,7 +685,15 @@ class DebugConsoleCommandLineCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.errors.first?.context, "\tload program \"\" 12\n\t                ^~")
     }
     
-    func testLoadWithIncorrectTypeForParameter() throws {
+    func testLoadWithIncorrectTypeForDestinationParameter() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("load 123 \"\"")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "expected an identifier for the destination: `load'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tload 123 \"\"\n\t     ^~~")
+    }
+    
+    func testLoadWithIncorrectTypeForFilePathParameter() throws {
         let compiler = DebugConsoleCommandLineCompiler()
         compiler.compile("load program 12")
         XCTAssertEqual(compiler.errors.count, 1)
@@ -724,7 +753,15 @@ class DebugConsoleCommandLineCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.errors.first?.context, "\tsave program \"\" 12\n\t                ^~")
     }
     
-    func testSaveWithIncorrectTypeForParameter() throws {
+    func testSaveWithIncorrectTypeForSourceParameter() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("save 123 \"\"")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "expected an identifier for the source: `save'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tsave 123 \"\"\n\t     ^~~")
+    }
+    
+    func testSaveWithIncorrectTypeForFilePathParameter() throws {
         let compiler = DebugConsoleCommandLineCompiler()
         compiler.compile("save program 12")
         XCTAssertEqual(compiler.errors.count, 1)
@@ -758,5 +795,144 @@ class DebugConsoleCommandLineCompilerTests: XCTestCase {
         compiler.compile("save data \"foo\"")
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [.save("data", URL(fileURLWithPath: "foo"))])
+    }
+    
+    func testDisassembleWithNoParameters() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("disassemble")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.disassemble(.unspecified)])
+    }
+    
+    func testDisassembleWithTooManyParameters() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("disassemble a b c")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "expected zero, one, or two parameters: `disassemble'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tdisassemble a b c\n\t                ^")
+    }
+    
+    func testDisassembleWithOneParameterExpectsStartAddress_FailsForString() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("disassemble \"\"")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "expected an identifier or number for the base address: `disassemble'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tdisassemble \"\"\n\t            ^~")
+    }
+    
+    func testDisassembleWithOneParameterExpectsBaseAddress() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("disassemble 0xabcd")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.disassemble(.base(0xabcd))])
+    }
+    
+    func testDisassembleWithOneParameterExpectsBaseAddress_MustBePositive() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("disassemble -1")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "base address must not be negative: `disassemble'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tdisassemble -1\n\t            ^~")
+    }
+    
+    func testDisassembleWithOneParameterExpectsBaseAddress_MustBeLessThan65536() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("disassemble 65536")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "base address must be less than 65536: `disassemble'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tdisassemble 65536\n\t            ^~~~~")
+    }
+    
+    func testDisassembleWithTwoParametersExpectsBaseAddress_FailsForString_1() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("disassemble \"\" 123")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "expected an identifier or number for the base address: `disassemble'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tdisassemble \"\" 123\n\t            ^~")
+    }
+    
+    func testDisassembleWithTwoParametersExpectsCount_FailsForIdentifier_2() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("disassemble 123 foo")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "expected a number for the count: `disassemble'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tdisassemble 123 foo\n\t                ^~~")
+    }
+    
+    func testDisassembleWithTwoParametersExpectsBaseAddress_MustBePositive() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("disassemble -1 0")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "base address must not be negative: `disassemble'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tdisassemble -1 0\n\t            ^~")
+    }
+    
+    func testDisassembleWithTwoParametersExpectsBaseAddress_MustBeLessThan65536() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("disassemble 65536 0")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "base address must be less than 65536: `disassemble'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tdisassemble 65536 0\n\t            ^~~~~")
+    }
+    
+    func testDisassembleWithOneParameterExpectsCount_MustBePositive() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("disassemble 0 -1")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "count must not be negative: `disassemble'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tdisassemble 0 -1\n\t              ^~")
+    }
+    
+    func testDisassembleWithOneParameterExpectsCount_MustBeLessThan65536() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("disassemble 0 65536")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "count must be less than 65536: `disassemble'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tdisassemble 0 65536\n\t              ^~~~~")
+    }
+    
+    func testDisassembleWithTwoParametersExpectsBaseAddressAndCount() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("disassemble 0x1000 32")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.disassemble(.baseCount(0x1000, 32))])
+    }
+    
+    func testDisassembleWithIdentifierAndNoCount() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("disassemble L0")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.disassemble(.identifier("L0"))])
+    }
+    
+    func testDisassembleWithIdentifierAndCount() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("disassemble L0 4")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.instructions, [.disassemble(.identifierCount("L0", 4))])
+    }
+    
+    func testDisassembleWithIdentifierAndCountExpectsCountIsANumber() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("disassemble foo \"\"")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "expected a number for the count: `disassemble'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tdisassemble foo \"\"\n\t                ^~")
+    }
+    
+    func testDisassembleWithIdentifierAndCountExpectsCountIsPositive() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("disassemble foo -1")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "count must not be negative: `disassemble'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tdisassemble foo -1\n\t                ^~")
+    }
+    
+    func testDisassembleWithIdentifierAndCountExpectsCountIsLEssThan65536() throws {
+        let compiler = DebugConsoleCommandLineCompiler()
+        compiler.compile("disassemble foo 65536")
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "count must be less than 65536: `disassemble'")
+        XCTAssertEqual(compiler.errors.first?.context, "\tdisassemble foo 65536\n\t                ^~~~~")
     }
 }

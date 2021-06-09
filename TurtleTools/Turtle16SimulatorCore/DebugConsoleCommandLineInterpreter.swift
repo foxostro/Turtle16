@@ -71,6 +71,9 @@ public class DebugConsoleCommandLineInterpreter: NSObject {
             
         case .save(let what, let url):
             save(what, url)
+        
+        case .disassemble(let target):
+            disassemble(target)
         }
     }
     
@@ -348,8 +351,68 @@ isResetting: \(computer.isResetting)
             logger.append("Wrote contents of opcode decode ROM 3 to file: \"\(url.path)\"\n")
         
         default:
-            abort()
+            fatalError("unknown source `\(what)'")
         }
         try! data.write(to: url)
+    }
+    
+    fileprivate func disassemble(_ target: DebugConsoleInstruction.DisassembleMode) {
+        let kDefaultCount: UInt = 16
+        switch target {
+        case .unspecified:
+            disassemble(base: computer.pc, count: kDefaultCount)
+            break
+            
+        case .base(let base):
+            disassemble(base: base, count: kDefaultCount)
+            break
+            
+        case .baseCount(let base, let count):
+            disassemble(base: base, count: count)
+            break
+            
+        case .identifier(let identifier):
+            disassemble(identifier: identifier, count: kDefaultCount)
+            break
+            
+        case .identifierCount(let identifier, let count):
+            disassemble(identifier: identifier, count: count)
+            break
+        }
+    }
+    
+    fileprivate func disassemble(base: UInt16, count: UInt) {
+        let disassembler = Disassembler()
+        let disassembly = disassembler.disassemble(computer.instructions)
+        var remaining = count
+        for entry in disassembly {
+            if entry.address >= base {
+                let strAddress = String(format: "%04x", entry.address)
+                let strWord = String(format: "%04x", entry.word)
+                let strLabel: String
+                if let label = entry.label {
+                    strLabel = label + ": "
+                } else {
+                    strLabel = ""
+                }
+                let strMnemonic = entry.mnemonic ?? ""
+                logger.append("\(strAddress)\t\(strWord)\t\(strLabel)\(strMnemonic)\n")
+                remaining = remaining - 1
+                if remaining == 0 {
+                    break
+                }
+            }
+        }
+    }
+    
+    fileprivate func disassemble(identifier: String, count: UInt) {
+        let disassembler = Disassembler()
+        let _ = disassembler.disassemble(computer.instructions)
+        if let base = disassembler.labels.first(where: { $1 == identifier })?.key {
+            disassemble(base: UInt16(base), count: count)
+        }
+        else {
+            logger.append("Use of unresolved identifier: `\(identifier)'\n")
+        }
     }
 }

@@ -9,6 +9,14 @@
 import Foundation
 
 public enum DebugConsoleInstruction: Equatable {
+    public enum DisassembleMode: Equatable {
+        case unspecified
+        case base(UInt16)
+        case baseCount(UInt16, UInt)
+        case identifier(String)
+        case identifierCount(String, UInt)
+    }
+    
     case help(DebugConsoleHelpTopic?)
     case quit
     case reset(type: ResetType)
@@ -22,4 +30,5 @@ public enum DebugConsoleInstruction: Equatable {
     case writeInstructions(base: UInt16, words: [UInt16])
     case load(String, URL)
     case save(String, URL)
+    case disassemble(DisassembleMode)
 }

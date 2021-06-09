@@ -182,12 +182,23 @@ public class Disassembler: NSObject {
         }
     }
     
-    public func disassemble(_ program: [UInt16]) -> [String] {
-        var result: [String] = []
+    public struct Entry {
+        public let address: Int
+        public let word: UInt16
+        public let label: String?
+        public let mnemonic: String?
+    }
+    
+    public func disassemble(_ program: [UInt16]) -> [Entry] {
+        var result: [Entry] = []
         for pc in 0..<program.count {
             let ins = program[pc]
-            let oneLine = disassembleOne(pc: pc, ins: ins) ?? ""
-            result.append(oneLine)
+            let mnemonic = disassembleOne(pc: pc, ins: ins)
+            let entry = Entry(address: pc, word: ins, label: nil, mnemonic: mnemonic)
+            result.append(entry)
+        }
+        result = result.map {
+            Entry(address: $0.address, word: $0.word, label: labels[$0.address], mnemonic: $0.mnemonic)
         }
         return result
     }

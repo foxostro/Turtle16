@@ -9,7 +9,7 @@
 import Foundation
 
 public enum DebugConsoleHelpTopic: Equatable, CaseIterable {
-    case help, quit, reset, step, reg, info, readMemory, writeMemory, readInstructions, writeInstructions, load, save
+    case help, quit, reset, step, reg, info, readMemory, writeMemory, readInstructions, writeInstructions, load, save, disassemble
     
     public var name: String {
         switch self {
@@ -25,6 +25,7 @@ public enum DebugConsoleHelpTopic: Equatable, CaseIterable {
         case .writeInstructions: return "writememi"
         case .load:              return "load"
         case .save:              return "save"
+        case .disassemble:       return "disassemble"
         }
     }
     
@@ -65,6 +66,9 @@ public enum DebugConsoleHelpTopic: Equatable, CaseIterable {
             
         case .save:
             return "Save contents of memory to file."
+            
+        case .disassemble:
+            return "Disassembles a specified region of instruction memory."
         }
     }
     
@@ -176,12 +180,22 @@ Syntax: load <destination> "<path>"
 
 Destination:
 \tprogram          -- Instruction memory
+\tprogram_lo       -- Instruction memory, low byte (U57)
+\tprogram_hi       -- Instruction memory, high byte (U58)
 \tdata             -- RAM
 \tOpcodeDecodeROM1 -- Opcode Decode ROM 1 (U37)
 \tOpcodeDecodeROM2 -- Opcode Decode ROM 2 (U38)
 \tOpcodeDecodeROM3 -- Opcode Decode ROM 3 (U39)
 
 Syntax: save <destination> "<path>"
+
+"""
+        
+        case .disassemble:
+            return """
+\(shortHelp)
+
+Syntax: disassemble [<base-address>] [<count>]
 
 """
         }

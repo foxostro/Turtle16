@@ -178,18 +178,19 @@ pc: 0xabcd
         interpreter.runOne(instruction: .help(.none))
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 Debugger commands:
-\thelp      -- Show a list of all debugger commands, or give details about a specific command.
-\tquit      -- Quit the debugger.
-\treset     -- Reset the computer.
-\tstep      -- Single step the simulation, executing for one or more clock cycles.
-\treg       -- Show CPU register contents.
-\tinfo      -- Show detailed information for a specified device.
-\tx         -- Read from memory.
-\twritemem  -- Write to memory.
-\txi        -- Read from instruction memory.
-\twritememi -- Write to instruction memory.
-\tload      -- Load contents of memory from file.
-\tsave      -- Save contents of memory to file.
+\thelp        -- Show a list of all debugger commands, or give details about a specific command.
+\tquit        -- Quit the debugger.
+\treset       -- Reset the computer.
+\tstep        -- Single step the simulation, executing for one or more clock cycles.
+\treg         -- Show CPU register contents.
+\tinfo        -- Show detailed information for a specified device.
+\tx           -- Read from memory.
+\twritemem    -- Write to memory.
+\txi          -- Read from instruction memory.
+\twritememi   -- Write to instruction memory.
+\tload        -- Load contents of memory from file.
+\tsave        -- Save contents of memory to file.
+\tdisassemble -- Disassembles a specified region of instruction memory.
 
 For more information on any command, type `help <command-name>'.
 
@@ -312,6 +313,39 @@ Destination:
 \tOpcodeDecodeROM3 -- Opcode Decode ROM 3 (U39)
 
 Syntax: load <destination> "<path>"
+
+""")
+    }
+    
+    func testHelpSave() throws {
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.runOne(instruction: .help(.save))
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
+Save contents of memory to file.
+
+Destination:
+\tprogram          -- Instruction memory
+\tprogram_lo       -- Instruction memory, low byte (U57)
+\tprogram_hi       -- Instruction memory, high byte (U58)
+\tdata             -- RAM
+\tOpcodeDecodeROM1 -- Opcode Decode ROM 1 (U37)
+\tOpcodeDecodeROM2 -- Opcode Decode ROM 2 (U38)
+\tOpcodeDecodeROM3 -- Opcode Decode ROM 3 (U39)
+
+Syntax: save <destination> "<path>"
+
+""")
+    }
+    
+    func testHelpDisassemble() throws {
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.runOne(instruction: .help(.disassemble))
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
+Disassembles a specified region of instruction memory.
+
+Syntax: disassemble [<base-address>] [<count>]
 
 """)
     }
@@ -706,5 +740,145 @@ Syntax: load <destination> "<path>"
         }
         XCTAssertEqual(data1, data2.subdata(in: 0..<data1.count))
         XCTAssertEqual(data2.subdata(in: data1.count..<data2.count), Data(count: data2.count - data1.count))
+    }
+    
+    func testDisassembleWithZeroParameters() throws {
+        let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.run(instructions:[
+            .load("program", url),
+            .disassemble(.unspecified)
+        ])
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
+Wrote 65536 words to instruction memory.
+0000\t0000\tNOP
+0001\t2000\tLI r0, 0
+0002\t2101\tLI r1, 1
+0003\t2700\tLI r7, 0
+0004\t3a04\tL0: ADD r2, r0, r1
+0005\t7020\tADDI r0, r1, 0
+0006\t77e1\tADDI r7, r7, 1
+0007\t7140\tADDI r1, r2, 0
+0008\t68e9\tCMPI r7, 9
+0009\td7f9\tBLT L0
+000a\t0800\tHLT
+000b\t0000\tNOP
+000c\t0000\tNOP
+000d\t0000\tNOP
+000e\t0000\tNOP
+000f\t0000\tNOP
+
+""")
+    }
+    
+    func testDisassembleWithBaseAddress() throws {
+        let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.run(instructions:[
+            .load("program", url),
+            .disassemble(.base(1))
+        ])
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
+Wrote 65536 words to instruction memory.
+0001\t2000\tLI r0, 0
+0002\t2101\tLI r1, 1
+0003\t2700\tLI r7, 0
+0004\t3a04\tL0: ADD r2, r0, r1
+0005\t7020\tADDI r0, r1, 0
+0006\t77e1\tADDI r7, r7, 1
+0007\t7140\tADDI r1, r2, 0
+0008\t68e9\tCMPI r7, 9
+0009\td7f9\tBLT L0
+000a\t0800\tHLT
+000b\t0000\tNOP
+000c\t0000\tNOP
+000d\t0000\tNOP
+000e\t0000\tNOP
+000f\t0000\tNOP
+0010\t0000\tNOP
+
+""")
+    }
+    
+    func testDisassembleWithBaseAddressAndCount() throws {
+        let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.run(instructions:[
+            .load("program", url),
+            .disassemble(.baseCount(1, 4))
+        ])
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
+Wrote 65536 words to instruction memory.
+0001\t2000\tLI r0, 0
+0002\t2101\tLI r1, 1
+0003\t2700\tLI r7, 0
+0004\t3a04\tL0: ADD r2, r0, r1
+
+""")
+    }
+    
+    func testDisassembleWithIdentifier() throws {
+        let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.run(instructions:[
+            .load("program", url),
+            .disassemble(.identifier("L0"))
+        ])
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
+Wrote 65536 words to instruction memory.
+0004\t3a04\tL0: ADD r2, r0, r1
+0005\t7020\tADDI r0, r1, 0
+0006\t77e1\tADDI r7, r7, 1
+0007\t7140\tADDI r1, r2, 0
+0008\t68e9\tCMPI r7, 9
+0009\td7f9\tBLT L0
+000a\t0800\tHLT
+000b\t0000\tNOP
+000c\t0000\tNOP
+000d\t0000\tNOP
+000e\t0000\tNOP
+000f\t0000\tNOP
+0010\t0000\tNOP
+0011\t0000\tNOP
+0012\t0000\tNOP
+0013\t0000\tNOP
+
+""")
+    }
+    
+    func testDisassembleWithIdentifierAndCount() throws {
+        let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.run(instructions:[
+            .load("program", url),
+            .disassemble(.identifierCount("L0", 6))
+        ])
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
+Wrote 65536 words to instruction memory.
+0004\t3a04\tL0: ADD r2, r0, r1
+0005\t7020\tADDI r0, r1, 0
+0006\t77e1\tADDI r7, r7, 1
+0007\t7140\tADDI r1, r2, 0
+0008\t68e9\tCMPI r7, 9
+0009\td7f9\tBLT L0
+
+""")
+    }
+    
+    func testDisassembleWithUnresolvedIdentifier() throws {
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let interpreter = DebugConsoleCommandLineInterpreter(computer)
+        interpreter.run(instructions:[
+            .disassemble(.identifier("foo"))
+        ])
+        XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
+Use of unresolved identifier: `foo'
+
+""")
     }
 }

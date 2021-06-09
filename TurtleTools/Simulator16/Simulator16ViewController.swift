@@ -176,4 +176,48 @@ class Simulator16ViewController: NSViewController {
                                constant: 0)
         ])
     }
+    
+    @IBAction func activateDebugConsole(_ sender: Any) {
+        debugConsoleContainerView.isHidden = false
+        debugConsoleViewController.debuggerInput.becomeFirstResponder()
+    }
+    
+    @IBAction func toggleDebugConsole(_ sender: Any) {
+        debugConsoleContainerView.isHidden = !debugConsoleContainerView.isHidden
+    }
+    
+    @IBAction func toggleRegisters(_ sender: Any) {
+        registersContainerView.isHidden = !registersContainerView.isHidden
+    }
+    
+    @IBAction func toggleDisassembly(_ sender: Any) {
+        disassemblyContainerView.isHidden = !disassemblyContainerView.isHidden
+    }
+    
+    @IBAction func toggleMemory(_ sender: Any) {
+        memoryContainerView.isHidden = !memoryContainerView.isHidden
+    }
+    
+    @objc func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+        switch menuItem.action {
+        case #selector(toggleDebugConsole):
+            menuItem.state = debugConsoleContainerView.isHidden ? .off : .on
+            return true
+            
+        case #selector(toggleRegisters):
+            menuItem.state = registersContainerView.isHidden ? .off : .on
+            return !(disassemblyContainerView.isHidden && memoryContainerView.isHidden)
+        
+        case #selector(toggleDisassembly):
+            menuItem.state = disassemblyContainerView.isHidden ? .off : .on
+            return !(registersContainerView.isHidden && memoryContainerView.isHidden)
+        
+        case #selector(toggleMemory):
+            menuItem.state = memoryContainerView.isHidden ? .off : .on
+            return !(registersContainerView.isHidden && disassemblyContainerView.isHidden)
+        
+        default:
+            return true
+        }
+    }
 }

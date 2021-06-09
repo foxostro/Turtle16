@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="18122" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="18122"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -13,17 +13,17 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <customView misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Hz6-mo-xeY" userLabel="Registers View">
-            <rect key="frame" x="0.0" y="0.0" width="480" height="216"/>
+        <customView translatesAutoresizingMaskIntoConstraints="NO" id="Hz6-mo-xeY" userLabel="Registers View">
+            <rect key="frame" x="0.0" y="0.0" width="480" height="188"/>
             <subviews>
-                <scrollView misplaced="YES" autohidesScrollers="YES" horizontalLineScroll="17" horizontalPageScroll="10" verticalLineScroll="17" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0pj-VM-eCU">
-                    <rect key="frame" x="0.0" y="0.0" width="480" height="216"/>
+                <scrollView autohidesScrollers="YES" horizontalLineScroll="17" horizontalPageScroll="10" verticalLineScroll="17" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0pj-VM-eCU">
+                    <rect key="frame" x="0.0" y="0.0" width="480" height="188"/>
                     <clipView key="contentView" id="Lgd-K9-7MO">
-                        <rect key="frame" x="1" y="1" width="478" height="214"/>
+                        <rect key="frame" x="1" y="1" width="478" height="186"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" autosaveColumns="NO" headerView="bAW-fk-UIX" viewBased="YES" id="N0K-CY-9II">
-                                <rect key="frame" x="0.0" y="0.0" width="478" height="186"/>
+                                <rect key="frame" x="0.0" y="0.0" width="478" height="158"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <size key="intercellSpacing" width="17" height="0.0"/>
                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -120,7 +120,7 @@
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                         <prototypeCellViews>
                                             <tableCellView id="7gs-Bc-LcB">
-                                                <rect key="frame" x="123" y="0.0" width="46" height="45"/>
+                                                <rect key="frame" x="123" y="0.0" width="346" height="45"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="g3F-mQ-uWk">
@@ -152,10 +152,11 @@
                     </clipView>
                     <constraints>
                         <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="183" id="ALN-nm-TsK"/>
-                        <constraint firstAttribute="width" constant="180" id="Mw3-J0-Eyi"/>
+                        <constraint firstAttribute="width" priority="750" constant="180" id="Mw3-J0-Eyi"/>
+                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="180" id="Uzb-60-vis"/>
                     </constraints>
                     <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="qPK-Ku-pxv">
-                        <rect key="frame" x="1" y="171" width="178" height="16"/>
+                        <rect key="frame" x="1" y="199" width="178" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                     <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="6IE-q4-qqu">

@@ -669,13 +669,13 @@ class DebugConsoleCommandLineCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.errors.first?.context, "\tload\n\t^~~~")
     }
     
-    func testLoadWithTooFewParameters() throws {
-        let compiler = DebugConsoleCommandLineCompiler()
-        compiler.compile("load program")
-        XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "expected one parameter for the destination and one parameter for the file path: `load'")
-        XCTAssertEqual(compiler.errors.first?.context, "\tload program\n\t     ^~~~~~~")
-    }
+//    func testLoadWithTooFewParameters() throws {
+//        let compiler = DebugConsoleCommandLineCompiler()
+//        compiler.compile("load program")
+//        XCTAssertEqual(compiler.errors.count, 1)
+//        XCTAssertEqual(compiler.errors.first?.message, "expected one parameter for the destination and one parameter for the file path: `load'")
+//        XCTAssertEqual(compiler.errors.first?.context, "\tload program\n\t     ^~~~~~~")
+//    }
     
     func testLoadWithTooManyParameters() throws {
         let compiler = DebugConsoleCommandLineCompiler()
@@ -737,13 +737,13 @@ class DebugConsoleCommandLineCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.errors.first?.context, "\tsave\n\t^~~~")
     }
     
-    func testSaveWithTooFewParameters() throws {
-        let compiler = DebugConsoleCommandLineCompiler()
-        compiler.compile("save program")
-        XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "expected one parameter for the source and one parameter for the file path: `save'")
-        XCTAssertEqual(compiler.errors.first?.context, "\tsave program\n\t     ^~~~~~~")
-    }
+//    func testSaveWithTooFewParameters() throws {
+//        let compiler = DebugConsoleCommandLineCompiler()
+//        compiler.compile("save program")
+//        XCTAssertEqual(compiler.errors.count, 1)
+//        XCTAssertEqual(compiler.errors.first?.message, "expected one parameter for the source and one parameter for the file path: `save'")
+//        XCTAssertEqual(compiler.errors.first?.context, "\tsave program\n\t     ^~~~~~~")
+//    }
     
     func testSaveWithTooManyParameters() throws {
         let compiler = DebugConsoleCommandLineCompiler()

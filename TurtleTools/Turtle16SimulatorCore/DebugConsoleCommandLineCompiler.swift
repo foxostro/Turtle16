@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Cocoa
 import TurtleCore
 
 public class DebugConsoleCommandLineCompiler: NSObject {
@@ -318,7 +319,7 @@ public class DebugConsoleCommandLineCompiler: NSObject {
     }
     
     fileprivate func acceptLoad(_ node: InstructionNode) {
-        guard node.parameters.elements.count == 2 else {
+        guard (1...2).contains(node.parameters.elements.count) else {
             let sourceAnchor = (node.parameters.elements.last?.sourceAnchor) ?? node.sourceAnchor
             errors.append(CompilerError(sourceAnchor: sourceAnchor, message: "expected one parameter for the destination and one parameter for the file path: `\(node.instruction)'"))
             return
@@ -327,17 +328,28 @@ public class DebugConsoleCommandLineCompiler: NSObject {
             errors.append(CompilerError(sourceAnchor: node.parameters.elements.first?.sourceAnchor, message: "expected an identifier for the destination: `\(node.instruction)'"))
             return
         }
-        guard let parameterPath = node.parameters.elements[1] as? ParameterString else {
-            errors.append(CompilerError(sourceAnchor: node.parameters.elements[1].sourceAnchor, message: "expected a string for the file path: `\(node.instruction)'"))
-            return
+        
+        if node.parameters.elements.count > 1 {
+            guard let parameterPath = node.parameters.elements[1] as? ParameterString else {
+                errors.append(CompilerError(sourceAnchor: node.parameters.elements[1].sourceAnchor, message: "expected a string for the file path: `\(node.instruction)'"))
+                return
+            }
+            let path = NSString(string: parameterPath.value).expandingTildeInPath
+            let url = URL(fileURLWithPath: path)
+            instructions.append(.load(parameterDestination.value, url))
+        } else {
+            let panel = NSOpenPanel()
+            let response = panel.runModal()
+            if (response == NSApplication.ModalResponse.OK) {
+                if let url = panel.url {
+                    instructions.append(.load(parameterDestination.value, url))
+                }
+            }
         }
-        let path = NSString(string: parameterPath.value).expandingTildeInPath
-        let url = URL(fileURLWithPath: path)
-        instructions.append(.load(parameterDestination.value, url))
     }
     
     fileprivate func acceptSave(_ node: InstructionNode) {
-        guard node.parameters.elements.count == 2 else {
+        guard (1...2).contains(node.parameters.elements.count) else {
             let sourceAnchor = (node.parameters.elements.last?.sourceAnchor) ?? node.sourceAnchor
             errors.append(CompilerError(sourceAnchor: sourceAnchor, message: "expected one parameter for the source and one parameter for the file path: `\(node.instruction)'"))
             return
@@ -346,13 +358,24 @@ public class DebugConsoleCommandLineCompiler: NSObject {
             errors.append(CompilerError(sourceAnchor: node.parameters.elements.first?.sourceAnchor, message: "expected an identifier for the source: `\(node.instruction)'"))
             return
         }
-        guard let parameterPath = node.parameters.elements[1] as? ParameterString else {
-            errors.append(CompilerError(sourceAnchor: node.parameters.elements[1].sourceAnchor, message: "expected a string for the file path: `\(node.instruction)'"))
-            return
+        
+        if node.parameters.elements.count > 1 {
+            guard let parameterPath = node.parameters.elements[1] as? ParameterString else {
+                errors.append(CompilerError(sourceAnchor: node.parameters.elements[1].sourceAnchor, message: "expected a string for the file path: `\(node.instruction)'"))
+                return
+            }
+            let path = NSString(string: parameterPath.value).expandingTildeInPath
+            let url = URL(fileURLWithPath: path)
+            instructions.append(.save(parameterDestination.value, url))
+        } else {
+            let panel = NSSavePanel()
+            let response = panel.runModal()
+            if (response == NSApplication.ModalResponse.OK) {
+                if let url = panel.url {
+                    instructions.append(.save(parameterDestination.value, url))
+                }
+            }
         }
-        let path = NSString(string: parameterPath.value).expandingTildeInPath
-        let url = URL(fileURLWithPath: path)
-        instructions.append(.save(parameterDestination.value, url))
     }
     
     fileprivate func acceptDisassemble(_ node: InstructionNode) {

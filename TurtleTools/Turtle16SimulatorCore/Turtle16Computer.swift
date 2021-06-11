@@ -20,7 +20,7 @@ public extension Notification.Name {
 // This is where we simulate memory mapping and integration with peripherals.
 public class Turtle16Computer: NSObject, NSSecureCoding {
     public static var supportsSecureCoding = true
-    public let cpu: CPU
+    public private(set) var cpu: CPU
     public var ram: [UInt16]
     public var opcodeDecodeROM: [UInt] {
         set(value) {
@@ -168,5 +168,18 @@ public class Turtle16Computer: NSObject, NSSecureCoding {
         hasher.combine(cpu.hash)
         hasher.combine(ram)
         return hasher.finalize()
+    }
+    
+    public func snapshot() -> Data {
+        let snapshot = try! NSKeyedArchiver.archivedData(withRootObject: self, requiringSecureCoding: true)
+        return snapshot
+    }
+    
+    public func restore(from snapshot: Data) {
+        let decodedComputer = try! NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(snapshot) as! Turtle16Computer
+        cpu = decodedComputer.cpu
+        ram = decodedComputer.ram
+        cachedDisassembly = nil
+        NotificationCenter.default.post(name: .virtualMachineStateDidChange, object: self)
     }
 }

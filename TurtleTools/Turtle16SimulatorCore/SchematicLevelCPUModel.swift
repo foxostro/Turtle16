@@ -180,6 +180,15 @@ public class SchematicLevelCPUModel: NSObject, CPU {
         self.outputEX = outputEX
         self.outputMEM = outputMEM
         self.outputWB = outputWB
+        
+        super.init()
+        
+        self.stageIF.load = {[weak self] (addr: UInt16) in
+            if addr < self!.instructions.count {
+                return self!.instructions[Int(addr)]
+            }
+            return 0
+        }
     }
     
     public func encode(with coder: NSCoder) {

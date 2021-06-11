@@ -80,4 +80,14 @@ class Turtle16ComputerTests: XCTestCase {
         XCTAssertNoThrow(computer2 = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? Turtle16Computer)
         XCTAssertEqual(computer1, computer2)
     }
+    
+    func testSaveRestoreSnapshot() throws {
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        computer.instructions = [0x000, 0x0800]
+        computer.reset()
+        let snapshot = computer.snapshot()
+        computer.run()
+        computer.restore(from: snapshot)
+        XCTAssertEqual(computer.pc, 0)
+    }
 }

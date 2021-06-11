@@ -10,7 +10,7 @@ import Cocoa
 import TurtleCore
 import Turtle16SimulatorCore
 
-class DebugConsoleViewController: NSViewController {
+class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate {
     @IBOutlet var debuggerOutput: NSTextView!
     @IBOutlet var debuggerInput: NSTextField!
     @IBOutlet var halted: NSTextField!
@@ -21,7 +21,9 @@ class DebugConsoleViewController: NSViewController {
     @IBOutlet var z: NSTextField!
     @IBOutlet var c0: NSTextField!
     
-    public let debugger: DebugConsole
+    let debugger: DebugConsole
+    var history: [String] = []
+    var cursor = 0
     
     public required init(debugger: DebugConsole) {
         self.debugger = debugger
@@ -69,11 +71,34 @@ class DebugConsoleViewController: NSViewController {
     }
     
     @IBAction func submitCommandLine(_ sender: Any) {
-        debugger.eval(debuggerInput.stringValue)
+        let command: String
+        if debuggerInput.stringValue == "" {
+            command = history.last ?? ""
+        } else {
+            command = debuggerInput.stringValue
+        }
+        debugger.eval(command)
         if debugger.shouldQuit {
             NSApp.terminate(self)
         }
         debugger.logger.append("\n")
         debuggerInput.stringValue = ""
+        history.insert(command, at: 0)
+        cursor = 0
+    }
+    
+    func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
+        if control === debuggerInput {
+            if commandSelector == #selector(moveUp(_:)) {
+                debuggerInput.stringValue = history[cursor]
+                cursor = min(cursor + 1, history.count - 1)
+                return true
+            } else if commandSelector == #selector(moveDown(_:)) {
+                debuggerInput.stringValue = history[cursor]
+                cursor = max(cursor - 1, 0)
+                return true
+            }
+        }
+        return false
     }
 }

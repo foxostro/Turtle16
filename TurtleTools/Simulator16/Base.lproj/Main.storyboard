@@ -493,7 +493,7 @@
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </customView>
                                             <customView hidden="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OZK-Aq-xAC" userLabel="Memory Container View">
-                                                <rect key="frame" x="350" y="0.0" width="123" height="199"/>
+                                                <rect key="frame" x="376" y="0.0" width="97" height="199"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </customView>
                                         </subviews>

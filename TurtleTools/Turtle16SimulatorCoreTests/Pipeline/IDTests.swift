@@ -369,4 +369,41 @@ class IDTests: XCTestCase {
         XCTAssertEqual(output.stall, 1)
         XCTAssertEqual(output.ctl_EX, 0b111111111111111111111) // no active control lines
     }
+    
+    func testEquality_Equal() throws {
+        let stageID1 = ID()
+        stageID1.associatedPC = 1
+        
+        let stageID2 = ID()
+        stageID2.associatedPC = 1
+        
+        XCTAssertEqual(stageID1, stageID2)
+        XCTAssertEqual(stageID1.hash, stageID2.hash)
+    }
+    
+    func testEquality_NotEqual() throws {
+        let stageID1 = ID()
+        stageID1.associatedPC = 1
+        
+        let stageID2 = ID()
+        stageID2.associatedPC = 2
+        
+        XCTAssertNotEqual(stageID1, stageID2)
+        XCTAssertNotEqual(stageID1.hash, stageID2.hash)
+    }
+    
+    func testEncodeDecodeRoundTrip() throws {
+        let stageID1 = ID()
+        stageID1.associatedPC = 1
+        
+        var data: Data! = nil
+        XCTAssertNoThrow(data = try NSKeyedArchiver.archivedData(withRootObject: stageID1, requiringSecureCoding: true))
+        if data == nil {
+            XCTFail()
+            return
+        }
+        var stageID2: ID! = nil
+        XCTAssertNoThrow(stageID2 = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? ID)
+        XCTAssertEqual(stageID1, stageID2)
+    }
 }

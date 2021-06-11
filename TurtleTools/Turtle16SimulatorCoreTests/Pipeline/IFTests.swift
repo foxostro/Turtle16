@@ -97,4 +97,41 @@ class IFTests: XCTestCase {
         XCTAssertEqual(output.pc, 1)
         XCTAssertEqual(output.ins, 0)
     }
+    
+    func testEquality_Equal() throws {
+        let stageIF1 = IF()
+        stageIF1.associatedPC = 1
+        
+        let stageIF2 = IF()
+        stageIF2.associatedPC = 1
+        
+        XCTAssertEqual(stageIF1, stageIF2)
+        XCTAssertEqual(stageIF1.hash, stageIF2.hash)
+    }
+    
+    func testEquality_NotEqual() throws {
+        let stageIF1 = IF()
+        stageIF1.associatedPC = 1
+        
+        let stageIF2 = IF()
+        stageIF2.associatedPC = 2
+        
+        XCTAssertNotEqual(stageIF1, stageIF2)
+        XCTAssertNotEqual(stageIF1.hash, stageIF2.hash)
+    }
+    
+    func testEncodeDecodeRoundTrip() throws {
+        let stageIF1 = IF()
+        stageIF1.associatedPC = 1
+        
+        var data: Data! = nil
+        XCTAssertNoThrow(data = try NSKeyedArchiver.archivedData(withRootObject: stageIF1, requiringSecureCoding: true))
+        if data == nil {
+            XCTFail()
+            return
+        }
+        var stageIF2: IF! = nil
+        XCTAssertNoThrow(stageIF2 = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? IF)
+        XCTAssertEqual(stageIF1, stageIF2)
+    }
 }

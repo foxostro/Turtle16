@@ -8,12 +8,78 @@
 
 import Foundation
 
+public class IF_Output: NSObject, NSSecureCoding {
+    public static var supportsSecureCoding = true
+    
+    public let ins: UInt16
+    public let pc: UInt16
+    public let associatedPC: UInt16?
+    
+    public override var description: String {
+        let strIns = String(format: "%04x", ins)
+        let strPC = String(format: "%04x", pc)
+        return "ins: \(strIns), pc: \(strPC)"
+    }
+    
+    public required init(ins: UInt16, pc: UInt16, associatedPC: UInt16? = nil) {
+        self.ins = ins
+        self.pc = pc
+        self.associatedPC = associatedPC
+    }
+    
+    public required init?(coder: NSCoder) {
+        guard let ins = coder.decodeObject(forKey: "ins") as? UInt16,
+              let pc = coder.decodeObject(forKey: "pc") as? UInt16,
+              let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16? else {
+            return nil
+        }
+        self.ins = ins
+        self.pc = pc
+        self.associatedPC = associatedPC
+    }
+    
+    public func encode(with coder: NSCoder) {
+        coder.encode(ins, forKey: "ins")
+        coder.encode(pc, forKey: "pc")
+        coder.encode(associatedPC, forKey: "associatedPC")
+    }
+    
+    public static func ==(lhs: IF_Output, rhs: IF_Output) -> Bool {
+        return lhs.isEqual(rhs)
+    }
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else {
+            return false
+        }
+        guard let rhs = rhs as? IF_Output else {
+            return false
+        }
+        guard ins == rhs.ins,
+              pc == rhs.pc,
+              associatedPC == rhs.associatedPC else {
+            return false
+        }
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(ins)
+        hasher.combine(pc)
+        hasher.combine(associatedPC)
+        return hasher.finalize()
+    }
+}
+
 // Models the IF (instruction fetch) stage of the Turtle16 pipeline.
 // Please refer to IF.sch for details.
 // Classes in the simulator intentionally model specific pieces of hardware,
 // following naming conventions and organization that matches the schematics.
-public class IF: NSObject {
-    public struct Input {
+public class IF: NSObject, NSSecureCoding {
+    public static var supportsSecureCoding = true
+    
+    public struct Input: Equatable, Hashable {
         public let stall: UInt
         public let y: UInt16
         public let jabs: UInt
@@ -29,24 +95,6 @@ public class IF: NSObject {
         }
     }
     
-    public struct Output {
-        public let ins: UInt16
-        public let pc: UInt16
-        public let associatedPC: UInt16?
-        
-        public init(ins: UInt16, pc: UInt16, associatedPC: UInt16? = nil) {
-            self.ins = ins
-            self.pc = pc
-            self.associatedPC = associatedPC
-        }
-        
-        public var description: String {
-            let strIns = String(format: "%04x", ins)
-            let strPC = String(format: "%04x", pc)
-            return "ins: \(strIns), pc: \(strPC)"
-        }
-    }
-    
     public var alu = IDT7831()
     public var prevPC: UInt16 = 0
     public var prevIns: UInt16 = 0
@@ -57,7 +105,7 @@ public class IF: NSObject {
         return 0xffff // bogus
     }
     
-    public func step(input: Input) -> Output {
+    public func step(input: Input) -> IF_Output {
         // The ALU's F register updates on the clock so the IF stage takes two
         // clock cycles to complete.
         let aluOutput = alu.step(input: driveALU(input: input))
@@ -78,7 +126,7 @@ public class IF: NSObject {
         prevPC = pc
         prevIns = ins
         prevAssociatedPC = associatedPC
-        return Output(ins: ins, pc: pc, associatedPC: associatedPC)
+        return IF_Output(ins: ins, pc: pc, associatedPC: associatedPC)
     }
     
     public func driveALU(input: Input) -> IDT7831.Input {
@@ -97,5 +145,62 @@ public class IF: NSObject {
                                      ftf: 1,
                                      oe: 0)
         return aluInput
+    }
+    
+    public required override init() {
+    }
+    
+    public required init?(coder: NSCoder) {
+        guard let alu = coder.decodeObject(of: IDT7831.self, forKey: "alu"),
+              let prevPC = coder.decodeObject(forKey: "prevPC") as? UInt16,
+              let prevIns = coder.decodeObject(forKey: "prevIns") as? UInt16,
+              let prevAssociatedPC = coder.decodeObject(forKey: "prevAssociatedPC") as? UInt16?,
+              let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16? else {
+            return nil
+        }
+        self.alu = alu
+        self.prevPC = prevPC
+        self.prevIns = prevIns
+        self.prevAssociatedPC = prevAssociatedPC
+        self.associatedPC = associatedPC
+    }
+    
+    public func encode(with coder: NSCoder) {
+        coder.encode(alu, forKey: "alu")
+        coder.encode(prevPC, forKey: "prevPC")
+        coder.encode(prevIns, forKey: "prevIns")
+        coder.encode(prevAssociatedPC, forKey: "prevAssociatedPC")
+        coder.encode(associatedPC, forKey: "associatedPC")
+    }
+    
+    public static func ==(lhs: IF, rhs: IF) -> Bool {
+        return lhs.isEqual(rhs)
+    }
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else {
+            return false
+        }
+        guard let rhs = rhs as? IF else {
+            return false
+        }
+        guard alu == rhs.alu,
+              prevPC == rhs.prevPC,
+              prevIns == rhs.prevIns,
+              prevAssociatedPC == rhs.prevAssociatedPC,
+              associatedPC == rhs.associatedPC else {
+            return false
+        }
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(alu)
+        hasher.combine(prevPC)
+        hasher.combine(prevIns)
+        hasher.combine(prevAssociatedPC)
+        hasher.combine(associatedPC)
+        return hasher.finalize()
     }
 }

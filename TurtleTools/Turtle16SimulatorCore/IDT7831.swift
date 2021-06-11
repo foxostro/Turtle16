@@ -11,7 +11,9 @@ import Foundation
 // Models the IDFT7831 sixteen-bit ALU IC in the Turtle16 computer.
 // Classes in the simulator intentionally model specific pieces of hardware,
 // following naming conventions and organization that matches the schematics.
-public class IDT7831: NSObject {
+public class IDT7831: NSObject, NSSecureCoding {
+    public static var supportsSecureCoding = true
+    
     public struct Input {
         public let a: UInt16
         public let b: UInt16
@@ -69,6 +71,29 @@ public class IDT7831: NSObject {
     public var a: UInt16 = 0
     public var b: UInt16 = 0
     public var f: UInt16 = 0
+    
+    public required override init() {
+        a = 0
+        b = 0
+        f = 0
+    }
+    
+    public required init?(coder: NSCoder) {
+        guard let a = coder.decodeObject(forKey: "a") as? UInt16,
+              let b = coder.decodeObject(forKey: "b") as? UInt16,
+              let f = coder.decodeObject(forKey: "f") as? UInt16 else {
+            return nil
+        }
+        self.a = a
+        self.b = b
+        self.f = f
+    }
+    
+    public func encode(with coder: NSCoder) {
+        coder.encode(a, forKey: "a")
+        coder.encode(b, forKey: "b")
+        coder.encode(f, forKey: "f")
+    }
     
     public func step(input: Input) -> Output {
         if input.ena == 0 {
@@ -220,5 +245,32 @@ public class IDT7831: NSObject {
             return b
         }
         return input.b
+    }
+    
+    public static func ==(lhs: IDT7831, rhs: IDT7831) -> Bool {
+        return lhs.isEqual(rhs)
+    }
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else {
+            return false
+        }
+        guard let rhs = rhs as? IDT7831 else {
+            return false
+        }
+        guard a == rhs.a,
+              b == rhs.b,
+              f == rhs.f else {
+            return false
+        }
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(a)
+        hasher.combine(b)
+        hasher.combine(f)
+        return hasher.finalize()
     }
 }

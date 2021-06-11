@@ -47,4 +47,41 @@ class WBTests: XCTestCase {
         let output = WB().step(input: WB.Input(y: 0xabab, storeOp: 0xcdcd, ctl: 1<<17))
         XCTAssertEqual(output.c, 0xcdcd)
     }
+    
+    func testEquality_Equal() throws {
+        let stage1 = WB()
+        stage1.associatedPC = 1
+        
+        let stage2 = WB()
+        stage2.associatedPC = 1
+        
+        XCTAssertEqual(stage1, stage2)
+        XCTAssertEqual(stage1.hash, stage2.hash)
+    }
+    
+    func testEquality_NotEqual() throws {
+        let stage1 = WB()
+        stage1.associatedPC = 1
+        
+        let stage2 = WB()
+        stage2.associatedPC = 2
+        
+        XCTAssertNotEqual(stage1, stage2)
+        XCTAssertNotEqual(stage1.hash, stage2.hash)
+    }
+    
+    func testEncodeDecodeRoundTrip() throws {
+        let stage1 = WB()
+        stage1.associatedPC = 1
+        
+        var data: Data! = nil
+        XCTAssertNoThrow(data = try NSKeyedArchiver.archivedData(withRootObject: stage1, requiringSecureCoding: true))
+        if data == nil {
+            XCTFail()
+            return
+        }
+        var stage2: WB! = nil
+        XCTAssertNoThrow(stage2 = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? WB)
+        XCTAssertEqual(stage1, stage2)
+    }
 }

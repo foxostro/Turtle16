@@ -8,14 +8,140 @@
 
 import Foundation
 
+public class EX_Output: NSObject, NSSecureCoding {
+    public static var supportsSecureCoding = true
+    
+    public let carry: UInt
+    public let z: UInt
+    public let ovf: UInt
+    public let j: UInt
+    public let jabs: UInt
+    public let y: UInt16
+    public let hlt: UInt
+    public let storeOp: UInt16
+    public let ctl: UInt
+    public let selC: UInt
+    public let associatedPC: UInt16?
+    
+    public override var description: String {
+        let c = (self.carry==0) ? "c" : "C"
+        let z = (self.z==0) ? "z" : "Z"
+        let o = (self.ovf==0) ? "o" : "O"
+        let j = (self.j==0) ? "J" : "j"
+        let a = (self.jabs==0) ? "A" : "a"
+        let h = (self.hlt==0) ? "H" : "h"
+        return "\(c)\(z)\(o)\(j)\(a)\(h), y: \(String(format: "%04x", y)), storeOp: \(String(format: "%04x", storeOp)), ctl: \(String(format: "%x", ctl)), selC: \(selC)"
+    }
+    
+    public required init(carry: UInt, z: UInt, ovf: UInt, j: UInt, jabs: UInt, y: UInt16, hlt: UInt, storeOp: UInt16, ctl: UInt, selC: UInt, associatedPC: UInt16? = nil) {
+        self.carry = carry
+        self.z = z
+        self.ovf = ovf
+        self.j = j
+        self.jabs = jabs
+        self.y = y
+        self.hlt = hlt
+        self.storeOp = storeOp
+        self.ctl = ctl
+        self.selC = selC
+        self.associatedPC = associatedPC
+    }
+    
+    public required init?(coder: NSCoder) {
+        guard let carry = coder.decodeObject(forKey: "carry") as? UInt,
+              let z = coder.decodeObject(forKey: "z") as? UInt,
+              let ovf = coder.decodeObject(forKey: "ovf") as? UInt,
+              let j = coder.decodeObject(forKey: "j") as? UInt,
+              let jabs = coder.decodeObject(forKey: "jabs") as? UInt,
+              let y = coder.decodeObject(forKey: "y") as? UInt16,
+              let hlt = coder.decodeObject(forKey: "hlt") as? UInt,
+              let storeOp = coder.decodeObject(forKey: "storeOp") as? UInt16,
+              let ctl = coder.decodeObject(forKey: "ctl") as? UInt,
+              let selC = coder.decodeObject(forKey: "selC") as? UInt,
+              let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16? else {
+            return nil
+        }
+        self.carry = carry
+        self.z = z
+        self.ovf = ovf
+        self.j = j
+        self.jabs = jabs
+        self.y = y
+        self.hlt = hlt
+        self.storeOp = storeOp
+        self.ctl = ctl
+        self.selC = selC
+        self.associatedPC = associatedPC
+    }
+    
+    public func encode(with coder: NSCoder) {
+        coder.encode(carry, forKey: "carry")
+        coder.encode(z, forKey: "z")
+        coder.encode(ovf, forKey: "ovf")
+        coder.encode(j, forKey: "j")
+        coder.encode(jabs, forKey: "jabs")
+        coder.encode(y, forKey: "y")
+        coder.encode(hlt, forKey: "hlt")
+        coder.encode(storeOp, forKey: "storeOp")
+        coder.encode(ctl, forKey: "ctl")
+        coder.encode(selC, forKey: "selC")
+        coder.encode(associatedPC, forKey: "associatedPC")
+    }
+    
+    public static func ==(lhs: EX_Output, rhs: EX_Output) -> Bool {
+        return lhs.isEqual(rhs)
+    }
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else {
+            return false
+        }
+        guard let rhs = rhs as? EX_Output else {
+            return false
+        }
+        guard carry == rhs.carry,
+              z == rhs.z,
+              ovf == rhs.ovf,
+              j == rhs.j,
+              jabs == rhs.jabs,
+              y == rhs.y,
+              hlt == rhs.hlt,
+              storeOp == rhs.storeOp,
+              ctl == rhs.ctl,
+              selC == rhs.selC,
+              associatedPC == rhs.associatedPC else {
+            return false
+        }
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(carry)
+        hasher.combine(z)
+        hasher.combine(ovf)
+        hasher.combine(j)
+        hasher.combine(jabs)
+        hasher.combine(y)
+        hasher.combine(hlt)
+        hasher.combine(storeOp)
+        hasher.combine(ctl)
+        hasher.combine(selC)
+        hasher.combine(associatedPC)
+        return hasher.finalize()
+    }
+}
+
 // Models the EX (execute) stage of the Turtle16 pipeline.
 // Please refer to EX.sch for details.
 // Classes in the simulator intentionally model specific pieces of hardware,
 // following naming conventions and organization that matches the schematics.
-public class EX: NSObject {
+public class EX: NSObject, NSSecureCoding {
+    public static var supportsSecureCoding = true
+    
     public var associatedPC: UInt16? = nil
     
-    public struct Input {
+    public struct Input: Equatable, Hashable {
         public let pc: UInt16
         public let ctl: UInt
         public let a: UInt16
@@ -78,45 +204,7 @@ public class EX: NSObject {
         }
     }
     
-    public struct Output {
-        public let carry: UInt
-        public let z: UInt
-        public let ovf: UInt
-        public let j: UInt
-        public let jabs: UInt
-        public let y: UInt16
-        public let hlt: UInt
-        public let storeOp: UInt16
-        public let ctl: UInt
-        public let selC: UInt
-        public let associatedPC: UInt16?
-        
-        public init(carry: UInt, z: UInt, ovf: UInt, j: UInt, jabs: UInt, y: UInt16, hlt: UInt, storeOp: UInt16, ctl: UInt, selC: UInt, associatedPC: UInt16? = nil) {
-            self.carry = carry
-            self.z = z
-            self.ovf = ovf
-            self.j = j
-            self.jabs = jabs
-            self.y = y
-            self.hlt = hlt
-            self.storeOp = storeOp
-            self.ctl = ctl
-            self.selC = selC
-            self.associatedPC = associatedPC
-        }
-        
-        public var description: String {
-            let c = (self.carry==0) ? "c" : "C"
-            let z = (self.z==0) ? "z" : "Z"
-            let o = (self.ovf==0) ? "o" : "O"
-            let j = (self.j==0) ? "J" : "j"
-            let a = (self.jabs==0) ? "A" : "a"
-            let h = (self.hlt==0) ? "H" : "h"
-            return "\(c)\(z)\(o)\(j)\(a)\(h), y: \(String(format: "%04x", y)), storeOp: \(String(format: "%04x", storeOp)), ctl: \(String(format: "%x", ctl)), selC: \(selC)"
-        }
-    }
-    
-    public func step(input: Input) -> Output {
+    public func step(input: Input) -> EX_Output {
         let c0 = (input.ctl >> 6) & 1
         let i0 = (input.ctl >> 7) & 1
         let i1 = (input.ctl >> 8) & 1
@@ -144,17 +232,17 @@ public class EX: NSObject {
                                                       oe: 0))
         let storeOp = selectStoreOperand(input: input)
         associatedPC = input.associatedPC
-        return Output(carry: aluOutput.c16,
-                      z: aluOutput.z,
-                      ovf: aluOutput.ovf,
-                      j: j,
-                      jabs: jabs,
-                      y: aluOutput.f!,
-                      hlt: hlt,
-                      storeOp: storeOp,
-                      ctl: input.ctl,
-                      selC: splitOutSelC(input: input),
-                      associatedPC: associatedPC)
+        return EX_Output(carry: aluOutput.c16,
+                         z: aluOutput.z,
+                         ovf: aluOutput.ovf,
+                         j: j,
+                         jabs: jabs,
+                         y: aluOutput.f!,
+                         hlt: hlt,
+                         storeOp: storeOp,
+                         ctl: input.ctl,
+                         selC: splitOutSelC(input: input),
+                         associatedPC: associatedPC)
     }
     
     public func splitOutSelC(input: Input) -> UInt {
@@ -210,5 +298,42 @@ public class EX: NSObject {
             assert(false) // unreachable
             fatalError("unreachable")
         }
+    }
+    
+    public required override init() {
+    }
+    
+    public required init?(coder: NSCoder) {
+        guard let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16? else {
+            return nil
+        }
+        self.associatedPC = associatedPC
+    }
+    
+    public func encode(with coder: NSCoder) {
+        coder.encode(associatedPC, forKey: "associatedPC")
+    }
+    
+    public static func ==(lhs: EX, rhs: EX) -> Bool {
+        return lhs.isEqual(rhs)
+    }
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else {
+            return false
+        }
+        guard let rhs = rhs as? EX else {
+            return false
+        }
+        guard associatedPC == rhs.associatedPC else {
+            return false
+        }
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(associatedPC)
+        return hasher.finalize()
     }
 }

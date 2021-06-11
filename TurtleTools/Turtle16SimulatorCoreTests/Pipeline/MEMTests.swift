@@ -52,4 +52,41 @@ class MEMTests: XCTestCase {
         XCTAssertEqual(output.selC, input.selC)
         XCTAssertEqual(output.ctl, input.ctl)
     }
+    
+    func testEquality_Equal() throws {
+        let stage1 = MEM()
+        stage1.associatedPC = 1
+        
+        let stage2 = MEM()
+        stage2.associatedPC = 1
+        
+        XCTAssertEqual(stage1, stage2)
+        XCTAssertEqual(stage1.hash, stage2.hash)
+    }
+    
+    func testEquality_NotEqual() throws {
+        let stage1 = MEM()
+        stage1.associatedPC = 1
+        
+        let stage2 = MEM()
+        stage2.associatedPC = 2
+        
+        XCTAssertNotEqual(stage1, stage2)
+        XCTAssertNotEqual(stage1.hash, stage2.hash)
+    }
+    
+    func testEncodeDecodeRoundTrip() throws {
+        let stage1 = MEM()
+        stage1.associatedPC = 1
+        
+        var data: Data! = nil
+        XCTAssertNoThrow(data = try NSKeyedArchiver.archivedData(withRootObject: stage1, requiringSecureCoding: true))
+        if data == nil {
+            XCTFail()
+            return
+        }
+        var stage2: MEM! = nil
+        XCTAssertNoThrow(stage2 = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? MEM)
+        XCTAssertEqual(stage1, stage2)
+    }
 }

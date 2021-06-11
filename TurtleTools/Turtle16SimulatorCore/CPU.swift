@@ -15,7 +15,7 @@ public struct PipelineStageInfo {
 }
 
 // Provides an abstract interface to a model of the Turtle16 CPU.
-public protocol CPU: NSObject {
+public protocol CPU: NSObject, NSSecureCoding {
     var timeStamp: UInt { get }
     var isResetting: Bool { get }
     var isHalted: Bool { get }

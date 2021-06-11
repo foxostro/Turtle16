@@ -12,6 +12,7 @@ import Foundation
 // Classes in the simulator intentionally model specific pieces of hardware,
 // following naming conventions and organization that matches the schematics.
 public class SchematicLevelCPUModel: NSObject, CPU {
+    public static var supportsSecureCoding = true
     public static let kNumberOfResetCycles: UInt = 100 // fake, but whatever
     
     public var timeStamp: UInt = 0
@@ -103,19 +104,31 @@ public class SchematicLevelCPUModel: NSObject, CPU {
         }
     }
 
-    public let stageIF = IF()
-    public let stageID = ID()
-    public let stageEX = EX()
-    public let stageMEM = MEM()
-    public let stageWB = WB()
+    public let stageIF: IF
+    public let stageID: ID
+    public let stageEX: EX
+    public let stageMEM: MEM
+    public let stageWB: WB
     
-    public var outputIF = IF.Output(ins: 0, pc: 0)
-    public var outputID = ID.Output(stall: 0, ctl_EX: 0b111111111111111111111, a: 0, b: 0, ins: 0)
-    public var outputEX = EX.Output(carry: 0, z: 0, ovf: 0, j: 1, jabs: 1, y: 0, hlt: 1, storeOp: 0, ctl: 0b111111111111111111111, selC: 0)
-    public var outputMEM = MEM.Output(y: 0, storeOp: 0, selC: 0, ctl: 0b111111111111111111111)
-    public var outputWB = WB.Output(c: 0, wrl: 1, wrh: 1, wben: 1)
+    public var outputIF: IF_Output
+    public var outputID: ID_Output
+    public var outputEX: EX_Output
+    public var outputMEM: MEM_Output
+    public var outputWB: WB_Output
     
     public override init() {
+        stageIF = IF()
+        stageID = ID()
+        stageEX = EX()
+        stageMEM = MEM()
+        stageWB = WB()
+        
+        outputIF = IF_Output(ins: 0, pc: 0)
+        outputID = ID_Output(stall: 0, ctl_EX: 0b111111111111111111111, a: 0, b: 0, ins: 0)
+        outputEX = EX_Output(carry: 0, z: 0, ovf: 0, j: 1, jabs: 1, y: 0, hlt: 1, storeOp: 0, ctl: 0b111111111111111111111, selC: 0)
+        outputMEM = MEM_Output(y: 0, storeOp: 0, selC: 0, ctl: 0b111111111111111111111)
+        outputWB = WB_Output(c: 0, wrl: 1, wrh: 1, wben: 1)
+        
         super.init()
         stageIF.load = {[weak self] (addr: UInt16) in
             if addr < self!.instructions.count {
@@ -126,6 +139,129 @@ public class SchematicLevelCPUModel: NSObject, CPU {
         
         let decoder = DecoderGenerator().generate()
         stageID.opcodeDecodeROM = decoder
+    }
+    
+    public required init?(coder: NSCoder) {
+        guard let timeStamp = coder.decodeObject(forKey: "timeStamp") as? UInt,
+              let resetCounter = coder.decodeObject(forKey: "resetCounter") as? UInt,
+              let pc = coder.decodeObject(forKey: "pc") as? UInt16,
+              let prevPC = coder.decodeObject(forKey: "prevPC") as? UInt16,
+              let instructions = coder.decodeObject(forKey: "instructions") as? [UInt16],
+              let carry = coder.decodeObject(forKey: "carry") as? UInt,
+              let z = coder.decodeObject(forKey: "z") as? UInt,
+              let ovf = coder.decodeObject(forKey: "ovf") as? UInt,
+              let stageIF = coder.decodeObject(of: IF.self, forKey: "stageIF"),
+              let stageID = coder.decodeObject(of: ID.self, forKey: "stageID"),
+              let stageEX = coder.decodeObject(of: EX.self, forKey: "stageEX"),
+              let stageMEM = coder.decodeObject(of: MEM.self, forKey: "stageMEM"),
+              let stageWB = coder.decodeObject(of: WB.self, forKey: "stageWB"),
+              let outputIF = coder.decodeObject(of: IF_Output.self, forKey: "outputIF"),
+              let outputID = coder.decodeObject(of: ID_Output.self, forKey: "outputID"),
+              let outputEX = coder.decodeObject(of: EX_Output.self, forKey: "outputEX"),
+              let outputMEM = coder.decodeObject(of: MEM_Output.self, forKey: "outputMEM"),
+              let outputWB = coder.decodeObject(of: WB_Output.self, forKey: "outputWB") else {
+            return nil
+        }
+        self.timeStamp = timeStamp
+        self.resetCounter = resetCounter
+        self.pc = pc
+        self.prevPC = prevPC
+        self.instructions = instructions
+        self.carry = carry
+        self.z = z
+        self.ovf = ovf
+        self.stageIF = stageIF
+        self.stageID = stageID
+        self.stageEX = stageEX
+        self.stageMEM = stageMEM
+        self.stageWB = stageWB
+        self.outputIF = outputIF
+        self.outputID = outputID
+        self.outputEX = outputEX
+        self.outputMEM = outputMEM
+        self.outputWB = outputWB
+    }
+    
+    public func encode(with coder: NSCoder) {
+        coder.encode(timeStamp, forKey: "timeStamp")
+        coder.encode(resetCounter, forKey: "resetCounter")
+        coder.encode(pc, forKey: "pc")
+        coder.encode(prevPC, forKey: "prevPC")
+        coder.encode(instructions, forKey: "instructions")
+        coder.encode(carry, forKey: "carry")
+        coder.encode(z, forKey: "z")
+        coder.encode(ovf, forKey: "ovf")
+        coder.encode(stageIF, forKey: "stageIF")
+        coder.encode(stageID, forKey: "stageID")
+        coder.encode(stageEX, forKey: "stageEX")
+        coder.encode(stageMEM, forKey: "stageMEM")
+        coder.encode(stageWB, forKey: "stageWB")
+        coder.encode(outputIF, forKey: "outputIF")
+        coder.encode(outputID, forKey: "outputID")
+        coder.encode(outputEX, forKey: "outputEX")
+        coder.encode(outputMEM, forKey: "outputMEM")
+        coder.encode(outputWB, forKey: "outputWB")
+    }
+    
+    public static func ==(lhs: SchematicLevelCPUModel, rhs: SchematicLevelCPUModel) -> Bool {
+        return lhs.isEqual(rhs)
+    }
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else {
+            return false
+        }
+        guard let rhs = rhs as? SchematicLevelCPUModel else {
+            return false
+        }
+        guard timeStamp == rhs.timeStamp,
+              resetCounter == rhs.resetCounter,
+              pc == rhs.pc,
+              prevPC == rhs.prevPC,
+              instructions == rhs.instructions,
+              carry == rhs.carry,
+              z == rhs.z,
+              ovf == rhs.ovf,
+              numberOfRegisters == rhs.numberOfRegisters,
+              numberOfPipelineStages == rhs.numberOfPipelineStages,
+              stageIF == rhs.stageIF,
+              stageID == rhs.stageID,
+              stageEX == rhs.stageEX,
+              stageMEM == rhs.stageMEM,
+              stageWB == rhs.stageWB,
+              outputIF == rhs.outputIF,
+              outputID == rhs.outputID,
+              outputEX == rhs.outputEX,
+              outputMEM == rhs.outputMEM,
+              outputWB == rhs.outputWB else {
+            return false
+        }
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(timeStamp)
+        hasher.combine(resetCounter)
+        hasher.combine(pc)
+        hasher.combine(prevPC)
+        hasher.combine(instructions)
+        hasher.combine(carry)
+        hasher.combine(z)
+        hasher.combine(ovf)
+        hasher.combine(numberOfRegisters)
+        hasher.combine(numberOfPipelineStages)
+        hasher.combine(stageIF)
+        hasher.combine(stageID)
+        hasher.combine(stageEX)
+        hasher.combine(stageMEM)
+        hasher.combine(stageWB)
+        hasher.combine(outputIF)
+        hasher.combine(outputID)
+        hasher.combine(outputEX)
+        hasher.combine(outputMEM)
+        hasher.combine(outputWB)
+        return hasher.finalize()
     }
     
     public func reset() {

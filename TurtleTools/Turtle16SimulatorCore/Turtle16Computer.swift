@@ -18,7 +18,8 @@ public extension Notification.Name {
 
 // Models the Turtle16 Computer as a whole.
 // This is where we simulate memory mapping and integration with peripherals.
-public class Turtle16Computer: NSObject {
+public class Turtle16Computer: NSObject, NSSecureCoding {
+    public static var supportsSecureCoding = true
     public let cpu: CPU
     public var ram: [UInt16]
     public var opcodeDecodeROM: [UInt] {
@@ -32,11 +33,6 @@ public class Turtle16Computer: NSObject {
     
     public var timeStamp: UInt {
         cpu.timeStamp
-    }
-    
-    public init(_ cpu: CPU) {
-        self.cpu = cpu
-        self.ram = Array<UInt16>(repeating: 0, count: Int(UInt16.max)+1)
     }
     
     public var isHalted: Bool {
@@ -86,6 +82,28 @@ public class Turtle16Computer: NSObject {
         cpu.numberOfRegisters
     }
     
+    public required init(cpu: CPU, ram: [UInt16]) {
+        self.cpu = cpu
+        self.ram = ram
+    }
+    
+    public convenience init(_ cpu: CPU) {
+        self.init(cpu: cpu, ram: Array<UInt16>(repeating: 0, count: Int(UInt16.max)+1))
+    }
+    
+    public required convenience init?(coder: NSCoder) {
+        guard let cpu = coder.decodeObject(of: SchematicLevelCPUModel.self, forKey: "cpu"),
+              let ram = coder.decodeObject(forKey: "ram") as? [UInt16] else {
+            return nil
+        }
+        self.init(cpu: cpu, ram: ram)
+    }
+
+    public func encode(with coder: NSCoder) {
+        coder.encode(cpu, forKey: "cpu")
+        coder.encode(ram, forKey: "ram")
+    }
+    
     public func setRegister(_ idx: Int, _ val: UInt16) {
         cpu.setRegister(idx, val)
     }
@@ -130,5 +148,25 @@ public class Turtle16Computer: NSObject {
             cachedDisassembly = Disassembly(labels: labels, entries: entries)
         }
         return cachedDisassembly!
+    }
+    
+    public static func ==(lhs: Turtle16Computer, rhs: Turtle16Computer) -> Bool {
+        return lhs.isEqual(rhs)
+    }
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        guard let rhs = rhs as? Turtle16Computer,
+              ram == rhs.ram,
+              cpu == rhs.cpu else {
+            return false
+        }
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(cpu.hash)
+        hasher.combine(ram)
+        return hasher.finalize()
     }
 }

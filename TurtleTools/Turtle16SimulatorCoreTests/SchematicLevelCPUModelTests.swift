@@ -2250,4 +2250,50 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step()
         XCTAssertTrue(cpu.isStalling)
     }
+    
+    func testEquality_Equal() throws {
+        let cpu1 = SchematicLevelCPUModel()
+        cpu1.instructions = [0x000, 0x0800]
+        cpu1.reset()
+        cpu1.run()
+        
+        let cpu2 = SchematicLevelCPUModel()
+        cpu2.instructions = [0x000, 0x0800]
+        cpu2.reset()
+        cpu2.run()
+        
+        XCTAssertEqual(cpu1, cpu2)
+        XCTAssertEqual(cpu1.hash, cpu2.hash)
+    }
+    
+    func testEquality_NotEqual() throws {
+        let cpu1 = SchematicLevelCPUModel()
+        cpu1.instructions = [0x000, 0x0800]
+        cpu1.reset()
+        cpu1.run()
+        
+        let cpu2 = SchematicLevelCPUModel()
+        cpu2.instructions = [0x000, 0x000, 0x0800]
+        cpu2.reset()
+        cpu2.run()
+        
+        XCTAssertNotEqual(cpu1, cpu2)
+        XCTAssertNotEqual(cpu1.hash, cpu2.hash)
+    }
+    
+    func testEncodeDecodeRoundTrip() throws {
+        let cpu1 = SchematicLevelCPUModel()
+        cpu1.instructions = [0x000, 0x0800]
+        cpu1.reset()
+        cpu1.run()
+        var data: Data! = nil
+        XCTAssertNoThrow(data = try NSKeyedArchiver.archivedData(withRootObject: cpu1, requiringSecureCoding: true))
+        if data == nil {
+            XCTFail()
+            return
+        }
+        var cpu2: SchematicLevelCPUModel! = nil
+        XCTAssertNoThrow(cpu2 = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? SchematicLevelCPUModel)
+        XCTAssertEqual(cpu1, cpu2)
+    }
 }

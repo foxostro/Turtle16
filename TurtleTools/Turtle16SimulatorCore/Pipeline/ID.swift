@@ -8,14 +8,104 @@
 
 import Foundation
 
+public class ID_Output: NSObject, NSSecureCoding {
+    public static var supportsSecureCoding = true
+    
+    public let stall: UInt
+    public let ctl_EX: UInt
+    public let a: UInt16
+    public let b: UInt16
+    public let ins: UInt
+    public let associatedPC: UInt16?
+    
+    public override var description: String {
+        return "stall: \(stall), ctl_EX: \(String(format: "%x", ctl_EX)), a: \(String(format: "%04x", a)), b: \(String(format: "%04x", b)), ins: \(String(format: "%04x", ins))"
+    }
+    
+    public required init(stall: UInt,
+                         ctl_EX: UInt,
+                         a: UInt16,
+                         b: UInt16,
+                         ins: UInt,
+                         associatedPC: UInt16? = nil) {
+        self.stall = stall
+        self.ctl_EX = ctl_EX
+        self.a = a
+        self.b = b
+        self.ins = ins
+        self.associatedPC = associatedPC
+    }
+    
+    public required init?(coder: NSCoder) {
+        guard let stall = coder.decodeObject(forKey: "stall") as? UInt,
+              let ctl_EX = coder.decodeObject(forKey: "ctl_EX") as? UInt,
+              let a = coder.decodeObject(forKey: "a") as? UInt16,
+              let b = coder.decodeObject(forKey: "b") as? UInt16,
+              let ins = coder.decodeObject(forKey: "ins") as? UInt,
+              let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16? else {
+            return nil
+        }
+        self.stall = stall
+        self.ctl_EX = ctl_EX
+        self.a = a
+        self.b = b
+        self.ins = ins
+        self.associatedPC = associatedPC
+    }
+    
+    public func encode(with coder: NSCoder) {
+        coder.encode(stall, forKey: "stall")
+        coder.encode(ctl_EX, forKey: "ctl_EX")
+        coder.encode(a, forKey: "a")
+        coder.encode(b, forKey: "b")
+        coder.encode(ins, forKey: "ins")
+        coder.encode(associatedPC, forKey: "associatedPC")
+    }
+    
+    public static func ==(lhs: ID_Output, rhs: ID_Output) -> Bool {
+        return lhs.isEqual(rhs)
+    }
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else {
+            return false
+        }
+        guard let rhs = rhs as? ID_Output else {
+            return false
+        }
+        guard stall == rhs.stall,
+              ctl_EX == rhs.ctl_EX,
+              a == rhs.a,
+              b == rhs.b,
+              ins == rhs.ins,
+              associatedPC == rhs.associatedPC else {
+            return false
+        }
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(stall)
+        hasher.combine(ctl_EX)
+        hasher.combine(a)
+        hasher.combine(b)
+        hasher.combine(ins)
+        hasher.combine(associatedPC)
+        return hasher.finalize()
+    }
+}
+
 // Models the ID (instruction decode) stage of the Turtle16 pipeline.
 // Please refer to ID.sch for details.
 // Classes in the simulator intentionally model specific pieces of hardware,
 // following naming conventions and organization that matches the schematics.
-public class ID: NSObject {
+public class ID: NSObject, NSSecureCoding {
+    public static var supportsSecureCoding = true
+    
     public static let nopControlWord: UInt = 0b111111111111111111111
     
-    public struct WriteBackInput {
+    public struct WriteBackInput: Equatable, Hashable {
         public let c: UInt16
         public let wrh: UInt
         public let wrl: UInt
@@ -46,7 +136,7 @@ public class ID: NSObject {
         }
     }
     
-    public struct Input {
+    public struct Input: Equatable, Hashable {
         public let ins: UInt16
         public let y_EX: UInt16
         public let y_MEM: UInt16
@@ -186,39 +276,62 @@ public class ID: NSObject {
         }
     }
     
-    public struct Output {
-        public let stall: UInt
-        public let ctl_EX: UInt
-        public let a: UInt16
-        public let b: UInt16
-        public let ins: UInt
-        public let associatedPC: UInt16?
-        
-        public init(stall: UInt,
-                    ctl_EX: UInt,
-                    a: UInt16,
-                    b: UInt16,
-                    ins: UInt,
-                    associatedPC: UInt16? = nil) {
-            self.stall = stall
-            self.ctl_EX = ctl_EX
-            self.a = a
-            self.b = b
-            self.ins = ins
-            self.associatedPC = associatedPC
-        }
-        
-        public var description: String {
-            return "stall: \(stall), ctl_EX: \(String(format: "%x", ctl_EX)), a: \(String(format: "%04x", a)), b: \(String(format: "%04x", b)), ins: \(String(format: "%04x", ins))"
-        }
-    }
-    
-    public var registerFile = Array<UInt16>(repeating: 0, count: 8)
-    public var opcodeDecodeROM = Array<UInt>(repeating: 0, count: 512)
+    public var registerFile: [UInt16]
+    public var opcodeDecodeROM: [UInt]
     public var associatedPC: UInt16?
     let hazardControlUnit: HazardControl = HazardControlMockup()
     
-    public func step(input: Input) -> Output {
+    public required override init() {
+        registerFile = Array<UInt16>(repeating: 0, count: 8)
+        opcodeDecodeROM = Array<UInt>(repeating: 0, count: 512)
+        associatedPC = nil
+    }
+    
+    public required init?(coder: NSCoder) {
+        guard let registerFile = coder.decodeObject(forKey: "registerFile") as? [UInt16],
+              let opcodeDecodeROM = coder.decodeObject(forKey: "opcodeDecodeROM") as? [UInt],
+              let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16? else {
+            return nil
+        }
+        self.registerFile = registerFile
+        self.opcodeDecodeROM = opcodeDecodeROM
+        self.associatedPC = associatedPC
+    }
+    
+    public func encode(with coder: NSCoder) {
+        coder.encode(registerFile, forKey: "registerFile")
+        coder.encode(opcodeDecodeROM, forKey: "opcodeDecodeROM")
+        coder.encode(associatedPC, forKey: "associatedPC")
+    }
+    
+    public static func ==(lhs: ID, rhs: ID) -> Bool {
+        return lhs.isEqual(rhs)
+    }
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else {
+            return false
+        }
+        guard let rhs = rhs as? ID else {
+            return false
+        }
+        guard registerFile == rhs.registerFile,
+              opcodeDecodeROM == rhs.opcodeDecodeROM,
+              associatedPC == rhs.associatedPC else {
+            return false
+        }
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(registerFile)
+        hasher.combine(opcodeDecodeROM)
+        hasher.combine(associatedPC)
+        return hasher.finalize()
+    }
+    
+    public func step(input: Input) -> ID_Output {
         let hazardControlSignals = hazardControlUnit.step(input: input)
         let flush = (hazardControlSignals.flush & 1)==1
         associatedPC = flush ? nil : input.associatedPC
@@ -226,7 +339,7 @@ public class ID: NSObject {
         let a = forwardA(input, hazardControlSignals)
         let b = forwardB(input, hazardControlSignals)
         let ins = UInt(input.ins & 0x07ff)
-        return Output(stall: hazardControlSignals.stall & 1,
+        return ID_Output(stall: hazardControlSignals.stall & 1,
                       ctl_EX: ctl_EX,
                       a: a,
                       b: b,

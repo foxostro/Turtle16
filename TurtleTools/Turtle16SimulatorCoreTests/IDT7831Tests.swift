@@ -494,4 +494,41 @@ class IDT7831Tests: XCTestCase {
         XCTAssertEqual(output.f, 0x8000)
         XCTAssertEqual(output.ovf, 1)
     }
+    
+    func testEquality_Equal() throws {
+        let alu1 = IDT7831()
+        alu1.a = 1
+        
+        let alu2 = IDT7831()
+        alu2.a = 1
+        
+        XCTAssertEqual(alu1, alu2)
+        XCTAssertEqual(alu1.hash, alu2.hash)
+    }
+    
+    func testEquality_NotEqual() throws {
+        let alu1 = IDT7831()
+        alu1.a = 1
+        
+        let alu2 = IDT7831()
+        alu2.a = 2
+        
+        XCTAssertNotEqual(alu1, alu2)
+        XCTAssertNotEqual(alu1.hash, alu2.hash)
+    }
+    
+    func testEncodeDecodeRoundTrip() throws {
+        let alu1 = IDT7831()
+        alu1.a = 1
+        
+        var data: Data! = nil
+        XCTAssertNoThrow(data = try NSKeyedArchiver.archivedData(withRootObject: alu1, requiringSecureCoding: true))
+        if data == nil {
+            XCTFail()
+            return
+        }
+        var alu2: IDT7831! = nil
+        XCTAssertNoThrow(alu2 = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? IDT7831)
+        XCTAssertEqual(alu1, alu2)
+    }
 }

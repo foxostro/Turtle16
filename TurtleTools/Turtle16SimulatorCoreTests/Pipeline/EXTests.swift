@@ -184,4 +184,41 @@ class EXTests: XCTestCase {
         XCTAssertEqual(output.z, 0)
         XCTAssertEqual(output.ovf, 1)
     }
+    
+    func testEquality_Equal() throws {
+        let stage1 = EX()
+        stage1.associatedPC = 1
+        
+        let stage2 = EX()
+        stage2.associatedPC = 1
+        
+        XCTAssertEqual(stage1, stage2)
+        XCTAssertEqual(stage1.hash, stage2.hash)
+    }
+    
+    func testEquality_NotEqual() throws {
+        let stage1 = EX()
+        stage1.associatedPC = 1
+        
+        let stage2 = EX()
+        stage2.associatedPC = 2
+        
+        XCTAssertNotEqual(stage1, stage2)
+        XCTAssertNotEqual(stage1.hash, stage2.hash)
+    }
+    
+    func testEncodeDecodeRoundTrip() throws {
+        let stage1 = EX()
+        stage1.associatedPC = 1
+        
+        var data: Data! = nil
+        XCTAssertNoThrow(data = try NSKeyedArchiver.archivedData(withRootObject: stage1, requiringSecureCoding: true))
+        if data == nil {
+            XCTFail()
+            return
+        }
+        var stage2: EX! = nil
+        XCTAssertNoThrow(stage2 = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? EX)
+        XCTAssertEqual(stage1, stage2)
+    }
 }

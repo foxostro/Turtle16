@@ -212,6 +212,10 @@ class Simulator16ViewController: NSViewController {
         ])
     }
     
+    override func viewDidAppear() {
+        debugConsoleViewController.debugger.undoManager = view.window?.undoManager
+    }
+    
     @IBAction func activateDebugConsole(_ sender: Any) {
         debugConsoleContainerView.isHidden = false
         debugConsoleViewController.debuggerInput.becomeFirstResponder()

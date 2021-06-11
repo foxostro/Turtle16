@@ -27,6 +27,7 @@ public class DebugConsole: NSObject {
             interpreter.shouldQuit
         }
     }
+    
     public var logger: Logger {
         set(value) {
             interpreter.logger = value
@@ -35,9 +36,11 @@ public class DebugConsole: NSObject {
             interpreter.logger
         }
     }
+    
     public let computer: Turtle16Computer
     public let interpreter: DebugConsoleCommandLineInterpreter
     public let compiler: DebugConsoleCommandLineCompiler
+    public var undoManager: UndoManager? = nil
     
     public init(computer: Turtle16Computer) {
         self.computer = computer
@@ -49,6 +52,7 @@ public class DebugConsole: NSObject {
         assert(!shouldQuit)
         logger.append("> \(text)\n")
         compiler.compile(text)
+        
         if compiler.hasError {
             if compiler.errors.count == 1 {
                 logger.append(compiler.errors.first!.message)
@@ -56,8 +60,26 @@ public class DebugConsole: NSObject {
                 let error = CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors)
                 logger.append(error.message + "\n")
             }
-        } else {
+        }
+        else {
+            if let keyInstruction = compiler.instructions.first, keyInstruction.undoable {
+                registerUndo(keyInstruction.actionName)
+            }
             interpreter.run(instructions: compiler.instructions)
         }
+    }
+    
+    fileprivate func registerUndo(_ actionName: String?) {
+        guard let undoManager = undoManager else {
+            return
+        }
+        if let actionName = actionName {
+            undoManager.setActionName(actionName)
+        }
+        let snapshotForUndo = computer.snapshot()
+        undoManager.registerUndo(withTarget: self, handler: { [weak self] in
+            self?.registerUndo(actionName)
+            $0.computer.restore(from: snapshotForUndo)
+        })
     }
 }

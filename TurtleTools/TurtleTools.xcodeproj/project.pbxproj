@@ -256,6 +256,7 @@
 		6FAABCA125318CDB00A66FAF /* TestDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FAABCA025318CDB00A66FAF /* TestDeclaration.swift */; };
 		6FAC109525A25E9300BB3836 /* DecoderGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FAC109425A25E9300BB3836 /* DecoderGenerator.swift */; };
 		6FAC10A725A25EA600BB3836 /* DecoderGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FAC10A625A25EA600BB3836 /* DecoderGeneratorTests.swift */; };
+		6FACB6DB267301F500488505 /* DebugConsoleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FACB6DA267301F500488505 /* DebugConsoleTests.swift */; };
 		6FAE8DFE261B943600A8A23D /* OutputLogicMacroCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FAE8DFD261B943600A8A23D /* OutputLogicMacroCell.swift */; };
 		6FAE8E10261B944A00A8A23D /* OutputLogicMacroCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FAE8E0F261B944A00A8A23D /* OutputLogicMacroCellTests.swift */; };
 		6FAE8E32261BA6F500A8A23D /* ProductTermFuseMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FAE8E31261BA6F500A8A23D /* ProductTermFuseMap.swift */; };
@@ -913,6 +914,7 @@
 		6FAABCA025318CDB00A66FAF /* TestDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDeclaration.swift; sourceTree = "<group>"; };
 		6FAC109425A25E9300BB3836 /* DecoderGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecoderGenerator.swift; sourceTree = "<group>"; };
 		6FAC10A625A25EA600BB3836 /* DecoderGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecoderGeneratorTests.swift; sourceTree = "<group>"; };
+		6FACB6DA267301F500488505 /* DebugConsoleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugConsoleTests.swift; sourceTree = "<group>"; };
 		6FAE8DFD261B943600A8A23D /* OutputLogicMacroCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutputLogicMacroCell.swift; sourceTree = "<group>"; };
 		6FAE8E0F261B944A00A8A23D /* OutputLogicMacroCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutputLogicMacroCellTests.swift; sourceTree = "<group>"; };
 		6FAE8E31261BA6F500A8A23D /* ProductTermFuseMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTermFuseMap.swift; sourceTree = "<group>"; };
@@ -1375,6 +1377,7 @@
 				6F42B8E226531532004A7B12 /* AssemblerLexerTests.swift */,
 				6F42B8E02651F01B004A7B12 /* AssemblerParserTests.swift */,
 				6F42B8E826531EC9004A7B12 /* AssemblerSingleInstructionCodeGeneratorTests.swift */,
+				6FACB6DA267301F500488505 /* DebugConsoleTests.swift */,
 				6F452B0E2624ECB9003732B3 /* DebugConsoleCommandLineInterpreterTests.swift */,
 				6F452A142623F3AC003732B3 /* DebugConsoleCommandLineCompilerTests.swift */,
 				6F4527AE2623D118003732B3 /* DebugConsoleCommandLineLexerTests.swift */,
@@ -2423,6 +2426,7 @@
 				6F87A5BE261E46DC0093750D /* HazardControlGALTests.swift in Sources */,
 				6F7C14FC259A94E40034C7D0 /* EXTests.swift in Sources */,
 				6F87A56A261E2B390093750D /* HazardControlMockupTests.swift in Sources */,
+				6FACB6DB267301F500488505 /* DebugConsoleTests.swift in Sources */,
 				6F452A152623F3AC003732B3 /* DebugConsoleCommandLineCompilerTests.swift in Sources */,
 				6F47D905261CC6FC008EFFF2 /* JEDECFuseFileParserTests.swift in Sources */,
 				6FDF61E3266D86E8002E7A17 /* DisassemblerTests.swift in Sources */,

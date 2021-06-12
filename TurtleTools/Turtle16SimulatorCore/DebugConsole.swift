@@ -9,7 +9,9 @@
 import Foundation
 import TurtleCore
 
-public class DebugConsole: NSObject {
+public class DebugConsole: NSObject, NSSecureCoding {
+    public static var supportsSecureCoding = true
+    
     public var sandboxAccessManager: SandboxAccessManager? {
         set(value) {
             interpreter.sandboxAccessManager = value
@@ -42,10 +44,21 @@ public class DebugConsole: NSObject {
     public let compiler: DebugConsoleCommandLineCompiler
     public var undoManager: UndoManager? = nil
     
-    public init(computer: Turtle16Computer) {
+    public required init(computer: Turtle16Computer) {
         self.computer = computer
         interpreter = DebugConsoleCommandLineInterpreter(computer)
         compiler = DebugConsoleCommandLineCompiler()
+    }
+    
+    public required convenience init?(coder: NSCoder) {
+        guard let computer = coder.decodeObject(of: Turtle16Computer.self, forKey: "computer") else {
+            return nil
+        }
+        self.init(computer: computer)
+    }
+    
+    public func encode(with coder: NSCoder) {
+        coder.encode(computer, forKey: "computer")
     }
     
     public func eval(_ text: String) {
@@ -76,10 +89,36 @@ public class DebugConsole: NSObject {
         if let actionName = actionName {
             undoManager.setActionName(actionName)
         }
-        let snapshotForUndo = computer.snapshot()
+        let snapshotForUndo = snapshot()
         undoManager.registerUndo(withTarget: self, handler: { [weak self] in
             self?.registerUndo(actionName)
-            $0.computer.restore(from: snapshotForUndo)
+            $0.restore(from: snapshotForUndo)
         })
+    }
+    
+    fileprivate func snapshot() -> Data {
+        return computer.snapshot()
+    }
+    
+    fileprivate func restore(from data: Data) {
+        computer.restore(from: data)
+    }
+    
+    public static func ==(lhs: DebugConsole, rhs: DebugConsole) -> Bool {
+        return lhs.isEqual(rhs)
+    }
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        guard let rhs = rhs as? DebugConsole,
+              computer == rhs.computer else {
+            return false
+        }
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(computer.hash)
+        return hasher.finalize()
     }
 }

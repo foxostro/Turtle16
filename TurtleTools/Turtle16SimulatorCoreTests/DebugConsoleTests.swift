@@ -30,4 +30,54 @@ class DebugConsoleTests: XCTestCase {
         let computer2 = debugConsole.computer
         XCTAssertEqual(computer1, computer2)
     }
+    
+    func testEquality_Equal() throws {
+        let path = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!.path
+        
+        let debugConsole1 = DebugConsole(computer: Turtle16Computer(SchematicLevelCPUModel()))
+        debugConsole1.undoManager = UndoManager()
+        debugConsole1.eval("load program \"\(path)\"")
+        
+        let debugConsole2 = DebugConsole(computer: Turtle16Computer(SchematicLevelCPUModel()))
+        debugConsole2.undoManager = UndoManager()
+        debugConsole2.eval("load program \"\(path)\"")
+        
+        XCTAssertEqual(debugConsole1, debugConsole2)
+        XCTAssertEqual(debugConsole1.hash, debugConsole2.hash)
+    }
+    
+    func testEquality_NotEqual() throws {
+        let path = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!.path
+        
+        let debugConsole1 = DebugConsole(computer: Turtle16Computer(SchematicLevelCPUModel()))
+        debugConsole1.undoManager = UndoManager()
+        debugConsole1.eval("load program \"\(path)\"")
+        debugConsole1.eval("c")
+        
+        let debugConsole2 = DebugConsole(computer: Turtle16Computer(SchematicLevelCPUModel()))
+        debugConsole2.undoManager = UndoManager()
+        debugConsole2.eval("load program \"\(path)\"")
+        
+        XCTAssertNotEqual(debugConsole1, debugConsole2)
+        XCTAssertNotEqual(debugConsole1.hash, debugConsole2.hash)
+    }
+    
+    func testEncodeDecodeRoundTrip() throws {
+        let path = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!.path
+        
+        let debugConsole1 = DebugConsole(computer: Turtle16Computer(SchematicLevelCPUModel()))
+        debugConsole1.undoManager = UndoManager()
+        debugConsole1.eval("load program \"\(path)\"")
+        debugConsole1.eval("r")
+        
+        var data: Data! = nil
+        XCTAssertNoThrow(data = try NSKeyedArchiver.archivedData(withRootObject: debugConsole1, requiringSecureCoding: true))
+        if data == nil {
+            XCTFail()
+            return
+        }
+        var debugConsole2: DebugConsole! = nil
+        XCTAssertNoThrow(debugConsole2 = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? DebugConsole)
+        XCTAssertEqual(debugConsole1, debugConsole2)
+    }
 }

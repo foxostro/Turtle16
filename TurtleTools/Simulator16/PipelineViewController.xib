@@ -22,7 +22,7 @@
                         <rect key="frame" x="1" y="1" width="461" height="186"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView verticalHuggingPriority="750" misplaced="YES" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" autosaveColumns="NO" headerView="CvR-Xd-XMk" viewBased="YES" translatesAutoresizingMaskIntoConstraints="NO" id="y3z-BX-ytD">
+                            <tableView verticalHuggingPriority="750" misplaced="YES" allowsExpansionToolTips="YES" columnAutoresizingStyle="none" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" autosaveColumns="NO" headerView="CvR-Xd-XMk" viewBased="YES" translatesAutoresizingMaskIntoConstraints="NO" id="y3z-BX-ytD">
                                 <rect key="frame" x="0.0" y="0.0" width="518" height="158"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <size key="intercellSpacing" width="17" height="0.0"/>

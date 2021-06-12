@@ -11,6 +11,8 @@ import TurtleCore
 import Turtle16SimulatorCore
 
 class Simulator16ViewController: NSViewController {
+    @IBOutlet var topLevelSplitView: NSSplitView!
+    @IBOutlet var upperDeckSplitView: NSSplitView!
     @IBOutlet var registersContainerView: NSView!
     @IBOutlet var pipelineContainerView: NSView!
     @IBOutlet var disassemblyContainerView: NSView!
@@ -23,30 +25,17 @@ class Simulator16ViewController: NSViewController {
     public var memoryViewController: MemoryViewController!
     public var debugConsoleViewController: DebugConsoleViewController!
     
-    public let debugger: DebugConsole
-    
-    required init?(coder: NSCoder) {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
-        debugger = DebugConsole(computer: computer)
-        debugger.sandboxAccessManager = ConcreteSandboxAccessManager()
-        
-        super.init(coder: coder)
-        
-        loadExampleProgram()
-    }
-
-    fileprivate func loadExampleProgram() {
-        let url = Bundle(for: type(of: self)).url(forResource: "example", withExtension: "bin")!
-        debugger.interpreter.run(instructions: [
-            .reset(type: .soft),
-            .load("program", url)
-        ])
+    var document: Document {
+        self.view.window!.windowController?.document as! Document
     }
     
     override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        registersViewController = RegistersViewController(computer: debugger.computer)
+        topLevelSplitView.autosaveName = "topLevelSplitView"
+        upperDeckSplitView.autosaveName = "upperDeckSplitView"
+    }
+    
+    override func viewWillAppear() {
+        registersViewController = RegistersViewController(computer: document.debugger.computer)
         registersContainerView.addSubview(registersViewController.view)
         view.addConstraints([
             NSLayoutConstraint(item: registersViewController.view,
@@ -79,7 +68,7 @@ class Simulator16ViewController: NSViewController {
                                constant: 0)
         ])
         
-        pipelineViewController = PipelineViewController(computer: debugger.computer)
+        pipelineViewController = PipelineViewController(computer: document.debugger.computer)
         pipelineContainerView.addSubview(pipelineViewController.view)
         view.addConstraints([
             NSLayoutConstraint(item: pipelineViewController.view,
@@ -112,7 +101,7 @@ class Simulator16ViewController: NSViewController {
                                constant: 0)
         ])
         
-        disassemblyViewController = DisassemblyViewController(debugger.computer)
+        disassemblyViewController = DisassemblyViewController(document.debugger.computer)
         disassemblyContainerView.addSubview(disassemblyViewController.view)
         view.addConstraints([
             NSLayoutConstraint(item: disassemblyViewController.view,
@@ -145,7 +134,7 @@ class Simulator16ViewController: NSViewController {
                                constant: 0)
         ])
         
-        memoryViewController = MemoryViewController(debugger: debugger)
+        memoryViewController = MemoryViewController(debugger: document.debugger)
         memoryContainerView.addSubview(memoryViewController.view)
         view.addConstraints([
             NSLayoutConstraint(item: memoryViewController.view,
@@ -178,7 +167,7 @@ class Simulator16ViewController: NSViewController {
                                constant: 0)
         ])
         
-        debugConsoleViewController = DebugConsoleViewController(debugger: debugger)
+        debugConsoleViewController = DebugConsoleViewController(debugger: document.debugger)
         debugConsoleContainerView.addSubview(debugConsoleViewController.view)
         view.addConstraints([
             NSLayoutConstraint(item: debugConsoleViewController.view,
@@ -210,10 +199,8 @@ class Simulator16ViewController: NSViewController {
                                multiplier: 1,
                                constant: 0)
         ])
-    }
     
-    override func viewDidAppear() {
-        debugConsoleViewController.debugger.undoManager = view.window?.undoManager
+        debugConsoleViewController.debugger.undoManager = document.undoManager
     }
     
     @IBAction func activateDebugConsole(_ sender: Any) {

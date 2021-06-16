@@ -130,7 +130,7 @@ Connection ~ 3300 5600
 Wire Bus Line
 	3300 5600 3300 5800
 $Sheet
-S 3000 1450 1250 750 
+S 3000 1450 1250 600 
 U 60693BCF
 F0 "sheet60693B97" 50
 F1 "InstructionDecoder.sch" 50
@@ -138,9 +138,8 @@ F2 "Carry" I L 3000 1650 50
 F3 "Z" I L 3000 1750 50 
 F4 "Ins_ID[11..15]" I L 3000 1550 50 
 F5 "OVF" I L 3000 1850 50 
-F6 "~RST" I L 3000 2000 50 
-F7 "Ctl_ID[0..20]" O R 4250 1550 50 
-F8 "FLUSH" I L 3000 2100 50 
+F6 "Ctl_ID[0..20]" O R 4250 1550 50 
+F7 "FLUSH" I L 3000 1950 50 
 $EndSheet
 Text Label 2750 950  2    50   ~ 0
 Ins_ID[0..10]
@@ -164,8 +163,6 @@ Text HLabel 2900 1850 0    50   Input ~ 0
 OVF
 Wire Wire Line
 	3000 1850 2900 1850
-Wire Wire Line
-	3000 2000 2900 2000
 Wire Bus Line
 	6600 1450 8300 1450
 Wire Bus Line
@@ -202,8 +199,6 @@ Text Notes 9450 5000 0    50   ~ 0
 The A port supplies\nthe Left operand.
 Text Notes 9450 5900 0    50   ~ 0
 The B port supplies\nthe Right operand.
-Text GLabel 2900 2000 0    50   Input ~ 0
-~RST
 Text HLabel 3800 6400 0    50   Input ~ 0
 ~WBEN
 Wire Wire Line
@@ -233,9 +228,9 @@ Text Notes 800  7900 0    50   ~ 0
 Wire Wire Line
 	6150 2850 6150 2400
 Wire Wire Line
-	2900 2400 2900 2100
+	2900 2400 2900 1950
 Wire Wire Line
-	2900 2100 3000 2100
+	2900 1950 3000 1950
 $Sheet
 S 7250 5000 1100 700 
 U 60ADB1D2

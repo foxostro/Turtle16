@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
-Sheet 12 39
+Sheet 11 39
 Title "MEM/WB: Store Operand Register"
 Date "2021-04-28"
 Rev "A (c8cebf3f)"

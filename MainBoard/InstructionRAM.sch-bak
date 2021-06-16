@@ -384,7 +384,7 @@ F 1 "SST39SF010A-45-4I-NHE" H 2400 4050 50  0000 C CNN
 F 2 "Socket:DIP_Socket-32_W11.9_W12.7_W15.24_W17.78_W18.5_3M_232-1285-00-0602J" H 3000 3050 50  0001 C CNN
 F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/25022B.pdf" H 3000 3050 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Microchip-Technology/SST39SF010A-45-4I-NHE?qs=tIuBKjZQlcn4x3o3EE%252B3qw%3D%3D" H 3000 2750 50  0001 C CNN "Mouser"
-F 5 "https://www.mouser.com/ProductDetail/517-8432-21B1-RK-TP" H 3000 2750 50  0001 C CNN "Mouser2"
+F 5 "https://www.mouser.com/ProductDetail/535-32-6554-11" H 3000 2750 50  0001 C CNN "Mouser2"
 	1    3000 2750
 	1    0    0    -1  
 $EndComp
@@ -400,7 +400,7 @@ F 1 "SST39SF010A-45-4I-NHE" H 5650 4050 50  0000 C CNN
 F 2 "Socket:DIP_Socket-32_W11.9_W12.7_W15.24_W17.78_W18.5_3M_232-1285-00-0602J" H 6250 3050 50  0001 C CNN
 F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/25022B.pdf" H 6250 3050 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Microchip-Technology/SST39SF010A-45-4I-NHE?qs=tIuBKjZQlcn4x3o3EE%252B3qw%3D%3D" H 6250 2750 50  0001 C CNN "Mouser"
-F 5 "https://www.mouser.com/ProductDetail/517-8432-21B1-RK-TP" H 6250 2750 50  0001 C CNN "Mouser2"
+F 5 "https://www.mouser.com/ProductDetail/535-32-6554-11" H 6250 2750 50  0001 C CNN "Mouser2"
 	1    6250 2750
 	1    0    0    -1  
 $EndComp

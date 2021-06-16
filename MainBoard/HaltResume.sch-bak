@@ -947,11 +947,11 @@ Text HLabel 4400 4500 2    50   Output ~ 0
 Wire Wire Line
 	4400 4500 4200 4500
 Text GLabel 3000 4400 0    50   Input ~ 0
-RDY_1
+RDY
 Wire Wire Line
 	3200 4400 3000 4400
 Text GLabel 4400 4400 2    50   Output ~ 0
-RDY_2
+RDY_sync
 Wire Wire Line
 	4200 4400 4400 4400
 $EndSCHEMATC

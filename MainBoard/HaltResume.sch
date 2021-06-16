@@ -386,12 +386,9 @@ Wire Wire Line
 Wire Wire Line
 	3150 4000 3150 4100
 Wire Wire Line
-	3150 4500 3200 4500
+	3000 4500 3200 4500
 Wire Wire Line
 	3200 4400 3150 4400
-Connection ~ 3150 4400
-Wire Wire Line
-	3150 4400 3150 4500
 Wire Wire Line
 	3200 4300 3150 4300
 Connection ~ 3150 4300
@@ -425,7 +422,6 @@ NoConn ~ 4200 4100
 NoConn ~ 4200 4200
 NoConn ~ 4200 4300
 NoConn ~ 4200 4400
-NoConn ~ 4200 4500
 Wire Wire Line
 	5350 4200 5450 4200
 Wire Wire Line
@@ -950,4 +946,10 @@ Wire Wire Line
 	2400 6950 2900 6950
 Wire Wire Line
 	2900 7250 2400 7250
+Text HLabel 3000 4500 0    50   Input ~ 0
+~RST
+Text HLabel 4400 4500 2    50   Output ~ 0
+~RST_sync
+Wire Wire Line
+	4400 4500 4200 4500
 $EndSCHEMATC

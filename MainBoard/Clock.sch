@@ -185,19 +185,6 @@ $EndComp
 Wire Wire Line
 	1750 2400 1750 2450
 $Comp
-L power:VCC #PWR?
-U 1 1 5FCD1869
-P -1100 4750
-AR Path="/5D2C0761/5FCD1869" Ref="#PWR?"  Part="1" 
-AR Path="/5D2C0720/5FCD1869" Ref="#PWR09"  Part="1" 
-F 0 "#PWR09" H -1100 4600 50  0001 C CNN
-F 1 "VCC" H -1083 4923 50  0000 C CNN
-F 2 "" H -1100 4750 50  0001 C CNN
-F 3 "" H -1100 4750 50  0001 C CNN
-	1    -1100 4750
-	1    0    0    -1  
-$EndComp
-$Comp
 L power:GND #PWR010
 U 1 1 5FD35768
 P -1100 5950
@@ -248,20 +235,6 @@ F 4 "https://www.mouser.com/ProductDetail/Microchip-Technology/MCP100-450DI-TO?q
 $EndComp
 $Comp
 L 74xx:74LS04 U?
-U 2 1 5E338851
-P 1850 3000
-AR Path="/5D8005AF/5D800744/5E338851" Ref="U?"  Part="6" 
-AR Path="/5D2C0720/5E338851" Ref="U1"  Part="2" 
-F 0 "U1" H 1850 3317 50  0000 C CNN
-F 1 "74AHCT04" H 1850 3226 50  0000 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 1850 3000 50  0001 C CNN
-F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 1850 3000 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H 1850 3000 50  0001 C CNN "Mouser"
-	2    1850 3000
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74xx:74LS04 U?
 U 3 1 5E3CB33D
 P 8800 3600
 AR Path="/5D8005AF/5D800744/5E3CB33D" Ref="U?"  Part="6" 
@@ -294,7 +267,7 @@ $EndComp
 Connection ~ 7000 3250
 Wire Wire Line
 	7000 3250 7100 3250
-Text HLabel 1450 3000 0    50   BiDi ~ 0
+Text HLabel 950  3000 0    50   BiDi ~ 0
 RDY
 $Comp
 L Device:C C?
@@ -331,34 +304,34 @@ Wire Wire Line
 $Comp
 L Device:R_Small R1
 U 1 1 5FBCBDB2
-P 2900 3150
+P 3300 3500
 AR Path="/5D2C0720/5FBCBDB2" Ref="R1"  Part="1" 
 AR Path="/5D2C0761/5FBCBDB2" Ref="R?"  Part="1" 
-F 0 "R1" V 3000 3100 50  0000 L CNN
-F 1 "220Ω" V 3100 3050 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 2940 3140 50  0001 C CNN
-F 3 "~" H 2900 3150 50  0001 C CNN
-F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-2200ELF" V 2900 3150 50  0001 C CNN "Mouser"
-	1    2900 3150
+F 0 "R1" V 3400 3450 50  0000 L CNN
+F 1 "220Ω" V 3500 3400 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" V 3340 3490 50  0001 C CNN
+F 3 "~" H 3300 3500 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-2200ELF" V 3300 3500 50  0001 C CNN "Mouser"
+	1    3300 3500
 	0    -1   1    0   
 $EndComp
 Wire Wire Line
-	2800 3150 2700 3150
+	3200 3500 3100 3500
 Wire Wire Line
-	3150 3150 3000 3150
+	3550 3500 3400 3500
 Wire Wire Line
-	3150 3150 3150 3250
+	3550 3500 3550 3600
 $Comp
 L power:GND #PWR?
 U 1 1 5FBCBDC1
-P 3150 3250
+P 3550 3600
 AR Path="/5D2C0761/5FBCBDC1" Ref="#PWR?"  Part="1" 
 AR Path="/5D2C0720/5FBCBDC1" Ref="#PWR015"  Part="1" 
-F 0 "#PWR015" H 3150 3000 50  0001 C CNN
-F 1 "GND" H 3155 3077 50  0000 C CNN
-F 2 "" H 3150 3250 50  0001 C CNN
-F 3 "" H 3150 3250 50  0001 C CNN
-	1    3150 3250
+F 0 "#PWR015" H 3550 3350 50  0001 C CNN
+F 1 "GND" H 3555 3427 50  0000 C CNN
+F 2 "" H 3550 3600 50  0001 C CNN
+F 3 "" H 3550 3600 50  0001 C CNN
+	1    3550 3600
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -433,7 +406,7 @@ Wire Wire Line
 Wire Wire Line
 	1400 7600 900  7600
 Wire Wire Line
-	1450 3000 1550 3000
+	2050 3500 2150 3500
 Wire Wire Line
 	4600 2500 4650 2500
 Wire Wire Line
@@ -452,20 +425,18 @@ Wire Wire Line
 Text Notes 4250 1850 0    50   ~ 0
 In the wait state, the Phi1\nclock is stopped.
 Wire Wire Line
-	2400 3150 2350 3150
-Wire Wire Line
-	2350 3150 2350 3000
+	2800 3500 2750 3500
 $Comp
 L Device:LED D1
 U 1 1 5FBCBDB8
-P 2550 3150
+P 2950 3500
 AR Path="/5D2C0720/5FBCBDB8" Ref="D1"  Part="1" 
 AR Path="/5D2C0761/5FBCBDB8" Ref="D?"  Part="1" 
-F 0 "D1" H 2600 3050 50  0000 R CNN
-F 1 "Wait" H 2650 2950 50  0000 R CNN
-F 2 "LED_THT:LED_D5.0mm" H 2550 3150 50  0001 C CNN
-F 3 "~" H 2550 3150 50  0001 C CNN
-	1    2550 3150
+F 0 "D1" H 3000 3400 50  0000 R CNN
+F 1 "Wait" H 3050 3300 50  0000 R CNN
+F 2 "LED_THT:LED_D5.0mm" H 2950 3500 50  0001 C CNN
+F 3 "~" H 2950 3500 50  0001 C CNN
+	1    2950 3500
 	-1   0    0    -1  
 $EndComp
 Wire Wire Line
@@ -565,8 +536,6 @@ Text GLabel 9300 3600 2    50   Output ~ 0
 ~RST
 Wire Wire Line
 	9100 3600 9300 3600
-Wire Wire Line
-	2150 3000 2350 3000
 Text Label 5700 1200 2    50   ~ 0
 Phi2_0
 Wire Wire Line
@@ -580,7 +549,6 @@ Wire Wire Line
 	2350 1100 2350 2100
 Wire Wire Line
 	2350 1100 5700 1100
-Connection ~ 2350 3000
 Wire Wire Line
 	900  7200 900  7300
 Connection ~ 900  7300
@@ -637,8 +605,6 @@ Wire Wire Line
 Wire Wire Line
 	3550 2400 3600 2400
 Connection ~ 3550 2300
-Wire Wire Line
-	-1100 4750 -1100 4800
 $Comp
 L 74xx:74LS04 U?
 U 5 1 5E3CD911
@@ -670,8 +636,6 @@ Wire Wire Line
 Connection ~ 7650 3850
 Wire Wire Line
 	7650 3850 7650 4150
-Wire Wire Line
-	2350 3000 3600 3000
 Connection ~ 3550 2750
 Wire Wire Line
 	3550 2750 3550 2800
@@ -888,4 +852,48 @@ Text GLabel 3800 5600 2    50   Output ~ 0
 ~RST_sync
 Wire Wire Line
 	3600 5600 3800 5600
+Text GLabel 1150 3000 2    50   Output ~ 0
+RDY
+Wire Wire Line
+	950  3000 1150 3000
+Text GLabel 1850 3000 0    50   Output ~ 0
+RDY_sync
+Wire Wire Line
+	-1100 4750 -1100 4800
+$Comp
+L power:VCC #PWR?
+U 1 1 5FCD1869
+P -1100 4750
+AR Path="/5D2C0761/5FCD1869" Ref="#PWR?"  Part="1" 
+AR Path="/5D2C0720/5FCD1869" Ref="#PWR09"  Part="1" 
+F 0 "#PWR09" H -1100 4600 50  0001 C CNN
+F 1 "VCC" H -1083 4923 50  0000 C CNN
+F 2 "" H -1100 4750 50  0001 C CNN
+F 3 "" H -1100 4750 50  0001 C CNN
+	1    -1100 4750
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS04 U?
+U 2 1 5E338851
+P 2450 3500
+AR Path="/5D8005AF/5D800744/5E338851" Ref="U?"  Part="6" 
+AR Path="/5D2C0720/5E338851" Ref="U1"  Part="2" 
+F 0 "U1" H 2450 3817 50  0000 C CNN
+F 1 "74AHCT04" H 2450 3726 50  0000 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 2450 3500 50  0001 C CNN
+F 3 "http://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=http%3A%2F%2Fwww.ti.com%2Flit%2Fgpn%2Fsn74ahct04" H 2450 3500 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/771-AHCT04PW112" H 2450 3500 50  0001 C CNN "Mouser"
+	2    2450 3500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1850 3000 2050 3000
+Wire Wire Line
+	2050 3500 2050 3000
+Connection ~ 2050 3000
+Wire Wire Line
+	2050 3000 3600 3000
+Text Notes 650  3400 0    50   ~ 0
+Latch RDY on the clock edge.\nThe inverter buffers the signal for\nthe LED.
 $EndSCHEMATC

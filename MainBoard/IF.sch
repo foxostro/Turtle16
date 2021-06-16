@@ -50,8 +50,6 @@ F2 "PC[0..15]" I L 4850 4000 50
 F3 "Ins_IF[0..15]" O R 6300 4000 50 
 F4 "FLUSH_IF" I L 4850 4100 50 
 $EndSheet
-Text GLabel 2700 3850 0    50   Input ~ 0
-~RST
 $Sheet
 S 3050 3600 1450 800 
 U 5FE3DA1C
@@ -173,4 +171,6 @@ F 3 "~" H 4150 5500 50  0001 C CNN
 $EndComp
 Text HLabel 2600 5500 0    50   Input ~ 0
 ~JABS
+Text GLabel 2700 3850 0    50   Input ~ 0
+~RST_sync
 $EndSCHEMATC

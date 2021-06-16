@@ -598,6 +598,7 @@ F2 "~RST" I L 2800 5300 50
 F3 "RDY" B R 3600 5300 50 
 F4 "~HLT" I L 2800 5450 50 
 F5 "Phi1_0" I L 2800 5600 50 
+F6 "~RST_sync" O R 3600 5600 50 
 $EndSheet
 Text GLabel 2600 5300 0    50   Input ~ 0
 ~RST
@@ -883,4 +884,8 @@ Text HLabel 7950 1900 0    50   Input ~ 0
 Wire Wire Line
 	9450 1600 9300 1600
 Connection ~ 9450 1600
+Text GLabel 3800 5600 2    50   Output ~ 0
+~RST_sync
+Wire Wire Line
+	3600 5600 3800 5600
 $EndSCHEMATC

@@ -4,6 +4,3 @@ NOP
 LI r7, -1
 NOP
 HLT
-HLT
-HLT
-HLT

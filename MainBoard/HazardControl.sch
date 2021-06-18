@@ -5,8 +5,8 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 34 39
 Title "Hazard Control"
-Date "2021-04-28"
-Rev "A (c8cebf3f)"
+Date "2021-06-18"
+Rev "B (2a1292a9)"
 Comp ""
 Comment1 ""
 Comment2 "control operand forwarding."

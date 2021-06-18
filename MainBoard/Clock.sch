@@ -897,6 +897,7 @@ F 1 "12MHz" H 1450 1200 50  0000 R CNN
 F 2 "Oscillator:Oscillator_DIP-14" H 2150 850 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/3/ACO-514121.pdf" H 1600 1200 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/ABRACON/ACO-12000MHZ-EK?qs=2xLVn2jvFuvTNNmW6JUIaw%3D%3D" H 1700 1200 50  0001 C CNN "Mouser"
+F 5 "https://www.mouser.com/ProductDetail/535-1107741" H 1700 1200 50  0001 C CNN "Mouser2"
 	1    1700 1200
 	1    0    0    -1  
 $EndComp

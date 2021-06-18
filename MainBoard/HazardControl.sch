@@ -57,10 +57,9 @@ AR Path="/5FE35007/5FE3DA1C/5FDA9CDF" Ref="U?"  Part="1"
 AR Path="/5FED3839/5FDA967F/5FDA9CDF" Ref="U51"  Part="1" 
 F 0 "U51" H 5200 4300 50  0000 C CNN
 F 1 "ATF22V10C-7PX" H 5200 4200 50  0000 C CNN
-F 2 "Package_DIP:DIP-24_W7.62mm_SMDSocket_SmallPads" H 6400 2950 50  0001 C CNN
+F 2 "Package_DIP:DIP-24_W7.62mm" H 6400 2950 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/268/doc0735-1369018.pdf" H 5550 3700 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Microchip-Technology-Atmel/ATF22V10C-7PX?qs=%2Fha2pyFadugqFuTUlWvkuaZr7DXQ8Rnu3dOZcKuoHGuPC51te6MYUw%3D%3D" H 5550 3650 50  0001 C CNN "Mouser"
-F 5 "https://www.mouser.com/ProductDetail/Preci-dip/114-87-324-41-117101?qs=%2Fha2pyFaduioVyNMD%252B7NH1l4mktK6muqQMloVdbh7x8%3D" H 5550 3650 50  0001 C CNN "Mouser2"
 	1    5550 3650
 	1    0    0    -1  
 $EndComp
@@ -411,10 +410,9 @@ AR Path="/5FE35007/5FE3DA1C/607B2A04" Ref="U?"  Part="1"
 AR Path="/5FED3839/5FDA967F/607B2A04" Ref="U52"  Part="1" 
 F 0 "U52" H 8500 4400 50  0000 C CNN
 F 1 "ATF22V10C-7PX" H 8500 4300 50  0000 C CNN
-F 2 "Package_DIP:DIP-24_W7.62mm_SMDSocket_SmallPads" H 9700 3050 50  0001 C CNN
+F 2 "Package_DIP:DIP-24_W7.62mm" H 9700 3050 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/268/doc0735-1369018.pdf" H 8850 3800 50  0001 C CNN
 F 4 "https://www.mouser.com/ProductDetail/Microchip-Technology-Atmel/ATF22V10C-7PX?qs=%2Fha2pyFadugqFuTUlWvkuaZr7DXQ8Rnu3dOZcKuoHGuPC51te6MYUw%3D%3D" H 8850 3750 50  0001 C CNN "Mouser"
-F 5 "https://www.mouser.com/ProductDetail/Preci-dip/114-87-324-41-117101?qs=%2Fha2pyFaduioVyNMD%252B7NH1l4mktK6muqQMloVdbh7x8%3D" H 8850 3750 50  0001 C CNN "Mouser2"
 	1    8850 3750
 	1    0    0    -1  
 $EndComp
@@ -535,92 +533,10 @@ F 3 "" H 4450 3200 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	5050 3200 4450 3200
-Wire Wire Line
-	7850 1300 7650 1300
-$Comp
-L power:GND #PWR?
-U 1 1 6084ED53
-P 9150 1450
-AR Path="/5D2C0720/6084ED53" Ref="#PWR?"  Part="1" 
-AR Path="/5FED3839/5FDA967F/6084ED53" Ref="#PWR0401"  Part="1" 
-F 0 "#PWR0401" H 9150 1200 50  0001 C CNN
-F 1 "GND" H 9155 1277 50  0000 C CNN
-F 2 "" H 9150 1450 50  0001 C CNN
-F 3 "" H 9150 1450 50  0001 C CNN
-	1    9150 1450
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	9000 1300 9150 1300
-Wire Wire Line
-	9150 1300 9150 1450
-Wire Wire Line
-	9150 1000 9150 1300
-Connection ~ 9150 1300
-$Comp
-L Connector:TestPoint TP?
-U 1 1 6084ED5D
-P 7850 1300
-AR Path="/5D2C0720/6084ED5D" Ref="TP?"  Part="1" 
-AR Path="/5FED3839/5FDA967F/6084ED5D" Ref="TP36"  Part="1" 
-F 0 "TP36" V 7804 1488 50  0000 L CNN
-F 1 "FLUSH" V 7895 1488 50  0000 L CNN
-F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 8050 1300 50  0001 C CNN
-F 3 "~" H 8050 1300 50  0001 C CNN
-	1    7850 1300
-	0    1    1    0   
-$EndComp
-$Comp
-L Connector:TestPoint TP?
-U 1 1 6084ED63
-P 9000 1300
-AR Path="/5D2C0720/6084ED63" Ref="TP?"  Part="1" 
-AR Path="/5FED3839/5FDA967F/6084ED63" Ref="TP38"  Part="1" 
-F 0 "TP38" V 8950 1650 50  0000 R CNN
-F 1 "GND" V 9050 1650 50  0000 R CNN
-F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 9200 1300 50  0001 C CNN
-F 3 "~" H 9200 1300 50  0001 C CNN
-	1    9000 1300
-	0    -1   1    0   
-$EndComp
-Wire Wire Line
-	7850 1000 7650 1000
-Wire Wire Line
-	9000 1000 9150 1000
-$Comp
-L Connector:TestPoint TP?
-U 1 1 60851A0E
-P 7850 1000
-AR Path="/5D2C0720/60851A0E" Ref="TP?"  Part="1" 
-AR Path="/5FED3839/5FDA967F/60851A0E" Ref="TP35"  Part="1" 
-F 0 "TP35" V 7804 1188 50  0000 L CNN
-F 1 "STALL" V 7895 1188 50  0000 L CNN
-F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 8050 1000 50  0001 C CNN
-F 3 "~" H 8050 1000 50  0001 C CNN
-	1    7850 1000
-	0    1    1    0   
-$EndComp
-$Comp
-L Connector:TestPoint TP?
-U 1 1 60851A14
-P 9000 1000
-AR Path="/5D2C0720/60851A14" Ref="TP?"  Part="1" 
-AR Path="/5FED3839/5FDA967F/60851A14" Ref="TP37"  Part="1" 
-F 0 "TP37" V 8950 1350 50  0000 R CNN
-F 1 "GND" V 9050 1350 50  0000 R CNN
-F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 9200 1000 50  0001 C CNN
-F 3 "~" H 9200 1000 50  0001 C CNN
-	1    9000 1000
-	0    -1   1    0   
-$EndComp
-Wire Bus Line
-	3200 3100 3200 3300
 Text Label 9450 3300 0    50   ~ 0
 STALL
 Text Label 9450 3400 0    50   ~ 0
 FLUSH
-Text Label 7650 1000 0    50   ~ 0
-STALL
-Text Label 7650 1300 0    50   ~ 0
-FLUSH
+Wire Bus Line
+	3200 3100 3200 3300
 $EndSCHEMATC

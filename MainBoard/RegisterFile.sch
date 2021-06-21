@@ -382,17 +382,6 @@ F 3 "" H 3400 6200 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0240
-U 1 1 5FD454DC
-P 2550 1900
-F 0 "#PWR0240" H 2550 1650 50  0001 C CNN
-F 1 "GND" V 2555 1772 50  0000 R CNN
-F 2 "" H 2550 1900 50  0001 C CNN
-F 3 "" H 2550 1900 50  0001 C CNN
-	1    2550 1900
-	0    1    1    0   
-$EndComp
-$Comp
 L power:GND #PWR0241
 U 1 1 5FD458D6
 P 2550 2100
@@ -405,17 +394,6 @@ F 3 "" H 2550 2100 50  0001 C CNN
 $EndComp
 NoConn ~ 2550 2200
 NoConn ~ 4350 2200
-$Comp
-L power:GND #PWR0242
-U 1 1 5FD4C172
-P 2550 2300
-F 0 "#PWR0242" H 2550 2050 50  0001 C CNN
-F 1 "GND" V 2555 2172 50  0000 R CNN
-F 2 "" H 2550 2300 50  0001 C CNN
-F 3 "" H 2550 2300 50  0001 C CNN
-	1    2550 2300
-	0    1    1    0   
-$EndComp
 $Comp
 L power:GND #PWR0243
 U 1 1 5FD4C5E8
@@ -436,17 +414,6 @@ F 1 "GND" V 4355 1972 50  0000 R CNN
 F 2 "" H 4350 2100 50  0001 C CNN
 F 3 "" H 4350 2100 50  0001 C CNN
 	1    4350 2100
-	0    -1   1    0   
-$EndComp
-$Comp
-L power:GND #PWR0257
-U 1 1 5FD4D61C
-P 4350 2300
-F 0 "#PWR0257" H 4350 2050 50  0001 C CNN
-F 1 "GND" V 4355 2172 50  0000 R CNN
-F 2 "" H 4350 2300 50  0001 C CNN
-F 3 "" H 4350 2300 50  0001 C CNN
-	1    4350 2300
 	0    -1   1    0   
 $EndComp
 $Comp
@@ -967,17 +934,6 @@ F 3 "" H 7650 6200 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0275
-U 1 1 5FDF3567
-P 6800 1900
-F 0 "#PWR0275" H 6800 1650 50  0001 C CNN
-F 1 "GND" V 6805 1772 50  0000 R CNN
-F 2 "" H 6800 1900 50  0001 C CNN
-F 3 "" H 6800 1900 50  0001 C CNN
-	1    6800 1900
-	0    1    1    0   
-$EndComp
-$Comp
 L power:GND #PWR0276
 U 1 1 5FDF356D
 P 6800 2100
@@ -990,17 +946,6 @@ F 3 "" H 6800 2100 50  0001 C CNN
 $EndComp
 NoConn ~ 6800 2200
 NoConn ~ 8600 2200
-$Comp
-L power:GND #PWR0277
-U 1 1 5FDF3575
-P 6800 2300
-F 0 "#PWR0277" H 6800 2050 50  0001 C CNN
-F 1 "GND" V 6805 2172 50  0000 R CNN
-F 2 "" H 6800 2300 50  0001 C CNN
-F 3 "" H 6800 2300 50  0001 C CNN
-	1    6800 2300
-	0    1    1    0   
-$EndComp
 $Comp
 L power:GND #PWR0278
 U 1 1 5FDF357B
@@ -1021,17 +966,6 @@ F 1 "GND" V 8605 1972 50  0000 R CNN
 F 2 "" H 8600 2100 50  0001 C CNN
 F 3 "" H 8600 2100 50  0001 C CNN
 	1    8600 2100
-	0    -1   1    0   
-$EndComp
-$Comp
-L power:GND #PWR0292
-U 1 1 5FDF3593
-P 8600 2300
-F 0 "#PWR0292" H 8600 2050 50  0001 C CNN
-F 1 "GND" V 8605 2172 50  0000 R CNN
-F 2 "" H 8600 2300 50  0001 C CNN
-F 3 "" H 8600 2300 50  0001 C CNN
-	1    8600 2300
 	0    -1   1    0   
 $EndComp
 $Comp
@@ -1287,8 +1221,6 @@ F 3 "" H 8600 2800 50  0001 C CNN
 	1    8600 2800
 	0    -1   1    0   
 $EndComp
-Text Notes 4250 1050 0    50   ~ 0
-Both dual port SRAMs are configured in Slave mode. This disables the\non board contention arbitration logic. Per application note, AN-91, a\nsimultaneous read and write to the same cell will flow through from one\nport to another after a short delay.
 Wire Wire Line
 	3350 1650 3350 1600
 Wire Wire Line
@@ -1774,6 +1706,10 @@ F 3 "" H 4850 7150 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	4850 7150 4600 7150
+NoConn ~ 8600 2300
+NoConn ~ 6800 2300
+NoConn ~ 4350 2300
+NoConn ~ 2550 2300
 Wire Bus Line
 	2000 2900 2000 3100
 Wire Bus Line
@@ -1792,4 +1728,26 @@ Wire Bus Line
 	9200 4200 9200 5700
 Wire Bus Line
 	1100 6300 1100 7800
+$Comp
+L power:VCC #PWR?
+U 1 1 60D4194D
+P 2550 1900
+F 0 "#PWR?" H 2550 1750 50  0001 C CNN
+F 1 "VCC" V 2565 2027 50  0000 L CNN
+F 2 "" H 2550 1900 50  0001 C CNN
+F 3 "" H 2550 1900 50  0001 C CNN
+	1    2550 1900
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:VCC #PWR?
+U 1 1 60D41E93
+P 6800 1900
+F 0 "#PWR?" H 6800 1750 50  0001 C CNN
+F 1 "VCC" V 6815 2027 50  0000 L CNN
+F 2 "" H 6800 1900 50  0001 C CNN
+F 3 "" H 6800 1900 50  0001 C CNN
+	1    6800 1900
+	0    -1   -1   0   
+$EndComp
 $EndSCHEMATC

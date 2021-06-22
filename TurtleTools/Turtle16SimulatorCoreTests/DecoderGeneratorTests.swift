@@ -31,6 +31,8 @@ class DecoderGeneratorTests: XCTestCase {
     let WRL = 18
     let WRH = 19
     let WBEN = 20
+    let LeftOperandIsUnused = 21
+    let RightOperandIsUnused = 22
     
     func testGeneratesExactly512Entries() throws {
         let generator = DecoderGenerator()
@@ -38,11 +40,11 @@ class DecoderGeneratorTests: XCTestCase {
         XCTAssertEqual(decoder.count, 512)
     }
     
-    func testEntriesAreTwentyOneBitsWide() throws {
+    func testEntriesAreTwentyThreeBitsWide() throws {
         let generator = DecoderGenerator()
         let decoder = generator.generate()
         for entry in decoder {
-            XCTAssertLessThanOrEqual(entry, (1<<21)-1)
+            XCTAssertLessThanOrEqual(entry, (1<<23)-1)
         }
     }
     
@@ -51,7 +53,7 @@ class DecoderGeneratorTests: XCTestCase {
         let decoder = generator.generate()
         let indices = generator.indicesForReset()
         for index in indices {
-            XCTAssertEqual(decoder[index], ID.nopControlWord)
+            XCTAssertEqual(decoder[index], ID.nopControlWord_ID)
         }
     }
     
@@ -95,7 +97,7 @@ class DecoderGeneratorTests: XCTestCase {
         let decoder = generator.generate()
         for index in generator.indicesForAllConditions(DecoderGenerator.opcodeNop) {
             let controlWord = decoder[index]
-            XCTAssertEqual(controlWord, ID.nopControlWord)
+            XCTAssertEqual(controlWord, ID.nopControlWord_ID)
         }
     }
     
@@ -105,6 +107,8 @@ class DecoderGeneratorTests: XCTestCase {
         for index in generator.indicesForAllConditions(DecoderGenerator.opcodeHlt) {
             let controlWord = decoder[index]
             XCTAssertEqual((controlWord >> HLT) & 1, 0)
+            XCTAssertEqual((controlWord >> LeftOperandIsUnused) & 1, 1)
+            XCTAssertEqual((controlWord >> RightOperandIsUnused) & 1, 1)
         }
     }
     
@@ -129,6 +133,8 @@ class DecoderGeneratorTests: XCTestCase {
             XCTAssertEqual((controlWord >> WRL) & 1, 0)
             XCTAssertEqual((controlWord >> WRH) & 1, 0)
             XCTAssertEqual((controlWord >> WBEN) & 1, 0)
+            XCTAssertEqual((controlWord >> LeftOperandIsUnused) & 1, 0)
+            XCTAssertEqual((controlWord >> RightOperandIsUnused) & 1, 0)
         }
     }
     
@@ -153,6 +159,8 @@ class DecoderGeneratorTests: XCTestCase {
             XCTAssertEqual((controlWord >> WRL) & 1, 1)
             XCTAssertEqual((controlWord >> WRH) & 1, 1)
             XCTAssertEqual((controlWord >> WBEN) & 1, 1)
+            XCTAssertEqual((controlWord >> LeftOperandIsUnused) & 1, 0)
+            XCTAssertEqual((controlWord >> RightOperandIsUnused) & 1, 0)
         }
     }
     
@@ -177,6 +185,8 @@ class DecoderGeneratorTests: XCTestCase {
             XCTAssertEqual((controlWord >> WRL) & 1, 0)
             XCTAssertEqual((controlWord >> WRH) & 1, 0)
             XCTAssertEqual((controlWord >> WBEN) & 1, 0)
+            XCTAssertEqual((controlWord >> LeftOperandIsUnused) & 1, 1)
+            XCTAssertEqual((controlWord >> RightOperandIsUnused) & 1, 1)
         }
     }
     
@@ -201,6 +211,8 @@ class DecoderGeneratorTests: XCTestCase {
             XCTAssertEqual((controlWord >> WRL) & 1, 1)
             XCTAssertEqual((controlWord >> WRH) & 1, 0)
             XCTAssertEqual((controlWord >> WBEN) & 1, 0)
+            XCTAssertEqual((controlWord >> LeftOperandIsUnused) & 1, 1)
+            XCTAssertEqual((controlWord >> RightOperandIsUnused) & 1, 1)
         }
     }
     
@@ -225,6 +237,8 @@ class DecoderGeneratorTests: XCTestCase {
             XCTAssertEqual((controlWord >> WRL) & 1, 1)
             XCTAssertEqual((controlWord >> WRH) & 1, 1)
             XCTAssertEqual((controlWord >> WBEN) & 1, 1)
+            XCTAssertEqual((controlWord >> LeftOperandIsUnused) & 1, 0)
+            XCTAssertEqual((controlWord >> RightOperandIsUnused) & 1, 0)
         }
     }
     
@@ -249,6 +263,8 @@ class DecoderGeneratorTests: XCTestCase {
             XCTAssertEqual((controlWord >> WRL) & 1, 0)
             XCTAssertEqual((controlWord >> WRH) & 1, 0)
             XCTAssertEqual((controlWord >> WBEN) & 1, 0)
+            XCTAssertEqual((controlWord >> LeftOperandIsUnused) & 1, 0)
+            XCTAssertEqual((controlWord >> RightOperandIsUnused) & 1, 0)
         }
     }
     
@@ -273,6 +289,8 @@ class DecoderGeneratorTests: XCTestCase {
             XCTAssertEqual((controlWord >> WRL) & 1, 0)
             XCTAssertEqual((controlWord >> WRH) & 1, 0)
             XCTAssertEqual((controlWord >> WBEN) & 1, 0)
+            XCTAssertEqual((controlWord >> LeftOperandIsUnused) & 1, 0)
+            XCTAssertEqual((controlWord >> RightOperandIsUnused) & 1, 0)
         }
     }
     
@@ -297,6 +315,8 @@ class DecoderGeneratorTests: XCTestCase {
             XCTAssertEqual((controlWord >> WRL) & 1, 0)
             XCTAssertEqual((controlWord >> WRH) & 1, 0)
             XCTAssertEqual((controlWord >> WBEN) & 1, 0)
+            XCTAssertEqual((controlWord >> LeftOperandIsUnused) & 1, 0)
+            XCTAssertEqual((controlWord >> RightOperandIsUnused) & 1, 0)
         }
     }
     
@@ -321,6 +341,8 @@ class DecoderGeneratorTests: XCTestCase {
             XCTAssertEqual((controlWord >> WRL) & 1, 0)
             XCTAssertEqual((controlWord >> WRH) & 1, 0)
             XCTAssertEqual((controlWord >> WBEN) & 1, 0)
+            XCTAssertEqual((controlWord >> LeftOperandIsUnused) & 1, 0)
+            XCTAssertEqual((controlWord >> RightOperandIsUnused) & 1, 0)
         }
     }
     
@@ -345,6 +367,8 @@ class DecoderGeneratorTests: XCTestCase {
             XCTAssertEqual((controlWord >> WRL) & 1, 0)
             XCTAssertEqual((controlWord >> WRH) & 1, 0)
             XCTAssertEqual((controlWord >> WBEN) & 1, 0)
+            XCTAssertEqual((controlWord >> LeftOperandIsUnused) & 1, 0)
+            XCTAssertEqual((controlWord >> RightOperandIsUnused) & 1, 0)
         }
     }
     
@@ -369,6 +393,8 @@ class DecoderGeneratorTests: XCTestCase {
             XCTAssertEqual((controlWord >> WRL) & 1, 0)
             XCTAssertEqual((controlWord >> WRH) & 1, 0)
             XCTAssertEqual((controlWord >> WBEN) & 1, 0)
+            XCTAssertEqual((controlWord >> LeftOperandIsUnused) & 1, 0)
+            XCTAssertEqual((controlWord >> RightOperandIsUnused) & 1, 1)
         }
     }
     
@@ -393,6 +419,8 @@ class DecoderGeneratorTests: XCTestCase {
             XCTAssertEqual((controlWord >> WRL) & 1, 1)
             XCTAssertEqual((controlWord >> WRH) & 1, 1)
             XCTAssertEqual((controlWord >> WBEN) & 1, 1)
+            XCTAssertEqual((controlWord >> LeftOperandIsUnused) & 1, 0)
+            XCTAssertEqual((controlWord >> RightOperandIsUnused) & 1, 1)
         }
     }
     
@@ -417,6 +445,8 @@ class DecoderGeneratorTests: XCTestCase {
             XCTAssertEqual((controlWord >> WRL) & 1, 0)
             XCTAssertEqual((controlWord >> WRH) & 1, 0)
             XCTAssertEqual((controlWord >> WBEN) & 1, 0)
+            XCTAssertEqual((controlWord >> LeftOperandIsUnused) & 1, 0)
+            XCTAssertEqual((controlWord >> RightOperandIsUnused) & 1, 1)
         }
     }
     
@@ -441,6 +471,8 @@ class DecoderGeneratorTests: XCTestCase {
             XCTAssertEqual((controlWord >> WRL) & 1, 0)
             XCTAssertEqual((controlWord >> WRH) & 1, 0)
             XCTAssertEqual((controlWord >> WBEN) & 1, 0)
+            XCTAssertEqual((controlWord >> LeftOperandIsUnused) & 1, 0)
+            XCTAssertEqual((controlWord >> RightOperandIsUnused) & 1, 1)
         }
     }
     
@@ -465,6 +497,8 @@ class DecoderGeneratorTests: XCTestCase {
             XCTAssertEqual((controlWord >> WRL) & 1, 0)
             XCTAssertEqual((controlWord >> WRH) & 1, 0)
             XCTAssertEqual((controlWord >> WBEN) & 1, 0)
+            XCTAssertEqual((controlWord >> LeftOperandIsUnused) & 1, 0)
+            XCTAssertEqual((controlWord >> RightOperandIsUnused) & 1, 1)
         }
     }
     
@@ -489,6 +523,8 @@ class DecoderGeneratorTests: XCTestCase {
             XCTAssertEqual((controlWord >> WRL) & 1, 0)
             XCTAssertEqual((controlWord >> WRH) & 1, 0)
             XCTAssertEqual((controlWord >> WBEN) & 1, 0)
+            XCTAssertEqual((controlWord >> LeftOperandIsUnused) & 1, 0)
+            XCTAssertEqual((controlWord >> RightOperandIsUnused) & 1, 1)
         }
     }
     
@@ -513,6 +549,8 @@ class DecoderGeneratorTests: XCTestCase {
             XCTAssertEqual((controlWord >> WRL) & 1, 0)
             XCTAssertEqual((controlWord >> WRH) & 1, 0)
             XCTAssertEqual((controlWord >> WBEN) & 1, 0)
+            XCTAssertEqual((controlWord >> LeftOperandIsUnused) & 1, 0)
+            XCTAssertEqual((controlWord >> RightOperandIsUnused) & 1, 1)
         }
     }
     
@@ -537,6 +575,8 @@ class DecoderGeneratorTests: XCTestCase {
             XCTAssertEqual((controlWord >> WRL) & 1, 1)
             XCTAssertEqual((controlWord >> WRH) & 1, 1)
             XCTAssertEqual((controlWord >> WBEN) & 1, 1)
+            XCTAssertEqual((controlWord >> LeftOperandIsUnused) & 1, 1)
+            XCTAssertEqual((controlWord >> RightOperandIsUnused) & 1, 1)
         }
     }
     
@@ -561,6 +601,8 @@ class DecoderGeneratorTests: XCTestCase {
             XCTAssertEqual((controlWord >> WRL) & 1, 1)
             XCTAssertEqual((controlWord >> WRH) & 1, 1)
             XCTAssertEqual((controlWord >> WBEN) & 1, 1)
+            XCTAssertEqual((controlWord >> LeftOperandIsUnused) & 1, 0)
+            XCTAssertEqual((controlWord >> RightOperandIsUnused) & 1, 1)
         }
     }
     
@@ -585,6 +627,8 @@ class DecoderGeneratorTests: XCTestCase {
             XCTAssertEqual((controlWord >> WRL) & 1, 0)
             XCTAssertEqual((controlWord >> WRH) & 1, 0)
             XCTAssertEqual((controlWord >> WBEN) & 1, 0)
+            XCTAssertEqual((controlWord >> LeftOperandIsUnused) & 1, 0)
+            XCTAssertEqual((controlWord >> RightOperandIsUnused) & 1, 1)
         }
     }
     
@@ -648,7 +692,7 @@ class DecoderGeneratorTests: XCTestCase {
         for carry in bits {
             for ovf in bits {
                 let indexForFailCondition = generator.makeIndex(rst: 1, carry: carry, z: 0, ovf: ovf, opcode: DecoderGenerator.opcodeBeq)
-                XCTAssertEqual(decoder[indexForFailCondition], ID.nopControlWord)
+                XCTAssertEqual(decoder[indexForFailCondition], ID.nopControlWord_ID)
                 
                 let indexForPassCondition = generator.makeIndex(rst: 1, carry: carry, z: 1, ovf: ovf, opcode: DecoderGenerator.opcodeBeq)
                 let ctlHighZ = decoder[indexForPassCondition]
@@ -665,7 +709,7 @@ class DecoderGeneratorTests: XCTestCase {
         for carry in bits {
             for ovf in bits {
                 let indexForFailCondition = generator.makeIndex(rst: 1, carry: carry, z: 1, ovf: ovf, opcode: DecoderGenerator.opcodeBne)
-                XCTAssertEqual(decoder[indexForFailCondition], ID.nopControlWord)
+                XCTAssertEqual(decoder[indexForFailCondition], ID.nopControlWord_ID)
                 
                 let indexForPassCondition = generator.makeIndex(rst: 1, carry: carry, z: 0, ovf: ovf, opcode: DecoderGenerator.opcodeBne)
                 let ctlHighZ = decoder[indexForPassCondition]
@@ -682,7 +726,7 @@ class DecoderGeneratorTests: XCTestCase {
         for carry in bits {
             for z in bits {
                 let indexForFailCondition = generator.makeIndex(rst: 1, carry: carry, z: z, ovf: 0, opcode: DecoderGenerator.opcodeBlt)
-                XCTAssertEqual(decoder[indexForFailCondition], ID.nopControlWord)
+                XCTAssertEqual(decoder[indexForFailCondition], ID.nopControlWord_ID)
                 
                 let indexForPassCondition = generator.makeIndex(rst: 1, carry: carry, z: z, ovf: 1, opcode: DecoderGenerator.opcodeBlt)
                 let ctlHighZ = decoder[indexForPassCondition]
@@ -699,7 +743,7 @@ class DecoderGeneratorTests: XCTestCase {
         for carry in bits {
             for z in bits {
                 let indexForFailCondition = generator.makeIndex(rst: 1, carry: carry, z: z, ovf: 1, opcode: DecoderGenerator.opcodeBge)
-                XCTAssertEqual(decoder[indexForFailCondition], ID.nopControlWord)
+                XCTAssertEqual(decoder[indexForFailCondition], ID.nopControlWord_ID)
                 
                 let indexForPassCondition = generator.makeIndex(rst: 1, carry: carry, z: z, ovf: 0, opcode: DecoderGenerator.opcodeBge)
                 let ctlHighZ = decoder[indexForPassCondition]
@@ -716,7 +760,7 @@ class DecoderGeneratorTests: XCTestCase {
         for ovf in bits {
             for z in bits {
                 let indexForFailCondition = generator.makeIndex(rst: 1, carry: 0, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeBltu)
-                XCTAssertEqual(decoder[indexForFailCondition], ID.nopControlWord)
+                XCTAssertEqual(decoder[indexForFailCondition], ID.nopControlWord_ID)
                 
                 let indexForPassCondition = generator.makeIndex(rst: 1, carry: 1, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeBltu)
                 let ctlHighZ = decoder[indexForPassCondition]
@@ -733,7 +777,7 @@ class DecoderGeneratorTests: XCTestCase {
         for ovf in bits {
             for z in bits {
                 let indexForFailCondition = generator.makeIndex(rst: 1, carry: 1, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeBgeu)
-                XCTAssertEqual(decoder[indexForFailCondition], ID.nopControlWord)
+                XCTAssertEqual(decoder[indexForFailCondition], ID.nopControlWord_ID)
                 
                 let indexForPassCondition = generator.makeIndex(rst: 1, carry: 0, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeBgeu)
                 let ctlHighZ = decoder[indexForPassCondition]
@@ -767,6 +811,8 @@ class DecoderGeneratorTests: XCTestCase {
                 XCTAssertEqual((controlWordFail >> WRL) & 1, 0)
                 XCTAssertEqual((controlWordFail >> WRH) & 1, 0)
                 XCTAssertEqual((controlWordFail >> WBEN) & 1, 0)
+                XCTAssertEqual((controlWordFail >> LeftOperandIsUnused) & 1, 0)
+                XCTAssertEqual((controlWordFail >> RightOperandIsUnused) & 1, 0)
                 
                 let indexForPassCondition = generator.makeIndex(rst: 1, carry: 1, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeAdc)
                 let controlWordPass = decoder[indexForPassCondition]
@@ -786,6 +832,8 @@ class DecoderGeneratorTests: XCTestCase {
                 XCTAssertEqual((controlWordPass >> WRL) & 1, 0)
                 XCTAssertEqual((controlWordPass >> WRH) & 1, 0)
                 XCTAssertEqual((controlWordPass >> WBEN) & 1, 0)
+                XCTAssertEqual((controlWordPass >> LeftOperandIsUnused) & 1, 0)
+                XCTAssertEqual((controlWordPass >> RightOperandIsUnused) & 1, 0)
             }
         }
     }
@@ -815,6 +863,8 @@ class DecoderGeneratorTests: XCTestCase {
                 XCTAssertEqual((controlWordFail >> WRL) & 1, 0)
                 XCTAssertEqual((controlWordFail >> WRH) & 1, 0)
                 XCTAssertEqual((controlWordFail >> WBEN) & 1, 0)
+                XCTAssertEqual((controlWordFail >> LeftOperandIsUnused) & 1, 0)
+                XCTAssertEqual((controlWordFail >> RightOperandIsUnused) & 1, 0)
                 
                 let indexForPassCondition = generator.makeIndex(rst: 1, carry: 1, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeSbc)
                 let controlWordPass = decoder[indexForPassCondition]
@@ -834,6 +884,8 @@ class DecoderGeneratorTests: XCTestCase {
                 XCTAssertEqual((controlWordPass >> WRL) & 1, 0)
                 XCTAssertEqual((controlWordPass >> WRH) & 1, 0)
                 XCTAssertEqual((controlWordPass >> WBEN) & 1, 0)
+                XCTAssertEqual((controlWordPass >> LeftOperandIsUnused) & 1, 0)
+                XCTAssertEqual((controlWordPass >> RightOperandIsUnused) & 1, 0)
             }
         }
     }

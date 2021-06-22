@@ -122,7 +122,7 @@ class IDTests: XCTestCase {
         let ins: UInt16 = UInt16(hltOpcode << 11)
         let output = id.step(input: ID.Input(ins: ins, j: 0))
         XCTAssertEqual(output.stall, 0)
-        XCTAssertEqual(output.ctl_EX, 0b111111111111111111111) // no active control lines
+        XCTAssertEqual(output.ctl_EX, ID.nopControlWord) // no active control lines
     }
     
     func testOperandForwarding_Forward_Y_EX_Instead_Of_rA() throws {

@@ -351,17 +351,7 @@ Alternatively, use the Simulator16 app to dump the contents of the simulated com
 
 # Hardware Bugs
 
-There is a bug in the hazard control unit where an instruction will be incorrectly determined to introduce a RAW hazard in the Store Operand case. The issue is that the hazard control unit will always assume the instruction's A and B bit fields are used to indicate register indices, but this is only sometimes true. For example, ALU instructions which use an immediate operand, such as ADDI will reuse the bits of the B field to specify an immediate value. Likewise, the LI instruction will reuse the bits of the A and B fields to specify an immediate value.
-
-The stalls only affect CPU run time performance. While these are safe to accept and ignore, there are a few ways to fix this bug:
-
-1) Add a new set of three control signals in the ID stage to indicate which bit fields are being used to represent register indices. The hazard control unit can incorporate these signals into it's logic in order to avoid stalling in cases where the values read from the register file are not actually used.
-
-2) Add circuitry to implement forwarding for the Store Operand. If this is done then no stall is necessary to resolve the perceived RAW hazard. The operand can be harmlessly ignored in cases where it wouldn't actually be used by the instruction.
-
-3) Change the hazard control logic (in the programmable GALs) to never stall on a perceived RAW hazard involving the Store Operand. Ensure programs insert NOPs as appropriate to avoid these hazards.
-
-This bug is documented by the testDemonstrateBugInHazardControlStallingOnStoreOp_LI and testDemonstrateBugInHazardControlStallingOnStoreOp_ADDI unit tests.
+There is no circuitry for forwarding the Store Operand. The Hazard Control Unit works around this limitation by introducing a pipeline stall whenever a Read-After-Write hazard involves the Store Operand.
 
 
 # TurtleTools

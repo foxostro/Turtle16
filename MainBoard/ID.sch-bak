@@ -20,24 +20,24 @@ Wire Wire Line
 Text HLabel 6800 2950 2    50   Output ~ 0
 STALL
 Wire Bus Line
-	4600 3250 3950 3250
-Wire Bus Line
 	4600 3350 3950 3350
-Text Label 3950 3250 0    50   ~ 0
-SelA[0..2]
+Wire Bus Line
+	4600 3450 3950 3450
 Text Label 3950 3350 0    50   ~ 0
+SelA[0..2]
+Text Label 3950 3450 0    50   ~ 0
 SelB[0..2]
-Text HLabel 3750 3450 0    50   Input ~ 0
+Text HLabel 3750 3550 0    50   Input ~ 0
 SelC_MEM[0..2]
 Wire Bus Line
-	3750 3450 4600 3450
-Text HLabel 3750 3150 0    50   Input ~ 0
+	3750 3550 4600 3550
+Text HLabel 3750 3250 0    50   Input ~ 0
 Ctl_MEM[14..20]
 Wire Bus Line
-	3750 3150 4600 3150
+	3750 3250 4600 3250
 Wire Bus Line
-	4600 3050 3950 3050
-Text Label 3950 3050 0    50   ~ 0
+	4600 3150 3950 3150
+Text Label 3950 3150 0    50   ~ 0
 Ctl_EX[0..20]
 Wire Wire Line
 	6000 2950 6800 2950
@@ -46,10 +46,10 @@ Wire Bus Line
 Text Label 4500 2950 2    50   ~ 0
 Ins_ID[11..15]
 Wire Bus Line
-	3750 3550 4600 3550
-Text HLabel 3750 3550 0    50   Input ~ 0
+	3750 3650 4600 3650
+Text HLabel 3750 3650 0    50   Input ~ 0
 Ins_EX[0..10]
-Text HLabel 8300 1450 2    50   Output ~ 0
+Text HLabel 8300 1550 2    50   Output ~ 0
 Ctl_EX[0..20]
 Text Notes 1700 7900 0    50   ~ 0
 Description\n————————\nHalt Clock\nSelect Store Operand 0\nSelect Store Operand 1\nSelect Right Operand 1\nSelect Right Operand 2\nFlags Register In\nALU Carry input\nALU I0 input\nALU I1 input\nALU I2 input\nALU RS0 input\nALU RS1 input\nJump\nAbsolute Jump\nMemory Load\nMemory Store\nDrive the Store operand onto the bus I/O lines\nSelect write back source\nWrite back low byte\nWrite back high byte\nEnable write back to register file
@@ -138,7 +138,7 @@ F2 "Carry" I L 3000 1650 50
 F3 "Z" I L 3000 1750 50 
 F4 "Ins_ID[11..15]" I L 3000 1550 50 
 F5 "OVF" I L 3000 1850 50 
-F6 "Ctl_ID[0..20]" O R 4250 1550 50 
+F6 "Ctl_ID[0..22]" O R 4250 1550 50 
 F7 "FLUSH" I L 3000 1950 50 
 $EndSheet
 Text Label 2750 950  2    50   ~ 0
@@ -164,16 +164,16 @@ OVF
 Wire Wire Line
 	3000 1850 2900 1850
 Wire Bus Line
-	6600 1450 8300 1450
+	6600 1550 8300 1550
 Wire Bus Line
 	6600 950  8300 950 
 $Sheet
-S 5200 1350 1400 400 
+S 5200 1450 1400 400 
 U 60693BE1
 F0 "sheet60693B98" 50
 F1 "ID_EX_ControlWord.sch" 50
-F2 "Ctl_ID[0..23]" I L 5200 1550 50 
-F3 "Ctl_EX[0..20]" O R 6600 1450 50 
+F2 "Ctl_ID[0..22]" I L 5200 1550 50 
+F3 "Ctl_EX[0..20]" O R 6600 1550 50 
 $EndSheet
 $Sheet
 S 5200 750  1400 300 
@@ -208,12 +208,10 @@ SelA[0..2]
 Text Label 4850 5800 0    50   ~ 0
 SelB[0..2]
 Text Label 4300 1550 0    50   ~ 0
-Ctl_ID[0..20]
-Wire Bus Line
-	4250 1550 5200 1550
+Ctl_ID[0..22]
 Text Label 7250 950  0    50   ~ 0
 Ins_EX[0..10]
-Text Label 7250 1450 0    50   ~ 0
+Text Label 7250 1550 0    50   ~ 0
 Ctl_EX[0..20]
 $Sheet
 S 8500 5900 900  300 
@@ -284,16 +282,16 @@ Wire Bus Line
 	7050 5500 7050 4300
 Connection ~ 7050 5500
 $Sheet
-S 4600 2750 1400 900 
+S 4600 2750 1400 1000
 U 5FDA967F
 F0 "Hazard Control" 50
 F1 "HazardControl.sch" 50
-F2 "SelC_MEM[0..2]" I L 4600 3450 50 
-F3 "SelA[0..2]" I L 4600 3250 50 
-F4 "SelB[0..2]" I L 4600 3350 50 
-F5 "Ins_EX[0..10]" I L 4600 3550 50 
-F6 "Ctl_MEM[14..20]" I L 4600 3150 50 
-F7 "Ctl_EX[0..20]" I L 4600 3050 50 
+F2 "SelC_MEM[0..2]" I L 4600 3550 50 
+F3 "SelA[0..2]" I L 4600 3350 50 
+F4 "SelB[0..2]" I L 4600 3450 50 
+F5 "Ins_EX[0..10]" I L 4600 3650 50 
+F6 "Ctl_MEM[14..20]" I L 4600 3250 50 
+F7 "Ctl_EX[0..20]" I L 4600 3150 50 
 F8 "~J" I L 4600 2850 50 
 F9 "Ins_ID[11..15]" I L 4600 2950 50 
 F10 "STALL" O R 6000 2950 50 
@@ -304,6 +302,7 @@ F14 "FWD_MEM_TO_A" O R 6000 3250 50
 F15 "FWD_EX_TO_B" O R 6000 3450 50 
 F16 "FWD_MEM_TO_B" O R 6000 3550 50 
 F17 "FWD_B" O R 6000 3350 50 
+F18 "Ctl_ID[0..22]" I L 4600 3050 50 
 $EndSheet
 Wire Wire Line
 	6150 2850 6000 2850
@@ -470,6 +469,21 @@ Text HLabel 1100 2700 0    50   Input ~ 0
 Z
 Text HLabel 1100 3000 0    50   Input ~ 0
 OVF
+Text Label 3950 3050 0    50   ~ 0
+Ctl_ID[0..22]
+Wire Bus Line
+	3350 3050 3350 2500
+Wire Bus Line
+	3350 3050 4600 3050
+Wire Bus Line
+	4900 1550 5200 1550
+Wire Bus Line
+	4250 1550 4900 1550
+Connection ~ 4900 1550
+Wire Bus Line
+	3350 2500 4900 2500
+Wire Bus Line
+	4900 2500 4900 1550
 Wire Bus Line
 	2050 950  5200 950 
 $EndSCHEMATC

@@ -508,7 +508,7 @@ Wire Wire Line
 Wire Wire Line
 	3750 6400 3800 6400
 Text HLabel 3100 1100 0    50   Input ~ 0
-Ctl_ID[0..23]
+Ctl_ID[0..22]
 Wire Wire Line
 	3750 6500 3800 6500
 Text Label 5500 5800 2    50   ~ 0

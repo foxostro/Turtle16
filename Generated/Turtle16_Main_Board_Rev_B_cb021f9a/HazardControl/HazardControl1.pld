@@ -1,0 +1,40 @@
+GAL22V10     ; First stage of logic to detect and resolve pipeline hazards
+HazardControl1
+        
+NC    WBSRCEX    WBENEX    WBSRCME    WBENME    AEQCEX    BEQCEX    AEQCME    BEQCME    LUNUSED    RUNUSED    GND
+NC    FSMTB      FSXTB     FSMTA      FSXTA     FMETB     FEXTB     FWDB      FWDA      FEXTA      FMETA      VCC
+
+; LOW indicates that Y_MEM should be forwarded to the EX stage for operand A.
+FMETA = AEQCME + WBSRCME + WBSRCME + /AEQCEX * /WBENEX * /WBSRCEX
+
+; LOW indicates that Y_EX should be forwarded to the EX stage for operand A.
+FEXTA = AEQCEX + WBENEX + WBSRCEX
+
+; LOW indicates that the value on the A port of the register file should be forwarded to the EX stage for operand A.
+/FWDA = AEQCEX * AEQCME + AEQCEX * WBSRCME + AEQCEX * WBSRCME + WBENEX * AEQCME + WBENEX * WBSRCME + WBENEX * WBSRCME + WBSRCEX * AEQCME + WBSRCEX * WBSRCME + WBSRCEX * WBSRCME
+
+; LOW indicates that the value on the B port of the register file should be forwarded to the EX stage for operand B.
+/FWDB = BEQCEX * BEQCME + BEQCEX * WBSRCME + BEQCEX * WBSRCME + WBENEX * BEQCME + WBENEX * WBSRCME + WBENEX * WBSRCME + WBSRCEX * BEQCME + WBSRCEX * WBSRCME + WBSRCEX * WBSRCME
+
+; LOW indicates that Y_EX should be forwarded to the EX stage for operand B.
+FEXTB = BEQCEX + WBENEX + WBSRCEX
+
+; LOW indicates that Y_MEM should be forwarded to the EX stage for operand B.
+FMETB = BEQCME + WBSRCME + WBSRCME + /BEQCEX * /WBENEX * /WBSRCEX
+
+; LOW indicates that this is a case where we would need to forward storeOp_EX, if we could, to operand A.
+FSXTA = AEQCEX + WBENEX + /WBSRCEX + LUNUSED
+
+; LOW indicates that this is a case where we would need to forward storeOp_MEM, if we could, to operand A.
+FSMTA = AEQCME + WBENME + /WBSRCME + LUNUSED
+
+; LOW indicates that this is a case where we would need to forward storeOp_EX, if we could, to operand B.
+FSXTB = BEQCEX + WBENEX + /WBSRCEX + RUNUSED
+
+; LOW indicates that this is a case where we would need to forward storeOp_MEM, if we could, to operand B.
+FSMTB = BEQCME + WBENME + /WBSRCME + RUNUSED
+
+
+DESCRIPTION
+
+First of two stages of logic to detect and resolve pipeline hazards for the Turtle16 CPU

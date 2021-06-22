@@ -103,7 +103,8 @@ public class ID_Output: NSObject, NSSecureCoding {
 public class ID: NSObject, NSSecureCoding {
     public static var supportsSecureCoding = true
     
-    public static let nopControlWord: UInt = 0b111111111111111111111
+    public static let nopControlWord: UInt = 0b111111111111111111111 // The signals output to ctl_EX on a NOP instruction. This is different than the signals on ctl_ID for the same.
+    public static let nopControlWord_ID: UInt = 0b11111111111111111111111 // The signals on ctl_ID when executing a NOP instruction. This is differnet than ctl_EX.
     
     public struct WriteBackInput: Equatable, Hashable {
         public let c: UInt16
@@ -332,19 +333,22 @@ public class ID: NSObject, NSSecureCoding {
     }
     
     public func step(input: Input) -> ID_Output {
-        let hazardControlSignals = hazardControlUnit.step(input: input)
+        let ctl_ID: UInt = decodeOpcode(input: input)
+        let hazardControlSignals = hazardControlUnit.step(input: input,
+                                                          left_operand_is_unused: (ctl_ID >> 21) & 1,
+                                                          right_operand_is_unused: (ctl_ID >> 22) & 1)
         let flush = (hazardControlSignals.flush & 1)==1
         associatedPC = flush ? nil : input.associatedPC
-        let ctl_EX: UInt = flush ? ID.nopControlWord : decodeOpcode(input: input)
+        let ctl_EX: UInt = flush ? ID.nopControlWord : (ctl_ID & UInt((1<<21)-1)) // only the lower 21 bits are present on real hardware
         let a = forwardA(input, hazardControlSignals)
         let b = forwardB(input, hazardControlSignals)
         let ins = UInt(input.ins & 0x07ff)
         return ID_Output(stall: hazardControlSignals.stall & 1,
-                      ctl_EX: ctl_EX,
-                      a: a,
-                      b: b,
-                      ins: ins,
-                      associatedPC: associatedPC)
+                         ctl_EX: ctl_EX,
+                         a: a,
+                         b: b,
+                         ins: ins,
+                         associatedPC: associatedPC)
     }
     
     public func decodeOpcode(input: Input) -> UInt {
@@ -354,8 +358,7 @@ public class ID: NSObject, NSSecureCoding {
                     | UInt(input.ovf << 5)
                     | UInt((input.ins >> 11) & 31)
         let ctl_ID = opcodeDecodeROM[Int(address)]
-        let ctl_EX = ctl_ID & UInt((1<<21)-1) // only the lower 21 bits are present on real hardware
-        return ctl_EX
+        return ctl_ID
     }
     
     fileprivate func forwardA(_ input: ID.Input, _ hzd: HazardControl.Output) -> UInt16 {

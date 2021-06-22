@@ -1,8 +1,8 @@
 GAL22V10     ; First stage of logic to detect and resolve pipeline hazards
 HazardControl1
         
-NC    WBSRCEX    WBENEX    WBSRCME    WBENME    AEQCEX    BEQCEX    AEQCME    BEQCME    NC       NC      GND
-NC    FSMTB      FSXTB     FSMTA      FSXTA     FMETB     FEXTB     FWDB      FWDA      FEXTA    FMETA   VCC
+NC    WBSRCEX    WBENEX    WBSRCME    WBENME    AEQCEX    BEQCEX    AEQCME    BEQCME    LUNUSED    RUNUSED    GND
+NC    FSMTB      FSXTB     FSMTA      FSXTA     FMETB     FEXTB     FWDB      FWDA      FEXTA      FMETA      VCC
 
 ; LOW indicates that Y_MEM should be forwarded to the EX stage for operand A.
 FMETA = AEQCME + WBSRCME + WBSRCME + /AEQCEX * /WBENEX * /WBSRCEX
@@ -23,16 +23,16 @@ FEXTB = BEQCEX + WBENEX + WBSRCEX
 FMETB = BEQCME + WBSRCME + WBSRCME + /BEQCEX * /WBENEX * /WBSRCEX
 
 ; LOW indicates that this is a case where we would need to forward storeOp_EX, if we could, to operand A.
-FSXTA = AEQCEX + WBENEX + /WBSRCEX
+FSXTA = AEQCEX + WBENEX + /WBSRCEX + LUNUSED
 
 ; LOW indicates that this is a case where we would need to forward storeOp_MEM, if we could, to operand A.
-FSMTA = AEQCME + WBENME + /WBSRCME
+FSMTA = AEQCME + WBENME + /WBSRCME + LUNUSED
 
 ; LOW indicates that this is a case where we would need to forward storeOp_EX, if we could, to operand B.
-FSXTB = BEQCEX + WBENEX + /WBSRCEX
+FSXTB = BEQCEX + WBENEX + /WBSRCEX + RUNUSED
 
 ; LOW indicates that this is a case where we would need to forward storeOp_MEM, if we could, to operand B.
-FSMTB = BEQCME + WBENME + /WBSRCME
+FSMTB = BEQCME + WBENME + /WBSRCME + RUNUSED
 
 
 DESCRIPTION

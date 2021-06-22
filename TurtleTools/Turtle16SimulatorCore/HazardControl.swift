@@ -34,6 +34,8 @@ public class HazardControl: NSObject {
         let writeBackSrc_MEM: UInt
         let wben_EX: UInt
         let wben_MEM: UInt
+        let left_operand_is_unused: UInt
+        let right_operand_is_unused: UInt
     }
     
     public struct StageOneOutput {
@@ -73,7 +75,9 @@ public class HazardControl: NSObject {
         abort() // implement in a subclass
     }
     
-    public func step(input: ID.Input) -> Output {
+    public func step(input: ID.Input,
+                     left_operand_is_unused: UInt,
+                     right_operand_is_unused: UInt) -> Output {
         // The hardware has an array of identity comparators to generate these
         // signals.
         let selA: UInt = UInt(input.ins >> 5) & 0b111
@@ -92,7 +96,9 @@ public class HazardControl: NSObject {
                                           writeBackSrc_EX: (input.ctl_EX >> 17) & 1,
                                           writeBackSrc_MEM: (input.ctl_MEM >> 17) & 1,
                                           wben_EX: (input.ctl_EX >> 20) & 1,
-                                          wben_MEM: (input.ctl_MEM >> 20) & 1)
+                                          wben_MEM: (input.ctl_MEM >> 20) & 1,
+                                          left_operand_is_unused: left_operand_is_unused & 1,
+                                          right_operand_is_unused: right_operand_is_unused & 1)
         let stageOneOutput = generatedHazardControlSignalsStageOne(input: stageOneInput)
         assert(stageOneOutput.fwd_a + stageOneOutput.fwd_ex_to_a + stageOneOutput.fwd_mem_to_a == 2)
         assert(stageOneOutput.fwd_b + stageOneOutput.fwd_ex_to_b + stageOneOutput.fwd_mem_to_b == 2)

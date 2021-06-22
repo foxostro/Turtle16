@@ -43,10 +43,10 @@ public class HazardControlMockup: HazardControl {
         let fwd_mem_to_a: UInt = (input.sel_a_matches_sel_c_mem | input.wben_MEM | input.writeBackSrc_MEM) | (~input.sel_a_matches_sel_c_ex & ~input.wben_EX & ~input.writeBackSrc_EX)
         let fwd_mem_to_b: UInt = (input.sel_b_matches_sel_c_mem | input.wben_MEM | input.writeBackSrc_MEM) | (~input.sel_b_matches_sel_c_ex & ~input.wben_EX & ~input.writeBackSrc_EX)
         
-        let need_to_forward_storeOp_EX_to_a: UInt = (input.sel_a_matches_sel_c_ex | input.wben_EX | ~input.writeBackSrc_EX)
-        let need_to_forward_storeOp_MEM_to_a: UInt = (input.sel_a_matches_sel_c_mem | input.wben_MEM | ~input.writeBackSrc_MEM)
-        let need_to_forward_storeOp_EX_to_b: UInt = (input.sel_b_matches_sel_c_ex | input.wben_EX | ~input.writeBackSrc_EX)
-        let need_to_forward_storeOp_MEM_to_b: UInt = (input.sel_b_matches_sel_c_mem | input.wben_MEM | ~input.writeBackSrc_MEM)
+        let need_to_forward_storeOp_EX_to_a: UInt = (input.sel_a_matches_sel_c_ex | input.wben_EX | ~input.writeBackSrc_EX | input.left_operand_is_unused)
+        let need_to_forward_storeOp_MEM_to_a: UInt = (input.sel_a_matches_sel_c_mem | input.wben_MEM | ~input.writeBackSrc_MEM | input.left_operand_is_unused)
+        let need_to_forward_storeOp_EX_to_b: UInt = (input.sel_b_matches_sel_c_ex | input.wben_EX | ~input.writeBackSrc_EX | input.right_operand_is_unused)
+        let need_to_forward_storeOp_MEM_to_b: UInt = (input.sel_b_matches_sel_c_mem | input.wben_MEM | ~input.writeBackSrc_MEM | input.right_operand_is_unused)
         
         let result = StageOneOutput(fwd_a: fwd_a & 1,
                                     fwd_b: fwd_b & 1,

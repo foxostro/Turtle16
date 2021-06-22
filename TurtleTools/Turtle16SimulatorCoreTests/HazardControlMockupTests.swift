@@ -18,7 +18,9 @@ class HazardControlMockupTests: XCTestCase {
         let hltOpcode: UInt = 1
         let ins: UInt16 = UInt16(hltOpcode << 11)
         let unit = makeHazardControl()
-        let output = unit.step(input: ID.Input(ins: ins, j: 0))
+        let output = unit.step(input: ID.Input(ins: ins, j: 0),
+                               left_operand_is_unused: 0,
+                               right_operand_is_unused: 0)
         XCTAssertEqual(output.flush, 1)
     }
     
@@ -32,7 +34,9 @@ class HazardControlMockupTests: XCTestCase {
         
         let input = ID.Input(ins: ins_ID, ins_EX: ins_EX, ctl_EX: ctl_EX, y_EX: 0xabcd)
         let unit = makeHazardControl()
-        let output = unit.step(input: input)
+        let output = unit.step(input: input,
+                               left_operand_is_unused: 0,
+                               right_operand_is_unused: 0)
         
         XCTAssertEqual(output.stall, 0) // No need to stall on this RAW hazard.
         XCTAssertEqual(output.fwd_ex_to_a, 0) // The A operand comes from Y_EX instead of register file port A.
@@ -48,7 +52,9 @@ class HazardControlMockupTests: XCTestCase {
         
         let input = ID.Input(ins: ins_ID, ins_EX: ins_EX, ctl_EX: ctl_EX, y_EX: 0)
         let unit = makeHazardControl()
-        let output = unit.step(input: input)
+        let output = unit.step(input: input,
+                               left_operand_is_unused: 0,
+                               right_operand_is_unused: 0)
         
         XCTAssertEqual(output.stall, 1) // The CPU must stall.
     }
@@ -63,7 +69,9 @@ class HazardControlMockupTests: XCTestCase {
         
         let input = ID.Input(ins: ins_ID, selC_MEM: selC_MEM, ctl_MEM: ctl_MEM, y_MEM: 0xabcd)
         let unit = makeHazardControl()
-        let output = unit.step(input: input)
+        let output = unit.step(input: input,
+                               left_operand_is_unused: 0,
+                               right_operand_is_unused: 0)
         
         XCTAssertEqual(output.stall, 0) // No need to stall on this RAW hazard.
         XCTAssertEqual(output.fwd_mem_to_a, 0) // The A operand comes from Y_MEM instead of register file port A.
@@ -79,7 +87,9 @@ class HazardControlMockupTests: XCTestCase {
         
         let input = ID.Input(ins: ins_ID, selC_MEM: selC_MEM, ctl_MEM: ctl_MEM, y_MEM: 0)
         let unit = makeHazardControl()
-        let output = unit.step(input: input)
+        let output = unit.step(input: input,
+                               left_operand_is_unused: 0,
+                               right_operand_is_unused: 0)
         
         XCTAssertEqual(output.stall, 1) // The CPU must stall.
     }
@@ -94,7 +104,9 @@ class HazardControlMockupTests: XCTestCase {
         
         let input = ID.Input(ins: ins_ID, ins_EX: ins_EX, ctl_EX: ctl_EX, y_EX: 0xabcd)
         let unit = makeHazardControl()
-        let output = unit.step(input: input)
+        let output = unit.step(input: input,
+                               left_operand_is_unused: 0,
+                               right_operand_is_unused: 0)
         
         XCTAssertEqual(output.stall, 0) // No need to stall on this RAW hazard.
         XCTAssertEqual(output.fwd_ex_to_b, 0) // The A operand comes from Y_EX instead of register file port B.
@@ -110,7 +122,9 @@ class HazardControlMockupTests: XCTestCase {
         
         let input = ID.Input(ins: ins_ID, ins_EX: ins_EX, ctl_EX: ctl_EX, y_EX: 0)
         let unit = makeHazardControl()
-        let output = unit.step(input: input)
+        let output = unit.step(input: input,
+                               left_operand_is_unused: 0,
+                               right_operand_is_unused: 0)
         
         XCTAssertEqual(output.stall, 1) // The CPU must stall.
     }
@@ -125,7 +139,9 @@ class HazardControlMockupTests: XCTestCase {
         
         let input = ID.Input(ins: ins_ID, selC_MEM: selC_MEM, ctl_MEM: ctl_MEM, y_MEM: 0xabcd)
         let unit = makeHazardControl()
-        let output = unit.step(input: input)
+        let output = unit.step(input: input,
+                               left_operand_is_unused: 0,
+                               right_operand_is_unused: 0)
         
         XCTAssertEqual(output.stall, 0) // No need to stall on this RAW hazard.
         XCTAssertEqual(output.fwd_mem_to_b, 0) // The A operand comes from Y_MEM instead of register file port B.
@@ -141,7 +157,9 @@ class HazardControlMockupTests: XCTestCase {
         
         let input = ID.Input(ins: ins_ID, selC_MEM: selC_MEM, ctl_MEM: ctl_MEM, y_MEM: 0)
         let unit = makeHazardControl()
-        let output = unit.step(input: input)
+        let output = unit.step(input: input,
+                               left_operand_is_unused: 0,
+                               right_operand_is_unused: 0)
         
         XCTAssertEqual(output.stall, 1) // The CPU must stall.
     }
@@ -156,7 +174,9 @@ class HazardControlMockupTests: XCTestCase {
         
         let input = ID.Input(ins: ins_ID, ins_EX: ins_EX, ctl_EX: ctl_EX, y_EX: 0xabcd)
         let unit = makeHazardControl()
-        let output = unit.step(input: input)
+        let output = unit.step(input: input,
+                               left_operand_is_unused: 0,
+                               right_operand_is_unused: 0)
         
         XCTAssertEqual(output.stall, 0) // No need to stall on this RAW hazard.
         XCTAssertEqual(output.fwd_ex_to_a, 0) // The A operand comes from Y_EX instead of register file port A.
@@ -173,7 +193,9 @@ class HazardControlMockupTests: XCTestCase {
         
         let input = ID.Input(ins: ins_ID, ins_EX: ins_EX, ctl_EX: ctl_EX, y_EX: 0)
         let unit = makeHazardControl()
-        let output = unit.step(input: input)
+        let output = unit.step(input: input,
+                               left_operand_is_unused: 0,
+                               right_operand_is_unused: 0)
         
         XCTAssertEqual(output.stall, 1) // The CPU must stall.
     }
@@ -188,7 +210,9 @@ class HazardControlMockupTests: XCTestCase {
         
         let input = ID.Input(ins: ins_ID, selC_MEM: selC_MEM, ctl_MEM: ctl_MEM, y_MEM: 0xabcd)
         let unit = makeHazardControl()
-        let output = unit.step(input: input)
+        let output = unit.step(input: input,
+                               left_operand_is_unused: 0,
+                               right_operand_is_unused: 0)
         
         XCTAssertEqual(output.stall, 0) // No need to stall on this RAW hazard.
         XCTAssertEqual(output.fwd_mem_to_a, 0) // The A operand comes from Y_MEM instead of register file port A.
@@ -205,7 +229,9 @@ class HazardControlMockupTests: XCTestCase {
         
         let input = ID.Input(ins: ins_ID, selC_MEM: selC_MEM, ctl_MEM: ctl_MEM, y_MEM: 0)
         let unit = makeHazardControl()
-        let output = unit.step(input: input)
+        let output = unit.step(input: input,
+                               left_operand_is_unused: 0,
+                               right_operand_is_unused: 0)
         
         XCTAssertEqual(output.stall, 1) // The CPU must stall.
     }
@@ -214,7 +240,9 @@ class HazardControlMockupTests: XCTestCase {
         let beq: UInt16 = 24
         let input = ID.Input(ins: beq<<11, ctl_EX: 0b111111111111111011111)
         let unit = makeHazardControl()
-        let output = unit.step(input: input)
+        let output = unit.step(input: input,
+                               left_operand_is_unused: 0,
+                               right_operand_is_unused: 0)
         XCTAssertEqual(output.stall, 1)
     }
     
@@ -249,7 +277,9 @@ class HazardControlMockupTests: XCTestCase {
                              rst: 1)
         
         let unit = makeHazardControl()
-        let output = unit.step(input: input)
+        let output = unit.step(input: input,
+                               left_operand_is_unused: 0,
+                               right_operand_is_unused: 0)
         
         XCTAssertEqual(output.stall, 0) // No need to stall on this RAW hazard.
         XCTAssertEqual(output.fwd_ex_to_a, 0) // The A operand comes from Y_EX instead of register file port A.
@@ -286,9 +316,51 @@ class HazardControlMockupTests: XCTestCase {
                              rst: 1)
         
         let unit = makeHazardControl()
-        let output = unit.step(input: input)
+        let output = unit.step(input: input,
+                               left_operand_is_unused: 0,
+                               right_operand_is_unused: 0)
         
         XCTAssertEqual(output.stall, 0) // No need to stall on this RAW hazard.
         XCTAssertEqual(output.fwd_ex_to_b, 0) // The A operand comes from Y_EX instead of register file port B.
+    }
+    
+    func testAvoidFalseStoreHazardOnLeftOperand() throws {
+        // The instruction in ID want to read r7 on port A (left)
+        let ins_ID: UInt16 = 0b0000100011100000
+        
+        // The instruction in MEM wants to write storeOP_MEM back to the register file in r7. (WriteBackSrcFlag=1)
+        let selC_MEM: UInt = 0b111
+        let ctl_MEM: UInt = ~UInt(1<<DecoderGenerator.WBEN)
+        
+        let input = ID.Input(ins: ins_ID, selC_MEM: selC_MEM, ctl_MEM: ctl_MEM, y_MEM: 0)
+        let unit = makeHazardControl()
+        let output = unit.step(input: input,
+                               left_operand_is_unused: 1,
+                               right_operand_is_unused: 0)
+        
+        // The CPU must not stall when the instruction doesn't actually use the
+        // operands. Since the values are unused, it doesn't matter if they're
+        // incorrect.
+        XCTAssertEqual(output.stall, 0)
+    }
+    
+    func testAvoidFalseStoreHazardOnRightOperand() throws {
+        // The instruction in ID want to read r7 on port B (right)
+        let ins_ID: UInt16 = 0b0000100000011100
+        
+        // The instruction in MEM wants to write storeOP_MEM back to the register file in r7. (WriteBackSrcFlag=1)
+        let selC_MEM: UInt = 0b111
+        let ctl_MEM: UInt = ~UInt(1<<DecoderGenerator.WBEN)
+        
+        let input = ID.Input(ins: ins_ID, selC_MEM: selC_MEM, ctl_MEM: ctl_MEM, y_MEM: 0)
+        let unit = makeHazardControl()
+        let output = unit.step(input: input,
+                               left_operand_is_unused: 0,
+                               right_operand_is_unused: 1)
+        
+        // The CPU must not stall when the instruction doesn't actually use the
+        // operands. Since the values are unused, it doesn't matter if they're
+        // incorrect.
+        XCTAssertEqual(output.stall, 0)
     }
 }

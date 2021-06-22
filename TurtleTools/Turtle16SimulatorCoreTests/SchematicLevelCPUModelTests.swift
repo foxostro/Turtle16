@@ -2208,16 +2208,18 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(cpu.getRegister(2), 55)
     }
     
-    func testDemonstrateBugInHazardControlStallingOnStoreOp_LI() {
-        // There is a bug in the hazard control unit where an instruction will
-        // be incorrectly determined to introduce a RAW hazard in the StoreOp
-        // case. The issue is that the hazard control unit will always assume
-        // the instruction's A and B bit fields are used to indicate register
-        // indices, but this is only sometimes true. For example, ALU
-        // instructions which use an immediate operand, such as ADDI will reuse
-        // the bits of the B field to specify an immediate value. Likewise, the
-        // LI instruction will reuse the bits of the A and B fields to specify
-        // an immediate value.
+    func testFixedBugInHazardControlStallingOnStoreOp_LI() {
+        // There is a bug in the hazard control unit in Rev A where an
+        // instruction will be incorrectly determined to introduce a RAW hazard
+        // in the StoreOp case. The issue is that the hazard control unit would
+        // always assume the instruction's A and B bit fields are used to
+        // indicate register indices, but this is only sometimes true
+        // For example, ALU instructions which use an immediate operand, such as
+        // ADDI will reuse the bits of the B field to specify an immediate
+        // value. Likewise, the LI instruction will reuse the bits of the A and
+        // B fields to specify an immediate value.
+        //
+        // This test ensures that the issue has been fixed in Rev B and later.
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b0000000000000000, // NOP
@@ -2230,10 +2232,10 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step()
         cpu.step()
         cpu.step()
-        XCTAssertTrue(cpu.isStalling)
+        XCTAssertFalse(cpu.isStalling)
     }
     
-    func testDemonstrateBugInHazardControlStallingOnStoreOp_ADDI() {
+    func testFixedBugInHazardControlStallingOnStoreOp_ADDI() {
         // See comment in testDemonstrateBugInHazardControlStallingOnStoreOp_LI
         // for detailed description of this hardware bug.
         let cpu = SchematicLevelCPUModel()
@@ -2248,7 +2250,7 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step()
         cpu.step()
         cpu.step()
-        XCTAssertTrue(cpu.isStalling)
+        XCTAssertFalse(cpu.isStalling)
     }
     
     func testEquality_Equal() throws {

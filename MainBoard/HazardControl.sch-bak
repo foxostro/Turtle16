@@ -394,8 +394,6 @@ Wire Wire Line
 Text Label 8250 3600 0    50   ~ 0
 ~FI
 NoConn ~ 6050 4200
-NoConn ~ 5050 4100
-NoConn ~ 5050 4200
 Wire Wire Line
 	7550 3700 8350 3700
 $Comp
@@ -537,6 +535,40 @@ Text Label 9450 3300 0    50   ~ 0
 STALL
 Text Label 9450 3400 0    50   ~ 0
 FLUSH
+Text Label 4650 4200 0    50   ~ 0
+Ctl_ID22
+Text HLabel 4850 4950 0    50   Input ~ 0
+Ctl_ID[0..22]
+Wire Bus Line
+	4850 4950 4950 4950
+Wire Wire Line
+	4650 4200 5050 4200
+Entry Wire Line
+	5050 5150 4950 5050
+Text Label 4650 4100 0    50   ~ 0
+Ctl_ID21
+Entry Wire Line
+	5050 5250 4950 5150
+Wire Wire Line
+	4650 4200 4650 4400
+Wire Wire Line
+	4650 4400 5300 4400
+Wire Wire Line
+	5300 4400 5300 5250
+Wire Wire Line
+	5300 5250 5050 5250
+Wire Wire Line
+	5050 5150 5200 5150
+Wire Wire Line
+	5200 5150 5200 4500
+Wire Wire Line
+	5200 4500 4550 4500
+Wire Wire Line
+	4550 4500 4550 4100
+Wire Wire Line
+	4550 4100 5050 4100
 Wire Bus Line
 	3200 3100 3200 3300
+Wire Bus Line
+	4950 4950 4950 5150
 $EndSCHEMATC

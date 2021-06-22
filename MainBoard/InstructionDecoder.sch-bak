@@ -350,7 +350,7 @@ Wire Wire Line
 Wire Wire Line
 	4100 2750 3750 2750
 Text HLabel 9950 5250 2    50   Output ~ 0
-Ctl_ID[0..20]
+Ctl_ID[0..22]
 Text HLabel 5200 2550 0    50   Input ~ 0
 Carry
 Text HLabel 5200 2650 0    50   Input ~ 0
@@ -817,7 +817,7 @@ Wire Bus Line
 	4200 5250 7000 5250
 Connection ~ 7000 5250
 Wire Bus Line
-	7000 5250 7400 5250
+	7000 5250 8400 5250
 Wire Bus Line
 	9950 5250 9800 5250
 Connection ~ 9800 5250
@@ -1545,31 +1545,15 @@ Wire Wire Line
 Connection ~ 6700 5700
 Connection ~ 5500 5700
 Wire Bus Line
-	7400 6550 7400 5250
-Connection ~ 7400 5250
+	8400 6550 8400 5250
+Connection ~ 8400 5250
 Wire Bus Line
-	7400 5250 9800 5250
+	8400 5250 9800 5250
 Text Notes 2800 6750 0    50   ~ 0
 When the ID stage is flushed, all the control lines are pulled high.\nThis configuration represents a NOP.
-NoConn ~ 9350 2550
-NoConn ~ 9350 2650
 NoConn ~ 9350 2750
 Entry Wire Line
 	9800 2550 9700 2450
-Wire Bus Line
-	7300 1300 7300 2350
-Wire Bus Line
-	9800 2150 9800 5250
-Wire Bus Line
-	4500 1300 4500 2350
-Wire Bus Line
-	1700 1300 1700 2350
-Wire Bus Line
-	7000 2150 7000 5250
-Wire Bus Line
-	4200 2150 4200 5250
-Wire Bus Line
-	1100 6550 7400 6550
 $Comp
 L power:GND #PWR?
 U 1 1 60CA2CD2
@@ -1615,4 +1599,81 @@ F 3 "" H 2550 2850 50  0001 C CNN
 	1    2550 2850
 	0    1    1    0   
 $EndComp
+Wire Wire Line
+	7600 6450 7600 5950
+Wire Wire Line
+	7300 6450 7300 5950
+Entry Wire Line
+	7300 6450 7400 6550
+Entry Wire Line
+	7600 6450 7700 6550
+$Comp
+L Device:R_Small R?
+U 1 1 60D47097
+P 7600 5850
+AR Path="/60AF64DE/60D47097" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/60D47097" Ref="R?"  Part="1" 
+AR Path="/5FED3839/60693BCF/60D47097" Ref="R82"  Part="1" 
+F 0 "R82" H 7659 5896 50  0000 L CNN
+F 1 "10kΩ" H 7659 5805 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 7600 5850 50  0001 C CNN
+F 3 "~" H 7600 5850 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 7600 5850 50  0001 C CNN "Mouser"
+	1    7600 5850
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 60D4709E
+P 7300 5850
+AR Path="/60AF64DE/60D4709E" Ref="R?"  Part="1" 
+AR Path="/60AF64DE/5FAF68C1/60D4709E" Ref="R?"  Part="1" 
+AR Path="/5FED3839/60693BCF/60D4709E" Ref="R81"  Part="1" 
+F 0 "R81" H 7359 5896 50  0000 L CNN
+F 1 "10kΩ" H 7359 5805 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" H 7300 5850 50  0001 C CNN
+F 3 "~" H 7300 5850 50  0001 C CNN
+F 4 "https://www.mouser.com/ProductDetail/652-CR0603FX-1002ELF" H 7300 5850 50  0001 C CNN "Mouser"
+	1    7300 5850
+	-1   0    0    1   
+$EndComp
+Text Label 7600 6450 1    50   ~ 0
+Ctl_ID22
+Text Label 7300 6450 1    50   ~ 0
+Ctl_ID21
+Wire Wire Line
+	7000 5700 7300 5700
+Wire Wire Line
+	7300 5700 7300 5750
+Wire Wire Line
+	7300 5700 7600 5700
+Wire Wire Line
+	7600 5700 7600 5750
+Connection ~ 7300 5700
+Text Label 9700 2650 2    50   ~ 0
+Ctl_ID22
+Entry Wire Line
+	9800 2650 9700 2550
+Text Label 9700 2550 2    50   ~ 0
+Ctl_ID21
+Wire Wire Line
+	9700 2650 9350 2650
+Wire Wire Line
+	9700 2550 9350 2550
+Entry Wire Line
+	9800 2750 9700 2650
+Wire Bus Line
+	7300 1300 7300 2350
+Wire Bus Line
+	4500 1300 4500 2350
+Wire Bus Line
+	1700 1300 1700 2350
+Wire Bus Line
+	9800 2150 9800 5250
+Wire Bus Line
+	7000 2150 7000 5250
+Wire Bus Line
+	4200 2150 4200 5250
+Wire Bus Line
+	1100 6550 8400 6550
 $EndSCHEMATC

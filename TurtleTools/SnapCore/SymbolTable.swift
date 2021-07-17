@@ -23,6 +23,16 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     case traitType(TraitType)
     case unionType(UnionType)
     
+    public var isPrimitive: Bool {
+        switch self {
+        case .void, .u8, .bool, .u16, .pointer:
+            return true
+        
+        default:
+            return false
+        }
+    }
+    
     public var isConst: Bool {
         switch self {
         case .void, .function:

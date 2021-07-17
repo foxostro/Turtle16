@@ -346,6 +346,7 @@
 		6FCB68202472064800798905 /* SnapParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCB681F2472064800798905 /* SnapParserTests.swift */; };
 		6FCB6846247241ED00798905 /* Return.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCB6845247241ED00798905 /* Return.swift */; };
 		6FCB68482472448300798905 /* ReturnTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCB68472472448300798905 /* ReturnTests.swift */; };
+		6FD5AE6E26A24AB500670CEB /* CommentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD5AE6D26A24AB500670CEB /* CommentNode.swift */; };
 		6FDB699D2543616000D532C2 /* CrackleInstructionListingMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDB699C2543616000D532C2 /* CrackleInstructionListingMaker.swift */; };
 		6FDB69AD2543618300D532C2 /* CrackleInstructionListingMakerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDB69AC2543618300D532C2 /* CrackleInstructionListingMakerTests.swift */; };
 		6FDF61E1266D86DC002E7A17 /* Disassembler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDF61E0266D86DC002E7A17 /* Disassembler.swift */; };
@@ -977,6 +978,7 @@
 		6FCD8DA823FA601100E90095 /* ComputerStopwatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputerStopwatch.swift; sourceTree = "<group>"; };
 		6FD4D70E2468BA12004F85B0 /* AudioDevicePeripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDevicePeripheral.swift; sourceTree = "<group>"; };
 		6FD4D7102468BA55004F85B0 /* AudioDevicePeripheralTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDevicePeripheralTests.swift; sourceTree = "<group>"; };
+		6FD5AE6D26A24AB500670CEB /* CommentNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentNode.swift; sourceTree = "<group>"; };
 		6FD8F9FE2360CAC5005A1856 /* ParameterListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterListTests.swift; sourceTree = "<group>"; };
 		6FD8FA002360CAF1005A1856 /* ParameterList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterList.swift; sourceTree = "<group>"; };
 		6FDB699C2543616000D532C2 /* CrackleInstructionListingMaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleInstructionListingMaker.swift; sourceTree = "<group>"; };
@@ -1425,6 +1427,7 @@
 				6F8F22E62471CB5100AFD574 /* AbstractSyntaxTreeNode.swift */,
 				6F4529762623ED8C003732B3 /* InstructionNode.swift */,
 				6F08807A230F5DBF00AB2339 /* LabelDeclaration.swift */,
+				6FD5AE6D26A24AB500670CEB /* CommentNode.swift */,
 				6F7F357324D492F000BA8E37 /* Parameter.swift */,
 				6F42B8EC26558B6B004A7B12 /* ParameterAddress.swift */,
 				6F01449F24D4941900071EC0 /* ParameterIdentifier.swift */,
@@ -2623,6 +2626,7 @@
 				6F000995262660B200C5DFDE /* CompilerError.swift in Sources */,
 				6F000C042626A4EA00C5DFDE /* ParameterSlashed.swift in Sources */,
 				6F000A13262661AD00C5DFDE /* TokenNewline.swift in Sources */,
+				6FD5AE6E26A24AB500670CEB /* CommentNode.swift in Sources */,
 				6F000A0D262661AD00C5DFDE /* TokenMisc.swift in Sources */,
 				6F000A46262661F200C5DFDE /* ParameterList.swift in Sources */,
 			);

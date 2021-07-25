@@ -28,7 +28,7 @@ class AssemblyListingMakerTests: XCTestCase {
         let actual = makeListing(snapSource: """
 let a = 42
 """)
-        print(actual)
+//        print(actual)
         XCTAssertTrue(actual.hasPrefix("""
 LI UV, 0xff
 BLTI M, 0x00

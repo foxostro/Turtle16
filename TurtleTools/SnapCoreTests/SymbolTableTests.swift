@@ -154,4 +154,39 @@ class SymbolTableTests: XCTestCase {
             XCTFail()
         }
     }
+    
+    func testInitializedWithDeclarationOrder() {
+        let symbols = SymbolTable([
+            "foo" : Symbol(type: .u8, offset: 0),
+            "bar" : Symbol(type: .u8, offset: 0)
+        ])
+        XCTAssertTrue(symbols.declarationOrder.contains("foo"))
+        XCTAssertTrue(symbols.declarationOrder.contains("bar"))
+        XCTAssertEqual(symbols.declarationOrder.count, 2)
+    }
+    
+    func testDeclarationOrderAffectsEquality() {
+        let symbols1 = SymbolTable([
+            "foo" : Symbol(type: .u8, offset: 0),
+            "bar" : Symbol(type: .u8, offset: 0)
+        ])
+        symbols1.declarationOrder = ["foo", "bar"]
+        
+        let symbols2 = SymbolTable([
+            "foo" : Symbol(type: .u8, offset: 0),
+            "bar" : Symbol(type: .u8, offset: 0)
+        ])
+        symbols2.declarationOrder = ["bar", "foo"]
+        
+        XCTAssertNotEqual(symbols1, symbols2)
+    }
+    
+    func testBindUpdatesDeclarationOrder() {
+        let symbols = SymbolTable()
+        XCTAssertEqual(symbols.declarationOrder, [])
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
+        XCTAssertEqual(symbols.declarationOrder, ["foo"])
+        symbols.bind(identifier: "bar", symbol: Symbol(type: .constBool, offset: 0x10))
+        XCTAssertEqual(symbols.declarationOrder, ["foo", "bar"])
+    }
 }

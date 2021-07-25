@@ -555,6 +555,7 @@ public class SymbolTable: NSObject {
         let symbolType: SymbolType
         let visibility: SymbolVisibility
     }
+    public var declarationOrder: [String] = []
     public private(set) var symbolTable: [String:Symbol]
     public private(set) var typeTable: [String:TypeRecord]
     public var parent: SymbolTable?
@@ -570,6 +571,9 @@ public class SymbolTable: NSObject {
     public init(parent p: SymbolTable?, dict: [String:Symbol] = [:], typeDict: [String:SymbolType] = [:]) {
         parent = p
         symbolTable = dict
+        for (identifier, _) in dict {
+            declarationOrder.append(identifier)
+        }
         typeTable = typeDict.mapValues({TypeRecord(symbolType: $0, visibility: .privateVisibility)})
         storagePointer = p?.storagePointer ?? 0
         enclosingFunctionType = p?.enclosingFunctionType
@@ -616,6 +620,10 @@ public class SymbolTable: NSObject {
     
     public func bind(identifier: String, symbol: Symbol) {
         symbolTable[identifier] = symbol
+        if let index = declarationOrder.firstIndex(of: identifier) {
+            declarationOrder.remove(at: index)
+        }
+        declarationOrder.append(identifier)
     }
     
     public func bind(identifier: String, symbolType: SymbolType, visibility: SymbolVisibility = .privateVisibility) {
@@ -741,6 +749,9 @@ public class SymbolTable: NSObject {
             return false
         }
         guard typeTable == rhs.typeTable else {
+            return false
+        }
+        guard declarationOrder == rhs.declarationOrder else {
             return false
         }
         return true

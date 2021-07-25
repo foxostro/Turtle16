@@ -176,24 +176,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     }
     
     public var sizeof: Int {
-        switch self {
-        case .compTimeInt, .compTimeBool, .void, .function:
-            return 0
-        case .constU8, .u8, .bool, .constBool:
-            return 1
-        case .constU16, .u16:
-            return 2
-        case .constPointer, .pointer:
-            return 2
-        case .constDynamicArray(elementType: _), .dynamicArray(elementType: _), .traitType(_):
-            return 4
-        case .array(count: let count, elementType: let elementType):
-            return (count ?? 0) * elementType.sizeof
-        case .constStructType(let typ), .structType(let typ):
-            return typ.sizeof
-        case .unionType(let typ):
-            return typ.sizeof
-        }
+        let strategy = MemoryLayoutStrategyTurtleTTL()
+        return strategy.sizeof(type: self)
     }
     
     public var arrayCount: Int? {
@@ -377,14 +361,6 @@ struct \(name) {
         return result
     }
     
-    public var sizeof: Int {
-        var accum = 0
-        for (_, symbol) in symbols.symbolTable {
-            accum += symbol.type.sizeof
-        }
-        return accum
-    }
-    
     public static func ==(lhs: StructType, rhs: StructType) -> Bool {
         return lhs.isEqual(rhs)
     }
@@ -459,14 +435,6 @@ trait \(name) {
         return result
     }
     
-    public var sizeof: Int {
-        var accum = 0
-        for (_, symbol) in symbols.symbolTable {
-            accum += symbol.type.sizeof
-        }
-        return accum
-    }
-    
     public static func ==(lhs: TraitType, rhs: TraitType) -> Bool {
         return lhs.isEqual(rhs)
     }
@@ -523,14 +491,6 @@ public class UnionType: NSObject {
     public override var description: String {
         let result = members.map({"\($0)"}).joined(separator: " | ")
         return result
-    }
-    
-    public var sizeof: Int {
-        let kTagSize = SymbolType.u8.sizeof
-        let kBufferSize = members.reduce(0) { (result, member) -> Int in
-            return max(result, member.sizeof)
-        }
-        return kTagSize + kBufferSize
     }
     
     public static func ==(lhs: UnionType, rhs: UnionType) -> Bool {

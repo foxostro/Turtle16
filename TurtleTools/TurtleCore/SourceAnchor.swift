@@ -14,6 +14,18 @@ public class SourceAnchor: NSObject {
         return lineMapper.url
     }
     
+    public override var description: String {
+        var str = ""
+        if let fileName = url?.lastPathComponent {
+            str += "\(fileName): "
+        }
+        if let lineNumbers = lineNumberPrefix {
+            str += "\(lineNumbers) "
+        }
+        str += text
+        return str
+    }
+    
     public override var debugDescription: String {
         var begin = 0
         var index = lineMapper.text.startIndex

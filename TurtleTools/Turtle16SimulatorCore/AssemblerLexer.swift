@@ -20,7 +20,9 @@ public class AssemblerLexer: Lexer {
             makeParenLeftRule(),
             makeParenRightRule(),
             makeQuotedStringRule(),
-            makeIdentifierRule(),
+            Rule(pattern: "\\.?[_a-zA-Z][\\-_a-zA-Z0-9]*\\b") {
+                TokenIdentifier(sourceAnchor: $0)
+            },
             makeDecimalNumberRule(),
             makeHexadecimalNumberWithDollarSigilRule(),
             makeHexadecimalNumberRule(),

@@ -166,6 +166,15 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         }
     }
     
+    public var isPointerType: Bool {
+        switch self {
+        case .pointer, .constPointer:
+            return true
+        default:
+            return false
+        }
+    }
+    
     public var sizeof: Int {
         switch self {
         case .compTimeInt, .compTimeBool, .void, .function:

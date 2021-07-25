@@ -11,6 +11,8 @@ import SnapCore
 import TurtleCore
 
 class RvalueExpressionTypeCheckerTests: XCTestCase {
+    let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
+    
     func testUnsupportedExpressionThrows() {
         let typeChecker = RvalueExpressionTypeChecker()
         XCTAssertThrowsError(try typeChecker.check(expression: Expression.UnsupportedExpression(sourceAnchor: nil))) {
@@ -4438,7 +4440,13 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         var actual: SymbolType? = nil
         XCTAssertNoThrow(actual = try typeChecker.check(expression: expr))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(actual?.sizeof, 6)
+        let actualSize: Int?
+        if let actual = actual {
+            actualSize = memoryLayoutStrategy.sizeof(type: actual)
+        } else {
+            actualSize = nil
+        }
+        XCTAssertEqual(actualSize, 6)
     }
     
     func testResolveConstUnionTypeExpression() {
@@ -4458,7 +4466,13 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         var actual: SymbolType? = nil
         XCTAssertNoThrow(actual = try typeChecker.check(expression: expr))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(actual?.sizeof, 6)
+        let actualSize: Int?
+        if let actual = actual {
+            actualSize = memoryLayoutStrategy.sizeof(type: actual)
+        } else {
+            actualSize = nil
+        }
+        XCTAssertEqual(actualSize, 6)
     }
     
     func testCompileFailsWhenCastingUnionTypeToNonMemberType() {

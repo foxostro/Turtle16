@@ -25,12 +25,16 @@ public class BaseExpressionCompiler: NSObject {
     let kSliceCountSize = 2
     let kSliceSize = 4 // kSliceBaseAddressSize + kSliceCountSize
     
+    let memoryLayoutStrategy: MemoryLayoutStrategy
+    
     public init(symbols: SymbolTable,
                 labelMaker: LabelMaker,
+                memoryLayoutStrategy: MemoryLayoutStrategy,
                 temporaryStack: CompilerTemporariesStack,
                 temporaryAllocator: CompilerTemporariesAllocator) {
         self.symbols = symbols
         self.labelMaker = labelMaker
+        self.memoryLayoutStrategy = memoryLayoutStrategy
         self.temporaryStack = temporaryStack
         self.temporaryAllocator = temporaryAllocator
     }
@@ -42,6 +46,7 @@ public class BaseExpressionCompiler: NSObject {
     public func rvalueContext() -> RvalueExpressionCompiler {
         return RvalueExpressionCompiler(symbols: symbols,
                                         labelMaker: labelMaker,
+                                        memoryLayoutStrategy: memoryLayoutStrategy,
                                         temporaryStack: temporaryStack,
                                         temporaryAllocator: temporaryAllocator)
     }
@@ -49,6 +54,7 @@ public class BaseExpressionCompiler: NSObject {
     public func lvalueContext() -> LvalueExpressionCompiler {
         return LvalueExpressionCompiler(symbols: symbols,
                                         labelMaker: labelMaker,
+                                        memoryLayoutStrategy: memoryLayoutStrategy,
                                         temporaryStack: temporaryStack,
                                         temporaryAllocator: temporaryAllocator)
     }
@@ -63,10 +69,11 @@ public class BaseExpressionCompiler: NSObject {
     }
     
     public func loadStaticValue(type: SymbolType, offset: Int) -> [CrackleInstruction] {
-        let dst = temporaryAllocator.allocate(size: type.sizeof)
+        let size = memoryLayoutStrategy.sizeof(type: type)
+        let dst = temporaryAllocator.allocate(size: size)
         temporaryStack.push(dst)
         var instructions: [CrackleInstruction] = []
-        instructions += [.copyWords(dst.address, offset, type.sizeof)]
+        instructions += [.copyWords(dst.address, offset, size)]
         return instructions
     }
     
@@ -80,8 +87,9 @@ public class BaseExpressionCompiler: NSObject {
         var instructions: [CrackleInstruction] = []
         instructions += computeAddressOfLocalVariable(offset: offset, depth: depth)
         let src = temporaryStack.pop()
-        let dst = temporaryAllocator.allocate(size: type.sizeof)
-        instructions += [.copyWordsIndirectSource(dst.address, src.address, type.sizeof)]
+        let size = memoryLayoutStrategy.sizeof(type: type)
+        let dst = temporaryAllocator.allocate(size: size)
+        instructions += [.copyWordsIndirectSource(dst.address, src.address, size)]
         src.consume()
         temporaryStack.push(dst)
         return instructions
@@ -178,7 +186,7 @@ public class BaseExpressionCompiler: NSObject {
         let tempSlice = temporaryAllocator.allocate(size: kSliceSize)
         
         let kRangeBeginOffset = 0
-        let kRangeLimitOffset = SymbolType.u16.sizeof
+        let kRangeLimitOffset = memoryLayoutStrategy.sizeof(type: .u16)
         
         // Evaluate the range expression first.
         instructions += try compile(expression: expr.argument)
@@ -228,10 +236,11 @@ public class BaseExpressionCompiler: NSObject {
         // the original array's base address.
         instructions += try lvalueContext().compile(expression: expr.subscriptable)
         let tempArrayBaseAddress = temporaryStack.pop()
+        let arrayElementSize = memoryLayoutStrategy.sizeof(type: symbolType.arrayElementType)
         instructions += [
             .muli16(tempSlice.address + kSliceBaseAddressOffset,
                     tempRangeStruct.address + kRangeBeginOffset,
-                    symbolType.arrayElementType.sizeof),
+                    arrayElementSize),
             .add16(tempSlice.address + kSliceBaseAddressOffset,
                    tempSlice.address + kSliceBaseAddressOffset,
                    tempArrayBaseAddress.address)
@@ -269,7 +278,7 @@ public class BaseExpressionCompiler: NSObject {
         
         // Evaluate the range expression to get the range value.
         let kRangeBeginOffset = 0
-        let kRangeLimitOffset = SymbolType.u16.sizeof
+        let kRangeLimitOffset = memoryLayoutStrategy.sizeof(type: .u16)
         instructions += try compile(expression: expr.argument)
         let tempRangeStruct = temporaryStack.pop()
         
@@ -324,13 +333,14 @@ public class BaseExpressionCompiler: NSObject {
         
         // Compute the base address of the array slice.
         let tempArrayBaseAddress = temporaryAllocator.allocate()
+        let arrayElementSize = memoryLayoutStrategy.sizeof(type: symbolType.arrayElementType)
         instructions += [
             .copyWordsIndirectSource(tempArrayBaseAddress.address,
                                      tempDynamicArrayAddress.address,
-                                     SymbolType.u16.sizeof),
+                                     memoryLayoutStrategy.sizeof(type: .u16)),
             .muli16(tempSlice.address + kSliceBaseAddressOffset,
                     tempRangeStruct.address + kRangeBeginOffset,
-                    symbolType.arrayElementType.sizeof),
+                    arrayElementSize),
             .add16(tempSlice.address + kSliceBaseAddressOffset,
                    tempSlice.address + kSliceBaseAddressOffset,
                    tempArrayBaseAddress.address)
@@ -383,7 +393,8 @@ public class BaseExpressionCompiler: NSObject {
         instructions += [.storeImmediate16(tempArrayCount.address, symbolType.arrayCount!)]
         
         let tempArraySize = temporaryAllocator.allocate()
-        instructions += [.muli16(tempArraySize.address, tempArrayCount.address, symbolType.arrayElementType.sizeof)]
+        let arrayElementSize = memoryLayoutStrategy.sizeof(type: symbolType.arrayElementType)
+        instructions += [.muli16(tempArraySize.address, tempArrayCount.address, arrayElementSize)]
         tempArrayCount.consume()
         
         let tempArrayLimit = temporaryAllocator.allocate()
@@ -478,7 +489,8 @@ public class BaseExpressionCompiler: NSObject {
         tempArrayCountAddress.consume()
         
         let tempArrayElementSize = temporaryAllocator.allocate()
-        instructions += [.storeImmediate16(tempArrayElementSize.address, symbolType.arrayElementType.sizeof)]
+        let arrayElementSize = memoryLayoutStrategy.sizeof(type: symbolType.arrayElementType)
+        instructions += [.storeImmediate16(tempArrayElementSize.address, arrayElementSize)]
         let tempArraySize = temporaryAllocator.allocate()
         instructions += [.mul16(tempArraySize.address, tempArrayCount.address, tempArrayElementSize.address)]
         tempArrayElementSize.consume()
@@ -530,7 +542,8 @@ public class BaseExpressionCompiler: NSObject {
         let subscriptIndex = temporaryStack.pop()
         
         let elementSize = temporaryAllocator.allocate()
-        instructions += [.storeImmediate16(elementSize.address, elementType.sizeof)]
+        let sizeOfElementType = memoryLayoutStrategy.sizeof(type: elementType)
+        instructions += [.storeImmediate16(elementSize.address, sizeOfElementType)]
         
         let accessOffset = temporaryAllocator.allocate()
         instructions += [.mul16(accessOffset.address, subscriptIndex.address, elementSize.address)]

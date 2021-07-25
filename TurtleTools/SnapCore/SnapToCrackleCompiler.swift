@@ -20,6 +20,7 @@ public class SnapToCrackleCompiler: NSObject {
     public let globalSymbols = SymbolTable()
     
     private var symbols: SymbolTable
+    public let memoryLayoutStrategy: MemoryLayoutStrategy
     private let labelMaker = LabelMaker()
     private var staticStoragePointer = SnapCompilerMetrics.kStaticStorageStartAddress
     private var currentSourceAnchor: SourceAnchor? = nil
@@ -36,6 +37,7 @@ public class SnapToCrackleCompiler: NSObject {
     
     public override init() {
         symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: globalSymbols)
+        memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
         super.init()
     }
     
@@ -155,7 +157,8 @@ public class SnapToCrackleCompiler: NSObject {
             }
             let symbol = Symbol(type: memberType, offset: members.storagePointer)
             members.bind(identifier: memberDeclaration.name, symbol: symbol)
-            members.storagePointer += memberType.sizeof
+            let sizeOfMemberType = memoryLayoutStrategy.sizeof(type: memberType)
+            members.storagePointer += sizeOfMemberType
         }
         members.parent = nil
     }
@@ -365,7 +368,8 @@ public class SnapToCrackleCompiler: NSObject {
             let memberType = try TypeContextTypeChecker(symbols: members).check(expression: memberDeclaration.memberType)
             let symbol = Symbol(type: memberType, offset: members.storagePointer)
             members.bind(identifier: memberDeclaration.name, symbol: symbol)
-            members.storagePointer += memberType.sizeof
+            let sizeOfMemberType = memoryLayoutStrategy.sizeof(type: memberType)
+            members.storagePointer += sizeOfMemberType
         }
         members.parent = nil
     }
@@ -507,8 +511,9 @@ public class SnapToCrackleCompiler: NSObject {
             
             // If the symbol is on the stack then allocate storage for it now.
             if symbol.storage == .stackStorage {
+                let size = memoryLayoutStrategy.sizeof(type: symbol.type)
                 emit([
-                    .subi16(kStackPointerAddress, kStackPointerAddress, symbol.type.sizeof)
+                    .subi16(kStackPointerAddress, kStackPointerAddress, size)
                 ])
             }
             
@@ -522,8 +527,9 @@ public class SnapToCrackleCompiler: NSObject {
             
             // If the symbol is on the stack then allocate storage for it now.
             if symbol.storage == .stackStorage {
+                let size = memoryLayoutStrategy.sizeof(type: symbol.type)
                 emit([
-                    .subi16(kStackPointerAddress, kStackPointerAddress, symbol.type.sizeof)
+                    .subi16(kStackPointerAddress, kStackPointerAddress, size)
                 ])
             }
         } else {
@@ -542,7 +548,7 @@ public class SnapToCrackleCompiler: NSObject {
     }
     
     private func bumpStoragePointer(_ symbolType: SymbolType, _ storage: SymbolStorage) -> Int {
-        let size = symbolType.sizeof
+        let size = memoryLayoutStrategy.sizeof(type: symbolType)
         let offset: Int
         switch storage {
         case .staticStorage:
@@ -562,7 +568,9 @@ public class SnapToCrackleCompiler: NSObject {
     
     @discardableResult private func compile(expression: Expression) throws -> RvalueExpressionCompiler {
         currentSourceAnchor = expression.sourceAnchor
-        let exprCompiler = RvalueExpressionCompiler(symbols: symbols, labelMaker: labelMaker)
+        let exprCompiler = RvalueExpressionCompiler(symbols: symbols,
+                                                    labelMaker: labelMaker,
+                                                    memoryLayoutStrategy: memoryLayoutStrategy)
         let ir = try exprCompiler.compile(expression: expression)
         emit(ir)
         return exprCompiler
@@ -1005,7 +1013,8 @@ public class SnapToCrackleCompiler: NSObject {
                                 offset: -offset,
                                 storage: .stackStorage)
             symbols.bind(identifier: argumentName, symbol: symbol)
-            offset += argumentType.sizeof
+            let sizeOfArugmentType = memoryLayoutStrategy.sizeof(type: argumentType)
+            offset += sizeOfArugmentType
         }
         
         // Bind a special symbol to contain the function return value.
@@ -1015,7 +1024,8 @@ public class SnapToCrackleCompiler: NSObject {
                      symbol: Symbol(type: functionType.returnType,
                                     offset: -offset,
                                     storage: .stackStorage))
-        offset += functionType.returnType.sizeof
+        let sizeOfFunctionReturnType = memoryLayoutStrategy.sizeof(type: functionType.returnType)
+        offset += sizeOfFunctionReturnType
     }
     
     private func expectFunctionReturnExpressionIsCorrectType(func node: FunctionDeclaration) throws {

@@ -12,7 +12,9 @@ import TurtleSimulatorCore
 
 extension Memory {
     public func loadValue(ofType elementType: SymbolType, from address: Int) -> Int {
-        switch elementType.sizeof {
+        let strategy = MemoryLayoutStrategyTurtleTTL()
+        let sizeOfElementType = strategy.sizeof(type: elementType)
+        switch sizeOfElementType {
         case 2:
             return Int(load16(from: address))
         case 1:
@@ -23,7 +25,9 @@ extension Memory {
     }
     
     public func storeValue(value: Int, ofType elementType: SymbolType, to address: Int) {
-        switch elementType.sizeof {
+        let strategy = MemoryLayoutStrategyTurtleTTL()
+        let sizeOfElementType = strategy.sizeof(type: elementType)
+        switch sizeOfElementType {
         case 2:
             store16(value: UInt16(value), to: address)
         case 1:

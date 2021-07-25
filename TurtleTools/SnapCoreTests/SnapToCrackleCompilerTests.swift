@@ -2245,7 +2245,8 @@ class SnapToCrackleCompilerTests: XCTestCase {
         }
         
         let Foo = try! compiler.globalSymbols.resolveType(identifier: "Foo")
-        XCTAssertEqual(2, Foo.sizeof)
+        let sizeOfFoo = compiler.memoryLayoutStrategy.sizeof(type: Foo)
+        XCTAssertEqual(2, sizeOfFoo)
     }
     
     func testImportCannotRedefineExistingTypealias() {
@@ -2283,7 +2284,8 @@ class SnapToCrackleCompilerTests: XCTestCase {
         }
         
         let Foo = try! compiler.globalSymbols.resolveType(identifier: "Foo")
-        XCTAssertEqual(2, Foo.sizeof)
+        let sizeOfFoo = compiler.memoryLayoutStrategy.sizeof(type: Foo)
+        XCTAssertEqual(2, sizeOfFoo)
     }
     
     func testModuleCannotRedefineExistingFunction() {
@@ -2658,13 +2660,21 @@ public func foo() -> None {
         let memberType: SymbolType = .pointer(.function(FunctionType(returnType: .u8, arguments: [.pointer(expected)])))
         let symbol = Symbol(type: memberType, offset: members.storagePointer)
         members.bind(identifier: "bar", symbol: symbol)
-        members.storagePointer += memberType.sizeof
+        let sizeOfMemoryType = compiler.memoryLayoutStrategy.sizeof(type: memberType)
+        members.storagePointer += sizeOfMemoryType
         members.parent = nil
         
         let actual = try? compiler.globalSymbols.resolveType(identifier: "Foo")
         XCTAssertEqual(expected, actual)
         
-        XCTAssertEqual(SymbolType.pointer(.void).sizeof*2, actual?.sizeof)
+        let sizeOfVoidPointer = compiler.memoryLayoutStrategy.sizeof(type: .pointer(.void))
+        let actualSize: Int?
+        if let actual = actual {
+            actualSize = compiler.memoryLayoutStrategy.sizeof(type: actual)
+        } else {
+            actualSize = nil
+        }
+        XCTAssertEqual(sizeOfVoidPointer*2, actualSize)
     }
     
     func testCompileTraitAddsVtableType_Empty() {
@@ -2765,9 +2775,10 @@ public func foo() -> None {
         ])))
         
         let nameOfTraitObjectType = traitType.unwrapTraitType().nameOfTraitObjectType
+        let offsetOfVtable = compiler.memoryLayoutStrategy.sizeof(type: .pointer(.void))
         let traitObjectSymbols = SymbolTable([
             "object" : Symbol(type: .pointer(.void), offset: 0),
-            "vtable" : Symbol(type: .pointer(expectedVtableType), offset: SymbolType.pointer(.void).sizeof)
+            "vtable" : Symbol(type: .pointer(expectedVtableType), offset: offsetOfVtable)
         ])
         let expectedTraitObjectType: SymbolType = .structType(StructType(name: nameOfTraitObjectType, symbols: traitObjectSymbols))
         traitObjectSymbols.bind(identifier: "bar", symbol: Symbol(type: .function(FunctionType(name: "bar", mangledName: "__Foo_object_bar", returnType: .u8, arguments: [.pointer(expectedTraitObjectType)])), offset: 0))

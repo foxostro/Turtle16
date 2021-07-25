@@ -175,11 +175,6 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         }
     }
     
-    public var sizeof: Int {
-        let strategy = MemoryLayoutStrategyTurtleTTL()
-        return strategy.sizeof(type: self)
-    }
-    
     public var arrayCount: Int? {
         switch self {
         case .array(count: let count, elementType: _):

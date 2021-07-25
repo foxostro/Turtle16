@@ -18,6 +18,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
     let kSliceBaseAddressOffset = 0
     let kSliceCountOffset = 2
     
+    let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
+    
     func mustCompile(compiler: RvalueExpressionCompiler, expression: Expression) -> [CrackleInstruction] {
         return try! compile(compiler: compiler,
                             expression: expression,
@@ -38,7 +40,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func makeCompiler(symbols: SymbolTable = SymbolTable()) -> RvalueExpressionCompiler {
         let symbols2 = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: symbols)
-        let compiler = RvalueExpressionCompiler(symbols: symbols2)
+        let compiler = RvalueExpressionCompiler(symbols: symbols2, memoryLayoutStrategy: memoryLayoutStrategy)
         return compiler
     }
     
@@ -4047,12 +4049,13 @@ class RvalueExpressionCompilerTests: XCTestCase {
         // since nothing has consumed the value.
         let tempResult = compiler.temporaryStack.peek()
         
+        let sizeOfElementType = memoryLayoutStrategy.sizeof(type: elementType)
         let executor = CrackleExecutor()
         executor.configure = { computer in
             for j in 0..<n {
                 computer.dataRAM.storeValue(value: j,
                                             ofType: elementType,
-                                            to: 0x0100 + j*elementType.sizeof)
+                                            to: 0x0100 + j*sizeOfElementType)
             }
         }
         let computer = try! executor.execute(crackle: ir)
@@ -4097,6 +4100,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         // since nothing has consumed the value.
         let tempResult = compiler.temporaryStack.peek()
         
+        let sizeOfElementType = memoryLayoutStrategy.sizeof(type: elementType)
         let executor = CrackleExecutor()
         executor.configure = { computer in
             // A dynamic array is an object containing a pointer and a length
@@ -4107,7 +4111,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             for j in 0..<n {
                 computer.dataRAM.storeValue(value: j,
                                             ofType: elementType,
-                                            to: addressOfData + j*elementType.sizeof)
+                                            to: addressOfData + j*sizeOfElementType)
             }
         }
         let computer = try! executor.execute(crackle: ir)
@@ -4136,12 +4140,13 @@ class RvalueExpressionCompilerTests: XCTestCase {
         // since nothing has consumed the value.
         let tempResult = compiler.temporaryStack.peek()
         
+        let sizeOfElementType = memoryLayoutStrategy.sizeof(type: .u16)
         let executor = CrackleExecutor()
         executor.configure = { computer in
             computer.dataRAM.store16(value: UInt16(addressOfData), to: addressOfPointer)
             computer.dataRAM.store16(value: UInt16(count), to: addressOfCount)
             for i in 0..<count {
-                computer.dataRAM.store16(value: UInt16(1000*i), to: addressOfData + i*SymbolType.u16.sizeof)
+                computer.dataRAM.store16(value: UInt16(1000*i), to: addressOfData + i*sizeOfElementType)
             }
         }
         let computer = try! executor.execute(crackle: ir)
@@ -4165,16 +4170,17 @@ class RvalueExpressionCompilerTests: XCTestCase {
             "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
         ])
         let ir = mustCompile(expression: expr, symbols: symbols)
+        let sizeOfElementType = memoryLayoutStrategy.sizeof(type: .u16)
         let executor = CrackleExecutor()
         executor.configure = { computer in
             computer.dataRAM.store16(value: UInt16(addressOfData), to: addressOfPointer)
             computer.dataRAM.store16(value: UInt16(count), to: addressOfCount)
             for i in 0..<count {
-                computer.dataRAM.store16(value: UInt16(0xbeef), to: addressOfData + i*SymbolType.u16.sizeof)
+                computer.dataRAM.store16(value: UInt16(0xbeef), to: addressOfData + i*sizeOfElementType)
             }
         }
         let computer = try! executor.execute(crackle: ir)
-        XCTAssertEqual(computer.dataRAM.load16(from: addressOfData + 2*SymbolType.u16.sizeof), 0xcafe)
+        XCTAssertEqual(computer.dataRAM.load16(from: addressOfData + 2*sizeOfElementType), 0xcafe)
     }
     
     func testAssignment_ArrayOfU8_to_DynamicArrayOfU8() {
@@ -4188,12 +4194,13 @@ class RvalueExpressionCompilerTests: XCTestCase {
             "src" : Symbol(type: .array(count: count, elementType: .u8), offset: addressOfData)
         ])
         let ir = mustCompile(expression: expr, symbols: symbols)
+        let sizeOfElementType = memoryLayoutStrategy.sizeof(type: .u16)
         let executor = CrackleExecutor()
         executor.configure = { computer in
             computer.dataRAM.store16(value: 0xcdcd, to: addressOfPointer)
             computer.dataRAM.store16(value: 0xcdcd, to: addressOfCount)
             for i in 0..<count {
-                computer.dataRAM.store16(value: UInt16(0xbeef), to: addressOfData + i*SymbolType.u16.sizeof)
+                computer.dataRAM.store16(value: UInt16(0xbeef), to: addressOfData + i*sizeOfElementType)
             }
         }
         let computer = try! executor.execute(crackle: ir)
@@ -4860,10 +4867,11 @@ class RvalueExpressionCompilerTests: XCTestCase {
         // since nothing has consumed the value.
         let tempResult = compiler.temporaryStack.peek()
         
+        let sizeOfElementType = memoryLayoutStrategy.sizeof(type: elementType)
         let executor = CrackleExecutor()
         executor.configure = { computer in
             for i in 0..<n {
-                computer.dataRAM.storeValue(value: i, ofType: elementType, to: arrayBase + i*elementType.sizeof)
+                computer.dataRAM.storeValue(value: i, ofType: elementType, to: arrayBase + i*sizeOfElementType)
             }
         }
         let computer = try! executor.execute(crackle: ir)
@@ -4897,10 +4905,11 @@ class RvalueExpressionCompilerTests: XCTestCase {
         // since nothing has consumed the value.
         let tempResult = compiler.temporaryStack.peek()
         
+        let sizeOfElementType = memoryLayoutStrategy.sizeof(type: elementType)
         let executor = CrackleExecutor()
         executor.configure = { computer in
             for i in 0..<n {
-                computer.dataRAM.storeValue(value: i, ofType: elementType, to: arrayBase + i*elementType.sizeof)
+                computer.dataRAM.storeValue(value: i, ofType: elementType, to: arrayBase + i*sizeOfElementType)
             }
         }
         let computer = try! executor.execute(crackle: ir)
@@ -4974,17 +4983,20 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
         let tempResult = compiler.temporaryStack.peek()
+        let offsetOfCount = memoryLayoutStrategy.sizeof(type: .u16)
         let executor = CrackleExecutor()
         executor.configure = { computer in
             computer.dataRAM.store16(value: UInt16(arrayBaseAddress), to: offset)
-            computer.dataRAM.store16(value: UInt16(arrayCount), to: offset + SymbolType.u16.sizeof)
+            computer.dataRAM.store16(value: UInt16(arrayCount), to: offset + offsetOfCount)
         }
         let computer = try! executor.execute(crackle: ir)
         
         let actualSliceBase = computer.dataRAM.loadValue(ofType: .u16, from: tempResult.address + 0)
-        let actualSliceCount = computer.dataRAM.loadValue(ofType: .u16, from: tempResult.address + SymbolType.u16.sizeof)
+        let actualSliceCount = computer.dataRAM.loadValue(ofType: .u16, from: tempResult.address + offsetOfCount)
         
-        XCTAssertEqual(actualSliceBase, arrayBaseAddress + SymbolType.u16.sizeof*begin)
+        let sizeOfArrayElement = memoryLayoutStrategy.sizeof(type: .u16)
+        
+        XCTAssertEqual(actualSliceBase, arrayBaseAddress + sizeOfArrayElement*begin)
         XCTAssertEqual(actualSliceCount, limit - begin)
     }
     
@@ -5008,11 +5020,12 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
         
+        let offsetOfCount = memoryLayoutStrategy.sizeof(type: .u16)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(crackle: ir)
         executor.configure = { computer in
             computer.dataRAM.store16(value: UInt16(arrayBaseAddress), to: offset)
-            computer.dataRAM.store16(value: UInt16(arrayCount), to: offset + SymbolType.u16.sizeof)
+            computer.dataRAM.store16(value: UInt16(arrayCount), to: offset + offsetOfCount)
         }
         XCTAssertEqual(computer.stack16(at: 0), 0xdead)
     }
@@ -5037,10 +5050,11 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
         
+        let offsetOfCount = memoryLayoutStrategy.sizeof(type: .u16)
         let executor = CrackleExecutor()
         executor.configure = { computer in
             computer.dataRAM.store16(value: UInt16(arrayBaseAddress), to: offset)
-            computer.dataRAM.store16(value: UInt16(arrayCount), to: offset + SymbolType.u16.sizeof)
+            computer.dataRAM.store16(value: UInt16(arrayCount), to: offset + offsetOfCount)
         }
         let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.stack16(at: 0), 0xdead)
@@ -5067,9 +5081,10 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let executor = CrackleExecutor()
         let computer = try! executor.execute(crackle: actual)
         
+        let sizeOfArrayElement = memoryLayoutStrategy.sizeof(type: .u8)
         var arr: [UInt8] = []
         for i in 0..<str.count {
-            arr.append(computer.dataRAM.load(from: offset + i*SymbolType.u8.sizeof))
+            arr.append(computer.dataRAM.load(from: offset + i*sizeOfArrayElement))
         }
         XCTAssertEqual(arr, Array<UInt8>(str.utf8))
     }

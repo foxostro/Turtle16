@@ -11,10 +11,11 @@ import SnapCore
 import TurtleCore
 
 class LvalueExpressionCompilerTests: XCTestCase {
+    let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
     let t0 = SnapCompilerMetrics.kTemporaryStorageStartAddress + 0
     
     func compile(expression: Expression, symbols: SymbolTable = SymbolTable()) throws -> [CrackleInstruction] {
-        let compiler = LvalueExpressionCompiler(symbols: symbols)
+        let compiler = LvalueExpressionCompiler(symbols: symbols, memoryLayoutStrategy: memoryLayoutStrategy)
         let ir = try compiler.compile(expression: expression)
         return ir
     }
@@ -43,7 +44,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
         // We don't really care about the exact sequence of instructions which
         // computes this address so long as it is computed. Look at the compiler
         // temporaries stack to determine which temporary contains the lvalue.
-        let compiler = LvalueExpressionCompiler(symbols: symbols)
+        let compiler = LvalueExpressionCompiler(symbols: symbols, memoryLayoutStrategy: memoryLayoutStrategy)
         let ir = try! compiler.compile(expression: expr)
         let dst = compiler.temporaryStack.pop()
         
@@ -62,7 +63,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"),
                                         argument: Expression.LiteralInt(2))
         
-        let expected = UInt16(addressOfData + 2*SymbolType.u16.sizeof)
+        let expected = UInt16(addressOfData + 2*memoryLayoutStrategy.sizeof(type: .u16))
         
         let symbols = SymbolTable([
             "foo" : Symbol(type: .dynamicArray(elementType: .u16), offset: addressOfPointer),
@@ -73,7 +74,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
         // We don't really care about the exact sequence of instructions which
         // computes this address so long as it is computed. Look at the compiler
         // temporaries stack to determine which temporary contains the lvalue.
-        let compiler = LvalueExpressionCompiler(symbols: symbols)
+        let compiler = LvalueExpressionCompiler(symbols: symbols, memoryLayoutStrategy: memoryLayoutStrategy)
         let ir = try! compiler.compile(expression: expr)
         let dst = compiler.temporaryStack.pop()
         
@@ -82,7 +83,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
             computer.dataRAM.store16(value: UInt16(addressOfData), to: addressOfPointer)
             computer.dataRAM.store16(value: UInt16(count), to: addressOfCount)
             for i in 0..<count {
-                computer.dataRAM.store16(value: UInt16(0xbeef), to: addressOfData + i*SymbolType.u16.sizeof)
+                computer.dataRAM.store16(value: UInt16(0xbeef), to: addressOfData + i*self.memoryLayoutStrategy.sizeof(type: .u16))
             }
         }
         let computer = try! executor.execute(crackle: ir)
@@ -135,7 +136,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
         let symbols = SymbolTable([
             "foo" : Symbol(type: .structType(typ), offset: offset)
         ])
-        let compiler = LvalueExpressionCompiler(symbols: symbols)
+        let compiler = LvalueExpressionCompiler(symbols: symbols, memoryLayoutStrategy: memoryLayoutStrategy)
         let ir = try! compiler.compile(expression: expr)
         let dst = compiler.temporaryStack.pop()
         let executor = CrackleExecutor()
@@ -154,7 +155,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
         let symbols = SymbolTable([
             "foo" : Symbol(type: .structType(typ), offset: offset)
         ])
-        let compiler = LvalueExpressionCompiler(symbols: symbols)
+        let compiler = LvalueExpressionCompiler(symbols: symbols, memoryLayoutStrategy: memoryLayoutStrategy)
         let ir = try! compiler.compile(expression: expr)
         let dst = compiler.temporaryStack.pop()
         let executor = CrackleExecutor()
@@ -168,7 +169,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
             "foo" : Symbol(type: .pointer(.u8), offset: 0x0100),
             "bar" : Symbol(type: .constU8, offset: 0x0102)
         ])
-        let compiler = LvalueExpressionCompiler(symbols: symbols)
+        let compiler = LvalueExpressionCompiler(symbols: symbols, memoryLayoutStrategy: memoryLayoutStrategy)
         let ir = try! compiler.compile(expression: expr)
         let tempResult = compiler.temporaryStack.peek()
         let executor = CrackleExecutor()
@@ -187,7 +188,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
             "foo" : Symbol(type: .pointer(.u8), offset: 0x0100),
             "bar" : Symbol(type: .u8, offset: 0x0102)
         ])
-        let compiler = LvalueExpressionCompiler(symbols: symbols)
+        let compiler = LvalueExpressionCompiler(symbols: symbols, memoryLayoutStrategy: memoryLayoutStrategy)
         let ir = try! compiler.compile(expression: expr)
         let tempResult = compiler.temporaryStack.peek()
         let executor = CrackleExecutor()
@@ -210,7 +211,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
         let symbols = SymbolTable([
             "foo" : Symbol(type: .pointer(.structType(typ)), offset: offset)
         ])
-        let compiler = LvalueExpressionCompiler(symbols: symbols)
+        let compiler = LvalueExpressionCompiler(symbols: symbols, memoryLayoutStrategy: memoryLayoutStrategy)
         XCTAssertThrowsError(try compiler.compile(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -229,7 +230,7 @@ class LvalueExpressionCompilerTests: XCTestCase {
         let symbols = SymbolTable([
             "foo" : Symbol(type: .pointer(.structType(typ)), offset: offset)
         ])
-        let compiler = LvalueExpressionCompiler(symbols: symbols)
+        let compiler = LvalueExpressionCompiler(symbols: symbols, memoryLayoutStrategy: memoryLayoutStrategy)
         let ir = try! compiler.compile(expression: expr)
         let dst = compiler.temporaryStack.pop()
         let executor = CrackleExecutor()

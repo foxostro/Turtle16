@@ -78,11 +78,13 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     
     public override init(symbols: SymbolTable = SymbolTable(),
                          labelMaker: LabelMaker = LabelMaker(),
+                         memoryLayoutStrategy: MemoryLayoutStrategy,
                          temporaryStack: CompilerTemporariesStack = CompilerTemporariesStack(),
                          temporaryAllocator: CompilerTemporariesAllocator = CompilerTemporariesAllocator()) {
         self.typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         super.init(symbols: symbols,
                    labelMaker: labelMaker,
+                   memoryLayoutStrategy: memoryLayoutStrategy,
                    temporaryStack: temporaryStack,
                    temporaryAllocator: temporaryAllocator)
     }
@@ -611,7 +613,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 // the expression, and copy the result to the address of the
                 // next array element.
                 let tempElementSize = temporaryAllocator.allocate()
-                instructions += [.storeImmediate16(tempElementSize.address, b.sizeof)]
+                let sizeOfB = memoryLayoutStrategy.sizeof(type: b)
+                instructions += [.storeImmediate16(tempElementSize.address, sizeOfB)]
                 
                 for i in 0..<literalArray.elements.count {
                     let el = literalArray.elements[i]
@@ -619,9 +622,9 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                     // Evaluate the expression and copy to the destination.
                     instructions += try compileAndConvertExpression(rexpr: el, ltype: b, isExplicitCast: false)
                     let tempElementValue = temporaryStack.pop()
-                    assert(b.sizeof <= 2)
+                    assert(sizeOfB <= 2)
                     instructions += [
-                        .copyWordsIndirectDestination(lvalue.address, tempElementValue.address, b.sizeof)
+                        .copyWordsIndirectDestination(lvalue.address, tempElementValue.address, sizeOfB)
                     ]
                     tempElementValue.consume()
 
@@ -647,12 +650,13 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                     let member = try! typ.symbols.resolve(identifier: arg.name)
                     instructions += try compileAndConvertExpression(rexpr: arg.expr, ltype: member.type, isExplicitCast: false)
                     let tempArg = temporaryStack.pop()
-                    let memberLvalue = temporaryAllocator.allocate(size: member.type.sizeof)
+                    let sizeOfMemberType = memoryLayoutStrategy.sizeof(type: member.type)
+                    let memberLvalue = temporaryAllocator.allocate(size: sizeOfMemberType)
                     instructions += [
                         .addi16(memberLvalue.address, lvalue.address, member.offset)
                     ]
                     instructions += [
-                        .copyWordsIndirectDestination(memberLvalue.address, tempArg.address, member.type.sizeof)
+                        .copyWordsIndirectDestination(memberLvalue.address, tempArg.address, sizeOfMemberType)
                     ]
                     memberLvalue.consume()
                     tempArg.consume()
@@ -689,7 +693,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         // a temporary allocated from the scratch memory region.
         // If it doesn't fit then an error would have been raised before
         // this point.
-        instructions += [.copyWordsIndirectDestination(lvalue.address, rvalue.address, ltype.sizeof)]
+        let sizeOfLtype = memoryLayoutStrategy.sizeof(type: ltype)
+        instructions += [.copyWordsIndirectDestination(lvalue.address, rvalue.address, sizeOfLtype)]
         
         return instructions
     }
@@ -760,12 +765,13 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let n = n!
             switch rexpr {
             case let literalArray as Expression.LiteralArray:
-                let dst = temporaryAllocator.allocate(size: n * b.sizeof)
+                let sizeOfB = memoryLayoutStrategy.sizeof(type: b)
+                let dst = temporaryAllocator.allocate(size: n * sizeOfB)
                 for i in 0..<literalArray.elements.count {
                     let el = literalArray.elements[i]
                     instructions += try compileAndConvertExpression(rexpr: el, ltype: b, isExplicitCast: isExplicitCast)
                     let src = temporaryStack.pop()
-                    instructions += [.copyWords(dst.address + i * b.sizeof, src.address, b.sizeof)]
+                    instructions += [.copyWords(dst.address + i * sizeOfB, src.address, sizeOfB)]
                     src.consume()
                 }
                 temporaryStack.push(dst)
@@ -822,7 +828,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             default:
                 // Allocate a temporary value on the stack for the source array.
                 // Copy the value of the right expression into that temporary.
-                let rhsSize = n * b.sizeof
+                let sizeOfB = memoryLayoutStrategy.sizeof(type: b)
+                let rhsSize = n * sizeOfB
                 instructions += try compile(expression: rexpr)
                 let tempRightExpr = temporaryStack.pop()
                 
@@ -906,8 +913,10 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             
             // Allocate a temporary for the union structure.
             // Write the converted value into the union structure.
-            let dst = temporaryAllocator.allocate(size: ltype.sizeof)
-            instructions += [.copyWords(dst.address+1, src.address, targetType!.sizeof)]
+            let sizeOfLtype = memoryLayoutStrategy.sizeof(type: ltype)
+            let sizeOfTargetType = memoryLayoutStrategy.sizeof(type: targetType!)
+            let dst = temporaryAllocator.allocate(size: sizeOfLtype)
+            instructions += [.copyWords(dst.address+1, src.address, sizeOfTargetType)]
             src.consume()
             
             // Write the type tag into the union structure too.
@@ -916,9 +925,10 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         case (.unionType, _):
             assert(isExplicitCast)
             instructions += try compile(expression: rexpr)
-            let dst = temporaryAllocator.allocate(size: ltype.sizeof)
+            let sizeOfLtype = memoryLayoutStrategy.sizeof(type: ltype)
+            let dst = temporaryAllocator.allocate(size: sizeOfLtype)
             let src = temporaryStack.pop()
-            instructions += [.copyWords(dst.address, src.address+1, ltype.sizeof)]
+            instructions += [.copyWords(dst.address, src.address+1, sizeOfLtype)]
             temporaryStack.push(dst)
             src.consume()
         case (.constPointer(let a), .traitType(let b)),
@@ -1004,9 +1014,10 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         var instructions: [CrackleInstruction] = []
         instructions += try pushFunctionArgumentsToCompilerTemporariesStack(typ, node)
         let tempArgumentValue = temporaryStack.pop()
-        let tempReturnValue = temporaryAllocator.allocate(size: typ.returnType.sizeof)
+        let sizeOfFunctionReturnType = memoryLayoutStrategy.sizeof(type: typ.returnType)
+        let tempReturnValue = temporaryAllocator.allocate(size: sizeOfFunctionReturnType)
         instructions += [
-            .copyWordsIndirectSource(tempReturnValue.address, tempArgumentValue.address, typ.returnType.sizeof)
+            .copyWordsIndirectSource(tempReturnValue.address, tempArgumentValue.address, sizeOfFunctionReturnType)
         ]
         tempArgumentValue.consume()
         temporaryStack.push(tempReturnValue)
@@ -1053,7 +1064,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let type = typ.arguments[i]
             instructions += try compileAndConvertExpressionForAssignment(rexpr: node.arguments[i], ltype: type)
             let tempArgumentValue = temporaryStack.pop()
-            instructions += pushTemporary(temporary: tempArgumentValue, explicitSize: type.sizeof)
+            let sizeOfArgumentType = memoryLayoutStrategy.sizeof(type: type)
+            instructions += pushTemporary(temporary: tempArgumentValue, explicitSize: sizeOfArgumentType)
             tempArgumentValue.consume()
         }
         
@@ -1063,14 +1075,14 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     // The function put the return value on the stack. Move that value
     // to a compiler temporary in the scratch memory region.
     private func moveFunctionReturnValueFromStackToTemporary(_ typ: FunctionType) -> [CrackleInstruction] {
-        guard typ.returnType.sizeof > 0 else {
+        let sizeOfFunctionReturnType = memoryLayoutStrategy.sizeof(type: typ.returnType)
+        guard sizeOfFunctionReturnType > 0 else {
             return []
         }
-        let size = typ.returnType.sizeof
-        let tempReturnValue = temporaryAllocator.allocate(size: size)
+        let tempReturnValue = temporaryAllocator.allocate(size: sizeOfFunctionReturnType)
         let instructions: [CrackleInstruction] = [
-            .copyWordsIndirectSource(tempReturnValue.address, kStackPointerAddress, size),
-            .addi16(kStackPointerAddress, kStackPointerAddress, size)
+            .copyWordsIndirectSource(tempReturnValue.address, kStackPointerAddress, sizeOfFunctionReturnType),
+            .addi16(kStackPointerAddress, kStackPointerAddress, sizeOfFunctionReturnType)
         ]
         temporaryStack.push(tempReturnValue)
         return instructions
@@ -1131,8 +1143,9 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         // stack right now. Push them to the program stack to build up the
         // function arguments pack.
         for argumentType in typ.arguments {
+            let sizeOfArgumentType = memoryLayoutStrategy.sizeof(type: argumentType)
             let tempArgumentValue = temporaryStack.pop()
-            instructions += pushTemporary(temporary: tempArgumentValue, explicitSize: argumentType.sizeof)
+            instructions += pushTemporary(temporary: tempArgumentValue, explicitSize: sizeOfArgumentType)
             tempArgumentValue.consume()
         }
         
@@ -1210,14 +1223,16 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         if case .void = typ.returnType {
             tempReturnValue = nil
         } else {
-            tempReturnValue = temporaryAllocator.allocate(size: typ.returnType.sizeof)
+            let sizeOfFunctionReturnType = memoryLayoutStrategy.sizeof(type: typ.returnType)
+            tempReturnValue = temporaryAllocator.allocate(size: sizeOfFunctionReturnType)
         }
         return tempReturnValue
     }
     
     private func pushToAllocateFunctionReturnValue(_ typ: FunctionType) throws -> [CrackleInstruction] {
-        if typ.returnType.sizeof > 0 {
-            return [.subi16(kStackPointerAddress, kStackPointerAddress, typ.returnType.sizeof)]
+        let sizeOfFunctionReturnType = memoryLayoutStrategy.sizeof(type: typ.returnType)
+        if sizeOfFunctionReturnType > 0 {
+            return [.subi16(kStackPointerAddress, kStackPointerAddress, sizeOfFunctionReturnType)]
         } else {
             return []
         }
@@ -1236,7 +1251,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     private func popFunctionArguments(_ typ: FunctionType) -> [CrackleInstruction] {
         var totalSize = 0
         for arg in typ.arguments {
-            totalSize += arg.sizeof
+            let sizeOfArgumentType = memoryLayoutStrategy.sizeof(type: arg)
+            totalSize += sizeOfArgumentType
         }
         if totalSize > 0 {
             return [.addi16(kStackPointerAddress, kStackPointerAddress, totalSize)]
@@ -1250,10 +1266,11 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     private func copyReturnValueForFunctionCall(_ typ: FunctionType, _ tempReturnValue: CompilerTemporary?) -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         if let tempReturnValue = tempReturnValue {
-            if typ.returnType.sizeof > 0 {
+            let sizeOfFunctionReturnType = memoryLayoutStrategy.sizeof(type: typ.returnType)
+            if sizeOfFunctionReturnType > 0 {
                 instructions += [
-                    .copyWordsIndirectSource(tempReturnValue.address, kStackPointerAddress, typ.returnType.sizeof),
-                    .addi16(kStackPointerAddress, kStackPointerAddress, typ.returnType.sizeof)
+                    .copyWordsIndirectSource(tempReturnValue.address, kStackPointerAddress, sizeOfFunctionReturnType),
+                    .addi16(kStackPointerAddress, kStackPointerAddress, sizeOfFunctionReturnType)
                 ]
             }
             temporaryStack.push(tempReturnValue)
@@ -1338,15 +1355,17 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     private func compile(literalArray expr: Expression.LiteralArray) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         let resultType = try typeChecker.check(expression: expr)
+        let sizeOfResultType = memoryLayoutStrategy.sizeof(type: resultType)
         let arrayElementType = resultType.arrayElementType
-        let tempResult = temporaryAllocator.allocate(size: resultType.sizeof)
+        let sizeOfArrayElementType = memoryLayoutStrategy.sizeof(type: arrayElementType)
+        let tempResult = temporaryAllocator.allocate(size: sizeOfResultType)
         var offset = 0
         for el in expr.elements {
             instructions += try compile(expression: el)
             let tempElement = temporaryStack.pop()
-            instructions += [.copyWords(tempResult.address + offset, tempElement.address, arrayElementType.sizeof)]
+            instructions += [.copyWords(tempResult.address + offset, tempElement.address, sizeOfArrayElementType)]
             tempElement.consume()
-            offset += arrayElementType.sizeof
+            offset += sizeOfArrayElementType
         }
         temporaryStack.push(tempResult)
         return instructions
@@ -1372,7 +1391,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         var instructions: [CrackleInstruction] = []
         let tempLvalue = temporaryStack.pop()
         let tempResult = temporaryAllocator.allocate()
-        instructions += [.copyWordsIndirectSource(tempResult.address, tempLvalue.address, elementType.sizeof)]
+        let sizeOfElementType = memoryLayoutStrategy.sizeof(type: elementType)
+        instructions += [.copyWordsIndirectSource(tempResult.address, tempLvalue.address, sizeOfElementType)]
         temporaryStack.push(tempResult)
         tempLvalue.consume()
         return instructions
@@ -1420,10 +1440,11 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             // Read the field in-place
             let tempStructAddress = temporaryStack.pop()
             let symbol = try typ.symbols.resolve(identifier: name)
-            let tempStructMember = temporaryAllocator.allocate(size: symbol.type.sizeof)
+            let sizeOfSymbolType = memoryLayoutStrategy.sizeof(type: symbol.type)
+            let tempStructMember = temporaryAllocator.allocate(size: sizeOfSymbolType)
             instructions += [
                 .addi16(tempStructAddress.address, tempStructAddress.address, symbol.offset),
-                .copyWordsIndirectSource(tempStructMember.address, tempStructAddress.address, symbol.type.sizeof)
+                .copyWordsIndirectSource(tempStructMember.address, tempStructAddress.address, sizeOfSymbolType)
             ]
             tempStructAddress.consume()
             temporaryStack.push(tempStructMember)
@@ -1432,7 +1453,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             let tempExprResult = temporaryStack.pop()
             if name == "pointee" {
                 let tempPointee = temporaryAllocator.allocate()
-                instructions += [.copyWordsIndirectSource(tempPointee.address, tempExprResult.address, typ.sizeof)]
+                let sizeOfPointeeType = memoryLayoutStrategy.sizeof(type: typ)
+                instructions += [.copyWordsIndirectSource(tempPointee.address, tempExprResult.address, sizeOfPointeeType)]
                 tempExprResult.consume()
                 temporaryStack.push(tempPointee)
             } else {
@@ -1453,7 +1475,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                     temporaryStack.push(tempCount)
                 case .constStructType(let b), .structType(let b):
                     let symbol = try b.symbols.resolve(identifier: name)
-                    let size = symbol.type.sizeof
+                    let size = memoryLayoutStrategy.sizeof(type: symbol.type)
                     let tempResult = temporaryAllocator.allocate(size: size)
                     instructions += [
                         .addi16(tempExprResult.address, tempExprResult.address, symbol.offset),
@@ -1478,13 +1500,15 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         let resultType = try typeChecker.check(expression: expr)
         let typ = resultType.unwrapStructType()
         var instructions: [CrackleInstruction] = []
-        let tempResult = temporaryAllocator.allocate(size: resultType.sizeof)
+        let sizeOfResultType = memoryLayoutStrategy.sizeof(type: resultType)
+        let tempResult = temporaryAllocator.allocate(size: sizeOfResultType)
         for i in 0..<expr.arguments.count {
             let arg = expr.arguments[i]
             let member = try typ.symbols.resolve(identifier: arg.name)
+            let sizeOfMemberType = memoryLayoutStrategy.sizeof(type: member.type)
             instructions += try compileAndConvertExpressionForExplicitCast(rexpr: arg.expr, ltype: member.type)
             let tempArg = temporaryStack.pop()
-            instructions += [.copyWords(tempResult.address + member.offset, tempArg.address, member.type.sizeof)]
+            instructions += [.copyWords(tempResult.address + member.offset, tempArg.address, sizeOfMemberType)]
             tempArg.consume()
         }
         temporaryStack.push(tempResult)
@@ -1494,8 +1518,9 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     private func compile(literalString expr: Expression.LiteralString) throws -> [CrackleInstruction] {
         var instructions: [CrackleInstruction] = []
         let resultType = try typeChecker.check(expression: expr)
-        assert((expr.value.utf8.count * SymbolType.u8.sizeof) == resultType.sizeof)
-        let tempResult = temporaryAllocator.allocate(size: resultType.sizeof)
+        let sizeOfResultType = memoryLayoutStrategy.sizeof(type: resultType)
+        assert((expr.value.utf8.count * memoryLayoutStrategy.sizeof(type: .u8)) == sizeOfResultType)
+        let tempResult = temporaryAllocator.allocate(size: sizeOfResultType)
         instructions += [.storeImmediateBytes(tempResult.address, Array<UInt8>(expr.value.utf8))]
         temporaryStack.push(tempResult)
         return instructions
@@ -1505,12 +1530,13 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         var instructions: [CrackleInstruction] = []
         
         let targetType = try typeChecker.check(expression: expr.targetType)
-        let tempDst = temporaryAllocator.allocate(size: targetType.sizeof)
+        let sizeOfTargetType = memoryLayoutStrategy.sizeof(type: targetType)
+        let tempDst = temporaryAllocator.allocate(size: sizeOfTargetType)
         
         instructions += try compile(expression: expr.expr)
         let tempSrc = temporaryStack.pop()
         instructions += [
-            .copyWords(tempDst.address, tempSrc.address, targetType.sizeof)
+            .copyWords(tempDst.address, tempSrc.address, sizeOfTargetType)
         ]
         tempSrc.consume()
         temporaryStack.push(tempDst)

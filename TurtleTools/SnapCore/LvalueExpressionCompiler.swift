@@ -14,11 +14,13 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
     
     public override init(symbols: SymbolTable = SymbolTable(),
                          labelMaker: LabelMaker = LabelMaker(),
-                         temporaryStack: CompilerTemporariesStack =     CompilerTemporariesStack(),
+                         memoryLayoutStrategy: MemoryLayoutStrategy,
+                         temporaryStack: CompilerTemporariesStack = CompilerTemporariesStack(),
                          temporaryAllocator: CompilerTemporariesAllocator = CompilerTemporariesAllocator()) {
         self.typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
         super.init(symbols: symbols,
                    labelMaker: labelMaker,
+                   memoryLayoutStrategy: memoryLayoutStrategy,
                    temporaryStack: temporaryStack,
                    temporaryAllocator: temporaryAllocator)
     }

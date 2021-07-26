@@ -147,4 +147,77 @@ class MemoryLayoutStrategyTurtleTTLTests: XCTestCase {
         let actual = strategy.layout(symbolTable: input)
         XCTAssertEqual(expected, actual)
     }
+    
+    func testLayoutWithParentInSameStackFrame() {
+        let parent = SymbolTable(parent: nil, dict: [:], typeDict: [:])
+        parent.bind(identifier: "foo", symbol: Symbol(type: .u8))
+        parent.bind(identifier: "bar", symbol: Symbol(type: .u16))
+        
+        let child = SymbolTable(parent: parent, dict: [:], typeDict: [:])
+        child.bind(identifier: "baz", symbol: Symbol(type: .u8))
+        
+        let strategy = makeStrategy()
+        let actual = strategy.layout(symbolTable: child)
+        
+        let expectedParent = SymbolTable(parent: nil, dict: [:], typeDict: [:])
+        expectedParent.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0))
+        expectedParent.bind(identifier: "bar", symbol: Symbol(type: .u16, offset: 1))
+        
+        let expectedChild = SymbolTable(parent: expectedParent, dict: [:], typeDict: [:])
+        expectedChild.bind(identifier: "baz", symbol: Symbol(type: .u8, offset: 3))
+        
+        XCTAssertEqual(expectedChild, actual)
+    }
+    
+    func testLayoutWithParentInDifferentStackFrame() {
+        let parent = SymbolTable(parent: nil, dict: [:], typeDict: [:])
+        parent.bind(identifier: "foo", symbol: Symbol(type: .u8))
+        parent.bind(identifier: "bar", symbol: Symbol(type: .u16))
+        
+        let child = SymbolTable(parent: parent, dict: [:], typeDict: [:])
+        child.stackFrameIndex = 1
+        child.bind(identifier: "baz", symbol: Symbol(type: .u8))
+        
+        let strategy = makeStrategy()
+        let actual = strategy.layout(symbolTable: child)
+        
+        let expectedParent = SymbolTable(parent: nil, dict: [:], typeDict: [:])
+        expectedParent.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0))
+        expectedParent.bind(identifier: "bar", symbol: Symbol(type: .u16, offset: 1))
+        
+        let expectedChild = SymbolTable(parent: expectedParent, dict: [:], typeDict: [:])
+        expectedChild.stackFrameIndex = 1
+        expectedChild.bind(identifier: "baz", symbol: Symbol(type: .u8, offset: 0))
+        
+        XCTAssertEqual(expectedChild, actual)
+    }
+    
+    func testLayoutWithParentInDifferentStackFrame2() {
+        let grandparent = SymbolTable(parent: nil, dict: [:], typeDict: [:])
+        grandparent.bind(identifier: "foo", symbol: Symbol(type: .u8))
+        
+        let parent = SymbolTable(parent: grandparent, dict: [:], typeDict: [:])
+        parent.bind(identifier: "bar", symbol: Symbol(type: .u16))
+        parent.stackFrameIndex = 1
+        
+        let child = SymbolTable(parent: parent, dict: [:], typeDict: [:])
+        child.bind(identifier: "baz", symbol: Symbol(type: .u8))
+        child.stackFrameIndex = 1
+        
+        let strategy = makeStrategy()
+        let actual = strategy.layout(symbolTable: child)
+        
+        let expectedGrandparent = SymbolTable(parent: nil, dict: [:], typeDict: [:])
+        expectedGrandparent.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0))
+        
+        let expectedParent = SymbolTable(parent: expectedGrandparent, dict: [:], typeDict: [:])
+        expectedParent.bind(identifier: "bar", symbol: Symbol(type: .u16, offset: 0))
+        expectedParent.stackFrameIndex = 1
+        
+        let expectedChild = SymbolTable(parent: expectedParent, dict: [:], typeDict: [:])
+        expectedChild.bind(identifier: "baz", symbol: Symbol(type: .u8, offset: 2))
+        expectedChild.stackFrameIndex = 1
+        
+        XCTAssertEqual(expectedChild, actual)
+    }
 }

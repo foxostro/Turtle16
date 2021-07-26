@@ -46,7 +46,29 @@ public class MemoryLayoutStrategyTurtleTTL: NSObject, MemoryLayoutStrategy {
     
     public func layout(symbolTable: SymbolTable) -> SymbolTable {
         let result = SymbolTable()
+        
         var offset = 0
+        
+        if let parent = symbolTable.parent {
+            let modifiedParent = layout(symbolTable: parent)
+            
+            result.typeTable = symbolTable.typeTable
+            result.storagePointer = offset
+            result.enclosingFunctionType = symbolTable.enclosingFunctionType
+            result.enclosingFunctionName = symbolTable.enclosingFunctionName
+            result.stackFrameIndex = symbolTable.stackFrameIndex
+            result.parent = modifiedParent
+            
+            // If the parent and child symbol tables are nested scopes within
+            // the same stack frame then continue allocating at the offset
+            // immediately following the parent.
+            if let lastIdentifier = modifiedParent.declarationOrder.last, parent.stackFrameIndex == symbolTable.stackFrameIndex {
+                let symbol = modifiedParent.symbolTable[lastIdentifier]!
+                offset = symbol.offset + sizeof(type: symbol.type)
+            }
+        }
+        
+        // Allocate all symbols in memory in declaration order.
         for identifier in symbolTable.declarationOrder {
             let originalSymbol = symbolTable.symbolTable[identifier]!
             let modifiedSymbol = originalSymbol
@@ -55,12 +77,7 @@ public class MemoryLayoutStrategyTurtleTTL: NSObject, MemoryLayoutStrategy {
             result.bind(identifier: identifier, symbol: modifiedSymbol)
             offset += sizeof(type: modifiedSymbol.type)
         }
-        result.typeTable = symbolTable.typeTable
-        result.parent = symbolTable.parent
-        result.storagePointer = offset
-        result.enclosingFunctionType = symbolTable.enclosingFunctionType
-        result.enclosingFunctionName = symbolTable.enclosingFunctionName
-        result.stackFrameIndex = symbolTable.stackFrameIndex
+        
         return result
     }
     

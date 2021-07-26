@@ -4717,9 +4717,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
             Arg(name: "begin", expr: Expression.LiteralInt(1)),
             Arg(name: "limit", expr: Expression.LiteralInt(10))
         ]))
-        let rangeType: SymbolType = .structType(StructType(name: "Range", symbols: SymbolTable([
-            "begin" : Symbol(type: .u16, offset: 0),
-            "limit" : Symbol(type: .u16, offset: 2)
+        let rangeType: SymbolType = .structType(StructType(name: "Range", symbols: SymbolTable(tuples: [
+            ("begin", Symbol(type: .u16, offset: 0)),
+            ("limit", Symbol(type: .u16, offset: 2))
         ])))
         let symbols = SymbolTable(["foo" : Symbol(type: rangeType, offset: 0x0010, storage: .stackStorage)])
         let ir = mustCompile(expression: expr, symbols: symbols)

@@ -1883,9 +1883,9 @@ class SnapToCrackleCompilerTests: XCTestCase {
             return
         }
         
-        let expected = SymbolType.structType(StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u8, offset: 0),
-            "baz" : Symbol(type: .function(FunctionType(name: "baz", mangledName: "Foo_baz", returnType: .void, arguments: [])), offset: 0)
+        let expected = SymbolType.structType(StructType(name: "Foo", symbols: SymbolTable(tuples: [
+            ("bar", Symbol(type: .u8, offset: 0)),
+            ("baz", Symbol(type: .function(FunctionType(name: "baz", mangledName: "Foo_baz", returnType: .void, arguments: [])), offset: 0))
         ])))
         let actual = try! compiler.globalSymbols.resolveType(identifier: "Foo")
         XCTAssertEqual(expected, actual)
@@ -2776,9 +2776,9 @@ public func foo() -> None {
         
         let nameOfTraitObjectType = traitType.unwrapTraitType().nameOfTraitObjectType
         let offsetOfVtable = compiler.memoryLayoutStrategy.sizeof(type: .pointer(.void))
-        let traitObjectSymbols = SymbolTable([
-            "object" : Symbol(type: .pointer(.void), offset: 0),
-            "vtable" : Symbol(type: .pointer(expectedVtableType), offset: offsetOfVtable)
+        let traitObjectSymbols = SymbolTable(tuples: [
+            ("object", Symbol(type: .pointer(.void), offset: 0)),
+            ("vtable", Symbol(type: .pointer(expectedVtableType), offset: offsetOfVtable))
         ])
         let expectedTraitObjectType: SymbolType = .structType(StructType(name: nameOfTraitObjectType, symbols: traitObjectSymbols))
         traitObjectSymbols.bind(identifier: "bar", symbol: Symbol(type: .function(FunctionType(name: "bar", mangledName: "__Foo_object_bar", returnType: .u8, arguments: [.pointer(expectedTraitObjectType)])), offset: 0))

@@ -8,4 +8,5 @@
 
 public protocol MemoryLayoutStrategy: NSObject {
     func sizeof(type: SymbolType) -> Int
+    func layout(symbolTable: SymbolTable) -> SymbolTable
 }

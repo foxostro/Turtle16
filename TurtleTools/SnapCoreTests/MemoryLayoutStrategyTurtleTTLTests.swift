@@ -56,11 +56,95 @@ class MemoryLayoutStrategyTurtleTTLTests: XCTestCase {
     }
     
     func testSizeOfStruct() throws {
-        let typ: SymbolType = .structType(StructType(name: "Slice", symbols: SymbolTable([
-            "base"  : Symbol(type: .u16, offset: 0),
-            "count" : Symbol(type: .u16, offset: 2)
+        let typ: SymbolType = .structType(StructType(name: "Slice", symbols: SymbolTable(tuples: [
+            ("base", Symbol(type: .u16, offset: 0)),
+            ("count", Symbol(type: .u16, offset: 2))
         ])))
         let strategy = makeStrategy()
         XCTAssertEqual(strategy.sizeof(type: typ), 4)
+    }
+    
+    func testLayoutEmptySymbolTable() {
+        let strategy = makeStrategy()
+        let input = SymbolTable()
+        let actual = strategy.layout(symbolTable: input)
+        let expected = SymbolTable()
+        XCTAssertEqual(expected, actual)
+    }
+    
+    func testLayoutOneU8Symbol() {
+        let strategy = makeStrategy()
+        let input = SymbolTable(["foo": Symbol(type: .u8)])
+        let actual = strategy.layout(symbolTable: input)
+        let expected = SymbolTable(["foo": Symbol(type: .u8, offset: 0)])
+        XCTAssertEqual(expected, actual)
+    }
+    
+    func testLayoutTwoSymbols() {
+        let strategy = makeStrategy()
+        let input = SymbolTable(tuples: [
+            ("foo", Symbol(type: .u16)),
+            ("bar", Symbol(type: .u8))
+        ])
+        let actual = strategy.layout(symbolTable: input)
+        let expected = SymbolTable(tuples: [
+            ("foo", Symbol(type: .u16, offset: 0)),
+            ("bar", Symbol(type: .u8, offset: 2))
+        ])
+        XCTAssertEqual(expected, actual)
+    }
+    
+    func testLayoutUnion() {
+        let strategy = makeStrategy()
+        let input = SymbolTable(tuples: [
+            ("foo", Symbol(type: .unionType(UnionType([.u8, .u16])))),
+            ("bar", Symbol(type: .u8))
+        ])
+        let actual = strategy.layout(symbolTable: input)
+        let expected = SymbolTable(tuples: [
+            ("foo", Symbol(type: .unionType(UnionType([.u8, .u16])), offset: 0)),
+            ("bar", Symbol(type: .u8, offset: 3))
+        ])
+        XCTAssertEqual(expected, actual)
+    }
+    
+    func testLayoutStruct() {
+        let strategy = makeStrategy()
+        let expectedStructType: SymbolType = .structType(StructType(name: "Slice", symbols: SymbolTable(tuples: [
+            ("base", Symbol(type: .u16, offset: 0)),
+            ("count", Symbol(type: .u16, offset: 2))
+        ])))
+        let expected = SymbolTable(tuples: [
+            ("foo", Symbol(type: expectedStructType, offset: 0))
+        ])
+        let inputStructType: SymbolType = .structType(StructType(name: "Slice", symbols: SymbolTable(tuples: [
+            ("base", Symbol(type: .u16)),
+            ("count", Symbol(type: .u16))
+        ])))
+        let input = SymbolTable(tuples: [
+            ("foo", Symbol(type: inputStructType))
+        ])
+        let actual = strategy.layout(symbolTable: input)
+        XCTAssertEqual(expected, actual)
+    }
+    
+    func testLayoutConstStruct() {
+        let strategy = makeStrategy()
+        let expectedStructType: SymbolType = .constStructType(StructType(name: "Slice", symbols: SymbolTable(tuples: [
+            ("base", Symbol(type: .u16, offset: 0)),
+            ("count", Symbol(type: .u16, offset: 2))
+        ])))
+        let expected = SymbolTable(tuples: [
+            ("foo", Symbol(type: expectedStructType, offset: 0))
+        ])
+        let inputStructType: SymbolType = .constStructType(StructType(name: "Slice", symbols: SymbolTable(tuples: [
+            ("base", Symbol(type: .u16)),
+            ("count", Symbol(type: .u16))
+        ])))
+        let input = SymbolTable(tuples: [
+            ("foo", Symbol(type: inputStructType))
+        ])
+        let actual = strategy.layout(symbolTable: input)
+        XCTAssertEqual(expected, actual)
     }
 }

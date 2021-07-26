@@ -541,11 +541,25 @@ public struct Symbol: Equatable {
     public let storage: SymbolStorage
     public let visibility: SymbolVisibility
     
-    public init(type: SymbolType, offset: Int, storage: SymbolStorage = .staticStorage, visibility: SymbolVisibility = .privateVisibility) {
+    public init(type: SymbolType, offset: Int = Int.min, storage: SymbolStorage = .staticStorage, visibility: SymbolVisibility = .privateVisibility) {
         self.type = type
         self.offset = offset
         self.storage = storage
         self.visibility = visibility
+    }
+    
+    public func withOffset(_ offset: Int) -> Symbol {
+        return Symbol(type: type,
+                      offset: offset,
+                      storage: storage,
+                      visibility: visibility)
+    }
+    
+    public func withType(_ type: SymbolType) -> Symbol {
+        return Symbol(type: type,
+                      offset: offset,
+                      storage: storage,
+                      visibility: visibility)
     }
 }
 
@@ -556,13 +570,20 @@ public class SymbolTable: NSObject {
         let visibility: SymbolVisibility
     }
     public var declarationOrder: [String] = []
-    public private(set) var symbolTable: [String:Symbol]
-    public private(set) var typeTable: [String:TypeRecord]
+    public var symbolTable: [String:Symbol]
+    public var typeTable: [String:TypeRecord]
     public var parent: SymbolTable?
     public var storagePointer: Int
     public var enclosingFunctionType: FunctionType? = nil
     public var enclosingFunctionName: String? = nil
     public var stackFrameIndex: Int
+    
+    public convenience init(tuples: [(String, Symbol)]) {
+        self.init(parent: nil, dict: [:])
+        for (identifier, symbol) in tuples {
+            bind(identifier: identifier, symbol: symbol)
+        }
+    }
     
     public convenience init(_ dict: [String:Symbol] = [:]) {
         self.init(parent: nil, dict: dict)

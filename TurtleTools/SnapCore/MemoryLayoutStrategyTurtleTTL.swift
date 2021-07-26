@@ -43,4 +43,47 @@ public class MemoryLayoutStrategyTurtleTTL: NSObject, MemoryLayoutStrategy {
         }
         return kTagSize + kBufferSize
     }
+    
+    public func layout(symbolTable: SymbolTable) -> SymbolTable {
+        let result = SymbolTable()
+        var offset = 0
+        for identifier in symbolTable.declarationOrder {
+            let originalSymbol = symbolTable.symbolTable[identifier]!
+            let modifiedSymbol = originalSymbol
+                .withOffset(offset)
+                .withType(layout(type: originalSymbol.type))
+            result.bind(identifier: identifier, symbol: modifiedSymbol)
+            offset += sizeof(type: modifiedSymbol.type)
+        }
+        result.typeTable = symbolTable.typeTable
+        result.parent = symbolTable.parent
+        result.storagePointer = offset
+        result.enclosingFunctionType = symbolTable.enclosingFunctionType
+        result.enclosingFunctionName = symbolTable.enclosingFunctionName
+        result.stackFrameIndex = symbolTable.stackFrameIndex
+        return result
+    }
+    
+    func layout(type originalType: SymbolType) -> SymbolType {
+        let result: SymbolType
+        switch originalType {
+        case .structType(let typ1):
+            let typ2 = layout(struct: typ1)
+            result = .structType(typ2)
+            
+        case .constStructType(let typ1):
+            let typ2 = layout(struct: typ1)
+            result = .constStructType(typ2)
+        
+        default:
+            result = originalType
+        }
+        return result
+    }
+    
+    func layout(struct original: StructType) -> StructType {
+        let modifiedSymbolTable = layout(symbolTable: original.symbols)
+        let result = StructType(name: original.name, symbols: modifiedSymbolTable)
+        return result
+    }
 }

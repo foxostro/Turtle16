@@ -41,20 +41,11 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
     }
     
     private func compile(identifier expr: Expression.Identifier) throws -> [CrackleInstruction] {
-        var instructions: [CrackleInstruction] = []
-        
         let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: expr.sourceAnchor, identifier: expr.identifier)
         let symbol = resolution.0
         let depth = symbols.stackFrameIndex - resolution.1
         
-        switch symbol.storage {
-        case .staticStorage:
-            let dst = temporaryAllocator.maybeAllocate(size: kSizeOfAddress)!
-            temporaryStack.push(dst)
-            instructions += [.storeImmediate16(dst.address, symbol.offset)]
-        case .automaticStorage:
-            instructions += computeAddressOfLocalVariable(symbol, depth)
-        }
+        let instructions = computeAddressOfSymbol(symbol, depth)
         
         return instructions
     }

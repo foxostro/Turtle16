@@ -83,8 +83,8 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
                                   member: Expression.Identifier("asdf"))
         let offset = 0x0100
         let typ = StructType(name: "foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u8, offset: 0),
-            "baz" : Symbol(type: .u16, offset: 1)
+            "bar" : Symbol(type: .u8, offset: 0, storage: .automaticStorage),
+            "baz" : Symbol(type: .u16, offset: 1, storage: .automaticStorage)
         ]))
         let symbols = SymbolTable([
             "foo" : Symbol(type: .structType(typ), offset: offset)
@@ -102,8 +102,8 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
                                   member: Expression.Identifier("bar"))
         let offset = 0x0100
         let typ = StructType(name: "foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u8, offset: 0),
-            "baz" : Symbol(type: .u16, offset: 1)
+            "bar" : Symbol(type: .u8, offset: 0, storage: .automaticStorage),
+            "baz" : Symbol(type: .u16, offset: 1, storage: .automaticStorage)
         ]))
         let symbols = SymbolTable([
             "foo" : Symbol(type: .structType(typ), offset: offset)
@@ -119,8 +119,8 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
                                   member: Expression.Identifier("baz"))
         let offset = 0x0100
         let typ = StructType(name: "foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u8, offset: 0),
-            "baz" : Symbol(type: .u16, offset: 1)
+            "bar" : Symbol(type: .u8, offset: 0, storage: .automaticStorage),
+            "baz" : Symbol(type: .u16, offset: 1, storage: .automaticStorage)
         ]))
         let symbols = SymbolTable([
             "foo" : Symbol(type: .structType(typ), offset: offset)
@@ -161,8 +161,8 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
                                   member: Expression.Identifier("asdf"))
         let offset = 0x0100
         let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u8, offset: 0),
-            "baz" : Symbol(type: .u16, offset: 1)
+            "bar" : Symbol(type: .u8, offset: 0, storage: .automaticStorage),
+            "baz" : Symbol(type: .u16, offset: 1, storage: .automaticStorage)
         ]))
         let symbols = SymbolTable([
             "foo" : Symbol(type: .pointer(.structType(typ)), offset: offset)
@@ -180,8 +180,8 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
                                   member: Expression.Identifier("bar"))
         let offset = 0x0100
         let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u8, offset: 0),
-            "baz" : Symbol(type: .u16, offset: 1)
+            "bar" : Symbol(type: .u8, offset: 0, storage: .automaticStorage),
+            "baz" : Symbol(type: .u16, offset: 1, storage: .automaticStorage)
         ]))
         let symbols = SymbolTable([
             "foo" : Symbol(type: .pointer(.structType(typ)), offset: offset)

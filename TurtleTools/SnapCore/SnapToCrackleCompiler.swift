@@ -132,7 +132,7 @@ public class SnapToCrackleCompiler: NSObject {
         
         let functionType = try evaluateFunctionTypeExpression(funDecl.functionType)
         let typ: SymbolType = .function(functionType)
-        let symbol = Symbol(type: typ, offset: 0, storage: .staticStorage, visibility: funDecl.visibility)
+        let symbol = Symbol(type: typ, offset: 0, storage: .automaticStorage, visibility: funDecl.visibility)
         symbols.bind(identifier: name, symbol: symbol)
     }
     
@@ -155,7 +155,7 @@ public class SnapToCrackleCompiler: NSObject {
             if memberType == .structType(fullyQualifiedStructType) || memberType == .constStructType(fullyQualifiedStructType) {
                 throw CompilerError(sourceAnchor: memberDeclaration.memberType.sourceAnchor, message: "a struct cannot contain itself recursively")
             }
-            let symbol = Symbol(type: memberType, offset: members.storagePointer)
+            let symbol = Symbol(type: memberType, offset: members.storagePointer, storage: .automaticStorage)
             members.bind(identifier: memberDeclaration.name, symbol: symbol)
             let sizeOfMemberType = memoryLayoutStrategy.sizeof(type: memberType)
             members.storagePointer += sizeOfMemberType
@@ -366,7 +366,7 @@ public class SnapToCrackleCompiler: NSObject {
         members.enclosingFunctionName = name
         for memberDeclaration in traitDecl.members {
             let memberType = try TypeContextTypeChecker(symbols: members).check(expression: memberDeclaration.memberType)
-            let symbol = Symbol(type: memberType, offset: members.storagePointer)
+            let symbol = Symbol(type: memberType, offset: members.storagePointer, storage: .automaticStorage)
             members.bind(identifier: memberDeclaration.name, symbol: symbol)
             let sizeOfMemberType = memoryLayoutStrategy.sizeof(type: memberType)
             members.storagePointer += sizeOfMemberType

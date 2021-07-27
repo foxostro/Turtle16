@@ -1603,7 +1603,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let symbolType = try! compiler.globalSymbols.resolveType(identifier: "foo")
         
         let expectedSymbols = SymbolTable(tuples: [
-            ("bar", Symbol(type: .u8, offset: 0))
+            ("bar", Symbol(type: .u8, offset: 0, storage: .automaticStorage))
         ])
         expectedSymbols.enclosingFunctionName = "foo"
         expectedSymbols.storagePointer = 1
@@ -1895,8 +1895,8 @@ class SnapToCrackleCompilerTests: XCTestCase {
         }
         
         let expectedStructSymbols = SymbolTable(tuples: [
-            ("bar", Symbol(type: .u8, offset: 0)),
-            ("baz", Symbol(type: .function(FunctionType(name: "baz", mangledName: "Foo_baz", returnType: .void, arguments: [])), offset: 0))
+            ("bar", Symbol(type: .u8, offset: 0, storage: .automaticStorage)),
+            ("baz", Symbol(type: .function(FunctionType(name: "baz", mangledName: "Foo_baz", returnType: .void, arguments: [])), offset: 0, storage: .automaticStorage))
         ])
         expectedStructSymbols.enclosingFunctionName = "Foo"
         expectedStructSymbols.storagePointer = 1
@@ -2736,7 +2736,7 @@ public func foo() -> None {
         let traitType = try? compiler.globalSymbols.resolveType(identifier: "Foo")
         let nameOfVtableType = traitType?.unwrapTraitType().nameOfVtableType ?? ""
         let expectedSymbols = SymbolTable(tuples: [
-            ("bar", Symbol(type: .pointer(.function(FunctionType(returnType: .u8, arguments: [.pointer(.void)]))), offset: 0))
+            ("bar", Symbol(type: .pointer(.function(FunctionType(returnType: .u8, arguments: [.pointer(.void)]))), offset: 0, storage: .automaticStorage))
         ])
         expectedSymbols.enclosingFunctionName = "__Foo_vtable"
         expectedSymbols.storagePointer = 2
@@ -2765,7 +2765,7 @@ public func foo() -> None {
         let traitType = try? compiler.globalSymbols.resolveType(identifier: "Foo")
         let nameOfVtableType = traitType?.unwrapTraitType().nameOfVtableType ?? ""
         let expectedSymbols = SymbolTable(tuples: [
-            ("bar", Symbol(type: .pointer(.function(FunctionType(returnType: .u8, arguments: [.pointer(.void)]))), offset: 0))
+            ("bar", Symbol(type: .pointer(.function(FunctionType(returnType: .u8, arguments: [.pointer(.void)]))), offset: 0, storage: .automaticStorage))
         ])
         expectedSymbols.enclosingFunctionName = "__Foo_vtable"
         expectedSymbols.storagePointer = 2
@@ -2795,7 +2795,7 @@ public func foo() -> None {
         
         let nameOfVtableType = traitType.unwrapTraitType().nameOfVtableType
         let expectedSymbols = SymbolTable([
-            "bar" : Symbol(type: .pointer(.function(FunctionType(returnType: .u8, arguments: [.pointer(.void)]))), offset: 0) // TODO: do I need something like a .constVoid type here?
+            "bar" : Symbol(type: .pointer(.function(FunctionType(returnType: .u8, arguments: [.pointer(.void)]))), offset: 0, storage: .automaticStorage) // TODO: do I need something like a .constVoid type here?
         ])
         expectedSymbols.enclosingFunctionName = "__Foo_vtable"
         expectedSymbols.storagePointer = 2
@@ -2804,8 +2804,8 @@ public func foo() -> None {
         let nameOfTraitObjectType = traitType.unwrapTraitType().nameOfTraitObjectType
         let offsetOfVtable = compiler.memoryLayoutStrategy.sizeof(type: .pointer(.void))
         let traitObjectSymbols = SymbolTable(tuples: [
-            ("object", Symbol(type: .pointer(.void), offset: 0)),
-            ("vtable", Symbol(type: .pointer(expectedVtableType), offset: offsetOfVtable))
+            ("object", Symbol(type: .pointer(.void), offset: 0, storage: .automaticStorage)),
+            ("vtable", Symbol(type: .pointer(expectedVtableType), offset: offsetOfVtable, storage: .automaticStorage))
         ])
         traitObjectSymbols.storagePointer = 4
         let expectedTraitObjectType: SymbolType = .structType(StructType(name: nameOfTraitObjectType, symbols: traitObjectSymbols))

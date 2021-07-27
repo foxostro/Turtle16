@@ -29,8 +29,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
     private static func bindCompilerIntrinsicRangeType(symbols: SymbolTable) -> SymbolTable {
         let name = "Range"
         let typ: SymbolType = .structType(StructType(name: name, symbols: SymbolTable(tuples: [
-            ("begin", Symbol(type: .u16, offset: 0)),
-            ("limit", Symbol(type: .u16, offset: 2))
+            ("begin", Symbol(type: .u16, offset: 0, storage: .automaticStorage)),
+            ("limit", Symbol(type: .u16, offset: 2, storage: .automaticStorage))
         ])))
         symbols.bind(identifier: name, symbolType: typ, visibility: .privateVisibility)
         return symbols

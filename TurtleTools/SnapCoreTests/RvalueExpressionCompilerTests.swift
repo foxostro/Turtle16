@@ -3612,9 +3612,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
             Arg(name: "qux", expr: Expression.LiteralInt(0xefef))
         ]))
         let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0),
-            "baz" : Symbol(type: .u16, offset: 2),
-            "qux" : Symbol(type: .u16, offset: 4)
+            "bar" : Symbol(type: .u16, offset: 0, storage: .automaticStorage),
+            "baz" : Symbol(type: .u16, offset: 2, storage: .automaticStorage),
+            "qux" : Symbol(type: .u16, offset: 4, storage: .automaticStorage)
         ]))
         let symbols = SymbolTable(parent: nil,
                                   dict: ["foo" : Symbol(type: .structType(typ), offset: 0x0010, storage: .automaticStorage)],
@@ -4480,7 +4480,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let value: UInt16 = 0xabcd
         let offset = 0x0100
         let typ = StructType(name: "foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0)
+            "bar" : Symbol(type: .u16, offset: 0, storage: .automaticStorage)
         ]))
         let symbols = SymbolTable([
             "foo" : Symbol(type: .structType(typ), offset: offset)
@@ -4501,8 +4501,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                   member: Expression.Identifier("baz"))
         let offset = 0x0100
         let typ = StructType(name: "foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u8, offset: 0),
-            "baz" : Symbol(type: .u16, offset: 1)
+            "bar" : Symbol(type: .u8, offset: 0, storage: .automaticStorage),
+            "baz" : Symbol(type: .u16, offset: 1, storage: .automaticStorage)
         ]))
         let symbols = SymbolTable([
             "foo" : Symbol(type: .structType(typ), offset: offset)
@@ -4557,7 +4557,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             Arg(name: "bar", expr: Expression.LiteralBool(false))
         ])
         let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0)
+            "bar" : Symbol(type: .u16, offset: 0, storage: .automaticStorage)
         ]))
         let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["Foo" : .structType(typ)])
         XCTAssertThrowsError(try tryCompile(expression: expr, symbols: symbols)) {
@@ -4574,8 +4574,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
             Arg(name: "baz", expr: Expression.LiteralInt(0xcdcd))
         ])
         let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0),
-            "baz" : Symbol(type: .u16, offset: 2)
+            "bar" : Symbol(type: .u16, offset: 0, storage: .automaticStorage),
+            "baz" : Symbol(type: .u16, offset: 2, storage: .automaticStorage)
         ]))
         let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["Foo" : .structType(typ)])
         let compiler = makeCompiler(symbols: symbols)
@@ -4594,7 +4594,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             Arg(name: "bar", expr: Expression.LiteralInt(0))
         ])
         let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0)
+            "bar" : Symbol(type: .u16, offset: 0, storage: .automaticStorage)
         ]))
         let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["Foo" : .structType(typ)])
         XCTAssertThrowsError(try tryCompile(expression: expr, symbols: symbols)) {
@@ -4608,8 +4608,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
         typealias Arg = Expression.StructInitializer.Argument
         let expr = Expression.StructInitializer(identifier: Expression.Identifier("Foo"), arguments: [])
         let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0),
-            "baz" : Symbol(type: .u16, offset: 2)
+            "bar" : Symbol(type: .u16, offset: 0, storage: .automaticStorage),
+            "baz" : Symbol(type: .u16, offset: 2, storage: .automaticStorage)
         ]))
         let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["Foo" : .structType(typ)])
         let compiler = makeCompiler(symbols: symbols)
@@ -4675,8 +4675,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Get(expr: Expression.Identifier("foo"),
                                   member: Expression.Identifier("bb"))
         let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "aa" : Symbol(type: .u16, offset: 0),
-            "bb" : Symbol(type: .u16, offset: 2)
+            "aa" : Symbol(type: .u16, offset: 0, storage: .automaticStorage),
+            "bb" : Symbol(type: .u16, offset: 2, storage: .automaticStorage)
         ]))
         let symbols = SymbolTable([
             "foo" : Symbol(type: .pointer(.structType(typ)), offset: 0x0100),
@@ -4699,7 +4699,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Get(expr: Expression.Identifier("foo"),
                                   member: Expression.Identifier("asdf"))
         let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0)
+            "bar" : Symbol(type: .u16, offset: 0, storage: .automaticStorage)
         ]))
         let symbols = SymbolTable([
             "foo" : Symbol(type: .pointer(.structType(typ)), offset: 0)
@@ -4718,8 +4718,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
             Arg(name: "limit", expr: Expression.LiteralInt(10))
         ]))
         let rangeType: SymbolType = .structType(StructType(name: "Range", symbols: SymbolTable(tuples: [
-            ("begin", Symbol(type: .u16, offset: 0)),
-            ("limit", Symbol(type: .u16, offset: 2))
+            ("begin", Symbol(type: .u16, offset: 0, storage: .automaticStorage)),
+            ("limit", Symbol(type: .u16, offset: 2, storage: .automaticStorage))
         ])))
         let symbols = SymbolTable(["foo" : Symbol(type: rangeType, offset: 0x0010, storage: .automaticStorage)])
         let ir = mustCompile(expression: expr, symbols: symbols)
@@ -5156,7 +5156,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         
         let addressOfFoo = SnapCompilerMetrics.kStaticStorageStartAddress
         let Foo: SymbolType = .structType(StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .array(count: 1, elementType: .u8), offset: 0)
+            "bar" : Symbol(type: .array(count: 1, elementType: .u8), offset: 0, storage: .automaticStorage)
         ])))
         let symbols = SymbolTable([
             "foo" : Symbol(type: Foo, offset: addressOfFoo),
@@ -5183,7 +5183,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         
         let addressOfFoo = SnapCompilerMetrics.kStaticStorageStartAddress
         let Foo: SymbolType = .structType(StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0)
+            "bar" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0, storage: .automaticStorage)
         ])))
         let symbols = SymbolTable([
             "foo" : Symbol(type: Foo, offset: addressOfFoo),
@@ -5213,7 +5213,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         
         let addressOfFoo = SnapCompilerMetrics.kStaticStorageStartAddress
         let Foo: SymbolType = .structType(StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .array(count: 1, elementType: .u8), offset: 0)
+            "bar" : Symbol(type: .array(count: 1, elementType: .u8), offset: 0, storage: .automaticStorage)
         ])))
         let symbols = SymbolTable([
             "foo" : Symbol(type: Foo, offset: addressOfFoo),
@@ -5241,7 +5241,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let arrayBaseAddress = 0x1000
         let addressOfFoo = SnapCompilerMetrics.kStaticStorageStartAddress
         let Foo: SymbolType = .structType(StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0)
+            "bar" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0, storage: .automaticStorage)
         ])))
         let symbols = SymbolTable([
             "foo" : Symbol(type: Foo, offset: addressOfFoo),

@@ -4204,7 +4204,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = Expression.Get(expr: Expression.Identifier("foo"),
                                   member: Expression.Identifier("bar"))
         let typ = StructType(name: "foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0)
+            "bar" : Symbol(type: .u16, offset: 0, storage: .automaticStorage)
         ]))
         let symbols = SymbolTable([
             "foo" : Symbol(type: .structType(typ), offset: 0)
@@ -4219,7 +4219,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = Expression.Get(expr: Expression.Identifier("foo"),
                                   member: Expression.Identifier("asdf"))
         let typ = StructType(name: "foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0)
+            "bar" : Symbol(type: .u16, offset: 0, storage: .automaticStorage)
         ]))
         let symbols = SymbolTable([
             "foo" : Symbol(type: .structType(typ), offset: 0)
@@ -4271,7 +4271,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
             Arg(name: "bar", expr: Expression.LiteralBool(false))
         ])
         let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0)
+            "bar" : Symbol(type: .u16, offset: 0, storage: .automaticStorage)
         ]))
         let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["Foo" : .structType(typ)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -4289,8 +4289,8 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
             Arg(name: "baz", expr: Expression.LiteralInt(0))
         ])
         let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0),
-            "baz" : Symbol(type: .u16, offset: 0)
+            "bar" : Symbol(type: .u16, offset: 0, storage: .automaticStorage),
+            "baz" : Symbol(type: .u16, offset: 0, storage: .automaticStorage)
         ]))
         let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["Foo" : .structType(typ)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -4304,7 +4304,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
             Arg(name: "bar", expr: Expression.LiteralInt(0))
         ])
         let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0)
+            "bar" : Symbol(type: .u16, offset: 0, storage: .automaticStorage)
         ]))
         let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["Foo" : .structType(typ)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -4319,8 +4319,8 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         typealias Arg = Expression.StructInitializer.Argument
         let expr = Expression.StructInitializer(identifier: Expression.Identifier("Foo"), arguments: [])
         let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0),
-            "baz" : Symbol(type: .u16, offset: 2)
+            "bar" : Symbol(type: .u16, offset: 0, storage: .automaticStorage),
+            "baz" : Symbol(type: .u16, offset: 2, storage: .automaticStorage)
         ]))
         let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["Foo" : .structType(typ)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -4398,7 +4398,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = Expression.Get(expr: Expression.Identifier("foo"),
                                   member: Expression.Identifier("bar"))
         let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0)
+            "bar" : Symbol(type: .u16, offset: 0, storage: .automaticStorage)
         ]))
         let symbols = SymbolTable([
             "foo" : Symbol(type: .pointer(.structType(typ)), offset: 0)
@@ -4413,7 +4413,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = Expression.Get(expr: Expression.Identifier("foo"),
                                   member: Expression.Identifier("asdf"))
         let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0)
+            "bar" : Symbol(type: .u16, offset: 0, storage: .automaticStorage)
         ]))
         let symbols = SymbolTable([
             "foo" : Symbol(type: .pointer(.structType(typ)), offset: 0)

@@ -57,8 +57,8 @@ class MemoryLayoutStrategyTurtleTTLTests: XCTestCase {
     
     func testSizeOfStruct() throws {
         let typ: SymbolType = .structType(StructType(name: "Slice", symbols: SymbolTable(tuples: [
-            ("base", Symbol(type: .u16, offset: 0)),
-            ("count", Symbol(type: .u16, offset: 2))
+            ("base", Symbol(type: .u16, offset: 0, storage: .automaticStorage)),
+            ("count", Symbol(type: .u16, offset: 2, storage: .automaticStorage))
         ])))
         let strategy = makeStrategy()
         XCTAssertEqual(strategy.sizeof(type: typ), 4)
@@ -77,6 +77,14 @@ class MemoryLayoutStrategyTurtleTTLTests: XCTestCase {
         let input = SymbolTable(["foo": Symbol(type: .u8, storage: .automaticStorage)])
         let actual = strategy.layout(symbolTable: input)
         let expected = SymbolTable(["foo": Symbol(type: .u8, offset: 0, storage: .automaticStorage)])
+        XCTAssertEqual(expected, actual)
+    }
+    
+    func testLayoutSkipsSymbolsThatAlreadyHaveOffsets() {
+        let strategy = makeStrategy()
+        let input = SymbolTable(["foo": Symbol(type: .u8, offset: 100)])
+        let actual = strategy.layout(symbolTable: input)
+        let expected = SymbolTable(["foo": Symbol(type: .u8, offset: 100)])
         XCTAssertEqual(expected, actual)
     }
     

@@ -47,18 +47,22 @@ public class MemoryLayoutStrategyTurtleTTL: NSObject, MemoryLayoutStrategy {
     }
     
     public func layout(symbolTable: SymbolTable) -> SymbolTable {
+        staticStorageOffset = SnapCompilerMetrics.kStaticStorageStartAddress
+        return _layout(symbolTable: symbolTable)
+    }
+    
+    func _layout(symbolTable: SymbolTable) -> SymbolTable {
         let result = SymbolTable()
+        
+        result.typeTable = symbolTable.typeTable
+        result.enclosingFunctionType = symbolTable.enclosingFunctionType
+        result.enclosingFunctionName = symbolTable.enclosingFunctionName
+        result.stackFrameIndex = symbolTable.stackFrameIndex
         
         var offset = 0
         
         if let parent = symbolTable.parent {
-            let modifiedParent = layout(symbolTable: parent)
-            
-            result.typeTable = symbolTable.typeTable
-            result.storagePointer = offset
-            result.enclosingFunctionType = symbolTable.enclosingFunctionType
-            result.enclosingFunctionName = symbolTable.enclosingFunctionName
-            result.stackFrameIndex = symbolTable.stackFrameIndex
+            let modifiedParent = _layout(symbolTable: parent)
             result.parent = modifiedParent
             
             // If the parent and child symbol tables are nested scopes within
@@ -76,14 +80,20 @@ public class MemoryLayoutStrategyTurtleTTL: NSObject, MemoryLayoutStrategy {
             let typeForSymbol = layout(type: originalSymbol.type)
             let offsetForSymbol: Int
             
-            switch originalSymbol.storage{
-            case .staticStorage:
-                offsetForSymbol = staticStorageOffset
-                staticStorageOffset += sizeof(type: typeForSymbol)
-                
-            case .automaticStorage:
+            // Skip symbols that have already been assigned offsets.
+            if let offset = originalSymbol.maybeOffset {
+                assert(offset != Int.min) // used to be used as a nil-like sentinel value
                 offsetForSymbol = offset
-                offset += sizeof(type: typeForSymbol)
+            } else {
+                switch originalSymbol.storage{
+                case .staticStorage:
+                    offsetForSymbol = staticStorageOffset
+                    staticStorageOffset += sizeof(type: typeForSymbol)
+                    
+                case .automaticStorage:
+                    offsetForSymbol = offset
+                    offset += sizeof(type: typeForSymbol)
+                }
             }
             
             let modifiedSymbol = originalSymbol

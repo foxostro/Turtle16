@@ -134,7 +134,7 @@ public class BaseExpressionCompiler: NSObject {
             let temp = temporaryAllocator.allocate()
             temporaryStack.push(temp)
             instructions += [.storeImmediate16(temp.address, symbol.offset)]
-        case .stackStorage:  instructions += computeAddressOfLocalVariable(symbol, depth)
+        case .automaticStorage:  instructions += computeAddressOfLocalVariable(symbol, depth)
         }
         return instructions
     }

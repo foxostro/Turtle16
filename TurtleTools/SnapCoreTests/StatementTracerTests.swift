@@ -109,8 +109,8 @@ class StatementTracerTests: XCTestCase {
             ]))
         ])
         let symbols = SymbolTable([
-            "result" : Symbol(type: .u8, offset: 0, storage: .stackStorage),
-            "test" : Symbol(type: .unionType(UnionType([.u8, .bool])), offset: 0, storage: .stackStorage),
+            "result" : Symbol(type: .u8, offset: 0, storage: .automaticStorage),
+            "test" : Symbol(type: .unionType(UnionType([.u8, .bool])), offset: 0, storage: .automaticStorage),
         ])
         let tracer = StatementTracer(symbols: symbols)
         let traces = try! tracer.trace(ast: ast)

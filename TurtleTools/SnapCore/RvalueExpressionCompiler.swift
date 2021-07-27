@@ -579,7 +579,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         switch symbol.storage {
         case .staticStorage:
             return loadStaticSymbol(symbol)
-        case .stackStorage:
+        case .automaticStorage:
             return loadStackSymbol(symbol, depth)
         }
     }

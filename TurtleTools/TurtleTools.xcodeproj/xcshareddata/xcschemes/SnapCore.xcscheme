@@ -40,9 +40,6 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "MemoryLayoutStrategyTurtleTTLTests">
-               </Test>
-               <Test
                   Identifier = "SnapCompilerTests/test_EndToEndIntegration_CannotMakeMutatingPointerFromImmutableObject_1()">
                </Test>
                <Test

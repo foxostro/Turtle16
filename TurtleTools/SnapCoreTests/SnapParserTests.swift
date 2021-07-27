@@ -107,7 +107,7 @@ class SnapParserTests: XCTestCase {
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: nil,
                                       expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(10, 11), value: 1),
-                                      storage: .stackStorage,
+                                      storage: .automaticStorage,
                                       isMutable: false)
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
@@ -124,7 +124,7 @@ class SnapParserTests: XCTestCase {
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(9, 11), typ: .u8),
                                       expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(14, 15), value: 1),
-                                      storage: .stackStorage,
+                                      storage: .automaticStorage,
                                       isMutable: false)
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
@@ -192,7 +192,7 @@ class SnapParserTests: XCTestCase {
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(9, 14), count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(12, 14), typ: .u8)),
                                       expression: innerArray,
-                                      storage: .stackStorage,
+                                      storage: .automaticStorage,
                                       isMutable: false)
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
@@ -211,7 +211,7 @@ class SnapParserTests: XCTestCase {
                                       expression: Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(17, 24),
                                                                           arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(17, 22), count: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(18, 19), value: 0), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(20, 22), typ: .u8)),
                                                                           elements: []),
-                                      storage: .stackStorage,
+                                      storage: .automaticStorage,
                                       isMutable: false)
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
@@ -232,7 +232,7 @@ class SnapParserTests: XCTestCase {
                                                                           elements: [
                                         Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(16, 17), value: 1)
                                       ]),
-                                      storage: .stackStorage,
+                                      storage: .automaticStorage,
                                       isMutable: false)
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
@@ -254,7 +254,7 @@ class SnapParserTests: XCTestCase {
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: nil,
                                       expression: arr,
-                                      storage: .stackStorage,
+                                      storage: .automaticStorage,
                                       isMutable: false)
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
@@ -273,7 +273,7 @@ let foo = "Hello, World!"
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: nil,
                                       expression: str,
-                                      storage: .stackStorage,
+                                      storage: .automaticStorage,
                                       isMutable: false)
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
@@ -290,7 +290,7 @@ let foo: []u8 = bar
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: Expression.DynamicArrayType(sourceAnchor: parser.lineMapper.anchor(9, 13), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(11, 13), typ: .u8)),
                                       expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(16, 19), identifier: "bar"),
-                                      storage: .stackStorage,
+                                      storage: .automaticStorage,
                                       isMutable: false)
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
@@ -307,7 +307,7 @@ let foo: [1]u8 = undefined
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(9, 14), count: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(10, 11), value: 1), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(12, 14), typ: .u8)),
                                       expression: nil,
-                                      storage: .stackStorage,
+                                      storage: .automaticStorage,
                                       isMutable: false)
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
@@ -356,7 +356,7 @@ let foo: [1]u8 = undefined
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: nil,
                                       expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(10, 11), value: 1),
-                                      storage: .stackStorage,
+                                      storage: .automaticStorage,
                                       isMutable: true)
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
@@ -373,7 +373,7 @@ let foo: [1]u8 = undefined
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(9, 11), typ: .u8),
                                       expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(14, 15), value: 1),
-                                      storage: .stackStorage,
+                                      storage: .automaticStorage,
                                       isMutable: true)
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
@@ -810,7 +810,7 @@ if 1 {
                                            identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(15, 18), identifier: "foo"),
                                            explicitType: nil,
                                            expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(21, 22), value: 2),
-                                           storage: .stackStorage,
+                                           storage: .automaticStorage,
                                            isMutable: true)
                           ]),
                           else: nil)
@@ -941,7 +941,7 @@ else
                                identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(13, 16), identifier: "foo"),
                                explicitType: nil,
                                expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(19, 20), value: 1),
-                               storage: .stackStorage,
+                               storage: .automaticStorage,
                                isMutable: false)
                ]),
                else: Block(sourceAnchor: parser.lineMapper.anchor(30, 41), children: [
@@ -949,7 +949,7 @@ else
                                identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(34, 37), identifier: "bar"),
                                explicitType: nil,
                                expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(40, 41), value: 1),
-                               storage: .stackStorage,
+                               storage: .automaticStorage,
                                isMutable: false)
                ]))
         ])
@@ -970,7 +970,7 @@ if 1
                                identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(13, 16), identifier: "foo"),
                                explicitType: nil,
                                expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(19, 20), value: 1),
-                               storage: .stackStorage,
+                               storage: .automaticStorage,
                                isMutable: false)
                ]),
                else: nil)
@@ -1035,7 +1035,7 @@ while 1 {
                                    identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(18, 21), identifier: "foo"),
                                    explicitType: nil,
                                    expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(24, 25), value: 2),
-                                   storage: .stackStorage,
+                                   storage: .automaticStorage,
                                    isMutable: true)
                   ]))
         ])
@@ -1081,7 +1081,7 @@ while 1 {}
                                identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(10, 13), identifier: "foo"),
                                explicitType: nil,
                                expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(16, 17), identifier: "i"),
-                               storage: .stackStorage,
+                               storage: .automaticStorage,
                                isMutable: true)
             ])
         ])
@@ -1096,7 +1096,7 @@ while 1 {}
                                identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo"),
                                explicitType: nil,
                                expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(11, 12), identifier: "i"),
-                               storage: .stackStorage,
+                               storage: .automaticStorage,
                                isMutable: true)
             ])
         ])
@@ -1126,7 +1126,7 @@ while 1 {}
                                    identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(20, 23), identifier: "bar"),
                                    explicitType: nil,
                                    expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(26, 27), identifier: "i"),
-                                   storage: .stackStorage,
+                                   storage: .automaticStorage,
                                    isMutable: true)
                 ])
             ])
@@ -1796,7 +1796,7 @@ let foo: *wat = undefined
                                       identifier: foo,
                                       explicitType: expectedType,
                                       expression: nil,
-                                      storage: .stackStorage,
+                                      storage: .automaticStorage,
                                       isMutable: false)
         XCTAssertEqual(ast.children.first, expected)
     }
@@ -1823,7 +1823,7 @@ let foo: *const wat = undefined
                                       identifier: foo,
                                       explicitType: expectedType,
                                       expression: nil,
-                                      storage: .stackStorage,
+                                      storage: .automaticStorage,
                                       isMutable: false)
         XCTAssertEqual(ast.children.first, expected)
     }
@@ -1899,7 +1899,7 @@ for i in 0..10 {
                                    identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(25, 28), identifier: "foo"),
                                    explicitType: nil,
                                    expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 5), identifier: "i"),
-                                   storage: .stackStorage,
+                                   storage: .automaticStorage,
                                    isMutable: true)
                 ]))
         ])
@@ -2072,7 +2072,7 @@ Foo.doSomething1()
                            identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                            explicitType: unionType,
                            expression: nil,
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true)
         ])
     }
@@ -2090,7 +2090,7 @@ Foo.doSomething1()
                            identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                            explicitType: unionType,
                            expression: nil,
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true)
         ])
     }
@@ -2107,7 +2107,7 @@ Foo.doSomething1()
                            identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                            explicitType: unionType,
                            expression: nil,
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true)
         ])
     }
@@ -2238,7 +2238,7 @@ match expr {
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(11, 14), identifier: "foo"),
                                       explicitType: nil,
                                       expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(17, 18), value: 1),
-                                      storage: .stackStorage,
+                                      storage: .automaticStorage,
                                       isMutable: true,
                                       visibility: .publicVisibility)
         let actual = ast.children[0]
@@ -2256,7 +2256,7 @@ match expr {
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(12, 15), identifier: "foo"),
                                       explicitType: nil,
                                       expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(18, 19), value: 1),
-                                      storage: .stackStorage,
+                                      storage: .automaticStorage,
                                       isMutable: true,
                                       visibility: .privateVisibility)
         let actual = ast.children[0]
@@ -2490,7 +2490,7 @@ let foo: func (u8) -> u8 = undefined
                                       identifier: foo,
                                       explicitType: expectedType,
                                       expression: nil,
-                                      storage: .stackStorage,
+                                      storage: .automaticStorage,
                                       isMutable: false)
         XCTAssertEqual(ast.children.first, expected)
     }

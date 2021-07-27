@@ -81,7 +81,7 @@ public class MemoryLayoutStrategyTurtleTTL: NSObject, MemoryLayoutStrategy {
                 offsetForSymbol = staticStorageOffset
                 staticStorageOffset += sizeof(type: typeForSymbol)
                 
-            case .stackStorage:
+            case .automaticStorage:
                 offsetForSymbol = offset
                 offset += sizeof(type: typeForSymbol)
             }

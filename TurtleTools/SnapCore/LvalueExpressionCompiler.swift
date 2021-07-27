@@ -52,7 +52,7 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
             let dst = temporaryAllocator.maybeAllocate(size: kSizeOfAddress)!
             temporaryStack.push(dst)
             instructions += [.storeImmediate16(dst.address, symbol.offset)]
-        case .stackStorage:
+        case .automaticStorage:
             instructions += computeAddressOfLocalVariable(symbol, depth)
         }
         

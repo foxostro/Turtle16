@@ -510,7 +510,7 @@ public class SnapToCrackleCompiler: NSObject {
             symbols.bind(identifier: varDecl.identifier.identifier, symbol: symbol)
             
             // If the symbol is on the stack then allocate storage for it now.
-            if symbol.storage == .stackStorage {
+            if symbol.storage == .automaticStorage {
                 let size = memoryLayoutStrategy.sizeof(type: symbol.type)
                 emit([
                     .subi16(kStackPointerAddress, kStackPointerAddress, size)
@@ -526,7 +526,7 @@ public class SnapToCrackleCompiler: NSObject {
             symbols.bind(identifier: varDecl.identifier.identifier, symbol: symbol)
             
             // If the symbol is on the stack then allocate storage for it now.
-            if symbol.storage == .stackStorage {
+            if symbol.storage == .automaticStorage {
                 let size = memoryLayoutStrategy.sizeof(type: symbol.type)
                 emit([
                     .subi16(kStackPointerAddress, kStackPointerAddress, size)
@@ -554,7 +554,7 @@ public class SnapToCrackleCompiler: NSObject {
         case .staticStorage:
             offset = staticStoragePointer
             staticStoragePointer += size
-        case .stackStorage:
+        case .automaticStorage:
             symbols.storagePointer += size
             offset = symbols.storagePointer
         }
@@ -649,17 +649,17 @@ public class SnapToCrackleCompiler: NSObject {
             VarDeclaration(identifier: sequence,
                            explicitType: nil,
                            expression: stmt.sequenceExpr,
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true),
             VarDeclaration(identifier: limit,
                            explicitType: nil,
                            expression: Expression.Get(expr: sequence, member: Expression.Identifier("limit")),
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: false),
             VarDeclaration(identifier: stmt.identifier,
                            explicitType: Expression.TypeOf(limit),
                            expression: Expression.LiteralInt(0),
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true),
             While(condition: Expression.Binary(op: .ne, left: stmt.identifier, right: limit),
                   body: Block(children: [
@@ -681,25 +681,25 @@ public class SnapToCrackleCompiler: NSObject {
                            identifier: sequence,
                            explicitType: nil,
                            expression: stmt.sequenceExpr,
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: false),
             VarDeclaration(sourceAnchor: stmt.sourceAnchor,
                            identifier: index,
                            explicitType: nil,
                            expression: Expression.LiteralInt(sourceAnchor: stmt.sourceAnchor, value: 0),
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true),
             VarDeclaration(sourceAnchor: stmt.sourceAnchor,
                            identifier: limit,
                            explicitType: nil,
                            expression: Expression.Get(expr: sequence, member: Expression.Identifier(sourceAnchor: stmt.sourceAnchor, identifier: "count")),
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: false),
             VarDeclaration(sourceAnchor: stmt.sourceAnchor,
                            identifier: stmt.identifier,
                            explicitType: Expression.PrimitiveType(sourceAnchor: stmt.sourceAnchor, typ: try RvalueExpressionTypeChecker(symbols: symbols).check(expression: stmt.sequenceExpr).arrayElementType.correspondingMutableType),
                            expression: nil,
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true),
             While(sourceAnchor: stmt.sourceAnchor,
                   condition: Expression.Binary(sourceAnchor: stmt.sourceAnchor,
@@ -1011,7 +1011,7 @@ public class SnapToCrackleCompiler: NSObject {
             let argumentName = argumentNames[i]
             let symbol = Symbol(type: argumentType.correspondingConstType,
                                 offset: -offset,
-                                storage: .stackStorage)
+                                storage: .automaticStorage)
             symbols.bind(identifier: argumentName, symbol: symbol)
             let sizeOfArugmentType = memoryLayoutStrategy.sizeof(type: argumentType)
             offset += sizeOfArugmentType
@@ -1023,7 +1023,7 @@ public class SnapToCrackleCompiler: NSObject {
         symbols.bind(identifier: kReturnValueIdentifier,
                      symbol: Symbol(type: functionType.returnType,
                                     offset: -offset,
-                                    storage: .stackStorage))
+                                    storage: .automaticStorage))
         let sizeOfFunctionReturnType = memoryLayoutStrategy.sizeof(type: functionType.returnType)
         offset += sizeOfFunctionReturnType
     }

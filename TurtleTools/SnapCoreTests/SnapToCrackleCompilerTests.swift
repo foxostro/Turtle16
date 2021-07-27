@@ -375,17 +375,17 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                     VarDeclaration(identifier: Expression.Identifier("a"),
                                                    explicitType: nil,
                                                    expression: one,
-                                                   storage: .stackStorage,
+                                                   storage: .automaticStorage,
                                                    isMutable: false),
                                     VarDeclaration(identifier: Expression.Identifier("b"),
                                                    explicitType: nil,
                                                    expression: two,
-                                                   storage: .stackStorage,
+                                                   storage: .automaticStorage,
                                                    isMutable: false),
                                     VarDeclaration(identifier: Expression.Identifier("c"),
                                                    explicitType: nil,
                                                    expression: three,
-                                                   storage: .stackStorage,
+                                                   storage: .automaticStorage,
                                                    isMutable: false),
                                     Return(Expression.Identifier("b"))
                                 ])),
@@ -417,19 +417,19 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                     VarDeclaration(identifier: Expression.Identifier("a"),
                                                    explicitType: nil,
                                                    expression: one,
-                                                   storage: .stackStorage,
+                                                   storage: .automaticStorage,
                                                    isMutable: false),
                                     Block(children: [
                                         VarDeclaration(identifier: Expression.Identifier("b"),
                                                        explicitType: nil,
                                                        expression: two,
-                                                       storage: .stackStorage,
+                                                       storage: .automaticStorage,
                                                        isMutable: false),
                                         Block(children: [
                                             VarDeclaration(identifier: Expression.Identifier("c"),
                                                            explicitType: nil,
                                                            expression: three,
-                                                           storage: .stackStorage,
+                                                           storage: .automaticStorage,
                                                            isMutable: false),
                                             Return(Expression.Identifier("c"))
                                         ]),
@@ -509,7 +509,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                 VarDeclaration(identifier: Expression.Identifier("foo"),
                                explicitType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u16)),
                                expression: arr,
-                               storage: .stackStorage,
+                               storage: .automaticStorage,
                                isMutable: false)
             ])
         ])
@@ -530,7 +530,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                 VarDeclaration(identifier: Expression.Identifier("foo"),
                                explicitType: nil,
                                expression: nil,
-                               storage: .stackStorage,
+                               storage: .automaticStorage,
                                isMutable: false)
             ])
         ])
@@ -546,7 +546,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                 VarDeclaration(identifier: Expression.Identifier("foo"),
                                explicitType: Expression.ArrayType(count: Expression.LiteralInt(100), elementType: Expression.PrimitiveType(.u16)),
                                expression: nil,
-                               storage: .stackStorage,
+                               storage: .automaticStorage,
                                isMutable: false)
             ])
         ])
@@ -563,7 +563,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                 VarDeclaration(identifier: Expression.Identifier("foo"),
                                explicitType: Expression.Identifier("bar"),
                                expression: nil,
-                               storage: .stackStorage,
+                               storage: .automaticStorage,
                                isMutable: false)
             ])
         ])
@@ -1209,7 +1209,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                     VarDeclaration(identifier: Expression.Identifier("baz"),
                                                    explicitType: nil,
                                                    expression: Expression.LiteralInt(0xbb),
-                                                   storage: .stackStorage,
+                                                   storage: .automaticStorage,
                                                    isMutable: false),
                                     Return(Expression.Identifier("bar"))
                                 ])),
@@ -1271,7 +1271,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                     VarDeclaration(identifier: Expression.Identifier("a"),
                                                    explicitType: nil,
                                                    expression: Expression.LiteralInt(0xaa),
-                                                   storage: .stackStorage,
+                                                   storage: .automaticStorage,
                                                    isMutable: false),
                                     FunctionDeclaration(identifier: Expression.Identifier("bar"),
                                                         functionType: Expression.FunctionType(name: "bar", returnType: Expression.PrimitiveType(.u8), arguments: []),
@@ -1307,7 +1307,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                     VarDeclaration(identifier: Expression.Identifier("a"),
                                                    explicitType: nil,
                                                    expression: Expression.LiteralInt(0xaa),
-                                                   storage: .stackStorage,
+                                                   storage: .automaticStorage,
                                                    isMutable: false),
                                     FunctionDeclaration(identifier: Expression.Identifier("bar"),
                                                         functionType: Expression.FunctionType(name: "bar", returnType: Expression.PrimitiveType(.u8), arguments: []),
@@ -1617,7 +1617,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: Expression.PointerType(Expression.PrimitiveType(.u8)),
                            expression: nil,
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: false)
         ])
         let compiler = SnapToCrackleCompiler()
@@ -1636,7 +1636,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: Expression.PrimitiveType(.u16),
                            expression: nil,
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true),
             ForIn(identifier: Expression.Identifier("i"),
                   sequenceExpr: Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
@@ -1666,7 +1666,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: Expression.PrimitiveType(.u16),
                            expression: nil,
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true),
             ForIn(identifier: Expression.Identifier("i"),
                   sequenceExpr: Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
@@ -1696,7 +1696,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: Expression.PrimitiveType(.u8),
                            expression: nil,
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true),
             ForIn(identifier: Expression.Identifier("i"),
                   sequenceExpr: Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8)), elements: [
@@ -1730,7 +1730,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: Expression.PrimitiveType(.u16),
                            expression: nil,
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true),
             ForIn(identifier: Expression.Identifier("i"),
                   sequenceExpr: Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u16)), elements: [
@@ -1764,7 +1764,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: Expression.PrimitiveType(.u16),
                            expression: nil,
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true),
             VarDeclaration(identifier: Expression.Identifier("arr"),
                            explicitType: nil,
@@ -1775,12 +1775,12 @@ class SnapToCrackleCompilerTests: XCTestCase {
                             Expression.LiteralInt(0x0004),
                             Expression.LiteralInt(0x0005)
                            ]),
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true),
             VarDeclaration(identifier: Expression.Identifier("slice"),
                            explicitType: Expression.DynamicArrayType(Expression.PrimitiveType(.u16)),
                            expression: Expression.Identifier("arr"),
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true),
             ForIn(identifier: Expression.Identifier("i"),
                   sequenceExpr: Expression.Identifier("slice"),
@@ -1808,12 +1808,12 @@ class SnapToCrackleCompilerTests: XCTestCase {
             VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: Expression.PrimitiveType(.u8),
                            expression: Expression.LiteralInt(42),
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true),
             VarDeclaration(identifier: Expression.Identifier("bar"),
                            explicitType: Expression.PointerType(Expression.PrimitiveType(.u8)),
                            expression: Expression.Unary(op: .ampersand, expression: Expression.Identifier("foo")),
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true)
         ])
         let compiler = SnapToCrackleCompiler()
@@ -1844,7 +1844,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             VarDeclaration(identifier: Expression.Identifier("Foo"),
                            explicitType: Expression.PrimitiveType(.u8),
                            expression: nil,
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: false),
             Impl(identifier: Expression.Identifier("Foo"), children: [])
         ])
@@ -1914,7 +1914,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             VarDeclaration(identifier: Expression.Identifier("result"),
                            explicitType: Expression.PrimitiveType(.u8),
                            expression: Expression.LiteralInt(0),
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true),
             StructDeclaration(identifier: Expression.Identifier("Foo"), members: []),
             Impl(identifier: Expression.Identifier("Foo"),
@@ -1981,7 +1981,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: Expression.PrimitiveType(.u8),
                            expression: Expression.LiteralInt(0),
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true),
             Match(expr: Expression.Identifier("foo"), clauses: [], elseClause: nil)
         ])
@@ -1996,7 +1996,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             VarDeclaration(identifier: Expression.Identifier("result"),
                            explicitType: Expression.PrimitiveType(.u8),
                            expression: Expression.LiteralInt(0),
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true),
             Match(expr: Expression.Identifier("result"), clauses: [], elseClause: Block(children: [
                 Expression.Assignment(lexpr: Expression.Identifier("result"), rexpr: Expression.LiteralInt(42))
@@ -2020,7 +2020,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             VarDeclaration(identifier: Expression.Identifier("result"),
                            explicitType: Expression.PrimitiveType(.u8),
                            expression: ExprUtils.makeU8(value: 0),
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true),
             Match(expr: Expression.Identifier("result"), clauses: [
                 Match.Clause(valueIdentifier: Expression.Identifier("foo"),
@@ -2044,7 +2044,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             VarDeclaration(identifier: Expression.Identifier("result"),
                            explicitType: Expression.PrimitiveType(.u8),
                            expression: ExprUtils.makeU8(value: 0),
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true),
             Match(expr: Expression.Identifier("result"), clauses: [
                 Match.Clause(valueIdentifier: Expression.Identifier("foo"),
@@ -2069,12 +2069,12 @@ class SnapToCrackleCompilerTests: XCTestCase {
             VarDeclaration(identifier: Expression.Identifier("result"),
                            explicitType: Expression.PrimitiveType(.u8),
                            expression: ExprUtils.makeU8(value: 0),
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true),
             VarDeclaration(identifier: Expression.Identifier("test"),
                            explicitType: Expression.PrimitiveType(.u8),
                            expression: ExprUtils.makeU8(value: 42),
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true),
             Match(expr: Expression.Identifier("test"), clauses: [
                 Match.Clause(valueIdentifier: Expression.Identifier("foo"),
@@ -2102,12 +2102,12 @@ class SnapToCrackleCompilerTests: XCTestCase {
             VarDeclaration(identifier: Expression.Identifier("result"),
                            explicitType: Expression.PrimitiveType(.u8),
                            expression: ExprUtils.makeU8(value: 0),
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true),
             VarDeclaration(identifier: Expression.Identifier("test"),
                            explicitType: Expression.UnionType([Expression.PrimitiveType(.u8), Expression.PrimitiveType(.bool)]),
                            expression: ExprUtils.makeU8(value: 0),
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true),
             Match(expr: Expression.Identifier("test"), clauses: [
                 Match.Clause(valueIdentifier: Expression.Identifier("foo"),
@@ -2128,12 +2128,12 @@ class SnapToCrackleCompilerTests: XCTestCase {
             VarDeclaration(identifier: Expression.Identifier("result"),
                            explicitType: Expression.PrimitiveType(.u8),
                            expression: ExprUtils.makeU8(value: 0),
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true),
             VarDeclaration(identifier: Expression.Identifier("test"),
                            explicitType: Expression.UnionType([Expression.PrimitiveType(.u8), Expression.PrimitiveType(.bool)]),
                            expression: ExprUtils.makeU8(value: 0),
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true),
             Match(expr: Expression.Identifier("test"), clauses: [
                 Match.Clause(valueIdentifier: Expression.Identifier("foo"),
@@ -2605,7 +2605,7 @@ public func foo() -> None {
             VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
                            expression: Expression.Unary(op: .ampersand, expression: Expression.Identifier("myfunc")),
-                           storage: .stackStorage,
+                           storage: .automaticStorage,
                            isMutable: true)
         ])
         let compiler = SnapToCrackleCompiler()

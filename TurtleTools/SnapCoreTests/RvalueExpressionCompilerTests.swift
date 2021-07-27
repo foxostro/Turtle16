@@ -3283,7 +3283,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testCompileIdentifierExpression_U8_Stack() {
         let kFramePointerAddress = Int(SnapCompilerMetrics.kFramePointerAddressHi)
         let expr = Expression.Identifier("foo")
-        let symbol = Symbol(type: .constU8, offset: 0x0010, storage: .stackStorage)
+        let symbol = Symbol(type: .constU8, offset: 0x0010, storage: .automaticStorage)
         let symbols = SymbolTable(["foo" : symbol])
         let expected: [CrackleInstruction] = [
             .copyWords(t0, kFramePointerAddress, 2), // t0 = *kFramePointerAddress
@@ -3308,7 +3308,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testCompileIdentifierExpression_U16_Stack() {
         let kFramePointerAddress = Int(SnapCompilerMetrics.kFramePointerAddressHi)
         let expr = Expression.Identifier("foo")
-        let symbol = Symbol(type: .constU16, offset: 0x0010, storage: .stackStorage)
+        let symbol = Symbol(type: .constU16, offset: 0x0010, storage: .automaticStorage)
         let symbols = SymbolTable(["foo" : symbol])
         let expected: [CrackleInstruction] = [
             .copyWords(t0, kFramePointerAddress, 2), // t0 = *kFramePointerAddress
@@ -3384,7 +3384,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Identifier("foo")
         let symbol = Symbol(type: .array(count: 5, elementType: .constU16),
                             offset: 0x0020,
-                            storage: .stackStorage)
+                            storage: .automaticStorage)
         let symbols = SymbolTable(["foo" : symbol])
         
         let compiler = makeCompiler(symbols: symbols)
@@ -3529,7 +3529,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let offset = 0x0004
         let kFramePointerAddress = Int(SnapCompilerMetrics.kFramePointerAddressHi)
         let expr = ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralBool(true))
-        let symbol = Symbol(type: .bool, offset: offset, storage: .stackStorage)
+        let symbol = Symbol(type: .bool, offset: offset, storage: .automaticStorage)
         let symbols = SymbolTable(["foo" : symbol])
         let expected: [CrackleInstruction] = [
             .copyWords(t0, kFramePointerAddress, 2), // t0 = *kFramePointerAddress
@@ -3549,7 +3549,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let value = 42
         let kFramePointerAddress = Int(SnapCompilerMetrics.kFramePointerAddressHi)
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: value))
-        let symbol = Symbol(type: .u8, offset: offset, storage: .stackStorage)
+        let symbol = Symbol(type: .u8, offset: offset, storage: .automaticStorage)
         let symbols = SymbolTable(["foo" : symbol])
         let expected: [CrackleInstruction] = [
             .copyWords(t0, kFramePointerAddress, 2), // t0 = *kFramePointerAddress
@@ -3569,7 +3569,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let value = 0xabcd
         let kFramePointerAddress = Int(SnapCompilerMetrics.kFramePointerAddressHi)
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU16(value: value))
-        let symbol = Symbol(type: .u16, offset: offset, storage: .stackStorage)
+        let symbol = Symbol(type: .u16, offset: offset, storage: .automaticStorage)
         let symbols = SymbolTable(["foo" : symbol])
         let expected: [CrackleInstruction] = [
             .copyWords(t0, kFramePointerAddress, 2), // t0 = *kFramePointerAddress
@@ -3592,7 +3592,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                                      ExprUtils.makeU16(value: 4000),
                                                      ExprUtils.makeU16(value: 5000)])
         let expr = ExprUtils.makeAssignment(name: "foo", right: arr)
-        let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .u16), offset: 0x0010, storage: .stackStorage)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .u16), offset: 0x0010, storage: .automaticStorage)])
         let ir = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(crackle: ir)
@@ -3617,7 +3617,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             "qux" : Symbol(type: .u16, offset: 4)
         ]))
         let symbols = SymbolTable(parent: nil,
-                                  dict: ["foo" : Symbol(type: .structType(typ), offset: 0x0010, storage: .stackStorage)],
+                                  dict: ["foo" : Symbol(type: .structType(typ), offset: 0x0010, storage: .automaticStorage)],
                                   typeDict: ["Foo" : .structType(typ)])
         let ir = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
@@ -4721,7 +4721,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             ("begin", Symbol(type: .u16, offset: 0)),
             ("limit", Symbol(type: .u16, offset: 2))
         ])))
-        let symbols = SymbolTable(["foo" : Symbol(type: rangeType, offset: 0x0010, storage: .stackStorage)])
+        let symbols = SymbolTable(["foo" : Symbol(type: rangeType, offset: 0x0010, storage: .automaticStorage)])
         let ir = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(crackle: ir)

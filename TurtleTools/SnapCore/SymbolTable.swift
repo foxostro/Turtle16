@@ -244,7 +244,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
 }
 
 public enum SymbolStorage: Equatable {
-    case staticStorage, stackStorage
+    case staticStorage, automaticStorage
 }
 
 public class FunctionType: NSObject {

@@ -58,7 +58,7 @@ public class MatchCompiler: NSObject {
             stmts.append(VarDeclaration(identifier: Expression.Identifier("__index"),
                                         explicitType: nil,
                                         expression: match.expr,
-                                        storage: .stackStorage,
+                                        storage: .automaticStorage,
                                         isMutable: true))
             stmts.append(compileMatchClause(match, match.clauses))
         }
@@ -80,7 +80,7 @@ public class MatchCompiler: NSObject {
                         VarDeclaration(identifier: clause.valueIdentifier,
                                        explicitType: nil,
                                        expression: Expression.As(expr: index, targetType: clause.valueType),
-                                       storage: .stackStorage,
+                                       storage: .automaticStorage,
                                        isMutable: false),
                         clause.block
                       ]),
@@ -91,7 +91,7 @@ public class MatchCompiler: NSObject {
                         VarDeclaration(identifier: clause.valueIdentifier,
                                        explicitType: nil,
                                        expression: Expression.As(expr: index, targetType: clause.valueType),
-                                       storage: .stackStorage,
+                                       storage: .automaticStorage,
                                        isMutable: false),
                         clause.block
                       ]),

@@ -50,7 +50,7 @@ class VarDeclarationTests: XCTestCase {
                           VarDeclaration(identifier: bar,
                                          explicitType: Expression.PrimitiveType(.u8),
                                          expression: one,
-                                         storage: .stackStorage,
+                                         storage: .automaticStorage,
                                          isMutable: true))
     }
     

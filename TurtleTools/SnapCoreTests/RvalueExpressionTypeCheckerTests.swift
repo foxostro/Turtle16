@@ -4478,7 +4478,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testCompileFailsWhenCastingUnionTypeToNonMemberType() {
         let union = Expression.Identifier("foo")
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
-        let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .u16])), offset: offset, storage: .stackStorage)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .u16])), offset: offset, storage: .automaticStorage)])
         let expr = Expression.As(expr: union, targetType: Expression.PrimitiveType(.bool))
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
@@ -4491,7 +4491,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testSuccessfullyCastUnionTypeToMemberType() {
         let expr = Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.PrimitiveType(.u8))
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
-        let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .u16])), offset: offset, storage: .stackStorage)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .u16])), offset: offset, storage: .automaticStorage)])
         let expected: SymbolType = .u8
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         var actual: SymbolType? = nil
@@ -4522,7 +4522,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testTestUnionVariantTypeAgainstNonMemberType() {
         let union = Expression.Identifier("foo")
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
-        let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .u16])), offset: offset, storage: .stackStorage)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .u16])), offset: offset, storage: .automaticStorage)])
         let expr = Expression.Is(expr: union, testType: Expression.PrimitiveType(.bool))
         let expected: SymbolType = .compTimeBool(false)
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -4534,7 +4534,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testTestUnionVariantTypeAgainstKnownMemberType() {
         let union = Expression.Identifier("foo")
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
-        let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .bool])), offset: offset, storage: .stackStorage)])
+        let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .bool])), offset: offset, storage: .automaticStorage)])
         let expr = Expression.Is(expr: union, testType: Expression.PrimitiveType(.u8))
         let expected: SymbolType = .bool
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)

@@ -7,6 +7,8 @@
 //
 
 public class MemoryLayoutStrategyTurtleTTL: NSObject, MemoryLayoutStrategy {
+    var staticStorageOffset = 0
+    
     public func sizeof(type: SymbolType) -> Int {
         switch type {
         case .compTimeInt, .compTimeBool, .void, .function:
@@ -71,11 +73,23 @@ public class MemoryLayoutStrategyTurtleTTL: NSObject, MemoryLayoutStrategy {
         // Allocate all symbols in memory in declaration order.
         for identifier in symbolTable.declarationOrder {
             let originalSymbol = symbolTable.symbolTable[identifier]!
+            let typeForSymbol = layout(type: originalSymbol.type)
+            let offsetForSymbol: Int
+            
+            switch originalSymbol.storage{
+            case .staticStorage:
+                offsetForSymbol = staticStorageOffset
+                staticStorageOffset += sizeof(type: typeForSymbol)
+                
+            case .stackStorage:
+                offsetForSymbol = offset
+                offset += sizeof(type: typeForSymbol)
+            }
+            
             let modifiedSymbol = originalSymbol
-                .withOffset(offset)
-                .withType(layout(type: originalSymbol.type))
+                .withOffset(offsetForSymbol)
+                .withType(typeForSymbol)
             result.bind(identifier: identifier, symbol: modifiedSymbol)
-            offset += sizeof(type: modifiedSymbol.type)
         }
         
         return result

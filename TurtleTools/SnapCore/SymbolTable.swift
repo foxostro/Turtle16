@@ -537,18 +537,21 @@ public enum SymbolVisibility: Equatable {
 
 public struct Symbol: Equatable {
     public let type: SymbolType
-    public let offset: Int
+    public let maybeOffset: Int?
+    public var offset: Int {
+        maybeOffset!
+    }
     public let storage: SymbolStorage
     public let visibility: SymbolVisibility
     
-    public init(type: SymbolType, offset: Int = Int.min, storage: SymbolStorage = .staticStorage, visibility: SymbolVisibility = .privateVisibility) {
+    public init(type: SymbolType, offset: Int? = nil, storage: SymbolStorage = .staticStorage, visibility: SymbolVisibility = .privateVisibility) {
         self.type = type
-        self.offset = offset
+        self.maybeOffset = offset
         self.storage = storage
         self.visibility = visibility
     }
     
-    public func withOffset(_ offset: Int) -> Symbol {
+    public func withOffset(_ offset: Int?) -> Symbol {
         return Symbol(type: type,
                       offset: offset,
                       storage: storage,
@@ -557,7 +560,7 @@ public struct Symbol: Equatable {
     
     public func withType(_ type: SymbolType) -> Symbol {
         return Symbol(type: type,
-                      offset: offset,
+                      offset: maybeOffset,
                       storage: storage,
                       visibility: visibility)
     }

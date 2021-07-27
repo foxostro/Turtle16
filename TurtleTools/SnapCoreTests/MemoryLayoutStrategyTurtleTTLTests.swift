@@ -223,14 +223,14 @@ class MemoryLayoutStrategyTurtleTTLTests: XCTestCase {
     
     func testLayoutStaticStorage() {
         let grandparent = SymbolTable(parent: nil, dict: [:], typeDict: [:])
-        grandparent.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: Int.min, storage: .staticStorage))
+        grandparent.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: nil, storage: .staticStorage))
         
         let parent = SymbolTable(parent: grandparent, dict: [:], typeDict: [:])
-        parent.bind(identifier: "bar", symbol: Symbol(type: .u16, offset: Int.min, storage: .staticStorage))
+        parent.bind(identifier: "bar", symbol: Symbol(type: .u16, offset: nil, storage: .staticStorage))
         parent.stackFrameIndex = 1
         
         let child = SymbolTable(parent: parent, dict: [:], typeDict: [:])
-        child.bind(identifier: "baz", symbol: Symbol(type: .u8, offset: Int.min, storage: .staticStorage))
+        child.bind(identifier: "baz", symbol: Symbol(type: .u8, offset: nil, storage: .staticStorage))
         child.stackFrameIndex = 1
         
         let strategy = makeStrategy()

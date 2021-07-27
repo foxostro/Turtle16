@@ -13,9 +13,7 @@ class TypeContextTypeCheckerTests: XCTestCase {
     func testTypeOfAnIdentifierNamingAStruct() {
         let expr = Expression.Identifier("foo")
         let typ = StructType(name: "foo", symbols: SymbolTable())
-        let symbols = SymbolTable(parent: nil,
-                                  dict: [:],
-                                  typeDict: ["foo" : .structType(typ)])
+        let symbols = SymbolTable(typeDict: ["foo" : .structType(typ)])
         let typeChecker = TypeContextTypeChecker(symbols: symbols)
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))

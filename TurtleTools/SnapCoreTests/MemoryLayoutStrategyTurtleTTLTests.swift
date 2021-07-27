@@ -74,17 +74,25 @@ class MemoryLayoutStrategyTurtleTTLTests: XCTestCase {
     
     func testLayoutOneU8Symbol() {
         let strategy = makeStrategy()
-        let input = SymbolTable(["foo": Symbol(type: .u8, storage: .automaticStorage)])
+        let input = SymbolTable(tuples: [
+            ("foo", Symbol(type: .u8, storage: .automaticStorage))
+        ])
         let actual = strategy.layout(symbolTable: input)
-        let expected = SymbolTable(["foo": Symbol(type: .u8, offset: 0, storage: .automaticStorage)])
+        let expected = SymbolTable(tuples: [
+            ("foo", Symbol(type: .u8, offset: 0, storage: .automaticStorage))
+        ])
         XCTAssertEqual(expected, actual)
     }
     
     func testLayoutSkipsSymbolsThatAlreadyHaveOffsets() {
         let strategy = makeStrategy()
-        let input = SymbolTable(["foo": Symbol(type: .u8, offset: 100)])
+        let input = SymbolTable(tuples: [
+            ("foo", Symbol(type: .u8, offset: 100))
+        ])
         let actual = strategy.layout(symbolTable: input)
-        let expected = SymbolTable(["foo": Symbol(type: .u8, offset: 100)])
+        let expected = SymbolTable(tuples: [
+            ("foo", Symbol(type: .u8, offset: 100))
+        ])
         XCTAssertEqual(expected, actual)
     }
     
@@ -157,43 +165,43 @@ class MemoryLayoutStrategyTurtleTTLTests: XCTestCase {
     }
     
     func testLayoutWithParentInSameStackFrame() {
-        let parent = SymbolTable(parent: nil, dict: [:], typeDict: [:])
+        let parent = SymbolTable()
         parent.bind(identifier: "foo", symbol: Symbol(type: .u8, storage: .automaticStorage))
         parent.bind(identifier: "bar", symbol: Symbol(type: .u16, storage: .automaticStorage))
         
-        let child = SymbolTable(parent: parent, dict: [:], typeDict: [:])
+        let child = SymbolTable(parent: parent)
         child.bind(identifier: "baz", symbol: Symbol(type: .u8, storage: .automaticStorage))
         
         let strategy = makeStrategy()
         let actual = strategy.layout(symbolTable: child)
         
-        let expectedParent = SymbolTable(parent: nil, dict: [:], typeDict: [:])
+        let expectedParent = SymbolTable()
         expectedParent.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0, storage: .automaticStorage))
         expectedParent.bind(identifier: "bar", symbol: Symbol(type: .u16, offset: 1, storage: .automaticStorage))
         
-        let expectedChild = SymbolTable(parent: expectedParent, dict: [:], typeDict: [:])
+        let expectedChild = SymbolTable(parent: expectedParent)
         expectedChild.bind(identifier: "baz", symbol: Symbol(type: .u8, offset: 3, storage: .automaticStorage))
         
         XCTAssertEqual(expectedChild, actual)
     }
     
     func testLayoutWithParentInDifferentStackFrame() {
-        let parent = SymbolTable(parent: nil, dict: [:], typeDict: [:])
+        let parent = SymbolTable()
         parent.bind(identifier: "foo", symbol: Symbol(type: .u8, storage: .automaticStorage))
         parent.bind(identifier: "bar", symbol: Symbol(type: .u16, storage: .automaticStorage))
         
-        let child = SymbolTable(parent: parent, dict: [:], typeDict: [:])
+        let child = SymbolTable(parent: parent)
         child.stackFrameIndex = 1
         child.bind(identifier: "baz", symbol: Symbol(type: .u8, storage: .automaticStorage))
         
         let strategy = makeStrategy()
         let actual = strategy.layout(symbolTable: child)
         
-        let expectedParent = SymbolTable(parent: nil, dict: [:], typeDict: [:])
+        let expectedParent = SymbolTable()
         expectedParent.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0, storage: .automaticStorage))
         expectedParent.bind(identifier: "bar", symbol: Symbol(type: .u16, offset: 1, storage: .automaticStorage))
         
-        let expectedChild = SymbolTable(parent: expectedParent, dict: [:], typeDict: [:])
+        let expectedChild = SymbolTable(parent: expectedParent)
         expectedChild.stackFrameIndex = 1
         expectedChild.bind(identifier: "baz", symbol: Symbol(type: .u8, offset: 0, storage: .automaticStorage))
         
@@ -201,28 +209,28 @@ class MemoryLayoutStrategyTurtleTTLTests: XCTestCase {
     }
     
     func testLayoutWithParentInDifferentStackFrame2() {
-        let grandparent = SymbolTable(parent: nil, dict: [:], typeDict: [:])
+        let grandparent = SymbolTable()
         grandparent.bind(identifier: "foo", symbol: Symbol(type: .u8, storage: .automaticStorage))
         
-        let parent = SymbolTable(parent: grandparent, dict: [:], typeDict: [:])
+        let parent = SymbolTable(parent: grandparent)
         parent.bind(identifier: "bar", symbol: Symbol(type: .u16, storage: .automaticStorage))
         parent.stackFrameIndex = 1
         
-        let child = SymbolTable(parent: parent, dict: [:], typeDict: [:])
+        let child = SymbolTable(parent: parent)
         child.bind(identifier: "baz", symbol: Symbol(type: .u8, storage: .automaticStorage))
         child.stackFrameIndex = 1
         
         let strategy = makeStrategy()
         let actual = strategy.layout(symbolTable: child)
         
-        let expectedGrandparent = SymbolTable(parent: nil, dict: [:], typeDict: [:])
+        let expectedGrandparent = SymbolTable(parent: nil)
         expectedGrandparent.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0, storage: .automaticStorage))
         
-        let expectedParent = SymbolTable(parent: expectedGrandparent, dict: [:], typeDict: [:])
+        let expectedParent = SymbolTable(parent: expectedGrandparent)
         expectedParent.bind(identifier: "bar", symbol: Symbol(type: .u16, offset: 0, storage: .automaticStorage))
         expectedParent.stackFrameIndex = 1
         
-        let expectedChild = SymbolTable(parent: expectedParent, dict: [:], typeDict: [:])
+        let expectedChild = SymbolTable(parent: expectedParent)
         expectedChild.bind(identifier: "baz", symbol: Symbol(type: .u8, offset: 2, storage: .automaticStorage))
         expectedChild.stackFrameIndex = 1
         
@@ -230,14 +238,14 @@ class MemoryLayoutStrategyTurtleTTLTests: XCTestCase {
     }
     
     func testLayoutStaticStorage() {
-        let grandparent = SymbolTable(parent: nil, dict: [:], typeDict: [:])
+        let grandparent = SymbolTable()
         grandparent.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: nil, storage: .staticStorage))
         
-        let parent = SymbolTable(parent: grandparent, dict: [:], typeDict: [:])
+        let parent = SymbolTable(parent: grandparent)
         parent.bind(identifier: "bar", symbol: Symbol(type: .u16, offset: nil, storage: .staticStorage))
         parent.stackFrameIndex = 1
         
-        let child = SymbolTable(parent: parent, dict: [:], typeDict: [:])
+        let child = SymbolTable(parent: parent)
         child.bind(identifier: "baz", symbol: Symbol(type: .u8, offset: nil, storage: .staticStorage))
         child.stackFrameIndex = 1
         
@@ -246,14 +254,14 @@ class MemoryLayoutStrategyTurtleTTLTests: XCTestCase {
         
         let base = SnapCompilerMetrics.kStaticStorageStartAddress
         
-        let expectedGrandparent = SymbolTable(parent: nil, dict: [:], typeDict: [:])
+        let expectedGrandparent = SymbolTable()
         expectedGrandparent.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: base+0, storage: .staticStorage))
         
-        let expectedParent = SymbolTable(parent: expectedGrandparent, dict: [:], typeDict: [:])
+        let expectedParent = SymbolTable(parent: expectedGrandparent)
         expectedParent.bind(identifier: "bar", symbol: Symbol(type: .u16, offset: base+1, storage: .staticStorage))
         expectedParent.stackFrameIndex = 1
         
-        let expectedChild = SymbolTable(parent: expectedParent, dict: [:], typeDict: [:])
+        let expectedChild = SymbolTable(parent: expectedParent)
         expectedChild.bind(identifier: "baz", symbol: Symbol(type: .u8, offset: base+3, storage: .staticStorage))
         expectedChild.stackFrameIndex = 1
         
@@ -261,14 +269,14 @@ class MemoryLayoutStrategyTurtleTTLTests: XCTestCase {
     }
     
     func testLayoutStaticStorageAgain() {
-        let grandparent = SymbolTable(parent: nil, dict: [:], typeDict: [:])
+        let grandparent = SymbolTable()
         grandparent.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: nil, storage: .staticStorage))
         
-        let parent = SymbolTable(parent: grandparent, dict: [:], typeDict: [:])
+        let parent = SymbolTable(parent: grandparent)
         parent.bind(identifier: "bar", symbol: Symbol(type: .u16, offset: nil, storage: .staticStorage))
         parent.stackFrameIndex = 1
         
-        let child = SymbolTable(parent: parent, dict: [:], typeDict: [:])
+        let child = SymbolTable(parent: parent)
         child.bind(identifier: "baz", symbol: Symbol(type: .u8, offset: nil, storage: .staticStorage))
         child.stackFrameIndex = 1
         
@@ -278,14 +286,14 @@ class MemoryLayoutStrategyTurtleTTLTests: XCTestCase {
         
         let base = SnapCompilerMetrics.kStaticStorageStartAddress
         
-        let expectedGrandparent = SymbolTable(parent: nil, dict: [:], typeDict: [:])
+        let expectedGrandparent = SymbolTable()
         expectedGrandparent.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: base+0, storage: .staticStorage))
         
-        let expectedParent = SymbolTable(parent: expectedGrandparent, dict: [:], typeDict: [:])
+        let expectedParent = SymbolTable(parent: expectedGrandparent)
         expectedParent.bind(identifier: "bar", symbol: Symbol(type: .u16, offset: base+1, storage: .staticStorage))
         expectedParent.stackFrameIndex = 1
         
-        let expectedChild = SymbolTable(parent: expectedParent, dict: [:], typeDict: [:])
+        let expectedChild = SymbolTable(parent: expectedParent)
         expectedChild.bind(identifier: "baz", symbol: Symbol(type: .u8, offset: base+3, storage: .staticStorage))
         expectedChild.stackFrameIndex = 1
         

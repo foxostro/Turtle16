@@ -573,7 +573,7 @@ public class SymbolTable: NSObject {
         let visibility: SymbolVisibility
     }
     public var declarationOrder: [String] = []
-    public var symbolTable: [String:Symbol]
+    public var symbolTable: [String:Symbol] = [:]
     public var typeTable: [String:TypeRecord]
     public var parent: SymbolTable?
     public var storagePointer: Int
@@ -581,28 +581,19 @@ public class SymbolTable: NSObject {
     public var enclosingFunctionName: String? = nil
     public var stackFrameIndex: Int
     
-    public convenience init(tuples: [(String, Symbol)]) {
-        self.init(parent: nil, dict: [:])
-        for (identifier, symbol) in tuples {
-            bind(identifier: identifier, symbol: symbol)
-        }
-    }
-    
-    public convenience init(_ dict: [String:Symbol] = [:]) {
-        self.init(parent: nil, dict: dict)
-    }
-    
-    public init(parent p: SymbolTable?, dict: [String:Symbol] = [:], typeDict: [String:SymbolType] = [:]) {
+    public init(parent p: SymbolTable? = nil, tuples: [(String, Symbol)] = [], typeDict: [String:SymbolType] = [:]) {
         parent = p
-        symbolTable = dict
-        for (identifier, _) in dict {
-            declarationOrder.append(identifier)
-        }
         typeTable = typeDict.mapValues({TypeRecord(symbolType: $0, visibility: .privateVisibility)})
         storagePointer = p?.storagePointer ?? 0
         enclosingFunctionType = p?.enclosingFunctionType
         enclosingFunctionName = p?.enclosingFunctionName
         stackFrameIndex = p?.stackFrameIndex ?? 0
+        
+        super.init()
+        
+        for (identifier, symbol) in tuples {
+            bind(identifier: identifier, symbol: symbol)
+        }
     }
     
     public func exists(identifier: String) -> Bool {

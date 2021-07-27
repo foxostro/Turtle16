@@ -3250,7 +3250,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testCompileIdentifierExpression_U8_Static() {
         let expr = Expression.Identifier("foo")
-        let symbols = SymbolTable(["foo" : Symbol(type: .constU8, offset: 0x0100)])
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .constU8, offset: 0x0100))
+        ])
         let expected: [CrackleInstruction] = [
             .copyWords(t0, 0x0100, 1)
         ]
@@ -3266,7 +3268,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testCompileIdentifierExpression_U16_Static() {
         let expr = Expression.Identifier("foo")
-        let symbols = SymbolTable(["foo" : Symbol(type: .constU16, offset: 0x0100)])
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .constU16, offset: 0x0100))
+        ])
         let expected: [CrackleInstruction] = [
             .copyWords(t0, 0x0100, 2)
         ]
@@ -3284,7 +3288,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let kFramePointerAddress = Int(SnapCompilerMetrics.kFramePointerAddressHi)
         let expr = Expression.Identifier("foo")
         let symbol = Symbol(type: .constU8, offset: 0x0010, storage: .automaticStorage)
-        let symbols = SymbolTable(["foo" : symbol])
+        let symbols = SymbolTable(tuples: [
+            ("foo", symbol)
+        ])
         let expected: [CrackleInstruction] = [
             .copyWords(t0, kFramePointerAddress, 2), // t0 = *kFramePointerAddress
             .subi16(t1, t0, 0x0010),                 // t1 = t0 - offset
@@ -3309,7 +3315,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let kFramePointerAddress = Int(SnapCompilerMetrics.kFramePointerAddressHi)
         let expr = Expression.Identifier("foo")
         let symbol = Symbol(type: .constU16, offset: 0x0010, storage: .automaticStorage)
-        let symbols = SymbolTable(["foo" : symbol])
+        let symbols = SymbolTable(tuples: [
+            ("foo", symbol)
+        ])
         let expected: [CrackleInstruction] = [
             .copyWords(t0, kFramePointerAddress, 2), // t0 = *kFramePointerAddress
             .subi16(t1, t0, 0x0010),                 // t1 = t0 - 0x0010
@@ -3330,7 +3338,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testCompileIdentifierExpression_Boolean_Static() {
         let expr = Expression.Identifier("foo")
-        let symbols = SymbolTable(["foo" : Symbol(type: .constBool, offset: 0x0100)])
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .constBool, offset: 0x0100))
+        ])
         let expected: [CrackleInstruction] = [
             .copyWords(t0, 0x0100, 1)
         ]
@@ -3354,7 +3364,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testCompileIdentifierExpression_ArrayOfU16_Static() {
         let expr = Expression.Identifier("foo")
         let offset = 0x0100
-        let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .constU16), offset: offset)])
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 5, elementType: .constU16), offset: offset))
+        ])
         
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
@@ -3385,7 +3397,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let symbol = Symbol(type: .array(count: 5, elementType: .constU16),
                             offset: 0x0020,
                             storage: .automaticStorage)
-        let symbols = SymbolTable(["foo" : symbol])
+        let symbols = SymbolTable(tuples: [
+            ("foo", symbol)
+        ])
         
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
@@ -3420,7 +3434,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         // to constants because it sets the initial value in the first place.
         let offset = 0x0100
         let expr = Expression.InitialAssignment(lexpr: Expression.Identifier("foo"), rexpr: Expression.LiteralBool(true))
-        let symbols = SymbolTable(["foo" : Symbol(type: .constBool, offset: offset)])
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .constBool, offset: offset))
+        ])
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, offset),
             .storeImmediate(t1, 1),
@@ -3438,7 +3454,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testCompileAssignment_Bool_Static() {
         let offset = 0x0100
         let expr = ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralBool(true))
-        let symbols = SymbolTable(["foo" : Symbol(type: .bool, offset: offset)])
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .bool, offset: offset))
+        ])
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, offset),
             .storeImmediate(t1, 1),
@@ -3457,7 +3475,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let offset = 0x0100
         let value = 42
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: value))
-        let symbols = SymbolTable(["foo" : Symbol(type: .u8, offset: offset)])
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .u8, offset: offset))
+        ])
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, offset),
             .storeImmediate(t1, 42),
@@ -3474,7 +3494,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let offset = 0x0100
         let value = 0xabcd
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU16(value: value))
-        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: offset)])
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .u16, offset: offset))
+        ])
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, offset),
             .storeImmediate16(t1, 0xabcd),
@@ -3496,7 +3518,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                                      ExprUtils.makeU16(value: 5000)])
         let expr = ExprUtils.makeAssignment(name: "foo", right: arr)
         let offset = 0x0100
-        let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .u16), offset: offset)])
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 5, elementType: .u16), offset: offset))
+        ])
         let ir = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(crackle: ir)
@@ -3511,7 +3535,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let offset = 0x0100
         let value = 42
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: value))
-        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: offset)])
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .u16, offset: offset))
+        ])
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t0, offset),
             .storeImmediate(t1, value),
@@ -3530,7 +3556,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let kFramePointerAddress = Int(SnapCompilerMetrics.kFramePointerAddressHi)
         let expr = ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralBool(true))
         let symbol = Symbol(type: .bool, offset: offset, storage: .automaticStorage)
-        let symbols = SymbolTable(["foo" : symbol])
+        let symbols = SymbolTable(tuples: [
+            ("foo", symbol)
+        ])
         let expected: [CrackleInstruction] = [
             .copyWords(t0, kFramePointerAddress, 2), // t0 = *kFramePointerAddress
             .subi16(t1, t0, offset),                 // t1 = t0 - offset
@@ -3550,7 +3578,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let kFramePointerAddress = Int(SnapCompilerMetrics.kFramePointerAddressHi)
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: value))
         let symbol = Symbol(type: .u8, offset: offset, storage: .automaticStorage)
-        let symbols = SymbolTable(["foo" : symbol])
+        let symbols = SymbolTable(tuples: [
+            ("foo", symbol)
+        ])
         let expected: [CrackleInstruction] = [
             .copyWords(t0, kFramePointerAddress, 2), // t0 = *kFramePointerAddress
             .subi16(t1, t0, offset),                 // t1 = t0 - offset
@@ -3570,7 +3600,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let kFramePointerAddress = Int(SnapCompilerMetrics.kFramePointerAddressHi)
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU16(value: value))
         let symbol = Symbol(type: .u16, offset: offset, storage: .automaticStorage)
-        let symbols = SymbolTable(["foo" : symbol])
+        let symbols = SymbolTable(tuples: [
+            ("foo", symbol)
+        ])
         let expected: [CrackleInstruction] = [
             .copyWords(t0, kFramePointerAddress, 2), // t0 = *kFramePointerAddress
             .subi16(t1, t0, offset),                 // t1 = t0 - offset
@@ -3592,7 +3624,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                                      ExprUtils.makeU16(value: 4000),
                                                      ExprUtils.makeU16(value: 5000)])
         let expr = ExprUtils.makeAssignment(name: "foo", right: arr)
-        let symbols = SymbolTable(["foo" : Symbol(type: .array(count: 5, elementType: .u16), offset: 0x0010, storage: .automaticStorage)])
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 5, elementType: .u16), offset: 0x0010, storage: .automaticStorage))
+        ])
         let ir = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(crackle: ir)
@@ -3611,14 +3645,12 @@ class RvalueExpressionCompilerTests: XCTestCase {
             Arg(name: "baz", expr: Expression.LiteralInt(0xcdcd)),
             Arg(name: "qux", expr: Expression.LiteralInt(0xefef))
         ]))
-        let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0, storage: .automaticStorage),
-            "baz" : Symbol(type: .u16, offset: 2, storage: .automaticStorage),
-            "qux" : Symbol(type: .u16, offset: 4, storage: .automaticStorage)
+        let typ = StructType(name: "Foo", symbols: SymbolTable(tuples: [
+            ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage)),
+            ("baz", Symbol(type: .u16, offset: 2, storage: .automaticStorage)),
+            ("qux", Symbol(type: .u16, offset: 4, storage: .automaticStorage))
         ]))
-        let symbols = SymbolTable(parent: nil,
-                                  dict: ["foo" : Symbol(type: .structType(typ), offset: 0x0010, storage: .automaticStorage)],
-                                  typeDict: ["Foo" : .structType(typ)])
+        let symbols = SymbolTable(tuples: [("foo", Symbol(type: .structType(typ), offset: 0x0010, storage: .automaticStorage))], typeDict: ["Foo" : .structType(typ)])
         let ir = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(crackle: ir)
@@ -3631,7 +3663,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testCannotAssignToAConstantValue_Word() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: 42))
         let offset = 0x0100
-        let symbols = SymbolTable(["foo" : Symbol(type: .constU8, offset: offset)])
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .constU8, offset: offset))
+        ])
         XCTAssertThrowsError(try tryCompile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -3642,7 +3676,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testCannotAssignToAConstantValue_Boolean() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeBool(value: true))
         let offset = 0x0100
-        let symbols = SymbolTable(["foo" : Symbol(type: .constBool, offset: offset)])
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .constBool, offset: offset))
+        ])
         XCTAssertThrowsError(try tryCompile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -3654,7 +3690,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Assignment(lexpr: Expression.LiteralInt(0),
                                          rexpr: Expression.LiteralInt(0))
         let offset = 0x0100
-        let symbols = SymbolTable(["foo" : Symbol(type: .constBool, offset: offset)])
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .constBool, offset: offset))
+        ])
         XCTAssertThrowsError(try tryCompile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -3665,7 +3703,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testAssignmentWhichConvertsU8ToU16() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: 0xaa))
         let offset = 0x0100
-        let symbols = SymbolTable(["foo" : Symbol(type: .u16, offset: offset)])
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .u16, offset: offset))
+        ])
         let ir = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(crackle: ir)
@@ -3683,8 +3723,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testCompilationFailsBecauseCannotCallValueOfNonFunctionType() {
         let expr = Expression.Call(callee: Expression.Identifier("fn"),
                                    arguments: [])
-        let symbols = SymbolTable([
-            "fn" : Symbol(type: .u8, offset: 0x0000, storage: .staticStorage)
+        let symbols = SymbolTable(tuples: [
+            ("fn", Symbol(type: .u8, offset: 0x0000, storage: .staticStorage))
         ])
         XCTAssertThrowsError(try tryCompile(expression: expr, symbols: symbols)) {
             XCTAssertEqual(($0 as? CompilerError)?.message, "cannot call value of non-function type `u8'")
@@ -3848,9 +3888,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testArrayIdentifierOfU8AsU16() {
         let expr = Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u16)))
         let offset = 0x0100
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: .array(count: 5, elementType: .u8), offset: offset),
-            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 5, elementType: .u8), offset: offset)),
+            ("__oob", Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         ])
         
         let compiler = makeCompiler(symbols: symbols)
@@ -4005,7 +4045,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     private func doTestSubscriptOfZero(_ symbolType: SymbolType) {
         let ident = "foo"
         let offset = 0x0100
-        let symbols = SymbolTable([ident : Symbol(type: symbolType, offset: offset)])
+        let symbols = SymbolTable(tuples: [
+            (ident, Symbol(type: symbolType, offset: offset))
+        ])
         let zero = Expression.LiteralInt(0)
         let expr = ExprUtils.makeSubscript(identifier: ident, expr: zero)
         XCTAssertThrowsError(try tryCompile(expression: expr, symbols: symbols)) {
@@ -4036,9 +4078,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     private func checkArraySubscriptAccessesArrayElement(_ i: Int, _ n: Int, _ elementType: SymbolType) {
         let ident = "foo"
-        let symbols = SymbolTable([
-            ident : Symbol(type: .array(count: n, elementType: elementType), offset: 0x0100),
-            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
+        let symbols = SymbolTable(tuples: [
+            (ident, Symbol(type: .array(count: n, elementType: elementType), offset: 0x0100)),
+            ("__oob", Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         ])
         let expr = ExprUtils.makeSubscript(identifier: ident, expr: Expression.LiteralInt(i))
         let compiler = makeCompiler(symbols: symbols)
@@ -4087,9 +4129,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let addressOfPointer = 0x0100
         let addressOfCount = 0x0102
         let addressOfData = 0x0104
-        let symbols = SymbolTable([
-            ident : Symbol(type: .dynamicArray(elementType: elementType), offset: addressOfPointer),
-            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
+        let symbols = SymbolTable(tuples: [
+            (ident, Symbol(type: .dynamicArray(elementType: elementType), offset: addressOfPointer)),
+            ("__oob", Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         ])
         let expr = ExprUtils.makeSubscript(identifier: ident, expr: Expression.LiteralInt(i))
         let compiler = makeCompiler(symbols: symbols)
@@ -4127,9 +4169,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let addressOfData = 0x0104
         
         let expr = Expression.Identifier("foo")
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: .dynamicArray(elementType: .u16), offset: addressOfPointer),
-            "bar" : Symbol(type: .array(count: count, elementType: .u16), offset: addressOfData)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .dynamicArray(elementType: .u16), offset: addressOfPointer)),
+            ("bar", Symbol(type: .array(count: count, elementType: .u16), offset: addressOfData))
         ])
         
         let compiler = makeCompiler(symbols: symbols)
@@ -4164,10 +4206,10 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = ExprUtils.makeAssignment(lexpr: ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(2)),
                                             rexpr: Expression.LiteralInt(0xcafe))
         
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: .dynamicArray(elementType: .u16), offset: addressOfPointer),
-            "bar" : Symbol(type: .array(count: count, elementType: .u16), offset: addressOfData),
-            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .dynamicArray(elementType: .u16), offset: addressOfPointer)),
+            ("bar", Symbol(type: .array(count: count, elementType: .u16), offset: addressOfData)),
+            ("__oob", Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         ])
         let ir = mustCompile(expression: expr, symbols: symbols)
         let sizeOfElementType = memoryLayoutStrategy.sizeof(type: .u16)
@@ -4189,9 +4231,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let addressOfCount = 0x0102
         let addressOfData = 0x0104
         let expr = ExprUtils.makeAssignment(name: "dst", right: Expression.Identifier("src"))
-        let symbols = SymbolTable([
-            "dst" : Symbol(type: .dynamicArray(elementType: .u8), offset: addressOfPointer),
-            "src" : Symbol(type: .array(count: count, elementType: .u8), offset: addressOfData)
+        let symbols = SymbolTable(tuples: [
+            ("dst", Symbol(type: .dynamicArray(elementType: .u8), offset: addressOfPointer)),
+            ("src", Symbol(type: .array(count: count, elementType: .u8), offset: addressOfData))
         ])
         let ir = mustCompile(expression: expr, symbols: symbols)
         let sizeOfElementType = memoryLayoutStrategy.sizeof(type: .u16)
@@ -4246,8 +4288,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Get(expr: Expression.Identifier("foo"),
                                   member: Expression.Identifier("count"))
         let offset = 0x0100
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: .array(count: 3, elementType: .u8), offset: offset)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 3, elementType: .u8), offset: offset))
         ])
         
         let compiler = makeCompiler(symbols: symbols)
@@ -4268,8 +4310,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Get(expr: Expression.Identifier("foo"),
                                   member: Expression.Identifier("count"))
         let offset = 0x0100
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: offset)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .dynamicArray(elementType: .u8), offset: offset))
         ])
         
         let compiler = makeCompiler(symbols: symbols)
@@ -4292,9 +4334,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testOutOfBoundsRvalueArrayAccessCausesPanic_FixedArray() {
         let offset = 0x0100
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: .array(count: 1, elementType: .u8), offset: offset),
-            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 1, elementType: .u8), offset: offset)),
+            ("__oob", Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         ])
         let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(1))
         let ir = mustCompile(expression: expr, symbols: symbols)
@@ -4308,9 +4350,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testOutOfBoundsRvalueArrayAccessCausesPanic_DynamicArray() {
         let offset = 0x0100
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: .dynamicArray(elementType: .u8), offset: offset),
-            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .dynamicArray(elementType: .u8), offset: offset)),
+            ("__oob", Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         ])
         let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(0))
         let ir = mustCompile(expression: expr, symbols: symbols)
@@ -4398,8 +4440,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testCannotCallValueOfNonFunctionType() {
         let expr = Expression.Call(callee: Expression.Identifier("foo"), arguments: [])
         let offset = 0x0100
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: .u8, offset: offset)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .u8, offset: offset))
         ])
         XCTAssertThrowsError(try tryCompile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
@@ -4410,8 +4452,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testCallVoidFunctionWithNoArgs() {
         let expr = Expression.Call(callee: Expression.Identifier("foo"), arguments: [])
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: .function(FunctionType(name: "foo", returnType: .void, arguments: [])), offset: 0)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .function(FunctionType(name: "foo", returnType: .void, arguments: [])), offset: 0))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = mustCompile(compiler: compiler, expression: expr)
@@ -4435,8 +4477,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let left = ExprUtils.makeU16(value: 42)
         let right = Expression.Call(callee: Expression.Identifier("foo"), arguments: [])
         let expr = Expression.Binary(op: .plus, left: left, right: right)
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: .function(FunctionType(name: "foo", returnType: .u16, arguments: [])), offset: 0)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .function(FunctionType(name: "foo", returnType: .u16, arguments: [])), offset: 0))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = mustCompile(compiler: compiler, expression: expr)
@@ -4451,8 +4493,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let left = Expression.Call(callee: Expression.Identifier("foo"), arguments: [])
         let right = ExprUtils.makeU16(value: 42)
         let expr = Expression.Binary(op: .plus, left: left, right: right)
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: .function(FunctionType(name: "foo", returnType: .u16, arguments: [])), offset: 0)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .function(FunctionType(name: "foo", returnType: .u16, arguments: [])), offset: 0))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = mustCompile(compiler: compiler, expression: expr)
@@ -4479,11 +4521,11 @@ class RvalueExpressionCompilerTests: XCTestCase {
                                   member: Expression.Identifier("bar"))
         let value: UInt16 = 0xabcd
         let offset = 0x0100
-        let typ = StructType(name: "foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0, storage: .automaticStorage)
+        let typ = StructType(name: "foo", symbols: SymbolTable(tuples: [
+            ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
         ]))
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: .structType(typ), offset: offset)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .structType(typ), offset: offset))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
@@ -4500,12 +4542,12 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Get(expr: Expression.Identifier("foo"),
                                   member: Expression.Identifier("baz"))
         let offset = 0x0100
-        let typ = StructType(name: "foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u8, offset: 0, storage: .automaticStorage),
-            "baz" : Symbol(type: .u16, offset: 1, storage: .automaticStorage)
+        let typ = StructType(name: "foo", symbols: SymbolTable(tuples: [
+            ("bar", Symbol(type: .u8, offset: 0, storage: .automaticStorage)),
+            ("baz", Symbol(type: .u16, offset: 1, storage: .automaticStorage))
         ]))
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: .structType(typ), offset: offset)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .structType(typ), offset: offset))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
@@ -4531,7 +4573,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testStructInitializerExpression_Empty() {
         let expr = Expression.StructInitializer(identifier: Expression.Identifier("Foo"), arguments: [])
         let typ: SymbolType = .structType(StructType(name: "Foo", symbols: SymbolTable()))
-        let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["Foo" : typ])
+        let symbols = SymbolTable(typeDict: ["Foo" : typ])
         let compiler = makeCompiler(symbols: symbols)
         _ = mustCompile(compiler: compiler, expression: expr)
         XCTAssertFalse(compiler.temporaryStack.isEmpty)
@@ -4543,7 +4585,7 @@ class RvalueExpressionCompilerTests: XCTestCase {
             Arg(name: "asdf", expr: Expression.LiteralInt(0))
         ])
         let typ = StructType(name: "foo", symbols: SymbolTable())
-        let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["Foo" : .structType(typ)])
+        let symbols = SymbolTable(typeDict: ["Foo" : .structType(typ)])
         XCTAssertThrowsError(try tryCompile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -4556,10 +4598,10 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.StructInitializer(identifier: Expression.Identifier("Foo"), arguments: [
             Arg(name: "bar", expr: Expression.LiteralBool(false))
         ])
-        let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0, storage: .automaticStorage)
+        let typ = StructType(name: "Foo", symbols: SymbolTable(tuples: [
+            ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
         ]))
-        let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["Foo" : .structType(typ)])
+        let symbols = SymbolTable(typeDict: ["Foo" : .structType(typ)])
         XCTAssertThrowsError(try tryCompile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -4573,11 +4615,11 @@ class RvalueExpressionCompilerTests: XCTestCase {
             Arg(name: "bar", expr: Expression.LiteralInt(0xabab)),
             Arg(name: "baz", expr: Expression.LiteralInt(0xcdcd))
         ])
-        let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0, storage: .automaticStorage),
-            "baz" : Symbol(type: .u16, offset: 2, storage: .automaticStorage)
+        let typ = StructType(name: "Foo", symbols: SymbolTable(tuples: [
+            ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage)),
+            ("baz", Symbol(type: .u16, offset: 2, storage: .automaticStorage))
         ]))
-        let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["Foo" : .structType(typ)])
+        let symbols = SymbolTable(typeDict: ["Foo" : .structType(typ)])
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
         let tempResult = compiler.temporaryStack.peek()
@@ -4593,10 +4635,10 @@ class RvalueExpressionCompilerTests: XCTestCase {
             Arg(name: "bar", expr: Expression.LiteralInt(0)),
             Arg(name: "bar", expr: Expression.LiteralInt(0))
         ])
-        let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0, storage: .automaticStorage)
+        let typ = StructType(name: "Foo", symbols: SymbolTable(tuples: [
+            ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
         ]))
-        let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["Foo" : .structType(typ)])
+        let symbols = SymbolTable(typeDict: ["Foo" : .structType(typ)])
         XCTAssertThrowsError(try tryCompile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -4607,11 +4649,11 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testStructInitializerExpression_TheresNothingWrongWithOmittingMembers() {
         typealias Arg = Expression.StructInitializer.Argument
         let expr = Expression.StructInitializer(identifier: Expression.Identifier("Foo"), arguments: [])
-        let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0, storage: .automaticStorage),
-            "baz" : Symbol(type: .u16, offset: 2, storage: .automaticStorage)
+        let typ = StructType(name: "Foo", symbols: SymbolTable(tuples: [
+            ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage)),
+            ("baz", Symbol(type: .u16, offset: 2, storage: .automaticStorage))
         ]))
-        let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["Foo" : .structType(typ)])
+        let symbols = SymbolTable(typeDict: ["Foo" : .structType(typ)])
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
         let tempResult = compiler.temporaryStack.peek()
@@ -4641,8 +4683,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
     
     func testAddressOfIdentifierForU8Symbol() {
         let expr = Expression.Unary(op: .ampersand, expression: Expression.Identifier("foo"))
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: .u8, offset: 0xabcd)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .u8, offset: 0xabcd))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
@@ -4655,9 +4697,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testDereferencePointerToU8() {
         let expr = Expression.Get(expr: Expression.Identifier("foo"),
                                   member: Expression.Identifier("pointee"))
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: .pointer(.u8), offset: 0x0100),
-            "bar" : Symbol(type: .u8, offset: 0x0102)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .pointer(.u8), offset: 0x0100)),
+            ("bar", Symbol(type: .u8, offset: 0x0102))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
@@ -4674,13 +4716,13 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testGetValueOfStructMemberThroughPointerLoadsTheValue() {
         let expr = Expression.Get(expr: Expression.Identifier("foo"),
                                   member: Expression.Identifier("bb"))
-        let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "aa" : Symbol(type: .u16, offset: 0, storage: .automaticStorage),
-            "bb" : Symbol(type: .u16, offset: 2, storage: .automaticStorage)
+        let typ = StructType(name: "Foo", symbols: SymbolTable(tuples: [
+            ("aa", Symbol(type: .u16, offset: 0, storage: .automaticStorage)),
+            ("bb", Symbol(type: .u16, offset: 2, storage: .automaticStorage))
         ]))
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: .pointer(.structType(typ)), offset: 0x0100),
-            "bar" : Symbol(type: .structType(typ), offset: 0x0102)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .pointer(.structType(typ)), offset: 0x0100)),
+            ("bar", Symbol(type: .structType(typ), offset: 0x0102))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
@@ -4698,11 +4740,11 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testGetValueOfNonexistentStructMemberThroughPointer() {
         let expr = Expression.Get(expr: Expression.Identifier("foo"),
                                   member: Expression.Identifier("asdf"))
-        let typ = StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .u16, offset: 0, storage: .automaticStorage)
+        let typ = StructType(name: "Foo", symbols: SymbolTable(tuples: [
+            ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
         ]))
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: .pointer(.structType(typ)), offset: 0)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .pointer(.structType(typ)), offset: 0))
         ])
         XCTAssertThrowsError(try tryCompile(expression: expr, symbols: symbols)) {
             let compilerError = $0 as? CompilerError
@@ -4721,7 +4763,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
             ("begin", Symbol(type: .u16, offset: 0, storage: .automaticStorage)),
             ("limit", Symbol(type: .u16, offset: 2, storage: .automaticStorage))
         ])))
-        let symbols = SymbolTable(["foo" : Symbol(type: rangeType, offset: 0x0010, storage: .automaticStorage)])
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: rangeType, offset: 0x0010, storage: .automaticStorage))
+        ])
         let ir = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(crackle: ir)
@@ -4746,7 +4790,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testSuccessfullyCastUnionTypeToMemberType() {
         let expr = Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.PrimitiveType(.u8))
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
-        let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .u16])), offset: offset, storage: .staticStorage)])
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .unionType(UnionType([.u8, .u16])), offset: offset, storage: .staticStorage))
+        ])
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
         let tempResult = compiler.temporaryStack.peek()
@@ -4783,7 +4829,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testTestUnionVariantTypeAgainstNonMemberType() {
         let union = Expression.Identifier("foo")
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
-        let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .u16])), offset: offset, storage: .staticStorage)])
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .unionType(UnionType([.u8, .u16])), offset: offset, storage: .staticStorage))
+        ])
         let expr = Expression.Is(expr: union, testType: Expression.PrimitiveType(.bool))
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
@@ -4796,7 +4844,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testTestUnionVariantTypeAgainstKnownMemberType_Tag0() {
         let union = Expression.Identifier("foo")
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
-        let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .bool])), offset: offset, storage: .staticStorage)])
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .unionType(UnionType([.u8, .bool])), offset: offset, storage: .staticStorage))
+        ])
         let expr = Expression.Is(expr: union, testType: Expression.PrimitiveType(.u8))
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
@@ -4813,7 +4863,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testTestUnionVariantTypeAgainstKnownMemberType_Tag1() {
         let union = Expression.Identifier("foo")
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
-        let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u8, .bool])), offset: offset, storage: .staticStorage)])
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .unionType(UnionType([.u8, .bool])), offset: offset, storage: .staticStorage))
+        ])
         let expr = Expression.Is(expr: union, testType: Expression.PrimitiveType(.bool))
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
@@ -4831,7 +4883,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
     func testCanAssignToUnionGivenTypeWhichConvertsToMatchingUnionMember() {
         let expr = Expression.Assignment(lexpr: Expression.Identifier("foo"), rexpr: ExprUtils.makeU8(value: 42))
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
-        let symbols = SymbolTable(["foo" : Symbol(type: .unionType(UnionType([.u16])), offset: offset, storage: .staticStorage)])
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .unionType(UnionType([.u16])), offset: offset, storage: .staticStorage))
+        ])
         let compiler = makeCompiler(symbols: symbols)
         let ir = mustCompile(compiler: compiler, expression: expr)
         let executor = CrackleExecutor()
@@ -4850,9 +4904,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let n = 10
         let elementType = SymbolType.u8
         
-        let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable([
-            "foo" : Symbol(type: .array(count: n, elementType: elementType), offset: arrayBase),
-            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
+        let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: n, elementType: elementType), offset: arrayBase)),
+            ("__oob", Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         ]))
         let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
             Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(1)),
@@ -4888,9 +4942,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let n = 10
         let elementType = SymbolType.u16
         
-        let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable([
-            "foo" : Symbol(type: .array(count: n, elementType: elementType), offset: arrayBase),
-            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
+        let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: n, elementType: elementType), offset: arrayBase)),
+            ("__oob", Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         ]))
         let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
             Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(2)),
@@ -4925,9 +4979,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let arrayBase = SnapCompilerMetrics.kStaticStorageStartAddress
         let elementType = SymbolType.u16
         
-        let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable([
-            "foo" : Symbol(type: .array(count: 10, elementType: elementType), offset: arrayBase),
-            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
+        let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 10, elementType: elementType), offset: arrayBase)),
+            ("__oob", Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         ]))
         let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
             Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(50)),
@@ -4946,9 +5000,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let arrayBase = SnapCompilerMetrics.kStaticStorageStartAddress
         let elementType = SymbolType.u16
         
-        let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable([
-            "foo" : Symbol(type: .array(count: 10, elementType: elementType), offset: arrayBase),
-            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
+        let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 10, elementType: elementType), offset: arrayBase)),
+            ("__oob", Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         ]))
         let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
             Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(0)),
@@ -4971,9 +5025,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let arrayBaseAddress = 0x1000
         let arrayCount = 10
         
-        let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable([
-            "foo" : Symbol(type: .dynamicArray(elementType: elementType), offset: offset),
-            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
+        let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
+            ("foo", Symbol(type: .dynamicArray(elementType: elementType), offset: offset)),
+            ("__oob", Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         ]))
         let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
             Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(begin)),
@@ -5008,9 +5062,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let arrayBaseAddress = 0x1000
         let arrayCount = 10
         
-        let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable([
-            "foo" : Symbol(type: .dynamicArray(elementType: elementType), offset: offset),
-            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
+        let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
+            ("foo", Symbol(type: .dynamicArray(elementType: elementType), offset: offset)),
+            ("__oob", Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         ]))
         let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
             Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(begin)),
@@ -5038,9 +5092,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let arrayBaseAddress = 0x1000
         let arrayCount = 10
         
-        let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable([
-            "foo" : Symbol(type: .dynamicArray(elementType: elementType), offset: offset),
-            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
+        let symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
+            ("foo", Symbol(type: .dynamicArray(elementType: elementType), offset: offset)),
+            ("__oob", Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         ]))
         let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
             Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(begin)),
@@ -5076,7 +5130,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let str = "foo"
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let expr = ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralString(str))
-        let symbols = SymbolTable(["foo" : Symbol(type: .array(count: str.count, elementType: .u8), offset: offset)])
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: str.count, elementType: .u8), offset: offset))
+        ])
         let actual = mustCompile(expression: expr, symbols: symbols)
         let executor = CrackleExecutor()
         let computer = try! executor.execute(crackle: actual)
@@ -5125,9 +5181,9 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Call(callee: Expression.Identifier("bar"), arguments: [])
         var addressOfFoo: UInt16 = 0
         let addressOfBar = SnapCompilerMetrics.kStaticStorageStartAddress
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: .function(FunctionType(name: "foo", returnType: .void, arguments: [])), offset: 0),
-            "bar" : Symbol(type: .pointer(.function(FunctionType(name: "foo", returnType: .void, arguments: []))), offset: addressOfBar),
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .function(FunctionType(name: "foo", returnType: .void, arguments: [])), offset: 0)),
+            ("bar", Symbol(type: .pointer(.function(FunctionType(name: "foo", returnType: .void, arguments: []))), offset: addressOfBar)),
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = mustCompile(compiler: compiler, expression: expr)
@@ -5155,12 +5211,12 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Subscript(subscriptable: getExpr, argument: zero)
         
         let addressOfFoo = SnapCompilerMetrics.kStaticStorageStartAddress
-        let Foo: SymbolType = .structType(StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .array(count: 1, elementType: .u8), offset: 0, storage: .automaticStorage)
+        let Foo: SymbolType = .structType(StructType(name: "Foo", symbols: SymbolTable(tuples: [
+            ("bar", Symbol(type: .array(count: 1, elementType: .u8), offset: 0, storage: .automaticStorage))
         ])))
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: Foo, offset: addressOfFoo),
-            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: Foo, offset: addressOfFoo)),
+            ("__oob", Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = mustCompile(compiler: compiler, expression: expr)
@@ -5182,12 +5238,12 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Subscript(subscriptable: getExpr, argument: zero)
         
         let addressOfFoo = SnapCompilerMetrics.kStaticStorageStartAddress
-        let Foo: SymbolType = .structType(StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0, storage: .automaticStorage)
+        let Foo: SymbolType = .structType(StructType(name: "Foo", symbols: SymbolTable(tuples: [
+            ("bar", Symbol(type: .dynamicArray(elementType: .u8), offset: 0, storage: .automaticStorage))
         ])))
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: Foo, offset: addressOfFoo),
-            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: Foo, offset: addressOfFoo)),
+            ("__oob", Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = mustCompile(compiler: compiler, expression: expr)
@@ -5212,12 +5268,12 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let expr = Expression.Subscript(subscriptable: getExpr, argument: range)
         
         let addressOfFoo = SnapCompilerMetrics.kStaticStorageStartAddress
-        let Foo: SymbolType = .structType(StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .array(count: 1, elementType: .u8), offset: 0, storage: .automaticStorage)
+        let Foo: SymbolType = .structType(StructType(name: "Foo", symbols: SymbolTable(tuples: [
+            ("bar", Symbol(type: .array(count: 1, elementType: .u8), offset: 0, storage: .automaticStorage))
         ])))
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: Foo, offset: addressOfFoo),
-            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: Foo, offset: addressOfFoo)),
+            ("__oob", Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = mustCompile(compiler: compiler, expression: expr)
@@ -5240,12 +5296,12 @@ class RvalueExpressionCompilerTests: XCTestCase {
         
         let arrayBaseAddress = 0x1000
         let addressOfFoo = SnapCompilerMetrics.kStaticStorageStartAddress
-        let Foo: SymbolType = .structType(StructType(name: "Foo", symbols: SymbolTable([
-            "bar" : Symbol(type: .dynamicArray(elementType: .u8), offset: 0, storage: .automaticStorage)
+        let Foo: SymbolType = .structType(StructType(name: "Foo", symbols: SymbolTable(tuples: [
+            ("bar", Symbol(type: .dynamicArray(elementType: .u8), offset: 0, storage: .automaticStorage))
         ])))
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: Foo, offset: addressOfFoo),
-            "__oob" : Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: Foo, offset: addressOfFoo)),
+            ("__oob", Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = mustCompile(compiler: compiler, expression: expr)
@@ -5278,8 +5334,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let expr = Expression.Bitcast(expr: Expression.Identifier("foo"),
                                       targetType: Expression.PointerType(Expression.PrimitiveType(.u16)))
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: .pointer(.u8), offset: offset)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .pointer(.u8), offset: offset))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = mustCompile(compiler: compiler, expression: expr)

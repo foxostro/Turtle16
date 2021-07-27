@@ -80,14 +80,14 @@ class SymbolTableTests: XCTestCase {
     func testExistsInParentScope() {
         let parent = SymbolTable()
         parent.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
-        let symbols = SymbolTable(parent: parent, dict: [:])
+        let symbols = SymbolTable(parent: parent)
         XCTAssertTrue(symbols.exists(identifier: "foo"))
     }
     
     func testSymbolCanBeShadowedInLocalScope() {
         let parent = SymbolTable()
         parent.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
-        let symbols = SymbolTable(parent: parent, dict: [:])
+        let symbols = SymbolTable(parent: parent)
         XCTAssertFalse(symbols.existsAndCannotBeShadowed(identifier: "foo"))
     }
     
@@ -100,7 +100,7 @@ class SymbolTableTests: XCTestCase {
     func testResolveSymbolInParentScope() {
         let parent = SymbolTable()
         parent.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
-        let symbols = SymbolTable(parent: parent, dict: [:])
+        let symbols = SymbolTable(parent: parent)
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
         XCTAssertEqual(symbol, Symbol(type: .constBool, offset: 0x10))
     }
@@ -108,7 +108,7 @@ class SymbolTableTests: XCTestCase {
     func testResolveSymbolWithStackFrameDepth() {
         let parent = SymbolTable()
         parent.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
-        let symbols = SymbolTable(parent: parent, dict: [:])
+        let symbols = SymbolTable(parent: parent)
         let resolution = try! symbols.resolveWithStackFrameDepth(sourceAnchor: nil, identifier: "foo")
         XCTAssertEqual(resolution.0, Symbol(type: .constBool, offset: 0x10))
         XCTAssertEqual(resolution.1, 0)
@@ -117,7 +117,7 @@ class SymbolTableTests: XCTestCase {
     func testResolveSymbolWithScopeDepth() {
         let parent = SymbolTable()
         parent.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
-        let symbols = SymbolTable(parent: parent, dict: [:])
+        let symbols = SymbolTable(parent: parent)
         let resolution = try! symbols.resolveWithScopeDepth(identifier: "foo")
         XCTAssertEqual(resolution.0, Symbol(type: .constBool, offset: 0x10))
         XCTAssertEqual(resolution.1, 1)
@@ -133,7 +133,7 @@ class SymbolTableTests: XCTestCase {
     }
     
     func testSuccessfullyResolveTypeByIdentifier() {
-        let symbols = SymbolTable(parent: nil, dict: [:], typeDict: ["foo" : .structType(StructType(name: "foo", symbols: SymbolTable()))])
+        let symbols = SymbolTable(parent: nil, typeDict: ["foo" : .structType(StructType(name: "foo", symbols: SymbolTable()))])
         let symbolType = try! symbols.resolveType(identifier: "foo")
         switch symbolType {
         case .structType(let typ):
@@ -156,9 +156,9 @@ class SymbolTableTests: XCTestCase {
     }
     
     func testInitializedWithDeclarationOrder() {
-        let symbols = SymbolTable([
-            "foo" : Symbol(type: .u8, offset: 0),
-            "bar" : Symbol(type: .u8, offset: 0)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .u8, offset: 0)),
+            ("bar", Symbol(type: .u8, offset: 0))
         ])
         XCTAssertTrue(symbols.declarationOrder.contains("foo"))
         XCTAssertTrue(symbols.declarationOrder.contains("bar"))
@@ -166,15 +166,15 @@ class SymbolTableTests: XCTestCase {
     }
     
     func testDeclarationOrderAffectsEquality() {
-        let symbols1 = SymbolTable([
-            "foo" : Symbol(type: .u8, offset: 0),
-            "bar" : Symbol(type: .u8, offset: 0)
+        let symbols1 = SymbolTable(tuples: [
+            ("foo", Symbol(type: .u8, offset: 0)),
+            ("bar", Symbol(type: .u8, offset: 0))
         ])
         symbols1.declarationOrder = ["foo", "bar"]
         
-        let symbols2 = SymbolTable([
-            "foo" : Symbol(type: .u8, offset: 0),
-            "bar" : Symbol(type: .u8, offset: 0)
+        let symbols2 = SymbolTable(tuples: [
+            ("foo", Symbol(type: .u8, offset: 0)),
+            ("bar", Symbol(type: .u8, offset: 0))
         ])
         symbols2.declarationOrder = ["bar", "foo"]
         

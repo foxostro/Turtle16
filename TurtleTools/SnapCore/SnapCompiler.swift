@@ -14,7 +14,7 @@ public class SnapCompiler: NSObject {
     public var shouldRunSpecificTest: String? = nil
     public var shouldEnableOptimizations = true
     public private(set) var testNames: [String] = []
-    public var ast: TopLevel! = nil
+    public var ast: Block! = nil
     public var crackle: [CrackleInstruction] = []
     public var pop: [PopInstruction] = []
     public var instructions: [Instruction] = []
@@ -56,7 +56,15 @@ public class SnapCompiler: NSObject {
             errors = parser.errors
             return
         }
-        ast = parser.syntaxTree
+        
+        // AST contraction step
+        let astTransformer = SnapASTTransformer()
+        astTransformer.transform(parser.syntaxTree!)
+        if astTransformer.hasError {
+            errors = astTransformer.errors
+            return
+        }
+        ast = astTransformer.ast
         
         // Compile the AST to IR code
         let snapToCrackleCompiler = SnapToCrackleCompiler()

@@ -41,7 +41,7 @@ public class SnapToCrackleCompiler: NSObject {
         super.init()
     }
     
-    public func compile(ast: TopLevel) {
+    public func compile(ast: Block) {
         instructions = []
         do {
             try tryCompile(ast: ast)
@@ -64,11 +64,11 @@ public class SnapToCrackleCompiler: NSObject {
         }
     }
     
-    private func tryCompile(ast: TopLevel) throws {
+    private func tryCompile(ast: Block) throws {
         try compile(topLevel: ast)
     }
     
-    private func compile(topLevel: TopLevel) throws {
+    private func compile(topLevel: Block) throws {
         var children: [AbstractSyntaxTreeNode] = []
         if isUsingStandardLibrary {
             let importStmt = Import(moduleName: SnapToCrackleCompiler.kStandardLibraryModuleName)
@@ -207,7 +207,7 @@ public class SnapToCrackleCompiler: NSObject {
         try compile(genericNode: module)
     }
     
-    public func compileProgramText(url: URL?, text: String) throws -> TopLevel {
+    public func compileProgramText(url: URL?, text: String) throws -> Block {
         let filename = url?.lastPathComponent
         
         // Lexer pass
@@ -224,7 +224,13 @@ public class SnapToCrackleCompiler: NSObject {
             throw CompilerError.makeOmnibusError(fileName: filename, errors: parser.errors)
         }
         
-        let topLevel = parser.syntaxTree!
+        // AST contraction step
+        let astTransformer = SnapASTTransformer()
+        astTransformer.transform(parser.syntaxTree!)
+        if astTransformer.hasError {
+            throw CompilerError.makeOmnibusError(fileName: filename, errors: astTransformer.errors)
+        }
+        let topLevel = astTransformer.ast
         
         return topLevel
     }

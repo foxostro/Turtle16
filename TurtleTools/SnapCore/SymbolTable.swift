@@ -390,7 +390,24 @@ struct \(name) {
         return true
     }
     
+    private var isComputingHash = false
+    
     public override var hash: Int {
+        // Avoid recursive computation of the hash.
+        // This can occur with recursive types such as the following:
+        //        struct LinkedList {
+        //            next: *const LinkedList | None,
+        //            key: u8,
+        //            value: u8
+        //        }
+        guard false == isComputingHash else {
+            var hasher = Hasher()
+            hasher.combine(name)
+            return hasher.finalize()
+        }
+        isComputingHash = true
+        defer { isComputingHash = false }
+        
         var hasher = Hasher()
         hasher.combine(name)
         hasher.combine(symbols)
@@ -535,7 +552,7 @@ public enum SymbolVisibility: Equatable {
     }
 }
 
-public struct Symbol: Equatable {
+public struct Symbol: Hashable, Equatable {
     public let type: SymbolType
     public let maybeOffset: Int?
     public var offset: Int {
@@ -568,7 +585,7 @@ public struct Symbol: Equatable {
 
 // Maps a name to symbol information.
 public class SymbolTable: NSObject {
-    public struct TypeRecord: Equatable {
+    public struct TypeRecord: Hashable, Equatable {
         let symbolType: SymbolType
         let visibility: SymbolVisibility
     }
@@ -750,6 +767,10 @@ public class SymbolTable: NSObject {
         return parent?.maybeResolveTypeRecord(sourceAnchor: sourceAnchor, identifier: identifier)
     }
     
+    public static func ==(lhs: SymbolTable, rhs: SymbolTable) -> Bool {
+        return lhs.isEqual(rhs)
+    }
+    
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else {
             return false
@@ -771,5 +792,18 @@ public class SymbolTable: NSObject {
             return false
         }
         return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(declarationOrder)
+        hasher.combine(symbolTable)
+        hasher.combine(typeTable)
+        hasher.combine(parent)
+        hasher.combine(storagePointer)
+        hasher.combine(enclosingFunctionType)
+        hasher.combine(enclosingFunctionName)
+        hasher.combine(stackFrameIndex)
+        return hasher.finalize()
     }
 }

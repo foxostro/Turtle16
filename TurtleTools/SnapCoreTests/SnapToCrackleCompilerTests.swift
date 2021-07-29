@@ -1711,8 +1711,10 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                           rexpr: Expression.Identifier("i"))
                 ]))
         ])
+        let globalSymbols = ast.symbols
+        globalSymbols.bind(identifier: "__oob", symbol: Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
+        
         let compiler = SnapToCrackleCompiler()
-        compiler.globalSymbols.bind(identifier: "__oob", symbol: Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
@@ -1745,8 +1747,10 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                           rexpr: Expression.Identifier("i"))
                 ]))
         ])
+        let globalSymbols = ast.symbols
+        globalSymbols.bind(identifier: "__oob", symbol: Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
+        
         let compiler = SnapToCrackleCompiler()
-        compiler.globalSymbols.bind(identifier: "__oob", symbol: Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
@@ -1789,8 +1793,10 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                           rexpr: Expression.Identifier("i"))
                 ]))
         ])
+        let globalSymbols = ast.symbols
+        globalSymbols.bind(identifier: "__oob", symbol: Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
+        
         let compiler = SnapToCrackleCompiler()
-        compiler.globalSymbols.bind(identifier: "__oob", symbol: Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         compiler.compile(ast: ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {

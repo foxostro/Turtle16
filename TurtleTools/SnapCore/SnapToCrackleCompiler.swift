@@ -17,9 +17,9 @@ public class SnapToCrackleCompiler: NSObject {
     public private(set) var instructions: [CrackleInstruction] = []
     public var programDebugInfo: SnapDebugInfo? = nil
     public var shouldRunSpecificTest: String? = nil
-    public let globalSymbols = SymbolTable()
+    public private(set) var globalSymbols = SymbolTable()
     
-    private var symbols: SymbolTable
+    private var symbols = SymbolTable()
     public let memoryLayoutStrategy: MemoryLayoutStrategy
     private let labelMaker = LabelMaker()
     private var staticStoragePointer = SnapCompilerMetrics.kStaticStorageStartAddress
@@ -36,7 +36,6 @@ public class SnapToCrackleCompiler: NSObject {
     public var sandboxAccessManager: SandboxAccessManager? = nil
     
     public override init() {
-        symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: globalSymbols)
         memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
         super.init()
     }
@@ -69,6 +68,9 @@ public class SnapToCrackleCompiler: NSObject {
     }
     
     private func compile(topLevel: Block) throws {
+        globalSymbols = topLevel.symbols
+        symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: globalSymbols)
+        
         var children: [AbstractSyntaxTreeNode] = []
         if isUsingStandardLibrary {
             let importStmt = Import(moduleName: SnapToCrackleCompiler.kStandardLibraryModuleName)

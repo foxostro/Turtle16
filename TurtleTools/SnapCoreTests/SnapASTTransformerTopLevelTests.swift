@@ -20,6 +20,9 @@ class SnapASTTransformerTopLevelTests: XCTestCase {
     func testTurnTopLevelIntoBlock() throws {
         let compiler = SnapASTTransformerTopLevel()
         let result = compiler.transform(TopLevel(children: [CommentNode(string: "")]))
-        XCTAssertEqual(result, Block(children: [CommentNode(string: "")]))
+        let expectedGlobalSymbols = CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable())
+        let expected = Block(symbols: expectedGlobalSymbols,
+                             children: [CommentNode(string: "")])
+        XCTAssertEqual(result, expected)
     }
 }

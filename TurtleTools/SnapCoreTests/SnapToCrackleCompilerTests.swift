@@ -1415,7 +1415,8 @@ class SnapToCrackleCompilerTests: XCTestCase {
     }
         
     func testCompilePeekMemory() {
-        let ast = Block(children: [
+        let ast = Block(symbols: CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable()),
+                        children: [
             VarDeclaration(identifier: Expression.Identifier("a"),
                            explicitType: nil,
                            expression: Expression.LiteralInt(0xaa),
@@ -1452,7 +1453,8 @@ class SnapToCrackleCompilerTests: XCTestCase {
     }
         
     func testCompilePokeMemory() {
-        let ast = Block(children: [
+        let ast = Block(symbols: CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable()),
+                        children: [
             Expression.Call(callee: Expression.Identifier("pokeMemory"),
                             arguments: [Expression.LiteralInt(0xab),
                                         Expression.LiteralInt(kStaticStorageStartAddress)])
@@ -1476,7 +1478,8 @@ class SnapToCrackleCompilerTests: XCTestCase {
     }
         
     func testCompilePokePeripheral() {
-        let ast = Block(children: [
+        let ast = Block(symbols: CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable()),
+                        children: [
             Expression.Call(callee: Expression.Identifier("pokePeripheral"),
                             arguments: [
                                 Expression.LiteralInt(0xff),
@@ -1505,7 +1508,8 @@ class SnapToCrackleCompilerTests: XCTestCase {
     }
         
     func testCompileHlt() {
-        let ast = Block(children: [
+        let ast = Block(symbols: CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable()),
+                        children: [
             Expression.Call(callee: Expression.Identifier("pokeMemory"),
                             arguments: [Expression.LiteralInt(0xab),
                                         Expression.LiteralInt(kStaticStorageStartAddress)]),
@@ -1632,7 +1636,8 @@ class SnapToCrackleCompilerTests: XCTestCase {
     }
     
     func testCompileForInLoop_Range() {
-        let ast = Block(children: [
+        let ast = Block(symbols: CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable()),
+                        children: [
             VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: Expression.PrimitiveType(.u16),
                            expression: nil,
@@ -1662,7 +1667,8 @@ class SnapToCrackleCompilerTests: XCTestCase {
     }
     
     func testCompileForInLoop_Range_LargerThanEightBits() {
-        let ast = Block(children: [
+        let ast = Block(symbols: CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable()),
+                        children: [
             VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: Expression.PrimitiveType(.u16),
                            expression: nil,
@@ -2445,7 +2451,8 @@ public func foo() -> None {
     }
     
     func testPassingAssertDoesNothing() {
-        let ast = Block(children: [
+        let ast = Block(symbols: CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable()),
+                        children: [
             VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
                            expression: Expression.LiteralInt(1),
@@ -2477,7 +2484,8 @@ public func foo() -> None {
     }
     
     func testFailingAssertPanics() {
-        let ast = Block(children: [
+        let ast = Block(symbols: CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable()),
+                        children: [
             VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
                            expression: Expression.LiteralInt(1),

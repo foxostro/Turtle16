@@ -13,7 +13,9 @@ public class SnapASTTransformerTopLevel: NSObject {
         guard let topLevel = root as? TopLevel else {
             return root
         }
+        let symbols = CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable())
         return Block(sourceAnchor: topLevel.sourceAnchor,
+                     symbols: symbols,
                      children: topLevel.children)
     }
 }

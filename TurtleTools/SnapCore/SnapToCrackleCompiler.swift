@@ -69,7 +69,7 @@ public class SnapToCrackleCompiler: NSObject {
     
     private func compile(topLevel: Block) throws {
         globalSymbols = topLevel.symbols
-        symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: globalSymbols)
+        symbols = globalSymbols
         
         var children: [AbstractSyntaxTreeNode] = []
         if isUsingStandardLibrary {
@@ -251,7 +251,7 @@ public class SnapToCrackleCompiler: NSObject {
         let oldModulesAlreadyImported = modulesAlreadyImported
         modulesAlreadyImported = []
         let oldSymbols = symbols
-        symbols = RvalueExpressionCompiler.bindCompilerIntrinsics(symbols: SymbolTable())
+        symbols = CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable())
         symbols.storagePointer = oldSymbols.storagePointer
         
         // Make sure to import the standard library when building a module.

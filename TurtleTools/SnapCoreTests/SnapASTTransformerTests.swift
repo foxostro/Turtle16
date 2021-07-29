@@ -16,7 +16,9 @@ class SnapASTTransformerTests: XCTestCase {
         let input = TopLevel(children: [CommentNode(string: "")])
         transformer.transform(input)
         let actual = transformer.ast
-        let expected = Block(children: [CommentNode(string: "")])
+        let expectedGlobalSymbols = CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable())
+        let expected = Block(symbols: expectedGlobalSymbols,
+                             children: [CommentNode(string: "")])
         XCTAssertFalse(transformer.hasError)
         XCTAssertEqual(expected, actual)
     }

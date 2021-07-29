@@ -455,8 +455,6 @@ public class SnapToCrackleCompiler: NSObject {
             try compile(implFor: node)
         case let node as Match:
             try compile(match: node)
-        case let node as Assert:
-            try compile(assert: node)
         case let node as TraitDeclaration:
             try compile(trait: node)
         default:
@@ -918,26 +916,6 @@ public class SnapToCrackleCompiler: NSObject {
     private func compile(match: Match) throws {
         let ast = try MatchCompiler().compile(match: match, symbols: symbols)
         try compile(genericNode: ast)
-    }
-    
-    private func compile(assert node: Assert) throws {
-        let s = node.sourceAnchor
-        let message: String
-        if let currentTest = currentTest {
-            message = "\(node.message) in test \"\(currentTest.name)\""
-        } else {
-            message = node.message
-        }
-        let panic = Expression.Call(sourceAnchor: s, callee: Expression.Identifier("panic"), arguments: [
-            Expression.LiteralString(message)
-        ])
-        let condition = Expression.Binary(sourceAnchor: s, op: .eq, left: node.condition, right: Expression.LiteralBool(false))
-        try compile(if: If(sourceAnchor: s,
-                           condition: condition,
-                           then: Block(children: [
-                            panic
-                           ]),
-                           else: nil))
     }
     
     private func compile(trait traitDecl: TraitDeclaration) throws {

@@ -158,6 +158,8 @@
 		6F40730126ADE09D007D8382 /* MemoryLayoutStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F40730026ADE09D007D8382 /* MemoryLayoutStrategy.swift */; };
 		6F40730326ADE0B7007D8382 /* MemoryLayoutStrategyTurtleTTL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F40730226ADE0B7007D8382 /* MemoryLayoutStrategyTurtleTTL.swift */; };
 		6F40730526ADE0EF007D8382 /* MemoryLayoutStrategyTurtleTTLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F40730426ADE0EF007D8382 /* MemoryLayoutStrategyTurtleTTLTests.swift */; };
+		6F40730726B1D5ED007D8382 /* SnapToTackCompiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F40730626B1D5ED007D8382 /* SnapToTackCompiler.swift */; };
+		6F40730926B1D61F007D8382 /* SnapToTackCompilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F40730826B1D61F007D8382 /* SnapToTackCompilerTests.swift */; };
 		6F42B8DD2651EE64004A7B12 /* AssemblerLexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F42B8DC2651EE64004A7B12 /* AssemblerLexer.swift */; };
 		6F42B8DF2651EFBD004A7B12 /* AssemblerParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F42B8DE2651EFBD004A7B12 /* AssemblerParser.swift */; };
 		6F42B8E12651F01B004A7B12 /* AssemblerParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F42B8E02651F01B004A7B12 /* AssemblerParserTests.swift */; };
@@ -757,6 +759,8 @@
 		6F40730026ADE09D007D8382 /* MemoryLayoutStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryLayoutStrategy.swift; sourceTree = "<group>"; };
 		6F40730226ADE0B7007D8382 /* MemoryLayoutStrategyTurtleTTL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryLayoutStrategyTurtleTTL.swift; sourceTree = "<group>"; };
 		6F40730426ADE0EF007D8382 /* MemoryLayoutStrategyTurtleTTLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryLayoutStrategyTurtleTTLTests.swift; sourceTree = "<group>"; };
+		6F40730626B1D5ED007D8382 /* SnapToTackCompiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapToTackCompiler.swift; sourceTree = "<group>"; };
+		6F40730826B1D61F007D8382 /* SnapToTackCompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapToTackCompilerTests.swift; sourceTree = "<group>"; };
 		6F41B66724762D2F0043A8D7 /* TokenOperator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenOperator.swift; sourceTree = "<group>"; };
 		6F41B66B2476D6130043A8D7 /* TokenOperatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenOperatorTests.swift; sourceTree = "<group>"; };
 		6F41B69524784B230043A8D7 /* RvalueExpressionCompiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RvalueExpressionCompiler.swift; sourceTree = "<group>"; };
@@ -1513,6 +1517,7 @@
 				6FCB6818247204F900798905 /* SnapLexer.swift */,
 				6FCB681D2472063900798905 /* SnapParser.swift */,
 				6F18DD8A248414DE0014C585 /* SnapToCrackleCompiler.swift */,
+				6F40730626B1D5ED007D8382 /* SnapToTackCompiler.swift */,
 				6F2E5B1D251AFB5700928DD1 /* MatchCompiler.swift */,
 				6F24AC8A24A07CAF005193BB /* StatementTracer.swift */,
 				6F5A00E9231C6454003E7C7F /* SymbolTable.swift */,
@@ -1556,6 +1561,7 @@
 				6FCB681B2472051200798905 /* SnapLexerTests.swift */,
 				6FCB681F2472064800798905 /* SnapParserTests.swift */,
 				6F18DD8C2484154F0014C585 /* SnapToCrackleCompilerTests.swift */,
+				6F40730826B1D61F007D8382 /* SnapToTackCompilerTests.swift */,
 				6F24AC8C24A07CBC005193BB /* StatementTracerTests.swift */,
 				6F50DB0D247F5F9500643DAC /* SymbolTableTests.swift */,
 				6F0D519E2506D57F00AB1C7E /* TypeContextTypeCheckerTests.swift */,
@@ -2554,6 +2560,7 @@
 				6FBD6EB0254C9E9A00CE5D06 /* PopCompiler.swift in Sources */,
 				6F9E286F2543CFB100946974 /* AssemblyListingMaker.swift in Sources */,
 				6FCB681E2472063900798905 /* SnapParser.swift in Sources */,
+				6F40730726B1D5ED007D8382 /* SnapToTackCompiler.swift in Sources */,
 				6FBD6ED0254C9EF700CE5D06 /* PopInstruction.swift in Sources */,
 				6F25325C24CB799A00339332 /* LvalueExpressionCompiler.swift in Sources */,
 				6F24B5FB254DFFDB00295D49 /* PopDeadStoreEliminationOptimizationPass.swift in Sources */,
@@ -2570,6 +2577,7 @@
 				6F238ADB248C94650040250D /* SnapExecutor.swift in Sources */,
 				6F924E7E248B4CCA00F43741 /* ExprUtils.swift in Sources */,
 				6F2940BD2483979800C50ABA /* RvalueExpressionCompilerTests.swift in Sources */,
+				6F40730926B1D61F007D8382 /* SnapToTackCompilerTests.swift in Sources */,
 				6FA220CF254CDC480017DDDF /* CrackleToPopCompilerTests.swift in Sources */,
 				6F5337352474BE7D00CFD33C /* VarDeclarationTests.swift in Sources */,
 				6F18DD94248463340014C585 /* CrackleExecutor.swift in Sources */,

@@ -9,6 +9,8 @@
 import TurtleCore
 
 public class SnapASTTransformerBase: NSObject {
+    var symbols: SymbolTable? = nil
+    
     public func transform(_ genericNode: AbstractSyntaxTreeNode) throws -> AbstractSyntaxTreeNode {
         switch genericNode {
         case let node as VarDeclaration:
@@ -73,9 +75,13 @@ public class SnapASTTransformerBase: NSObject {
     }
     
     public func transform(block node: Block) throws -> AbstractSyntaxTreeNode {
-        return Block(sourceAnchor: node.sourceAnchor,
-                     symbols: node.symbols,
-                     children: try node.children.map { try transform($0) })
+        let parent = symbols
+        symbols = node.symbols
+        let result = Block(sourceAnchor: node.sourceAnchor,
+                           symbols: node.symbols,
+                           children: try node.children.map { try transform($0) })
+        symbols = parent
+        return result
     }
     
     public func transform(return node: Return) throws -> AbstractSyntaxTreeNode {
@@ -83,13 +89,17 @@ public class SnapASTTransformerBase: NSObject {
     }
     
     public func transform(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode {
-        return FunctionDeclaration(sourceAnchor: node.sourceAnchor,
-                                   identifier: node.identifier,
-                                   functionType: node.functionType,
-                                   argumentNames: node.argumentNames,
-                                   body: try transform(node.body) as! Block,
-                                   visibility: node.visibility,
-                                   symbols: node.symbols)
+        let parent = symbols
+        symbols = node.symbols
+        let result = FunctionDeclaration(sourceAnchor: node.sourceAnchor,
+                                         identifier: node.identifier,
+                                         functionType: node.functionType,
+                                         argumentNames: node.argumentNames,
+                                         body: try transform(node.body) as! Block,
+                                         visibility: node.visibility,
+                                         symbols: node.symbols)
+        symbols = parent
+        return result
     }
     
     public func transform(impl node: Impl) throws -> AbstractSyntaxTreeNode {

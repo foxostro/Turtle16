@@ -9,8 +9,6 @@
 import TurtleCore
 
 public class SnapASTTransformerSymbolTables: SnapASTTransformerBase {
-    var symbols: SymbolTable? = nil
-    
     public override func transform(block node: Block) throws -> AbstractSyntaxTreeNode {
         let parent = symbols
         node.symbols.parent = parent

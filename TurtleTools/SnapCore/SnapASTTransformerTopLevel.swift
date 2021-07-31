@@ -8,8 +8,8 @@
 
 import TurtleCore
 
-public class SnapASTTransformerTopLevel: NSObject {
-    public func transform(_ root: AbstractSyntaxTreeNode) -> AbstractSyntaxTreeNode {
+public class SnapASTTransformerTopLevel: SnapASTTransformerBase {
+    public override func transform(_ root: AbstractSyntaxTreeNode) throws -> AbstractSyntaxTreeNode {
         guard let topLevel = root as? TopLevel else {
             return root
         }

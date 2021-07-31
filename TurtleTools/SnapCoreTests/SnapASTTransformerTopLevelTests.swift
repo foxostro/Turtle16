@@ -13,13 +13,13 @@ import TurtleCore
 class SnapASTTransformerTopLevelTests: XCTestCase {
     func testPassThroughUnrecognizedNodes() throws {
         let compiler = SnapASTTransformerTopLevel()
-        let result = compiler.transform(CommentNode(string: ""))
+        let result = try? compiler.transform(CommentNode(string: ""))
         XCTAssertEqual(result, CommentNode(string: ""))
     }
     
     func testTurnTopLevelIntoBlock() throws {
         let compiler = SnapASTTransformerTopLevel()
-        let result = compiler.transform(TopLevel(children: [CommentNode(string: "")]))
+        let result = try? compiler.transform(TopLevel(children: [CommentNode(string: "")]))
         let expectedGlobalSymbols = CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable())
         let expected = Block(symbols: expectedGlobalSymbols,
                              children: [CommentNode(string: "")])

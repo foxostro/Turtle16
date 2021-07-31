@@ -12,13 +12,13 @@ import TurtleCore
 
 class SnapASTTransformerAssertTests: XCTestCase {
     func testIgnoresUnrecognizedNodes() throws {
-        let result = SnapASTTransformerAssert().transform(CommentNode(string: ""))
+        let result = try? SnapASTTransformerAssert().transform(CommentNode(string: ""))
         XCTAssertEqual(result, CommentNode(string: ""))
     }
     
     func testTransformAssert_Bare() throws {
         let input = makeAssertFalse()
-        let result = SnapASTTransformerAssert().transform(input)
+        let result = try? SnapASTTransformerAssert().transform(input)
         let expected = makeAssertFalseResult()
         XCTAssertEqual(result, expected)
     }
@@ -39,28 +39,28 @@ class SnapASTTransformerAssertTests: XCTestCase {
     
     func testTransformAssert_InsideBlock() throws {
         let input = Block(children: [makeAssertFalse()])
-        let result = SnapASTTransformerAssert().transform(input)
+        let result = try? SnapASTTransformerAssert().transform(input)
         let expected = Block(children: [makeAssertFalseResult()])
         XCTAssertEqual(result, expected)
     }
     
     func testTransformAssert_InsideIf() throws {
         let input = If(condition: Expression.LiteralBool(true), then: makeAssertFalse())
-        let result = SnapASTTransformerAssert().transform(input)
+        let result = try? SnapASTTransformerAssert().transform(input)
         let expected = If(condition: Expression.LiteralBool(true), then: makeAssertFalseResult())
         XCTAssertEqual(result, expected)
     }
     
     func testTransformAssert_InsideElse() throws {
         let input = If(condition: Expression.LiteralBool(true), then: Block(), else: makeAssertFalse())
-        let result = SnapASTTransformerAssert().transform(input)
+        let result = try? SnapASTTransformerAssert().transform(input)
         let expected = If(condition: Expression.LiteralBool(true), then: Block(), else: makeAssertFalseResult())
         XCTAssertEqual(result, expected)
     }
     
     func testTransformAssert_InsideWhile() throws {
         let input = While(condition: Expression.LiteralBool(true), body: makeAssertFalse())
-        let result = SnapASTTransformerAssert().transform(input)
+        let result = try? SnapASTTransformerAssert().transform(input)
         let expected = While(condition: Expression.LiteralBool(true), body: makeAssertFalseResult())
         XCTAssertEqual(result, expected)
     }
@@ -69,7 +69,7 @@ class SnapASTTransformerAssertTests: XCTestCase {
         let input = ForIn(identifier: Expression.Identifier(""),
                           sequenceExpr: Expression.LiteralBool(true),
                           body: Block(children: [makeAssertFalse()]))
-        let result = SnapASTTransformerAssert().transform(input)
+        let result = try? SnapASTTransformerAssert().transform(input)
         let expected = ForIn(identifier: Expression.Identifier(""),
                              sequenceExpr: Expression.LiteralBool(true),
                              body: Block(children: [makeAssertFalseResult()]))
@@ -82,7 +82,7 @@ class SnapASTTransformerAssertTests: XCTestCase {
                                         argumentNames: [],
                                         body: Block(children: [makeAssertFalse()]))
         
-        let result = SnapASTTransformerAssert().transform(input)
+        let result = try? SnapASTTransformerAssert().transform(input)
         let expected = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                            functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
                                            argumentNames: [],
@@ -98,7 +98,7 @@ class SnapASTTransformerAssertTests: XCTestCase {
                                             body: Block(children: [makeAssertFalse()]))
         ])
         
-        let result = SnapASTTransformerAssert().transform(input)
+        let result = try? SnapASTTransformerAssert().transform(input)
         let expected = Impl(identifier: Expression.Identifier(""), children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                             functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
@@ -116,7 +116,7 @@ class SnapASTTransformerAssertTests: XCTestCase {
                                             body: Block(children: [makeAssertFalse()]))
         ])
         
-        let result = SnapASTTransformerAssert().transform(input)
+        let result = try? SnapASTTransformerAssert().transform(input)
         let expected = ImplFor(traitIdentifier: Expression.Identifier("foo"), structIdentifier: Expression.Identifier("bar"), children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                             functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
@@ -130,7 +130,7 @@ class SnapASTTransformerAssertTests: XCTestCase {
         let input = Match(expr: Expression.LiteralBool(false),
                           clauses: [],
                           elseClause: Block(children: [makeAssertFalse()]))
-        let result = SnapASTTransformerAssert().transform(input)
+        let result = try? SnapASTTransformerAssert().transform(input)
         let expected = Match(expr: Expression.LiteralBool(false),
                              clauses: [],
                              elseClause: Block(children: [makeAssertFalseResult()]))
@@ -143,7 +143,7 @@ class SnapASTTransformerAssertTests: XCTestCase {
                                                  valueType: Expression.PrimitiveType(.u8),
                                                  block: Block(children: [makeAssertFalse()]))],
                           elseClause: nil)
-        let result = SnapASTTransformerAssert().transform(input)
+        let result = try? SnapASTTransformerAssert().transform(input)
         let expected = Match(expr: Expression.LiteralBool(false),
                              clauses: [Match.Clause(valueIdentifier: Expression.Identifier("foo"),
                                                     valueType: Expression.PrimitiveType(.u8),
@@ -154,7 +154,7 @@ class SnapASTTransformerAssertTests: XCTestCase {
     
     func testTransformAssert_InsideTest() throws {
         let input = TestDeclaration(name: "foo", body: Block(children: [makeAssertFalse()]))
-        let result = SnapASTTransformerAssert().transform(input)
+        let result = try? SnapASTTransformerAssert().transform(input)
         let expected = TestDeclaration(name: "foo", body: Block(children: [
             If(condition: Expression.Binary(op: .eq,
                                             left: Expression.LiteralBool(false),

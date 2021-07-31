@@ -17,6 +17,18 @@ class SnapToCrackleCompilerTests: XCTestCase {
     let t3 = SnapCompilerMetrics.kTemporaryStorageStartAddress + 6
     let kStaticStorageStartAddress = SnapCompilerMetrics.kStaticStorageStartAddress
     
+    func compile(_ original: AbstractSyntaxTreeNode, shouldRunSpecificTest: String? = nil) -> SnapToCrackleCompiler {
+        // It's super annoying to connect symbol table chains by hand. Do it automatically.
+        let modified = try! SnapASTTransformerSymbolTables().transform(original) as! Block
+        
+        // Compile to Crackle IR
+        let compiler = SnapToCrackleCompiler()
+        compiler.shouldRunSpecificTest = shouldRunSpecificTest
+        compiler.compile(ast: modified)
+        
+        return compiler
+    }
+    
     func testNoErrorsAtFirst() {
         let compiler = SnapToCrackleCompiler()
         XCTAssertFalse(compiler.hasError)
@@ -53,8 +65,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         let addressFoo = SnapCompilerMetrics.kStaticStorageStartAddress+0
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
@@ -81,8 +92,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "constant redefines existing symbol: `foo'")
     }
@@ -102,8 +112,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         ])
         let addressFoo = SnapCompilerMetrics.kStaticStorageStartAddress+0
         let addressBar = SnapCompilerMetrics.kStaticStorageStartAddress+1
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
             .storeImmediate16(t0, addressFoo),
@@ -127,8 +136,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            isMutable: false)
         ])
         let addressFoo = SnapCompilerMetrics.kStaticStorageStartAddress+0
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
             .storeImmediate16(t0, addressFoo),
@@ -153,8 +161,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            isMutable: false)
         ])
         let addressFoo = SnapCompilerMetrics.kStaticStorageStartAddress+0
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
             .storeImmediate16(t0, 272),
@@ -186,8 +193,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            isMutable: false)
         ])
         let addressFoo = SnapCompilerMetrics.kStaticStorageStartAddress+0
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
             .storeImmediate16(t0, addressFoo),
@@ -226,8 +232,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: true)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "inappropriate use of a function type (Try taking the function's address instead.)")
     }
@@ -248,8 +253,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            isMutable: false)
         ])
         let addressFoo = SnapCompilerMetrics.kStaticStorageStartAddress+0
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         
         var symbol: Symbol? = nil
@@ -291,8 +295,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            isMutable: true)
         ])
         let addressFoo = SnapCompilerMetrics.kStaticStorageStartAddress
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         var symbol: Symbol? = nil
         XCTAssertNoThrow(symbol = try compiler.globalSymbols.resolve(identifier: "foo"))
@@ -319,8 +322,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            isMutable: true)
         ])
         
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         
         let addressFoo = SnapCompilerMetrics.kStaticStorageStartAddress+0
@@ -357,8 +359,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: true)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "variable redefines existing symbol: `foo'")
     }
@@ -396,8 +397,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
@@ -442,8 +442,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
@@ -468,8 +467,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                isMutable: false)
             ])
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
@@ -486,8 +484,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            isMutable: true)
         ])
         let addressFoo = SnapCompilerMetrics.kStaticStorageStartAddress+0
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
             .storeImmediate16(t0, addressFoo),
@@ -513,8 +510,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                isMutable: false)
             ])
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
@@ -534,8 +530,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                isMutable: false)
             ])
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "unable to deduce type of constant `foo'")
     }
@@ -550,8 +545,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                isMutable: false)
             ])
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
     }
     
@@ -567,8 +561,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                isMutable: false)
             ])
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
     }
     
@@ -581,8 +574,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let ast = Block(children: [
             Expression.LiteralInt(1)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
             .storeImmediate(t0, 1)
@@ -604,8 +596,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                                Expression.LiteralInt(0xb),
                                                Expression.LiteralInt(0xc)])
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
             .storeImmediate(t1, 0xa),
@@ -632,8 +623,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                                ExprUtils.makeU16(value: 0xbbbb),
                                                ExprUtils.makeU16(value: 0xcccc)])
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.instructions, [
             .storeImmediate16(t1, 0xaaaa),
@@ -669,8 +659,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                                    ExprUtils.makeU16(value: 0xffff)])
             ])
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         let expected: [CrackleInstruction] = [
             .storeImmediate16(t3, 0xaaaa),
@@ -704,8 +693,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         ])
         
         let addressFoo = SnapCompilerMetrics.kStaticStorageStartAddress
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         let L0 = ".L0"
         XCTAssertEqual(compiler.instructions, [
@@ -744,8 +732,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                               right: Expression.LiteralInt(2)))
         ])
         let addressFoo = SnapCompilerMetrics.kStaticStorageStartAddress
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         let L0 = ".L0"
         let L1 = ".L1"
@@ -783,8 +770,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             While(condition: Expression.LiteralBool(true),
                   body: Expression.LiteralInt(2))
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         let head = ".L0"
         let tail = ".L1"
@@ -807,8 +793,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "binary operator `+' cannot be applied to operands of types `u8' and `bool'")
     }
@@ -824,8 +809,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             ]),
             ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralInt(0))
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "use of unresolved identifier: `foo'")
     }
@@ -837,8 +821,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                 argumentNames: [],
                                 body: Block())
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         let L0 = "foo"
         let L1 = "__foo_tail"
@@ -869,8 +852,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             Expression.Call(callee: Expression.Identifier("foo"),
                             arguments: [])
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
@@ -885,8 +867,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                 argumentNames: [],
                                 body: Block())
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "missing return in a function expected to return `u8'")
     }
@@ -900,8 +881,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                     Return(ExprUtils.makeBool(value: true))
                                 ]))
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `bool' to return type `u8'")
     }
@@ -915,8 +895,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                     Return(nil)
                                 ]))
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "non-void function should return a value")
     }
@@ -931,8 +910,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                     Expression.LiteralBool(false)
                                 ]))
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "code after return will never be executed")
     }
@@ -951,8 +929,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                     Return(one)
                                 ]))
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `bool' to return type `u8'")
     }
@@ -971,8 +948,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                     Return(one)
                                 ]))
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `bool' to return type `u8'")
     }
@@ -990,8 +966,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                     Return(one)
                                 ]))
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `bool' to return type `u8'")
     }
@@ -1011,8 +986,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
@@ -1035,8 +1009,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
@@ -1059,8 +1032,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
@@ -1080,8 +1052,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                        else: nil)
                                 ]))
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "missing return in a function expected to return `u8'")
     }
@@ -1114,8 +1085,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "cannot convert value of type `bool' to expected argument type `u8' in call to `foo'")
     }
@@ -1129,8 +1099,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                     Return(ExprUtils.makeU8(value: 1))
                                 ]))
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "use of undeclared type `wat'")
     }
@@ -1139,8 +1108,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let ast = Block(children: [
             Return(Expression.LiteralBool(true))
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "return is invalid outside of a function")
     }
@@ -1154,8 +1122,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                     Return(ExprUtils.makeU8(value: 1))
                                 ]))
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
         XCTAssertEqual(compiler.errors.first?.message, "unexpected non-void return value in void function")
@@ -1170,8 +1137,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                     Return()
                                 ]))
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
     }
     
@@ -1190,8 +1156,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
@@ -1220,8 +1185,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
@@ -1244,8 +1208,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
@@ -1289,8 +1252,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
@@ -1331,8 +1293,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
@@ -1379,8 +1340,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            isMutable: false)
         ])
         
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
             XCTFail()
@@ -1401,8 +1361,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            isMutable: false)
         ])
         
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
             XCTFail()
@@ -1429,8 +1388,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
             XCTFail()
@@ -1459,8 +1417,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                             arguments: [Expression.LiteralInt(0xab),
                                         Expression.LiteralInt(kStaticStorageStartAddress)])
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
             XCTFail()
@@ -1493,8 +1450,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                 Expression.LiteralInt(1)
             ])
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
             XCTFail()
@@ -1519,8 +1475,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                             arguments: [Expression.LiteralInt(0xcd),
                                         Expression.LiteralInt(kStaticStorageStartAddress)])
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
             XCTFail()
@@ -1558,8 +1513,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                                         member: Expression.Identifier("count")))
             
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -1575,8 +1529,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let ast = Block(children: [
             StructDeclaration(identifier: Expression.Identifier("foo"), members: [])
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -1597,8 +1550,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                 StructDeclaration.Member(name: "bar", type: Expression.PrimitiveType(.u8))
             ])
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -1624,8 +1576,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .automaticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -1653,8 +1604,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                           rexpr: Expression.Identifier("i"))
                 ]))
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -1684,8 +1634,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                           rexpr: Expression.Identifier("i"))
                 ]))
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -1720,8 +1669,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let globalSymbols = ast.symbols
         globalSymbols.bind(identifier: "__oob", symbol: Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -1756,8 +1704,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let globalSymbols = ast.symbols
         globalSymbols.bind(identifier: "__oob", symbol: Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -1802,8 +1749,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let globalSymbols = ast.symbols
         globalSymbols.bind(identifier: "__oob", symbol: Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -1828,8 +1774,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .automaticStorage,
                            isMutable: true)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -1845,8 +1790,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let ast = Block(children: [
             Impl(identifier: Expression.Identifier("Foo"), children: [])
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "use of undeclared type `Foo'")
     }
@@ -1860,8 +1804,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            isMutable: false),
             Impl(identifier: Expression.Identifier("Foo"), children: [])
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "use of undeclared type `Foo'")
     }
@@ -1879,8 +1822,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                         body: Block(children: []))
                  ])
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "function redefines existing symbol: `bar'")
     }
@@ -1898,8 +1840,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                         body: Block(children: []))
                  ])
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -1940,8 +1881,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                  ]),
             Expression.Call(callee: Expression.Get(expr: Expression.Identifier("Foo"), member: Expression.Identifier("baz")), arguments: [])
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -1961,8 +1901,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                 ])
             ])
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "a struct cannot contain itself recursively")
     }
@@ -1971,8 +1910,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let ast = Block(children: [
             Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.u8))
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         let result = try? compiler.globalSymbols.resolveType(identifier: "Foo")
         XCTAssertEqual(result, .u8)
     }
@@ -1982,8 +1920,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.u8)),
             Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.u8))
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "typealias redefines existing type: `Foo'")
     }
@@ -1997,8 +1934,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            isMutable: true),
             Match(expr: Expression.Identifier("foo"), clauses: [], elseClause: nil)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "match statement is not exhaustive. Missing clause: u8")
     }
@@ -2014,8 +1950,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                 Expression.Assignment(lexpr: Expression.Identifier("result"), rexpr: Expression.LiteralInt(42))
             ]))
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -2043,8 +1978,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                              block: Block(children: []))
             ], elseClause: nil)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "extraneous clause in match statement: bool")
     }
@@ -2070,8 +2004,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                              block: Block(children: []))
             ], elseClause: nil)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "extraneous clauses in match statement: bool, None")
     }
@@ -2096,8 +2029,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                             ]))
             ], elseClause: nil)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -2129,8 +2061,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                             ]))
             ], elseClause: nil)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "match statement is not exhaustive. Missing clause: bool")
     }
@@ -2160,8 +2091,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                             ]))
             ], elseClause: nil)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -2194,8 +2124,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             ]),
             Import(moduleName: "MyModule2")
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "import of module `MyModule2' redefines existing symbol: `foo'")
     }
@@ -2217,8 +2146,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -2243,8 +2171,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             ]),
             Import(moduleName: "MyModule")
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "import of module `MyModule' redefines existing type: `Foo'")
     }
@@ -2262,8 +2189,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                 StructDeclaration.Member(name: "bar", type: Expression.PrimitiveType(.u16))
                               ])
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -2285,8 +2211,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             ]),
             Import(moduleName: "MyModule")
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "import of module `MyModule' redefines existing type: `Foo'")
     }
@@ -2301,8 +2226,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             Import(moduleName: "MyModule"),
             Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.u16))
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -2333,8 +2257,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             ]),
             Import(moduleName: "MyModule2")
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "import of module `MyModule2' redefines existing symbol: `foo'")
     }
@@ -2350,8 +2273,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             ]),
             Import(moduleName: "MyModule")
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -2375,8 +2297,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             ]),
             Import(moduleName: "Outer")
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertNil(compiler.globalSymbols.maybeResolve(identifier: "foo"))
     }
@@ -2393,8 +2314,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             Import(moduleName: "MyModule"),
             Import(moduleName: "MyModule")
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         XCTAssertNotNil(compiler.globalSymbols.maybeResolve(identifier: "foo"))
     }
@@ -2434,8 +2354,7 @@ public func foo() -> None {
                then: Block(children: []),
                else: nil)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "cannot convert value of type `integer constant 0' to type `bool'")
     }
@@ -2453,8 +2372,7 @@ public func foo() -> None {
             ]))
         ])
         
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -2485,9 +2403,7 @@ public func foo() -> None {
             ]))
         ])
         
-        let compiler = SnapToCrackleCompiler()
-        compiler.shouldRunSpecificTest = "bar"
-        compiler.compile(ast: ast)
+        let compiler = compile(ast, shouldRunSpecificTest: "bar")
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "declaration is only valid at file scope")
     }
@@ -2499,8 +2415,7 @@ public func foo() -> None {
             TestDeclaration(name: "bar", body: Block(children: []))
         ])
         
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "test \"bar\" already exists")
     }
@@ -2519,9 +2434,7 @@ public func foo() -> None {
             ]))
         ])
         
-        let compiler = SnapToCrackleCompiler()
-        compiler.shouldRunSpecificTest = "bar"
-        compiler.compile(ast: ast)
+        let compiler = compile(ast, shouldRunSpecificTest: "bar")
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -2545,8 +2458,7 @@ public func foo() -> None {
                            storage: .automaticStorage,
                            isMutable: true)
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -2564,8 +2476,7 @@ public func foo() -> None {
         let ast = Block(children: [
             Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PointerType(Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: [])))
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         let result = try? compiler.globalSymbols.resolveType(identifier: "Foo")
         XCTAssertEqual(result, .pointer(.function(FunctionType(returnType: .u8, arguments: []))))
     }
@@ -2574,8 +2485,7 @@ public func foo() -> None {
         let ast = Block(children: [
             TraitDeclaration(identifier: Expression.Identifier("Foo"), members: [])
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -2598,8 +2508,7 @@ public func foo() -> None {
                              visibility: .privateVisibility)
         ])
         
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -2635,8 +2544,7 @@ public func foo() -> None {
             TraitDeclaration(identifier: Expression.Identifier("Foo"), members: [])
         ])
         
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -2663,8 +2571,7 @@ public func foo() -> None {
                              visibility: .privateVisibility)
         ])
         
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -2692,8 +2599,7 @@ public func foo() -> None {
                              visibility: .privateVisibility)
         ])
         
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -2721,8 +2627,7 @@ public func foo() -> None {
                              visibility: .privateVisibility)
         ])
         
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -2776,8 +2681,7 @@ public func foo() -> None {
                     ])
         ])
         
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertFalse(compiler.hasError)
         if compiler.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
@@ -2810,8 +2714,7 @@ public func foo() -> None {
                     children: [])
         ])
         
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "`SerialFake' does not implement all trait methods; missing `puts'.")
     }
@@ -2839,8 +2742,7 @@ public func foo() -> None {
                     ])
         ])
         
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "`SerialFake' method `puts' has 1 parameter but the declaration in the `Serial' trait has 2.")
     }
@@ -2869,8 +2771,7 @@ public func foo() -> None {
                     ])
         ])
         
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "`SerialFake' method `puts' has incompatible type for trait `Serial'; expected `[]u8' argument, got `u8' instead")
     }
@@ -2899,8 +2800,7 @@ public func foo() -> None {
                     ])
         ])
         
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "`SerialFake' method `puts' has incompatible type for trait `Serial'; expected `*SerialFake' argument, got `u8' instead")
     }
@@ -2929,8 +2829,7 @@ public func foo() -> None {
                     ])
         ])
         
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "`SerialFake' method `puts' has incompatible type for trait `Serial'; expected `bool' return value, got `void' instead")
     }

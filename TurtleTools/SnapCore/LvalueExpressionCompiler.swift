@@ -44,6 +44,7 @@ public class LvalueExpressionCompiler: BaseExpressionCompiler {
         let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: expr.sourceAnchor, identifier: expr.identifier)
         let symbol = resolution.0
         let depth = symbols.stackFrameIndex - resolution.1
+        assert(depth >= 0)
         
         let instructions = computeAddressOfSymbol(symbol, depth)
         

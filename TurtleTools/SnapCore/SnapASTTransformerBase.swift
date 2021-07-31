@@ -88,7 +88,8 @@ public class SnapASTTransformerBase: NSObject {
                                    functionType: node.functionType,
                                    argumentNames: node.argumentNames,
                                    body: try transform(node.body) as! Block,
-                                   visibility: node.visibility)
+                                   visibility: node.visibility,
+                                   symbols: node.symbols)
     }
     
     public func transform(impl node: Impl) throws -> AbstractSyntaxTreeNode {

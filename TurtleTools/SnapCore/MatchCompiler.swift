@@ -12,6 +12,8 @@ import TurtleCore
 // of other nodes.
 public class MatchCompiler: NSObject {
     public func compile(match: Match, symbols: SymbolTable) throws -> AbstractSyntaxTreeNode {
+        let outer = SymbolTable(parent: symbols)
+        
         let matchExprType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: match.expr)
         
         // Get the list of types this match statement is expected to contain.
@@ -60,42 +62,67 @@ public class MatchCompiler: NSObject {
                                         expression: match.expr,
                                         storage: .automaticStorage,
                                         isMutable: true))
-            stmts.append(compileMatchClause(match, match.clauses))
+            stmts.append(compileMatchClause(match, match.clauses, outer))
         }
         else if let elseClause = match.elseClause {
-            stmts.append(elseClause)
+            let rewrittenElseClause = Block(sourceAnchor: elseClause.sourceAnchor,
+                                            symbols: SymbolTable(parent: outer),
+                                            children: elseClause.children)
+            stmts.append(rewrittenElseClause)
         }
         
-        let block = Block(sourceAnchor: match.sourceAnchor, children: stmts)
+        let block = Block(sourceAnchor: match.sourceAnchor,
+                          symbols: outer,
+                          children: stmts)
         return block
     }
     
-    private func compileMatchClause(_ match: Match, _ clauses: [Match.Clause]) -> If {
+    private func compileMatchClause(_ match: Match, _ clauses: [Match.Clause], _ symbols: SymbolTable) -> If {
         assert(!clauses.isEmpty)
+        
         let clause = clauses.last!
         let index = Expression.Identifier("__index")
+        
         if clauses.count == 1 {
+            let clauseElseBlock: Block?
+            if match.elseClause == nil {
+                clauseElseBlock = nil
+            } else {
+                clauseElseBlock = Block(sourceAnchor: match.elseClause!.sourceAnchor,
+                                        symbols: SymbolTable(parent: symbols),
+                                        children: match.elseClause!.children)
+            }
+            
+            let outerSymbols = SymbolTable(parent: symbols)
+            
             return If(condition: Expression.Is(expr: index, testType: clause.valueType),
-                      then: Block(children: [
+                      then: Block(symbols: outerSymbols,
+                                  children: [
                         VarDeclaration(identifier: clause.valueIdentifier,
                                        explicitType: nil,
                                        expression: Expression.As(expr: index, targetType: clause.valueType),
                                        storage: .automaticStorage,
                                        isMutable: false),
-                        clause.block
+                                    Block(sourceAnchor: clause.block.sourceAnchor,
+                                          symbols: SymbolTable(parent: outerSymbols),
+                                          children: clause.block.children)
                       ]),
-                      else: match.elseClause)
+                      else: clauseElseBlock)
         } else {
+            let outerSymbols = SymbolTable(parent: symbols)
             return If(condition: Expression.Is(expr: index, testType: clause.valueType),
-                      then: Block(children: [
+                      then: Block(symbols: outerSymbols,
+                                  children: [
                         VarDeclaration(identifier: clause.valueIdentifier,
                                        explicitType: nil,
                                        expression: Expression.As(expr: index, targetType: clause.valueType),
                                        storage: .automaticStorage,
                                        isMutable: false),
-                        clause.block
+                                    Block(sourceAnchor: clause.block.sourceAnchor,
+                                          symbols: SymbolTable(parent: outerSymbols),
+                                          children: clause.block.children)
                       ]),
-                      else: compileMatchClause(match, clauses.dropLast()))
+                      else: compileMatchClause(match, clauses.dropLast(), symbols))
         }
     }
 }

@@ -78,12 +78,14 @@ public class BaseExpressionCompiler: NSObject {
     }
     
     public func loadStackSymbol(_ symbol: Symbol, _ depth: Int) -> [CrackleInstruction] {
+        assert(depth >= 0)
         return loadStackValue(type: symbol.type,
                               offset: symbol.offset,
                               depth: depth)
     }
     
     public func loadStackValue(type: SymbolType, offset: Int, depth: Int) -> [CrackleInstruction] {
+        assert(depth >= 0)
         var instructions: [CrackleInstruction] = []
         instructions += computeAddressOfLocalVariable(offset: offset, depth: depth)
         let src = temporaryStack.pop()
@@ -96,10 +98,13 @@ public class BaseExpressionCompiler: NSObject {
     }
     
     public func computeAddressOfLocalVariable(_ symbol: Symbol, _ depth: Int) -> [CrackleInstruction] {
+        assert(depth >= 0)
         return computeAddressOfLocalVariable(offset: symbol.offset, depth: depth)
     }
     
     public func computeAddressOfLocalVariable(offset: Int, depth: Int) -> [CrackleInstruction] {
+        assert(depth >= 0)
+        
         var instructions: [CrackleInstruction] = []
         
         let temp_framePointer = temporaryAllocator.allocate()
@@ -128,13 +133,15 @@ public class BaseExpressionCompiler: NSObject {
     
     // Compute and push the address of the specified symbol.
     public func computeAddressOfSymbol(_ symbol: Symbol, _ depth: Int) -> [CrackleInstruction] {
+        assert(depth >= 0)
         var instructions: [CrackleInstruction] = []
         switch symbol.storage {
         case .staticStorage:
             let temp = temporaryAllocator.allocate()
             temporaryStack.push(temp)
             instructions += [.storeImmediate16(temp.address, symbol.offset)]
-        case .automaticStorage:  instructions += computeAddressOfLocalVariable(symbol, depth)
+        case .automaticStorage:
+            instructions += computeAddressOfLocalVariable(symbol, depth)
         }
         return instructions
     }

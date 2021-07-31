@@ -31,9 +31,7 @@ public class SnapASTTransformerAssert: SnapASTTransformerBase {
         let condition = Expression.Binary(sourceAnchor: s, op: .eq, left: node.condition, right: Expression.LiteralBool(false))
         return If(sourceAnchor: s,
                   condition: condition,
-                  then: Block(children: [
-                   panic
-                  ]),
+                  then: Block(children: [ panic ]),
                   else: nil)
     }
 }

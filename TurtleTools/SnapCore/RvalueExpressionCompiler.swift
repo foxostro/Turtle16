@@ -515,6 +515,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         let resolution = try symbols.resolveWithStackFrameDepth(sourceAnchor: identifier.sourceAnchor, identifier: identifier.identifier)
         let symbol = resolution.0
         let depth = symbols.stackFrameIndex - resolution.1
+        assert(depth >= 0)
         switch symbol.storage {
         case .staticStorage:
             return loadStaticSymbol(symbol)

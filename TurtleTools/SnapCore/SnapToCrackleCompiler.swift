@@ -651,7 +651,15 @@ public class SnapToCrackleCompiler: NSObject {
         let sequence = Expression.Identifier("__sequence")
         let limit = Expression.Identifier("__limit")
         
-        let ast = Block(children: [
+        let grandparent = SymbolTable(parent: symbols)
+        let parent = SymbolTable(parent: grandparent)
+        let inner = SymbolTable(parent: parent)
+        
+        let body = Block(sourceAnchor: stmt.body.sourceAnchor,
+                         symbols: inner,
+                         children: stmt.body.children)
+        
+        let ast = Block(symbols: grandparent, children: [
             VarDeclaration(identifier: sequence,
                            explicitType: nil,
                            expression: stmt.sequenceExpr,
@@ -668,10 +676,8 @@ public class SnapToCrackleCompiler: NSObject {
                            storage: .automaticStorage,
                            isMutable: true),
             While(condition: Expression.Binary(op: .ne, left: stmt.identifier, right: limit),
-                  body: Block(children: [
-                    stmt.body,
-                    Expression.Assignment(lexpr: stmt.identifier, rexpr: Expression.Binary(op: .plus, left: stmt.identifier, right: Expression.LiteralInt(1)))
-                  ]))
+                  body: Block(symbols: SymbolTable(parent: grandparent),
+                              children: [body, Expression.Assignment(lexpr: stmt.identifier, rexpr: Expression.Binary(op: .plus, left: stmt.identifier, right: Expression.LiteralInt(1)))]))
         ])
         
         try compile(block: ast)
@@ -682,7 +688,15 @@ public class SnapToCrackleCompiler: NSObject {
         let index = Expression.Identifier(sourceAnchor: stmt.sourceAnchor, identifier: "__index")
         let limit = Expression.Identifier(sourceAnchor: stmt.sourceAnchor, identifier: "__limit")
         
-        let ast = Block(sourceAnchor: stmt.sourceAnchor, children: [
+        let grandparent = SymbolTable(parent: symbols)
+        let parent = SymbolTable(parent: grandparent)
+        let inner = SymbolTable(parent: parent)
+        
+        let body = Block(sourceAnchor: stmt.body.sourceAnchor,
+                         symbols: inner,
+                         children: stmt.body.children)
+        
+        let ast = Block(sourceAnchor: stmt.sourceAnchor, symbols: grandparent, children: [
             VarDeclaration(sourceAnchor: stmt.sourceAnchor,
                            identifier: sequence,
                            explicitType: nil,
@@ -711,13 +725,14 @@ public class SnapToCrackleCompiler: NSObject {
                   condition: Expression.Binary(sourceAnchor: stmt.sourceAnchor,
                                                op: .ne, left: index, right: limit),
                   body: Block(sourceAnchor: stmt.sourceAnchor,
+                              symbols: parent,
                               children: [
                     Expression.Assignment(sourceAnchor: stmt.sourceAnchor,
                                           lexpr: stmt.identifier,
                                           rexpr: Expression.Subscript(sourceAnchor: stmt.sourceAnchor,
                                                                       subscriptable: sequence,
                                                                       argument: index)),
-                    stmt.body,
+                    body,
                     Expression.Assignment(sourceAnchor: stmt.sourceAnchor,
                                           lexpr: index,
                                           rexpr: Expression.Binary(op: .plus,
@@ -731,21 +746,19 @@ public class SnapToCrackleCompiler: NSObject {
     
     private func compile(block: Block) throws {
         currentSourceAnchor = block.sourceAnchor
-        pushScopeForBlock()
+        
+        let parent = symbols
+        assert(block.symbols.parent == symbols)
+        symbols = block.symbols
+        symbols.enclosingFunctionType = parent.enclosingFunctionType
+        
         try performDeclPass(block: block)
         for child in block.children {
             try compile(genericNode: child)
         }
-        popScopeForBlock()
-    }
-    
-    private func pushScopeForBlock() {
-        symbols = SymbolTable(parent: symbols)
-    }
-    
-    private func popScopeForBlock() {
+        
         let storagePointer = symbols.storagePointer
-        symbols = symbols.parent!
+        symbols = parent
         symbols.storagePointer = storagePointer
     }
     
@@ -827,7 +840,7 @@ public class SnapToCrackleCompiler: NSObject {
     private func compile(impl: Impl) throws {
         let typ = try symbols.resolveType(sourceAnchor: impl.identifier.sourceAnchor, identifier: impl.identifier.identifier).unwrapStructType()
         
-        pushScopeForBlock()
+        symbols = SymbolTable(parent: symbols)
         symbols.enclosingFunctionName = impl.identifier.identifier
         
         for child in impl.children {
@@ -847,7 +860,9 @@ public class SnapToCrackleCompiler: NSObject {
         }
         
         symbols.enclosingFunctionName = nil
-        popScopeForBlock()
+        let storagePointer = symbols.storagePointer
+        symbols = symbols.parent!
+        symbols.storagePointer = storagePointer
     }
     
     private func compile(implFor: ImplFor) throws {
@@ -938,18 +953,23 @@ public class SnapToCrackleCompiler: NSObject {
             let callee = Expression.Get(expr: Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("vtable")), member: Expression.Identifier(method.name))
             let arguments = [Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("object"))] + argumentNames[1...].map({Expression.Identifier($0)})
             
+            let outer = SymbolTable(parent: symbols)
+            
             let fnBody: Block
             let returnType = try TypeContextTypeChecker(symbols: symbols).check(expression: functionType.returnType)
             if returnType == .void {
-                fnBody = Block(children: [Expression.Call(callee: callee, arguments: arguments)])
+                fnBody = Block(symbols: SymbolTable(parent: outer),
+                               children: [Expression.Call(callee: callee, arguments: arguments)])
             } else {
-                fnBody = Block(children: [Return(Expression.Call(callee: callee, arguments: arguments))])
+                fnBody = Block(symbols: SymbolTable(parent: outer),
+                               children: [Return(Expression.Call(callee: callee, arguments: arguments))])
             }
             
             let fnDecl = FunctionDeclaration(identifier: Expression.Identifier(method.name),
                                              functionType: functionType,
                                              argumentNames: argumentNames,
-                                             body: fnBody)
+                                             body: fnBody,
+                                             symbols: outer)
             thunks.append(fnDecl)
         }
         let implBlock = Impl(sourceAnchor: traitDecl.sourceAnchor, identifier: Expression.Identifier(traitDecl.nameOfTraitObjectType), children: thunks)
@@ -1071,7 +1091,8 @@ public class SnapToCrackleCompiler: NSObject {
                 currentTest = nil
             }
         }
-        try compile(block: Block(children: try compileProgramText(url: nil, text: """
+        try compile(block: Block(symbols: SymbolTable(parent: symbols),
+                                 children: try compileProgramText(url: nil, text: """
 puts("passed\\n")
 """).children))
     }

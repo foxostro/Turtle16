@@ -796,9 +796,15 @@ public class SnapToCrackleCompiler: NSObject {
             .pushReturnAddress,
             .enter
         ])
-
-        pushScopeForNewStackFrame(enclosingFunctionName: node.identifier.identifier,
-                                  enclosingFunctionType: functionType)
+        
+        let parent = symbols
+        node.symbols.parent = parent
+        node.symbols.enclosingFunctionType = functionType
+        node.symbols.enclosingFunctionName = node.identifier.identifier
+        node.symbols.storagePointer = 0
+        node.symbols.stackFrameIndex = parent.stackFrameIndex + 1
+        symbols = node.symbols
+        
         bindFunctionArguments(functionType: functionType, argumentNames: node.argumentNames)
         try performDeclPass(block: node.body)
         try expectFunctionReturnExpressionIsCorrectType(func: node)
@@ -810,7 +816,8 @@ public class SnapToCrackleCompiler: NSObject {
             try compile(return: Return(sourceAnchor: sourceAnchors?.last, expression: nil))
         }
         currentSourceAnchor = sourceAnchors?.last
-        popScopeForStackFrame()
+        
+        symbols = symbols.parent!
         
         emit([
             .label(labelTail),
@@ -972,19 +979,6 @@ public class SnapToCrackleCompiler: NSObject {
         }
         
         return functionType
-    }
-    
-    private func pushScopeForNewStackFrame(enclosingFunctionName: String,
-                                           enclosingFunctionType: FunctionType) {
-        symbols = SymbolTable(parent: symbols)
-        symbols.storagePointer = 0
-        symbols.stackFrameIndex += 1
-        symbols.enclosingFunctionName = enclosingFunctionName
-        symbols.enclosingFunctionType = enclosingFunctionType
-    }
-    
-    private func popScopeForStackFrame() {
-        symbols = symbols.parent!
     }
     
     private func bindFunctionArguments(functionType: FunctionType, argumentNames: [String]) {

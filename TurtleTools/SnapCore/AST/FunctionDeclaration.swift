@@ -14,31 +14,21 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
     public let argumentNames: [String]
     public let body: Block
     public let visibility: SymbolVisibility
+    public let symbols: SymbolTable
     
-    public convenience init(identifier: Expression.Identifier,
-                            functionType: Expression,
-                            argumentNames: [String],
-                            body: Block,
-                            visibility: SymbolVisibility = .privateVisibility) {
-        self.init(sourceAnchor: nil,
-                  identifier: identifier,
-                  functionType: functionType,
-                  argumentNames: argumentNames,
-                  body: body,
-                  visibility: visibility)
-    }
-    
-    public required init(sourceAnchor: SourceAnchor?,
-                         identifier: Expression.Identifier,
-                         functionType: Expression,
-                         argumentNames: [String],
-                         body: Block,
-                         visibility: SymbolVisibility = .privateVisibility) {
+    public init(sourceAnchor: SourceAnchor? = nil,
+                identifier: Expression.Identifier,
+                functionType: Expression,
+                argumentNames: [String],
+                body: Block,
+                visibility: SymbolVisibility = .privateVisibility,
+                symbols: SymbolTable = SymbolTable()) {
         self.identifier = identifier
         self.functionType = functionType
         self.argumentNames = argumentNames
         self.body = body
         self.visibility = visibility
+        self.symbols = symbols
         super.init(sourceAnchor: sourceAnchor)
     }
     
@@ -70,6 +60,9 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
         guard visibility == rhs.visibility else {
             return false
         }
+        guard symbols == rhs.symbols else {
+            return false
+        }
         return true
     }
     
@@ -80,6 +73,7 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
         hasher.combine(argumentNames)
         hasher.combine(body)
         hasher.combine(visibility)
+        hasher.combine(symbols)
         hasher.combine(super.hash)
         return hasher.finalize()
     }

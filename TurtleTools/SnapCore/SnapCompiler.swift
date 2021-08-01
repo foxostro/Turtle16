@@ -9,6 +9,9 @@
 import TurtleCore
 import TurtleSimulatorCore
 
+public let kMainFunctionName = "main"
+public let kTestMainFunctionName = "__testMain"
+
 public class SnapCompiler: NSObject {
     public var isUsingStandardLibrary = false
     public var shouldRunSpecificTest: String? = nil
@@ -59,11 +62,13 @@ public class SnapCompiler: NSObject {
         
         // AST contraction step
         let astTransformer = SnapASTTransformer()
+        astTransformer.shouldRunSpecificTest = shouldRunSpecificTest
         astTransformer.transform(parser.syntaxTree!)
         if astTransformer.hasError {
             errors = astTransformer.errors
             return
         }
+        testNames = astTransformer.testNames
         ast = astTransformer.ast
         
         // Compile the AST to IR code
@@ -73,14 +78,12 @@ public class SnapCompiler: NSObject {
         }
         snapToCrackleCompiler.programDebugInfo = programDebugInfo
         snapToCrackleCompiler.isUsingStandardLibrary = isUsingStandardLibrary
-        snapToCrackleCompiler.shouldRunSpecificTest = shouldRunSpecificTest
         snapToCrackleCompiler.sandboxAccessManager = sandboxAccessManager
         snapToCrackleCompiler.compile(ast: ast)
         if snapToCrackleCompiler.hasError {
             errors = snapToCrackleCompiler.errors
             return
         }
-        testNames = snapToCrackleCompiler.testNames
         if shouldEnableOptimizations {
             optimizeCrackle(snapToCrackleCompiler)
         } else {

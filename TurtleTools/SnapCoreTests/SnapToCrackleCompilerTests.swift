@@ -17,13 +17,12 @@ class SnapToCrackleCompilerTests: XCTestCase {
     let t3 = SnapCompilerMetrics.kTemporaryStorageStartAddress + 6
     let kStaticStorageStartAddress = SnapCompilerMetrics.kStaticStorageStartAddress
     
-    func compile(_ original: AbstractSyntaxTreeNode, shouldRunSpecificTest: String? = nil) -> SnapToCrackleCompiler {
+    func compile(_ original: AbstractSyntaxTreeNode) -> SnapToCrackleCompiler {
         // It's super annoying to connect symbol table chains by hand. Do it automatically.
         let modified = try! SnapASTTransformerSymbolTables().transform(original) as! Block
         
         // Compile to Crackle IR
         let compiler = SnapToCrackleCompiler()
-        compiler.shouldRunSpecificTest = shouldRunSpecificTest
         compiler.compile(ast: modified)
         
         return compiler
@@ -2357,96 +2356,6 @@ public func foo() -> None {
         let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "cannot convert value of type `integer constant 0' to type `bool'")
-    }
-    
-    func testProgramCallsMainFunctionIfOneExists() {
-        let ast = Block(children: [
-            VarDeclaration(identifier: Expression.Identifier("foo"),
-                           explicitType: nil,
-                           expression: Expression.LiteralInt(1),
-                           storage: .staticStorage,
-                           isMutable: true),
-            FunctionDeclaration(identifier: Expression.Identifier(SnapToCrackleCompiler.kMainFunctionName), functionType: Expression.FunctionType(name: SnapToCrackleCompiler.kMainFunctionName, returnType: Expression.PrimitiveType(.void), arguments: []), argumentNames: [], body: Block(children: [
-                Expression.Assignment(lexpr: Expression.Identifier("foo"),
-                                      rexpr: Expression.LiteralInt(42))
-            ]))
-        ])
-        
-        let compiler = compile(ast)
-        XCTAssertFalse(compiler.hasError)
-        if compiler.hasError {
-            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
-            return
-        }
-        let ir = compiler.instructions
-        let executor = CrackleExecutor()
-        executor.injectPanicStub = false
-        let computer = try! executor.execute(crackle: ir)
-        
-        let addressOfFoo = try! compiler.globalSymbols.resolve(identifier: "foo").offset
-        XCTAssertEqual(computer.dataRAM.load(from: addressOfFoo), 42)
-    }
-    
-    func testTestDeclarationMustBeAtFileScope() {
-        let ast = Block(children: [
-            VarDeclaration(identifier: Expression.Identifier("foo"),
-                           explicitType: nil,
-                           expression: Expression.LiteralInt(1),
-                           storage: .staticStorage,
-                           isMutable: true),
-            FunctionDeclaration(identifier: Expression.Identifier("puts"), functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [Expression.DynamicArrayType(Expression.PrimitiveType(.u8))]), argumentNames: ["s"], body: Block(children: [])),
-            TestDeclaration(name: "bar", body: Block(children: [
-                TestDeclaration(name: "baz", body: Block(children: [
-                    Expression.Assignment(lexpr: Expression.Identifier("foo"),
-                                          rexpr: Expression.LiteralInt(42))
-                ]))
-            ]))
-        ])
-        
-        let compiler = compile(ast, shouldRunSpecificTest: "bar")
-        XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "declaration is only valid at file scope")
-    }
-    
-    func testTestDeclarationsMustHaveUniqueName() {
-        let ast = Block(children: [
-            FunctionDeclaration(identifier: Expression.Identifier("puts"), functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [Expression.DynamicArrayType(Expression.PrimitiveType(.u8))]), argumentNames: ["s"], body: Block(children: [])),
-            TestDeclaration(name: "bar", body: Block(children: [])),
-            TestDeclaration(name: "bar", body: Block(children: []))
-        ])
-        
-        let compiler = compile(ast)
-        XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "test \"bar\" already exists")
-    }
-    
-    func testProgramTestModeInvokesTestCodeInsteadOfCallingMain() {
-        let ast = Block(children: [
-            VarDeclaration(identifier: Expression.Identifier("foo"),
-                           explicitType: nil,
-                           expression: Expression.LiteralInt(1),
-                           storage: .staticStorage,
-                           isMutable: true),
-            FunctionDeclaration(identifier: Expression.Identifier("puts"), functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [Expression.DynamicArrayType(Expression.PrimitiveType(.u8))]), argumentNames: ["s"], body: Block(children: [])),
-            TestDeclaration(name: "bar", body: Block(children: [
-                Expression.Assignment(lexpr: Expression.Identifier("foo"),
-                                      rexpr: Expression.LiteralInt(42))
-            ]))
-        ])
-        
-        let compiler = compile(ast, shouldRunSpecificTest: "bar")
-        XCTAssertFalse(compiler.hasError)
-        if compiler.hasError {
-            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
-            return
-        }
-        let ir = compiler.instructions
-        let executor = CrackleExecutor()
-        executor.injectPanicStub = false
-        let computer = try! executor.execute(crackle: ir)
-        
-        let addressOfFoo = try! compiler.globalSymbols.resolve(identifier: "foo").offset
-        XCTAssertEqual(computer.dataRAM.load(from: addressOfFoo), 42)
     }
     
     func testDeclareAFunctionPointerVariable() {

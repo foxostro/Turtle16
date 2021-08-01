@@ -11,7 +11,7 @@ import TurtleCore
 public class SnapASTTransformerBase: NSObject {
     var symbols: SymbolTable? = nil
     
-    public func transform(_ genericNode: AbstractSyntaxTreeNode) throws -> AbstractSyntaxTreeNode {
+    public func transform(_ genericNode: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
         switch genericNode {
         case let node as VarDeclaration:
             return try transform(varDecl: node)
@@ -57,14 +57,14 @@ public class SnapASTTransformerBase: NSObject {
     public func transform(if node: If) throws -> AbstractSyntaxTreeNode {
         return If(sourceAnchor: node.sourceAnchor,
                   condition: node.condition,
-                  then: try transform(node.thenBranch),
+                  then: try transform(node.thenBranch)!,
                   else: try node.elseBranch.flatMap { try transform($0) })
     }
     
     public func transform(while node: While) throws -> AbstractSyntaxTreeNode {
         return While(sourceAnchor: node.sourceAnchor,
                      condition: node.condition,
-                     body: try transform(node.body))
+                     body: try transform(node.body)!)
     }
     
     public func transform(forIn node: ForIn) throws -> AbstractSyntaxTreeNode {
@@ -79,7 +79,7 @@ public class SnapASTTransformerBase: NSObject {
         symbols = node.symbols
         let result = Block(sourceAnchor: node.sourceAnchor,
                            symbols: node.symbols,
-                           children: try node.children.map { try transform($0) })
+                           children: try node.children.compactMap { try transform($0) })
         symbols = parent
         return result
     }
@@ -124,7 +124,7 @@ public class SnapASTTransformerBase: NSObject {
                                             valueType: $0.valueType,
                                             block: try transform(block: $0.block) as! Block)
                      },
-                     elseClause: try node.elseClause.flatMap { try transform($0) as? Block })
+                     elseClause: try transform(node.elseClause) as? Block)
     }
     
     public func transform(assert node: Assert) throws -> AbstractSyntaxTreeNode {
@@ -135,7 +135,7 @@ public class SnapASTTransformerBase: NSObject {
         return node
     }
     
-    public func transform(testDecl node: TestDeclaration) throws -> AbstractSyntaxTreeNode {
+    public func transform(testDecl node: TestDeclaration) throws -> AbstractSyntaxTreeNode? {
         return TestDeclaration(sourceAnchor: node.sourceAnchor,
                                name: node.name,
                                body: try transform(node.body) as! Block)

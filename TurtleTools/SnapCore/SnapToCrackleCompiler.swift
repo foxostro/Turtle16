@@ -16,7 +16,6 @@ public class SnapToCrackleCompiler: NSObject {
     public var hasError: Bool { !errors.isEmpty }
     public private(set) var instructions: [CrackleInstruction] = []
     public var programDebugInfo: SnapDebugInfo? = nil
-    public var shouldRunSpecificTest: String? = nil
     public private(set) var globalSymbols = SymbolTable()
     
     private var symbols = SymbolTable()
@@ -25,13 +24,8 @@ public class SnapToCrackleCompiler: NSObject {
     private var staticStoragePointer = SnapCompilerMetrics.kStaticStorageStartAddress
     private var currentSourceAnchor: SourceAnchor? = nil
     
-    public static let kMainFunctionName = "main"
     public static let kStandardLibraryModuleName = "stdlib"
     public var isUsingStandardLibrary = false
-    
-    public private(set) var testNames: [String] = []
-    private var testDeclarations: [TestDeclaration] = []
-    private var currentTest: TestDeclaration? = nil
     
     public var sandboxAccessManager: SandboxAccessManager? = nil
     
@@ -85,14 +79,6 @@ public class SnapToCrackleCompiler: NSObject {
         for node in children {
             try compile(genericNode: node)
         }
-        
-        if shouldRunSpecificTest != nil {
-            try compileTestRunner()
-        }
-        else if nil != globalSymbols.maybeResolve(identifier: SnapToCrackleCompiler.kMainFunctionName) {
-            let callMainFn = Expression.Call(callee: Expression.Identifier(SnapToCrackleCompiler.kMainFunctionName), arguments: [])
-            try compile(genericNode: callMainFn)
-        }
     }
     
     private func performDeclPass(genericNode: AbstractSyntaxTreeNode) throws {
@@ -112,7 +98,7 @@ public class SnapToCrackleCompiler: NSObject {
         case let node as TraitDeclaration:
             try performDeclPass(trait: node)
         case let node as TestDeclaration:
-            try performDeclPass(testDecl: node)
+            fatalError("TestDeclaration should have been handled at a higher level: \(node)")
         default:
             break
         }
@@ -341,19 +327,6 @@ public class SnapToCrackleCompiler: NSObject {
         }
         
         modulesAlreadyImported.insert(name)
-    }
-    
-    private func performDeclPass(testDecl node: TestDeclaration) throws {
-        guard symbols.parent == nil else {
-            throw CompilerError(sourceAnchor: node.sourceAnchor, message: "declaration is only valid at file scope")
-        }
-        
-        guard testNames.contains(node.name) == false else {
-            throw CompilerError(sourceAnchor: node.sourceAnchor, message: "test \"\(node.name)\" already exists")
-        }
-        
-        testNames.append(node.name)
-        testDeclarations.append(node)
     }
     
     private func performDeclPass(trait traitDecl: TraitDeclaration) throws {
@@ -1081,19 +1054,5 @@ public class SnapToCrackleCompiler: NSObject {
     
     public func injectModule(name: String, sourceCode: String) {
         injectedModules[name] = sourceCode
-    }
-    
-    private func compileTestRunner() throws {
-        for testDeclaration in testDeclarations {
-            if testDeclaration.name == shouldRunSpecificTest! {
-                currentTest = testDeclaration
-                try compile(block: testDeclaration.body)
-                currentTest = nil
-            }
-        }
-        try compile(block: Block(symbols: SymbolTable(parent: symbols),
-                                 children: try compileProgramText(url: nil, text: """
-puts("passed\\n")
-""").children))
     }
 }

@@ -20,7 +20,7 @@ public class SnapASTTransformerSymbolTables: SnapASTTransformerBase {
         symbols = node.symbols
         let result = Block(sourceAnchor: node.sourceAnchor,
                            symbols: node.symbols,
-                           children: try node.children.map { try transform($0) })
+                           children: try node.children.compactMap { try transform($0) })
         symbols = parent
         return result
     }
@@ -36,7 +36,7 @@ public class SnapASTTransformerSymbolTables: SnapASTTransformerBase {
         
         let body = Block(sourceAnchor: node.body.sourceAnchor,
                          symbols: node.symbols,
-                         children: try node.body.children.map { try transform($0) })
+                         children: try node.body.children.compactMap { try transform($0) })
         
         let result = FunctionDeclaration(sourceAnchor: node.sourceAnchor,
                                          identifier: node.identifier,

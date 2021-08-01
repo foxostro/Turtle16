@@ -24,20 +24,18 @@ public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
         depth -= 1
         
         if depth == 0 {
+            var children = result.children
+            
             if let testName = shouldRunSpecificTest,
                let testDeclaration = testDeclarations.first(where: { $0.name == testName }) {
                 let testRunnerMain = FunctionDeclaration(identifier: Expression.Identifier(kTestMainFunctionName), functionType: Expression.FunctionType(name: kTestMainFunctionName, returnType: Expression.PrimitiveType(.void), arguments: []), argumentNames: [], body: Block(children: [
                     testDeclaration.body,
                     Expression.Call(callee: Expression.Identifier("puts"), arguments: [Expression.LiteralString("passed\n")])
                 ]))
-                var children = result.children
                 children += [
                     testRunnerMain,
                     Expression.Call(callee: Expression.Identifier(kTestMainFunctionName), arguments: [])
                 ]
-                return Block(sourceAnchor: result.sourceAnchor,
-                             symbols: result.symbols,
-                             children: children)
             } else {
                 let hasMain = result.children.first(where: {
                     if let functionDeclaration = $0 as? FunctionDeclaration,
@@ -46,16 +44,18 @@ public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
                     }
                     return false
                 }) != nil
-                var children = result.children
                 if hasMain {
                     children += [
                         Expression.Call(callee: Expression.Identifier(kMainFunctionName), arguments: [])
                     ]
                 }
-                return Block(sourceAnchor: result.sourceAnchor,
-                             symbols: result.symbols,
-                             children: children)
             }
+            
+            let block = Block(sourceAnchor: result.sourceAnchor,
+                              symbols: result.symbols,
+                              children: children)
+            let result = try reconnectSymbolTables(block)
+            return result
         }
             
         return result

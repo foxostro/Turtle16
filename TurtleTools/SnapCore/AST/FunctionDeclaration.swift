@@ -60,9 +60,9 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
         guard visibility == rhs.visibility else {
             return false
         }
-        guard symbols == rhs.symbols else {
-            return false
-        }
+//        guard symbols == rhs.symbols else {
+//            return false
+//        }
         return true
     }
     
@@ -73,7 +73,7 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
         hasher.combine(argumentNames)
         hasher.combine(body)
         hasher.combine(visibility)
-        hasher.combine(symbols)
+//        hasher.combine(symbols)
         hasher.combine(super.hash)
         return hasher.finalize()
     }

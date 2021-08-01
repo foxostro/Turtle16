@@ -25,14 +25,14 @@ public class Block: AbstractSyntaxTreeNode {
         guard type(of: rhs!) == type(of: self) else { return false }
         guard super.isEqual(rhs) else { return false }
         guard let rhs = rhs as? Block else { return false }
-        guard symbols == rhs.symbols else { return false }
+//        guard symbols == rhs.symbols else { return false }
         guard children == rhs.children else { return false }
         return true
     }
     
     public override var hash: Int {
         var hasher = Hasher()
-        hasher.combine(symbols)
+//        hasher.combine(symbols)
         hasher.combine(children)
         hasher.combine(super.hash)
         return hasher.finalize()

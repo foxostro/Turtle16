@@ -140,4 +140,8 @@ public class SnapASTTransformerBase: NSObject {
                                name: node.name,
                                body: try transform(node.body) as! Block)
     }
+    
+    public func reconnectSymbolTables(_ node: AbstractSyntaxTreeNode) throws -> AbstractSyntaxTreeNode {
+        return try SnapASTTransformerSymbolTables(symbols).transform(node)!
+    }
 }

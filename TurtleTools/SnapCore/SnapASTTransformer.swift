@@ -28,9 +28,9 @@ public class SnapASTTransformer: NSObject {
     
     public func tryTransform(_ t0: AbstractSyntaxTreeNode) throws {
         let t1 = try SnapASTTransformerTopLevel().transform(t0)
-        let t2 = try SnapASTTransformerAssert().transform(t1)
-        let t3 = try testTransform(t2)
-        let t4 = try SnapASTTransformerSymbolTables().transform(t3)
+        let t2 = try SnapASTTransformerSymbolTables().transform(t1)
+        let t3 = try SnapASTTransformerAssert().transform(t2)
+        let t4 = try testTransform(t3)
         guard let topLevel = t4 as? Block else {
             throw CompilerError(sourceAnchor: t0.sourceAnchor, message: "expected Block at root of tree after AST transformation")
         }

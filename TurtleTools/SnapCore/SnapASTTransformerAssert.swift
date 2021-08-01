@@ -29,9 +29,11 @@ public class SnapASTTransformerAssert: SnapASTTransformerBase {
             Expression.LiteralString(message)
         ])
         let condition = Expression.Binary(sourceAnchor: s, op: .eq, left: node.condition, right: Expression.LiteralBool(false))
-        return If(sourceAnchor: s,
-                  condition: condition,
-                  then: Block(children: [ panic ]),
-                  else: nil)
+        let ifNode = If(sourceAnchor: s,
+                        condition: condition,
+                        then: Block(children: [ panic ]),
+                        else: nil)
+        let result = try reconnectSymbolTables(ifNode)
+        return result
     }
 }

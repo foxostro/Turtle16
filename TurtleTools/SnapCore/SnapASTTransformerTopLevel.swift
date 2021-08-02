@@ -13,9 +13,11 @@ public class SnapASTTransformerTopLevel: SnapASTTransformerBase {
         guard let topLevel = root as? TopLevel else {
             return root
         }
-        let symbols = CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable())
-        return Block(sourceAnchor: topLevel.sourceAnchor,
-                     symbols: symbols,
-                     children: topLevel.children)
+        let blockSymbols = CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable())
+        let block = Block(sourceAnchor: topLevel.sourceAnchor,
+                          symbols: blockSymbols,
+                          children: topLevel.children)
+        let result = try reconnectSymbolTables(block)
+        return result
     }
 }

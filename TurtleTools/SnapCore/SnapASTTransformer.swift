@@ -20,21 +20,27 @@ public class SnapASTTransformer: NSObject {
     
     public func transform(_ root: AbstractSyntaxTreeNode) {
         do {
-            try tryTransform(root)
+            guard let topLevel = try applyTopLevelMacros(root) as? Block else {
+                throw CompilerError(message: "expected Block at root of tree after AST transformation")
+            }
+            ast = topLevel
         } catch let e {
             errors.append(e as! CompilerError)
         }
     }
     
-    public func tryTransform(_ t0: AbstractSyntaxTreeNode) throws {
+    public func applyTopLevelMacros(_ t0: AbstractSyntaxTreeNode) throws -> AbstractSyntaxTreeNode? {
+        // Rewrite TopLevel to a Block so it can carry the global symbol table.
         let t1 = try SnapASTTransformerTopLevel().transform(t0)
-        let t2 = try SnapASTTransformerSymbolTables().transform(t1)
-        let t3 = try SnapASTTransformerAssert().transform(t2)
-        let t4 = try testTransform(t3)
-        guard let topLevel = t4 as? Block else {
-            throw CompilerError(sourceAnchor: t0.sourceAnchor, message: "expected Block at root of tree after AST transformation")
-        }
-        ast = topLevel
+        
+        // Process Assert before tests since Assert needs to know about the
+        // enclosing test to synthesize the error message.
+        let t2 = try SnapASTTransformerAssert().transform(t1)
+        
+        // Erase test declarations and replace with a synthesized test runner.
+        let t3 = try testTransform(t2)
+        
+        return t3
     }
     
     func testTransform(_ input: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {

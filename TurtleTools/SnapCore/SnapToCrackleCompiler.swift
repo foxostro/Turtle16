@@ -245,6 +245,9 @@ public class SnapToCrackleCompiler: NSObject {
         let nodes: [AbstractSyntaxTreeNode] = [importStdlib] + module.children
         
         for node in nodes {
+            SymbolTablesReconnector(symbols).reconnect(node)
+        }
+        for node in nodes {
             try performDeclPass(genericNode: node)
         }
         for child in nodes {
@@ -794,16 +797,14 @@ public class SnapToCrackleCompiler: NSObject {
         bindFunctionArguments(functionType: functionType, argumentNames: node.argumentNames)
         try performDeclPass(block: node.body)
         try expectFunctionReturnExpressionIsCorrectType(func: node)
-        for child in node.body.children {
-            try compile(genericNode: child)
-        }
+        try compile(block: node.body)
          
         if try shouldSynthesizeTerminalReturnStatement(func: node) {
             try compile(return: Return(sourceAnchor: sourceAnchors?.last, expression: nil))
         }
         currentSourceAnchor = sourceAnchors?.last
         
-        symbols = symbols.parent!
+        symbols = parent
         
         emit([
             .label(labelTail),
@@ -815,6 +816,8 @@ public class SnapToCrackleCompiler: NSObject {
         
         symbols = SymbolTable(parent: symbols)
         symbols.enclosingFunctionName = impl.identifier.identifier
+        
+        SymbolTablesReconnector(symbols).reconnect(impl)
         
         for child in impl.children {
             let identifier = child.identifier.identifier

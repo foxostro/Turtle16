@@ -28,10 +28,10 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
         ])
         
         // It's super annoying to connect symbol table chains by hand. Do it automatically.
-        let modified = try! SnapASTTransformerSymbolTables().transform(original) as! Block
+        SymbolTablesReconnector().reconnect(original)
         
         let transformer = SnapASTTransformerTestDeclaration(shouldRunSpecificTest: "bar")
-        XCTAssertThrowsError(try transformer.transform(modified)) {
+        XCTAssertThrowsError(try transformer.transform(original)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "declaration is only valid at file scope")
@@ -46,10 +46,10 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
         ])
         
         // It's super annoying to connect symbol table chains by hand. Do it automatically.
-        let modified = try! SnapASTTransformerSymbolTables().transform(original) as! Block
+        SymbolTablesReconnector().reconnect(original)
         
         let transformer = SnapASTTransformerTestDeclaration()
-        XCTAssertThrowsError(try transformer.transform(modified)) {
+        XCTAssertThrowsError(try transformer.transform(original)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "test \"bar\" already exists")

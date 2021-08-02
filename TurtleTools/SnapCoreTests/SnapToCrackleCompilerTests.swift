@@ -17,13 +17,13 @@ class SnapToCrackleCompilerTests: XCTestCase {
     let t3 = SnapCompilerMetrics.kTemporaryStorageStartAddress + 6
     let kStaticStorageStartAddress = SnapCompilerMetrics.kStaticStorageStartAddress
     
-    func compile(_ original: AbstractSyntaxTreeNode) -> SnapToCrackleCompiler {
+    func compile(_ ast: Block) -> SnapToCrackleCompiler {
         // It's super annoying to connect symbol table chains by hand. Do it automatically.
-        let modified = try! SnapASTTransformerSymbolTables().transform(original) as! Block
+        SymbolTablesReconnector().reconnect(ast)
         
         // Compile to Crackle IR
         let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: modified)
+        compiler.compile(ast: ast)
         
         return compiler
     }

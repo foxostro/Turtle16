@@ -51,10 +51,9 @@ public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
                 }
             }
             
-            let block = Block(sourceAnchor: result.sourceAnchor,
-                              symbols: result.symbols,
-                              children: children)
-            let result = try reconnectSymbolTables(block)
+            let result = Block(sourceAnchor: result.sourceAnchor,
+                               symbols: result.symbols,
+                               children: children)
             return result
         }
             

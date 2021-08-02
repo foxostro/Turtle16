@@ -79,9 +79,16 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+        let parentStr: String
+        if let parent = symbols.parent {
+            parentStr = "\(parent)"
+        } else {
+            parentStr = "nil"
+        }
+        
         return String(format: "%@%@\n%@identifier: %@\n%@visibility: %@\n%@functionType: %@\n%@argumentNames: %@\n%@body: %@",
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
+                      String(describing: type(of: self)) + "(symbols=\(symbols); parent=\(parentStr))",
                       makeIndent(depth: depth + 1),
                       identifier.makeIndentedDescription(depth: depth + 1),
                       makeIndent(depth: depth + 1),

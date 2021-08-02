@@ -1,5 +1,5 @@
 //
-//  SnapASTTransformerSymbolTablesTests.swift
+//  SymbolTablesReconnectorTests.swift
 //  SnapCoreTests
 //
 //  Created by Andrew Fox on 7/29/21.
@@ -10,13 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class SnapASTTransformerSymbolTablesTests: XCTestCase {
-    func testExample() throws {
-        let actual = try? SnapASTTransformerSymbolTables().transform(CommentNode(string: ""))
-        let expected = CommentNode(string: "")
-        XCTAssertEqual(actual, expected)
-    }
-    
+class SymbolTablesReconnectorTests: XCTestCase {
     func testBlock() throws {
         let table1 = SymbolTable()
         let table2 = SymbolTable()
@@ -24,7 +18,7 @@ class SnapASTTransformerSymbolTablesTests: XCTestCase {
             Block(symbols: table2, children: [
             ])
         ])
-        XCTAssertNoThrow(try SnapASTTransformerSymbolTables().transform(input))
+        SymbolTablesReconnector().reconnect(input)
         XCTAssertEqual(table2.parent, table1)
         XCTAssertEqual(table1.parent, nil)
     }
@@ -40,7 +34,7 @@ class SnapASTTransformerSymbolTablesTests: XCTestCase {
                                             body: Block(children: []),
                                             symbols: table2)
         ])
-        XCTAssertNoThrow(try SnapASTTransformerSymbolTables().transform(input))
+        SymbolTablesReconnector().reconnect(input)
         
         XCTAssertEqual(table2.parent, table1)
         XCTAssertEqual(table1.parent, nil)
@@ -53,9 +47,8 @@ class SnapASTTransformerSymbolTablesTests: XCTestCase {
                                         functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
                                         argumentNames: [],
                                         body: Block(children: []))
-        var result: FunctionDeclaration? = nil
-        XCTAssertNoThrow(result = try? SnapASTTransformerSymbolTables().transform(input) as? FunctionDeclaration)
+        SymbolTablesReconnector().reconnect(input)
         
-        XCTAssertEqual(result?.symbols, result?.body.symbols)
+        XCTAssertEqual(input.symbols, input.body.symbols.parent)
     }
 }

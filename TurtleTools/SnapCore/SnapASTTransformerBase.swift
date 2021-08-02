@@ -12,38 +12,41 @@ public class SnapASTTransformerBase: NSObject {
     var symbols: SymbolTable? = nil
     
     public func transform(_ genericNode: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
+        let result: AbstractSyntaxTreeNode?
         switch genericNode {
         case let node as VarDeclaration:
-            return try transform(varDecl: node)
+            result = try transform(varDecl: node)
         case let node as Expression:
-            return try transform(expressionStatement: node)
+            result = try transform(expressionStatement: node)
         case let node as If:
-            return try transform(if: node)
+            result = try transform(if: node)
         case let node as While:
-            return try transform(while: node)
+            result = try transform(while: node)
         case let node as ForIn:
-            return try transform(forIn: node)
+            result = try transform(forIn: node)
         case let node as Block:
-            return try transform(block: node)
+            result = try transform(block: node)
         case let node as Return:
-            return try transform(return: node)
+            result = try transform(return: node)
         case let node as FunctionDeclaration:
-            return try transform(func: node)
+            result = try transform(func: node)
         case let node as Impl:
-            return try transform(impl: node)
+            result = try transform(impl: node)
         case let node as ImplFor:
-            return try transform(implFor: node)
+            result = try transform(implFor: node)
         case let node as Match:
-            return try transform(match: node)
+            result = try transform(match: node)
         case let node as Assert:
-            return try transform(assert: node)
+            result = try transform(assert: node)
         case let node as TraitDeclaration:
-            return try transform(trait: node)
+            result = try transform(trait: node)
         case let node as TestDeclaration:
-            return try transform(testDecl: node)
+            result = try transform(testDecl: node)
         default:
-            return genericNode
+            result = genericNode
         }
+        reconnect(result)
+        return result
     }
     
     public func transform(varDecl node: VarDeclaration) throws -> AbstractSyntaxTreeNode {
@@ -141,7 +144,7 @@ public class SnapASTTransformerBase: NSObject {
                                body: try transform(node.body) as! Block)
     }
     
-    public func reconnectSymbolTables(_ node: AbstractSyntaxTreeNode) throws -> AbstractSyntaxTreeNode {
-        return try SnapASTTransformerSymbolTables(symbols).transform(node)!
+    fileprivate func reconnect(_ node: AbstractSyntaxTreeNode?) {
+        SymbolTablesReconnector(symbols).reconnect(node)
     }
 }

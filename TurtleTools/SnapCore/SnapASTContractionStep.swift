@@ -54,11 +54,13 @@ public class SnapASTContractionStep: NSObject {
         let t3 = try testDeclarationTransformer.compile(t2)
         testNames = testDeclarationTransformer.testNames
         
+        return t3
+        
         // Some AST contraction steps both need to be aware of symbols and
         // themselves create new symbols. Both of those steps have to be
         // performed together, in one pass over the tree.
-        //let t4 = try SnapAbstractSyntaxTreeCompiler(memoryLayoutStrategy: memoryLayoutStrategy, symbols: nil).compile(t3)
-        
-        return t3
+//        let t4 = try SnapAbstractSyntaxTreeCompiler(memoryLayoutStrategy: memoryLayoutStrategy, symbols: nil).compile(t3)
+//
+//        return t4
     }
 }

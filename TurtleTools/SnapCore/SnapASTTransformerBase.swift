@@ -9,7 +9,11 @@
 import TurtleCore
 
 public class SnapASTTransformerBase: NSObject {
-    var symbols: SymbolTable? = nil
+    public private(set) var symbols: SymbolTable? = nil
+    
+    public init(_ symbols: SymbolTable? = nil) {
+        self.symbols = symbols
+    }
     
     public func compile(_ genericNode: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
         let result: AbstractSyntaxTreeNode?

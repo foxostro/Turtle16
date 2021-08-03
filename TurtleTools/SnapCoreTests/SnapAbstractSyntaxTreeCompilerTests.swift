@@ -12,7 +12,7 @@ import TurtleCore
 
 class SnapAbstractSyntaxTreeCompilerTests: XCTestCase {
     func makeCompiler() -> SnapAbstractSyntaxTreeCompiler {
-        return SnapAbstractSyntaxTreeCompiler(MemoryLayoutStrategyTurtleTTL())
+        return SnapAbstractSyntaxTreeCompiler(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
     }
     
     func testExample() throws {

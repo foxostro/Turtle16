@@ -439,109 +439,28 @@ public class SnapToCrackleCompiler: NSObject {
         }
     }
     
-    private func compile(varDecl: VarDeclaration) throws {
-        guard symbols.existsAndCannotBeShadowed(identifier: varDecl.identifier.identifier) == false else {
-            throw CompilerError(sourceAnchor: varDecl.identifier.sourceAnchor,
-                                format: "%@ redefines existing symbol: `%@'",
-                                varDecl.isMutable ? "variable" : "constant",
-                                varDecl.identifier.identifier)
-        }
+    private func compile(varDecl varDecl0: VarDeclaration) throws {
+        // Compile the variable declaration using the subcompiler and then check
+        // to make sure the type is as expected. This is a temporary scaffold
+        // while I work to move the symbol table manipulation out of the
+        // SnapToCrackleCompiler class.
+        let subcompiler = SnapASTTransformerVarDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols)
+        let varDecl = try subcompiler.compile(varDecl0) as! VarDeclaration
         
-        // If the variable declaration provided an explicit type expression then
-        // the type checker can determine what type it evaluates to.
-        let explicitType: SymbolType?
-        if let explicitTypeExpr = varDecl.explicitType {
-            explicitType = try TypeContextTypeChecker(symbols: symbols).check(expression: explicitTypeExpr)
-        } else {
-            explicitType = nil
+        // If the symbol is on the stack then allocate storage for it now.
+        let symbol = try symbols.resolve(identifier: varDecl.identifier.identifier)
+        if symbol.storage == .automaticStorage {
+            let size = memoryLayoutStrategy.sizeof(type: symbol.type)
+            emit([
+                .subi16(kStackPointerAddress, kStackPointerAddress, size)
+            ])
         }
         
         if let varDeclExpr = varDecl.expression {
-            // The type of the initial value expression may be used to infer the
-            // symbol type in cases where the explicit type is not specified.
-            let expressionResultType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: varDeclExpr)
-            
-            // An explicit array type does not specify the number of array elements.
-            // If the explicit type is an array type then we must examine the
-            // expression result type to determine the array length.
-            var symbolType: SymbolType
-            switch (expressionResultType, explicitType) {
-            case (.array(count: let count, elementType: _), .array(count: _, elementType: let elementType)):
-                symbolType = .array(count: count, elementType: elementType)
-            default:
-                if let explicitType = explicitType {
-                    symbolType = explicitType
-                } else {
-                    // Some expression types cannot be made concrete.
-                    // Convert these appropriate convertible types.
-                    switch expressionResultType {
-                    case .compTimeInt(let a):
-                        symbolType = a > 255 ? .u16 : .u8
-                    case .compTimeBool:
-                        symbolType = .bool
-                    default:
-                        symbolType = expressionResultType
-                    }
-                }
-            }
-            if varDecl.isMutable {
-                symbolType = symbolType.correspondingMutableType
-            } else {
-                symbolType = symbolType.correspondingConstType
-            }
-            let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: varDecl.storage, visibility: varDecl.visibility)
-            symbols.bind(identifier: varDecl.identifier.identifier, symbol: symbol)
-            
-            // If the symbol is on the stack then allocate storage for it now.
-            if symbol.storage == .automaticStorage {
-                let size = memoryLayoutStrategy.sizeof(type: symbol.type)
-                emit([
-                    .subi16(kStackPointerAddress, kStackPointerAddress, size)
-                ])
-            }
-            
             try compile(expression: Expression.InitialAssignment(sourceAnchor: varDecl.sourceAnchor,
                                                                  lexpr: varDecl.identifier,
                                                                  rexpr: varDeclExpr))
-        } else if let explicitType = explicitType {
-            let symbolType = varDecl.isMutable ? explicitType : explicitType.correspondingConstType
-            let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: varDecl.storage, visibility: varDecl.visibility)
-            symbols.bind(identifier: varDecl.identifier.identifier, symbol: symbol)
-            
-            // If the symbol is on the stack then allocate storage for it now.
-            if symbol.storage == .automaticStorage {
-                let size = memoryLayoutStrategy.sizeof(type: symbol.type)
-                emit([
-                    .subi16(kStackPointerAddress, kStackPointerAddress, size)
-                ])
-            }
-        } else {
-            throw CompilerError(sourceAnchor: varDecl.identifier.sourceAnchor,
-                                format: "unable to deduce type of %@ `%@'",
-                                varDecl.isMutable ? "variable" : "constant",
-                                varDecl.identifier.identifier)
         }
-    }
-    
-    private func makeSymbolWithExplicitType(explicitType: SymbolType, storage: SymbolStorage, visibility: SymbolVisibility) throws -> Symbol {
-        let storage: SymbolStorage = (symbols.stackFrameIndex==0) ? .staticStorage : storage
-        let offset = bumpStoragePointer(explicitType, storage)
-        let symbol = Symbol(type: explicitType, offset: offset, storage: storage, visibility: visibility)
-        return symbol
-    }
-    
-    private func bumpStoragePointer(_ symbolType: SymbolType, _ storage: SymbolStorage) -> Int {
-        let size = memoryLayoutStrategy.sizeof(type: symbolType)
-        let offset: Int
-        switch storage {
-        case .staticStorage:
-            offset = staticStoragePointer
-            staticStoragePointer += size
-        case .automaticStorage:
-            symbols.storagePointer += size
-            offset = symbols.storagePointer
-        }
-        return offset
     }
     
     // A statement can be a bare expression too.

@@ -7,7 +7,7 @@
 //
 
 public class MemoryLayoutStrategyTurtleTTL: NSObject, MemoryLayoutStrategy {
-    var staticStorageOffset = 0
+    public var staticStorageOffset = SnapCompilerMetrics.kStaticStorageStartAddress
     
     public func sizeof(type: SymbolType) -> Int {
         switch type {

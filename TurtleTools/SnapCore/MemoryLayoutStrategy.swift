@@ -7,6 +7,7 @@
 //
 
 public protocol MemoryLayoutStrategy: NSObject {
+    var staticStorageOffset: Int { get set }
     func sizeof(type: SymbolType) -> Int
     func layout(symbolTable: SymbolTable) -> SymbolTable
 }

@@ -781,14 +781,28 @@ public class SymbolTable: NSObject {
         guard let rhs = rhs as? SymbolTable else {
             return false
         }
-        guard declarationOrder == rhs.declarationOrder,
-              symbolTable == rhs.symbolTable,
-              typeTable == rhs.typeTable,
-              parent == rhs.parent,
-              storagePointer == rhs.storagePointer,
-              enclosingFunctionType == rhs.enclosingFunctionType,
-              enclosingFunctionName == rhs.enclosingFunctionName,
-              stackFrameIndex == rhs.stackFrameIndex else {
+        guard declarationOrder == rhs.declarationOrder else {
+            return false
+        }
+        guard symbolTable == rhs.symbolTable else {
+            return false
+        }
+        guard typeTable == rhs.typeTable else {
+            return false
+        }
+        guard parent == rhs.parent else {
+            return false
+        }
+        guard storagePointer == rhs.storagePointer else {
+            return false
+        }
+        guard enclosingFunctionType == rhs.enclosingFunctionType else {
+            return false
+        }
+        guard enclosingFunctionName == rhs.enclosingFunctionName else {
+            return false
+        }
+        guard stackFrameIndex == rhs.stackFrameIndex else {
             return false
         }
         return true

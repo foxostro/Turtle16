@@ -34,6 +34,8 @@ public class SnapASTTransformerBase: NSObject {
             result = try compile(return: node)
         case let node as FunctionDeclaration:
             result = try compile(func: node)
+        case let node as StructDeclaration:
+            result = try compile(struct: node)
         case let node as Impl:
             result = try compile(impl: node)
         case let node as ImplFor:
@@ -107,6 +109,10 @@ public class SnapASTTransformerBase: NSObject {
                                          symbols: node.symbols)
         symbols = parent
         return result
+    }
+    
+    public func compile(struct node: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
+        return node
     }
     
     public func compile(impl node: Impl) throws -> AbstractSyntaxTreeNode {

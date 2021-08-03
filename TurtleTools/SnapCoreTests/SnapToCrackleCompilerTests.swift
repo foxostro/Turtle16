@@ -17,13 +17,20 @@ class SnapToCrackleCompilerTests: XCTestCase {
     let t3 = SnapCompilerMetrics.kTemporaryStorageStartAddress + 6
     let kStaticStorageStartAddress = SnapCompilerMetrics.kStaticStorageStartAddress
     
-    func compile(_ ast: Block) -> SnapToCrackleCompiler {
-        // It's super annoying to connect symbol table chains by hand. Do it automatically.
-        SymbolTablesReconnector().reconnect(ast)
+    func compile(_ ast0: Block) -> SnapToCrackleCompiler {
+        let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
+        let contractionStep = SnapASTContractionStep(memoryLayoutStrategy)
+        contractionStep.compile(ast0)
+        if contractionStep.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: contractionStep.errors).message)
+            XCTFail()
+            return SnapToCrackleCompiler(memoryLayoutStrategy)
+        }
+        let ast1 = contractionStep.ast
         
         // Compile to Crackle IR
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: ast)
+        let compiler = SnapToCrackleCompiler(memoryLayoutStrategy)
+        compiler.compile(ast: ast1)
         
         return compiler
     }

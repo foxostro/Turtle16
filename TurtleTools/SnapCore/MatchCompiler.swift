@@ -78,8 +78,8 @@ public class MatchCompiler: NSObject {
         }
         
         let block0 = Block(sourceAnchor: match.sourceAnchor,
-                          symbols: outer,
-                          children: stmts)
+                           symbols: outer,
+                           children: stmts)
         
         SymbolTablesReconnector(symbols).reconnect(block0)
         

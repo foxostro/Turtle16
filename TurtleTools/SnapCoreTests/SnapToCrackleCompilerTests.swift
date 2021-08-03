@@ -17,7 +17,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
     let t3 = SnapCompilerMetrics.kTemporaryStorageStartAddress + 6
     let kStaticStorageStartAddress = SnapCompilerMetrics.kStaticStorageStartAddress
     
-    func compile(_ ast0: Block) -> SnapToCrackleCompiler {
+    func compile(_ ast0: Block, injectModules: [(String, String)] = []) -> SnapToCrackleCompiler {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
         let contractionStep = SnapASTContractionStep(memoryLayoutStrategy)
         contractionStep.compile(ast0)
@@ -30,6 +30,9 @@ class SnapToCrackleCompilerTests: XCTestCase {
         
         // Compile to Crackle IR
         let compiler = SnapToCrackleCompiler(memoryLayoutStrategy)
+        for module in injectModules {
+            compiler.injectModule(name: module.0, sourceCode: module.1)
+        }
         compiler.compile(ast: ast1)
         
         return compiler
@@ -2329,12 +2332,12 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let ast = Block(children: [
             Import(moduleName: "MyModule")
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.injectModule(name: "MyModule", sourceCode: """
+        let compiler = compile(ast, injectModules: [
+            (name: "MyModule", sourceCode: """
 public func foo() {
 }
 """)
-        compiler.compile(ast: ast)
+        ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertNotNil(compiler.globalSymbols.maybeResolve(identifier: "foo"))
     }

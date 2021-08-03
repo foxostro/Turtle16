@@ -189,7 +189,8 @@ public class SnapToCrackleCompiler: NSObject {
         let moduleTopLevel = try compileProgramText(url: moduleData.1, text: moduleData.0)
         let module = Module(sourceAnchor: moduleTopLevel.sourceAnchor,
                             name: node.moduleName,
-                            children: moduleTopLevel.children)
+                            children: moduleTopLevel.children,
+                            symbols: moduleTopLevel.symbols)
         try performDeclPass(genericNode: module)
         try compile(genericNode: module)
     }
@@ -236,7 +237,7 @@ public class SnapToCrackleCompiler: NSObject {
         let oldModulesAlreadyImported = modulesAlreadyImported
         modulesAlreadyImported = []
         let oldSymbols = symbols
-        symbols = CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable())
+        symbols = module.symbols
         symbols.storagePointer = oldSymbols.storagePointer
         
         // Make sure to import the standard library when building a module.

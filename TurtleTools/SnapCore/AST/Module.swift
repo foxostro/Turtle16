@@ -11,14 +11,15 @@ import TurtleCore
 public class Module: AbstractSyntaxTreeNode {
     public let name: String
     public let children: [AbstractSyntaxTreeNode]
+    public let symbols: SymbolTable
     
-    public convenience init(name: String, children: [AbstractSyntaxTreeNode] = []) {
-        self.init(sourceAnchor: nil, name: name, children: children)
-    }
-    
-    public init(sourceAnchor: SourceAnchor?, name: String, children: [AbstractSyntaxTreeNode] = []) {
+    public init(sourceAnchor: SourceAnchor? = nil,
+                name: String,
+                children: [AbstractSyntaxTreeNode] = [],
+                symbols: SymbolTable = SymbolTable()) {
         self.name = name
         self.children = children
+        self.symbols = symbols
         super.init(sourceAnchor: sourceAnchor)
     }
     
@@ -29,6 +30,7 @@ public class Module: AbstractSyntaxTreeNode {
         guard let rhs = rhs as? Module else { return false }
         guard name == rhs.name else { return false }
         guard children == rhs.children else { return false }
+//        guard symbols == rhs.symbols else { return false }
         return true
     }
     
@@ -36,6 +38,7 @@ public class Module: AbstractSyntaxTreeNode {
         var hasher = Hasher()
         hasher.combine(name)
         hasher.combine(children)
+//        hasher.combine(symbols)
         hasher.combine(super.hash)
         return hasher.finalize()
     }

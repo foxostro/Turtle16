@@ -832,7 +832,7 @@ public class SnapToCrackleCompiler: NSObject {
     }
     
     private func compile(match: Match) throws {
-        let ast = try MatchCompiler().compile(match: match, symbols: symbols)
+        let ast = try MatchCompiler(memoryLayoutStrategy).compile(match: match, symbols: symbols)
         try compile(genericNode: ast)
     }
     

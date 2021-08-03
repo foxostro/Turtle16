@@ -9,6 +9,8 @@
 import TurtleCore
 
 public class StatementTracer: NSObject {
+    let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
+    
     public enum TraceElement: Equatable {
         case Statement(String)
         case IfThen
@@ -98,7 +100,7 @@ public class StatementTracer: NSObject {
     }
     
     private func trace(currentTrace: Trace, match node: Match) throws -> [Trace] {
-        let ast = try MatchCompiler().compile(match: node, symbols: symbols)
+        let ast = try MatchCompiler(memoryLayoutStrategy).compile(match: node, symbols: symbols)
         return try trace(currentTrace: currentTrace, genericNode: ast)
     }
     

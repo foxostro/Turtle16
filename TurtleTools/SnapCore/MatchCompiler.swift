@@ -11,6 +11,12 @@ import TurtleCore
 // Accepts a Match statement and produces an AST which implements it in terms
 // of other nodes.
 public class MatchCompiler: NSObject {
+    public let memoryLayoutStrategy: MemoryLayoutStrategy
+    
+    public init(_ memoryLayoutStrategy: MemoryLayoutStrategy) {
+        self.memoryLayoutStrategy = memoryLayoutStrategy
+    }
+    
     public func compile(match: Match, symbols: SymbolTable) throws -> AbstractSyntaxTreeNode {
         let outer = SymbolTable(parent: symbols)
         
@@ -71,10 +77,16 @@ public class MatchCompiler: NSObject {
             stmts.append(rewrittenElseClause)
         }
         
-        let block = Block(sourceAnchor: match.sourceAnchor,
+        let block0 = Block(sourceAnchor: match.sourceAnchor,
                           symbols: outer,
                           children: stmts)
-        return block
+        
+        SymbolTablesReconnector(symbols).reconnect(block0)
+        
+//        let subcompiler = SnapASTTransformerVarDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols)
+//        let block1 = try subcompiler.compile(block0) as! Block
+        
+        return block0
     }
     
     private func compileMatchClause(_ match: Match, _ clauses: [Match.Clause], _ symbols: SymbolTable) -> If {

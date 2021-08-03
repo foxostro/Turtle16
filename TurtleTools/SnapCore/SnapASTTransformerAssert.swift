@@ -11,13 +11,13 @@ import TurtleCore
 public class SnapASTTransformerAssert: SnapASTTransformerBase {
     var currentTest: TestDeclaration? = nil
     
-    public override func transform(testDecl node: TestDeclaration) throws -> AbstractSyntaxTreeNode? {
+    public override func compile(testDecl node: TestDeclaration) throws -> AbstractSyntaxTreeNode? {
         currentTest = node
         defer { currentTest = nil }
-        return try super.transform(testDecl: node)
+        return try super.compile(testDecl: node)
     }
     
-    public override func transform(assert node: Assert) throws -> AbstractSyntaxTreeNode {
+    public override func compile(assert node: Assert) throws -> AbstractSyntaxTreeNode {
         let s = node.sourceAnchor
         let message: String
         if let currentTest = currentTest {

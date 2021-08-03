@@ -11,37 +11,37 @@ import TurtleCore
 public class SnapASTTransformerBase: NSObject {
     var symbols: SymbolTable? = nil
     
-    public func transform(_ genericNode: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
+    public func compile(_ genericNode: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
         let result: AbstractSyntaxTreeNode?
         switch genericNode {
         case let node as VarDeclaration:
-            result = try transform(varDecl: node)
+            result = try compile(varDecl: node)
         case let node as Expression:
-            result = try transform(expressionStatement: node)
+            result = try compile(expressionStatement: node)
         case let node as If:
-            result = try transform(if: node)
+            result = try compile(if: node)
         case let node as While:
-            result = try transform(while: node)
+            result = try compile(while: node)
         case let node as ForIn:
-            result = try transform(forIn: node)
+            result = try compile(forIn: node)
         case let node as Block:
-            result = try transform(block: node)
+            result = try compile(block: node)
         case let node as Return:
-            result = try transform(return: node)
+            result = try compile(return: node)
         case let node as FunctionDeclaration:
-            result = try transform(func: node)
+            result = try compile(func: node)
         case let node as Impl:
-            result = try transform(impl: node)
+            result = try compile(impl: node)
         case let node as ImplFor:
-            result = try transform(implFor: node)
+            result = try compile(implFor: node)
         case let node as Match:
-            result = try transform(match: node)
+            result = try compile(match: node)
         case let node as Assert:
-            result = try transform(assert: node)
+            result = try compile(assert: node)
         case let node as TraitDeclaration:
-            result = try transform(trait: node)
+            result = try compile(trait: node)
         case let node as TestDeclaration:
-            result = try transform(testDecl: node)
+            result = try compile(testDecl: node)
         default:
             result = genericNode
         }
@@ -49,102 +49,102 @@ public class SnapASTTransformerBase: NSObject {
         return result
     }
     
-    public func transform(varDecl node: VarDeclaration) throws -> AbstractSyntaxTreeNode {
+    public func compile(varDecl node: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
         return node
     }
     
-    public func transform(expressionStatement node: Expression) throws -> AbstractSyntaxTreeNode {
+    public func compile(expressionStatement node: Expression) throws -> AbstractSyntaxTreeNode {
         return node
     }
     
-    public func transform(if node: If) throws -> AbstractSyntaxTreeNode {
+    public func compile(if node: If) throws -> AbstractSyntaxTreeNode {
         return If(sourceAnchor: node.sourceAnchor,
                   condition: node.condition,
-                  then: try transform(node.thenBranch)!,
-                  else: try node.elseBranch.flatMap { try transform($0) })
+                  then: try compile(node.thenBranch)!,
+                  else: try node.elseBranch.flatMap { try compile($0) })
     }
     
-    public func transform(while node: While) throws -> AbstractSyntaxTreeNode {
+    public func compile(while node: While) throws -> AbstractSyntaxTreeNode {
         return While(sourceAnchor: node.sourceAnchor,
                      condition: node.condition,
-                     body: try transform(node.body)!)
+                     body: try compile(node.body)!)
     }
     
-    public func transform(forIn node: ForIn) throws -> AbstractSyntaxTreeNode {
+    public func compile(forIn node: ForIn) throws -> AbstractSyntaxTreeNode {
         return ForIn(sourceAnchor: node.sourceAnchor,
                      identifier: node.identifier,
                      sequenceExpr: node.sequenceExpr,
-                     body: try transform(node.body) as! Block)
+                     body: try compile(node.body) as! Block)
     }
     
-    public func transform(block node: Block) throws -> AbstractSyntaxTreeNode {
+    public func compile(block node: Block) throws -> AbstractSyntaxTreeNode {
         let parent = symbols
         symbols = node.symbols
         let result = Block(sourceAnchor: node.sourceAnchor,
                            symbols: node.symbols,
-                           children: try node.children.compactMap { try transform($0) })
+                           children: try node.children.compactMap { try compile($0) })
         symbols = parent
         return result
     }
     
-    public func transform(return node: Return) throws -> AbstractSyntaxTreeNode {
+    public func compile(return node: Return) throws -> AbstractSyntaxTreeNode {
         return node
     }
     
-    public func transform(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode {
+    public func compile(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode {
         let parent = symbols
         symbols = node.symbols
         let result = FunctionDeclaration(sourceAnchor: node.sourceAnchor,
                                          identifier: node.identifier,
                                          functionType: node.functionType,
                                          argumentNames: node.argumentNames,
-                                         body: try transform(node.body) as! Block,
+                                         body: try compile(node.body) as! Block,
                                          visibility: node.visibility,
                                          symbols: node.symbols)
         symbols = parent
         return result
     }
     
-    public func transform(impl node: Impl) throws -> AbstractSyntaxTreeNode {
+    public func compile(impl node: Impl) throws -> AbstractSyntaxTreeNode {
         return Impl(sourceAnchor: node.sourceAnchor,
                     identifier: node.identifier,
-                    children: try node.children.map { try transform($0) as! FunctionDeclaration })
+                    children: try node.children.map { try compile($0) as! FunctionDeclaration })
     }
     
-    public func transform(implFor node: ImplFor) throws -> AbstractSyntaxTreeNode {
+    public func compile(implFor node: ImplFor) throws -> AbstractSyntaxTreeNode {
         return ImplFor(sourceAnchor: node.sourceAnchor,
                        traitIdentifier: node.traitIdentifier,
                        structIdentifier: node.structIdentifier,
-                       children: try node.children.map { try transform($0) as! FunctionDeclaration })
+                       children: try node.children.map { try compile($0) as! FunctionDeclaration })
     }
     
-    public func transform(match node: Match) throws -> AbstractSyntaxTreeNode {
+    public func compile(match node: Match) throws -> AbstractSyntaxTreeNode {
         return Match(sourceAnchor: node.sourceAnchor,
                      expr: node.expr,
                      clauses: try node.clauses.map {
                         Match.Clause(sourceAnchor: $0.sourceAnchor,
                                             valueIdentifier: $0.valueIdentifier,
                                             valueType: $0.valueType,
-                                            block: try transform(block: $0.block) as! Block)
+                                            block: try compile(block: $0.block) as! Block)
                      },
-                     elseClause: try transform(node.elseClause) as? Block)
+                     elseClause: try compile(node.elseClause) as? Block)
     }
     
-    public func transform(assert node: Assert) throws -> AbstractSyntaxTreeNode {
+    public func compile(assert node: Assert) throws -> AbstractSyntaxTreeNode {
         return node
     }
     
-    public func transform(trait node: TraitDeclaration) throws -> AbstractSyntaxTreeNode {
+    public func compile(trait node: TraitDeclaration) throws -> AbstractSyntaxTreeNode {
         return node
     }
     
-    public func transform(testDecl node: TestDeclaration) throws -> AbstractSyntaxTreeNode? {
+    public func compile(testDecl node: TestDeclaration) throws -> AbstractSyntaxTreeNode? {
         return TestDeclaration(sourceAnchor: node.sourceAnchor,
                                name: node.name,
-                               body: try transform(node.body) as! Block)
+                               body: try compile(node.body) as! Block)
     }
     
-    fileprivate func reconnect(_ node: AbstractSyntaxTreeNode?) {
+    public func reconnect(_ node: AbstractSyntaxTreeNode?) {
         SymbolTablesReconnector(symbols).reconnect(node)
     }
 }

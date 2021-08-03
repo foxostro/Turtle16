@@ -29,9 +29,8 @@ public class SnapToCrackleCompiler: NSObject {
     
     public var sandboxAccessManager: SandboxAccessManager? = nil
     
-    public override init() {
-        memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
-        super.init()
+    public init(_ memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()) {
+        self.memoryLayoutStrategy = memoryLayoutStrategy
     }
     
     public func compile(ast: Block) {
@@ -205,7 +204,7 @@ public class SnapToCrackleCompiler: NSObject {
             throw CompilerError.makeOmnibusError(fileName: filename, errors: lexer.errors)
         }
         
-        // Compile to an abstract syntax tree
+        // Compile to a parser syntax tree
         let parser = SnapParser(tokens: lexer.tokens)
         parser.parse()
         if parser.hasError {
@@ -213,12 +212,12 @@ public class SnapToCrackleCompiler: NSObject {
         }
         
         // AST contraction step
-        let astTransformer = SnapASTTransformer()
-        astTransformer.transform(parser.syntaxTree!)
-        if astTransformer.hasError {
-            throw CompilerError.makeOmnibusError(fileName: filename, errors: astTransformer.errors)
+        let contractionStep = SnapASTContractionStep(memoryLayoutStrategy)
+        contractionStep.compile(parser.syntaxTree)
+        if contractionStep.hasError {
+            throw CompilerError.makeOmnibusError(fileName: filename, errors: contractionStep.errors)
         }
-        let topLevel = astTransformer.ast
+        let topLevel = contractionStep.ast
         
         return topLevel
     }
@@ -241,6 +240,7 @@ public class SnapToCrackleCompiler: NSObject {
         symbols.storagePointer = oldSymbols.storagePointer
         
         // Make sure to import the standard library when building a module.
+        // TODO: Adding an `import stdlib` to the Module body is something that can be done in an AST macro
         let importStdlib = Import(moduleName: SnapToCrackleCompiler.kStandardLibraryModuleName)
         let nodes: [AbstractSyntaxTreeNode] = [importStdlib] + module.children
         
@@ -257,6 +257,7 @@ public class SnapToCrackleCompiler: NSObject {
         // Stash away the symbol table of the module and restore the old symbol
         // table chain. Make sure to continue allocating where the module left
         // off.
+        // TODO: Why not put a symbol table on Module and store it there? SymbolTableReconnector should handle the case of Module too. Or maybe the entire module should be put into the symbol table as a distinct global instance of a distinct type?
         moduleSymbols[module.name] = symbols
         let storagePointer = symbols.storagePointer
         symbols = oldSymbols

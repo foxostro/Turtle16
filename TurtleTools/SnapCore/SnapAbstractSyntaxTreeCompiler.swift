@@ -23,6 +23,20 @@ public class SnapAbstractSyntaxTreeCompiler: SnapASTTransformerBase {
         return node2
     }
     
+    public override func compile(struct node0: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
+        let subcompiler = SnapASTTransformerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols!)
+        let node1 = try subcompiler.compile(node0) as! StructDeclaration
+        let node2 = try super.compile(struct: node1)
+        return node2
+    }
+    
+    public override func compile(typealias node0: Typealias) throws -> AbstractSyntaxTreeNode {
+        let subcompiler = SnapASTTransformerTypealias(symbols!)
+        let node1 = try subcompiler.compile(node0) as! Typealias
+        let node2 = try super.compile(typealias: node1)
+        return node2
+    }
+    
     public override func compile(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
         let subcompiler = SnapASTTransformerVarDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols!)
         let node1 = try subcompiler.compile(node0) as! VarDeclaration

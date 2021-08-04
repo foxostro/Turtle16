@@ -48,6 +48,8 @@ public class SnapASTTransformerBase: NSObject {
             result = try compile(trait: node)
         case let node as TestDeclaration:
             result = try compile(testDecl: node)
+        case let node as Typealias:
+            result = try compile(typealias: node)
         default:
             result = genericNode
         }
@@ -152,6 +154,10 @@ public class SnapASTTransformerBase: NSObject {
         return TestDeclaration(sourceAnchor: node.sourceAnchor,
                                name: node.name,
                                body: try compile(node.body) as! Block)
+    }
+    
+    public func compile(typealias node: Typealias) throws -> AbstractSyntaxTreeNode {
+        return node
     }
     
     public func reconnect(_ node: AbstractSyntaxTreeNode?) {

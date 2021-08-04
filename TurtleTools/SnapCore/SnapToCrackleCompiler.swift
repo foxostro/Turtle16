@@ -445,8 +445,8 @@ public class SnapToCrackleCompiler: NSObject {
         // to make sure the type is as expected. This is a temporary scaffold
         // while I work to move the symbol table manipulation out of the
         // SnapToCrackleCompiler class.
-        let subcompiler = SnapASTTransformerVarDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols)
-        let varDecl = try subcompiler.compile(varDecl0) as! VarDeclaration
+        let subcompiler = SnapSubcompilerVarDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols)
+        let varDecl = try subcompiler.compile(varDecl0)
         
         // If the symbol is on the stack then allocate storage for it now.
         let symbol = try symbols.resolve(identifier: varDecl.identifier.identifier)

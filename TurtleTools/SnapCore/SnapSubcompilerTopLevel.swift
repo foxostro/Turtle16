@@ -1,5 +1,5 @@
 //
-//  SnapASTTransformerTopLevel.swift
+//  SnapSubcompilerTopLevel.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 7/28/21.
@@ -8,8 +8,14 @@
 
 import TurtleCore
 
-public class SnapASTTransformerTopLevel: SnapASTTransformerBase {
-    public override func compile(_ root: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
+public class SnapSubcompilerTopLevel: NSObject {
+    public private(set) var symbols: SymbolTable? = nil
+    
+    public init(_ symbols: SymbolTable? = nil) {
+        self.symbols = symbols
+    }
+    
+    public func compile(_ root: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
         guard let topLevel = root as? TopLevel else {
             return root
         }

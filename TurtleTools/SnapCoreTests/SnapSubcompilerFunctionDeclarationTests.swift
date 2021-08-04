@@ -1,5 +1,5 @@
 //
-//  SnapASTTransformerFunctionDeclarationTests.swift
+//  Subcompiler.swift
 //  SnapCoreTests
 //
 //  Created by Andrew Fox on 8/2/21.
@@ -10,16 +10,11 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class SnapASTTransformerFunctionDeclarationTests: XCTestCase {
-    func testIgnoresUnrecognizedNodes() throws {
-        let result = try? SnapASTTransformerFunctionDeclaration().compile(CommentNode(string: ""))
-        XCTAssertEqual(result, CommentNode(string: ""))
-    }
-    
+class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
     func testFunctionRedefinesExistingSymbol() throws {
         let symbols = SymbolTable()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .void))
-        let compiler = SnapASTTransformerFunctionDeclaration(symbols)
+        let compiler = SnapSubcompilerFunctionDeclaration(symbols)
         let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                         functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
                                         argumentNames: [],
@@ -32,7 +27,7 @@ class SnapASTTransformerFunctionDeclarationTests: XCTestCase {
     
     func testDeclareFunction() throws {
         let symbols = SymbolTable()
-        let compiler = SnapASTTransformerFunctionDeclaration(symbols)
+        let compiler = SnapSubcompilerFunctionDeclaration(symbols)
         let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                         functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
                                         argumentNames: [],

@@ -1,5 +1,5 @@
 //
-//  SnapASTTransformerStructDeclaration.swift
+//  SnapSubcompilerStructDeclaration.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 8/3/21.
@@ -8,15 +8,16 @@
 
 import TurtleCore
 
-public class SnapASTTransformerStructDeclaration: SnapASTTransformerBase {
+public class SnapSubcompilerStructDeclaration: NSObject {
+    public private(set) var symbols: SymbolTable? = nil
     public let memoryLayoutStrategy: MemoryLayoutStrategy
     
     public init(memoryLayoutStrategy: MemoryLayoutStrategy, symbols: SymbolTable) {
+        self.symbols = symbols
         self.memoryLayoutStrategy = memoryLayoutStrategy
-        super.init(symbols)
     }
     
-    public override func compile(struct node: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
+    public func compile(_ node: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
         let name = node.identifier.identifier
         
         let members = SymbolTable(parent: symbols)

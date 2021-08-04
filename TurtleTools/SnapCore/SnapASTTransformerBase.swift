@@ -61,31 +61,31 @@ public class SnapASTTransformerBase: NSObject {
         return node
     }
     
-    public func compile(expressionStatement node: Expression) throws -> AbstractSyntaxTreeNode {
+    public func compile(expressionStatement node: Expression) throws -> AbstractSyntaxTreeNode? {
         return node
     }
     
-    public func compile(if node: If) throws -> AbstractSyntaxTreeNode {
+    public func compile(if node: If) throws -> AbstractSyntaxTreeNode? {
         return If(sourceAnchor: node.sourceAnchor,
                   condition: node.condition,
                   then: try compile(node.thenBranch)!,
                   else: try node.elseBranch.flatMap { try compile($0) })
     }
     
-    public func compile(while node: While) throws -> AbstractSyntaxTreeNode {
+    public func compile(while node: While) throws -> AbstractSyntaxTreeNode? {
         return While(sourceAnchor: node.sourceAnchor,
                      condition: node.condition,
                      body: try compile(node.body)!)
     }
     
-    public func compile(forIn node: ForIn) throws -> AbstractSyntaxTreeNode {
+    public func compile(forIn node: ForIn) throws -> AbstractSyntaxTreeNode? {
         return ForIn(sourceAnchor: node.sourceAnchor,
                      identifier: node.identifier,
                      sequenceExpr: node.sequenceExpr,
                      body: try compile(node.body) as! Block)
     }
     
-    public func compile(block node: Block) throws -> AbstractSyntaxTreeNode {
+    public func compile(block node: Block) throws -> AbstractSyntaxTreeNode? {
         let parent = symbols
         symbols = node.symbols
         let result = Block(sourceAnchor: node.sourceAnchor,
@@ -95,11 +95,11 @@ public class SnapASTTransformerBase: NSObject {
         return result
     }
     
-    public func compile(return node: Return) throws -> AbstractSyntaxTreeNode {
+    public func compile(return node: Return) throws -> AbstractSyntaxTreeNode? {
         return node
     }
     
-    public func compile(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode {
+    public func compile(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
         let parent = symbols
         symbols = node.symbols
         let result = FunctionDeclaration(sourceAnchor: node.sourceAnchor,
@@ -117,20 +117,20 @@ public class SnapASTTransformerBase: NSObject {
         return node
     }
     
-    public func compile(impl node: Impl) throws -> AbstractSyntaxTreeNode {
+    public func compile(impl node: Impl) throws -> AbstractSyntaxTreeNode? {
         return Impl(sourceAnchor: node.sourceAnchor,
                     identifier: node.identifier,
                     children: try node.children.map { try compile($0) as! FunctionDeclaration })
     }
     
-    public func compile(implFor node: ImplFor) throws -> AbstractSyntaxTreeNode {
+    public func compile(implFor node: ImplFor) throws -> AbstractSyntaxTreeNode? {
         return ImplFor(sourceAnchor: node.sourceAnchor,
                        traitIdentifier: node.traitIdentifier,
                        structIdentifier: node.structIdentifier,
                        children: try node.children.map { try compile($0) as! FunctionDeclaration })
     }
     
-    public func compile(match node: Match) throws -> AbstractSyntaxTreeNode {
+    public func compile(match node: Match) throws -> AbstractSyntaxTreeNode? {
         return Match(sourceAnchor: node.sourceAnchor,
                      expr: node.expr,
                      clauses: try node.clauses.map {
@@ -142,11 +142,11 @@ public class SnapASTTransformerBase: NSObject {
                      elseClause: try compile(node.elseClause) as? Block)
     }
     
-    public func compile(assert node: Assert) throws -> AbstractSyntaxTreeNode {
+    public func compile(assert node: Assert) throws -> AbstractSyntaxTreeNode? {
         return node
     }
     
-    public func compile(trait node: TraitDeclaration) throws -> AbstractSyntaxTreeNode {
+    public func compile(trait node: TraitDeclaration) throws -> AbstractSyntaxTreeNode? {
         return node
     }
     
@@ -156,7 +156,7 @@ public class SnapASTTransformerBase: NSObject {
                                body: try compile(node.body) as! Block)
     }
     
-    public func compile(typealias node: Typealias) throws -> AbstractSyntaxTreeNode {
+    public func compile(typealias node: Typealias) throws -> AbstractSyntaxTreeNode? {
         return node
     }
     

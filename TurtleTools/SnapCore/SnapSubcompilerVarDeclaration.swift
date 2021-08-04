@@ -1,5 +1,5 @@
 //
-//  SnapASTTransformerVarDeclaration.swift
+//  SnapSubcompilerVarDeclaration.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 8/2/21.
@@ -8,15 +8,16 @@
 
 import TurtleCore
 
-public class SnapASTTransformerVarDeclaration: SnapASTTransformerBase {
+public class SnapSubcompilerVarDeclaration: NSObject {
+    public private(set) var symbols: SymbolTable? = nil
     public let memoryLayoutStrategy: MemoryLayoutStrategy
     
     public init(memoryLayoutStrategy: MemoryLayoutStrategy, symbols: SymbolTable) {
+        self.symbols = symbols
         self.memoryLayoutStrategy = memoryLayoutStrategy
-        super.init(symbols)
     }
     
-    public override func compile(varDecl node: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
+    public func compile(_ node: VarDeclaration) throws -> VarDeclaration {
         guard symbols!.existsAndCannotBeShadowed(identifier: node.identifier.identifier) == false else {
             throw CompilerError(sourceAnchor: node.identifier.sourceAnchor,
                                 format: "%@ redefines existing symbol: `%@'",

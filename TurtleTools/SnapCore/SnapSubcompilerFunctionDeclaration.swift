@@ -1,5 +1,5 @@
 //
-//  SnapASTTransformerFunctionDeclaration.swift
+//  SnapSubcompilerFunctionDeclaration.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 8/2/21.
@@ -8,8 +8,14 @@
 
 import TurtleCore
 
-public class SnapASTTransformerFunctionDeclaration: SnapASTTransformerBase {
-    public override func compile(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode {
+public class SnapSubcompilerFunctionDeclaration: NSObject {
+    public private(set) var symbols: SymbolTable? = nil
+    
+    public init(_ symbols: SymbolTable? = nil) {
+        self.symbols = symbols
+    }
+    
+    public func compile(_ node: FunctionDeclaration) throws -> FunctionDeclaration {
         let name = node.identifier.identifier
         
         guard symbols!.existsAndCannotBeShadowed(identifier: name) == false else {
@@ -22,7 +28,7 @@ public class SnapASTTransformerFunctionDeclaration: SnapASTTransformerBase {
         let symbol = Symbol(type: typ, offset: 0, storage: .automaticStorage, visibility: node.visibility)
         symbols!.bind(identifier: name, symbol: symbol)
         
-        return try super.compile(func: node)
+        return node
     }
     
     func evaluateFunctionTypeExpression(_ expr: Expression) throws -> FunctionType {

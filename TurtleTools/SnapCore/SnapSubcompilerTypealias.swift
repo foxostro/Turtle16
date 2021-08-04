@@ -1,5 +1,5 @@
 //
-//  SnapASTTransformerTypealias.swift
+//  SnapSubcompilerTypealias.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 8/3/21.
@@ -8,8 +8,14 @@
 
 import TurtleCore
 
-public class SnapASTTransformerTypealias: SnapASTTransformerBase {
-    public override func compile(typealias node: Typealias) throws -> AbstractSyntaxTreeNode {
+public class SnapSubcompilerTypealias: NSObject {
+    public private(set) var symbols: SymbolTable? = nil
+    
+    public init(_ symbols: SymbolTable? = nil) {
+        self.symbols = symbols
+    }
+    
+    public func compile(_ node: Typealias) throws -> Typealias? {
         guard false == symbols!.existsAsTypeAndCannotBeShadowed(identifier: node.lexpr.identifier) else {
             throw CompilerError(sourceAnchor: node.lexpr.sourceAnchor,
                                 message: "typealias redefines existing type: `\(node.lexpr.identifier)'")
@@ -20,6 +26,7 @@ public class SnapASTTransformerTypealias: SnapASTTransformerBase {
                       symbolType: symbolType,
                       visibility: node.visibility)
         
-        return try super.compile(typealias: node)
+        // Erase the typealias now that we've bound the new type.
+        return nil
     }
 }

@@ -1,5 +1,5 @@
 //
-//  SnapASTTransformerStructDeclarationTests.swift
+//  SnapSubcompilerStructDeclarationTests.swift
 //  SnapCoreTests
 //
 //  Created by Andrew Fox on 8/3/21.
@@ -10,22 +10,16 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class SnapASTTransformerStructDeclarationTests: XCTestCase {
-    fileprivate func makeCompiler(_ symbols: SymbolTable) -> SnapASTTransformerStructDeclaration {
-        return SnapASTTransformerStructDeclaration(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(), symbols: symbols)
-    }
-    
-    func testIgnoresUnrecognizedNodes() throws {
-        let symbols = SymbolTable()
-        let result = try? makeCompiler(symbols).compile(CommentNode(string: ""))
-        XCTAssertEqual(result, CommentNode(string: ""))
+class SnapSubcompilerStructDeclarationTests: XCTestCase {
+    fileprivate func makeCompiler(_ symbols: SymbolTable) -> SnapSubcompilerStructDeclaration {
+        return SnapSubcompilerStructDeclaration(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(), symbols: symbols)
     }
     
     func testEmptyStruct() throws {
         let symbols = SymbolTable()
         let input = StructDeclaration(identifier: Expression.Identifier("None"), members: [])
         var result: AbstractSyntaxTreeNode?
-        XCTAssertNoThrow(result = try makeCompiler(symbols).compile(struct: input))
+        XCTAssertNoThrow(result = try makeCompiler(symbols).compile(input))
         XCTAssertNil(result)
         let expectedStructSymbols = SymbolTable()
         expectedStructSymbols.enclosingFunctionName = "None"
@@ -40,7 +34,7 @@ class SnapASTTransformerStructDeclarationTests: XCTestCase {
             StructDeclaration.Member(name: "bar", type: Expression.PrimitiveType(.u8))
         ])
         var result: AbstractSyntaxTreeNode?
-        XCTAssertNoThrow(result = try makeCompiler(symbols).compile(struct: input))
+        XCTAssertNoThrow(result = try makeCompiler(symbols).compile(input))
         XCTAssertNil(result)
         let expectedStructSymbols = SymbolTable(tuples: [
             ("bar", Symbol(type: .u8, offset: 0, storage: .automaticStorage))
@@ -58,7 +52,7 @@ class SnapASTTransformerStructDeclarationTests: XCTestCase {
             StructDeclaration.Member(name: "bar", type: Expression.Identifier("Foo"))
         ])
         let compiler = makeCompiler(symbols)
-        XCTAssertThrowsError(try compiler.compile(struct: input)) {
+        XCTAssertThrowsError(try compiler.compile(input)) {
             let error = $0 as? CompilerError
             XCTAssertEqual(error?.message, "a struct cannot contain itself recursively")
         }

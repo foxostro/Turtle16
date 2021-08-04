@@ -43,7 +43,7 @@ public class SnapASTContractionStep: NSObject {
     
     func applyTopLevelMacros(_ t0: AbstractSyntaxTreeNode) throws -> AbstractSyntaxTreeNode? {
         // Rewrite TopLevel to a Block so it can carry the global symbol table.
-        let t1 = try SnapASTTransformerTopLevel().compile(t0)
+        let t1 = try SnapSubcompilerTopLevel().compile(t0)
         
         // Process Assert before tests since Assert needs to know about the
         // enclosing test to synthesize the error message.

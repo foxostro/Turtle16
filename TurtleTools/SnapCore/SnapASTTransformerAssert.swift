@@ -17,7 +17,7 @@ public class SnapASTTransformerAssert: SnapASTTransformerBase {
         return try super.compile(testDecl: node)
     }
     
-    public override func compile(assert node: Assert) throws -> AbstractSyntaxTreeNode {
+    public override func compile(assert node: Assert) throws -> AbstractSyntaxTreeNode? {
         let s = node.sourceAnchor
         let message: String
         if let currentTest = currentTest {

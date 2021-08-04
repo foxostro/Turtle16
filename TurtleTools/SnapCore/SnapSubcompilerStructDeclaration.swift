@@ -17,7 +17,7 @@ public class SnapSubcompilerStructDeclaration: NSObject {
         self.memoryLayoutStrategy = memoryLayoutStrategy
     }
     
-    public func compile(_ node: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
+    public func compile(_ node: StructDeclaration) throws -> StructDeclaration? {
         let name = node.identifier.identifier
         
         let members = SymbolTable(parent: symbols)
@@ -39,6 +39,6 @@ public class SnapSubcompilerStructDeclaration: NSObject {
         }
         members.parent = nil
         
-        return nil
+        return nil // Erase the StructDeclaration now that it's been processd.
     }
 }

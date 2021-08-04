@@ -1,8 +1,8 @@
 //
-//  SnapAbstractSyntaxTreeCompilerTests.swift
+//  SnapAbstractSyntaxTreeCompilerImplPassTests.swift
 //  SnapCoreTests
 //
-//  Created by Andrew Fox on 8/2/21.
+//  Created by Andrew Fox on 8/3/21.
 //  Copyright © 2021 Andrew Fox. All rights reserved.
 //
 
@@ -10,9 +10,9 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class SnapAbstractSyntaxTreeCompilerTests: XCTestCase {
-    func makeCompiler() -> SnapAbstractSyntaxTreeCompiler {
-        return SnapAbstractSyntaxTreeCompiler(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+class SnapAbstractSyntaxTreeCompilerImplPassTests: XCTestCase {
+    func makeCompiler() -> SnapAbstractSyntaxTreeCompilerImplPass {
+        return SnapAbstractSyntaxTreeCompilerImplPass(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
     }
     
     func testExample() throws {

@@ -20,4 +20,56 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         let result = try? compiler.compile(CommentNode(string: "foo"))
         XCTAssertEqual(result, CommentNode(string: "foo"))
     }
+    
+    func testFunctionDeclaration() throws {
+        let globalSymbols = SymbolTable()
+        let input = Block(symbols: globalSymbols, children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
+                                            functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                            argumentNames: [],
+                                            body: Block(children: []))
+        ])
+        
+        let compiler = makeCompiler()
+        let result = try? compiler.compile(input)
+        XCTAssertEqual(result, input)
+        
+        let actual = try? globalSymbols.resolve(identifier: "foo")
+        let expected = Symbol(type: .function(FunctionType(name: "foo", returnType: .u8, arguments: [])), offset: 0, storage: .automaticStorage)
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testStructDeclaration() throws {
+        let globalSymbols = SymbolTable()
+        let input = Block(symbols: globalSymbols, children: [
+            StructDeclaration(identifier: Expression.Identifier("None"), members: [])
+        ])
+        
+        let expected = Block(symbols: globalSymbols, children: []) // StructDeclaration is removed after being processed
+        let compiler = makeCompiler()
+        let result = try? compiler.compile(input)
+        XCTAssertEqual(result, expected)
+        
+        let expectedStructSymbols = SymbolTable()
+        expectedStructSymbols.enclosingFunctionName = "None"
+        let expectedType: SymbolType = .structType(StructType(name: "None", symbols: expectedStructSymbols))
+        let actualType = try? globalSymbols.resolveType(identifier: "None")
+        XCTAssertEqual(actualType, expectedType)
+    }
+    
+    func testTypealias() throws {
+        let globalSymbols = SymbolTable()
+        let input = Block(symbols: globalSymbols, children: [
+            Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.u8))
+        ])
+        
+        let expected = Block(symbols: globalSymbols, children: []) // Typealias is removed after being processed
+        let compiler = makeCompiler()
+        let result = try? compiler.compile(input)
+        XCTAssertEqual(result, expected)
+        
+        let expectedType: SymbolType = .u8
+        let actualType = try? globalSymbols.resolveType(identifier: "Foo")
+        XCTAssertEqual(actualType, expectedType)
+    }
 }

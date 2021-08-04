@@ -1,5 +1,5 @@
 //
-//  SnapASTContractionStep.swift
+//  SnapAbstractSyntaxTreeCompiler.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 7/28/21.
@@ -12,7 +12,7 @@ import TurtleCore
 // This is generally a contraction and rewriting of the parse tree, simplifying,
 // removing extraneous nodes, and rewriting nodes to express high-level concepts
 // in terms simpler ones.
-public class SnapASTContractionStep: NSObject {
+public class SnapAbstractSyntaxTreeCompiler: NSObject {
     public let memoryLayoutStrategy: MemoryLayoutStrategy
     public var shouldRunSpecificTest: String? = nil
     
@@ -32,7 +32,7 @@ public class SnapASTContractionStep: NSObject {
             return
         }
         do {
-            guard let topLevel = try applyTopLevelMacros(root) as? Block else {
+            guard let topLevel = try tryCompile(root) as? Block else {
                 throw CompilerError(message: "expected Block at root of tree after AST transformation")
             }
             ast = topLevel
@@ -41,27 +41,20 @@ public class SnapASTContractionStep: NSObject {
         }
     }
     
-    func applyTopLevelMacros(_ t0: AbstractSyntaxTreeNode) throws -> AbstractSyntaxTreeNode? {
-        // Rewrite TopLevel to a Block so it can carry the global symbol table.
-        let t1 = try SnapSubcompilerTopLevel().compile(t0)
-        
-        // Process Assert before tests since Assert needs to know about the
-        // enclosing test to synthesize the error message.
-        let t2 = try SnapASTTransformerAssert().compile(t1)
-        
+    func tryCompile(_ t0: AbstractSyntaxTreeNode) throws -> AbstractSyntaxTreeNode? {
         // Erase test declarations and replace with a synthesized test runner.
         let testDeclarationTransformer = SnapASTTransformerTestDeclaration(shouldRunSpecificTest: shouldRunSpecificTest)
-        let t3 = try testDeclarationTransformer.compile(t2)
+        let t1 = try testDeclarationTransformer.compile(t0)
         testNames = testDeclarationTransformer.testNames
         
-        return t3
+        return t1
         
-        // Some AST contraction steps both need to be aware of symbols and
-        // themselves create new symbols. Both of those steps have to be
-        // performed together, in one pass over the tree.
-//        let t4 = try SnapAbstractSyntaxTreeCompilerDeclPass(memoryLayoutStrategy: memoryLayoutStrategy, symbols: nil).compile(t3)
-//        let t5 = try SnapAbstractSyntaxTreeCompilerImplPass(memoryLayoutStrategy: memoryLayoutStrategy, symbols: nil).compile(t4)
+        // Collect type declarations in a discrete pass
+//        let t2 = try SnapAbstractSyntaxTreeCompilerDeclPass(memoryLayoutStrategy: memoryLayoutStrategy, symbols: nil).compile(t1)
+        
+        // Rewrite higher-level nodes in terms of trees of lower-level nodes.
+//        let t3 = try SnapAbstractSyntaxTreeCompilerImplPass(memoryLayoutStrategy: memoryLayoutStrategy, symbols: nil).compile(t2)
 //
-//        return t5
+//        return t3
     }
 }

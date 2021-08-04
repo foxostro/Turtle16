@@ -62,7 +62,7 @@ public class SnapCompiler: NSObject {
         }
         
         // AST contraction step
-        let contractionStep = SnapASTContractionStep(memoryLayoutStrategy)
+        let contractionStep = SnapAbstractSyntaxTreeCompiler(memoryLayoutStrategy)
         contractionStep.shouldRunSpecificTest = shouldRunSpecificTest
         contractionStep.compile(parser.syntaxTree)
         if contractionStep.hasError {

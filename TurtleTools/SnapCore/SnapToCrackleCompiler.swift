@@ -213,7 +213,7 @@ public class SnapToCrackleCompiler: NSObject {
         }
         
         // AST contraction step
-        let contractionStep = SnapASTContractionStep(memoryLayoutStrategy)
+        let contractionStep = SnapAbstractSyntaxTreeCompiler(memoryLayoutStrategy)
         contractionStep.compile(parser.syntaxTree)
         if contractionStep.hasError {
             throw CompilerError.makeOmnibusError(fileName: filename, errors: contractionStep.errors)
@@ -433,6 +433,8 @@ public class SnapToCrackleCompiler: NSObject {
             try compile(implFor: node)
         case let node as Match:
             try compile(match: node)
+        case let node as Assert:
+            try compile(assert: node)
         case let node as TraitDeclaration:
             try compile(trait: node)
         default:
@@ -835,6 +837,13 @@ public class SnapToCrackleCompiler: NSObject {
     private func compile(match: Match) throws {
         let ast = try MatchCompiler(memoryLayoutStrategy).compile(match: match, symbols: symbols)
         try compile(genericNode: ast)
+    }
+    
+    private func compile(assert node: Assert) throws {
+        if let ast = try SnapSubcompilerAssert().compile(node) {
+            SymbolTablesReconnector(symbols).reconnect(ast)
+            try compile(genericNode: ast)
+        }
     }
     
     private func compile(trait traitDecl: TraitDeclaration) throws {

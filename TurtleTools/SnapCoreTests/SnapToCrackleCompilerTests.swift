@@ -19,7 +19,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
     
     func compile(_ ast0: Block, injectModules: [(String, String)] = []) -> SnapToCrackleCompiler {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
-        let contractionStep = SnapASTContractionStep(memoryLayoutStrategy)
+        let contractionStep = SnapAbstractSyntaxTreeCompiler(memoryLayoutStrategy)
         contractionStep.compile(ast0)
         if contractionStep.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: contractionStep.errors).message)
@@ -2366,6 +2366,78 @@ public func foo() -> None {
         let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "cannot convert value of type `integer constant 0' to type `bool'")
+    }
+    
+    func testFailToCompileAssertStatementWithNonbooleanCondition() {
+        let ast = Block(children: [
+            Assert(condition: Expression.LiteralInt(0), message: "0")
+        ])
+        let compiler = compile(ast)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "binary operator `==' cannot be applied to operands of types `integer constant 0' and `boolean constant false'")
+    }
+    
+    func testPassingAssertDoesNothing() {
+        let ast = Block(symbols: CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable()), children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
+                           explicitType: nil,
+                           expression: Expression.LiteralInt(1),
+                           storage: .staticStorage,
+                           isMutable: true),
+            FunctionDeclaration(identifier: Expression.Identifier("panic"), functionType: Expression.FunctionType(name: "panic", returnType: Expression.PrimitiveType(.void), arguments: [Expression.DynamicArrayType(Expression.PrimitiveType(.u8))]), argumentNames: ["s"], body: Block(children: [
+                Expression.Assignment(lexpr: Expression.Identifier("foo"),
+                                      rexpr: Expression.LiteralInt(2)),
+                Expression.Call(callee: Expression.Identifier("hlt"), arguments: [])
+            ])),
+            Assert(condition: Expression.LiteralBool(true), message: "true"),
+            Expression.Assignment(lexpr: Expression.Identifier("foo"),
+                                  rexpr: Expression.LiteralInt(42))
+        ])
+        let compiler = compile(ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        let ir = compiler.instructions
+        let executor = CrackleExecutor()
+        executor.injectPanicStub = false
+        let computer = try! executor.execute(crackle: ir)
+        
+        let addressOfFoo = try! compiler.globalSymbols.resolve(identifier: "foo").offset
+        XCTAssertEqual(computer.dataRAM.load(from: addressOfFoo), 42)
+    }
+    
+    func testFailingAssertPanics() {
+        let ast = Block(symbols: CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable()), children: [
+            VarDeclaration(identifier: Expression.Identifier("foo"),
+                           explicitType: nil,
+                           expression: Expression.LiteralInt(1),
+                           storage: .staticStorage,
+                           isMutable: true),
+            FunctionDeclaration(identifier: Expression.Identifier("panic"), functionType: Expression.FunctionType(name: "panic", returnType: Expression.PrimitiveType(.void), arguments: [Expression.DynamicArrayType(Expression.PrimitiveType(.u8))]), argumentNames: ["s"], body: Block(children: [
+                Expression.Assignment(lexpr: Expression.Identifier("foo"),
+                                      rexpr: Expression.LiteralInt(2)),
+                Expression.Call(callee: Expression.Identifier("hlt"), arguments: [])
+            ])),
+            Assert(condition: Expression.LiteralBool(false), message: "false"),
+            Expression.Assignment(lexpr: Expression.Identifier("foo"),
+                                  rexpr: Expression.LiteralInt(42))
+        ])
+        
+        let compiler = compile(ast)
+        XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
+            return
+        }
+        let ir = compiler.instructions
+        let executor = CrackleExecutor()
+        executor.injectPanicStub = false
+        let computer = try! executor.execute(crackle: ir)
+        
+        let addressOfFoo = try! compiler.globalSymbols.resolve(identifier: "foo").offset
+        XCTAssertEqual(computer.dataRAM.load(from: addressOfFoo), 2)
     }
     
     func testDeclareAFunctionPointerVariable() {

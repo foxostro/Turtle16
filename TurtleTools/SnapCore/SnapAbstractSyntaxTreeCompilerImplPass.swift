@@ -23,6 +23,12 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: SnapASTTransformerBase {
         super.init(symbols)
     }
     
+    public override func compile(assert node0: Assert) throws -> AbstractSyntaxTreeNode? {
+        let node1 = try SnapSubcompilerAssert().compile(node0)
+        let node2 = try super.compile(node1)
+        return node2
+    }
+    
     public override func compile(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
         let subcompiler = SnapSubcompilerVarDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols!)
         let node1 = try subcompiler.compile(node0)

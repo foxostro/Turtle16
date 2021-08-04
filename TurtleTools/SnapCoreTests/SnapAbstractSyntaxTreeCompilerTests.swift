@@ -1,5 +1,5 @@
 //
-//  SnapASTContractionStepTests.swift
+//  SnapAbstractSyntaxTreeCompilerTests.swift
 //  SnapCoreTests
 //
 //  Created by Andrew Fox on 7/28/21.
@@ -10,9 +10,9 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class SnapASTContractionStepTests: XCTestCase {
+class SnapAbstractSyntaxTreeCompilerTests: XCTestCase {
     func testExample() throws {
-        let compiler = SnapASTContractionStep()
+        let compiler = SnapAbstractSyntaxTreeCompiler()
         let input = TopLevel(children: [CommentNode(string: "")])
         compiler.compile(input)
         let actual = compiler.ast
@@ -24,7 +24,7 @@ class SnapASTContractionStepTests: XCTestCase {
     }
     
     func testExpectTopLevelNodeAtRoot() throws {
-        let compiler = SnapASTContractionStep()
+        let compiler = SnapAbstractSyntaxTreeCompiler()
         compiler.compile(CommentNode(string: ""))
         XCTAssertTrue(compiler.hasError)
     }

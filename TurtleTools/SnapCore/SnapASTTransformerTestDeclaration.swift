@@ -9,13 +9,22 @@
 import TurtleCore
 
 public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
-    public var depth = 0
     public private(set) var testNames: [String] = []
     public private(set) var testDeclarations: [TestDeclaration] = []
+    var currentTest: TestDeclaration? = nil
+    var depth = 0
     let shouldRunSpecificTest: String?
     
     public init(shouldRunSpecificTest: String? = nil) {
         self.shouldRunSpecificTest = shouldRunSpecificTest
+    }
+    
+    public override func compile(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {
+        let globalSymbols = CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable())
+        let block = Block(sourceAnchor: node.sourceAnchor,
+                          symbols: globalSymbols,
+                          children: node.children)
+        return try compile(block: block)
     }
     
     public override func compile(block node: Block) throws -> AbstractSyntaxTreeNode? {
@@ -69,11 +78,21 @@ public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
             throw CompilerError(sourceAnchor: node.sourceAnchor, message: "test \"\(node.name)\" already exists")
         }
         
-        testNames.append(node.name)
-        testDeclarations.append(node)
+        currentTest = node
+        defer { currentTest = nil }
         
-        let _ = try super.compile(testDecl: node)
+        let modifiedNode = try super.compile(testDecl: node) as! TestDeclaration
         
-        return nil
+        testNames.append(modifiedNode.name)
+        testDeclarations.append(modifiedNode)
+        
+        return nil // Erase TestDeclaration at this point.
+    }
+    
+    public override func compile(assert node: Assert) throws -> AbstractSyntaxTreeNode {
+        return Assert(sourceAnchor: node.sourceAnchor,
+                      condition: node.condition,
+                      message: node.message,
+                      enclosingTestName: currentTest?.name)
     }
 }

@@ -18,6 +18,8 @@ public class SnapASTTransformerBase: NSObject {
     public func compile(_ genericNode: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
         let result: AbstractSyntaxTreeNode?
         switch genericNode {
+        case let node as TopLevel:
+            result = try compile(topLevel: node)
         case let node as VarDeclaration:
             result = try compile(varDecl: node)
         case let node as Expression:
@@ -55,6 +57,11 @@ public class SnapASTTransformerBase: NSObject {
         }
         reconnect(result)
         return result
+    }
+    
+    public func compile(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {
+        return TopLevel(sourceAnchor: node.sourceAnchor,
+                        children: try node.children.compactMap { try compile($0) })
     }
     
     public func compile(varDecl node: VarDeclaration) throws -> AbstractSyntaxTreeNode? {

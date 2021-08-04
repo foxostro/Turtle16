@@ -11,18 +11,15 @@ import TurtleCore
 public class Assert: AbstractSyntaxTreeNode {
     public let condition: Expression
     public let message: String
+    public let enclosingTestName: String?
     
-    public convenience init(condition: Expression, message: String) {
-        self.init(sourceAnchor: nil,
-                  condition: condition,
-                  message: message)
-    }
-    
-    public required init(sourceAnchor: SourceAnchor?,
-                         condition: Expression,
-                         message: String) {
+    public init(sourceAnchor: SourceAnchor? = nil,
+                condition: Expression,
+                message: String,
+                enclosingTestName: String? = nil) {
         self.condition = condition
         self.message = message
+        self.enclosingTestName = enclosingTestName
         super.init(sourceAnchor: sourceAnchor)
     }
     
@@ -33,6 +30,7 @@ public class Assert: AbstractSyntaxTreeNode {
         guard let rhs = rhs as? Assert else { return false }
         guard condition == rhs.condition else { return false }
         guard message == rhs.message else { return false }
+        guard enclosingTestName == rhs.enclosingTestName else { return false }
         return true
     }
     
@@ -40,6 +38,7 @@ public class Assert: AbstractSyntaxTreeNode {
         var hasher = Hasher()
         hasher.combine(condition)
         hasher.combine(message)
+        hasher.combine(enclosingTestName)
         hasher.combine(super.hash)
         return hasher.finalize()
     }
@@ -51,6 +50,16 @@ public class Assert: AbstractSyntaxTreeNode {
                       makeIndent(depth: depth + 1),
                       condition.makeIndentedDescription(depth: depth + 1),
                       makeIndent(depth: depth + 1),
-                      message)
+                      finalMessage)
+    }
+    
+    public var finalMessage: String {
+        let result: String
+        if let enclosingTestName = enclosingTestName {
+            result = "\(message) in test \"\(enclosingTestName)\""
+        } else {
+            result = message
+        }
+        return result
     }
 }

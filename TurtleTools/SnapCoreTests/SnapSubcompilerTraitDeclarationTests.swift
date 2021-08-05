@@ -119,6 +119,40 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
                                          isConst: true)
         XCTAssertEqual(result?.first, expected)
     }
+    
+    func testCompileTraitAddsTraitObjectType_VoidReturn() {
+        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.void), arguments: [
+            Expression.PointerType(Expression.Identifier("Foo"))
+        ])))
+        let ast = TraitDeclaration(identifier: Expression.Identifier("Foo"),
+                                   members: [bar],
+                                   visibility: .privateVisibility)
+        
+        let globalSymbols = SymbolTable()
+        let result = try? makeCompiler(globalSymbols).compile(ast)
+        
+        let traitType = try? globalSymbols.resolveType(identifier: "Foo")
+        XCTAssertEqual("__Foo_vtable", traitType?.unwrapTraitType().nameOfVtableType)
+        XCTAssertEqual("__Foo_object", traitType?.unwrapTraitType().nameOfTraitObjectType)
+        
+        let expected: [AbstractSyntaxTreeNode] = [
+            StructDeclaration(identifier: Expression.Identifier("__Foo_vtable"), members: [
+               StructDeclaration.Member(name: "bar", type: Expression.PointerType(Expression.FunctionType(returnType: Expression.PrimitiveType(.void), arguments: [Expression.PointerType(Expression.PrimitiveType(.void))])))
+            ], visibility: .privateVisibility, isConst: true),
+            StructDeclaration(identifier: Expression.Identifier("__Foo_object"), members: [
+                StructDeclaration.Member(name: "object", type: Expression.PointerType(Expression.PrimitiveType(.void))),
+                StructDeclaration.Member(name: "vtable", type: Expression.PointerType(Expression.ConstType(Expression.Identifier("__Foo_vtable"))))
+            ], visibility: .privateVisibility),
+            Impl(identifier: Expression.Identifier("__Foo_object"), children: [
+                FunctionDeclaration(identifier: Expression.Identifier("bar"), functionType: Expression.FunctionType(name: "bar", returnType: Expression.PrimitiveType(.void), arguments: [Expression.PointerType(Expression.Identifier("__Foo_object"))]), argumentNames: ["self"], body: Block(children: [
+                    Expression.Call(callee: Expression.Get(expr: Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("vtable")), member: Expression.Identifier("bar")), arguments: [
+                        Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("object"))
+                    ])
+                ]))
+            ])
+        ]
+        XCTAssertEqual(result, expected)
+    }
 
     func testCompileTraitAddsTraitObjectType() {
         let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.u8), arguments: [
@@ -136,18 +170,20 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
         XCTAssertEqual("__Foo_object", traitType?.unwrapTraitType().nameOfTraitObjectType)
         
         let expected: [AbstractSyntaxTreeNode] = [
-            StructDeclaration(identifier: Expression.Identifier("__Foo_vtable"),
-                                             members: [
-                                                StructDeclaration.Member(name: "bar", type: Expression.PointerType(Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: [Expression.PointerType(Expression.PrimitiveType(.void))])))
-                                             ],
-                                             visibility: .privateVisibility,
-                                             isConst: true),
-            StructDeclaration(identifier: Expression.Identifier("__Foo_object"),
-                                             members: [
-                                                StructDeclaration.Member(name: "object", type: Expression.PointerType(Expression.PrimitiveType(.void))),
-                                                StructDeclaration.Member(name: "vtable", type: Expression.PointerType(Expression.ConstType(Expression.Identifier("__Foo_vtable"))))
-                                             ],
-                                             visibility: .privateVisibility)
+            StructDeclaration(identifier: Expression.Identifier("__Foo_vtable"), members: [
+               StructDeclaration.Member(name: "bar", type: Expression.PointerType(Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: [Expression.PointerType(Expression.PrimitiveType(.void))])))
+            ], visibility: .privateVisibility, isConst: true),
+            StructDeclaration(identifier: Expression.Identifier("__Foo_object"), members: [
+                StructDeclaration.Member(name: "object", type: Expression.PointerType(Expression.PrimitiveType(.void))),
+                StructDeclaration.Member(name: "vtable", type: Expression.PointerType(Expression.ConstType(Expression.Identifier("__Foo_vtable"))))
+            ], visibility: .privateVisibility),
+            Impl(identifier: Expression.Identifier("__Foo_object"), children: [
+                FunctionDeclaration(identifier: Expression.Identifier("bar"), functionType: Expression.FunctionType(name: "bar", returnType: Expression.PrimitiveType(.u8), arguments: [Expression.PointerType(Expression.Identifier("__Foo_object"))]), argumentNames: ["self"], body: Block(children: [
+                    Return(Expression.Call(callee: Expression.Get(expr: Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("vtable")), member: Expression.Identifier("bar")), arguments: [
+                        Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("object"))
+                    ]))
+                ]))
+            ])
         ]
         XCTAssertEqual(result, expected)
     }

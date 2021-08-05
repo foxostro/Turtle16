@@ -9,7 +9,7 @@
 import TurtleCore
 
 public class SnapSubcompilerTraitDeclaration: NSObject {
-    public private(set) var symbols: SymbolTable? = nil
+    public let symbols: SymbolTable
     public let memoryLayoutStrategy: MemoryLayoutStrategy
     
     public init(memoryLayoutStrategy: MemoryLayoutStrategy, symbols: SymbolTable) {
@@ -21,7 +21,8 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
         try declareTraitType(node)
         let vtable = try declareVtableType(node)
         let traitObject = declareTraitObjectType(node)
-        return [vtable, traitObject]
+        let thunks = try compileTraitObjectThunks(node)
+        return [vtable, traitObject, thunks]
     }
     
     func declareTraitType(_ traitDecl: TraitDeclaration) throws {
@@ -29,9 +30,9 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
         
         let members = SymbolTable(parent: symbols)
         let fullyQualifiedTraitType = TraitType(name: name, nameOfTraitObjectType: traitDecl.nameOfTraitObjectType, nameOfVtableType: traitDecl.nameOfVtableType, symbols: members)
-        symbols!.bind(identifier: name,
-                      symbolType: .traitType(fullyQualifiedTraitType),
-                      visibility: traitDecl.visibility)
+        symbols.bind(identifier: name,
+                     symbolType: .traitType(fullyQualifiedTraitType),
+                     visibility: traitDecl.visibility)
         
         members.enclosingFunctionName = name
         for memberDeclaration in traitDecl.members {
@@ -93,5 +94,61 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
                                            visibility: traitDecl.visibility,
                                            isConst: false) // TODO: Should isConst be true here?
         return structDecl
+    }
+    
+    func compileTraitObjectThunks(_ traitDecl: TraitDeclaration) throws -> Impl {
+        var thunks: [FunctionDeclaration] = []
+        for method in traitDecl.members {
+            let functionType = rewriteTraitMemberTypeForThunk(traitDecl, method)
+            let argumentNames = (0..<functionType.arguments.count).map { ($0 == 0) ? "self" : "arg\($0)" }
+            let callee = Expression.Get(expr: Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("vtable")), member: Expression.Identifier(method.name))
+            let arguments = [Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("object"))] + argumentNames[1...].map({Expression.Identifier($0)})
+            
+            let outer = SymbolTable(parent: symbols)
+            
+            let fnBody: Block
+            let returnType = try TypeContextTypeChecker(symbols: symbols).check(expression: functionType.returnType)
+            if returnType == .void {
+                fnBody = Block(symbols: SymbolTable(parent: outer),
+                               children: [Expression.Call(callee: callee, arguments: arguments)])
+            } else {
+                fnBody = Block(symbols: SymbolTable(parent: outer),
+                               children: [Return(Expression.Call(callee: callee, arguments: arguments))])
+            }
+            
+            let fnDecl = FunctionDeclaration(identifier: Expression.Identifier(method.name),
+                                             functionType: functionType,
+                                             argumentNames: argumentNames,
+                                             body: fnBody,
+                                             symbols: outer)
+            thunks.append(fnDecl)
+        }
+        let implBlock = Impl(sourceAnchor: traitDecl.sourceAnchor, identifier: Expression.Identifier(traitDecl.nameOfTraitObjectType), children: thunks)
+        return implBlock
+    }
+    
+    func rewriteTraitMemberTypeForThunk(_ traitDecl: TraitDeclaration, _ method: TraitDeclaration.Member) -> Expression.FunctionType {
+        
+        let traitName = traitDecl.identifier.identifier
+        let traitObjectName = traitDecl.nameOfTraitObjectType
+        let functionType = (method.memberType as! Expression.PointerType).typ as! Expression.FunctionType
+        
+        if let arg0 = functionType.arguments.first {
+            if ((arg0 as? Expression.PointerType)?.typ as? Expression.Identifier)?.identifier == traitName {
+                var arguments: [Expression] = functionType.arguments
+                arguments[0] = Expression.PointerType(Expression.Identifier(traitObjectName))
+                let modifiedFunctionType = Expression.FunctionType(name: method.name, returnType: functionType.returnType, arguments: arguments)
+                return modifiedFunctionType
+            }
+            
+            if (((arg0 as? Expression.PointerType)?.typ as? Expression.ConstType)?.typ as? Expression.Identifier)?.identifier == traitName {
+                var arguments: [Expression] = functionType.arguments
+                arguments[0] = Expression.PointerType(Expression.ConstType(Expression.Identifier(traitObjectName)))
+                let modifiedFunctionType = Expression.FunctionType(name: method.name, returnType: functionType.returnType, arguments: arguments)
+                return modifiedFunctionType
+            }
+        }
+        
+        return functionType
     }
 }

@@ -47,11 +47,8 @@ public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
     public override func compile(trait node0: TraitDeclaration) throws -> AbstractSyntaxTreeNode? {
         let subcompiler = SnapSubcompilerTraitDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols!)
         let seq1 = try subcompiler.compile(node0)
-        let seq2 = try seq1.compactMap { try compile(struct: $0 as! StructDeclaration) }
-        assert(seq2.isEmpty)
-        
-        // We need to pass forward the original TraitDeclaration node so that
-        // the Impl pass of the compiler can generate thunks for trait methods.
-        return node0
+        let seq2 = try seq1.compactMap { try compile($0) }
+        assert(seq2.count == 1)
+        return seq2.first!
     }
 }

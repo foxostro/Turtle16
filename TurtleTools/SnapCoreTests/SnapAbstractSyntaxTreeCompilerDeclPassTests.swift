@@ -79,12 +79,8 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
             TraitDeclaration(identifier: Expression.Identifier("Foo"), members: [])
         ])
         
-        let expected = Block(symbols: globalSymbols, children: [
-            TraitDeclaration(identifier: Expression.Identifier("Foo"), members: [])
-        ])
         let compiler = makeCompiler()
-        let result = try? compiler.compile(input)
-        XCTAssertEqual(result, expected)
+        XCTAssertNoThrow(try compiler.compile(input))
         
         let expectedSymbols = SymbolTable()
         expectedSymbols.enclosingFunctionName = "Foo"

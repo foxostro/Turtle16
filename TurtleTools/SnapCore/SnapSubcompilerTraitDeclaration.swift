@@ -79,7 +79,6 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
             }
         }
         
-        fatalError("TODO: add a test to trigger this case")
         return expr
     }
     

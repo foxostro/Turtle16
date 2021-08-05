@@ -17,6 +17,7 @@ import TurtleCore
 // various subcompilers classes.
 public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
     public let memoryLayoutStrategy: MemoryLayoutStrategy
+    public private(set) var modules: [Module] = []
     
     public init(memoryLayoutStrategy: MemoryLayoutStrategy, symbols: SymbolTable? = nil) {
         self.memoryLayoutStrategy = memoryLayoutStrategy
@@ -50,5 +51,15 @@ public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
         let seq2 = try seq1.compactMap { try compile($0) }
         assert(seq2.count == 1)
         return seq2.first!
+    }
+    
+//    public override func compile(import node0: Import) throws -> AbstractSyntaxTreeNode? {
+//        fatalError("unimplemented")
+//    }
+    
+    public override func compile(module node0: Module) throws -> AbstractSyntaxTreeNode? {
+        let subcompiler = SnapSubcompilerModule(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols!)
+        let node1 = try subcompiler.compile(node0)
+        return node1
     }
 }

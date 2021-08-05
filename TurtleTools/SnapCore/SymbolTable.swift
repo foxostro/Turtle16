@@ -597,6 +597,7 @@ public class SymbolTable: NSObject {
     public var enclosingFunctionType: FunctionType? = nil
     public var enclosingFunctionName: String? = nil
     public var stackFrameIndex: Int
+    public var moduleTable: [String:SymbolTable] = [:]
     
     public init(parent p: SymbolTable? = nil, tuples: [(String, Symbol)] = [], typeDict: [String:SymbolType] = [:]) {
         parent = p
@@ -623,6 +624,13 @@ public class SymbolTable: NSObject {
     public func existsAsType(identifier: String) -> Bool {
         if nil == typeTable[identifier] {
             return parent?.existsAsType(identifier: identifier) ?? false
+        }
+        return true
+    }
+    
+    public func existsAsModule(identifier: String) -> Bool {
+        if nil == moduleTable[identifier] {
+            return parent?.existsAsModule(identifier: identifier) ?? false
         }
         return true
     }
@@ -660,6 +668,10 @@ public class SymbolTable: NSObject {
     
     public func bind(identifier: String, symbolType: SymbolType, visibility: SymbolVisibility = .privateVisibility) {
         typeTable[identifier] = TypeRecord(symbolType: symbolType, visibility: visibility)
+    }
+    
+    public func bind(identifier: String, moduleSymbols: SymbolTable) {
+        moduleTable[identifier] = moduleSymbols
     }
     
     public func resolve(identifier: String) throws -> Symbol {
@@ -767,6 +779,17 @@ public class SymbolTable: NSObject {
         return parent?.maybeResolveTypeRecord(sourceAnchor: sourceAnchor, identifier: identifier)
     }
     
+    public func resolveModule(sourceAnchor: SourceAnchor? = nil, identifier: String) throws -> SymbolTable {
+        if let symbols = moduleTable[identifier] {
+            return symbols
+        }
+        guard let parent = parent else {
+            throw CompilerError(sourceAnchor: sourceAnchor,
+                                message: "use of undeclared type `\(identifier)'")
+        }
+        return try parent.resolveModule(sourceAnchor: sourceAnchor, identifier: identifier)
+    }
+    
     public static func ==(lhs: SymbolTable, rhs: SymbolTable) -> Bool {
         return lhs.isEqual(rhs)
     }
@@ -805,6 +828,9 @@ public class SymbolTable: NSObject {
         guard stackFrameIndex == rhs.stackFrameIndex else {
             return false
         }
+        guard moduleTable == rhs.moduleTable else {
+            return false
+        }
         return true
     }
     
@@ -818,6 +844,7 @@ public class SymbolTable: NSObject {
         hasher.combine(enclosingFunctionType)
         hasher.combine(enclosingFunctionName)
         hasher.combine(stackFrameIndex)
+        hasher.combine(moduleTable)
         return hasher.finalize()
     }
 }

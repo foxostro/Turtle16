@@ -88,4 +88,22 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         let actualType = try? globalSymbols.resolveType(identifier: "Foo")
         XCTAssertEqual(expectedType, actualType)
     }
+    
+    func testModule() throws {
+        let globalSymbols = SymbolTable()
+        let input = Block(symbols: globalSymbols, children: [
+            Module(name: "Foo", children: [
+                FunctionDeclaration(identifier: Expression.Identifier("puts"), functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [Expression.DynamicArrayType(Expression.PrimitiveType(.u8))]), argumentNames: ["s"], body: Block(children: []), visibility: .publicVisibility)
+            ])
+        ])
+        
+        let compiler = makeCompiler()
+        let result = try? compiler.compile(input)
+        let moduleOutput = (result as? Block)?.children.first as? Module
+        
+        XCTAssertTrue(globalSymbols.symbolTable.isEmpty)
+        XCTAssertTrue(globalSymbols.existsAsModule(identifier: "Foo"))
+        let puts = try? moduleOutput?.symbols.resolve(identifier: "puts")
+        XCTAssertNotNil(puts)
+    }
 }

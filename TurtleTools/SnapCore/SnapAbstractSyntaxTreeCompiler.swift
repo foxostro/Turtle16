@@ -27,12 +27,12 @@ public class SnapAbstractSyntaxTreeCompiler: NSObject {
         self.memoryLayoutStrategy = memoryLayoutStrategy
     }
     
-    public func compile(_ root: AbstractSyntaxTreeNode?) {
+    public func compile(_ root: AbstractSyntaxTreeNode?, actuallyDoIt: Bool = false) {
         guard let root = root else {
             return
         }
         do {
-            guard let topLevel = try tryCompile(root) as? Block else {
+            guard let topLevel = try tryCompile(root, actuallyDoIt) as? Block else {
                 throw CompilerError(message: "expected Block at root of tree after AST transformation")
             }
             ast = topLevel
@@ -41,20 +41,22 @@ public class SnapAbstractSyntaxTreeCompiler: NSObject {
         }
     }
     
-    func tryCompile(_ t0: AbstractSyntaxTreeNode) throws -> AbstractSyntaxTreeNode? {
+    func tryCompile(_ t0: AbstractSyntaxTreeNode, _ actuallyDoIt: Bool = false) throws -> AbstractSyntaxTreeNode? {
         // Erase test declarations and replace with a synthesized test runner.
         let testDeclarationTransformer = SnapASTTransformerTestDeclaration(shouldRunSpecificTest: shouldRunSpecificTest)
         let t1 = try testDeclarationTransformer.compile(t0)
         testNames = testDeclarationTransformer.testNames
         
-        return t1
+        if !actuallyDoIt {
+            return t1
+        }
         
         // Collect type declarations in a discrete pass
-//        let t2 = try SnapAbstractSyntaxTreeCompilerDeclPass(memoryLayoutStrategy: memoryLayoutStrategy, symbols: nil).compile(t1)
+        let t2 = try SnapAbstractSyntaxTreeCompilerDeclPass(memoryLayoutStrategy: memoryLayoutStrategy, symbols: nil).compile(t1)
         
         // Rewrite higher-level nodes in terms of trees of lower-level nodes.
-//        let t3 = try SnapAbstractSyntaxTreeCompilerImplPass(memoryLayoutStrategy: memoryLayoutStrategy, symbols: nil).compile(t2)
-//
-//        return t3
+        let t3 = try SnapAbstractSyntaxTreeCompilerImplPass(memoryLayoutStrategy: memoryLayoutStrategy, symbols: nil).compile(t2)
+
+        return t3
     }
 }

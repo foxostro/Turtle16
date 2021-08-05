@@ -72,4 +72,24 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         let actualType = try? globalSymbols.resolveType(identifier: "Foo")
         XCTAssertEqual(actualType, expectedType)
     }
+    
+    func testTraitDeclaration() throws {
+        let globalSymbols = SymbolTable()
+        let input = Block(symbols: globalSymbols, children: [
+            TraitDeclaration(identifier: Expression.Identifier("Foo"), members: [])
+        ])
+        
+        let expected = Block(symbols: globalSymbols, children: [
+            TraitDeclaration(identifier: Expression.Identifier("Foo"), members: [])
+        ])
+        let compiler = makeCompiler()
+        let result = try? compiler.compile(input)
+        XCTAssertEqual(result, expected)
+        
+        let expectedSymbols = SymbolTable()
+        expectedSymbols.enclosingFunctionName = "Foo"
+        let expectedType: SymbolType = .traitType(TraitType(name: "Foo", nameOfTraitObjectType: "__Foo_object", nameOfVtableType: "__Foo_vtable", symbols: expectedSymbols))
+        let actualType = try? globalSymbols.resolveType(identifier: "Foo")
+        XCTAssertEqual(expectedType, actualType)
+    }
 }

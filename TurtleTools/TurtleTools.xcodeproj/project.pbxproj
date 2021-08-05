@@ -386,6 +386,8 @@
 		6FE003C822F3DC8400221C4C /* ViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE003C722F3DC8400221C4C /* ViewControllerTests.swift */; };
 		6FE219CE241CC223006BC92A /* Example.txt in Resources */ = {isa = PBXBuildFile; fileRef = 6FE219CD241CC223006BC92A /* Example.txt */; };
 		6FEC3DFE24D78CF800E9C299 /* LabelMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEC3DFD24D78CF800E9C299 /* LabelMaker.swift */; };
+		6FF179C126B9F97C0026F284 /* SnapSubcompilerTraitDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF179C026B9F97C0026F284 /* SnapSubcompilerTraitDeclaration.swift */; };
+		6FF179C326B9F9EE0026F284 /* SnapSubcompilerTraitDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF179C226B9F9EE0026F284 /* SnapSubcompilerTraitDeclarationTests.swift */; };
 		6FF1995722ECB36F00C255A2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF1995622ECB36F00C255A2 /* AppDelegate.swift */; };
 		6FF1995922ECB36F00C255A2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF1995822ECB36F00C255A2 /* ViewController.swift */; };
 		6FF1995B22ECB37000C255A2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6FF1995A22ECB37000C255A2 /* Assets.xcassets */; };
@@ -1071,6 +1073,8 @@
 		6FE976E3240849B6006C393B /* InstructionMemoryRev1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionMemoryRev1.swift; sourceTree = "<group>"; };
 		6FEBE3E223F77F0200E42B66 /* ThrottledQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottledQueue.swift; sourceTree = "<group>"; };
 		6FEC3DFD24D78CF800E9C299 /* LabelMaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelMaker.swift; sourceTree = "<group>"; };
+		6FF179C026B9F97C0026F284 /* SnapSubcompilerTraitDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerTraitDeclaration.swift; sourceTree = "<group>"; };
+		6FF179C226B9F9EE0026F284 /* SnapSubcompilerTraitDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerTraitDeclarationTests.swift; sourceTree = "<group>"; };
 		6FF1995322ECB36F00C255A2 /* Simulator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Simulator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FF1995622ECB36F00C255A2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6FF1995822ECB36F00C255A2 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -1570,6 +1574,7 @@
 				6F40731C26B2A187007D8382 /* SnapSubcompilerAssert.swift */,
 				6F15423126B91BCC00BA9572 /* SnapSubcompilerFunctionDeclaration.swift */,
 				6F15423526B92AB500BA9572 /* SnapSubcompilerStructDeclaration.swift */,
+				6FF179C026B9F97C0026F284 /* SnapSubcompilerTraitDeclaration.swift */,
 				6F9E8F7E26B9A90F00FE25E4 /* SnapSubcompilerTypealias.swift */,
 				6F15422D26B897BA00BA9572 /* SnapSubcompilerVarDeclaration.swift */,
 				6F18DD8A248414DE0014C585 /* SnapToCrackleCompiler.swift */,
@@ -1623,6 +1628,7 @@
 				6F40731E26B2A194007D8382 /* SnapSubcompilerAssertTests.swift */,
 				6F15423326B91BD800BA9572 /* SnapSubcompilerFunctionDeclarationTests.swift */,
 				6F15423726B92ADB00BA9572 /* SnapSubcompilerStructDeclarationTests.swift */,
+				6FF179C226B9F9EE0026F284 /* SnapSubcompilerTraitDeclarationTests.swift */,
 				6F9E8F8026B9A91900FE25E4 /* SnapSubcompilerTypealiasTests.swift */,
 				6F15422F26B897D200BA9572 /* SnapSubcompilerVarDeclarationTests.swift */,
 				6F18DD8C2484154F0014C585 /* SnapToCrackleCompilerTests.swift */,
@@ -2625,6 +2631,7 @@
 				6F374F242548B82000793A78 /* CrackleBasicBlockPartitioner.swift in Sources */,
 				6F2E5B0E251AA46B00928DD1 /* Match.swift in Sources */,
 				6F2940BB2483978E00C50ABA /* CrackleInstruction.swift in Sources */,
+				6FF179C126B9F97C0026F284 /* SnapSubcompilerTraitDeclaration.swift in Sources */,
 				6F1800A7251D9079005D9D36 /* Import.swift in Sources */,
 				6FCA942525264C61000C2A2D /* Assert.swift in Sources */,
 				6F2940C5248399BE00C50ABA /* SymbolTable.swift in Sources */,
@@ -2692,6 +2699,7 @@
 				6F13CB062489DD2300ADB1BE /* CrackleInstructionTests.swift in Sources */,
 				6F0FAF1825495024002C1469 /* CrackleDeadCodeEliminationOptimizationPassTests.swift in Sources */,
 				6F24AC8D24A07CBC005193BB /* StatementTracerTests.swift in Sources */,
+				6FF179C326B9F9EE0026F284 /* SnapSubcompilerTraitDeclarationTests.swift in Sources */,
 				6F40730526ADE0EF007D8382 /* MemoryLayoutStrategyTurtleTTLTests.swift in Sources */,
 				6FF75BA82486C35400F55625 /* SnapCommandLineArgumentParserTests.swift in Sources */,
 				6FDB69AD2543618300D532C2 /* CrackleInstructionListingMakerTests.swift in Sources */,

@@ -23,7 +23,7 @@ public class SnapSubcompilerStructDeclaration: NSObject {
         let members = SymbolTable(parent: symbols)
         let fullyQualifiedStructType = StructType(name: name, symbols: members)
         symbols!.bind(identifier: name,
-                      symbolType: .structType(fullyQualifiedStructType),
+                      symbolType: node.isConst ? .constStructType(fullyQualifiedStructType) : .structType(fullyQualifiedStructType),
                       visibility: node.visibility)
         
         members.enclosingFunctionName = name

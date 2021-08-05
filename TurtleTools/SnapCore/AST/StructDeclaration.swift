@@ -46,23 +46,17 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
     public let identifier: Expression.Identifier
     public let members: [Member]
     public let visibility: SymbolVisibility
+    public let isConst: Bool
     
-    public convenience init(identifier: Expression.Identifier,
-                            members: [Member],
-                            visibility: SymbolVisibility = .privateVisibility) {
-        self.init(sourceAnchor: nil,
-                  identifier: identifier,
-                  members: members,
-                  visibility: visibility)
-    }
-    
-    public required init(sourceAnchor: SourceAnchor?,
-                         identifier: Expression.Identifier,
-                         members: [Member],
-                         visibility: SymbolVisibility = .privateVisibility) {
+    public init(sourceAnchor: SourceAnchor? = nil,
+                identifier: Expression.Identifier,
+                members: [Member],
+                visibility: SymbolVisibility = .privateVisibility,
+                isConst: Bool = false) {
         self.identifier = identifier
         self.members = members
         self.visibility = visibility
+        self.isConst = isConst
         super.init(sourceAnchor: sourceAnchor)
     }
     
@@ -74,6 +68,7 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
         guard identifier == rhs.identifier else { return false }
         guard members == rhs.members else { return false }
         guard visibility == rhs.visibility else { return false }
+        guard isConst == rhs.isConst else { return false }
         return true
     }
     
@@ -82,6 +77,7 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
         hasher.combine(identifier)
         hasher.combine(members)
         hasher.combine(visibility)
+        hasher.combine(isConst)
         hasher.combine(super.hash)
         return hasher.finalize()
     }
@@ -89,7 +85,7 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         return String(format: "%@%@\n%@identifier: %@\n%@visibility: %@\n%@members: %@",
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
+                      (isConst ? "const " : "") + String(describing: type(of: self)),
                       makeIndent(depth: depth + 1),
                       identifier.makeIndentedDescription(depth: depth + 1),
                       makeIndent(depth: depth + 1),

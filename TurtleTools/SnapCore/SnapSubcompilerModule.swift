@@ -31,12 +31,9 @@ public class SnapSubcompilerModule: NSObject {
         let moduleSymbols = node0.symbols
         moduleSymbols.storagePointer = symbols.storagePointer
         
-        // Make sure to import the standard library when building a module.
-        let importStdlib = Import(moduleName: SnapToCrackleCompiler.kStandardLibraryModuleName)
-        
         // Compile the contents of the module, producing a new module node with
         // a populated symbol table and relevant rewritten tree.
-        let node1 = Block(symbols: node0.symbols, children: [importStdlib] + node0.children)
+        let node1 = Block(symbols: node0.symbols, children: node0.children)
         let compiler = SnapAbstractSyntaxTreeCompiler(memoryLayoutStrategy)
         compiler.compile(node1, actuallyDoIt: true)
         if compiler.hasError {

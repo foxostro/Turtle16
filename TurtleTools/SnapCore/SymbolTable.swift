@@ -598,6 +598,7 @@ public class SymbolTable: NSObject {
     public var enclosingFunctionName: String? = nil
     public var stackFrameIndex: Int
     public var moduleTable: [String:SymbolTable] = [:]
+    public var modulesAlreadyImported: Set<String> = []
     
     public init(parent p: SymbolTable? = nil, tuples: [(String, Symbol)] = [], typeDict: [String:SymbolType] = [:]) {
         parent = p
@@ -785,7 +786,7 @@ public class SymbolTable: NSObject {
         }
         guard let parent = parent else {
             throw CompilerError(sourceAnchor: sourceAnchor,
-                                message: "use of undeclared type `\(identifier)'")
+                                message: "use of undeclared module `\(identifier)'")
         }
         return try parent.resolveModule(sourceAnchor: sourceAnchor, identifier: identifier)
     }

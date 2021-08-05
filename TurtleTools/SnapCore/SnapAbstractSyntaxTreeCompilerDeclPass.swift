@@ -53,9 +53,11 @@ public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
         return seq2.first!
     }
     
-//    public override func compile(import node0: Import) throws -> AbstractSyntaxTreeNode? {
-//        fatalError("unimplemented")
-//    }
+    public override func compile(import node0: Import) throws -> AbstractSyntaxTreeNode? {
+        let subcompiler = SnapSubcompilerImport(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols!)
+        let node1 = try subcompiler.compile(node0)
+        return node1
+    }
     
     public override func compile(module node0: Module) throws -> AbstractSyntaxTreeNode? {
         let subcompiler = SnapSubcompilerModule(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols!)

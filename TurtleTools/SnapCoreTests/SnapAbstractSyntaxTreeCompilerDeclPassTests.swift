@@ -103,7 +103,22 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         
         XCTAssertTrue(globalSymbols.symbolTable.isEmpty)
         XCTAssertTrue(globalSymbols.existsAsModule(identifier: "Foo"))
+        XCTAssertFalse(globalSymbols.modulesAlreadyImported.contains("Foo"))
         let puts = try? moduleOutput?.symbols.resolve(identifier: "puts")
         XCTAssertNotNil(puts)
+    }
+    
+    func testImportStdlib() throws {
+        let stdlib = SnapToCrackleCompiler.kStandardLibraryModuleName
+        let globalSymbols = SymbolTable()
+        let input = Block(symbols: globalSymbols, children: [
+            Import(moduleName: stdlib)
+        ])
+        let compiler = makeCompiler()
+        let output = try compiler.compile(input)
+        XCTAssertNotNil(output)
+        XCTAssertTrue(globalSymbols.existsAsModule(identifier: stdlib))
+        XCTAssertTrue(globalSymbols.modulesAlreadyImported.contains(stdlib))
+        XCTAssertNotNil(try? globalSymbols.resolve(identifier: "panic"))
     }
 }

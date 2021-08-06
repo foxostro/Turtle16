@@ -22,7 +22,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
         let _ = try? makeCompiler(globalSymbols).compile(ast)
         
         let expectedSymbols = SymbolTable()
-        expectedSymbols.enclosingFunctionName = "Foo"
+        expectedSymbols.enclosingFunctionNameMode = .set("Foo")
         let expected: SymbolType = .traitType(TraitType(name: "Foo", nameOfTraitObjectType: "__Foo_object", nameOfVtableType: "__Foo_vtable", symbols: expectedSymbols))
         let actual = try? globalSymbols.resolveType(identifier: "Foo")
         XCTAssertEqual(expected, actual)
@@ -43,7 +43,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
         let members = SymbolTable()
         let fullyQualifiedTraitType = TraitType(name: "Foo", nameOfTraitObjectType: "__Foo_object", nameOfVtableType: "__Foo_vtable", symbols: members)
         let expected: SymbolType = .traitType(fullyQualifiedTraitType)
-        members.enclosingFunctionName = "Foo"
+        members.enclosingFunctionNameMode = .set("Foo")
         let memberType: SymbolType = .pointer(.function(FunctionType(returnType: .u8, arguments: [.pointer(expected)])))
         let symbol = Symbol(type: memberType, offset: members.storagePointer, storage: .automaticStorage)
         members.bind(identifier: "bar", symbol: symbol)

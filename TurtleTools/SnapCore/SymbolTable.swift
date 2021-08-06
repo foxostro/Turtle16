@@ -594,9 +594,36 @@ public class SymbolTable: NSObject {
     public var typeTable: [String:TypeRecord]
     public var parent: SymbolTable?
     public var storagePointer: Int
-    public var enclosingFunctionType: FunctionType? = nil
-    public var enclosingFunctionName: String? = nil
     public var stackFrameIndex: Int
+    
+    public enum EnclosingFunctionType: Hashable, Equatable {
+        case inherit, set(FunctionType?)
+    }
+    public var enclosingFunctionTypeMode: EnclosingFunctionType = .inherit
+    public var enclosingFunctionType: FunctionType? {
+        switch enclosingFunctionTypeMode {
+        case .inherit:
+            return parent?.enclosingFunctionType
+            
+        case .set(let val):
+            return val
+        }
+    }
+    
+    public enum EnclosingFunctionName: Hashable, Equatable  {
+        case inherit, set(String?)
+    }
+    public var enclosingFunctionNameMode: EnclosingFunctionName = .inherit
+    public var enclosingFunctionName: String? {
+        switch enclosingFunctionNameMode {
+        case .inherit:
+            return parent?.enclosingFunctionName
+            
+        case .set(let val):
+            return val
+        }
+    }
+    
     public var moduleTable: [String:SymbolTable] = [:]
     public var modulesAlreadyImported: Set<String> = []
     
@@ -604,8 +631,6 @@ public class SymbolTable: NSObject {
         parent = p
         typeTable = typeDict.mapValues({TypeRecord(symbolType: $0, visibility: .privateVisibility)})
         storagePointer = p?.storagePointer ?? 0
-        enclosingFunctionType = p?.enclosingFunctionType
-        enclosingFunctionName = p?.enclosingFunctionName
         stackFrameIndex = p?.stackFrameIndex ?? 0
         
         super.init()

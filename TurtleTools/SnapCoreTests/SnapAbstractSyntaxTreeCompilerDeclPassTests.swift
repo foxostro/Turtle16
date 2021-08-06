@@ -51,7 +51,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         XCTAssertEqual(result, expected)
         
         let expectedStructSymbols = SymbolTable()
-        expectedStructSymbols.enclosingFunctionName = "None"
+        expectedStructSymbols.enclosingFunctionNameMode = .set("None")
         let expectedType: SymbolType = .structType(StructType(name: "None", symbols: expectedStructSymbols))
         let actualType = try? globalSymbols.resolveType(identifier: "None")
         XCTAssertEqual(actualType, expectedType)
@@ -83,7 +83,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         XCTAssertNoThrow(try compiler.compile(input))
         
         let expectedSymbols = SymbolTable()
-        expectedSymbols.enclosingFunctionName = "Foo"
+        expectedSymbols.enclosingFunctionNameMode = .set("Foo")
         let expectedType: SymbolType = .traitType(TraitType(name: "Foo", nameOfTraitObjectType: "__Foo_object", nameOfVtableType: "__Foo_vtable", symbols: expectedSymbols))
         let actualType = try? globalSymbols.resolveType(identifier: "Foo")
         XCTAssertEqual(expectedType, actualType)

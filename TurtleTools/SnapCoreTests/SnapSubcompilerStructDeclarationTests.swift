@@ -22,7 +22,7 @@ class SnapSubcompilerStructDeclarationTests: XCTestCase {
         XCTAssertNoThrow(result = try makeCompiler(symbols).compile(input))
         XCTAssertNil(result)
         let expectedStructSymbols = SymbolTable()
-        expectedStructSymbols.enclosingFunctionName = "None"
+        expectedStructSymbols.enclosingFunctionNameMode = .set("None")
         let expectedType: SymbolType = .structType(StructType(name: "None", symbols: expectedStructSymbols))
         let actualType = try? symbols.resolveType(identifier: "None")
         XCTAssertEqual(actualType, expectedType)
@@ -39,7 +39,7 @@ class SnapSubcompilerStructDeclarationTests: XCTestCase {
         let expectedStructSymbols = SymbolTable(tuples: [
             ("bar", Symbol(type: .u8, offset: 0, storage: .automaticStorage))
         ])
-        expectedStructSymbols.enclosingFunctionName = "Foo"
+        expectedStructSymbols.enclosingFunctionNameMode = .set("Foo")
         expectedStructSymbols.storagePointer = 1
         let expectedType: SymbolType = .structType(StructType(name: "Foo", symbols: expectedStructSymbols))
         let actualType = try? symbols.resolveType(identifier: "Foo")

@@ -1547,7 +1547,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let symbolType = try! compiler.globalSymbols.resolveType(identifier: "foo")
         
         let expectedStructSymbols = SymbolTable()
-        expectedStructSymbols.enclosingFunctionName = "foo"
+        expectedStructSymbols.enclosingFunctionNameMode = .set("foo")
         let expected: SymbolType = .structType(StructType(name: "foo", symbols: expectedStructSymbols))
         
         XCTAssertEqual(symbolType, expected)
@@ -1570,7 +1570,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let expectedSymbols = SymbolTable(tuples: [
             ("bar", Symbol(type: .u8, offset: 0, storage: .automaticStorage))
         ])
-        expectedSymbols.enclosingFunctionName = "foo"
+        expectedSymbols.enclosingFunctionNameMode = .set("foo")
         expectedSymbols.storagePointer = 1
         let expected: SymbolType = .structType(StructType(name: "foo", symbols: expectedSymbols))
         
@@ -1860,7 +1860,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             ("bar", Symbol(type: .u8, offset: 0, storage: .automaticStorage)),
             ("baz", Symbol(type: .function(FunctionType(name: "baz", mangledName: "Foo_baz", returnType: .void, arguments: [])), offset: 0, storage: .automaticStorage))
         ])
-        expectedStructSymbols.enclosingFunctionName = "Foo"
+        expectedStructSymbols.enclosingFunctionNameMode = .set("Foo")
         expectedStructSymbols.storagePointer = 1
         let expected = SymbolType.structType(StructType(name: "Foo", symbols: expectedStructSymbols))
         let actual = try! compiler.globalSymbols.resolveType(identifier: "Foo")
@@ -2483,7 +2483,7 @@ public func foo() -> None {
             return
         }
         let expectedSymbols = SymbolTable()
-        expectedSymbols.enclosingFunctionName = "Foo"
+        expectedSymbols.enclosingFunctionNameMode = .set("Foo")
         let expected: SymbolType = .traitType(TraitType(name: "Foo", nameOfTraitObjectType: "__Foo_object", nameOfVtableType: "__Foo_vtable", symbols: expectedSymbols))
         let actual = try? compiler.globalSymbols.resolveType(identifier: "Foo")
         XCTAssertEqual(expected, actual)
@@ -2509,7 +2509,7 @@ public func foo() -> None {
         let members = SymbolTable()
         let fullyQualifiedTraitType = TraitType(name: "Foo", nameOfTraitObjectType: "__Foo_object", nameOfVtableType: "__Foo_vtable", symbols: members)
         let expected: SymbolType = .traitType(fullyQualifiedTraitType)
-        members.enclosingFunctionName = "Foo"
+        members.enclosingFunctionNameMode = .set("Foo")
         let memberType: SymbolType = .pointer(.function(FunctionType(returnType: .u8, arguments: [.pointer(expected)])))
         let symbol = Symbol(type: memberType, offset: members.storagePointer, storage: .automaticStorage)
         members.bind(identifier: "bar", symbol: symbol)
@@ -2546,7 +2546,7 @@ public func foo() -> None {
         XCTAssertEqual("__Foo_vtable", nameOfVtableType)
         
         let expectedSymbols = SymbolTable()
-        expectedSymbols.enclosingFunctionName = "__Foo_vtable"
+        expectedSymbols.enclosingFunctionNameMode = .set("__Foo_vtable")
         let expectedVtableType: SymbolType = .structType(StructType(name: nameOfVtableType, symbols: expectedSymbols))
         let actualVtableType = try? compiler.globalSymbols.resolveType(identifier: nameOfVtableType)
         XCTAssertEqual(expectedVtableType, actualVtableType)
@@ -2573,7 +2573,7 @@ public func foo() -> None {
         let expectedSymbols = SymbolTable(tuples: [
             ("bar", Symbol(type: .pointer(.function(FunctionType(returnType: .u8, arguments: [.pointer(.void)]))), offset: 0, storage: .automaticStorage))
         ])
-        expectedSymbols.enclosingFunctionName = "__Foo_vtable"
+        expectedSymbols.enclosingFunctionNameMode = .set("__Foo_vtable")
         expectedSymbols.storagePointer = 2
         let expectedVtableType: SymbolType = .structType(StructType(name: nameOfVtableType, symbols: expectedSymbols))
         let actualVtableType = try? compiler.globalSymbols.resolveType(identifier: nameOfVtableType)
@@ -2601,7 +2601,7 @@ public func foo() -> None {
         let expectedSymbols = SymbolTable(tuples: [
             ("bar", Symbol(type: .pointer(.function(FunctionType(returnType: .u8, arguments: [.pointer(.void)]))), offset: 0, storage: .automaticStorage))
         ])
-        expectedSymbols.enclosingFunctionName = "__Foo_vtable"
+        expectedSymbols.enclosingFunctionNameMode = .set("__Foo_vtable")
         expectedSymbols.storagePointer = 2
         let expectedVtableType: SymbolType = .structType(StructType(name: nameOfVtableType, symbols: expectedSymbols))
         let actualVtableType = try? compiler.globalSymbols.resolveType(identifier: nameOfVtableType)
@@ -2630,7 +2630,7 @@ public func foo() -> None {
         let expectedSymbols = SymbolTable(tuples: [
             ("bar", Symbol(type: .pointer(.function(FunctionType(returnType: .u8, arguments: [.pointer(.void)]))), offset: 0, storage: .automaticStorage)) // TODO: do I need something like a .constVoid type here?
         ])
-        expectedSymbols.enclosingFunctionName = "__Foo_vtable"
+        expectedSymbols.enclosingFunctionNameMode = .set("__Foo_vtable")
         expectedSymbols.storagePointer = 2
         let expectedVtableType: SymbolType = .constStructType(StructType(name: nameOfVtableType, symbols: expectedSymbols))
         
@@ -2643,7 +2643,7 @@ public func foo() -> None {
         traitObjectSymbols.storagePointer = 4
         let expectedTraitObjectType: SymbolType = .structType(StructType(name: nameOfTraitObjectType, symbols: traitObjectSymbols))
         traitObjectSymbols.bind(identifier: "bar", symbol: Symbol(type: .function(FunctionType(name: "bar", mangledName: "__Foo_object_bar", returnType: .u8, arguments: [.pointer(expectedTraitObjectType)])), offset: 0, storage: .automaticStorage))
-        traitObjectSymbols.enclosingFunctionName = "__Foo_object"
+        traitObjectSymbols.enclosingFunctionNameMode = .set("__Foo_object")
         let actualTraitObjectType = try? compiler.globalSymbols.resolveType(identifier: nameOfTraitObjectType)
         XCTAssertEqual(expectedTraitObjectType, actualTraitObjectType)
     }

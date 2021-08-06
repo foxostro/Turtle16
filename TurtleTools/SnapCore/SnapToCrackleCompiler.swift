@@ -136,7 +136,7 @@ public class SnapToCrackleCompiler: NSObject {
                      symbolType: .structType(fullyQualifiedStructType),
                      visibility: structDecl.visibility)
         
-        members.enclosingFunctionName = name
+        members.enclosingFunctionNameMode = .set(name)
         for memberDeclaration in structDecl.members {
             let memberType = try TypeContextTypeChecker(symbols: members).check(expression: memberDeclaration.memberType)
             if memberType == .structType(fullyQualifiedStructType) || memberType == .constStructType(fullyQualifiedStructType) {
@@ -349,7 +349,7 @@ public class SnapToCrackleCompiler: NSObject {
                      symbolType: .traitType(fullyQualifiedTraitType),
                      visibility: traitDecl.visibility)
         
-        members.enclosingFunctionName = name
+        members.enclosingFunctionNameMode = .set(name)
         for memberDeclaration in traitDecl.members {
             let memberType = try TypeContextTypeChecker(symbols: members).check(expression: memberDeclaration.memberType)
             let symbol = Symbol(type: memberType, offset: members.storagePointer, storage: .automaticStorage)
@@ -649,7 +649,6 @@ public class SnapToCrackleCompiler: NSObject {
         let parent = symbols
         assert(block.symbols.parent == symbols)
         symbols = block.symbols
-        symbols.enclosingFunctionType = parent.enclosingFunctionType
         
         try performDeclPass(block: block)
         for child in block.children {
@@ -711,8 +710,8 @@ public class SnapToCrackleCompiler: NSObject {
         
         let parent = symbols
         node.symbols.parent = parent
-        node.symbols.enclosingFunctionType = functionType
-        node.symbols.enclosingFunctionName = node.identifier.identifier
+        node.symbols.enclosingFunctionTypeMode = .set(functionType)
+        node.symbols.enclosingFunctionNameMode = .set(node.identifier.identifier)
         node.symbols.storagePointer = 0
         node.symbols.stackFrameIndex = parent.stackFrameIndex + 1
         symbols = node.symbols
@@ -738,7 +737,7 @@ public class SnapToCrackleCompiler: NSObject {
         let typ = try symbols.resolveType(sourceAnchor: impl.identifier.sourceAnchor, identifier: impl.identifier.identifier).unwrapStructType()
         
         symbols = SymbolTable(parent: symbols)
-        symbols.enclosingFunctionName = impl.identifier.identifier
+        symbols.enclosingFunctionNameMode = .set(impl.identifier.identifier)
         
         SymbolTablesReconnector(symbols).reconnect(impl)
         
@@ -758,7 +757,6 @@ public class SnapToCrackleCompiler: NSObject {
             try compile(func: child)
         }
         
-        symbols.enclosingFunctionName = nil
         let storagePointer = symbols.storagePointer
         symbols = symbols.parent!
         symbols.storagePointer = storagePointer

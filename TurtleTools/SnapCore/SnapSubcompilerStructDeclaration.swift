@@ -26,7 +26,7 @@ public class SnapSubcompilerStructDeclaration: NSObject {
                       symbolType: node.isConst ? .constStructType(fullyQualifiedStructType) : .structType(fullyQualifiedStructType),
                       visibility: node.visibility)
         
-        members.enclosingFunctionName = name
+        members.enclosingFunctionNameMode = .set(name)
         for memberDeclaration in node.members {
             let memberType = try TypeContextTypeChecker(symbols: members).check(expression: memberDeclaration.memberType)
             if memberType == .structType(fullyQualifiedStructType) || memberType == .constStructType(fullyQualifiedStructType) {

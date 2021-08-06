@@ -34,7 +34,7 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
                      symbolType: .traitType(fullyQualifiedTraitType),
                      visibility: traitDecl.visibility)
         
-        members.enclosingFunctionName = name
+        members.enclosingFunctionNameMode = .set(name)
         for memberDeclaration in traitDecl.members {
             let memberType = try TypeContextTypeChecker(symbols: members).check(expression: memberDeclaration.memberType)
             let symbol = Symbol(type: memberType, offset: members.storagePointer, storage: .automaticStorage)

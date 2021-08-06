@@ -55,8 +55,8 @@ public class MemoryLayoutStrategyTurtleTTL: NSObject, MemoryLayoutStrategy {
         let result = SymbolTable()
         
         result.typeTable = symbolTable.typeTable
-        result.enclosingFunctionType = symbolTable.enclosingFunctionType
-        result.enclosingFunctionName = symbolTable.enclosingFunctionName
+        result.enclosingFunctionTypeMode = symbolTable.enclosingFunctionTypeMode
+        result.enclosingFunctionNameMode = symbolTable.enclosingFunctionNameMode
         result.stackFrameIndex = symbolTable.stackFrameIndex
         
         var offset = 0

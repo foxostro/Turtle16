@@ -45,6 +45,12 @@
                <Test
                   Identifier = "SnapCompilerTests/test_EndToEndIntegration_CannotMakeMutatingPointerFromImmutableObject_2()">
                </Test>
+               <Test
+                  Identifier = "SnapCompilerTests/test_EndToEndIntegration_LinkedList()">
+               </Test>
+               <Test
+                  Identifier = "SnapToCrackleCompilerTests/testInjectedModulesAllUseTheStandardLibraryImplicitly()">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

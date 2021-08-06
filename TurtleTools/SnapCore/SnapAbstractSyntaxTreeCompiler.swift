@@ -58,10 +58,6 @@ public class SnapAbstractSyntaxTreeCompiler: NSObject {
         let t1 = try testDeclarationTransformer.compile(t0)
         testNames = testDeclarationTransformer.testNames
         
-        if !actuallyDoIt {
-            return t1
-        }
-        
         // Collect type declarations in a discrete pass
         let t2 = try SnapAbstractSyntaxTreeCompilerDeclPass(memoryLayoutStrategy: memoryLayoutStrategy, symbols: nil, injectModules: injectModules).compile(t1)
         

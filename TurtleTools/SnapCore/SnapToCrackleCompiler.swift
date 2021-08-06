@@ -420,6 +420,8 @@ public class SnapToCrackleCompiler: NSObject {
             try compile(while: node)
         case let node as ForIn:
             try compile(forIn: node)
+        case let node as Seq:
+            try compile(seq: node)
         case let node as Block:
             try compile(block: node)
         case let node as Return:
@@ -640,6 +642,13 @@ public class SnapToCrackleCompiler: NSObject {
         ])
         
         try compile(block: ast)
+    }
+    
+    private func compile(seq: Seq) throws {
+        currentSourceAnchor = seq.sourceAnchor
+        for child in seq.children {
+            try compile(genericNode: child)
+        }
     }
     
     private func compile(block: Block) throws {

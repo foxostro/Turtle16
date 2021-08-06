@@ -34,6 +34,10 @@ public class StatementTracer: NSObject {
     
     public func trace(currentTrace: Trace, genericNode: AbstractSyntaxTreeNode) throws -> [Trace] {
         switch genericNode {
+        case is TopLevel:
+            fatalError("unimplemented")
+        case let node as Seq:
+            return try trace(currentTrace: currentTrace, seq: node)
         case let node as Block:
             return try trace(currentTrace: currentTrace, block: node)
         case let node as If:
@@ -49,9 +53,8 @@ public class StatementTracer: NSObject {
         }
     }
     
-    private func trace(currentTrace: Trace, block: Block) throws -> [Trace] {
-        try checkForCodeAfterReturn(block: block)
-        var stmts = block.children
+    fileprivate func trace(_ stmts_: [AbstractSyntaxTreeNode], _ currentTrace: StatementTracer.Trace) throws -> [StatementTracer.Trace] {
+        var stmts = stmts_
         var traces: [Trace] = [currentTrace]
         while !stmts.isEmpty {
             let stmt = stmts[0]
@@ -61,11 +64,21 @@ public class StatementTracer: NSObject {
         return traces
     }
     
-    private func checkForCodeAfterReturn(block: Block) throws {
-        for i in 0..<block.children.count {
-            let stmt = block.children[i]
+    private func trace(currentTrace: Trace, seq: Seq) throws -> [Trace] {
+        try checkForCodeAfterReturn(stmts: seq.children)
+        return try trace(seq.children, currentTrace)
+    }
+    
+    private func trace(currentTrace: Trace, block: Block) throws -> [Trace] {
+        try checkForCodeAfterReturn(stmts: block.children)
+        return try trace(block.children, currentTrace)
+    }
+    
+    private func checkForCodeAfterReturn(stmts: [AbstractSyntaxTreeNode]) throws {
+        for i in 0..<stmts.count {
+            let stmt = stmts[i]
             if let _ = stmt as? Return {
-                if i != block.children.count-1 {
+                if i != stmts.count-1 {
                     throw CompilerError(sourceAnchor: stmt.sourceAnchor, message: "code after return will never be executed")
                 }
             }

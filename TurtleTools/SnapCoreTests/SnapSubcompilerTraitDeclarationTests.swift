@@ -69,7 +69,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
                                          members: [],
                                          visibility: .privateVisibility,
                                          isConst: true)
-        XCTAssertEqual(result?.first, expected)
+        XCTAssertEqual(result?.children.first, expected)
     }
 
     func testCompileTraitAddsVtableType_HasMethod() {
@@ -93,7 +93,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
                                          ],
                                          visibility: .privateVisibility,
                                          isConst: true)
-        XCTAssertEqual(result?.first, expected)
+        XCTAssertEqual(result?.children.first, expected)
     }
 
     func testCompileTraitAddsVtableType_HasConstMethod() {
@@ -117,7 +117,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
                                          ],
                                          visibility: .privateVisibility,
                                          isConst: true)
-        XCTAssertEqual(result?.first, expected)
+        XCTAssertEqual(result?.children.first, expected)
     }
     
     func testCompileTraitAddsTraitObjectType_VoidReturn() {
@@ -135,7 +135,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
         XCTAssertEqual("__Foo_vtable", traitType?.unwrapTraitType().nameOfVtableType)
         XCTAssertEqual("__Foo_object", traitType?.unwrapTraitType().nameOfTraitObjectType)
         
-        let expected: [AbstractSyntaxTreeNode] = [
+        let expected = Seq(children: [
             StructDeclaration(identifier: Expression.Identifier("__Foo_vtable"), members: [
                StructDeclaration.Member(name: "bar", type: Expression.PointerType(Expression.FunctionType(returnType: Expression.PrimitiveType(.void), arguments: [Expression.PointerType(Expression.PrimitiveType(.void))])))
             ], visibility: .privateVisibility, isConst: true),
@@ -150,7 +150,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
                     ])
                 ]))
             ])
-        ]
+        ])
         XCTAssertEqual(result, expected)
     }
 
@@ -169,7 +169,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
         XCTAssertEqual("__Foo_vtable", traitType?.unwrapTraitType().nameOfVtableType)
         XCTAssertEqual("__Foo_object", traitType?.unwrapTraitType().nameOfTraitObjectType)
         
-        let expected: [AbstractSyntaxTreeNode] = [
+        let expected = Seq(children: [
             StructDeclaration(identifier: Expression.Identifier("__Foo_vtable"), members: [
                StructDeclaration.Member(name: "bar", type: Expression.PointerType(Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: [Expression.PointerType(Expression.PrimitiveType(.void))])))
             ], visibility: .privateVisibility, isConst: true),
@@ -184,7 +184,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
                     ]))
                 ]))
             ])
-        ]
+        ])
         XCTAssertEqual(result, expected)
     }
 }

@@ -17,12 +17,12 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
         self.memoryLayoutStrategy = memoryLayoutStrategy
     }
     
-    public func compile(_ node: TraitDeclaration) throws -> [AbstractSyntaxTreeNode] {
+    public func compile(_ node: TraitDeclaration) throws -> Seq {
         try declareTraitType(node)
         let vtable = try declareVtableType(node)
         let traitObject = declareTraitObjectType(node)
-        let thunks = try compileTraitObjectThunks(node)
-        return [vtable, traitObject, thunks]
+        let thunks = try declareTraitObjectThunks(node)
+        return Seq(sourceAnchor: node.sourceAnchor, children: [vtable, traitObject, thunks])
     }
     
     func declareTraitType(_ traitDecl: TraitDeclaration) throws {
@@ -95,7 +95,7 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
         return structDecl
     }
     
-    func compileTraitObjectThunks(_ traitDecl: TraitDeclaration) throws -> Impl {
+    func declareTraitObjectThunks(_ traitDecl: TraitDeclaration) throws -> Impl {
         var thunks: [FunctionDeclaration] = []
         for method in traitDecl.members {
             let functionType = rewriteTraitMemberTypeForThunk(traitDecl, method)

@@ -23,6 +23,10 @@ public class SymbolTablesReconnector: NSObject {
             reconnect(while: node)
         case let node as ForIn:
             reconnect(forIn: node)
+        case let node as TopLevel:
+            reconnect(topLevel: node)
+        case let node as Seq:
+            reconnect(seq: node)
         case let node as Block:
             reconnect(block: node)
         case let node as FunctionDeclaration:
@@ -53,6 +57,18 @@ public class SymbolTablesReconnector: NSObject {
     
     func reconnect(forIn node: ForIn) {
         reconnect(node.body)
+    }
+    
+    func reconnect(topLevel node: TopLevel) {
+        for child in node.children {
+            reconnect(child)
+        }
+    }
+    
+    func reconnect(seq node: Seq) {
+        for child in node.children {
+            reconnect(child)
+        }
     }
     
     func reconnect(block node: Block) {

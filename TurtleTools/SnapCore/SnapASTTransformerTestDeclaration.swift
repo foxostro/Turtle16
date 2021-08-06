@@ -11,19 +11,26 @@ import TurtleCore
 public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
     public private(set) var testNames: [String] = []
     public private(set) var testDeclarations: [TestDeclaration] = []
+    public let isUsingStandardLibrary: Bool
     var currentTest: TestDeclaration? = nil
     var depth = 0
     let shouldRunSpecificTest: String?
     
-    public init(shouldRunSpecificTest: String? = nil) {
+    public init(shouldRunSpecificTest: String? = nil, isUsingStandardLibrary: Bool = false) {
         self.shouldRunSpecificTest = shouldRunSpecificTest
+        self.isUsingStandardLibrary = isUsingStandardLibrary
     }
     
     public override func compile(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {
         let globalSymbols = CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable())
+        var children = node.children
+        if isUsingStandardLibrary {
+            let importStmt = Import(moduleName: kStandardLibraryModuleName)
+            children.insert(importStmt, at: 0)
+        }
         let block = Block(sourceAnchor: node.sourceAnchor,
                           symbols: globalSymbols,
-                          children: node.children)
+                          children: children)
         return try compile(block: block)
     }
     

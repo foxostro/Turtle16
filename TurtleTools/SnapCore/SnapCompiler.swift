@@ -63,8 +63,10 @@ public class SnapCompiler: NSObject {
         }
         
         // AST contraction step
-        let contractionStep = SnapAbstractSyntaxTreeCompiler(memoryLayoutStrategy)
-        contractionStep.shouldRunSpecificTest = shouldRunSpecificTest
+        let contractionStep = SnapAbstractSyntaxTreeCompiler(memoryLayoutStrategy: memoryLayoutStrategy,
+                                                             shouldRunSpecificTest: shouldRunSpecificTest,
+                                                             isUsingStandardLibrary: isUsingStandardLibrary,
+                                                             sandboxAccessManager: sandboxAccessManager)
         contractionStep.compile(parser.syntaxTree)
         if contractionStep.hasError {
             errors = contractionStep.errors
@@ -79,8 +81,6 @@ public class SnapCompiler: NSObject {
             snapToCrackleCompiler.injectModule(name: name, sourceCode: sourceCode)
         }
         snapToCrackleCompiler.programDebugInfo = programDebugInfo
-        snapToCrackleCompiler.isUsingStandardLibrary = isUsingStandardLibrary
-        snapToCrackleCompiler.sandboxAccessManager = sandboxAccessManager
         snapToCrackleCompiler.compile(ast: ast)
         if snapToCrackleCompiler.hasError {
             errors = snapToCrackleCompiler.errors

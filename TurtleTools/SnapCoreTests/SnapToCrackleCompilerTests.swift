@@ -17,9 +17,13 @@ class SnapToCrackleCompilerTests: XCTestCase {
     let t3 = SnapCompilerMetrics.kTemporaryStorageStartAddress + 6
     let kStaticStorageStartAddress = SnapCompilerMetrics.kStaticStorageStartAddress
     
-    func compile(_ ast0: Block, injectModules: [(String, String)] = []) -> SnapToCrackleCompiler {
+    func compile(_ ast0: Block,
+                 isUsingStandardLibrary: Bool = false,
+                 injectModules: [(String, String)] = []) -> SnapToCrackleCompiler {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
-        let contractionStep = SnapAbstractSyntaxTreeCompiler(memoryLayoutStrategy)
+        let contractionStep = SnapAbstractSyntaxTreeCompiler(memoryLayoutStrategy: memoryLayoutStrategy,
+                                                             injectModules: injectModules,
+                                                             isUsingStandardLibrary: isUsingStandardLibrary)
         contractionStep.compile(ast0)
         if contractionStep.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: contractionStep.errors).message)
@@ -2346,13 +2350,13 @@ public func foo() {
         let ast = Block(children: [
             Import(moduleName: "MyModule")
         ])
-        let compiler = SnapToCrackleCompiler()
-        compiler.injectModule(name: "MyModule", sourceCode: """
-public func foo() -> None {
-    return none
-}
-""")
-        compiler.compile(ast: ast)
+        let compiler = compile(ast, injectModules: [
+            ("MyModule", """
+                         public func foo() -> None {
+                             return none
+                         }
+                         """)
+        ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertNotNil(compiler.globalSymbols.maybeResolve(identifier: "foo"))
     }

@@ -212,7 +212,7 @@ public class SnapToCrackleCompiler: NSObject {
         }
         
         // AST contraction step
-        let contractionStep = SnapAbstractSyntaxTreeCompiler(memoryLayoutStrategy)
+        let contractionStep = SnapAbstractSyntaxTreeCompiler(memoryLayoutStrategy: memoryLayoutStrategy)
         contractionStep.compile(parser.syntaxTree)
         if contractionStep.hasError {
             throw CompilerError.makeOmnibusError(fileName: filename, errors: contractionStep.errors)

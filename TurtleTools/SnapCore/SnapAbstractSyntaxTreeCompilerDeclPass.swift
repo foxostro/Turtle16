@@ -18,9 +18,11 @@ import TurtleCore
 public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
     public let memoryLayoutStrategy: MemoryLayoutStrategy
     public private(set) var modules: [Module] = []
+    var injectModules: [(String, String)]
     
-    public init(memoryLayoutStrategy: MemoryLayoutStrategy, symbols: SymbolTable? = nil) {
+    public init(memoryLayoutStrategy: MemoryLayoutStrategy, symbols: SymbolTable? = nil, injectModules: [(String, String)] = []) {
         self.memoryLayoutStrategy = memoryLayoutStrategy
+        self.injectModules = injectModules
         super.init(symbols)
     }
     
@@ -52,6 +54,9 @@ public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
     
     public override func compile(import node0: Import) throws -> AbstractSyntaxTreeNode? {
         let subcompiler = SnapSubcompilerImport(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols!)
+        for (name, text) in injectModules {
+            subcompiler.injectModule(name: name, sourceCode: "import stdlib\n" + text)
+        }
         let node1 = try subcompiler.compile(node0)
         return node1
     }

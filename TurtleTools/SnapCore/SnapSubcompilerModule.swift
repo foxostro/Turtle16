@@ -34,7 +34,7 @@ public class SnapSubcompilerModule: NSObject {
         // Compile the contents of the module, producing a new module node with
         // a populated symbol table and relevant rewritten tree.
         let node1 = Block(symbols: node0.symbols, children: node0.children)
-        let compiler = SnapAbstractSyntaxTreeCompiler(memoryLayoutStrategy)
+        let compiler = SnapAbstractSyntaxTreeCompiler(memoryLayoutStrategy: memoryLayoutStrategy)
         compiler.compile(node1, actuallyDoIt: true)
         if compiler.hasError {
             let fileName = node0.sourceAnchor?.url?.lastPathComponent

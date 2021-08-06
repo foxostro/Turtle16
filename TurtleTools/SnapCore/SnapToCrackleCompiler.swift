@@ -24,7 +24,6 @@ public class SnapToCrackleCompiler: NSObject {
     private var staticStoragePointer = SnapCompilerMetrics.kStaticStorageStartAddress
     private var currentSourceAnchor: SourceAnchor? = nil
     
-    public static let kStandardLibraryModuleName = "stdlib"
     public var isUsingStandardLibrary = false
     
     public var sandboxAccessManager: SandboxAccessManager? = nil
@@ -66,7 +65,7 @@ public class SnapToCrackleCompiler: NSObject {
         
         var children: [AbstractSyntaxTreeNode] = []
         if isUsingStandardLibrary {
-            let importStmt = Import(moduleName: SnapToCrackleCompiler.kStandardLibraryModuleName)
+            let importStmt = Import(moduleName: kStandardLibraryModuleName)
             children.insert(importStmt, at: 0)
         }
         children += topLevel.children
@@ -242,7 +241,7 @@ public class SnapToCrackleCompiler: NSObject {
         
         // Make sure to import the standard library when building a module.
         // TODO: Adding an `import stdlib` to the Module body is something that can be done in an AST macro
-        let importStdlib = Import(moduleName: SnapToCrackleCompiler.kStandardLibraryModuleName)
+        let importStdlib = Import(moduleName: kStandardLibraryModuleName)
         let nodes: [AbstractSyntaxTreeNode] = [importStdlib] + module.children
         
         for node in nodes {

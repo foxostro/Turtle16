@@ -11,6 +11,7 @@ import TurtleSimulatorCore
 
 public let kMainFunctionName = "main"
 public let kTestMainFunctionName = "__testMain"
+public let kStandardLibraryModuleName = "stdlib"
 
 public class SnapCompiler: NSObject {
     public var isUsingStandardLibrary = false

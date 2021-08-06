@@ -116,26 +116,24 @@ class SnapSubcompilerImportTests: XCTestCase {
     }
     
     func testImportFromBundleResource() throws {
-        let stdlib = SnapToCrackleCompiler.kStandardLibraryModuleName
         let symbols = SymbolTable()
         let compiler = makeCompiler(symbols)
-        let input = Import(moduleName: stdlib)
+        let input = Import(moduleName: kStandardLibraryModuleName)
         let output = try compiler.compile(input)
         XCTAssertNotNil(output)
-        XCTAssertTrue(symbols.existsAsModule(identifier: stdlib))
-        XCTAssertTrue(symbols.modulesAlreadyImported.contains(stdlib))
+        XCTAssertTrue(symbols.existsAsModule(identifier: kStandardLibraryModuleName))
+        XCTAssertTrue(symbols.modulesAlreadyImported.contains(kStandardLibraryModuleName))
         XCTAssertNotNil(try? symbols.resolveType(identifier: "None"))
     }
     
     func testImportTwice() throws {
-        let stdlib = SnapToCrackleCompiler.kStandardLibraryModuleName
         let symbols = SymbolTable()
-        symbols.bind(identifier: stdlib, moduleSymbols: SymbolTable())
-        symbols.modulesAlreadyImported.insert(stdlib)
+        symbols.bind(identifier: kStandardLibraryModuleName, moduleSymbols: SymbolTable())
+        symbols.modulesAlreadyImported.insert(kStandardLibraryModuleName)
         let compiler = makeCompiler(symbols)
-        let input = Import(moduleName: stdlib)
+        let input = Import(moduleName: kStandardLibraryModuleName)
         XCTAssertNoThrow(try compiler.compile(input))
-        XCTAssertTrue(symbols.existsAsModule(identifier: stdlib))
-        XCTAssertTrue(symbols.modulesAlreadyImported.contains(stdlib))
+        XCTAssertTrue(symbols.existsAsModule(identifier: kStandardLibraryModuleName))
+        XCTAssertTrue(symbols.modulesAlreadyImported.contains(kStandardLibraryModuleName))
     }
 }

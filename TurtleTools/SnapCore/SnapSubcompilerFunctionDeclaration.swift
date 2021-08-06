@@ -15,7 +15,7 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
         self.symbols = symbols
     }
     
-    public func compile(_ node: FunctionDeclaration) throws -> FunctionDeclaration? {
+    public func compile(_ node: FunctionDeclaration) throws -> FunctionDeclaration {
         let name = node.identifier.identifier
         
         guard symbols!.existsAndCannotBeShadowed(identifier: name) == false else {

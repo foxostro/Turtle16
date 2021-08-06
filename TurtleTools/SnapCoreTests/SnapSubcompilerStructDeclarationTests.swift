@@ -18,9 +18,7 @@ class SnapSubcompilerStructDeclarationTests: XCTestCase {
     func testEmptyStruct() throws {
         let symbols = SymbolTable()
         let input = StructDeclaration(identifier: Expression.Identifier("None"), members: [])
-        var result: AbstractSyntaxTreeNode?
-        XCTAssertNoThrow(result = try makeCompiler(symbols).compile(input))
-        XCTAssertNil(result)
+        XCTAssertNoThrow(try makeCompiler(symbols).compile(input))
         let expectedStructSymbols = SymbolTable()
         expectedStructSymbols.enclosingFunctionNameMode = .set("None")
         let expectedType: SymbolType = .structType(StructType(name: "None", symbols: expectedStructSymbols))
@@ -33,9 +31,7 @@ class SnapSubcompilerStructDeclarationTests: XCTestCase {
         let input = StructDeclaration(identifier: Expression.Identifier("Foo"), members: [
             StructDeclaration.Member(name: "bar", type: Expression.PrimitiveType(.u8))
         ])
-        var result: AbstractSyntaxTreeNode?
-        XCTAssertNoThrow(result = try makeCompiler(symbols).compile(input))
-        XCTAssertNil(result)
+        XCTAssertNoThrow(try makeCompiler(symbols).compile(input))
         let expectedStructSymbols = SymbolTable(tuples: [
             ("bar", Symbol(type: .u8, offset: 0, storage: .automaticStorage))
         ])

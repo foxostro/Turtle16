@@ -15,7 +15,7 @@ public class SnapSubcompilerTypealias: NSObject {
         self.symbols = symbols
     }
     
-    public func compile(_ node: Typealias) throws -> Typealias? {
+    public func compile(_ node: Typealias) throws {
         guard false == symbols!.existsAsTypeAndCannotBeShadowed(identifier: node.lexpr.identifier) else {
             throw CompilerError(sourceAnchor: node.lexpr.sourceAnchor,
                                 message: "typealias redefines existing type: `\(node.lexpr.identifier)'")
@@ -27,6 +27,5 @@ public class SnapSubcompilerTypealias: NSObject {
                       visibility: node.visibility)
         
         // Erase the typealias now that we've bound the new type.
-        return nil
     }
 }

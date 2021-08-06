@@ -25,7 +25,7 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: SnapASTTransformerBase {
     
     public override func compile(assert node0: Assert) throws -> AbstractSyntaxTreeNode? {
         let node1 = try SnapSubcompilerAssert().compile(node0)
-        let node2 = try node1.flatMap({ try super.compile($0) })
+        let node2 = try super.compile(node1)
         return node2
     }
     

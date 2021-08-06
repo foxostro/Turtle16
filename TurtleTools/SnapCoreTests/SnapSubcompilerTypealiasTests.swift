@@ -14,8 +14,7 @@ class SnapSubcompilerTypealiasTests: XCTestCase {
     func testDeclareTypealias() throws {
         let input = Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.u8))
         let symbols = SymbolTable()
-        let result = try? SnapSubcompilerTypealias(symbols).compile(input)
-        XCTAssertEqual(result, nil) // Typealias is removed after being processed
+        try SnapSubcompilerTypealias(symbols).compile(input)
         let expectedType: SymbolType = .u8
         let actualType = try? symbols.resolveType(identifier: "Foo")
         XCTAssertEqual(actualType, expectedType)

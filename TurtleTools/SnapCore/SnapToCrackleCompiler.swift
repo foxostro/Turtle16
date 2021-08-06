@@ -837,10 +837,9 @@ public class SnapToCrackleCompiler: NSObject {
     }
     
     private func compile(assert node: Assert) throws {
-        if let ast = try SnapSubcompilerAssert().compile(node) {
-            SymbolTablesReconnector(symbols).reconnect(ast)
-            try compile(genericNode: ast)
-        }
+        let ast = try SnapSubcompilerAssert().compile(node)
+        SymbolTablesReconnector(symbols).reconnect(ast)
+        try compile(genericNode: ast)
     }
     
     private func compile(trait traitDecl: TraitDeclaration) throws {

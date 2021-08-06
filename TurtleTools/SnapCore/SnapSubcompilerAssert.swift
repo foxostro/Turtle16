@@ -9,7 +9,7 @@
 import TurtleCore
 
 public class SnapSubcompilerAssert: NSObject {
-    public func compile(_ node: Assert) throws -> AbstractSyntaxTreeNode? {
+    public func compile(_ node: Assert) throws -> If {
         let s = node.sourceAnchor
         let panic = Expression.Call(sourceAnchor: s, callee: Expression.Identifier("panic"), arguments: [
             Expression.LiteralString(node.finalMessage)

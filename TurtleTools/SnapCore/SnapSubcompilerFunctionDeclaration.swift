@@ -24,8 +24,10 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
         }
         
         let functionType = try evaluateFunctionTypeExpression(node.functionType)
-        let typ: SymbolType = .function(functionType)
-        let symbol = Symbol(type: typ, offset: 0, storage: .automaticStorage, visibility: node.visibility)
+        node.symbols.enclosingFunctionTypeMode = .set(functionType)
+        node.symbols.enclosingFunctionNameMode = .set(name)
+        
+        let symbol = Symbol(type: .function(functionType), offset: 0, storage: .automaticStorage, visibility: node.visibility)
         symbols!.bind(identifier: name, symbol: symbol)
         
         return node

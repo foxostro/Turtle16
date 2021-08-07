@@ -185,4 +185,61 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         
         XCTAssertEqual(method, expectedMethod)
     }
+    
+    func testCompileImplForTrait() {
+        let globalSymbols = SymbolTable()
+        
+        let bar = TraitDeclaration.Member(name: "puts", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.void), arguments: [
+            Expression.PointerType(Expression.Identifier("Serial")),
+            Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
+        ])))
+        let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Serial"),
+                                         members: [bar],
+                                         visibility: .privateVisibility)
+        let fake = StructDeclaration(identifier: Expression.Identifier("SerialFake"), members: [])
+        let implFor = ImplFor(traitIdentifier: Expression.Identifier("Serial"),
+                              structIdentifier: Expression.Identifier("SerialFake"),
+                              children: [
+                                FunctionDeclaration(identifier: Expression.Identifier("puts"),
+                                                    functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [
+                                                        Expression.PointerType(Expression.Identifier("Serial")),
+                                                        Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
+                                                    ]),
+                                                    argumentNames: ["self", "s"],
+                                                    body: Block())
+                              ])
+        let input = Block(symbols: globalSymbols, children: [
+            traitDecl,
+            fake,
+            implFor
+        ])
+        
+        let compiler = makeCompiler()
+        var output: AbstractSyntaxTreeNode? = nil
+        XCTAssertNoThrow(output = try compiler.compile(input))
+        
+        guard let block = output as? Block else {
+            XCTFail()
+            return
+        }
+        
+        // Compile the vtable instance so we can compare it's type against our
+        // expectations. We could also examine the type expression in the
+        // uncompiled VarDeclaration node, but this ensures we evaluate that
+        // expression in the same way it would be in the full compiler.
+        guard let vtableDeclaration = (block.children.last as? Seq)?.children.last as? VarDeclaration else {
+            XCTFail()
+            return
+        }
+        _ = try? SnapSubcompilerVarDeclaration(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(), symbols: globalSymbols).compile(vtableDeclaration)
+        
+        let nameOfVtableInstance = "__Serial_SerialFake_vtable_instance"
+        let vtableInstance = try? globalSymbols.resolve(identifier: nameOfVtableInstance)
+        let vtableStructType = vtableInstance?.type.unwrapStructType()
+        XCTAssertEqual(vtableStructType?.name, "__Serial_vtable")
+        XCTAssertEqual(vtableStructType?.symbols.exists(identifier: "puts"), true)
+        let putsSymbol = try? vtableStructType?.symbols.resolve(identifier: "puts")
+        XCTAssertEqual(putsSymbol?.type, .pointer(.function(FunctionType(returnType: .void, arguments: [.pointer(.void), .dynamicArray(elementType: .u8)]))))
+        XCTAssertEqual(putsSymbol?.offset, 0)
+    }
 }

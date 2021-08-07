@@ -21,19 +21,21 @@ class SnapToCrackleCompilerTests: XCTestCase {
                  isUsingStandardLibrary: Bool = false,
                  injectModules: [(String, String)] = []) -> SnapToCrackleCompiler {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
+        let globalEnvironment = GlobalEnvironment()
         let contractionStep = SnapAbstractSyntaxTreeCompiler(memoryLayoutStrategy: memoryLayoutStrategy,
                                                              injectModules: injectModules,
-                                                             isUsingStandardLibrary: isUsingStandardLibrary)
+                                                             isUsingStandardLibrary: isUsingStandardLibrary,
+                                                             globalEnvironment: globalEnvironment)
         contractionStep.compile(ast0)
         if contractionStep.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: contractionStep.errors).message)
             XCTFail()
-            return SnapToCrackleCompiler(memoryLayoutStrategy)
+            return SnapToCrackleCompiler(memoryLayoutStrategy, globalEnvironment)
         }
         let ast1 = contractionStep.ast
         
         // Compile to Crackle IR
-        let compiler = SnapToCrackleCompiler(memoryLayoutStrategy)
+        let compiler = SnapToCrackleCompiler(memoryLayoutStrategy, globalEnvironment)
         compiler.compile(ast: ast1)
         
         return compiler
@@ -1988,40 +1990,6 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let executor = CrackleExecutor()
         let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
-    }
-    
-    func testCanInjectModuleSourceCodeForTestingPurposes() {
-        let ast = TopLevel(children: [
-            Import(moduleName: "MyModule")
-        ])
-        let compiler = compile(ast, injectModules: [
-            (name: "MyModule", sourceCode: """
-public func foo() {
-}
-""")
-        ])
-        XCTAssertFalse(compiler.hasError)
-        XCTAssertNotNil(compiler.globalSymbols.maybeResolve(identifier: "foo"))
-    }
-    
-    func testInjectedModulesAllUseTheStandardLibraryImplicitly() {
-        let ast = TopLevel(children: [
-            Import(moduleName: "stdlib"),
-            Import(moduleName: "MyModule")
-        ])
-        let compiler = compile(ast, injectModules: [
-            ("MyModule", """
-                         public func foo() -> None {
-                             return none
-                         }
-                         """)
-        ])
-        XCTAssertFalse(compiler.hasError)
-        if compiler.hasError {
-            print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
-            return
-        }
-        XCTAssertNotNil(compiler.globalSymbols.maybeResolve(identifier: "foo"))
     }
     
     func testFailCompileIfStatementWithNonbooleanCondition() {

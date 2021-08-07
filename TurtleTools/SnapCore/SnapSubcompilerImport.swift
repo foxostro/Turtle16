@@ -8,16 +8,19 @@
 import TurtleCore
 
 public class SnapSubcompilerImport: NSObject {
-    public let symbols: SymbolTable
     public let memoryLayoutStrategy: MemoryLayoutStrategy
-    let sandboxAccessManager: SandboxAccessManager?
+    public let symbols: SymbolTable
+    public let globalEnvironment: GlobalEnvironment
+    public let sandboxAccessManager: SandboxAccessManager?
     var injectedModules: [String : String] = [:]
     
     public init(memoryLayoutStrategy: MemoryLayoutStrategy,
                 symbols: SymbolTable,
+                globalEnvironment: GlobalEnvironment,
                 sandboxAccessManager: SandboxAccessManager? = nil) {
-        self.symbols = symbols
         self.memoryLayoutStrategy = memoryLayoutStrategy
+        self.symbols = symbols
+        self.globalEnvironment = globalEnvironment
         self.sandboxAccessManager = sandboxAccessManager
     }
     
@@ -25,37 +28,29 @@ public class SnapSubcompilerImport: NSObject {
         injectedModules[name] = sourceCode
     }
     
-    public func compile(_ node: Import) throws -> Module? {
+    public func compile(_ node: Import) throws {
         guard symbols.parent == nil else {
             throw CompilerError(sourceAnchor: node.sourceAnchor, message: "declaration is only valid at file scope")
         }
         
-        let result: Module?
-        if symbols.existsAsModule(identifier: node.moduleName) {
-            result = nil
-        } else {
-            result = try compileModuleForImport(import: node)
-        }
-        
+        try compileModuleForImport(import: node)
         try exportPublicSymbolsFromModule(sourceAnchor: node.sourceAnchor, name: node.moduleName)
-        
-        // The import statement is erased after being processed. If this is the
-        // first time the module has been imported then return a synthesized
-        // Module node to hold the module AST during compilation.
-        return result
     }
     
-    func compileModuleForImport(import node: Import) throws -> Module {
+    func compileModuleForImport(import node: Import) throws {
+        if globalEnvironment.hasModule(node.moduleName) {
+            return
+        }
+        let isUsingStandardLibrary = (node.moduleName != kStandardLibraryModuleName)
         let moduleData = try readModuleFromFile(sourceAnchor: node.sourceAnchor, moduleName: node.moduleName)
         let topLevel = try parse(url: moduleData.1, text: moduleData.0)
-        let moduleSymbols = CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable())
-        let module0 = Module(sourceAnchor: topLevel.sourceAnchor,
-                            name: node.moduleName,
-                            children: topLevel.children,
-                            symbols: moduleSymbols)
-        let subcompiler = SnapSubcompilerModule(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols)
-        let module1 = try subcompiler.compile(module0)
-        return module1
+        let compiler = SnapAbstractSyntaxTreeCompiler(memoryLayoutStrategy: memoryLayoutStrategy, isUsingStandardLibrary: isUsingStandardLibrary, sandboxAccessManager: sandboxAccessManager, globalEnvironment: globalEnvironment)
+        compiler.compile(topLevel)
+        if compiler.hasError {
+            let fileName = topLevel.sourceAnchor?.url?.lastPathComponent
+            throw CompilerError.makeOmnibusError(fileName: fileName, errors: compiler.errors)
+        }
+        globalEnvironment.modules[node.moduleName] = compiler.ast
     }
     
     private func readModuleFromFile(sourceAnchor: SourceAnchor?, moduleName: String) throws -> (String, URL) {
@@ -118,7 +113,9 @@ public class SnapSubcompilerImport: NSObject {
             return
         }
         
-        let src = try symbols.resolveModule(identifier: name)
+        guard let src = globalEnvironment.modules[name]?.symbols else {
+            throw CompilerError(sourceAnchor: sourceAnchor, message: "failed to get symbols for module `\(name)'")
+        }
         
         for (identifier, symbol) in src.symbolTable {
             if symbol.visibility == .publicVisibility {

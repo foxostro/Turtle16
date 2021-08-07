@@ -56,8 +56,6 @@ public class SnapASTTransformerBase: NSObject {
             result = try compile(typealias: node)
         case let node as Import:
             result = try compile(import: node)
-        case let node as Module:
-            result = try compile(module: node)
         default:
             result = genericNode
         }
@@ -191,17 +189,6 @@ public class SnapASTTransformerBase: NSObject {
     
     public func compile(import node: Import) throws -> AbstractSyntaxTreeNode? {
         return node
-    }
-    
-    public func compile(module node: Module) throws -> AbstractSyntaxTreeNode? {
-        let parent = symbols
-        symbols = node.symbols
-        let result = Module(sourceAnchor: node.sourceAnchor,
-                            name: node.name,
-                            children: try node.children.compactMap { try compile($0) },
-                            symbols: node.symbols)
-        symbols = parent
-        return result
     }
     
     public func reconnect(_ node: AbstractSyntaxTreeNode?) {

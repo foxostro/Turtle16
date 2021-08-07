@@ -39,8 +39,6 @@ public class SymbolTablesReconnector: NSObject {
             reconnect(match: node)
         case let node as TestDeclaration:
             reconnect(testDecl: node)
-        case let node as Module:
-            reconnect(module: node)
         default:
             break
         }
@@ -116,14 +114,5 @@ public class SymbolTablesReconnector: NSObject {
     
     func reconnect(testDecl node: TestDeclaration) {
         reconnect(node.body)
-    }
-    
-    func reconnect(module node: Module) {
-        let parent = symbols
-        symbols = node.symbols
-        for child in node.children {
-            reconnect(child)
-        }
-        symbols = parent
     }
 }

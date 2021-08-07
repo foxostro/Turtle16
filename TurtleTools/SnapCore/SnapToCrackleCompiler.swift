@@ -20,11 +20,13 @@ public class SnapToCrackleCompiler: NSObject {
     
     private var symbols = SymbolTable()
     public let memoryLayoutStrategy: MemoryLayoutStrategy
+    public let globalEnvironment: GlobalEnvironment
     private let labelMaker = LabelMaker()
     private var currentSourceAnchor: SourceAnchor? = nil
     
-    public init(_ memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()) {
+    public init(_ memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL(), _ globalEnvironment: GlobalEnvironment = GlobalEnvironment()) {
         self.memoryLayoutStrategy = memoryLayoutStrategy
+        self.globalEnvironment = globalEnvironment
     }
     
     public func compile(ast: Block) {
@@ -55,6 +57,11 @@ public class SnapToCrackleCompiler: NSObject {
     }
     
     private func compile(topLevel: Block) throws {
+        for (_, module) in globalEnvironment.modules {
+            symbols = module.symbols
+            try compile(block: module)
+        }
+        
         globalSymbols = topLevel.symbols
         symbols = globalSymbols
         
@@ -82,8 +89,6 @@ public class SnapToCrackleCompiler: NSObject {
             try compile(forIn: node)
         case let node as Seq:
             try compile(seq: node)
-        case let node as Module:
-            try compile(module: node)
         case let node as Block:
             try compile(block: node)
         case let node as Return:
@@ -313,24 +318,10 @@ public class SnapToCrackleCompiler: NSObject {
         }
     }
     
-    private func compile(module: Module) throws {
-        currentSourceAnchor = module.sourceAnchor
-        
-        let oldSymbols = symbols
-        symbols = module.symbols
-        
-        for child in module.children {
-            try compile(genericNode: child)
-        }
-        
-        symbols = oldSymbols
-    }
-    
     private func compile(block: Block) throws {
         currentSourceAnchor = block.sourceAnchor
         
         let parent = symbols
-        assert(block.symbols.parent == symbols)
         symbols = block.symbols
         
         for child in block.children {

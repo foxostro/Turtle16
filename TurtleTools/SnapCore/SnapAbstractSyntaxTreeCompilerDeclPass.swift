@@ -17,12 +17,13 @@ import TurtleCore
 // various subcompilers classes.
 public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
     public let memoryLayoutStrategy: MemoryLayoutStrategy
-    public private(set) var modules: [Module] = []
-    var injectModules: [(String, String)]
+    public private(set) var injectModules: [(String, String)]
+    public let globalEnvironment: GlobalEnvironment
     
-    public init(memoryLayoutStrategy: MemoryLayoutStrategy, symbols: SymbolTable? = nil, injectModules: [(String, String)] = []) {
+    public init(memoryLayoutStrategy: MemoryLayoutStrategy, symbols: SymbolTable? = nil, injectModules: [(String, String)] = [], globalEnvironment: GlobalEnvironment) {
         self.memoryLayoutStrategy = memoryLayoutStrategy
         self.injectModules = injectModules
+        self.globalEnvironment = globalEnvironment
         super.init(symbols)
     }
     
@@ -59,18 +60,12 @@ public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
     }
     
     public override func compile(import node0: Import) throws -> AbstractSyntaxTreeNode? {
-        let subcompiler = SnapSubcompilerImport(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols!)
+        let subcompiler = SnapSubcompilerImport(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols!, globalEnvironment: globalEnvironment)
         for (name, text) in injectModules {
             subcompiler.injectModule(name: name, sourceCode: "import stdlib\n" + text)
         }
-        let node1 = try subcompiler.compile(node0)
-        return node1
-    }
-    
-    public override func compile(module node0: Module) throws -> AbstractSyntaxTreeNode? {
-        let subcompiler = SnapSubcompilerModule(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols!)
-        let node1 = try subcompiler.compile(node0)
-        return node1
+        try subcompiler.compile(node0)
+        return nil
     }
     
     public override func compile(implFor node0: ImplFor) throws -> AbstractSyntaxTreeNode? {

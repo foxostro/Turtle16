@@ -12,7 +12,7 @@ import TurtleCore
 
 class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
     func makeCompiler() -> SnapAbstractSyntaxTreeCompilerDeclPass {
-        return SnapAbstractSyntaxTreeCompilerDeclPass(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        return SnapAbstractSyntaxTreeCompilerDeclPass(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(), globalEnvironment: GlobalEnvironment())
     }
     
     func testExample() throws {
@@ -89,34 +89,16 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         XCTAssertEqual(expectedType, actualType)
     }
     
-    func testModule() throws {
-        let globalSymbols = SymbolTable()
-        let input = Block(symbols: globalSymbols, children: [
-            Module(name: "Foo", children: [
-                FunctionDeclaration(identifier: Expression.Identifier("puts"), functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [Expression.DynamicArrayType(Expression.PrimitiveType(.u8))]), argumentNames: ["s"], body: Block(children: []), visibility: .publicVisibility)
-            ])
-        ])
-        
-        let compiler = makeCompiler()
-        let result = try? compiler.compile(input)
-        let moduleOutput = (result as? Block)?.children.first as? Module
-        
-        XCTAssertTrue(globalSymbols.symbolTable.isEmpty)
-        XCTAssertTrue(globalSymbols.existsAsModule(identifier: "Foo"))
-        XCTAssertFalse(globalSymbols.modulesAlreadyImported.contains("Foo"))
-        let puts = try? moduleOutput?.symbols.resolve(identifier: "puts")
-        XCTAssertNotNil(puts)
-    }
-    
     func testImportStdlib() throws {
         let globalSymbols = SymbolTable()
         let input = Block(symbols: globalSymbols, children: [
             Import(moduleName: kStandardLibraryModuleName)
         ])
         let compiler = makeCompiler()
-        let output = try compiler.compile(input)
+        var output: AbstractSyntaxTreeNode? = nil
+        XCTAssertNoThrow(output = try compiler.compile(input))
         XCTAssertNotNil(output)
-        XCTAssertTrue(globalSymbols.existsAsModule(identifier: kStandardLibraryModuleName))
+        XCTAssertTrue(compiler.globalEnvironment.hasModule(kStandardLibraryModuleName))
         XCTAssertTrue(globalSymbols.modulesAlreadyImported.contains(kStandardLibraryModuleName))
         XCTAssertNotNil(try? globalSymbols.resolve(identifier: "panic"))
     }

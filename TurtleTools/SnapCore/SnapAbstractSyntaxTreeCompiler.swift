@@ -25,25 +25,28 @@ public class SnapAbstractSyntaxTreeCompiler: NSObject {
     let isUsingStandardLibrary: Bool
     let sandboxAccessManager: SandboxAccessManager?
     let injectModules: [(String, String)]
+    let globalEnvironment: GlobalEnvironment
     
     public init(memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL(),
                 shouldRunSpecificTest: String? = nil,
                 injectModules: [(String, String)] = [],
                 isUsingStandardLibrary: Bool = false,
-                sandboxAccessManager: SandboxAccessManager? = nil) {
+                sandboxAccessManager: SandboxAccessManager? = nil,
+                globalEnvironment: GlobalEnvironment) {
         self.memoryLayoutStrategy = memoryLayoutStrategy
         self.shouldRunSpecificTest = shouldRunSpecificTest
         self.injectModules = injectModules
         self.isUsingStandardLibrary = isUsingStandardLibrary
         self.sandboxAccessManager = sandboxAccessManager
+        self.globalEnvironment = globalEnvironment
     }
     
-    public func compile(_ root: AbstractSyntaxTreeNode?, actuallyDoIt: Bool = false) {
+    public func compile(_ root: AbstractSyntaxTreeNode?) {
         guard let root = root else {
             return
         }
         do {
-            guard let topLevel = try tryCompile(root, actuallyDoIt) as? Block else {
+            guard let topLevel = try tryCompile(root) as? Block else {
                 throw CompilerError(message: "expected Block at root of tree after AST transformation")
             }
             ast = topLevel
@@ -52,14 +55,14 @@ public class SnapAbstractSyntaxTreeCompiler: NSObject {
         }
     }
     
-    func tryCompile(_ t0: AbstractSyntaxTreeNode, _ actuallyDoIt: Bool = false) throws -> AbstractSyntaxTreeNode? {
+    func tryCompile(_ t0: AbstractSyntaxTreeNode) throws -> AbstractSyntaxTreeNode? {
         // Erase test declarations and replace with a synthesized test runner.
         let testDeclarationTransformer = SnapASTTransformerTestDeclaration(shouldRunSpecificTest: shouldRunSpecificTest, isUsingStandardLibrary: isUsingStandardLibrary)
         let t1 = try testDeclarationTransformer.compile(t0)
         testNames = testDeclarationTransformer.testNames
         
         // Collect type declarations in a discrete pass
-        let t2 = try SnapAbstractSyntaxTreeCompilerDeclPass(memoryLayoutStrategy: memoryLayoutStrategy, symbols: nil, injectModules: injectModules).compile(t1)
+        let t2 = try SnapAbstractSyntaxTreeCompilerDeclPass(memoryLayoutStrategy: memoryLayoutStrategy, symbols: nil, injectModules: injectModules, globalEnvironment: globalEnvironment).compile(t1)
         
         // Rewrite higher-level nodes in terms of trees of lower-level nodes.
         let t3 = try SnapAbstractSyntaxTreeCompilerImplPass(memoryLayoutStrategy: memoryLayoutStrategy, symbols: nil).compile(t2)

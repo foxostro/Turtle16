@@ -12,7 +12,9 @@ import TurtleCore
 
 class SnapSubcompilerImportTests: XCTestCase {
     fileprivate func makeCompiler(_ symbols: SymbolTable) -> SnapSubcompilerImport {
-        return SnapSubcompilerImport(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(), symbols: symbols)
+        return SnapSubcompilerImport(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(),
+                                     symbols: symbols,
+                                     globalEnvironment: GlobalEnvironment())
     }
     
     func testEmptyModuleName() throws {
@@ -41,48 +43,44 @@ class SnapSubcompilerImportTests: XCTestCase {
         compiler.injectModule(name: "Foo", sourceCode: "")
         let input = Import(moduleName: "Foo")
         _ = try compiler.compile(input)
-        XCTAssertTrue(symbols.existsAsModule(identifier: "Foo"))
+        XCTAssertTrue(compiler.globalEnvironment.hasModule("Foo"))
         XCTAssertTrue(symbols.modulesAlreadyImported.contains("Foo"))
     }
     
-    func testInjectModuleWithPrivateSymbol() throws {
+    func testImportModuleWithPrivateSymbol() throws {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "Foo", moduleSymbols: SymbolTable(tuples: [
-            ("bar", Symbol(type: .u8, offset: 0, visibility: .privateVisibility))
-        ]))
         let compiler = makeCompiler(symbols)
+        let moduleSymbols = SymbolTable(tuples: [
+            ("bar", Symbol(type: .u8, offset: 0, visibility: .privateVisibility))
+        ])
+        compiler.globalEnvironment.modules["Foo"] = Block(symbols: moduleSymbols, children: [])
         let input = Import(moduleName: "Foo")
-        let output = try compiler.compile(input)
-        XCTAssertNil(output)
-        XCTAssertTrue(symbols.existsAsModule(identifier: "Foo"))
+        try compiler.compile(input)
         XCTAssertTrue(symbols.modulesAlreadyImported.contains("Foo"))
         XCTAssertNil(try? symbols.resolve(identifier: "bar"))
     }
     
-    func testInjectModuleWithPublicSymbol() throws {
+    func testImportModuleWithPublicSymbol() throws {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "Foo", moduleSymbols: SymbolTable(tuples: [
-            ("bar", Symbol(type: .u8, offset: 0, visibility: .publicVisibility))
-        ]))
         let compiler = makeCompiler(symbols)
+        let moduleSymbols = SymbolTable(tuples: [
+            ("bar", Symbol(type: .u8, offset: 0, visibility: .publicVisibility))
+        ])
+        compiler.globalEnvironment.modules["Foo"] = Block(symbols: moduleSymbols, children: [])
         let input = Import(moduleName: "Foo")
-        let output = try compiler.compile(input)
-        XCTAssertNil(output)
-        XCTAssertTrue(symbols.existsAsModule(identifier: "Foo"))
+        try compiler.compile(input)
         XCTAssertTrue(symbols.modulesAlreadyImported.contains("Foo"))
         XCTAssertNotNil(try? symbols.resolve(identifier: "bar"))
     }
     
-    func testInjectModuleWithPublicType() throws {
+    func testImportModuleWithPublicType() throws {
         let symbols = SymbolTable()
+        let compiler = makeCompiler(symbols)
         let moduleSymbols = SymbolTable()
         moduleSymbols.bind(identifier: "bar", symbolType: .u8, visibility: .publicVisibility)
-        symbols.bind(identifier: "Foo", moduleSymbols: moduleSymbols)
-        let compiler = makeCompiler(symbols)
+        compiler.globalEnvironment.modules["Foo"] = Block(symbols: moduleSymbols, children: [])
         let input = Import(moduleName: "Foo")
-        let output = try compiler.compile(input)
-        XCTAssertNil(output)
-        XCTAssertTrue(symbols.existsAsModule(identifier: "Foo"))
+        try compiler.compile(input)
         XCTAssertTrue(symbols.modulesAlreadyImported.contains("Foo"))
         XCTAssertNotNil(try? symbols.resolveType(identifier: "bar"))
     }
@@ -90,10 +88,11 @@ class SnapSubcompilerImportTests: XCTestCase {
     func testImportCannotRedefineExistingSymbol() throws {
         let symbols = SymbolTable()
         symbols.bind(identifier: "bar", symbol: Symbol(type: .u8, offset: 0, visibility: .publicVisibility))
-        symbols.bind(identifier: "Foo", moduleSymbols: SymbolTable(tuples: [
-            ("bar", Symbol(type: .u8, offset: 0, visibility: .publicVisibility))
-        ]))
         let compiler = makeCompiler(symbols)
+        let moduleSymbols = SymbolTable(tuples: [
+            ("bar", Symbol(type: .u8, offset: 0, visibility: .publicVisibility))
+        ])
+        compiler.globalEnvironment.modules["Foo"] = Block(symbols: moduleSymbols, children: [])
         let input = Import(moduleName: "Foo")
         XCTAssertThrowsError(try compiler.compile(input)) {
             let compilerError = $0 as? CompilerError
@@ -104,10 +103,10 @@ class SnapSubcompilerImportTests: XCTestCase {
     func testImportCannotRedefineExistingType() throws {
         let symbols = SymbolTable()
         symbols.bind(identifier: "bar", symbolType: .u8)
+        let compiler = makeCompiler(symbols)
         let moduleSymbols = SymbolTable()
         moduleSymbols.bind(identifier: "bar", symbolType: .u8, visibility: .publicVisibility)
-        symbols.bind(identifier: "Foo", moduleSymbols: moduleSymbols)
-        let compiler = makeCompiler(symbols)
+        compiler.globalEnvironment.modules["Foo"] = Block(symbols: moduleSymbols, children: [])
         let input = Import(moduleName: "Foo")
         XCTAssertThrowsError(try compiler.compile(input)) {
             let compilerError = $0 as? CompilerError
@@ -119,21 +118,18 @@ class SnapSubcompilerImportTests: XCTestCase {
         let symbols = SymbolTable()
         let compiler = makeCompiler(symbols)
         let input = Import(moduleName: kStandardLibraryModuleName)
-        let output = try compiler.compile(input)
-        XCTAssertNotNil(output)
-        XCTAssertTrue(symbols.existsAsModule(identifier: kStandardLibraryModuleName))
+        try compiler.compile(input)
+        XCTAssertTrue(compiler.globalEnvironment.hasModule(kStandardLibraryModuleName))
         XCTAssertTrue(symbols.modulesAlreadyImported.contains(kStandardLibraryModuleName))
         XCTAssertNotNil(try? symbols.resolveType(identifier: "None"))
     }
     
-    func testImportTwice() throws {
+    func testImportModuleThatsAlreadyBeenImportedBefore() throws {
         let symbols = SymbolTable()
-        symbols.bind(identifier: kStandardLibraryModuleName, moduleSymbols: SymbolTable())
-        symbols.modulesAlreadyImported.insert(kStandardLibraryModuleName)
         let compiler = makeCompiler(symbols)
+        symbols.modulesAlreadyImported.insert(kStandardLibraryModuleName)
         let input = Import(moduleName: kStandardLibraryModuleName)
         XCTAssertNoThrow(try compiler.compile(input))
-        XCTAssertTrue(symbols.existsAsModule(identifier: kStandardLibraryModuleName))
         XCTAssertTrue(symbols.modulesAlreadyImported.contains(kStandardLibraryModuleName))
     }
 }

@@ -21,7 +21,6 @@ public class SnapToCrackleCompiler: NSObject {
     private var symbols = SymbolTable()
     public let memoryLayoutStrategy: MemoryLayoutStrategy
     private let labelMaker = LabelMaker()
-    private var staticStoragePointer = SnapCompilerMetrics.kStaticStorageStartAddress
     private var currentSourceAnchor: SourceAnchor? = nil
     
     public var isUsingStandardLibrary = false

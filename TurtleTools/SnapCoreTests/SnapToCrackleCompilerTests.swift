@@ -790,90 +790,6 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
     }
     
-    func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType() {
-        let ast = TopLevel(children: [
-            FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
-                                argumentNames: [],
-                                body: Block(children: [
-                                    Return(ExprUtils.makeBool(value: true))
-                                ]))
-        ])
-        let compiler = compile(ast)
-        XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `bool' to return type `u8'")
-    }
-    
-    func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType_ReturnVoid() {
-        let ast = TopLevel(children: [
-            FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
-                                argumentNames: [],
-                                body: Block(children: [
-                                    Return(nil)
-                                ]))
-        ])
-        let compiler = compile(ast)
-        XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "non-void function should return a value")
-    }
-    
-    func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType_ReturnInsideIf() {
-        let tr = ExprUtils.makeBool(value: true)
-        let one = ExprUtils.makeU8(value: 1)
-        let ast = TopLevel(children: [
-            FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
-                                argumentNames: [],
-                                body: Block(children: [
-                                    If(condition: tr,
-                                       then: Return(tr),
-                                       else: nil),
-                                    Return(one)
-                                ]))
-        ])
-        let compiler = compile(ast)
-        XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `bool' to return type `u8'")
-    }
-    
-    func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType_ReturnInsideElse() {
-        let tr = ExprUtils.makeBool(value: true)
-        let one = ExprUtils.makeU8(value: 1)
-        let ast = TopLevel(children: [
-            FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
-                                argumentNames: [],
-                                body: Block(children: [
-                                    If(condition: tr,
-                                       then: Block(children: []),
-                                       else: Return(tr)),
-                                    Return(one)
-                                ]))
-        ])
-        let compiler = compile(ast)
-        XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `bool' to return type `u8'")
-    }
-    
-    func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType_ReturnInsideWhile() {
-        let tr = ExprUtils.makeBool(value: true)
-        let one = ExprUtils.makeU8(value: 1)
-        let ast = TopLevel(children: [
-            FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
-                                argumentNames: [],
-                                body: Block(children: [
-                                    While(condition: tr,
-                                          body: Return(tr)),
-                                    Return(one)
-                                ]))
-        ])
-        let compiler = compile(ast)
-        XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot convert return expression of type `bool' to return type `u8'")
-    }
-    
     func testCompileFunctionWithReturnValueU8() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
@@ -941,30 +857,6 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let executor = CrackleExecutor()
         let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 0x00aa)
-    }
-    
-    func testCompilationFailsBecauseReturnIsInvalidOutsideFunction() {
-        let ast = TopLevel(children: [
-            Return(Expression.LiteralBool(true))
-        ])
-        let compiler = compile(ast)
-        XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "return is invalid outside of a function")
-    }
-    
-    func testUnexpectedNonVoidReturnValueInVoidFunction() {
-        let ast = TopLevel(children: [
-            FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
-                                argumentNames: [],
-                                body: Block(children: [
-                                    Return(ExprUtils.makeU8(value: 1))
-                                ]))
-        ])
-        let compiler = compile(ast)
-        XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "unexpected non-void return value in void function")
     }
     
     func testItIsCompletelyValidToHaveMeaninglessReturnStatementAtBottomOfVoidFunction() {

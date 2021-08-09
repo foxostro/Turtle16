@@ -42,4 +42,11 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: SnapASTTransformerBase {
         let node2 = try super.compile(block: node1)
         return node2
     }
+    
+    public override func compile(match node0: Match) throws -> AbstractSyntaxTreeNode? {
+        let subcompiler = SnapSubcompilerMatch(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols!)
+        let node1 = try subcompiler.compile(node0)
+        let node2 = try super.compile(node1)
+        return node2
+    }
 }

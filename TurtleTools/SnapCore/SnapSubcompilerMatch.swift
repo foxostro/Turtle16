@@ -1,5 +1,5 @@
 //
-//  MatchCompiler.swift
+//  SnapSubcompilerMatch.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 9/22/20.
@@ -10,14 +10,16 @@ import TurtleCore
 
 // Accepts a Match statement and produces an AST which implements it in terms
 // of other nodes.
-public class MatchCompiler: NSObject {
+public class SnapSubcompilerMatch: NSObject {
+    public let symbols: SymbolTable
     public let memoryLayoutStrategy: MemoryLayoutStrategy
     
-    public init(_ memoryLayoutStrategy: MemoryLayoutStrategy) {
+    public init(memoryLayoutStrategy: MemoryLayoutStrategy, symbols: SymbolTable) {
+        self.symbols = symbols
         self.memoryLayoutStrategy = memoryLayoutStrategy
     }
     
-    public func compile(match: Match, symbols: SymbolTable) throws -> AbstractSyntaxTreeNode {
+    public func compile(_ match: Match) throws -> AbstractSyntaxTreeNode {
         let outer = SymbolTable(parent: symbols)
         
         let matchExprType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: match.expr)

@@ -54,21 +54,6 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [])
     }
     
-    func testAbstractSyntaxTreeNodeIsIgnoredInProgramCompilation() {
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: Block(children: [AbstractSyntaxTreeNode()]))
-        XCTAssertFalse(compiler.hasError)
-        XCTAssertEqual(compiler.instructions, [])
-    }
-    
-    func testCompilationIgnoresUnknownNodes() {
-        class UnknownNode: AbstractSyntaxTreeNode {}
-        let compiler = SnapToCrackleCompiler()
-        compiler.compile(ast: Block(children: [UnknownNode(sourceAnchor: nil)]))
-        XCTAssertFalse(compiler.hasError)
-        XCTAssertEqual(compiler.instructions, [])
-    }
-    
     func testCompileLetDeclaration_CompileTimeConstant() {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: Expression.Identifier("foo"),
@@ -861,7 +846,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
                                 argumentNames: [],
                                 body: Block(children: [
                                     If(condition: tr,
-                                       then: AbstractSyntaxTreeNode(),
+                                       then: Block(children: []),
                                        else: Return(tr)),
                                     Return(one)
                                 ]))

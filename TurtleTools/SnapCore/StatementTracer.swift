@@ -113,7 +113,7 @@ public class StatementTracer: NSObject {
     }
     
     private func trace(currentTrace: Trace, match node: Match) throws -> [Trace] {
-        let ast = try MatchCompiler(memoryLayoutStrategy).compile(match: node, symbols: symbols)
+        let ast = try SnapSubcompilerMatch(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols).compile(node)
         return try trace(currentTrace: currentTrace, genericNode: ast)
     }
     

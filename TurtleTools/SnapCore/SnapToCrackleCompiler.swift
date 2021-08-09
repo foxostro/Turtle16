@@ -85,8 +85,6 @@ public class SnapToCrackleCompiler: NSObject {
             try compile(if: node)
         case let node as While:
             try compile(while: node)
-        case let node as ForIn:
-            throw CompilerError(message: "unimplemented: `\(node)'")
         case let node as Seq:
             try compile(seq: node)
         case let node as Block:
@@ -95,18 +93,8 @@ public class SnapToCrackleCompiler: NSObject {
             try compile(return: node)
         case let node as FunctionDeclaration:
             try compile(func: node)
-        case let node as Impl:
-            throw CompilerError(message: "unimplemented: `\(node)'")
-        case let node as ImplFor:
-            throw CompilerError(message: "unimplemented: `\(node)'")
-        case let node as Match:
-            try compile(match: node)
-        case let node as Assert:
-            throw CompilerError(message: "unimplemented: `\(node)'")
-        case let node as TraitDeclaration:
-            throw CompilerError(message: "unimplemented: `\(node)'")
         default:
-            break
+            throw CompilerError(message: "unimplemented: `\(genericNode)'")
         }
     }
     
@@ -196,119 +184,6 @@ public class SnapToCrackleCompiler: NSObject {
         ])
     }
     
-    private func compile(forIn stmt: ForIn) throws {
-        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
-        let sequenceType = try typeChecker.check(expression: stmt.sequenceExpr)
-        switch sequenceType {
-        case .constStructType(let typ), .structType(let typ):
-            guard typ.name == "Range" else {
-                throw CompilerError(sourceAnchor: stmt.sequenceExpr.sourceAnchor, message: "for-in loop requires iterable sequence")
-            }
-            try compileForInRange(stmt)
-        case .array, .constDynamicArray, .dynamicArray:
-            try compileForInArray(stmt)
-        default:
-            throw CompilerError(sourceAnchor: stmt.sequenceExpr.sourceAnchor, message: "for-in loop requires iterable sequence")
-        }
-    }
-    
-    private func compileForInRange(_ stmt: ForIn) throws {
-        let sequence = Expression.Identifier("__sequence")
-        let limit = Expression.Identifier("__limit")
-        
-        let grandparent = SymbolTable(parent: symbols)
-        let parent = SymbolTable(parent: grandparent)
-        let inner = SymbolTable(parent: parent)
-        
-        let body = Block(sourceAnchor: stmt.body.sourceAnchor,
-                         symbols: inner,
-                         children: stmt.body.children)
-        
-        let ast = Block(symbols: grandparent, children: [
-            VarDeclaration(identifier: sequence,
-                           explicitType: nil,
-                           expression: stmt.sequenceExpr,
-                           storage: .automaticStorage,
-                           isMutable: true),
-            VarDeclaration(identifier: limit,
-                           explicitType: nil,
-                           expression: Expression.Get(expr: sequence, member: Expression.Identifier("limit")),
-                           storage: .automaticStorage,
-                           isMutable: false),
-            VarDeclaration(identifier: stmt.identifier,
-                           explicitType: Expression.TypeOf(limit),
-                           expression: Expression.LiteralInt(0),
-                           storage: .automaticStorage,
-                           isMutable: true),
-            While(condition: Expression.Binary(op: .ne, left: stmt.identifier, right: limit),
-                  body: Block(symbols: SymbolTable(parent: grandparent),
-                              children: [body, Expression.Assignment(lexpr: stmt.identifier, rexpr: Expression.Binary(op: .plus, left: stmt.identifier, right: Expression.LiteralInt(1)))]))
-        ])
-        
-        try compile(block: ast)
-    }
-    
-    private func compileForInArray(_ stmt: ForIn) throws {
-        let sequence = Expression.Identifier(sourceAnchor: stmt.sourceAnchor, identifier: "__sequence")
-        let index = Expression.Identifier(sourceAnchor: stmt.sourceAnchor, identifier: "__index")
-        let limit = Expression.Identifier(sourceAnchor: stmt.sourceAnchor, identifier: "__limit")
-        
-        let grandparent = SymbolTable(parent: symbols)
-        let parent = SymbolTable(parent: grandparent)
-        let inner = SymbolTable(parent: parent)
-        
-        let body = Block(sourceAnchor: stmt.body.sourceAnchor,
-                         symbols: inner,
-                         children: stmt.body.children)
-        
-        let ast = Block(sourceAnchor: stmt.sourceAnchor, symbols: grandparent, children: [
-            VarDeclaration(sourceAnchor: stmt.sourceAnchor,
-                           identifier: sequence,
-                           explicitType: nil,
-                           expression: stmt.sequenceExpr,
-                           storage: .automaticStorage,
-                           isMutable: false),
-            VarDeclaration(sourceAnchor: stmt.sourceAnchor,
-                           identifier: index,
-                           explicitType: nil,
-                           expression: Expression.LiteralInt(sourceAnchor: stmt.sourceAnchor, value: 0),
-                           storage: .automaticStorage,
-                           isMutable: true),
-            VarDeclaration(sourceAnchor: stmt.sourceAnchor,
-                           identifier: limit,
-                           explicitType: nil,
-                           expression: Expression.Get(expr: sequence, member: Expression.Identifier(sourceAnchor: stmt.sourceAnchor, identifier: "count")),
-                           storage: .automaticStorage,
-                           isMutable: false),
-            VarDeclaration(sourceAnchor: stmt.sourceAnchor,
-                           identifier: stmt.identifier,
-                           explicitType: Expression.PrimitiveType(sourceAnchor: stmt.sourceAnchor, typ: try RvalueExpressionTypeChecker(symbols: symbols).check(expression: stmt.sequenceExpr).arrayElementType.correspondingMutableType),
-                           expression: nil,
-                           storage: .automaticStorage,
-                           isMutable: true),
-            While(sourceAnchor: stmt.sourceAnchor,
-                  condition: Expression.Binary(sourceAnchor: stmt.sourceAnchor,
-                                               op: .ne, left: index, right: limit),
-                  body: Block(sourceAnchor: stmt.sourceAnchor,
-                              symbols: parent,
-                              children: [
-                    Expression.Assignment(sourceAnchor: stmt.sourceAnchor,
-                                          lexpr: stmt.identifier,
-                                          rexpr: Expression.Subscript(sourceAnchor: stmt.sourceAnchor,
-                                                                      subscriptable: sequence,
-                                                                      argument: index)),
-                    body,
-                    Expression.Assignment(sourceAnchor: stmt.sourceAnchor,
-                                          lexpr: index,
-                                          rexpr: Expression.Binary(op: .plus,
-                                                                   left: index,
-                                                                   right: Expression.LiteralInt(sourceAnchor: stmt.sourceAnchor, value: 1))),
-                  ]))
-        ])
-        
-        try compile(block: ast)
-    }
-    
     private func compile(seq: Seq) throws {
         currentSourceAnchor = seq.sourceAnchor
         for child in seq.children {
@@ -389,10 +264,5 @@ public class SnapToCrackleCompiler: NSObject {
         emit([
             .label(labelTail),
         ])
-    }
-    
-    private func compile(match: Match) throws {
-        let ast = try MatchCompiler(memoryLayoutStrategy).compile(match: match, symbols: symbols)
-        try compile(genericNode: ast)
     }
 }

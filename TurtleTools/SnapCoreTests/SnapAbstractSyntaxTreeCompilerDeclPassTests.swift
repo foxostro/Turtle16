@@ -25,17 +25,16 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         let globalSymbols = SymbolTable()
         let input = Block(symbols: globalSymbols, children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                            functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                            functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
                                             argumentNames: [],
                                             body: Block(children: []))
         ])
         
         let compiler = makeCompiler()
-        let result = try? compiler.compile(input)
-        XCTAssertEqual(result, input)
+        XCTAssertNoThrow(_ = try compiler.compile(input))
         
         let actual = try? globalSymbols.resolve(identifier: "foo")
-        let expected = Symbol(type: .function(FunctionType(name: "foo", returnType: .u8, arguments: [])), offset: 0, storage: .automaticStorage)
+        let expected = Symbol(type: .function(FunctionType(name: "foo", returnType: .void, arguments: [])), offset: 0, storage: .automaticStorage)
         XCTAssertEqual(actual, expected)
     }
     

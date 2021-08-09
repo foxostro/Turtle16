@@ -872,18 +872,6 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
     }
     
-    func testCompilationFailsBecauseFunctionIsMissingAReturnStatement() {
-        let ast = TopLevel(children: [
-            FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
-                                argumentNames: [],
-                                body: Block())
-        ])
-        let compiler = compile(ast)
-        XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "missing return in a function expected to return `u8'")
-    }
-    
     func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
@@ -910,21 +898,6 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let compiler = compile(ast)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "non-void function should return a value")
-    }
-    
-    func testCompilationFailsBecauseCodeAfterReturnWillNeverBeExecuted() {
-        let ast = TopLevel(children: [
-            FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
-                                argumentNames: [],
-                                body: Block(children: [
-                                    Return(Expression.LiteralBool(true)),
-                                    Expression.LiteralBool(false)
-                                ]))
-        ])
-        let compiler = compile(ast)
-        XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "code after return will never be executed")
     }
     
     func testCompilationFailsBecauseFunctionReturnExpressionCannotBeConvertedToReturnType_ReturnInsideIf() {
@@ -1050,55 +1023,6 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let executor = CrackleExecutor()
         let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 0x00aa)
-    }
-    
-    func testCompilationFailsBecauseThereExistsAPathMissingAReturn_1() {
-        let ast = TopLevel(children: [
-            FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
-                                argumentNames: [],
-                                body: Block(children: [
-                                    If(sourceAnchor: nil,
-                                       condition: Expression.LiteralBool(true),
-                                       then: Return(Expression.LiteralInt(1)),
-                                       else: nil)
-                                ]))
-        ])
-        let compiler = compile(ast)
-        XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "missing return in a function expected to return `u8'")
-    }
-    
-    func testCompilationFailsBecauseThereExistsAPathMissingAReturn_2() {
-        let ast = TopLevel(children: [
-            FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
-                                argumentNames: [],
-                                body: Block())
-        ])
-        let compiler = compile(ast)
-        XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "missing return in a function expected to return `u8'")
-    }
-    
-    func testCompilationFailsBecauseFunctionCallUsesIncorrectParameterType() {
-        let ast = TopLevel(children: [
-            FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: [Expression.PrimitiveType(.u8)]),
-                                argumentNames: ["a"],
-                                body: Block(children: [
-                                    Return(ExprUtils.makeU8(value: 1))
-                                ])),
-            VarDeclaration(identifier: Expression.Identifier("b"),
-                           explicitType: nil,
-                           expression: Expression.Call(callee: Expression.Identifier("foo"),
-                                                       arguments: [ExprUtils.makeBool(value: true)]),
-                           storage: .staticStorage,
-                           isMutable: false)
-        ])
-        let compiler = compile(ast)
-        XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot convert value of type `bool' to expected argument type `u8' in call to `foo'")
     }
     
     func testCompilationFailsBecauseReturnIsInvalidOutsideFunction() {

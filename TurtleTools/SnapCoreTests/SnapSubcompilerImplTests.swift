@@ -51,7 +51,8 @@ class SnapSubcompilerImplTests: XCTestCase {
         
         let (impl, symbols) = try makeImpl()
         
-        let compiler = SnapSubcompilerImpl(symbols)
+        let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
+        let compiler = SnapSubcompilerImpl(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols)
         var output: AbstractSyntaxTreeNode? = nil
         XCTAssertNoThrow(output = try compiler.compile(impl))
         
@@ -99,7 +100,9 @@ class SnapSubcompilerImplTests: XCTestCase {
         
         let (impl, symbols) = try makeImpl()
         
-        let compiler = SnapSubcompilerImpl(symbols)
+        let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
+        let compiler = SnapSubcompilerImpl(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols)
+        
         XCTAssertThrowsError(try compiler.compile(impl)) {
             let error = $0 as? CompilerError
             XCTAssertEqual(error?.message, "function redefines existing symbol: `bar\'")

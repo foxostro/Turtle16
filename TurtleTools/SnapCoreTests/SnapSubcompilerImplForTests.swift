@@ -29,7 +29,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
             .compile(t0.children[0] as! StructDeclaration)
         try! SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols)
             .compile(t0.children[1] as! StructDeclaration)
-        let t1 = try! SnapSubcompilerImpl(globalSymbols)
+        let t1 = try! SnapSubcompilerImpl(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols)
             .compile(t0.children[2] as! Impl)
         return t1
     }
@@ -59,7 +59,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
                                                   body: Block())
                           ])
         
-        let compiler = SnapSubcompilerImplFor(globalSymbols)
+        let compiler = SnapSubcompilerImplFor(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols)
         
         var seq: Seq? = nil
         XCTAssertNoThrow(seq = try compiler.compile(ast))
@@ -95,7 +95,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
                           structIdentifier: Expression.Identifier("SerialFake"),
                           children: [])
         
-        let compiler = SnapSubcompilerImplFor(globalSymbols)
+        let compiler = SnapSubcompilerImplFor(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols)
         XCTAssertThrowsError(try compiler.compile(ast)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -121,7 +121,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
                                                   body: Block())
                           ])
         
-        let compiler = SnapSubcompilerImplFor(globalSymbols)
+        let compiler = SnapSubcompilerImplFor(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols)
         XCTAssertThrowsError(try compiler.compile(ast)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -148,7 +148,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
                                                   body: Block())
                           ])
         
-        let compiler = SnapSubcompilerImplFor(globalSymbols)
+        let compiler = SnapSubcompilerImplFor(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols)
         XCTAssertThrowsError(try compiler.compile(ast)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -175,7 +175,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
                                                   body: Block())
                           ])
         
-        let compiler = SnapSubcompilerImplFor(globalSymbols)
+        let compiler = SnapSubcompilerImplFor(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols)
         XCTAssertThrowsError(try compiler.compile(ast)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -204,7 +204,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
                                                 ]))
                           ])
         
-        let compiler = SnapSubcompilerImplFor(globalSymbols)
+        let compiler = SnapSubcompilerImplFor(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols)
         XCTAssertThrowsError(try compiler.compile(ast)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)

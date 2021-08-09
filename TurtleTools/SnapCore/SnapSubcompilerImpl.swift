@@ -10,9 +10,11 @@ import TurtleCore
 
 public class SnapSubcompilerImpl: NSObject {
     public let parent: SymbolTable
+    public let memoryLayoutStrategy: MemoryLayoutStrategy
     
-    public init(_ parent: SymbolTable) {
-        self.parent = parent
+    public init(memoryLayoutStrategy: MemoryLayoutStrategy, symbols: SymbolTable) {
+        self.parent = symbols
+        self.memoryLayoutStrategy = memoryLayoutStrategy
     }
     
     public func compile(_ node: Impl) throws -> Block {
@@ -33,7 +35,7 @@ public class SnapSubcompilerImpl: NSObject {
                                     message: "function redefines existing symbol: `\(identifier)'")
             }
             
-            let modifiedChild = try SnapSubcompilerFunctionDeclaration(symbols).compile(child)
+            let modifiedChild = try SnapSubcompilerFunctionDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols).compile(child)
             modifiedChildren.append(modifiedChild)
             
             // Put the symbol back into the struct type's symbol table too.

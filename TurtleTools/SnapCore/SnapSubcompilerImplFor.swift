@@ -9,10 +9,12 @@
 import TurtleCore
 
 public class SnapSubcompilerImplFor: NSObject {
+    public let memoryLayoutStrategy: MemoryLayoutStrategy
     public let symbols: SymbolTable
     
-    public init(_ symbols: SymbolTable) {
+    public init(memoryLayoutStrategy: MemoryLayoutStrategy, symbols: SymbolTable) {
         self.symbols = symbols
+        self.memoryLayoutStrategy = memoryLayoutStrategy
     }
     
     public func compile(_ node: ImplFor) throws -> Seq {
@@ -26,7 +28,7 @@ public class SnapSubcompilerImplFor: NSObject {
                                                  identifier: traitType.nameOfVtableType).unwrapStructType()
         
         let impl = Impl(sourceAnchor: node.sourceAnchor, identifier: node.structIdentifier, children: node.children)
-        resultArr.append(try SnapSubcompilerImpl(symbols).compile(impl))
+        resultArr.append(try SnapSubcompilerImpl(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols).compile(impl))
         
         let sortedTraitSymbols = traitType.symbols.symbolTable.sorted { $0.0 < $1.0 }
         for (requiredMethodName, requiredMethodSymbol) in sortedTraitSymbols {

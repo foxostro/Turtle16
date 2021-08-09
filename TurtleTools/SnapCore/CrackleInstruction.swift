@@ -31,7 +31,7 @@ public enum CrackleInstruction: Equatable, Hashable {
     case jmp(String) // unconditional jump, no change to the stack
     case jalr(String) // unconditional jump-and-link, e.g., for a function call. Inserts code at the link point to clear the stack save for whatever value was in the A register.
     case indirectJalr(Int) // unconditional jump-and-link, e.g., for a function call. Inserts code at the link point to clear the stack save for whatever value was in the A register. The jump target is located in RAM at the specified address.
-    case enter // push fp in two bytes ; fp <- sp
+    case enter(Int) // push fp in two bytes ; fp <- sp ; allocate stack space for local symbols
     case leave // sp <- fp ; fp <- pop two bytes from the stack
     case pushReturnAddress // push the link register (two bytes) to the stack
     case ret // pop the two byte return address and jump to that address
@@ -139,8 +139,8 @@ public enum CrackleInstruction: Equatable, Hashable {
             return "JALR \(label)"
         case .indirectJalr(let address):
             return String(format: "INDIRECT-JALR 0x%04x", address)
-        case .enter:
-            return "ENTER"
+        case .enter(let n):
+            return "ENTER \(n)"
         case .leave:
             return "LEAVE"
         case .pushReturnAddress:

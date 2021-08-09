@@ -759,7 +759,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             .jmp(L1),
             .label(L0),
             .pushReturnAddress,
-            .enter,
+            .enter(0),
             .leave,
             .ret,
             .label(L1)

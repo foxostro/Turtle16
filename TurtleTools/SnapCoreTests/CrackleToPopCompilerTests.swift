@@ -304,37 +304,9 @@ class CrackleToPopCompilerTests: XCTestCase {
     }
     
     func testEnter() {
-        let computer = try! execute(ir: [.enter])
-        XCTAssertEqual(computer.stack16(at: 0), 0x0000)
-        XCTAssertEqual(computer.stackPointer, 0xfffe)
-        XCTAssertEqual(computer.framePointer, 0xfffe)
-    }
-    
-    func testEnterThenLeave() {
-        let computer = try! execute(ir: [.enter, .leave])
-        XCTAssertEqual(computer.stackPointer, 0x0000)
-        XCTAssertEqual(computer.framePointer, 0x0000)
-    }
-    
-    func testEnterEnter() {
-        let computer = try! execute(ir: [.enter, .enter])
-        XCTAssertEqual(computer.stack16(at: 2), 0x0000)
-        XCTAssertEqual(computer.stack16(at: 0), 0xfffe)
+        let computer = try! execute(ir: [.enter(2)])
         XCTAssertEqual(computer.stackPointer, 0xfffc)
-        XCTAssertEqual(computer.framePointer, 0xfffc)
-    }
-    
-    func testEnterEnterLeave() {
-        let computer = try! execute(ir: [.enter, .enter, .leave])
-        XCTAssertEqual(computer.stack16(at: 0), 0x0000)
-        XCTAssertEqual(computer.stackPointer, 0xfffe)
         XCTAssertEqual(computer.framePointer, 0xfffe)
-    }
-    
-    func testEnterEnterLeaveLeave() {
-        let computer = try! execute(ir: [.enter, .enter, .leave, .leave])
-        XCTAssertEqual(computer.stackPointer, 0x0000)
-        XCTAssertEqual(computer.framePointer, 0x0000)
     }
     
     func testAdd() {

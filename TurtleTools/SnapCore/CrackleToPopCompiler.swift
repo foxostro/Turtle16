@@ -248,7 +248,7 @@ public class CrackleToPopCompilerSingleInstruction: NSObject {
         case .jmp(let label): try jmp(label)
         case .jalr(let label): try jalr(label)
         case .indirectJalr(let address): try indirectJalr(address)
-        case .enter: try enter()
+        case .enter(let n): try enter(n)
         case .leave: try leave()
         case .pushReturnAddress: try pushReturnAddress()
         case .leafRet: try leafRet()
@@ -565,8 +565,8 @@ public class CrackleToPopCompilerSingleInstruction: NSObject {
         emit(.explicitJalr)
     }
     
-    func enter() throws {
-        // push fp in two bytes ; fp <- sp
+    func enter(_ n: Int) throws {
+        // push fp in two bytes ; fp <- sp ; allocate `n' bytes on the stack
         try setUV(kFramePointerAddressLo)
         emit(.mov(.A, .M))
         try pushAToStack()
@@ -584,6 +584,10 @@ public class CrackleToPopCompilerSingleInstruction: NSObject {
         emit(.mov(.M, .X))
         try setUV(kFramePointerAddressLo)
         emit(.mov(.M, .Y))
+        
+        if n != 0 {
+            try subi16(kStackPointerAddressHi, kStackPointerAddressHi, n)
+        }
     }
     
     func leave() throws {

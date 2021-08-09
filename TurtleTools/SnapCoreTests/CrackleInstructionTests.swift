@@ -25,7 +25,7 @@ class CrackleInstructionTests: XCTestCase {
         XCTAssertEqual(CrackleInstruction.jmp(L0).description, "JMP .L0")
         XCTAssertEqual(CrackleInstruction.jalr(L0).description, "JALR .L0")
         XCTAssertEqual(CrackleInstruction.indirectJalr(0xabcd).description, "INDIRECT-JALR 0xabcd")
-        XCTAssertEqual(CrackleInstruction.enter.description, "ENTER")
+        XCTAssertEqual(CrackleInstruction.enter(10).description, "ENTER 10")
         XCTAssertEqual(CrackleInstruction.leave.description, "LEAVE")
         XCTAssertEqual(CrackleInstruction.pushReturnAddress.description, "PUSH-RETURN-ADDRESS")
         XCTAssertEqual(CrackleInstruction.ret.description, "RET")

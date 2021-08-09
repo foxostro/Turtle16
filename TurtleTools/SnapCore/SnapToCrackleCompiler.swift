@@ -202,6 +202,10 @@ public class SnapToCrackleCompiler: NSObject {
     func compile(func node: FunctionDeclaration) throws {
         currentSourceAnchor = node.sourceAnchor?.split().first
         
+        let sizeOfLocalVariables = node.symbols.symbolTable.reduce(0) { (offset, tuple) in
+            offset + memoryLayoutStrategy.sizeof(type: tuple.1.type)
+        }
+        
         let mangledName = (try TypeContextTypeChecker(symbols: symbols).check(expression: node.functionType).unwrapFunctionType()).mangledName!
         let labelHead = mangledName
         let labelTail = "__\(mangledName)_tail"
@@ -209,7 +213,7 @@ public class SnapToCrackleCompiler: NSObject {
             .jmp(labelTail),
             .label(labelHead),
             .pushReturnAddress,
-            .enter
+            .enter(sizeOfLocalVariables)
         ])
         
         let parent = symbols

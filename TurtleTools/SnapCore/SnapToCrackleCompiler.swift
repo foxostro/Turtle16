@@ -10,19 +10,18 @@ import TurtleCore
 
 // Compiles a Snap AST to the IR language.
 public class SnapToCrackleCompiler: NSObject {
-    private let kStackPointerAddress: Int = Int(SnapCompilerMetrics.kStackPointerAddressHi)
-    
     public private(set) var errors: [CompilerError] = []
     public var hasError: Bool { !errors.isEmpty }
     public private(set) var instructions: [CrackleInstruction] = []
     public var programDebugInfo: SnapDebugInfo? = nil
     public private(set) var globalSymbols = SymbolTable()
     
-    private var symbols = SymbolTable()
-    public let memoryLayoutStrategy: MemoryLayoutStrategy
-    public let globalEnvironment: GlobalEnvironment
-    private let labelMaker = LabelMaker()
-    private var currentSourceAnchor: SourceAnchor? = nil
+    let kStackPointerAddress: Int = Int(SnapCompilerMetrics.kStackPointerAddressHi)
+    let memoryLayoutStrategy: MemoryLayoutStrategy
+    let globalEnvironment: GlobalEnvironment
+    let labelMaker = LabelMaker()
+    var symbols = SymbolTable()
+    var currentSourceAnchor: SourceAnchor? = nil
     
     public init(_ memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL(), _ globalEnvironment: GlobalEnvironment = GlobalEnvironment()) {
         self.memoryLayoutStrategy = memoryLayoutStrategy
@@ -32,13 +31,13 @@ public class SnapToCrackleCompiler: NSObject {
     public func compile(ast: Block) {
         instructions = []
         do {
-            try tryCompile(ast: ast)
+            try compile(topLevel: ast)
         } catch let e {
             errors.append(e as! CompilerError)
         }
     }
     
-    private func emit(_ ins: [CrackleInstruction]) {
+    func emit(_ ins: [CrackleInstruction]) {
         let instructionsBegin = instructions.count
         instructions += ins
         if let info = programDebugInfo {
@@ -52,11 +51,7 @@ public class SnapToCrackleCompiler: NSObject {
         }
     }
     
-    private func tryCompile(ast: Block) throws {
-        try compile(topLevel: ast)
-    }
-    
-    private func compile(topLevel: Block) throws {
+    func compile(topLevel: Block) throws {
         for (_, module) in globalEnvironment.modules {
             symbols = module.symbols
             try compile(block: module)
@@ -70,17 +65,13 @@ public class SnapToCrackleCompiler: NSObject {
         }
     }
     
-    private func evaluateFunctionTypeExpression(_ expr: Expression) throws -> FunctionType {
-        return try TypeContextTypeChecker(symbols: symbols).check(expression: expr).unwrapFunctionType()
-    }
-    
-    private func compile(genericNode: AbstractSyntaxTreeNode) throws {
+    func compile(genericNode: AbstractSyntaxTreeNode) throws {
         currentSourceAnchor = genericNode.sourceAnchor
         switch genericNode {
         case let node as VarDeclaration:
             try compile(varDecl: node)
         case let node as Expression:
-            try compile(expressionStatement: node)
+            try compile(expression: node)
         case let node as If:
             try compile(if: node)
         case let node as While:
@@ -98,7 +89,7 @@ public class SnapToCrackleCompiler: NSObject {
         }
     }
     
-    private func compile(varDecl: VarDeclaration) throws {
+    func compile(varDecl: VarDeclaration) throws {
         // Compile the variable declaration using the subcompiler and then check
         // to make sure the type is as expected. This is a temporary scaffold
         // while I work to move the symbol table manipulation out of the
@@ -120,11 +111,6 @@ public class SnapToCrackleCompiler: NSObject {
         }
     }
     
-    // A statement can be a bare expression too.
-    private func compile(expressionStatement node: Expression) throws {
-        try compile(expression: node)
-    }
-    
     @discardableResult private func compile(expression: Expression) throws -> RvalueExpressionCompiler {
         currentSourceAnchor = expression.sourceAnchor
         let exprCompiler = RvalueExpressionCompiler(symbols: symbols,
@@ -135,7 +121,7 @@ public class SnapToCrackleCompiler: NSObject {
         return exprCompiler
     }
     
-    private func compile(if stmt: If) throws {
+    func compile(if stmt: If) throws {
         currentSourceAnchor = stmt.sourceAnchor
         let condition = Expression.As(sourceAnchor: stmt.condition.sourceAnchor,
                                       expr: stmt.condition,
@@ -166,9 +152,8 @@ public class SnapToCrackleCompiler: NSObject {
         }
     }
     
-    private func compile(while stmt: While) throws {
-        let sourceAnchors = stmt.sourceAnchor?.split()
-        currentSourceAnchor = sourceAnchors?.first
+    func compile(while stmt: While) throws {
+        currentSourceAnchor = stmt.sourceAnchor?.split().first
         let labelHead = labelMaker.next()
         let labelTail = labelMaker.next()
         emit([.label(labelHead)])
@@ -177,21 +162,20 @@ public class SnapToCrackleCompiler: NSObject {
             .jz(labelTail, tempConditionResult.address)
         ])
         try compile(genericNode: stmt.body)
-        currentSourceAnchor = sourceAnchors?.last
         emit([
             .jmp(labelHead),
             .label(labelTail)
         ])
     }
     
-    private func compile(seq: Seq) throws {
+    func compile(seq: Seq) throws {
         currentSourceAnchor = seq.sourceAnchor
         for child in seq.children {
             try compile(genericNode: child)
         }
     }
     
-    private func compile(block: Block) throws {
+    func compile(block: Block) throws {
         currentSourceAnchor = block.sourceAnchor
         
         let parent = symbols
@@ -204,7 +188,7 @@ public class SnapToCrackleCompiler: NSObject {
         symbols = parent
     }
     
-    private func compile(return node: Return) throws {
+    func compile(return node: Return) throws {
         currentSourceAnchor = node.sourceAnchor
         guard node.expression == nil else {
             throw CompilerError(message: "only supports nil return expressions: `\(node)'")
@@ -215,13 +199,10 @@ public class SnapToCrackleCompiler: NSObject {
         ])
     }
     
-    private func compile(func node: FunctionDeclaration) throws {
-        let sourceAnchors = node.sourceAnchor?.split()
-        currentSourceAnchor = sourceAnchors?.first
+    func compile(func node: FunctionDeclaration) throws {
+        currentSourceAnchor = node.sourceAnchor?.split().first
         
-        let functionType = try evaluateFunctionTypeExpression(node.functionType)
-        
-        let mangledName = functionType.mangledName!
+        let mangledName = (try TypeContextTypeChecker(symbols: symbols).check(expression: node.functionType).unwrapFunctionType()).mangledName!
         let labelHead = mangledName
         let labelTail = "__\(mangledName)_tail"
         emit([
@@ -234,7 +215,6 @@ public class SnapToCrackleCompiler: NSObject {
         let parent = symbols
         symbols = node.symbols
         try compile(block: node.body)
-        currentSourceAnchor = sourceAnchors?.last
         symbols = parent
         
         emit([

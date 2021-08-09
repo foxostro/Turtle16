@@ -478,10 +478,4 @@ public class SnapToCrackleCompiler: NSObject {
         }
         return !allTracesEndInReturnStatement
     }
-    
-    private var injectedModules: [String : String] = [:]
-    
-    public func injectModule(name: String, sourceCode: String) {
-        injectedModules[name] = sourceCode
-    }
 }

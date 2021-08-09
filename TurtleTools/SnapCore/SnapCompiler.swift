@@ -79,9 +79,6 @@ public class SnapCompiler: NSObject {
         
         // Compile the AST to IR code
         let snapToCrackleCompiler = SnapToCrackleCompiler(memoryLayoutStrategy, globalEnvironment)
-        for (name, sourceCode) in injectedModules {
-            snapToCrackleCompiler.injectModule(name: name, sourceCode: sourceCode)
-        }
         snapToCrackleCompiler.programDebugInfo = programDebugInfo
         snapToCrackleCompiler.compile(ast: ast)
         if snapToCrackleCompiler.hasError {

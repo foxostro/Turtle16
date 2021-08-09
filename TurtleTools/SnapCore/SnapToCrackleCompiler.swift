@@ -86,7 +86,7 @@ public class SnapToCrackleCompiler: NSObject {
         case let node as While:
             try compile(while: node)
         case let node as ForIn:
-            try compile(forIn: node)
+            throw CompilerError(message: "unimplemented: `\(node)'")
         case let node as Seq:
             try compile(seq: node)
         case let node as Block:
@@ -110,13 +110,11 @@ public class SnapToCrackleCompiler: NSObject {
         }
     }
     
-    private func compile(varDecl varDecl0: VarDeclaration) throws {
+    private func compile(varDecl: VarDeclaration) throws {
         // Compile the variable declaration using the subcompiler and then check
         // to make sure the type is as expected. This is a temporary scaffold
         // while I work to move the symbol table manipulation out of the
         // SnapToCrackleCompiler class.
-        let subcompiler = SnapSubcompilerVarDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols)
-        let varDecl = try subcompiler.compile(varDecl0)
         
         // If the symbol is on the stack then allocate storage for it now.
         let symbol = try symbols.resolve(identifier: varDecl.identifier.identifier)
@@ -382,13 +380,8 @@ public class SnapToCrackleCompiler: NSObject {
         let parent = symbols
         symbols = node.symbols
         
-        bindFunctionArguments(functionType: functionType, argumentNames: node.argumentNames)
-        try expectFunctionReturnExpressionIsCorrectType(func: node)
         try compile(block: node.body)
          
-        if try shouldSynthesizeTerminalReturnStatement(func: node) {
-            try compile(return: Return(sourceAnchor: sourceAnchors?.last, expression: nil))
-        }
         currentSourceAnchor = sourceAnchors?.last
         
         symbols = parent
@@ -401,81 +394,5 @@ public class SnapToCrackleCompiler: NSObject {
     private func compile(match: Match) throws {
         let ast = try MatchCompiler(memoryLayoutStrategy).compile(match: match, symbols: symbols)
         try compile(genericNode: ast)
-    }
-    
-    private func bindFunctionArguments(functionType: FunctionType, argumentNames: [String]) {
-        let kReturnAddressSize = 2
-        let kFramePointerSize = 2
-        var offset = kReturnAddressSize + kFramePointerSize
-        
-        for i in (0..<functionType.arguments.count).reversed() {
-            let argumentType = functionType.arguments[i]
-            let argumentName = argumentNames[i]
-            let symbol = Symbol(type: argumentType.correspondingConstType,
-                                offset: -offset,
-                                storage: .automaticStorage)
-            symbols.bind(identifier: argumentName, symbol: symbol)
-            let sizeOfArugmentType = memoryLayoutStrategy.sizeof(type: argumentType)
-            offset += sizeOfArugmentType
-        }
-        
-        // Bind a special symbol to contain the function return value.
-        // This must be located just before the function arguments.
-        let kReturnValueIdentifier = "__returnValue"
-        symbols.bind(identifier: kReturnValueIdentifier,
-                     symbol: Symbol(type: functionType.returnType,
-                                    offset: -offset,
-                                    storage: .automaticStorage))
-        let sizeOfFunctionReturnType = memoryLayoutStrategy.sizeof(type: functionType.returnType)
-        offset += sizeOfFunctionReturnType
-    }
-    
-    private func expectFunctionReturnExpressionIsCorrectType(func node: FunctionDeclaration) throws {
-        let functionType = try evaluateFunctionTypeExpression(node.functionType)
-        let tracer = StatementTracer(symbols: symbols)
-        let traces = try tracer.trace(ast: node.body)
-        for trace in traces {
-            if let last = trace.last {
-                switch last {
-                case .Return:
-                    break
-                default:
-                    if functionType.returnType != .void {
-                        throw makeErrorForMissingReturn(node)
-                    }
-                }
-            } else if functionType.returnType != .void {
-                throw makeErrorForMissingReturn(node)
-            }
-        }
-    }
-    
-    private func makeErrorForMissingReturn(_ node: FunctionDeclaration) -> CompilerError {
-        let functionType = try! evaluateFunctionTypeExpression(node.functionType)
-        return CompilerError(sourceAnchor: node.identifier.sourceAnchor,
-                             message: "missing return in a function expected to return `\(functionType.returnType)'")
-    }
-    
-    private func shouldSynthesizeTerminalReturnStatement(func node: FunctionDeclaration) throws -> Bool {
-        let functionType = try evaluateFunctionTypeExpression(node.functionType)
-        guard functionType.returnType == .void else {
-            return false
-        }
-        let tracer = StatementTracer(symbols: symbols)
-        let traces = try! tracer.trace(ast: node.body)
-        var allTracesEndInReturnStatement = true
-        for trace in traces {
-            if let last = trace.last {
-                switch last {
-                case .Return:
-                    break
-                default:
-                    allTracesEndInReturnStatement = false
-                }
-            } else {
-                allTracesEndInReturnStatement = false
-            }
-        }
-        return !allTracesEndInReturnStatement
     }
 }

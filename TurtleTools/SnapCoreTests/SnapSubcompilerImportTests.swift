@@ -42,7 +42,7 @@ class SnapSubcompilerImportTests: XCTestCase {
         let compiler = makeCompiler(symbols)
         compiler.injectModule(name: "Foo", sourceCode: "")
         let input = Import(moduleName: "Foo")
-        _ = try compiler.compile(input)
+        XCTAssertNoThrow(_ = try compiler.compile(input))
         XCTAssertTrue(compiler.globalEnvironment.hasModule("Foo"))
         XCTAssertTrue(symbols.modulesAlreadyImported.contains("Foo"))
     }

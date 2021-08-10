@@ -1922,4 +1922,15 @@ let b: u8 | bool = a
 """)
         XCTAssertFalse(compiler.hasError)
     }
+    
+    func testWeCannotUseVariableBeforeItIsDeclared() {
+        let compiler = SnapCompiler()
+        compiler.compile("""
+func main() {
+    a = 1
+    var a: u16 = 0
+}
+""")
+        XCTAssertTrue(compiler.hasError)
+    }
 }

@@ -20,7 +20,7 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
                                    storage: .staticStorage,
                                    isMutable: false)
         let actual = try? compiler.compile(input)
-        XCTAssertEqual(actual, input)
+        XCTAssertNil(actual)
         let foo = try? symbols.resolve(identifier: "foo")
         let expectedSymbol = Symbol(type: .constU8,
                                     offset: SnapCompilerMetrics.kStaticStorageStartAddress,
@@ -39,7 +39,7 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
                                    storage: .automaticStorage,
                                    isMutable: false)
         let actual = try? compiler.compile(input)
-        XCTAssertEqual(actual, input)
+        XCTAssertNil(actual)
         let foo = try? symbols.resolve(identifier: "foo")
         let expectedSymbol = Symbol(type: .constU8,
                                     offset: 1,
@@ -87,7 +87,9 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
                                    storage: .staticStorage,
                                    isMutable: false)
         let actual = try? compiler.compile(input)
-        XCTAssertEqual(actual, input)
+        let expected = Expression.InitialAssignment(lexpr: Expression.Identifier("foo"),
+                                                    rexpr: Expression.LiteralInt(0))
+        XCTAssertEqual(actual, expected)
         let foo = try? symbols.resolve(identifier: "foo")
         let expectedSymbol = Symbol(type: .constU8,
                                     offset: SnapCompilerMetrics.kStaticStorageStartAddress,
@@ -105,7 +107,9 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
                                    storage: .staticStorage,
                                    isMutable: true)
         let actual = try? compiler.compile(input)
-        XCTAssertEqual(actual, input)
+        let expected = Expression.InitialAssignment(lexpr: Expression.Identifier("foo"),
+                                                    rexpr: Expression.LiteralInt(0))
+        XCTAssertEqual(actual, expected)
         let foo = try? symbols.resolve(identifier: "foo")
         let expectedSymbol = Symbol(type: .u8,
                                     offset: SnapCompilerMetrics.kStaticStorageStartAddress,
@@ -123,7 +127,9 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
                                    storage: .staticStorage,
                                    isMutable: false)
         let actual = try? compiler.compile(input)
-        XCTAssertEqual(actual, input)
+        let expected = Expression.InitialAssignment(lexpr: Expression.Identifier("foo"),
+                                                    rexpr: Expression.LiteralInt(0))
+        XCTAssertEqual(actual, expected)
         let foo = try? symbols.resolve(identifier: "foo")
         let expectedSymbol = Symbol(type: .constU8,
                                     offset: SnapCompilerMetrics.kStaticStorageStartAddress,
@@ -141,7 +147,9 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
                                    storage: .staticStorage,
                                    isMutable: false)
         let actual = try? compiler.compile(input)
-        XCTAssertEqual(actual, input)
+        let expected = Expression.InitialAssignment(lexpr: Expression.Identifier("foo"),
+                                                    rexpr: Expression.LiteralInt(1000))
+        XCTAssertEqual(actual, expected)
         let foo = try? symbols.resolve(identifier: "foo")
         let expectedSymbol = Symbol(type: .constU16,
                                     offset: SnapCompilerMetrics.kStaticStorageStartAddress,
@@ -159,7 +167,9 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
                                    storage: .staticStorage,
                                    isMutable: false)
         let actual = try? compiler.compile(input)
-        XCTAssertEqual(actual, input)
+        let expected = Expression.InitialAssignment(lexpr: Expression.Identifier("foo"),
+                                                    rexpr: Expression.LiteralBool(true))
+        XCTAssertEqual(actual, expected)
         let foo = try? symbols.resolve(identifier: "foo")
         let expectedSymbol = Symbol(type: .constBool,
                                     offset: SnapCompilerMetrics.kStaticStorageStartAddress,
@@ -179,7 +189,9 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
                                    storage: .staticStorage,
                                    isMutable: false)
         let actual = try? compiler.compile(input)
-        XCTAssertEqual(actual, input)
+        let expected = Expression.InitialAssignment(lexpr: Expression.Identifier("foo"),
+                                                    rexpr: Expression.StructInitializer(identifier: Expression.Identifier("bar"), arguments: []))
+        XCTAssertEqual(actual, expected)
         let foo = try? symbols.resolve(identifier: "foo")
         let expectedSymbol = Symbol(type: .constStructType(typ),
                                     offset: SnapCompilerMetrics.kStaticStorageStartAddress,
@@ -197,7 +209,7 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
                                    storage: .staticStorage,
                                    isMutable: false)
         let actual = try? compiler.compile(input)
-        XCTAssertEqual(actual, input)
+        XCTAssertNil(actual)
         let foo = try? symbols.resolve(identifier: "foo")
         let expectedSymbol = Symbol(type: .constU8,
                                     offset: SnapCompilerMetrics.kStaticStorageStartAddress,
@@ -215,7 +227,7 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
                                    storage: .staticStorage,
                                    isMutable: true)
         let actual = try? compiler.compile(input)
-        XCTAssertEqual(actual, input)
+        XCTAssertNil(actual)
         let foo = try? symbols.resolve(identifier: "foo")
         let expectedSymbol = Symbol(type: .u8,
                                     offset: SnapCompilerMetrics.kStaticStorageStartAddress,
@@ -262,7 +274,9 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
                                    storage: .staticStorage,
                                    isMutable: false)
         let actual = try? compiler.compile(input)
-        XCTAssertEqual(actual, input)
+        let expected = Expression.InitialAssignment(lexpr: Expression.Identifier("foo"),
+                                                    rexpr: arrayExpr)
+        XCTAssertEqual(actual, expected)
         let foo = try? symbols.resolve(identifier: "foo")
         let expectedSymbol = Symbol(type: .array(count: 1, elementType: .constU8),
                                     offset: SnapCompilerMetrics.kStaticStorageStartAddress,

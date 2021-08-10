@@ -594,6 +594,7 @@ public class SymbolTable: NSObject {
     public var typeTable: [String:TypeRecord]
     public var parent: SymbolTable?
     public var storagePointer: Int
+    public var highwaterMark: Int
     public var stackFrameIndex: Int
     
     public enum EnclosingFunctionType: Hashable, Equatable {
@@ -630,6 +631,7 @@ public class SymbolTable: NSObject {
         parent = p
         typeTable = typeDict.mapValues({TypeRecord(symbolType: $0, visibility: .privateVisibility)})
         storagePointer = p?.storagePointer ?? 0
+        highwaterMark = p?.highwaterMark ?? 0
         stackFrameIndex = p?.stackFrameIndex ?? 0
         
         super.init()
@@ -822,6 +824,9 @@ public class SymbolTable: NSObject {
         guard storagePointer == rhs.storagePointer else {
             return false
         }
+        guard highwaterMark == rhs.highwaterMark else {
+            return false
+        }
         guard enclosingFunctionType == rhs.enclosingFunctionType else {
             return false
         }
@@ -841,6 +846,7 @@ public class SymbolTable: NSObject {
         hasher.combine(typeTable)
         hasher.combine(parent)
         hasher.combine(storagePointer)
+        hasher.combine(highwaterMark)
         hasher.combine(enclosingFunctionType)
         hasher.combine(enclosingFunctionName)
         hasher.combine(stackFrameIndex)

@@ -17,13 +17,15 @@ public class SnapSubcompilerVarDeclaration: NSObject {
         self.memoryLayoutStrategy = memoryLayoutStrategy
     }
     
-    public func compile(_ node: VarDeclaration) throws -> VarDeclaration {
+    public func compile(_ node: VarDeclaration) throws -> Expression.InitialAssignment? {
         guard symbols!.existsAndCannotBeShadowed(identifier: node.identifier.identifier) == false else {
             throw CompilerError(sourceAnchor: node.identifier.sourceAnchor,
                                 format: "%@ redefines existing symbol: `%@'",
                                 node.isMutable ? "variable" : "constant",
                                 node.identifier.identifier)
         }
+        
+        let result: Expression.InitialAssignment?
 
         // If the variable declaration provided an explicit type expression then
         // the type checker can determine what type it evaluates to.
@@ -69,10 +71,14 @@ public class SnapSubcompilerVarDeclaration: NSObject {
             }
             let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: node.storage, visibility: node.visibility)
             symbols!.bind(identifier: node.identifier.identifier, symbol: symbol)
+            result = Expression.InitialAssignment(sourceAnchor: node.sourceAnchor,
+                                                  lexpr: node.identifier,
+                                                  rexpr: varDeclExpr)
         } else if let explicitType = explicitType {
             let symbolType = node.isMutable ? explicitType : explicitType.correspondingConstType
             let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: node.storage, visibility: node.visibility)
             symbols!.bind(identifier: node.identifier.identifier, symbol: symbol)
+            result = nil
         } else {
             throw CompilerError(sourceAnchor: node.identifier.sourceAnchor,
                                 format: "unable to deduce type of %@ `%@'",
@@ -80,7 +86,7 @@ public class SnapSubcompilerVarDeclaration: NSObject {
                                 node.identifier.identifier)
         }
 
-        return node
+        return result
     }
 
     func makeSymbolWithExplicitType(explicitType: SymbolType, storage: SymbolStorage, visibility: SymbolVisibility) throws -> Symbol {
@@ -99,6 +105,7 @@ public class SnapSubcompilerVarDeclaration: NSObject {
             memoryLayoutStrategy.staticStorageOffset += size
         case .automaticStorage:
             symbols!.storagePointer += size
+            symbols!.highwaterMark = max(symbols!.highwaterMark, symbols!.storagePointer)
             offset = symbols!.storagePointer
         }
         return offset

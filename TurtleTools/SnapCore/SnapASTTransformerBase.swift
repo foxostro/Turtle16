@@ -119,6 +119,9 @@ public class SnapASTTransformerBase: NSObject {
                            symbols: node.symbols,
                            children: try node.children.compactMap { try compile($0) })
         symbols = parent
+        if let symbols = symbols, node.symbols.stackFrameIndex == symbols.stackFrameIndex {
+            symbols.highwaterMark = max(symbols.highwaterMark, node.symbols.highwaterMark)
+        }
         return result
     }
     

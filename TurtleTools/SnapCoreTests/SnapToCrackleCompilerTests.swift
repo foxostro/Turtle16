@@ -728,22 +728,6 @@ class SnapToCrackleCompilerTests: XCTestCase {
         ])
     }
     
-    func testCompilationFailsBecauseLocalVarDoesntSurviveLocalScope() {
-        let ast = TopLevel(children: [
-            Block(children: [
-                VarDeclaration(identifier: Expression.Identifier("foo"),
-                               explicitType: nil,
-                               expression: Expression.LiteralInt(0),
-                               storage: .staticStorage,
-                               isMutable: true),
-            ]),
-            ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralInt(0))
-        ])
-        let compiler = compile(ast)
-        XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "use of unresolved identifier: `foo'")
-    }
-    
     func testCompileFunctionDeclaration_Simplest() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
@@ -1384,7 +1368,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let ast = TopLevel(children: [
             Assert(condition: Expression.LiteralInt(0), message: "0")
         ])
-        let compiler = compile(ast)
+        let compiler = compile(ast, isUsingStandardLibrary: true)
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "binary operator `==' cannot be applied to operands of types `integer constant 0' and `boolean constant false'")
     }

@@ -16,7 +16,6 @@ public class SnapToCrackleCompiler: NSObject {
     public var programDebugInfo: SnapDebugInfo? = nil
     public private(set) var globalSymbols = SymbolTable()
     
-    let kStackPointerAddress: Int = Int(SnapCompilerMetrics.kStackPointerAddressHi)
     let memoryLayoutStrategy: MemoryLayoutStrategy
     let globalEnvironment: GlobalEnvironment
     let labelMaker = LabelMaker()
@@ -68,8 +67,6 @@ public class SnapToCrackleCompiler: NSObject {
     func compile(genericNode: AbstractSyntaxTreeNode) throws {
         currentSourceAnchor = genericNode.sourceAnchor
         switch genericNode {
-        case let node as VarDeclaration:
-            try compile(varDecl: node)
         case let node as Expression:
             try compile(expression: node)
         case let node as If:
@@ -86,28 +83,6 @@ public class SnapToCrackleCompiler: NSObject {
             try compile(func: node)
         default:
             throw CompilerError(message: "unimplemented: `\(genericNode)'")
-        }
-    }
-    
-    func compile(varDecl: VarDeclaration) throws {
-        // Compile the variable declaration using the subcompiler and then check
-        // to make sure the type is as expected. This is a temporary scaffold
-        // while I work to move the symbol table manipulation out of the
-        // SnapToCrackleCompiler class.
-        
-        // If the symbol is on the stack then allocate storage for it now.
-        let symbol = try symbols.resolve(identifier: varDecl.identifier.identifier)
-        if symbol.storage == .automaticStorage {
-            let size = memoryLayoutStrategy.sizeof(type: symbol.type)
-            emit([
-                .subi16(kStackPointerAddress, kStackPointerAddress, size)
-            ])
-        }
-        
-        if let varDeclExpr = varDecl.expression {
-            try compile(expression: Expression.InitialAssignment(sourceAnchor: varDecl.sourceAnchor,
-                                                                 lexpr: varDecl.identifier,
-                                                                 rexpr: varDeclExpr))
         }
     }
     
@@ -202,9 +177,7 @@ public class SnapToCrackleCompiler: NSObject {
     func compile(func node: FunctionDeclaration) throws {
         currentSourceAnchor = node.sourceAnchor?.split().first
         
-        let sizeOfLocalVariables = node.symbols.symbolTable.reduce(0) { (offset, tuple) in
-            offset + memoryLayoutStrategy.sizeof(type: tuple.1.type)
-        }
+        let sizeOfLocalVariables = node.symbols.highwaterMark
         
         let mangledName = (try TypeContextTypeChecker(symbols: symbols).check(expression: node.functionType).unwrapFunctionType()).mangledName!
         let labelHead = mangledName

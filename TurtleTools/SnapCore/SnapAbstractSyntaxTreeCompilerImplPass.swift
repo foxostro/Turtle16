@@ -23,8 +23,14 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: SnapASTTransformerBase {
         super.init(symbols)
     }
     
+    public override func compile(expressionStatement node: Expression) throws -> AbstractSyntaxTreeNode? {
+        try RvalueExpressionTypeChecker(symbols: symbols!).check(expression: node)
+        return node
+    }
+    
     public override func compile(assert node0: Assert) throws -> AbstractSyntaxTreeNode? {
         let node1 = try SnapSubcompilerAssert().compile(node0)
+        reconnect(node1)
         let node2 = try super.compile(node1)
         return node2
     }
@@ -32,13 +38,13 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: SnapASTTransformerBase {
     public override func compile(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
         let subcompiler = SnapSubcompilerVarDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols!)
         let node1 = try subcompiler.compile(node0)
-        let node2 = try super.compile(varDecl: node1)
-        return node2
+        return node1
     }
     
     public override func compile(forIn node0: ForIn) throws -> AbstractSyntaxTreeNode? {
         let subcompiler = SnapSubcompilerForIn(symbols!)
         let node1 = try subcompiler.compile(node0)
+        reconnect(node1)
         let node2 = try super.compile(block: node1)
         return node2
     }
@@ -46,6 +52,7 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: SnapASTTransformerBase {
     public override func compile(match node0: Match) throws -> AbstractSyntaxTreeNode? {
         let subcompiler = SnapSubcompilerMatch(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols!)
         let node1 = try subcompiler.compile(node0)
+        reconnect(node1)
         let node2 = try super.compile(node1)
         return node2
     }
@@ -54,5 +61,27 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: SnapASTTransformerBase {
         let subcompiler = SnapSubcompilerReturn(symbols!)
         let node1 = try subcompiler.compile(node0)
         return node1
+    }
+    
+    public override func compile(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
+        let result = try super.compile(func: node)
+        reconnect(result)
+        
+        if let symbols = symbols {
+            let functionType = node.symbols.enclosingFunctionType!
+            var size = 0
+            
+            for i in (0..<functionType.arguments.count).reversed() {
+                let sizeOfArgumentType = memoryLayoutStrategy.sizeof(type: functionType.arguments[i])
+                size += sizeOfArgumentType
+            }
+            
+            let sizeOfFunctionReturnType = memoryLayoutStrategy.sizeof(type: functionType.returnType)
+            size += sizeOfFunctionReturnType
+            
+            symbols.highwaterMark = max(symbols.highwaterMark, symbols.storagePointer + size)
+        }
+        
+        return result
     }
 }

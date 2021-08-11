@@ -9,7 +9,7 @@
 import TurtleCore
 
 public class SnapSubcompilerVarDeclaration: NSObject {
-    public private(set) var symbols: SymbolTable? = nil
+    public let symbols: SymbolTable
     public let memoryLayoutStrategy: MemoryLayoutStrategy
     
     public init(memoryLayoutStrategy: MemoryLayoutStrategy, symbols: SymbolTable) {
@@ -18,7 +18,7 @@ public class SnapSubcompilerVarDeclaration: NSObject {
     }
     
     public func compile(_ node: VarDeclaration) throws -> Expression.InitialAssignment? {
-        guard symbols!.existsAndCannotBeShadowed(identifier: node.identifier.identifier) == false else {
+        guard symbols.existsAndCannotBeShadowed(identifier: node.identifier.identifier) == false else {
             throw CompilerError(sourceAnchor: node.identifier.sourceAnchor,
                                 format: "%@ redefines existing symbol: `%@'",
                                 node.isMutable ? "variable" : "constant",
@@ -31,7 +31,7 @@ public class SnapSubcompilerVarDeclaration: NSObject {
         // the type checker can determine what type it evaluates to.
         let explicitType: SymbolType?
         if let explicitTypeExpr = node.explicitType {
-            explicitType = try TypeContextTypeChecker(symbols: symbols!).check(expression: explicitTypeExpr)
+            explicitType = try TypeContextTypeChecker(symbols: symbols).check(expression: explicitTypeExpr)
         } else {
             explicitType = nil
         }
@@ -39,7 +39,7 @@ public class SnapSubcompilerVarDeclaration: NSObject {
         if let varDeclExpr = node.expression {
             // The type of the initial value expression may be used to infer the
             // symbol type in cases where the explicit type is not specified.
-            let expressionResultType = try RvalueExpressionTypeChecker(symbols: symbols!).check(expression: varDeclExpr)
+            let expressionResultType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: varDeclExpr)
 
             // An explicit array type does not specify the number of array elements.
             // If the explicit type is an array type then we must examine the
@@ -70,14 +70,14 @@ public class SnapSubcompilerVarDeclaration: NSObject {
                 symbolType = symbolType.correspondingConstType
             }
             let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: node.storage, visibility: node.visibility)
-            symbols!.bind(identifier: node.identifier.identifier, symbol: symbol)
+            symbols.bind(identifier: node.identifier.identifier, symbol: symbol)
             result = Expression.InitialAssignment(sourceAnchor: node.sourceAnchor,
                                                   lexpr: node.identifier,
                                                   rexpr: varDeclExpr)
         } else if let explicitType = explicitType {
             let symbolType = node.isMutable ? explicitType : explicitType.correspondingConstType
             let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: node.storage, visibility: node.visibility)
-            symbols!.bind(identifier: node.identifier.identifier, symbol: symbol)
+            symbols.bind(identifier: node.identifier.identifier, symbol: symbol)
             result = nil
         } else {
             throw CompilerError(sourceAnchor: node.identifier.sourceAnchor,
@@ -90,7 +90,7 @@ public class SnapSubcompilerVarDeclaration: NSObject {
     }
 
     func makeSymbolWithExplicitType(explicitType: SymbolType, storage: SymbolStorage, visibility: SymbolVisibility) throws -> Symbol {
-        let storage: SymbolStorage = (symbols!.stackFrameIndex==0) ? .staticStorage : storage
+        let storage: SymbolStorage = (symbols.stackFrameIndex==0) ? .staticStorage : storage
         let offset = bumpStoragePointer(explicitType, storage)
         let symbol = Symbol(type: explicitType, offset: offset, storage: storage, visibility: visibility)
         return symbol
@@ -104,9 +104,9 @@ public class SnapSubcompilerVarDeclaration: NSObject {
             offset = memoryLayoutStrategy.staticStorageOffset
             memoryLayoutStrategy.staticStorageOffset += size
         case .automaticStorage:
-            symbols!.storagePointer += size
-            symbols!.highwaterMark = max(symbols!.highwaterMark, symbols!.storagePointer)
-            offset = symbols!.storagePointer
+            symbols.storagePointer += size
+            symbols.highwaterMark = max(symbols.highwaterMark, symbols.storagePointer)
+            offset = symbols.storagePointer
         }
         return offset
     }

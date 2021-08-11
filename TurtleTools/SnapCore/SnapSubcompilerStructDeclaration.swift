@@ -9,7 +9,7 @@
 import TurtleCore
 
 public class SnapSubcompilerStructDeclaration: NSObject {
-    public private(set) var symbols: SymbolTable? = nil
+    public let symbols: SymbolTable
     public let memoryLayoutStrategy: MemoryLayoutStrategy
     
     public init(memoryLayoutStrategy: MemoryLayoutStrategy, symbols: SymbolTable) {
@@ -22,9 +22,9 @@ public class SnapSubcompilerStructDeclaration: NSObject {
         
         let members = SymbolTable(parent: symbols)
         let fullyQualifiedStructType = StructType(name: name, symbols: members)
-        symbols!.bind(identifier: name,
-                      symbolType: node.isConst ? .constStructType(fullyQualifiedStructType) : .structType(fullyQualifiedStructType),
-                      visibility: node.visibility)
+        symbols.bind(identifier: name,
+                     symbolType: node.isConst ? .constStructType(fullyQualifiedStructType) : .structType(fullyQualifiedStructType),
+                     visibility: node.visibility)
         
         members.enclosingFunctionNameMode = .set(name)
         for memberDeclaration in node.members {

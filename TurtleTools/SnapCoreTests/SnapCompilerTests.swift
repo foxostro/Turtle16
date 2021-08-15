@@ -1443,15 +1443,24 @@ test "foo" {
     }
     
     func testImportModule() {
+        var serialOutput = ""
         let executor = SnapExecutor()
+        executor.isUsingStandardLibrary = true
+        executor.configure = { computer in
+            computer.didUpdateSerialOutput = {
+                serialOutput = $0
+            }
+        }
         executor.injectModule(name: "MyModule", sourceCode: """
 public func foo() {
+    puts("Hello, World!")
 }
 """)
         _ = try! executor.execute(program: """
 import MyModule
 foo()
 """)
+        XCTAssertEqual(serialOutput, "Hello, World!")
     }
     
     func testBasicFunctionPointerDemonstration() {

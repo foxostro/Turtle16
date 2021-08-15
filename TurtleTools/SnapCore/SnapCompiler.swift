@@ -66,6 +66,7 @@ public class SnapCompiler: NSObject {
         // AST contraction step
         let contractionStep = SnapAbstractSyntaxTreeCompiler(memoryLayoutStrategy: memoryLayoutStrategy,
                                                              shouldRunSpecificTest: shouldRunSpecificTest,
+                                                             injectModules: Array(injectedModules),
                                                              isUsingStandardLibrary: isUsingStandardLibrary,
                                                              sandboxAccessManager: sandboxAccessManager,
                                                              globalEnvironment: globalEnvironment)

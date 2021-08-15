@@ -69,8 +69,12 @@ public class SnapToCrackleCompiler: NSObject {
         switch genericNode {
         case let node as Expression:
             try compile(expression: node)
-        case let node as If:
-            try compile(if: node)
+        case let node as LabelDeclaration:
+            try compile(label: node)
+        case let node as Goto:
+            try compile(goto: node)
+        case let node as GotoIfFalse:
+            try compile(gotoIfFalse: node)
         case let node as While:
             try compile(while: node)
         case let node as Seq:
@@ -96,35 +100,26 @@ public class SnapToCrackleCompiler: NSObject {
         return exprCompiler
     }
     
-    func compile(if stmt: If) throws {
-        currentSourceAnchor = stmt.sourceAnchor
-        let condition = Expression.As(sourceAnchor: stmt.condition.sourceAnchor,
-                                      expr: stmt.condition,
-                                      targetType: Expression.PrimitiveType(.bool))
-        let tempConditionResult = try compile(expression: condition).temporaryStack.pop()
-        if let elseBranch = stmt.elseBranch {
-            let labelElse = labelMaker.next()
-            let labelTail = labelMaker.next()
-            emit([
-                .jz(labelElse, tempConditionResult.address)
-            ])
-            try compile(genericNode: stmt.thenBranch)
-            emit([
-                .jmp(labelTail),
-                .label(labelElse),
-            ])
-            try compile(genericNode: elseBranch)
-            emit([.label(labelTail)])
-        } else {
-            let labelTail = labelMaker.next()
-            emit([
-                .jz(labelTail, tempConditionResult.address)
-            ])
-            try compile(genericNode: stmt.thenBranch)
-            emit([
-                .label(labelTail)
-            ])
-        }
+    func compile(label node: LabelDeclaration) throws {
+        currentSourceAnchor = node.sourceAnchor
+        emit([
+            .label(node.identifier)
+        ])
+    }
+    
+    func compile(goto node: Goto) throws {
+        currentSourceAnchor = node.sourceAnchor
+        emit([
+            .jmp(node.target)
+        ])
+    }
+    
+    func compile(gotoIfFalse node: GotoIfFalse) throws {
+        currentSourceAnchor = node.sourceAnchor
+        let tempConditionResult = try compile(expression: node.condition).temporaryStack.pop()
+        emit([
+            .jz(node.target, tempConditionResult.address)
+        ])
     }
     
     func compile(while stmt: While) throws {

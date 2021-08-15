@@ -624,91 +624,6 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, expected)
     }
     
-    func testCompileIfStatementWithoutElseBranch() {
-        let ast = TopLevel(children: [
-            VarDeclaration(identifier: Expression.Identifier("foo"),
-                           explicitType: nil,
-                           expression: Expression.LiteralInt(0),
-                           storage: .staticStorage,
-                           isMutable: true),
-            If(condition: Expression.LiteralBool(true),
-               then: ExprUtils.makeAssignment(name: "foo", right: Expression.LiteralInt(1)),
-               else: nil)
-        ])
-        
-        let addressFoo = SnapCompilerMetrics.kStaticStorageStartAddress
-        let compiler = compile(ast)
-        XCTAssertFalse(compiler.hasError)
-        let L0 = ".L0"
-        XCTAssertEqual(compiler.instructions, [
-            // foo = 0
-            .storeImmediate16(t0, addressFoo),
-            .storeImmediate(t1, 0),
-            .copyWordsIndirectDestination(t0, t1, 1),
-            
-            // the condition `true'
-            .storeImmediate(t0, 1),
-            
-            // if the condition is equal to zero then jump to L0 (else)
-            .jz(L0, t0),
-            
-            // foo = 1
-            .storeImmediate16(t0, addressFoo),
-            .storeImmediate(t1, 1),
-            .copyWordsIndirectDestination(t0, t1, 1),
-            
-            .label(L0)
-        ])
-    }
-    
-    func testCompileIfStatementIncludingElseBranch() {
-        let ast = TopLevel(children: [
-            VarDeclaration(identifier: Expression.Identifier("foo"),
-                           explicitType: nil,
-                           expression: Expression.LiteralInt(0),
-                           storage: .staticStorage,
-                           isMutable: true),
-            If(sourceAnchor: nil,
-               condition: Expression.LiteralBool(true),
-               then: ExprUtils.makeAssignment(name: "foo",
-                                              right: Expression.LiteralInt(1)),
-               else: ExprUtils.makeAssignment(name: "foo",
-                                              right: Expression.LiteralInt(2)))
-        ])
-        let addressFoo = SnapCompilerMetrics.kStaticStorageStartAddress
-        let compiler = compile(ast)
-        XCTAssertFalse(compiler.hasError)
-        let L0 = ".L0"
-        let L1 = ".L1"
-        XCTAssertEqual(compiler.instructions, [
-            // foo = 0
-            .storeImmediate16(t0, addressFoo),
-            .storeImmediate(t1, 0),
-            .copyWordsIndirectDestination(t0, t1, 1),
-            
-            // the condition `true'
-            .storeImmediate(t0, 1),
-            
-            // if the condition is equal to zero then jump to L0 (else)
-            .jz(L0, t0),
-            
-            // foo = 1
-            .storeImmediate16(t0, addressFoo),
-            .storeImmediate(t1, 1),
-            .copyWordsIndirectDestination(t0, t1, 1),
-            .jmp(L1),
-            
-            .label(L0),
-            
-            // foo = 2
-            .storeImmediate16(t0, addressFoo),
-            .storeImmediate(t1, 2),
-            .copyWordsIndirectDestination(t0, t1, 1),
-            
-            .label(L1)
-        ])
-    }
-    
     func testCompileWhileStatement() {
         let ast = TopLevel(children: [
             While(condition: Expression.LiteralBool(true),
@@ -1351,26 +1266,6 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let executor = CrackleExecutor()
         let computer = try! executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
-    }
-    
-    func testFailCompileIfStatementWithNonbooleanCondition() {
-        let ast = TopLevel(children: [
-            If(condition: Expression.LiteralInt(0),
-               then: Block(children: []),
-               else: nil)
-        ])
-        let compiler = compile(ast)
-        XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "cannot convert value of type `integer constant 0' to type `bool'")
-    }
-    
-    func testFailToCompileAssertStatementWithNonbooleanCondition() {
-        let ast = TopLevel(children: [
-            Assert(condition: Expression.LiteralInt(0), message: "0")
-        ])
-        let compiler = compile(ast, isUsingStandardLibrary: true)
-        XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.first?.message, "binary operator `==' cannot be applied to operands of types `integer constant 0' and `boolean constant false'")
     }
     
     func testPassingAssertDoesNothing() {

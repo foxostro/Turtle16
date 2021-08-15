@@ -17,6 +17,7 @@ import TurtleCore
 // various subcompilers classes.
 public class SnapAbstractSyntaxTreeCompilerImplPass: SnapASTTransformerBase {
     public let memoryLayoutStrategy: MemoryLayoutStrategy
+    public let labelMaker = LabelMaker(prefix: ".astL")
     
     public init(memoryLayoutStrategy: MemoryLayoutStrategy, symbols: SymbolTable? = nil) {
         self.memoryLayoutStrategy = memoryLayoutStrategy
@@ -83,5 +84,12 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: SnapASTTransformerBase {
         }
         
         return result
+    }
+    
+    public override func compile(if node0: If) throws -> AbstractSyntaxTreeNode? {
+        let node1 = try SnapSubcompilerIf().compile(if: node0, symbols: symbols!, labelMaker: labelMaker)
+        reconnect(node1)
+        let node2 = try super.compile(node1)
+        return node2
     }
 }

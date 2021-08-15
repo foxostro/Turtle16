@@ -85,7 +85,7 @@ public class MemoryLayoutStrategyTurtleTTL: NSObject, MemoryLayoutStrategy {
                 assert(offset != Int.min) // used to be used as a nil-like sentinel value
                 offsetForSymbol = offset
             } else {
-                switch originalSymbol.storage{
+                switch originalSymbol.storage {
                 case .staticStorage:
                     offsetForSymbol = staticStorageOffset
                     staticStorageOffset += sizeof(type: typeForSymbol)

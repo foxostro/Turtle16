@@ -12,7 +12,8 @@ import TurtleCore
 
 class SnapAbstractSyntaxTreeCompilerImplPassTests: XCTestCase {
     func makeCompiler() -> SnapAbstractSyntaxTreeCompilerImplPass {
-        return SnapAbstractSyntaxTreeCompilerImplPass(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        return SnapAbstractSyntaxTreeCompilerImplPass(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(),
+                                                      globalEnvironment: GlobalEnvironment())
     }
     
     func testExample() throws {

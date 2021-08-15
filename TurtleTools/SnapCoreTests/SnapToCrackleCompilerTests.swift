@@ -624,25 +624,6 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, expected)
     }
     
-    func testCompileWhileStatement() {
-        let ast = TopLevel(children: [
-            While(condition: Expression.LiteralBool(true),
-                  body: Expression.LiteralInt(2))
-        ])
-        let compiler = compile(ast)
-        XCTAssertFalse(compiler.hasError)
-        let head = ".L0"
-        let tail = ".L1"
-        XCTAssertEqual(compiler.instructions, [
-            .label(head),
-            .storeImmediate(t0, 1), // the condition `true'
-            .jz(tail, t0),
-            .storeImmediate(t0, 2),
-            .jmp(head),
-            .label(tail)
-        ])
-    }
-    
     func testCompileFunctionDeclaration_Simplest() {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),

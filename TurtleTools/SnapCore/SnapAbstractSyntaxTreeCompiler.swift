@@ -65,7 +65,7 @@ public class SnapAbstractSyntaxTreeCompiler: NSObject {
         let t2 = try SnapAbstractSyntaxTreeCompilerDeclPass(memoryLayoutStrategy: memoryLayoutStrategy, symbols: nil, injectModules: injectModules, globalEnvironment: globalEnvironment).compile(t1)
         
         // Rewrite higher-level nodes in terms of trees of lower-level nodes.
-        let t3 = try SnapAbstractSyntaxTreeCompilerImplPass(memoryLayoutStrategy: memoryLayoutStrategy, symbols: nil).compile(t2)
+        let t3 = try SnapAbstractSyntaxTreeCompilerImplPass(memoryLayoutStrategy: memoryLayoutStrategy, symbols: nil, globalEnvironment: globalEnvironment).compile(t2)
 
         return t3
     }

@@ -18,11 +18,11 @@ public class SnapToCrackleCompiler: NSObject {
     
     let memoryLayoutStrategy: MemoryLayoutStrategy
     let globalEnvironment: GlobalEnvironment
-    let labelMaker = LabelMaker()
     var symbols = SymbolTable()
     var currentSourceAnchor: SourceAnchor? = nil
     
-    public init(_ memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL(), _ globalEnvironment: GlobalEnvironment = GlobalEnvironment()) {
+    public init(_ memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL(),
+                _ globalEnvironment: GlobalEnvironment = GlobalEnvironment()) {
         self.memoryLayoutStrategy = memoryLayoutStrategy
         self.globalEnvironment = globalEnvironment
     }
@@ -75,8 +75,6 @@ public class SnapToCrackleCompiler: NSObject {
             try compile(goto: node)
         case let node as GotoIfFalse:
             try compile(gotoIfFalse: node)
-        case let node as While:
-            try compile(while: node)
         case let node as Seq:
             try compile(seq: node)
         case let node as Block:
@@ -93,7 +91,7 @@ public class SnapToCrackleCompiler: NSObject {
     @discardableResult private func compile(expression: Expression) throws -> RvalueExpressionCompiler {
         currentSourceAnchor = expression.sourceAnchor
         let exprCompiler = RvalueExpressionCompiler(symbols: symbols,
-                                                    labelMaker: labelMaker,
+                                                    labelMaker: globalEnvironment.labelMaker,
                                                     memoryLayoutStrategy: memoryLayoutStrategy)
         let ir = try exprCompiler.compile(expression: expression)
         emit(ir)
@@ -119,22 +117,6 @@ public class SnapToCrackleCompiler: NSObject {
         let tempConditionResult = try compile(expression: node.condition).temporaryStack.pop()
         emit([
             .jz(node.target, tempConditionResult.address)
-        ])
-    }
-    
-    func compile(while stmt: While) throws {
-        currentSourceAnchor = stmt.sourceAnchor?.split().first
-        let labelHead = labelMaker.next()
-        let labelTail = labelMaker.next()
-        emit([.label(labelHead)])
-        let tempConditionResult = try compile(expression: stmt.condition).temporaryStack.pop()
-        emit([
-            .jz(labelTail, tempConditionResult.address)
-        ])
-        try compile(genericNode: stmt.body)
-        emit([
-            .jmp(labelHead),
-            .label(labelTail)
         ])
     }
     

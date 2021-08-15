@@ -7,6 +7,7 @@
 //
 
 public class GlobalEnvironment: NSObject {
+    public let labelMaker = LabelMaker()
     public var modules: [String : Block] = [:]
     
     public func hasModule(_ name: String) -> Bool {

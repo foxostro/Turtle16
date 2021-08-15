@@ -20,7 +20,10 @@ public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
     public private(set) var injectModules: [(String, String)]
     public let globalEnvironment: GlobalEnvironment
     
-    public init(memoryLayoutStrategy: MemoryLayoutStrategy, symbols: SymbolTable? = nil, injectModules: [(String, String)] = [], globalEnvironment: GlobalEnvironment) {
+    public init(memoryLayoutStrategy: MemoryLayoutStrategy,
+                symbols: SymbolTable? = nil,
+                injectModules: [(String, String)] = [],
+                globalEnvironment: GlobalEnvironment) {
         self.memoryLayoutStrategy = memoryLayoutStrategy
         self.injectModules = injectModules
         self.globalEnvironment = globalEnvironment
@@ -62,7 +65,9 @@ public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
     }
     
     public override func compile(import node0: Import) throws -> AbstractSyntaxTreeNode? {
-        let subcompiler = SnapSubcompilerImport(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols!, globalEnvironment: globalEnvironment)
+        let subcompiler = SnapSubcompilerImport(memoryLayoutStrategy: memoryLayoutStrategy,
+                                                symbols: symbols!,
+                                                globalEnvironment: globalEnvironment)
         for (name, text) in injectModules {
             subcompiler.injectModule(name: name, sourceCode: "import stdlib\n" + text)
         }

@@ -20,20 +20,17 @@ public class SnapAbstractSyntaxTreeCompiler: NSObject {
         !errors.isEmpty
     }
     
-    let memoryLayoutStrategy: MemoryLayoutStrategy
     let shouldRunSpecificTest: String?
     let isUsingStandardLibrary: Bool
     let sandboxAccessManager: SandboxAccessManager?
     let injectModules: [(String, String)]
     let globalEnvironment: GlobalEnvironment
     
-    public init(memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL(),
-                shouldRunSpecificTest: String? = nil,
+    public init(shouldRunSpecificTest: String? = nil,
                 injectModules: [(String, String)] = [],
                 isUsingStandardLibrary: Bool = false,
                 sandboxAccessManager: SandboxAccessManager? = nil,
                 globalEnvironment: GlobalEnvironment) {
-        self.memoryLayoutStrategy = memoryLayoutStrategy
         self.shouldRunSpecificTest = shouldRunSpecificTest
         self.injectModules = injectModules
         self.isUsingStandardLibrary = isUsingStandardLibrary
@@ -62,10 +59,10 @@ public class SnapAbstractSyntaxTreeCompiler: NSObject {
         testNames = testDeclarationTransformer.testNames
         
         // Collect type declarations in a discrete pass
-        let t2 = try SnapAbstractSyntaxTreeCompilerDeclPass(memoryLayoutStrategy: memoryLayoutStrategy, symbols: nil, injectModules: injectModules, globalEnvironment: globalEnvironment).compile(t1)
+        let t2 = try SnapAbstractSyntaxTreeCompilerDeclPass(symbols: nil, injectModules: injectModules, globalEnvironment: globalEnvironment).compile(t1)
         
         // Rewrite higher-level nodes in terms of trees of lower-level nodes.
-        let t3 = try SnapAbstractSyntaxTreeCompilerImplPass(memoryLayoutStrategy: memoryLayoutStrategy, symbols: nil, globalEnvironment: globalEnvironment).compile(t2)
+        let t3 = try SnapAbstractSyntaxTreeCompilerImplPass(symbols: nil, globalEnvironment: globalEnvironment).compile(t2)
 
         return t3
     }

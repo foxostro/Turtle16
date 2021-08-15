@@ -20,22 +20,20 @@ class SnapToCrackleCompilerTests: XCTestCase {
     func compile(_ ast0: TopLevel,
                  isUsingStandardLibrary: Bool = false,
                  injectModules: [(String, String)] = []) -> SnapToCrackleCompiler {
-        let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
-        let globalEnvironment = GlobalEnvironment()
-        let contractionStep = SnapAbstractSyntaxTreeCompiler(memoryLayoutStrategy: memoryLayoutStrategy,
-                                                             injectModules: injectModules,
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let contractionStep = SnapAbstractSyntaxTreeCompiler(injectModules: injectModules,
                                                              isUsingStandardLibrary: isUsingStandardLibrary,
                                                              globalEnvironment: globalEnvironment)
         contractionStep.compile(ast0)
         if contractionStep.hasError {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: contractionStep.errors).message)
             XCTFail()
-            return SnapToCrackleCompiler(memoryLayoutStrategy, globalEnvironment)
+            return SnapToCrackleCompiler(globalEnvironment)
         }
         let ast1 = contractionStep.ast
         
         // Compile to Crackle IR
-        let compiler = SnapToCrackleCompiler(memoryLayoutStrategy, globalEnvironment)
+        let compiler = SnapToCrackleCompiler(globalEnvironment)
         compiler.compile(ast: ast1)
         
         return compiler

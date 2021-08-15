@@ -8,17 +8,14 @@
 import TurtleCore
 
 public class SnapSubcompilerImport: NSObject {
-    public let memoryLayoutStrategy: MemoryLayoutStrategy
     public let symbols: SymbolTable
     public let globalEnvironment: GlobalEnvironment
     public let sandboxAccessManager: SandboxAccessManager?
     var injectedModules: [String : String] = [:]
     
-    public init(memoryLayoutStrategy: MemoryLayoutStrategy,
-                symbols: SymbolTable,
+    public init(symbols: SymbolTable,
                 globalEnvironment: GlobalEnvironment,
                 sandboxAccessManager: SandboxAccessManager? = nil) {
-        self.memoryLayoutStrategy = memoryLayoutStrategy
         self.symbols = symbols
         self.globalEnvironment = globalEnvironment
         self.sandboxAccessManager = sandboxAccessManager
@@ -44,8 +41,7 @@ public class SnapSubcompilerImport: NSObject {
         let isUsingStandardLibrary = (node.moduleName != kStandardLibraryModuleName)
         let moduleData = try readModuleFromFile(sourceAnchor: node.sourceAnchor, moduleName: node.moduleName)
         let topLevel = try parse(url: moduleData.1, text: moduleData.0)
-        let compiler = SnapAbstractSyntaxTreeCompiler(memoryLayoutStrategy: memoryLayoutStrategy,
-                                                      isUsingStandardLibrary: isUsingStandardLibrary,
+        let compiler = SnapAbstractSyntaxTreeCompiler(isUsingStandardLibrary: isUsingStandardLibrary,
                                                       sandboxAccessManager: sandboxAccessManager,
                                                       globalEnvironment: globalEnvironment)
         compiler.compile(topLevel)

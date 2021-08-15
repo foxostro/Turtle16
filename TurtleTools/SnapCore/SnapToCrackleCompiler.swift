@@ -16,14 +16,11 @@ public class SnapToCrackleCompiler: NSObject {
     public var programDebugInfo: SnapDebugInfo? = nil
     public private(set) var globalSymbols = SymbolTable()
     
-    let memoryLayoutStrategy: MemoryLayoutStrategy
     let globalEnvironment: GlobalEnvironment
     var symbols = SymbolTable()
     var currentSourceAnchor: SourceAnchor? = nil
     
-    public init(_ memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL(),
-                _ globalEnvironment: GlobalEnvironment = GlobalEnvironment()) {
-        self.memoryLayoutStrategy = memoryLayoutStrategy
+    public init(_ globalEnvironment: GlobalEnvironment = GlobalEnvironment()) {
         self.globalEnvironment = globalEnvironment
     }
     
@@ -92,7 +89,7 @@ public class SnapToCrackleCompiler: NSObject {
         currentSourceAnchor = expression.sourceAnchor
         let exprCompiler = RvalueExpressionCompiler(symbols: symbols,
                                                     labelMaker: globalEnvironment.labelMaker,
-                                                    memoryLayoutStrategy: memoryLayoutStrategy)
+                                                    memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy)
         let ir = try exprCompiler.compile(expression: expression)
         emit(ir)
         return exprCompiler

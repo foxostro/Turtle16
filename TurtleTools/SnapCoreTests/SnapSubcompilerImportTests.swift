@@ -12,9 +12,7 @@ import TurtleCore
 
 class SnapSubcompilerImportTests: XCTestCase {
     fileprivate func makeCompiler(_ symbols: SymbolTable) -> SnapSubcompilerImport {
-        return SnapSubcompilerImport(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(),
-                                     symbols: symbols,
-                                     globalEnvironment: GlobalEnvironment())
+        return SnapSubcompilerImport(symbols: symbols, globalEnvironment: GlobalEnvironment())
     }
     
     func testEmptyModuleName() throws {

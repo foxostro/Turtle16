@@ -24,8 +24,7 @@ public class SnapCompiler: NSObject {
     public var instructions: [Instruction] = []
     public let programDebugInfo = SnapDebugInfo()
     public var sandboxAccessManager: SandboxAccessManager? = nil
-    public let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
-    public let globalEnvironment = GlobalEnvironment()
+    public let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
     
     public private(set) var errors: [CompilerError] = []
     public var hasError:Bool {
@@ -64,8 +63,7 @@ public class SnapCompiler: NSObject {
         }
         
         // AST contraction step
-        let contractionStep = SnapAbstractSyntaxTreeCompiler(memoryLayoutStrategy: memoryLayoutStrategy,
-                                                             shouldRunSpecificTest: shouldRunSpecificTest,
+        let contractionStep = SnapAbstractSyntaxTreeCompiler(shouldRunSpecificTest: shouldRunSpecificTest,
                                                              injectModules: Array(injectedModules),
                                                              isUsingStandardLibrary: isUsingStandardLibrary,
                                                              sandboxAccessManager: sandboxAccessManager,
@@ -79,7 +77,7 @@ public class SnapCompiler: NSObject {
         ast = contractionStep.ast
         
         // Compile the AST to IR code
-        let snapToCrackleCompiler = SnapToCrackleCompiler(memoryLayoutStrategy, globalEnvironment)
+        let snapToCrackleCompiler = SnapToCrackleCompiler(globalEnvironment)
         snapToCrackleCompiler.programDebugInfo = programDebugInfo
         snapToCrackleCompiler.compile(ast: ast)
         if snapToCrackleCompiler.hasError {

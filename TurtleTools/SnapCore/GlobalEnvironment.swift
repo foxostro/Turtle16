@@ -7,8 +7,13 @@
 //
 
 public class GlobalEnvironment: NSObject {
+    public let memoryLayoutStrategy: MemoryLayoutStrategy
     public let labelMaker = LabelMaker()
     public var modules: [String : Block] = [:]
+    
+    public init(memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()) {
+        self.memoryLayoutStrategy = memoryLayoutStrategy
+    }
     
     public func hasModule(_ name: String) -> Bool {
         return modules[name] != nil

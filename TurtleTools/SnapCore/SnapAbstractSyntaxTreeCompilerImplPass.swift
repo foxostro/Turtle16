@@ -16,13 +16,10 @@ import TurtleCore
 // SnapAbstractSyntaxTreeCompilerImplPass delegates most the specific work to
 // various subcompilers classes.
 public class SnapAbstractSyntaxTreeCompilerImplPass: SnapASTTransformerBase {
-    public let memoryLayoutStrategy: MemoryLayoutStrategy
     public let globalEnvironment: GlobalEnvironment
     
-    public init(memoryLayoutStrategy: MemoryLayoutStrategy,
-                symbols: SymbolTable? = nil,
+    public init(symbols: SymbolTable? = nil,
                 globalEnvironment: GlobalEnvironment) {
-        self.memoryLayoutStrategy = memoryLayoutStrategy
         self.globalEnvironment = globalEnvironment
         super.init(symbols)
     }
@@ -40,7 +37,7 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: SnapASTTransformerBase {
     }
     
     public override func compile(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
-        let subcompiler = SnapSubcompilerVarDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols!)
+        let subcompiler = SnapSubcompilerVarDeclaration(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy, symbols: symbols!)
         let node1 = try subcompiler.compile(node0)
         return node1
     }
@@ -54,7 +51,7 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: SnapASTTransformerBase {
     }
     
     public override func compile(match node0: Match) throws -> AbstractSyntaxTreeNode? {
-        let subcompiler = SnapSubcompilerMatch(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols!)
+        let subcompiler = SnapSubcompilerMatch(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy, symbols: symbols!)
         let node1 = try subcompiler.compile(node0)
         reconnect(node1)
         let node2 = try super.compile(node1)
@@ -68,6 +65,7 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: SnapASTTransformerBase {
     }
     
     public override func compile(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
+        let memoryLayoutStrategy = globalEnvironment.memoryLayoutStrategy
         let result = try super.compile(func: node)
         reconnect(result)
         

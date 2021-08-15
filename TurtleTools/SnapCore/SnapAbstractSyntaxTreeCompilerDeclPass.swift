@@ -16,22 +16,19 @@ import TurtleCore
 // SnapAbstractSyntaxTreeCompilerDeclPass delegates most the specific work to
 // various subcompilers classes.
 public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
-    public let memoryLayoutStrategy: MemoryLayoutStrategy
     public private(set) var injectModules: [(String, String)]
     public let globalEnvironment: GlobalEnvironment
     
-    public init(memoryLayoutStrategy: MemoryLayoutStrategy,
-                symbols: SymbolTable? = nil,
+    public init(symbols: SymbolTable? = nil,
                 injectModules: [(String, String)] = [],
                 globalEnvironment: GlobalEnvironment) {
-        self.memoryLayoutStrategy = memoryLayoutStrategy
         self.injectModules = injectModules
         self.globalEnvironment = globalEnvironment
         super.init(symbols)
     }
     
     public override func compile(func node0: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
-        let subcompiler = SnapSubcompilerFunctionDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols!)
+        let subcompiler = SnapSubcompilerFunctionDeclaration(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy, symbols: symbols!)
         let node1 = try subcompiler.compile(node0)
         reconnect(node1)
         let node2 = try super.compile(func: node1)
@@ -39,7 +36,7 @@ public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
     }
     
     public override func compile(struct node0: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
-        let subcompiler = SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols!)
+        let subcompiler = SnapSubcompilerStructDeclaration(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy, symbols: symbols!)
         try subcompiler.compile(node0)
         return nil // Erase the StructDeclaration now that it's been processd.
     }
@@ -51,7 +48,7 @@ public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
     }
     
     public override func compile(trait node0: TraitDeclaration) throws -> AbstractSyntaxTreeNode? {
-        let subcompiler = SnapSubcompilerTraitDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols!)
+        let subcompiler = SnapSubcompilerTraitDeclaration(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy, symbols: symbols!)
         let node1 = try subcompiler.compile(node0)
         reconnect(node1)
         let node2 = try super.compile(seq: node1)
@@ -59,15 +56,13 @@ public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
     }
     
     public override func compile(impl node0: Impl) throws -> AbstractSyntaxTreeNode? {
-        let subcompiler = SnapSubcompilerImpl(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols!)
+        let subcompiler = SnapSubcompilerImpl(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy, symbols: symbols!)
         let node1 = try subcompiler.compile(node0)
         return node1
     }
     
     public override func compile(import node0: Import) throws -> AbstractSyntaxTreeNode? {
-        let subcompiler = SnapSubcompilerImport(memoryLayoutStrategy: memoryLayoutStrategy,
-                                                symbols: symbols!,
-                                                globalEnvironment: globalEnvironment)
+        let subcompiler = SnapSubcompilerImport(symbols: symbols!, globalEnvironment: globalEnvironment)
         for (name, text) in injectModules {
             subcompiler.injectModule(name: name, sourceCode: "import stdlib\n" + text)
         }
@@ -76,7 +71,7 @@ public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
     }
     
     public override func compile(implFor node0: ImplFor) throws -> AbstractSyntaxTreeNode? {
-        let subcompiler = SnapSubcompilerImplFor(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols!)
+        let subcompiler = SnapSubcompilerImplFor(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy, symbols: symbols!)
         let node1 = try subcompiler.compile(node0)
         return node1
     }

@@ -10,11 +10,11 @@ import TurtleCore
 
 public class SnapSubcompilerVarDeclaration: NSObject {
     public let symbols: SymbolTable
-    public let memoryLayoutStrategy: MemoryLayoutStrategy
+    public let globalEnvironment: GlobalEnvironment
     
-    public init(memoryLayoutStrategy: MemoryLayoutStrategy, symbols: SymbolTable) {
+    public init(symbols: SymbolTable, globalEnvironment: GlobalEnvironment) {
         self.symbols = symbols
-        self.memoryLayoutStrategy = memoryLayoutStrategy
+        self.globalEnvironment = globalEnvironment
     }
     
     public func compile(_ node: VarDeclaration) throws -> Expression.InitialAssignment? {
@@ -97,12 +97,12 @@ public class SnapSubcompilerVarDeclaration: NSObject {
     }
 
     func bumpStoragePointer(_ symbolType: SymbolType, _ storage: SymbolStorage) -> Int {
-        let size = memoryLayoutStrategy.sizeof(type: symbolType)
+        let size = globalEnvironment.memoryLayoutStrategy.sizeof(type: symbolType)
         let offset: Int
         switch storage {
         case .staticStorage:
-            offset = memoryLayoutStrategy.staticStorageOffset
-            memoryLayoutStrategy.staticStorageOffset += size
+            offset = globalEnvironment.staticStorageOffset
+            globalEnvironment.staticStorageOffset += size
         case .automaticStorage:
             symbols.storagePointer += size
             symbols.highwaterMark = max(symbols.highwaterMark, symbols.storagePointer)

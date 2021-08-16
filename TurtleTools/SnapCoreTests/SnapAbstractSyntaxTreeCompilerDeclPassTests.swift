@@ -212,7 +212,8 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
             XCTFail()
             return
         }
-        _ = try? SnapSubcompilerVarDeclaration(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(), symbols: globalSymbols).compile(vtableDeclaration)
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        _ = try? SnapSubcompilerVarDeclaration(symbols: globalSymbols, globalEnvironment: globalEnvironment).compile(vtableDeclaration)
         
         let nameOfVtableInstance = "__Serial_SerialFake_vtable_instance"
         let vtableInstance = try? globalSymbols.resolve(identifier: nameOfVtableInstance)

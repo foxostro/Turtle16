@@ -7,6 +7,7 @@
 //
 
 public class GlobalEnvironment: NSObject {
+    public var staticStorageOffset = SnapCompilerMetrics.kStaticStorageStartAddress
     public let memoryLayoutStrategy: MemoryLayoutStrategy
     public let labelMaker = LabelMaker()
     public var modules: [String : Block] = [:]

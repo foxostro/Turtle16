@@ -7,8 +7,6 @@
 //
 
 public class MemoryLayoutStrategyTurtleTTL: NSObject, MemoryLayoutStrategy {
-    public var staticStorageOffset = SnapCompilerMetrics.kStaticStorageStartAddress
-    
     public func sizeof(type: SymbolType) -> Int {
         switch type {
         case .compTimeInt, .compTimeBool, .void, .function:
@@ -44,87 +42,5 @@ public class MemoryLayoutStrategyTurtleTTL: NSObject, MemoryLayoutStrategy {
             return max(result, sizeof(type: memberType))
         }
         return kTagSize + kBufferSize
-    }
-    
-    public func layout(symbolTable: SymbolTable) -> SymbolTable {
-        staticStorageOffset = SnapCompilerMetrics.kStaticStorageStartAddress
-        return _layout(symbolTable: symbolTable)
-    }
-    
-    func _layout(symbolTable: SymbolTable) -> SymbolTable {
-        let result = SymbolTable()
-        
-        result.typeTable = symbolTable.typeTable
-        result.enclosingFunctionTypeMode = symbolTable.enclosingFunctionTypeMode
-        result.enclosingFunctionNameMode = symbolTable.enclosingFunctionNameMode
-        result.stackFrameIndex = symbolTable.stackFrameIndex
-        
-        var offset = 0
-        
-        if let parent = symbolTable.parent {
-            let modifiedParent = _layout(symbolTable: parent)
-            result.parent = modifiedParent
-            
-            // If the parent and child symbol tables are nested scopes within
-            // the same stack frame then continue allocating at the offset
-            // immediately following the parent.
-            if let lastIdentifier = modifiedParent.declarationOrder.last, parent.stackFrameIndex == symbolTable.stackFrameIndex {
-                let symbol = modifiedParent.symbolTable[lastIdentifier]!
-                offset = symbol.offset + sizeof(type: symbol.type)
-            }
-        }
-        
-        // Allocate all symbols in memory in declaration order.
-        for identifier in symbolTable.declarationOrder {
-            let originalSymbol = symbolTable.symbolTable[identifier]!
-            let typeForSymbol = layout(type: originalSymbol.type)
-            let offsetForSymbol: Int
-            
-            // Skip symbols that have already been assigned offsets.
-            if let offset = originalSymbol.maybeOffset {
-                assert(offset != Int.min) // used to be used as a nil-like sentinel value
-                offsetForSymbol = offset
-            } else {
-                switch originalSymbol.storage {
-                case .staticStorage:
-                    offsetForSymbol = staticStorageOffset
-                    staticStorageOffset += sizeof(type: typeForSymbol)
-                    
-                case .automaticStorage:
-                    offsetForSymbol = offset
-                    offset += sizeof(type: typeForSymbol)
-                }
-            }
-            
-            let modifiedSymbol = originalSymbol
-                .withOffset(offsetForSymbol)
-                .withType(typeForSymbol)
-            result.bind(identifier: identifier, symbol: modifiedSymbol)
-        }
-        
-        return result
-    }
-    
-    func layout(type originalType: SymbolType) -> SymbolType {
-        let result: SymbolType
-        switch originalType {
-        case .structType(let typ1):
-            let typ2 = layout(struct: typ1)
-            result = .structType(typ2)
-            
-        case .constStructType(let typ1):
-            let typ2 = layout(struct: typ1)
-            result = .constStructType(typ2)
-        
-        default:
-            result = originalType
-        }
-        return result
-    }
-    
-    func layout(struct original: StructType) -> StructType {
-        let modifiedSymbolTable = layout(symbolTable: original.symbols)
-        let result = StructType(name: original.name, symbols: modifiedSymbolTable)
-        return result
     }
 }

@@ -45,7 +45,9 @@ public class Seq: AbstractSyntaxTreeNode {
         if children.isEmpty {
             result = " (empty)"
         } else {
-            result = "\n" + children.map({$0.makeIndentedDescription(depth: depth, wantsLeadingWhitespace: true)}).joined(separator: "\n")
+            result = "\n" + children.map {
+                $0.makeIndentedDescription(depth: depth, wantsLeadingWhitespace: true)
+            }.joined(separator: "\n")
         }
         return result
     }

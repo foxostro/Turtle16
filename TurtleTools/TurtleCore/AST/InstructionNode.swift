@@ -12,15 +12,9 @@ public class InstructionNode: AbstractSyntaxTreeNode {
     public let instruction: String
     public let parameters: ParameterList
     
-    public convenience init(instruction: String) {
-        self.init(sourceAnchor: nil, instruction: instruction, parameters: ParameterList(parameters: []))
-    }
-    
-    public convenience init(instruction: String, parameters: ParameterList) {
-        self.init(sourceAnchor: nil, instruction: instruction, parameters: parameters)
-    }
-    
-    public required init(sourceAnchor: SourceAnchor?, instruction: String, parameters: ParameterList) {
+    public init(sourceAnchor: SourceAnchor? = nil,
+                instruction: String,
+                parameters: ParameterList = ParameterList(parameters: [])) {
         self.instruction = instruction
         self.parameters = parameters
         super.init(sourceAnchor: sourceAnchor)
@@ -41,5 +35,11 @@ public class InstructionNode: AbstractSyntaxTreeNode {
         hasher.combine(parameters)
         hasher.combine(super.hash)
         return hasher.finalize()
+    }
+    
+    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+        let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let param = parameters.makeIndentedDescription(depth: depth+1, wantsLeadingWhitespace: false)
+        return "\(indent)\(instruction) \(param)"
     }
 }

@@ -32,4 +32,10 @@ public class LabelDeclaration: AbstractSyntaxTreeNode {
         hasher.combine(super.hash)
         return hasher.finalize()
     }
+    
+    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+        let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let name = String(describing: type(of: self))
+        return "\(indent)\(name)(\(identifier))"
+    }
 }

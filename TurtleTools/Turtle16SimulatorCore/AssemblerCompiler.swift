@@ -8,6 +8,7 @@
 
 import TurtleCore
 
+// Turtle16 assembly instruction opcodes
 public let kNOP = "NOP"
 public let kHLT = "HLT"
 public let kLOAD = "LOAD"
@@ -40,6 +41,12 @@ public let kBLTU = "BLTU"
 public let kBGEU = "BGEU"
 public let kADC = "ADC"
 public let kSBC = "SBC"
+
+// Various high-level macro instruction opcodes
+public let kCALL = "CALL"
+public let kENTER = "ENTER"
+public let kLEAVE = "LEAVE"
+public let kRET = "RET"
 
 public class AssemblerCompiler: NSObject {
     let codeGenerator = AssemblerCodeGenerator()

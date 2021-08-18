@@ -174,8 +174,8 @@
 		6F40730126ADE09D007D8382 /* MemoryLayoutStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F40730026ADE09D007D8382 /* MemoryLayoutStrategy.swift */; };
 		6F40730326ADE0B7007D8382 /* MemoryLayoutStrategyTurtleTTL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F40730226ADE0B7007D8382 /* MemoryLayoutStrategyTurtleTTL.swift */; };
 		6F40730526ADE0EF007D8382 /* MemoryLayoutStrategyTurtleTTLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F40730426ADE0EF007D8382 /* MemoryLayoutStrategyTurtleTTLTests.swift */; };
-		6F40730726B1D5ED007D8382 /* SnapToTackCompiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F40730626B1D5ED007D8382 /* SnapToTackCompiler.swift */; };
-		6F40730926B1D61F007D8382 /* SnapToTackCompilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F40730826B1D61F007D8382 /* SnapToTackCompilerTests.swift */; };
+		6F40730726B1D5ED007D8382 /* SnapToTurtle16Compiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F40730626B1D5ED007D8382 /* SnapToTurtle16Compiler.swift */; };
+		6F40730926B1D61F007D8382 /* SnapToTurtle16CompilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F40730826B1D61F007D8382 /* SnapToTurtle16CompilerTests.swift */; };
 		6F40731726B281B7007D8382 /* SnapAbstractSyntaxTreeCompiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F40731626B281B7007D8382 /* SnapAbstractSyntaxTreeCompiler.swift */; };
 		6F40731926B281C1007D8382 /* SnapAbstractSyntaxTreeCompilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F40731826B281C1007D8382 /* SnapAbstractSyntaxTreeCompilerTests.swift */; };
 		6F40731B26B29E9F007D8382 /* CompilerIntrinsicSymbolBinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F40731A26B29E9F007D8382 /* CompilerIntrinsicSymbolBinder.swift */; };
@@ -632,6 +632,20 @@
 			remoteGlobalIDString = 6F9201E42471DAC7009E1410;
 			remoteInfo = SnapCore;
 		};
+		6FD2736D26CA1BB800749CDA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F734330259327D400B7E43F;
+			remoteInfo = Turtle16SimulatorCore;
+		};
+		6FD2736F26CA1BC900749CDA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F734330259327D400B7E43F;
+			remoteInfo = Turtle16SimulatorCore;
+		};
 		6FF1996622ECB37000C255A2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
@@ -821,8 +835,8 @@
 		6F40730026ADE09D007D8382 /* MemoryLayoutStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryLayoutStrategy.swift; sourceTree = "<group>"; };
 		6F40730226ADE0B7007D8382 /* MemoryLayoutStrategyTurtleTTL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryLayoutStrategyTurtleTTL.swift; sourceTree = "<group>"; };
 		6F40730426ADE0EF007D8382 /* MemoryLayoutStrategyTurtleTTLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryLayoutStrategyTurtleTTLTests.swift; sourceTree = "<group>"; };
-		6F40730626B1D5ED007D8382 /* SnapToTackCompiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapToTackCompiler.swift; sourceTree = "<group>"; };
-		6F40730826B1D61F007D8382 /* SnapToTackCompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapToTackCompilerTests.swift; sourceTree = "<group>"; };
+		6F40730626B1D5ED007D8382 /* SnapToTurtle16Compiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapToTurtle16Compiler.swift; sourceTree = "<group>"; };
+		6F40730826B1D61F007D8382 /* SnapToTurtle16CompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapToTurtle16CompilerTests.swift; sourceTree = "<group>"; };
 		6F40731626B281B7007D8382 /* SnapAbstractSyntaxTreeCompiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapAbstractSyntaxTreeCompiler.swift; sourceTree = "<group>"; };
 		6F40731826B281C1007D8382 /* SnapAbstractSyntaxTreeCompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapAbstractSyntaxTreeCompilerTests.swift; sourceTree = "<group>"; };
 		6F40731A26B29E9F007D8382 /* CompilerIntrinsicSymbolBinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerIntrinsicSymbolBinder.swift; sourceTree = "<group>"; };
@@ -1633,7 +1647,7 @@
 				6FD2735F26C9C92900749CDA /* SnapSubcompilerWhile.swift */,
 				6F18DD8A248414DE0014C585 /* SnapToCrackleCompiler.swift */,
 				6F469E0826BEF5020004613B /* GlobalEnvironment.swift */,
-				6F40730626B1D5ED007D8382 /* SnapToTackCompiler.swift */,
+				6F40730626B1D5ED007D8382 /* SnapToTurtle16Compiler.swift */,
 				6F24AC8A24A07CAF005193BB /* StatementTracer.swift */,
 				6F5A00E9231C6454003E7C7F /* SymbolTable.swift */,
 				6F15421D26B34E3300BA9572 /* SymbolTablesReconnector.swift */,
@@ -1698,7 +1712,7 @@
 				6FD2736126C9C94600749CDA /* SnapSubcompilerWhileTests.swift */,
 				6F18DD8C2484154F0014C585 /* SnapToCrackleCompilerTests.swift */,
 				6F469E0A26BEF5220004613B /* GlobalEnvironmentTests.swift */,
-				6F40730826B1D61F007D8382 /* SnapToTackCompilerTests.swift */,
+				6F40730826B1D61F007D8382 /* SnapToTurtle16CompilerTests.swift */,
 				6F24AC8C24A07CBC005193BB /* StatementTracerTests.swift */,
 				6F15421F26B34E4400BA9572 /* SymbolTablesReconnectorTests.swift */,
 				6F50DB0D247F5F9500643DAC /* SymbolTableTests.swift */,
@@ -2122,6 +2136,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				6FD2736E26CA1BB800749CDA /* PBXTargetDependency */,
 				6F000D582626C39800C5DFDE /* PBXTargetDependency */,
 				6F41B67C2476F56A0043A8D7 /* PBXTargetDependency */,
 			);
@@ -2141,6 +2156,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				6FD2737026CA1BC900749CDA /* PBXTargetDependency */,
 				6F41B6702476F5130043A8D7 /* PBXTargetDependency */,
 				6F41B6742476F51C0043A8D7 /* PBXTargetDependency */,
 				6F9201F02471DAC7009E1410 /* PBXTargetDependency */,
@@ -2721,7 +2737,7 @@
 				6F15422E26B897BA00BA9572 /* SnapSubcompilerVarDeclaration.swift in Sources */,
 				6F9E8F7F26B9A90F00FE25E4 /* SnapSubcompilerTypealias.swift in Sources */,
 				6F40731D26B2A187007D8382 /* SnapSubcompilerAssert.swift in Sources */,
-				6F40730726B1D5ED007D8382 /* SnapToTackCompiler.swift in Sources */,
+				6F40730726B1D5ED007D8382 /* SnapToTurtle16Compiler.swift in Sources */,
 				6FBD6ED0254C9EF700CE5D06 /* PopInstruction.swift in Sources */,
 				6F25325C24CB799A00339332 /* LvalueExpressionCompiler.swift in Sources */,
 				6F13826326C0E878002CF167 /* SnapSubcompilerReturn.swift in Sources */,
@@ -2743,7 +2759,7 @@
 				6F15423826B92ADB00BA9572 /* SnapSubcompilerStructDeclarationTests.swift in Sources */,
 				6F2940BD2483979800C50ABA /* RvalueExpressionCompilerTests.swift in Sources */,
 				6F9E8F8526B9BE2C00FE25E4 /* SnapAbstractSyntaxTreeCompilerImplPassTests.swift in Sources */,
-				6F40730926B1D61F007D8382 /* SnapToTackCompilerTests.swift in Sources */,
+				6F40730926B1D61F007D8382 /* SnapToTurtle16CompilerTests.swift in Sources */,
 				6F13826126C0DA01002CF167 /* SnapSubcompilerMatchTests.swift in Sources */,
 				6FA220CF254CDC480017DDDF /* CrackleToPopCompilerTests.swift in Sources */,
 				6F5337352474BE7D00CFD33C /* VarDeclarationTests.swift in Sources */,
@@ -3129,6 +3145,16 @@
 			isa = PBXTargetDependency;
 			target = 6F9201E42471DAC7009E1410 /* SnapCore */;
 			targetProxy = 6FB28F742512C9E4001F5D12 /* PBXContainerItemProxy */;
+		};
+		6FD2736E26CA1BB800749CDA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F734330259327D400B7E43F /* Turtle16SimulatorCore */;
+			targetProxy = 6FD2736D26CA1BB800749CDA /* PBXContainerItemProxy */;
+		};
+		6FD2737026CA1BC900749CDA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F734330259327D400B7E43F /* Turtle16SimulatorCore */;
+			targetProxy = 6FD2736F26CA1BC900749CDA /* PBXContainerItemProxy */;
 		};
 		6FF1996722ECB37000C255A2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

@@ -64,24 +64,37 @@ public class SnapASTTransformerBase: NSObject {
     }
     
     public func compile(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {
-        return TopLevel(sourceAnchor: node.sourceAnchor,
-                        children: try node.children.compactMap { try compile($0) })
+        let children: [AbstractSyntaxTreeNode] = try node.children.compactMap { try compile($0) }
+        var flatChildren: [AbstractSyntaxTreeNode] = []
+        
+        for node in children {
+            if let seq = node as? Seq {
+                flatChildren += seq.children
+            } else {
+                flatChildren.append(node)
+            }
+        }
+        
+        return TopLevel(sourceAnchor: node.sourceAnchor, children: flatChildren)
     }
     
     public func compile(seq node: Seq) throws -> AbstractSyntaxTreeNode? {
-        if node.children.count < 2 {
-            return try compile(node.children.first)
+        let children: [AbstractSyntaxTreeNode] = try node.children.compactMap { try compile($0) }
+        
+        if children.count < 2 {
+            return children.first
         }
         
-        var children: [AbstractSyntaxTreeNode] = []
-        for node in node.children {
+        var flatChildren: [AbstractSyntaxTreeNode] = []
+        for node in children {
             if let seq = node as? Seq {
-                children += seq.children
+                flatChildren += seq.children
             } else {
-                try compile(node).flatMap { children.append($0) }
+                flatChildren.append(node)
             }
         }
-        return Seq(sourceAnchor: node.sourceAnchor, children: children)
+        
+        return Seq(sourceAnchor: node.sourceAnchor, children: flatChildren)
     }
     
     public func compile(varDecl node: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
@@ -115,9 +128,20 @@ public class SnapASTTransformerBase: NSObject {
     public func compile(block node: Block) throws -> AbstractSyntaxTreeNode? {
         let parent = symbols
         symbols = node.symbols
+        
+        let children: [AbstractSyntaxTreeNode] = try node.children.compactMap { try compile($0) }
+        var flatChildren: [AbstractSyntaxTreeNode] = []
+        for node in children {
+            if let seq = node as? Seq {
+                flatChildren += seq.children
+            } else {
+                flatChildren.append(node)
+            }
+        }
         let result = Block(sourceAnchor: node.sourceAnchor,
                            symbols: node.symbols,
-                           children: try node.children.compactMap { try compile($0) })
+                           children: flatChildren)
+
         symbols = parent
         if let symbols = symbols, node.symbols.stackFrameIndex == symbols.stackFrameIndex {
             symbols.highwaterMark = max(symbols.highwaterMark, node.symbols.highwaterMark)

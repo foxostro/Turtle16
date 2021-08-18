@@ -45,4 +45,40 @@ class SnapASTTransformerBaseTests: XCTestCase {
         let actual = try? compiler.compile(input)
         XCTAssertEqual(actual, expected)
     }
+    
+    func testNestedSeqStatementsAreFlattened_InBlock() throws {
+        let input = Block(children: [
+            Seq(children: [
+                CommentNode(string: "a"),
+                CommentNode(string: "b")
+            ]),
+            CommentNode(string: "c")
+        ])
+        let expected = Block(children: [
+            CommentNode(string: "a"),
+            CommentNode(string: "b"),
+            CommentNode(string: "c")
+        ])
+        let compiler = SnapASTTransformerBase()
+        let actual = try? compiler.compile(input)
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testNestedSeqStatementsAreFlattened_InTopLevel() throws {
+        let input = TopLevel(children: [
+            Seq(children: [
+                CommentNode(string: "a"),
+                CommentNode(string: "b")
+            ]),
+            CommentNode(string: "c")
+        ])
+        let expected = TopLevel(children: [
+            CommentNode(string: "a"),
+            CommentNode(string: "b"),
+            CommentNode(string: "c")
+        ])
+        let compiler = SnapASTTransformerBase()
+        let actual = try? compiler.compile(input)
+        XCTAssertEqual(actual, expected)
+    }
 }

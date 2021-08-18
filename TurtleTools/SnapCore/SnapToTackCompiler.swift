@@ -179,70 +179,6 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         return try compile(result)!
     }
     
-    func rvalue(expr: Expression) throws -> AbstractSyntaxTreeNode {
-        switch expr {
-        case let group as Expression.Group:
-            return try rvalue(expr: group.expression)
-        case let literal as Expression.LiteralInt:
-            return rvalue(literalInt: literal)
-        case let literal as Expression.LiteralBool:
-            return rvalue(literalBoolean: literal)
-        case let node as Expression.Identifier:
-            return try rvalue(identifier: node)
-        case let node as Expression.As:
-            return try rvalue(as: node)
-        case let node as Expression.Unary:
-            return try rvalue(unary: node)
-        case let node as Expression.Binary:
-            return try rvalue(binary: node)
-        case let expr as Expression.Is:
-            return try rvalue(is: expr)
-        default:
-            throw CompilerError(message: "unimplemented: `\(expr)'")
-        }
-    }
-    
-    func rvalue(literalInt node: Expression.LiteralInt) -> AbstractSyntaxTreeNode {
-        let dest = nextRegister()
-        pushRegister(dest)
-        let op = (node.value < 256) ? Tack.kLI8 : Tack.kLI16
-        let result = InstructionNode(sourceAnchor: node.sourceAnchor, instruction: op, parameters: ParameterList(parameters: [
-            ParameterIdentifier(value: dest),
-            ParameterNumber(value: node.value)
-        ]))
-        return result
-    }
-    
-    func rvalue(literalBoolean node: Expression.LiteralBool) -> AbstractSyntaxTreeNode {
-        let dest = nextRegister()
-        pushRegister(dest)
-        let result = InstructionNode(sourceAnchor: node.sourceAnchor, instruction: Tack.kLI16, parameters: ParameterList(parameters: [
-            ParameterIdentifier(value: dest),
-            ParameterNumber(value: node.value ? 1 : 0)
-        ]))
-        return result
-    }
-    
-    func rvalue(identifier node: Expression.Identifier) throws -> AbstractSyntaxTreeNode {
-        let resolution = try symbols!.resolveWithStackFrameDepth(sourceAnchor: node.sourceAnchor, identifier: node.identifier)
-        let symbol = resolution.0
-        assert(globalEnvironment.memoryLayoutStrategy.sizeof(type: symbol.type) <= 1)
-        let depth = symbols!.stackFrameIndex - resolution.1
-        assert(depth >= 0)
-        let addr = computeAddressOfSymbol(sourceAnchor: node.sourceAnchor, symbol: symbol, depth: depth)
-        let dest = nextRegister()
-        let ins = (symbol.type == .u8) ? Tack.kLOAD8 : Tack.kLOAD16
-        let result = try compile(seq: Seq(sourceAnchor: node.sourceAnchor, children: [
-            addr,
-            InstructionNode(sourceAnchor: node.sourceAnchor, instruction: ins, parameters: ParameterList(parameters: [
-                ParameterIdentifier(value: dest),
-                ParameterIdentifier(value: popRegister()),
-            ]))
-        ]))!
-        pushRegister(dest)
-        return result
-    }
-    
     func computeAddressOfSymbol(sourceAnchor: SourceAnchor?, symbol: Symbol, depth: Int) -> Seq {
         assert(depth >= 0)
         var children: [AbstractSyntaxTreeNode] = []
@@ -317,6 +253,73 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         pushRegister(temp_result)
         
         return Seq(sourceAnchor: sourceAnchor, children: children)
+    }
+    
+    func rvalue(expr: Expression) throws -> AbstractSyntaxTreeNode {
+        switch expr {
+        case let group as Expression.Group:
+            return try rvalue(expr: group.expression)
+        case let literal as Expression.LiteralInt:
+            return rvalue(literalInt: literal)
+        case let literal as Expression.LiteralBool:
+            return rvalue(literalBoolean: literal)
+        case let node as Expression.Identifier:
+            return try rvalue(identifier: node)
+        case let node as Expression.As:
+            return try rvalue(as: node)
+        case let node as Expression.Unary:
+            return try rvalue(unary: node)
+        case let node as Expression.Binary:
+            return try rvalue(binary: node)
+        case let expr as Expression.Is:
+            return try rvalue(is: expr)
+        default:
+            throw CompilerError(message: "unimplemented: `\(expr)'")
+        }
+    }
+    
+    func rvalue(literalInt node: Expression.LiteralInt) -> AbstractSyntaxTreeNode {
+        let dest = nextRegister()
+        pushRegister(dest)
+        let op = (node.value < 256) ? Tack.kLI8 : Tack.kLI16
+        let result = InstructionNode(sourceAnchor: node.sourceAnchor, instruction: op, parameters: ParameterList(parameters: [
+            ParameterIdentifier(value: dest),
+            ParameterNumber(value: node.value)
+        ]))
+        return result
+    }
+    
+    func rvalue(literalBoolean node: Expression.LiteralBool) -> AbstractSyntaxTreeNode {
+        let dest = nextRegister()
+        pushRegister(dest)
+        let result = InstructionNode(sourceAnchor: node.sourceAnchor, instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+            ParameterIdentifier(value: dest),
+            ParameterNumber(value: node.value ? 1 : 0)
+        ]))
+        return result
+    }
+    
+    func rvalue(identifier node: Expression.Identifier) throws -> AbstractSyntaxTreeNode {
+        let symbol = try symbols!.resolve(identifier: node.identifier)
+        let size = globalEnvironment.memoryLayoutStrategy.sizeof(type: symbol.type)
+        assert(size <= 1)
+        
+        var children: [AbstractSyntaxTreeNode] = [
+            try lvalue(expr: node)
+        ]
+        let addr = popRegister()
+        
+        let dest = nextRegister()
+        pushRegister(dest)
+        let ins = (symbol.type == .u8) ? Tack.kLOAD8 : Tack.kLOAD16
+        children += [
+            InstructionNode(sourceAnchor: node.sourceAnchor, instruction: ins, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: dest),
+                ParameterIdentifier(value: addr),
+            ]))
+        ]
+        
+        return try compile(seq: Seq(sourceAnchor: node.sourceAnchor, children: children))!
     }
     
     func rvalue(as expr: Expression.As) throws -> AbstractSyntaxTreeNode {

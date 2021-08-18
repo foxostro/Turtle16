@@ -224,13 +224,7 @@ public class Expression: AbstractSyntaxTreeNode {
         public let left: Expression
         public let right: Expression
         
-        public convenience init(op: TokenOperator.Operator,
-                    left: Expression,
-                    right: Expression) {
-            self.init(sourceAnchor: nil, op: op, left: left, right: right)
-        }
-        
-        public init(sourceAnchor: SourceAnchor?,
+        public init(sourceAnchor: SourceAnchor? = nil,
                     op: TokenOperator.Operator,
                     left: Expression,
                     right: Expression) {

@@ -301,23 +301,23 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     
     func rvalue(identifier node: Expression.Identifier) throws -> AbstractSyntaxTreeNode {
         let symbol = try symbols!.resolve(identifier: node.identifier)
-        let size = globalEnvironment.memoryLayoutStrategy.sizeof(type: symbol.type)
-        assert(size <= 1)
         
         var children: [AbstractSyntaxTreeNode] = [
             try lvalue(expr: node)
         ]
-        let addr = popRegister()
         
-        let dest = nextRegister()
-        pushRegister(dest)
-        let ins = (symbol.type == .u8) ? Tack.kLOAD8 : Tack.kLOAD16
-        children += [
-            InstructionNode(sourceAnchor: node.sourceAnchor, instruction: ins, parameters: ParameterList(parameters: [
-                ParameterIdentifier(value: dest),
-                ParameterIdentifier(value: addr),
-            ]))
-        ]
+        if symbol.type.isPrimitive {
+            let addr = popRegister()
+            let dest = nextRegister()
+            pushRegister(dest)
+            let ins = (symbol.type == .u8) ? Tack.kLOAD8 : Tack.kLOAD16
+            children += [
+                InstructionNode(sourceAnchor: node.sourceAnchor, instruction: ins, parameters: ParameterList(parameters: [
+                    ParameterIdentifier(value: dest),
+                    ParameterIdentifier(value: addr),
+                ]))
+            ]
+        }
         
         return try compile(seq: Seq(sourceAnchor: node.sourceAnchor, children: children))!
     }
@@ -328,47 +328,17 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     func compileAndConvertExpression(rexpr: Expression, ltype: SymbolType, isExplicitCast: Bool) throws -> AbstractSyntaxTreeNode {
-        let result: AbstractSyntaxTreeNode
         let rtype = try typeCheck(rexpr: rexpr)
         
-        switch (rtype, ltype) {
-        case (.constBool, .constBool),
-             (.constBool, .bool),
-             (.bool, .constBool),
-             (.bool, .bool),
-             (.constU8, .constU8),
-             (.constU8, .u8),
-             (.u8, .constU8),
-             (.u8, .u8),
-             (.constU16, .constU16),
-             (.constU16, .u16),
-             (.u16, .constU16),
-             (.u16, .u16):
+        if canValueBeTriviallyReinterpreted(ltype, rtype) {
             // The expression produces a value whose bitpattern can be trivially
             // reinterpreted as the target type.
-            result = try rvalue(expr: rexpr)
-            
-        case (.constU8, .constU16),
-             (.constU8, .u16),
-             (.u8, .constU16),
-             (.u8, .u16):
-            // Turtle16 hardware uses a sixteen-bit machine word. An eight-bit
-            // value can be represented using the lower byte, with the upper
-            // byte being kept as all zeroes. To convert to a sixteen-bit value
-            // simply allow the upper byte to be used as well.
-            result = try rvalue(expr: rexpr)
-            
-        case (.constPointer(let a), .constPointer(let b)),
-             (.constPointer(let a), .pointer(let b)),
-             (.pointer(let a), .constPointer(let b)),
-             (.pointer(let a), .pointer(let b)):
-            // When we convert a pointer, we can change the pointee type
-            // from the mutable type to the corresponding const type.
-            guard a == b || a.correspondingConstType == b else {
-                fatalError("Semantic analysis should have already detected and already rejected a conversion from \(rtype) to \(ltype).")
-            }
-            result = try rvalue(expr: rexpr)
-            
+            return try rvalue(expr: rexpr)
+        }
+        
+        let result: AbstractSyntaxTreeNode
+        
+        switch (rtype, ltype) {
         case (.compTimeInt(let a), .u8),
              (.compTimeInt(let a), .constU8):
             // The expression produces a value that is known at compile time.
@@ -424,8 +394,82 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             ]
             result = try compile(seq: Seq(sourceAnchor: rexpr.sourceAnchor, children: children))!
             
+        case (.array(let n, let a), .array(let m, let b)):
+            guard n == m || m == nil, let n = n else {
+                fatalError("Unsupported type conversion from \(rtype) to \(ltype). Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(rexpr)")
+            }
+            fatalError("unimplemented: array(\(String(describing: n)), \(a)) -> array(\(String(describing: m)), \(b))")
+            
+        case (.array(let n?, let a), .constDynamicArray(let b)),
+             (.array(let n?, let a), .dynamicArray(let b)):
+            fatalError("unimplemented: array(\(n), \(a)) -> dynamicArray(\(b)")
+            
+        case (.constDynamicArray(let a), .constDynamicArray(let b)),
+             (.constDynamicArray(let a), .dynamicArray(let b)),
+             (.dynamicArray(let a), .constDynamicArray(let b)),
+             (.dynamicArray(let a), .dynamicArray(let b)):
+            fatalError("unimplemented: dynamicArray(\(a)) -> dynamicArray(\(b))")
+            
+        case (.constStructType(let a), .constStructType(let b)),
+             (.constStructType(let a), .structType(let b)),
+             (.structType(let a), .constStructType(let b)),
+             (.structType(let a), .structType(let b)):
+            fatalError("unimplemented: structType(\(a)) -> structType(\(b))")
+            
+        case (.unionType, .unionType):
+            fatalError("unimplemented: unionType -> unionType")
+            
+        case (_, .unionType(let typ)):
+            fatalError("unimplemented: * -> unionType(\(typ))")
+            
+        case (.unionType, _):
+            fatalError("unimplemented: unionType -> *")
+            
+        case (.constPointer(let a), .traitType(let b)),
+             (.pointer(let a), .traitType(let b)):
+            fatalError("unimplemented: pointer(\(a)) -> pointer(\(b))")
+            
+        case (.traitType(let a), .traitType(let b)):
+            fatalError("unimplemented: trait(\(a)) -> trait(\(b))")
+            
         default:
-            fatalError("Unsupported type conversion from \(rtype) to \(ltype). Semantic analysis should have rewritten this expression: \(rexpr)")
+            fatalError("Unsupported type conversion from \(rtype) to \(ltype). Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(rexpr)")
+        }
+        
+        return result
+    }
+    
+    func canValueBeTriviallyReinterpreted(_ ltype: SymbolType, _ rtype: SymbolType) -> Bool {
+        let result: Bool
+        
+        switch (rtype, ltype) {
+        case (.constBool, .constBool),
+             (.constBool, .bool),
+             (.bool, .constBool),
+             (.bool, .bool),
+             (.constU8, .constU8),
+             (.constU8, .u8),
+             (.u8, .constU8),
+             (.u8, .u8),
+             (.constU16, .constU16),
+             (.constU16, .u16),
+             (.u16, .constU16),
+             (.u16, .u16),
+             (.constU8, .constU16),
+             (.constU8, .u16),
+             (.u8, .constU16),
+             (.u8, .u16),
+             (.constPointer, .constPointer),
+             (.constPointer, .pointer),
+             (.pointer, .constPointer),
+             (.pointer, .pointer):
+            result = true
+            
+        case (.array(_, let a), .array(_, let b)):
+            result = canValueBeTriviallyReinterpreted(b, a)
+            
+        default:
+            result = false
         }
         
         return result

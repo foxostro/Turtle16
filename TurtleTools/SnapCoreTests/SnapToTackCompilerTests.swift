@@ -11,6 +11,20 @@ import SnapCore
 import TurtleCore
 import Turtle16SimulatorCore
 
+
+let kSliceName = "Slice"
+let kSliceBase = "base"
+let kSliceBaseAddressOffset = 0
+let kSliceBaseAddressType = SymbolType.u16
+let kSliceCount = "count"
+let kSliceCountOffset = 1
+let kSliceCountType = SymbolType.u16
+let kSliceType: SymbolType = .structType(StructType(name: kSliceName, symbols: SymbolTable(tuples: [
+    (kSliceBase,  Symbol(type: kSliceBaseAddressType, offset: kSliceBaseAddressOffset)),
+    (kSliceCount, Symbol(type: kSliceCountType, offset: kSliceCountOffset))
+])))
+
+
 class SnapToTackCompilerTests: XCTestCase {
     func makeCompiler(symbols: SymbolTable = SymbolTable()) -> SnapToTackCompiler {
         return SnapToTackCompiler(symbols: symbols, globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()))
@@ -213,6 +227,20 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr1")
     }
     
+    func testExpr_Identifier_struct() throws {
+        let offset = SnapCompilerMetrics.kStaticStorageStartAddress
+        let compiler = makeCompiler(symbols: SymbolTable(tuples: [
+            ("foo", Symbol(type: kSliceType, offset: offset, storage: .staticStorage))
+        ]))
+        let actual = try compiler.compile(Expression.Identifier("foo"))
+        let expected = InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ParameterIdentifier(value: "vr0"),
+            ParameterNumber(value: offset)
+        ]))
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr0")
+    }
+    
     func testExpr_As_u8_to_u8() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .u8, offset: 0xabcd, storage: .staticStorage))
@@ -282,6 +310,88 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr2")
+    }
+    
+    func testExpr_As_array_to_array_of_same_type() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 1, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.compile(Expression.As(expr: Expression.Identifier("foo"),
+                                                        targetType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u16))))
+        let expected = InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ParameterIdentifier(value: "vr0"),
+            ParameterNumber(value: 0xabcd)
+        ]))
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr0")
+    }
+    
+    func testExpr_As_array_to_array_with_different_type_that_can_be_trivially_reinterpreted() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 0, elementType: .u8), offset: 0xabcd, storage: .staticStorage))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.compile(Expression.As(expr: Expression.Identifier("foo"),
+                                                        targetType: Expression.ArrayType(count: Expression.LiteralInt(0), elementType: Expression.PrimitiveType(.u16))))
+        let expected = InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ParameterIdentifier(value: "vr0"),
+            ParameterNumber(value: 0xabcd)
+        ]))
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr0")
+    }
+    
+    func testExpr_As_array_to_array_where_each_element_must_be_converted() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 3, elementType: .u16), offset: 0x1000, storage: .staticStorage))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.compile(Expression.As(expr: Expression.Identifier("foo"),
+                                                        targetType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8))))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 0x1000)
+            ])),
+            InstructionNode(instruction: Tack.kLOAD16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr0")
+            ])),
+            InstructionNode(instruction: Tack.kANDI16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr2"),
+                ParameterIdentifier(value: "vr1"),
+                ParameterNumber(value: 0x00ff)
+            ])),
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr3"),
+                ParameterNumber(value: 0x1001)
+            ])),
+            InstructionNode(instruction: Tack.kLOAD16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr4"),
+                ParameterIdentifier(value: "vr3")
+            ])),
+            InstructionNode(instruction: Tack.kANDI16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr5"),
+                ParameterIdentifier(value: "vr4"),
+                ParameterNumber(value: 0x00ff)
+            ])),
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr6"),
+                ParameterNumber(value: 0x1002)
+            ])),
+            InstructionNode(instruction: Tack.kLOAD16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr7"),
+                ParameterIdentifier(value: "vr6")
+            ])),
+            InstructionNode(instruction: Tack.kANDI16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr8"),
+                ParameterIdentifier(value: "vr7"),
+                ParameterNumber(value: 0x00ff)
+            ]))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr8")
     }
     
     func testExpr_As_compTimeInt_small() throws {

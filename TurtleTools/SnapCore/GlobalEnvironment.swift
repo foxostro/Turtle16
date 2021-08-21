@@ -10,6 +10,7 @@ public class GlobalEnvironment: NSObject {
     public var staticStorageOffset = SnapCompilerMetrics.kStaticStorageStartAddress
     public let memoryLayoutStrategy: MemoryLayoutStrategy
     public let labelMaker = LabelMaker()
+    public let tempNameMaker = LabelMaker(prefix: "__temp")
     public var modules: [String : Block] = [:]
     
     public init(memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()) {

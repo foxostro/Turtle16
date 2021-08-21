@@ -394,11 +394,34 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             ]
             result = try compile(seq: Seq(sourceAnchor: rexpr.sourceAnchor, children: children))!
             
-        case (.array(let n, let a), .array(let m, let b)):
+        case (.array(let n, _), .array(let m, let b)):
             guard n == m || m == nil, let n = n else {
                 fatalError("Unsupported type conversion from \(rtype) to \(ltype). Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(rexpr)")
             }
-            fatalError("unimplemented: array(\(String(describing: n)), \(a)) -> array(\(String(describing: m)), \(b))")
+            let savedRegisterStack = registerStack
+            let tempArrayId = Expression.Identifier(sourceAnchor: rexpr.sourceAnchor, identifier: globalEnvironment.tempNameMaker.next())
+            let tempDecl = VarDeclaration(sourceAnchor: rexpr.sourceAnchor,
+                                          identifier: tempArrayId,
+                                          explicitType: Expression.PrimitiveType(ltype),
+                                          expression: nil,
+                                          storage: .automaticStorage,
+                                          isMutable: true,
+                                          visibility: .privateVisibility)
+            let varDeclCompiler = SnapSubcompilerVarDeclaration(symbols: symbols!, globalEnvironment: globalEnvironment)
+            let _ = try varDeclCompiler.compile(tempDecl)
+            for i in 0..<n {
+                _ = try rvalue(expr: Expression.Assignment(sourceAnchor: rexpr.sourceAnchor,
+                                                   lexpr: Expression.Subscript(sourceAnchor: rexpr.sourceAnchor,
+                                                                               subscriptable: tempArrayId,
+                                                                               argument: Expression.LiteralInt(i)),
+                                                   rexpr: Expression.As(sourceAnchor: rexpr.sourceAnchor,
+                                                                        expr: Expression.Subscript(sourceAnchor: rexpr.sourceAnchor,
+                                                                                                   subscriptable: rexpr,
+                                                                                                   argument: Expression.LiteralInt(i)),
+                                                                        targetType: Expression.PrimitiveType(b))))
+            }
+            registerStack = savedRegisterStack
+            result = try lvalue(identifier: tempArrayId)
             
         case (.array(let n?, let a), .constDynamicArray(let b)),
              (.array(let n?, let a), .dynamicArray(let b)):

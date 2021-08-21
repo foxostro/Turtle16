@@ -186,8 +186,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         
         switch binary.op {
         case .eq:
-            let right: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .bool)
-            let left: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .bool)
+            let right = try compile(expression: binary.right)
+            let left = try compile(expression: binary.left)
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
@@ -196,8 +196,8 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             a.consume()
             b.consume()
         case .ne:
-            let right: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .bool)
-            let left: [CrackleInstruction] = try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .bool)
+            let right = try compile(expression: binary.right)
+            let left = try compile(expression: binary.left)
             let c = temporaryAllocator.allocate()
             let a = temporaryStack.pop()
             let b = temporaryStack.pop()
@@ -224,10 +224,10 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         let c = temporaryAllocator.allocate()
         let labelFalse = labelMaker.next()
         let labelTail = labelMaker.next()
-        instructions += try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .bool)
+        instructions += try compile(expression: binary.left)
         let a = temporaryStack.pop()
         instructions += [.jz(labelFalse, a.address)]
-        instructions += try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .bool)
+        instructions += try compile(expression: binary.right)
         let b = temporaryStack.pop()
         instructions += [
             .jz(labelFalse, b.address),
@@ -248,10 +248,10 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
         let c = temporaryAllocator.allocate()
         let labelTrue = labelMaker.next()
         let labelTail = labelMaker.next()
-        instructions += try compileAndConvertExpressionForAssignment(rexpr: binary.left, ltype: .bool)
+        instructions += try compile(expression: binary.left)
         let a = temporaryStack.pop()
         instructions += [.jnz(labelTrue, a.address)]
-        instructions += try compileAndConvertExpressionForAssignment(rexpr: binary.right, ltype: .bool)
+        instructions += try compile(expression: binary.right)
         let b = temporaryStack.pop()
         instructions += [
             .jnz(labelTrue, b.address),

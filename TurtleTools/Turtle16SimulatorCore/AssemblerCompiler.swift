@@ -233,16 +233,16 @@ public class AssemblerCompiler: NSObject {
         guard (2...3).contains(node.parameters.elements.count) else {
             throw errorExpectsTwoOrThreeOperands(node)
         }
-        guard let destination = lookupRegister(node.parameters.elements[0]) else {
+        guard let destinationAddress = lookupRegister(node.parameters.elements[0]) else {
             throw errorExpectsFirstOperandToBeTheDestinationAddress(node)
         }
-        guard let sourceAddress = lookupRegister(node.parameters.elements[1]) else {
+        guard let source = lookupRegister(node.parameters.elements[1]) else {
             throw errorExpectsSecondOperandToBeTheSource(node)
         }
         guard let offset = ((node.parameters.elements.count > 2 ? node.parameters.elements[2] : nil) as? ParameterNumber)?.value else {
             throw errorExpectsThirdOperandToBeAnImmediateValueOffset(node)
         }
-        try codeGenerator.store(destination, sourceAddress, offset)
+        try codeGenerator.store(destinationAddress, source, offset)
     }
     
     fileprivate func compileLI(_ node: InstructionNode) throws {

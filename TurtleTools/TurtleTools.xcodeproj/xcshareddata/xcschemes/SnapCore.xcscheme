@@ -39,6 +39,11 @@
                BlueprintName = "SnapCoreTests"
                ReferencedContainer = "container:TurtleTools.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "SnapToTackCompilerTests/testExpr_As_array_to_array_where_each_element_must_be_converted()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

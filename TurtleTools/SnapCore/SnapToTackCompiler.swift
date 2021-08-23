@@ -13,62 +13,62 @@ import Turtle16SimulatorCore
 // InstructionNode, similar to the representation of an assembly program. The
 // instruction operands are taken from the following list.
 public struct Tack {
-    public static let kCALL   = "TACK_CALL"
-    public static let kENTER  = "TACK_ENTER"
-    public static let kLEAVE  = "TACK_LEAVE"
-    public static let kRET    = "TACK_RET"
-    public static let kJMP    = "TACK_JMP"
-    public static let kNOT    = "TACK_NOT"
-    public static let kLA     = "TACK_LA"
-    public static let kBZ     = "TACK_BZ"
-    public static let kBNZ    = "TACK_BNZ"
+    public static let kCALL    = "TACK_CALL"
+    public static let kENTER   = "TACK_ENTER"
+    public static let kLEAVE   = "TACK_LEAVE"
+    public static let kRET     = "TACK_RET"
+    public static let kJMP     = "TACK_JMP"
+    public static let kNOT     = "TACK_NOT"
+    public static let kLA      = "TACK_LA"
+    public static let kBZ      = "TACK_BZ"
+    public static let kBNZ     = "TACK_BNZ"
+    public static let kLOAD    = "TACK_LOAD"
+    public static let kSTORE   = "TACK_STORE"
     
-    public static let kANDI16 = "TACK_ANDI16"
-    public static let kADDI16 = "TACK_ADDI16"
-    public static let kSUBI16 = "TACK_SUBI16"
+    public static let kANDI16  = "TACK_ANDI16"
+    public static let kADDI16  = "TACK_ADDI16"
+    public static let kSUBI16  = "TACK_SUBI16"
     
-    public static let kLOAD16 = "TACK_LOAD16"
-    public static let kLI16   = "TACK_LI16"
-    public static let kLIU16  = "TACK_LIU16"
-    public static let kCMP16  = "TACK_CMP16"
-    public static let kAND16  = "TACK_AND16"
-    public static let kOR16   = "TACK_OR16"
-    public static let kXOR16  = "TACK_XOR16"
-    public static let kNEG16  = "TACK_NEG16"
-    public static let kADD16  = "TACK_ADD16"
-    public static let kSUB16  = "TACK_SUB16"
-    public static let kMUL16  = "TACK_MUL16"
-    public static let kDIV16  = "TACK_DIV16"
-    public static let kMOD16  = "TACK_MOD16"
-    public static let kLSL16  = "TACK_LSL16"
-    public static let kLSR16  = "TACK_LSR16"
-    public static let kEQ16   = "TACK_EQ16"
-    public static let kNE16   = "TACK_NE16"
-    public static let kLT16   = "TACK_LT16"
-    public static let kGE16   = "TACK_GE16"
-    public static let kLE16   = "TACK_LE16"
-    public static let kGT16   = "TACK_GT16"
+    public static let kLI16    = "TACK_LI16"
+    public static let kLIU16   = "TACK_LIU16"
+    public static let kCMP16   = "TACK_CMP16"
+    public static let kAND16   = "TACK_AND16"
+    public static let kOR16    = "TACK_OR16"
+    public static let kXOR16   = "TACK_XOR16"
+    public static let kNEG16   = "TACK_NEG16"
+    public static let kADD16   = "TACK_ADD16"
+    public static let kSUB16   = "TACK_SUB16"
+    public static let kMUL16   = "TACK_MUL16"
+    public static let kDIV16   = "TACK_DIV16"
+    public static let kMOD16   = "TACK_MOD16"
+    public static let kLSL16   = "TACK_LSL16"
+    public static let kLSR16   = "TACK_LSR16"
+    public static let kEQ16    = "TACK_EQ16"
+    public static let kNE16    = "TACK_NE16"
+    public static let kLT16    = "TACK_LT16"
+    public static let kGE16    = "TACK_GE16"
+    public static let kLE16    = "TACK_LE16"
+    public static let kGT16    = "TACK_GT16"
     
-    public static let kLOAD8  = "TACK_LOAD8"
-    public static let kLI8    = "TACK_LI8"
-    public static let kCMP8   = "TACK_CMP8"
-    public static let kAND8   = "TACK_AND8"
-    public static let kOR8    = "TACK_OR8"
-    public static let kXOR8   = "TACK_XOR8"
-    public static let kNEG8   = "TACK_NEG8"
-    public static let kADD8   = "TACK_ADD8"
-    public static let kSUB8   = "TACK_SUB8"
-    public static let kMUL8   = "TACK_MUL8"
-    public static let kDIV8   = "TACK_DIV8"
-    public static let kMOD8   = "TACK_MOD8"
-    public static let kLSL8   = "TACK_LSL8"
-    public static let kLSR8   = "TACK_LSR8"
-    public static let kEQ8    = "TACK_EQ8"
-    public static let kNE8    = "TACK_NE8"
-    public static let kLT8    = "TACK_LT8"
-    public static let kGE8    = "TACK_GE8"
-    public static let kLE8    = "TACK_LE8"
-    public static let kGT8    = "TACK_GT8"
+    public static let kLI8     = "TACK_LI8"
+    public static let kCMP8    = "TACK_CMP8"
+    public static let kAND8    = "TACK_AND8"
+    public static let kOR8     = "TACK_OR8"
+    public static let kXOR8    = "TACK_XOR8"
+    public static let kNEG8    = "TACK_NEG8"
+    public static let kADD8    = "TACK_ADD8"
+    public static let kSUB8    = "TACK_SUB8"
+    public static let kMUL8    = "TACK_MUL8"
+    public static let kDIV8    = "TACK_DIV8"
+    public static let kMOD8    = "TACK_MOD8"
+    public static let kLSL8    = "TACK_LSL8"
+    public static let kLSR8    = "TACK_LSR8"
+    public static let kEQ8     = "TACK_EQ8"
+    public static let kNE8     = "TACK_NE8"
+    public static let kLT8     = "TACK_LT8"
+    public static let kGE8     = "TACK_GE8"
+    public static let kLE8     = "TACK_LE8"
+    public static let kGT8     = "TACK_GT8"
 }
 
 public class SnapToTackCompiler: SnapASTTransformerBase {
@@ -84,6 +84,11 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     func popRegister() -> String {
         assert(!registerStack.isEmpty)
         return registerStack.removeLast()
+    }
+    
+    func peekRegister() -> String {
+        assert(!registerStack.isEmpty)
+        return registerStack.last!
     }
     
     func nextRegister() -> String {
@@ -213,7 +218,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             temp_framePointer = nextRegister()
             
             children += [
-                InstructionNode(sourceAnchor: sourceAnchor, instruction: Tack.kLOAD16, parameters: ParameterList(parameters: [
+                InstructionNode(sourceAnchor: sourceAnchor, instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
                     ParameterIdentifier(value: temp_framePointer),
                     ParameterIdentifier(value: fp)
                 ]))
@@ -222,7 +227,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             // Follow the frame pointer `depth' times.
             for _ in 1..<depth {
                 children += [
-                    InstructionNode(sourceAnchor: sourceAnchor, instruction: Tack.kLOAD16, parameters: ParameterList(parameters: [
+                    InstructionNode(sourceAnchor: sourceAnchor, instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
                         ParameterIdentifier(value: temp_framePointer),
                         ParameterIdentifier(value: temp_framePointer)
                     ]))
@@ -273,6 +278,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             return try rvalue(binary: node)
         case let expr as Expression.Is:
             return try rvalue(is: expr)
+        case let expr as Expression.Assignment:
+            return try rvalue(assignment: expr)
         default:
             throw CompilerError(message: "unimplemented: `\(expr)'")
         }
@@ -310,7 +317,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             let addr = popRegister()
             let dest = nextRegister()
             pushRegister(dest)
-            let ins = (symbol.type == .u8) ? Tack.kLOAD8 : Tack.kLOAD16
+            let ins = Tack.kLOAD
             children += [
                 InstructionNode(sourceAnchor: node.sourceAnchor, instruction: ins, parameters: ParameterList(parameters: [
                     ParameterIdentifier(value: dest),
@@ -993,7 +1000,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         // Read the union type tag in memory.
         let tempActualTag = nextRegister()
         children += [
-            InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLOAD16, parameters: ParameterList(parameters: [
+            InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: tempActualTag),
                 ParameterIdentifier(value: tempUnionAddr)
             ]))
@@ -1024,5 +1031,74 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             }
         }
         return nil
+    }
+    
+    func rvalue(assignment expr: Expression.Assignment) throws -> AbstractSyntaxTreeNode {
+        guard let ltype = try LvalueExpressionTypeChecker(symbols: symbols!).check(expression: expr.lexpr) else {
+            throw CompilerError(sourceAnchor: expr.lexpr.sourceAnchor,
+                                message: "lvalue required in assignment")
+        }
+        
+        guard false==ltype.isConst || (expr is Expression.InitialAssignment) else {
+            fatalError("Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(expr)")
+        }
+        
+        if ltype.isPrimitive {
+            let lvalueProc = try lvalue(expr: expr.lexpr)
+            let dst = popRegister()
+            let rvalueProc = try compileAndConvertExpression(rexpr: expr.rexpr, ltype: ltype, isExplicitCast: false)
+            let src = peekRegister()
+            
+            return try compile(seq: Seq(sourceAnchor: expr.sourceAnchor, children: [
+                lvalueProc,
+                rvalueProc,
+                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+                    ParameterIdentifier(value: dst),
+                    ParameterIdentifier(value: src)
+                ]))
+            ]))!
+        } else {
+            let size = globalEnvironment.memoryLayoutStrategy.sizeof(type: ltype)
+            if size == 0 {
+                let lvalueProc = try lvalue(expr: expr.lexpr)
+                
+                return try compile(seq: Seq(sourceAnchor: expr.sourceAnchor, children: [
+                    lvalueProc
+                ]))!
+            } else {
+                let lvalueProc = try lvalue(expr: expr.lexpr)
+                let dst = popRegister()
+                let rvalueProc = try compileAndConvertExpression(rexpr: expr.rexpr, ltype: ltype, isExplicitCast: false)
+                let src = peekRegister()
+                
+                return try compile(seq: Seq(sourceAnchor: expr.sourceAnchor, children: [
+                    lvalueProc,
+                    rvalueProc,
+                    memcpy(expr.sourceAnchor, dst, src, size)
+                ]))!
+            }
+        }
+    }
+    
+    func memcpy(_ sourceAnchor: SourceAnchor?, _ dst: String, _ src: String, _ size: Int) -> AbstractSyntaxTreeNode {
+        var children: [AbstractSyntaxTreeNode] = []
+        
+        for i in 0..<size {
+            let temp = nextRegister()
+            children += [
+                InstructionNode(sourceAnchor: sourceAnchor, instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                    ParameterIdentifier(value: temp),
+                    ParameterIdentifier(value: src),
+                    ParameterNumber(value: i)
+                ])),
+                InstructionNode(sourceAnchor: sourceAnchor, instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+                    ParameterIdentifier(value: dst),
+                    ParameterIdentifier(value: temp),
+                    ParameterNumber(value: i)
+                ]))
+            ]
+        }
+        
+        return Seq(children: children)
     }
 }

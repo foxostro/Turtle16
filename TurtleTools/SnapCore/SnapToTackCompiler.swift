@@ -272,6 +272,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             return try rvalue(identifier: node)
         case let node as Expression.As:
             return try rvalue(as: node)
+        case let node as Expression.Bitcast:
+            return try rvalue(bitcast: node)
         case let node as Expression.Unary:
             return try rvalue(unary: node)
         case let node as Expression.Binary:
@@ -332,6 +334,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     func rvalue(as expr: Expression.As) throws -> AbstractSyntaxTreeNode {
         let targetType = try typeCheck(rexpr: expr.targetType)
         return try compileAndConvertExpression(rexpr: expr.expr, ltype: targetType, isExplicitCast: true)
+    }
+    
+    func rvalue(bitcast expr: Expression.Bitcast) throws -> AbstractSyntaxTreeNode {
+        return try rvalue(expr: expr.expr)
     }
     
     func compileAndConvertExpression(rexpr: Expression, ltype: SymbolType, isExplicitCast: Bool) throws -> AbstractSyntaxTreeNode {

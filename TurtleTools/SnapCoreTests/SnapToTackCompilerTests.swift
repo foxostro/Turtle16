@@ -480,6 +480,28 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr1")
     }
     
+    func testExpr_Bitcast_u16_to_pointer() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .u16, offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.compile(Expression.Bitcast(expr: Expression.Identifier("foo"),
+                                                             targetType: Expression.PointerType(Expression.PrimitiveType(.constU16))))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 0xabcd)
+            ])),
+            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr0"),
+            ]))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr1")
+    }
+    
     func testExpr_Group() throws {
         let compiler = makeCompiler()
         let actual = try compiler.compile(Expression.Group(Expression.LiteralBool(false)))

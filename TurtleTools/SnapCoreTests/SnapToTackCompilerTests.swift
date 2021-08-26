@@ -344,7 +344,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testExpr_As_array_to_array_where_each_element_must_be_converted() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .array(count: 3, elementType: .u16), offset: 0x1000, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 1, elementType: .u16), offset: 0x1000, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.compile(Expression.As(expr: Expression.Identifier("foo"),
@@ -352,46 +352,42 @@ class SnapToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
-                ParameterNumber(value: 0x1000)
+                ParameterNumber(value: 272)
             ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLI8, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterNumber(value: 0)
+            ])),
+            InstructionNode(instruction: Tack.kADD16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
             ])),
-            InstructionNode(instruction: Tack.kANDI16, parameters: ParameterList(parameters: [
-                ParameterIdentifier(value: "vr2"),
-                ParameterIdentifier(value: "vr1"),
-                ParameterNumber(value: 0x00ff)
-            ])),
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr3"),
-                ParameterNumber(value: 0x1001)
+                ParameterNumber(value: 0x1000)
             ])),
             InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr4"),
-                ParameterIdentifier(value: "vr3")
+                ParameterIdentifier(value: "vr3"),
+                ParameterNumber(value: 0)
             ])),
             InstructionNode(instruction: Tack.kANDI16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr5"),
                 ParameterIdentifier(value: "vr4"),
                 ParameterNumber(value: 0x00ff)
             ])),
+            InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr2"),
+                ParameterIdentifier(value: "vr5")
+            ])),
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr6"),
-                ParameterNumber(value: 0x1002)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
-                ParameterIdentifier(value: "vr7"),
-                ParameterIdentifier(value: "vr6")
-            ])),
-            InstructionNode(instruction: Tack.kANDI16, parameters: ParameterList(parameters: [
-                ParameterIdentifier(value: "vr8"),
-                ParameterIdentifier(value: "vr7"),
-                ParameterNumber(value: 0x00ff)
+                ParameterNumber(value: 272)
             ]))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr8")
+        XCTAssertEqual(compiler.registerStack.last, "vr6")
     }
     
     func testExpr_As_compTimeInt_small() throws {
@@ -2383,5 +2379,146 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr1")
+    }
+    
+    func testExpr_SubscriptRvalue_CompileTimeIndexAndPrimitiveElement() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.compile(Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: Expression.LiteralInt(9)))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 0xabcd)
+            ])),
+            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 9)
+            ]))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr1")
+    }
+    
+    func testExpr_SubscriptRvalue_RuntimeTimeIndexAndPrimitiveElement() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.compile(Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 0xabcd)
+            ])),
+            InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterNumber(value: 9)
+            ])),
+            InstructionNode(instruction: Tack.kADD16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr2"),
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr0"),
+            ])),
+            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr3"),
+                ParameterIdentifier(value: "vr2")
+            ]))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr3")
+    }
+    
+    func testExpr_SubscriptRvalue_ZeroSizeElement() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 10, elementType: .void), offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.compile(Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 0xabcd)
+            ])),
+            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr0")
+            ]))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr1")
+    }
+    
+    func testExpr_SubscriptRvalue_NestedArray() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 10, elementType: .array(count: 2, elementType: .u16)), offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.compile(Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 0xabcd)
+            ])),
+            InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterNumber(value: 9)
+            ])),
+            InstructionNode(instruction: Tack.kMULI16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr2"),
+                ParameterIdentifier(value: "vr1"),
+                ParameterNumber(value: 2)
+            ])),
+            InstructionNode(instruction: Tack.kADD16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr3"),
+                ParameterIdentifier(value: "vr2"),
+                ParameterIdentifier(value: "vr0"),
+            ]))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr3")
+    }
+    
+    func testExpr_Assignment_ToArrayElementViaSubscript() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0x1000, storage: .staticStorage))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.compile(Expression.Assignment(
+            lexpr: Expression.Subscript(subscriptable: Expression.Identifier("foo"),
+                                        argument: Expression.LiteralInt(9)),
+            rexpr: Expression.LiteralInt(42))
+        )
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 0x1000)
+            ])),
+            InstructionNode(instruction: Tack.kLI8, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterNumber(value: 9)
+            ])),
+            InstructionNode(instruction: Tack.kADD16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr2"),
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr0"),
+            ])),
+            InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr3"),
+                ParameterNumber(value: 42)
+            ])),
+            InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr2"),
+                ParameterIdentifier(value: "vr3")
+            ]))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr3")
     }
 }

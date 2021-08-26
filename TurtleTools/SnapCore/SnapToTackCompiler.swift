@@ -163,16 +163,23 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         return try rvalue(expr: node)
     }
     
-    func typeCheck(rexpr: Expression) throws -> SymbolType {
+    @discardableResult func typeCheck(rexpr: Expression) throws -> SymbolType {
         return try RvalueExpressionTypeChecker(symbols: symbols!).check(expression: rexpr)
     }
     
+    @discardableResult func typeCheck(lexpr: Expression) throws -> SymbolType? {
+        return try LvalueExpressionTypeChecker(symbols: symbols!).check(expression: lexpr)
+    }
+    
     func lvalue(expr: Expression) throws -> AbstractSyntaxTreeNode {
+        try typeCheck(lexpr: expr)
         switch expr {
         case let node as Expression.Identifier:
             return try lvalue(identifier: node)
         case let node as Expression.Subscript:
             return try lvalue(subscript: node)
+        case let node as Expression.Get:
+            return try lvalue(get: node)
         default:
             fatalError("unimplemented")
         }
@@ -317,7 +324,68 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         return Seq(sourceAnchor: sourceAnchor, children: children)
     }
     
+    func lvalue(get expr: Expression.Get) throws -> AbstractSyntaxTreeNode {
+        let name = expr.member.identifier
+        let resultType = try typeCheck(lexpr: expr.expr)
+        
+        var children: [AbstractSyntaxTreeNode] = []
+        
+        switch resultType {
+        case .constStructType(let typ), .structType(let typ):
+            let symbol = try typ.symbols.resolve(identifier: name)
+            
+            children += [
+                try lvalue(expr: expr.expr)
+            ]
+            let tempStructAddress = popRegister()
+            let dst = nextRegister()
+            pushRegister(dst)
+            children += [
+                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+                    ParameterIdentifier(value: dst),
+                    ParameterIdentifier(value: tempStructAddress),
+                    ParameterNumber(value: symbol.offset)
+                ]))
+            ]
+            
+        case .constPointer(let typ), .pointer(let typ):
+            if name == "pointee" {
+                children += [
+                    try rvalue(expr: expr.expr)
+                ]
+            } else {
+                switch typ {
+                case .constStructType(let b), .structType(let b):
+                    let symbol = try b.symbols.resolve(identifier: name)
+                    
+                    children += [
+                        try rvalue(expr: expr.expr)
+                    ]
+                    let tempStructAddress = popRegister()
+                    let dst = nextRegister()
+                    pushRegister(dst)
+                    children += [
+                        InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+                            ParameterIdentifier(value: dst),
+                            ParameterIdentifier(value: tempStructAddress),
+                            ParameterNumber(value: symbol.offset)
+                        ]))
+                    ]
+                    
+                default:
+                    fatalError("unimplemented")
+                }
+            }
+        
+        default:
+            fatalError("unimplemented")
+        }
+        
+        return try compile(seq: Seq(sourceAnchor: expr.sourceAnchor, children: children))!
+    }
+    
     func rvalue(expr: Expression) throws -> AbstractSyntaxTreeNode {
+        try typeCheck(rexpr: expr)
         switch expr {
         case let group as Expression.Group:
             return try rvalue(expr: group.expression)
@@ -345,6 +413,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             return try rvalue(assignment: expr)
         case let expr as Expression.Subscript:
             return try rvalue(subscript: expr)
+        case let expr as Expression.Get:
+            return try rvalue(get: expr)
         default:
             throw CompilerError(message: "unimplemented: `\(expr)'")
         }
@@ -1313,6 +1383,156 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                     ]))
                 ]
             }
+        }
+        
+        return try compile(seq: Seq(sourceAnchor: expr.sourceAnchor, children: children))!
+    }
+    
+    func rvalue(get expr: Expression.Get) throws -> AbstractSyntaxTreeNode {
+        let name = expr.member.identifier
+        let resultType = try typeCheck(rexpr: expr.expr)
+        
+        var children: [AbstractSyntaxTreeNode] = []
+        
+        switch resultType {
+        case .array(count: let count, elementType: _):
+            assert(name == "count")
+            let countReg = nextRegister()
+            pushRegister(countReg)
+            children += [
+                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                    ParameterIdentifier(value: countReg),
+                    ParameterNumber(value: count!)
+                ]))
+            ]
+            
+        case .constDynamicArray, .dynamicArray:
+            assert(name == "count")
+            children += [
+                try rvalue(expr: expr.expr)
+            ]
+            let sliceAddr = popRegister()
+            let countReg = nextRegister()
+            pushRegister(countReg)
+            let countOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .u16)
+            children += [
+                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                    ParameterIdentifier(value: countReg),
+                    ParameterIdentifier(value: sliceAddr),
+                    ParameterNumber(value: countOffset)
+                ]))
+            ]
+        
+        case .constStructType(let typ), .structType(let typ):
+            let symbol = try typ.symbols.resolve(identifier: name)
+            
+            if symbol.type.isPrimitive {
+                // Read the field in-place
+                children += [
+                    try lvalue(expr: expr.expr)
+                ]
+                let tempStructAddress = popRegister()
+                let dst = nextRegister()
+                pushRegister(dst)
+                children += [
+                    InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                        ParameterIdentifier(value: dst),
+                        ParameterIdentifier(value: tempStructAddress),
+                        ParameterNumber(value: symbol.offset)
+                    ]))
+                ]
+            } else {
+                children += [
+                    try lvalue(expr: expr)
+                ]
+            }
+            
+        case .constPointer(let typ), .pointer(let typ):
+            if name == "pointee" {
+                children += [
+                    try rvalue(expr: expr.expr)
+                ]
+                
+                // If the pointee is a primitive then load it into a register.
+                // Else, the expression value is the value of the pointer, which
+                // is the same as the pointee's lvalue.
+                if typ.isPrimitive {
+                    let pointerValue = popRegister()
+                    let pointeeValue = nextRegister()
+                    pushRegister(pointeeValue)
+                    children += [
+                        InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                            ParameterIdentifier(value: pointeeValue),
+                            ParameterIdentifier(value: pointerValue)
+                        ]))
+                    ]
+                }
+            } else {
+                switch typ {
+                case .array(count: let count, elementType: _):
+                    assert(name == "count")
+                    let countReg = nextRegister()
+                    pushRegister(countReg)
+                    children += [
+                        InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                            ParameterIdentifier(value: countReg),
+                            ParameterNumber(value: count!)
+                        ]))
+                    ]
+                    
+                case .constDynamicArray, .dynamicArray:
+                    assert(name == "count")
+                    children += [
+                        try rvalue(expr: expr.expr)
+                    ]
+                    let sliceAddr = popRegister()
+                    let countReg = nextRegister()
+                    pushRegister(countReg)
+                    let countOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .u16)
+                    children += [
+                        InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                            ParameterIdentifier(value: countReg),
+                            ParameterIdentifier(value: sliceAddr),
+                            ParameterNumber(value: countOffset)
+                        ]))
+                    ]
+                    
+                case .constStructType(let b), .structType(let b):
+                    let symbol = try b.symbols.resolve(identifier: name)
+                    
+                    if symbol.type.isPrimitive {
+                        // If the field is a primitive then load into a register
+                        children += [
+                            try lvalue(expr: expr.expr)
+                        ]
+                        let structAddr = popRegister()
+                        let fieldAddr = nextRegister()
+                        let dst = nextRegister()
+                        pushRegister(dst)
+                        children += [
+                            InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                                ParameterIdentifier(value: fieldAddr),
+                                ParameterIdentifier(value: structAddr)
+                            ])),
+                            InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                                ParameterIdentifier(value: dst),
+                                ParameterIdentifier(value: fieldAddr),
+                                ParameterNumber(value: symbol.offset)
+                            ]))
+                        ]
+                    } else {
+                        children += [
+                            try lvalue(expr: expr)
+                        ]
+                    }
+                    
+                default:
+                    fatalError("unimplemented")
+                }
+            }
+        
+        default:
+            fatalError("unimplemented")
         }
         
         return try compile(seq: Seq(sourceAnchor: expr.sourceAnchor, children: children))!

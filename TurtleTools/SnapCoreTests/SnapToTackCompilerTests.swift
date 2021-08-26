@@ -2624,4 +2624,242 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr3")
     }
+    
+    func testExpr_Get_array_count() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 42, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.compile(Expression.Get(expr: Expression.Identifier("foo"),
+                                                         member: Expression.Identifier("count")))
+        let expected = InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ParameterIdentifier(value: "vr0"),
+            ParameterNumber(value: 42)
+        ]))
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr0")
+    }
+    
+    func testExpr_Get_dynamic_array_count() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .dynamicArray(elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.compile(Expression.Get(expr: Expression.Identifier("foo"),
+                                                         member: Expression.Identifier("count")))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 0xabcd)
+            ])),
+            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 1)
+            ]))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr1")
+    }
+    
+    func testExpr_Get_struct_member_primitive() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: kSliceType, offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.compile(Expression.Get(expr: Expression.Identifier("foo"),
+                                                         member: Expression.Identifier("count")))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 0xabcd)
+            ])),
+            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 1)
+            ]))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr1")
+    }
+    
+    func testExpr_Get_struct_member_not_primitive() throws {
+        let type: SymbolType = .structType(StructType(name: "bar", symbols: SymbolTable(tuples: [
+            ("wat", Symbol(type: .u16, offset: 0)),
+            ("baz", Symbol(type: .array(count: 1, elementType: .u16), offset: 1))
+        ])))
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: type, offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.compile(Expression.Get(expr: Expression.Identifier("foo"),
+                                                         member: Expression.Identifier("baz")))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 0xabcd)
+            ])),
+            InstructionNode(instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 1)
+            ]))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr1")
+    }
+    
+    func testExpr_Get_pointee_primitive() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .pointer(.u16), offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.compile(Expression.Get(expr: Expression.Identifier("foo"),
+                                                         member: Expression.Identifier("pointee")))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 0xabcd)
+            ])),
+            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr0")
+            ])),
+            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr2"),
+                ParameterIdentifier(value: "vr1")
+            ]))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr2")
+    }
+    
+    func testExpr_Get_pointee_not_primitive() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .pointer(.array(count: 1, elementType: .u16)), offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.compile(Expression.Get(expr: Expression.Identifier("foo"),
+                                                         member: Expression.Identifier("pointee")))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 0xabcd)
+            ])),
+            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr0")
+            ]))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr1")
+    }
+    
+    func testExpr_Get_array_count_via_pointer() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .pointer(.array(count: 42, elementType: .u16)), offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.compile(Expression.Get(expr: Expression.Identifier("foo"),
+                                                         member: Expression.Identifier("count")))
+        let expected = InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ParameterIdentifier(value: "vr0"),
+            ParameterNumber(value: 42)
+        ]))
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr0")
+    }
+    
+    func testExpr_Get_dynamic_array_count_via_pointer() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .pointer(.dynamicArray(elementType: .u16)), offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.compile(Expression.Get(expr: Expression.Identifier("foo"),
+                                                         member: Expression.Identifier("count")))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 0xabcd)
+            ])),
+            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr0")
+            ])),
+            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr2"),
+                ParameterIdentifier(value: "vr1"),
+                ParameterNumber(value: 1)
+            ]))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr2")
+    }
+    
+    func testExpr_Get_primitive_struct_member_via_pointer() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .pointer(kSliceType), offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.compile(Expression.Get(expr: Expression.Identifier("foo"),
+                                                         member: Expression.Identifier("count")))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 0xabcd)
+            ])),
+            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr0")
+            ])),
+            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr2"),
+                ParameterIdentifier(value: "vr1"),
+                ParameterNumber(value: 1)
+            ]))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr2")
+    }
+    
+    func testExpr_Get_non_primitive_struct_member_via_pointer() throws {
+        let type: SymbolType = .pointer(.structType(StructType(name: "bar", symbols: SymbolTable(tuples: [
+            ("wat", Symbol(type: .u16, offset: 0)),
+            ("baz", Symbol(type: .array(count: 1, elementType: .u16), offset: 1))
+        ]))))
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: type, offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.compile(Expression.Get(expr: Expression.Identifier("foo"),
+                                                         member: Expression.Identifier("baz")))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 0xabcd)
+            ])),
+            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr0")
+            ])),
+            InstructionNode(instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr2"),
+                ParameterIdentifier(value: "vr1"),
+                ParameterNumber(value: 1)
+            ]))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr2")
+    }
 }

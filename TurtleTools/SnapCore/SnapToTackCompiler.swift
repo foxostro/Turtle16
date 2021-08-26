@@ -546,13 +546,45 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             
         case (.array(let n?, let a), .constDynamicArray(let b)),
              (.array(let n?, let a), .dynamicArray(let b)):
-            fatalError("unimplemented: array(\(n), \(a)) -> dynamicArray(\(b)")
-            
-        case (.constDynamicArray(let a), .constDynamicArray(let b)),
-             (.constDynamicArray(let a), .dynamicArray(let b)),
-             (.dynamicArray(let a), .constDynamicArray(let b)),
-             (.dynamicArray(let a), .dynamicArray(let b)):
-            fatalError("unimplemented: dynamicArray(\(a)) -> dynamicArray(\(b))")
+            assert(canValueBeTriviallyReinterpreted(b, a))
+            let tempArrayId = Expression.Identifier(sourceAnchor: rexpr.sourceAnchor, identifier: globalEnvironment.tempNameMaker.next())
+            let tempDecl = VarDeclaration(sourceAnchor: rexpr.sourceAnchor,
+                                          identifier: tempArrayId,
+                                          explicitType: Expression.PrimitiveType(ltype),
+                                          expression: nil,
+                                          storage: .automaticStorage,
+                                          isMutable: true,
+                                          visibility: .privateVisibility)
+            let varDeclCompiler = SnapSubcompilerVarDeclaration(symbols: symbols!, globalEnvironment: globalEnvironment)
+            _ = try varDeclCompiler.compile(tempDecl)
+            var children: [AbstractSyntaxTreeNode] = [
+                try lvalue(expr: tempArrayId)
+            ]
+            let savedRegisterStack = registerStack
+            let dst = popRegister()
+            children += [
+                try lvalue(expr: rexpr),
+                InstructionNode(sourceAnchor: rexpr.sourceAnchor, instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+                    ParameterIdentifier(value: dst),
+                    ParameterIdentifier(value: popRegister()),
+                    ParameterNumber(value: 0),
+                ]))
+            ]
+            let countReg = nextRegister()
+            let countOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .u16)
+            children += [
+                InstructionNode(sourceAnchor: rexpr.sourceAnchor, instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                    ParameterIdentifier(value: countReg),
+                    ParameterNumber(value: n),
+                ])),
+                InstructionNode(sourceAnchor: rexpr.sourceAnchor, instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+                    ParameterIdentifier(value: dst),
+                    ParameterIdentifier(value: countReg),
+                    ParameterNumber(value: countOffset),
+                ]))
+            ]
+            registerStack = savedRegisterStack
+            result = try compile(seq: Seq(sourceAnchor: rexpr.sourceAnchor, children: children))!
             
         case (.constStructType(let a), .constStructType(let b)),
              (.constStructType(let a), .structType(let b)),
@@ -584,6 +616,14 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     func canValueBeTriviallyReinterpreted(_ ltype: SymbolType, _ rtype: SymbolType) -> Bool {
+        // The type checker has already verified that the conversion is legal.
+        // The SnapToTackCompiler class must only determine how to implement it.
+        // So conversions from one array type to another are assumed to be fine
+        // we only need determine whether the in-memory representations of
+        // elements can be trivially reinterpreted as the new type. This is the
+        // case for conversions to and from "const" for example.
+        // Same thing for conversions of pointers and dynamic array types.
+        
         if ltype == rtype {
             return true
         }
@@ -610,10 +650,18 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
              (.constPointer, .constPointer),
              (.constPointer, .pointer),
              (.pointer, .constPointer),
-             (.pointer, .pointer):
+             (.pointer, .pointer),
+             (.constDynamicArray, .constDynamicArray),
+             (.constDynamicArray, .dynamicArray),
+             (.dynamicArray, .constDynamicArray),
+             (.dynamicArray, .dynamicArray):
             result = true
             
         case (.array(_, let a), .array(_, let b)):
+            // When implmenting a conversion between array types, it might be
+            // possible to trivially reinterpret the bits in the new type.
+            // It might also be the case that we need to emit code to convert
+            // each element.
             result = canValueBeTriviallyReinterpreted(b, a)
             
         default:
@@ -1161,41 +1209,50 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             fatalError("Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(expr)")
         }
         
+        let size = globalEnvironment.memoryLayoutStrategy.sizeof(type: ltype)
+        let result: Seq
+        
         if ltype.isPrimitive {
             let lvalueProc = try lvalue(expr: expr.lexpr)
             let dst = popRegister()
             let rvalueProc = try compileAndConvertExpression(rexpr: expr.rexpr, ltype: ltype, isExplicitCast: false)
             let src = peekRegister()
             
-            return try compile(seq: Seq(sourceAnchor: expr.sourceAnchor, children: [
+            result = Seq(sourceAnchor: expr.sourceAnchor, children: [
                 lvalueProc,
                 rvalueProc,
                 InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
                     ParameterIdentifier(value: dst),
                     ParameterIdentifier(value: src)
                 ]))
-            ]))!
-        } else {
-            let size = globalEnvironment.memoryLayoutStrategy.sizeof(type: ltype)
-            if size == 0 {
-                let lvalueProc = try lvalue(expr: expr.lexpr)
-                
-                return try compile(seq: Seq(sourceAnchor: expr.sourceAnchor, children: [
-                    lvalueProc
-                ]))!
-            } else {
-                let lvalueProc = try lvalue(expr: expr.lexpr)
-                let dst = popRegister()
-                let rvalueProc = try compileAndConvertExpression(rexpr: expr.rexpr, ltype: ltype, isExplicitCast: false)
-                let src = peekRegister()
-                
-                return try compile(seq: Seq(sourceAnchor: expr.sourceAnchor, children: [
-                    lvalueProc,
-                    rvalueProc,
-                    memcpy(expr.sourceAnchor, dst, src, size)
-                ]))!
+            ])
+        } else if size == 0 {
+            result = Seq(sourceAnchor: expr.sourceAnchor, children: [
+                try lvalue(expr: expr.lexpr)
+            ])
+        }else if let structInitializer = expr.rexpr as? Expression.StructInitializer {
+            let children = structInitializer.arguments.map {
+                Expression.Assignment(sourceAnchor: expr.rexpr.sourceAnchor,
+                                      lexpr: Expression.Get(sourceAnchor: expr.rexpr.sourceAnchor,
+                                                            expr: expr.lexpr,
+                                                            member: Expression.Identifier($0.name)),
+                                      rexpr: $0.expr)
             }
+            result = Seq(sourceAnchor: expr.sourceAnchor, children: children)
+        } else {
+            let lvalueProc = try lvalue(expr: expr.lexpr)
+            let dst = popRegister()
+            let rvalueProc = try compileAndConvertExpression(rexpr: expr.rexpr, ltype: ltype, isExplicitCast: false)
+            let src = peekRegister()
+            
+            result = Seq(sourceAnchor: expr.sourceAnchor, children: [
+                lvalueProc,
+                rvalueProc,
+                memcpy(expr.sourceAnchor, dst, src, size)
+            ])
         }
+        
+        return try compile(seq: result)!
     }
     
     func memcpy(_ sourceAnchor: SourceAnchor?, _ dst: String, _ src: String, _ size: Int) -> AbstractSyntaxTreeNode {

@@ -415,6 +415,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             return try rvalue(subscript: expr)
         case let expr as Expression.Get:
             return try rvalue(get: expr)
+        case let node as Expression.StructInitializer:
+            return try rvalue(structInitializer: node)
         default:
             throw CompilerError(message: "unimplemented: `\(expr)'")
         }
@@ -1535,6 +1537,36 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             fatalError("unimplemented")
         }
         
+        return try compile(seq: Seq(sourceAnchor: expr.sourceAnchor, children: children))!
+    }
+    
+    func rvalue(structInitializer expr: Expression.StructInitializer) throws -> AbstractSyntaxTreeNode {
+        let resultType = try typeCheck(rexpr: expr)
+        let savedRegisterStack = registerStack
+        let tempArrayId = Expression.Identifier(sourceAnchor: expr.sourceAnchor, identifier: globalEnvironment.tempNameMaker.next())
+        let tempDecl = VarDeclaration(sourceAnchor: expr.sourceAnchor,
+                                      identifier: tempArrayId,
+                                      explicitType: Expression.PrimitiveType(resultType),
+                                      expression: nil,
+                                      storage: .automaticStorage,
+                                      isMutable: true,
+                                      visibility: .privateVisibility)
+        let varDeclCompiler = SnapSubcompilerVarDeclaration(symbols: symbols!, globalEnvironment: globalEnvironment)
+        let _ = try varDeclCompiler.compile(tempDecl)
+        var children: [AbstractSyntaxTreeNode] = []
+        for arg in expr.arguments {
+            let slot = Expression.Get(sourceAnchor: expr.sourceAnchor,
+                                      expr: tempArrayId,
+                                      member: Expression.Identifier(arg.name))
+            let child =  try rvalue(expr: Expression.Assignment(sourceAnchor: expr.sourceAnchor,
+                                                                lexpr: slot,
+                                                                rexpr: arg.expr))
+            children.append(child)
+        }
+        registerStack = savedRegisterStack
+        children += [
+            try lvalue(identifier: tempArrayId)
+        ]
         return try compile(seq: Seq(sourceAnchor: expr.sourceAnchor, children: children))!
     }
 }

@@ -253,6 +253,60 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
+    func testExpr_StructInitializer() throws {
+        let symbols = SymbolTable()
+        symbols.bind(identifier: kSliceName, symbolType: kSliceType)
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.compile(Expression.StructInitializer(identifier: Expression.Identifier(kSliceName), arguments: [
+            Expression.StructInitializer.Argument(name: kSliceBase,
+                                                  expr: Expression.LiteralInt(0xabcd)),
+            Expression.StructInitializer.Argument(name: kSliceCount,
+                                                  expr: Expression.LiteralInt(0xffff))
+        ]))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 272)
+            ])),
+            InstructionNode(instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 0)
+            ])),
+            InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr2"),
+                ParameterNumber(value: 0xabcd)
+            ])),
+            InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr2")
+            ])),
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr3"),
+                ParameterNumber(value: 272)
+            ])),
+            InstructionNode(instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr4"),
+                ParameterIdentifier(value: "vr3"),
+                ParameterNumber(value: 1)
+            ])),
+            InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr5"),
+                ParameterNumber(value: 0xffff)
+            ])),
+            InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr4"),
+                ParameterIdentifier(value: "vr5")
+            ])),
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr6"),
+                ParameterNumber(value: 272)
+            ]))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr6")
+    }
+    
     func testExpr_Identifier_Static_u16() throws {
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let compiler = makeCompiler(symbols: SymbolTable(tuples: [

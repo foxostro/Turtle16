@@ -327,6 +327,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             return rvalue(literalBoolean: literal)
         case let literal as Expression.LiteralArray:
             return try rvalue(literalArray: literal)
+        case let literal as Expression.LiteralString:
+            return try rvalue(literalString: literal)
         case let node as Expression.Identifier:
             return try rvalue(identifier: node)
         case let node as Expression.As:
@@ -397,6 +399,17 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         ]
         return try compile(seq: Seq(sourceAnchor: expr.sourceAnchor, children: children))!
     }
+    
+    func rvalue(literalString expr: Expression.LiteralString) throws -> AbstractSyntaxTreeNode {
+        let arrayType = Expression.ArrayType(sourceAnchor: expr.sourceAnchor,
+                                             count: Expression.LiteralInt(expr.value.count),
+                                             elementType: Expression.PrimitiveType(.u8))
+        let elements = expr.value.utf8.map { Expression.LiteralInt(sourceAnchor: expr.sourceAnchor, value: Int($0)) }
+        return try rvalue(literalArray: Expression.LiteralArray(sourceAnchor: expr.sourceAnchor,
+                                                                arrayType: arrayType,
+                                                                elements: elements))
+    }
+    
     func rvalue(identifier node: Expression.Identifier) throws -> AbstractSyntaxTreeNode {
         let symbol = try symbols!.resolve(identifier: node.identifier)
         

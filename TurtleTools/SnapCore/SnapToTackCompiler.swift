@@ -325,6 +325,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             return rvalue(literalInt: literal)
         case let literal as Expression.LiteralBool:
             return rvalue(literalBoolean: literal)
+        case let literal as Expression.LiteralArray:
+            return try rvalue(literalArray: literal)
         case let node as Expression.Identifier:
             return try rvalue(identifier: node)
         case let node as Expression.As:
@@ -367,6 +369,34 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         return result
     }
     
+    func rvalue(literalArray expr: Expression.LiteralArray) throws -> AbstractSyntaxTreeNode {
+        let savedRegisterStack = registerStack
+        let tempArrayId = Expression.Identifier(sourceAnchor: expr.sourceAnchor, identifier: globalEnvironment.tempNameMaker.next())
+        let tempDecl = VarDeclaration(sourceAnchor: expr.sourceAnchor,
+                                      identifier: tempArrayId,
+                                      explicitType: expr.arrayType,
+                                      expression: nil,
+                                      storage: .automaticStorage,
+                                      isMutable: true,
+                                      visibility: .privateVisibility)
+        let varDeclCompiler = SnapSubcompilerVarDeclaration(symbols: symbols!, globalEnvironment: globalEnvironment)
+        let _ = try varDeclCompiler.compile(tempDecl)
+        var children: [AbstractSyntaxTreeNode] = []
+        for i in 0..<expr.elements.count {
+            let slot = Expression.Subscript(sourceAnchor: expr.sourceAnchor,
+                                            subscriptable: tempArrayId,
+                                            argument: Expression.LiteralInt(i))
+            let child =  try rvalue(expr: Expression.Assignment(sourceAnchor: expr.sourceAnchor,
+                                                                lexpr: slot,
+                                                                rexpr: expr.elements[i]))
+            children.append(child)
+        }
+        registerStack = savedRegisterStack
+        children += [
+            try lvalue(identifier: tempArrayId)
+        ]
+        return try compile(seq: Seq(sourceAnchor: expr.sourceAnchor, children: children))!
+    }
     func rvalue(identifier node: Expression.Identifier) throws -> AbstractSyntaxTreeNode {
         let symbol = try symbols!.resolve(identifier: node.identifier)
         
@@ -541,6 +571,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     func canValueBeTriviallyReinterpreted(_ ltype: SymbolType, _ rtype: SymbolType) -> Bool {
+        if ltype == rtype {
+            return true
+        }
+        
         let result: Bool
         
         switch (rtype, ltype) {

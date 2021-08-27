@@ -449,16 +449,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     
     func rvalue(literalArray expr: Expression.LiteralArray) throws -> AbstractSyntaxTreeNode {
         let savedRegisterStack = registerStack
-        let tempArrayId = Expression.Identifier(sourceAnchor: expr.sourceAnchor, identifier: globalEnvironment.tempNameMaker.next())
-        let tempDecl = VarDeclaration(sourceAnchor: expr.sourceAnchor,
-                                      identifier: tempArrayId,
-                                      explicitType: expr.arrayType,
-                                      expression: nil,
-                                      storage: .automaticStorage,
-                                      isMutable: true,
-                                      visibility: .privateVisibility)
-        let varDeclCompiler = SnapSubcompilerVarDeclaration(symbols: symbols!, globalEnvironment: globalEnvironment)
-        let _ = try varDeclCompiler.compile(tempDecl)
+        let tempArrayId = try makeCompilerTemporary(expr.sourceAnchor, expr.arrayType)
         var children: [AbstractSyntaxTreeNode] = []
         for i in 0..<expr.elements.count {
             let slot = Expression.Subscript(sourceAnchor: expr.sourceAnchor,
@@ -474,6 +465,20 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             try lvalue(identifier: tempArrayId)
         ]
         return try compile(seq: Seq(sourceAnchor: expr.sourceAnchor, children: children))!
+    }
+    
+    func makeCompilerTemporary(_ sourceAnchor: SourceAnchor?, _ type: Expression) throws -> Expression.Identifier {
+        let tempArrayId = Expression.Identifier(sourceAnchor: sourceAnchor, identifier: globalEnvironment.tempNameMaker.next())
+        let tempDecl = VarDeclaration(sourceAnchor: sourceAnchor,
+                                      identifier: tempArrayId,
+                                      explicitType: type,
+                                      expression: nil,
+                                      storage: .automaticStorage,
+                                      isMutable: true,
+                                      visibility: .privateVisibility)
+        let varDeclCompiler = SnapSubcompilerVarDeclaration(symbols: symbols!, globalEnvironment: globalEnvironment)
+        let _ = try varDeclCompiler.compile(tempDecl)
+        return tempArrayId
     }
     
     func rvalue(literalString expr: Expression.LiteralString) throws -> AbstractSyntaxTreeNode {
@@ -589,16 +594,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 fatalError("Unsupported type conversion from \(rtype) to \(ltype). Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(rexpr)")
             }
             let savedRegisterStack = registerStack
-            let tempArrayId = Expression.Identifier(sourceAnchor: rexpr.sourceAnchor, identifier: globalEnvironment.tempNameMaker.next())
-            let tempDecl = VarDeclaration(sourceAnchor: rexpr.sourceAnchor,
-                                          identifier: tempArrayId,
-                                          explicitType: Expression.PrimitiveType(ltype),
-                                          expression: nil,
-                                          storage: .automaticStorage,
-                                          isMutable: true,
-                                          visibility: .privateVisibility)
-            let varDeclCompiler = SnapSubcompilerVarDeclaration(symbols: symbols!, globalEnvironment: globalEnvironment)
-            let _ = try varDeclCompiler.compile(tempDecl)
+            let tempArrayId = try makeCompilerTemporary(rexpr.sourceAnchor, Expression.PrimitiveType(ltype))
             var children: [AbstractSyntaxTreeNode] = []
             for i in 0..<n {
                 children += [
@@ -623,16 +619,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         case (.array(let n?, let a), .constDynamicArray(let b)),
              (.array(let n?, let a), .dynamicArray(let b)):
             assert(canValueBeTriviallyReinterpreted(b, a))
-            let tempArrayId = Expression.Identifier(sourceAnchor: rexpr.sourceAnchor, identifier: globalEnvironment.tempNameMaker.next())
-            let tempDecl = VarDeclaration(sourceAnchor: rexpr.sourceAnchor,
-                                          identifier: tempArrayId,
-                                          explicitType: Expression.PrimitiveType(ltype),
-                                          expression: nil,
-                                          storage: .automaticStorage,
-                                          isMutable: true,
-                                          visibility: .privateVisibility)
-            let varDeclCompiler = SnapSubcompilerVarDeclaration(symbols: symbols!, globalEnvironment: globalEnvironment)
-            _ = try varDeclCompiler.compile(tempDecl)
+            let tempArrayId = try makeCompilerTemporary(rexpr.sourceAnchor, Expression.PrimitiveType(ltype))
             var children: [AbstractSyntaxTreeNode] = [
                 try lvalue(expr: tempArrayId)
             ]
@@ -1547,16 +1534,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     func rvalue(structInitializer expr: Expression.StructInitializer) throws -> AbstractSyntaxTreeNode {
         let resultType = try typeCheck(rexpr: expr)
         let savedRegisterStack = registerStack
-        let tempArrayId = Expression.Identifier(sourceAnchor: expr.sourceAnchor, identifier: globalEnvironment.tempNameMaker.next())
-        let tempDecl = VarDeclaration(sourceAnchor: expr.sourceAnchor,
-                                      identifier: tempArrayId,
-                                      explicitType: Expression.PrimitiveType(resultType),
-                                      expression: nil,
-                                      storage: .automaticStorage,
-                                      isMutable: true,
-                                      visibility: .privateVisibility)
-        let varDeclCompiler = SnapSubcompilerVarDeclaration(symbols: symbols!, globalEnvironment: globalEnvironment)
-        let _ = try varDeclCompiler.compile(tempDecl)
+        let tempArrayId = try makeCompilerTemporary(expr.sourceAnchor, Expression.PrimitiveType(resultType))
         var children: [AbstractSyntaxTreeNode] = []
         for arg in expr.arguments {
             let slot = Expression.Get(sourceAnchor: expr.sourceAnchor,

@@ -1306,7 +1306,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             result = Seq(sourceAnchor: expr.sourceAnchor, children: [
                 try lvalue(expr: expr.lexpr)
             ])
-        }else if let structInitializer = expr.rexpr as? Expression.StructInitializer {
+        } else if let structInitializer = expr.rexpr as? Expression.StructInitializer {
             let children = structInitializer.arguments.map {
                 Expression.Assignment(sourceAnchor: expr.rexpr.sourceAnchor,
                                       lexpr: Expression.Get(sourceAnchor: expr.rexpr.sourceAnchor,

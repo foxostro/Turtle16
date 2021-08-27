@@ -421,6 +421,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             return try rvalue(get: expr)
         case let node as Expression.StructInitializer:
             return try rvalue(structInitializer: node)
+        case let node as Expression.Call:
+            return try rvalue(call: node)
         default:
             throw CompilerError(message: "unimplemented: `\(expr)'")
         }
@@ -1550,5 +1552,143 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             try lvalue(identifier: tempArrayId)
         ]
         return try compile(seq: Seq(sourceAnchor: expr.sourceAnchor, children: children))!
+    }
+    
+    func rvalue(call expr: Expression.Call) throws -> AbstractSyntaxTreeNode {
+        let calleeType = try typeCheck(rexpr: expr.callee)
+        
+        switch calleeType {
+        case .function(let typ), .pointer(.function(let typ)), .constPointer(.function(let typ)):
+            return try rvalue(call: expr, typ: typ)
+            
+        default:
+            fatalError("cannot call value of non-function type `\(calleeType)'")
+        }
+    }
+    
+    func rvalue(call expr: Expression.Call, typ: FunctionType) throws -> AbstractSyntaxTreeNode {
+        if typ.name == "hlt" {
+           return InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: kHLT)
+        }
+        
+        // Allocate a temporary to hold the function call return value.
+        var tempRetId: Expression.Identifier! = nil
+        if typ.returnType != .void {
+            tempRetId = try makeCompilerTemporary(expr.sourceAnchor, Expression.PrimitiveType(typ.returnType))
+        }
+        
+        let parent = symbols
+        let innerBlock = SymbolTable(parent: parent)
+        symbols = innerBlock
+        
+        var children: [AbstractSyntaxTreeNode] = []
+        
+        // Allocate temporaries for each argument to the function call.
+        // Evaluation of argument expressions may involve allocating memory on
+        // the stack so we evaluate first and then copy into the argument pack.
+        var tempArgIds: [Expression.Identifier] = []
+        for i in 0..<typ.arguments.count {
+            let tempArgId = Expression.Identifier(sourceAnchor: expr.sourceAnchor, identifier: globalEnvironment.tempNameMaker.next())
+            let tempDecl = VarDeclaration(sourceAnchor: expr.sourceAnchor,
+                                          identifier: tempArgId,
+                                          explicitType: Expression.PrimitiveType(typ.arguments[i]),
+                                          expression: expr.arguments[i],
+                                          storage: .automaticStorage,
+                                          isMutable: false,
+                                          visibility: .privateVisibility)
+            let varDeclCompiler = SnapSubcompilerVarDeclaration(symbols: symbols!, globalEnvironment: globalEnvironment)
+            let assignmentExpr = try varDeclCompiler.compile(tempDecl)!
+            let argProc = try compile(assignmentExpr)!
+            children.append(argProc)
+            tempArgIds.append(tempArgId)
+        }
+        
+        // Allocate storage on the stack for the return value.
+        let returnTypeSize = globalEnvironment.memoryLayoutStrategy.sizeof(type: typ.returnType)
+        if returnTypeSize > 0 {
+            children += [
+                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+                    ParameterIdentifier(value: sp),
+                    ParameterIdentifier(value: sp),
+                    ParameterNumber(value: returnTypeSize)
+                ]))
+            ]
+        }
+        
+        // Allocate stack space for another argument and copy in the argument.
+        for i in 0..<typ.arguments.count {
+            let tempArgId = tempArgIds[i]
+            let argType = typ.arguments[i]
+            let argTypeSize = globalEnvironment.memoryLayoutStrategy.sizeof(type: argType)
+            if argTypeSize > 0 {
+                children += [
+                    InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+                        ParameterIdentifier(value: sp),
+                        ParameterIdentifier(value: sp),
+                        ParameterNumber(value: argTypeSize)
+                    ])),
+                    try lvalue(identifier: tempArgId),
+                    memcpy(expr.sourceAnchor, sp, popRegister(), argTypeSize),
+                ]
+            }
+        }
+        
+        // Make the function call.
+        children += [
+            InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kCALL, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: typ.mangledName!)
+            ]))
+        ]
+        
+        // Free up stack storage allocated for arguments.
+        let argPackSize = typ.arguments.reduce(0) { (result, type) in
+            result + globalEnvironment.memoryLayoutStrategy.sizeof(type: type)
+        }
+        if argPackSize > 0 {
+            children += [
+                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+                    ParameterIdentifier(value: sp),
+                    ParameterIdentifier(value: sp),
+                    ParameterNumber(value: argPackSize)
+                ]))
+            ]
+        }
+        
+        // Copy the function call return value to the compiler temporary we
+        // allocated earlier. Free stack storage allocated earlier.
+        if returnTypeSize > 0 {
+            children += [
+                try lvalue(identifier: tempRetId!),
+                memcpy(expr.sourceAnchor, popRegister(), sp, returnTypeSize),
+                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+                    ParameterIdentifier(value: sp),
+                    ParameterIdentifier(value: sp),
+                    ParameterNumber(value: returnTypeSize)
+                ]))
+            ]
+        }
+        
+        let innerSeq = try compile(seq: Seq(sourceAnchor: expr.sourceAnchor, children: children))!
+        
+        symbols = parent
+        if let symbols = symbols, innerBlock.stackFrameIndex == symbols.stackFrameIndex {
+            symbols.highwaterMark = max(symbols.highwaterMark, innerBlock.highwaterMark)
+        }
+        
+        // If the function call evaluates to a non-void value then get the
+        // rvalue of the compiler temporary so we can chain that value into the
+        // next expression.
+        let outerSeq: Seq
+        if typ.returnType != .void {
+            outerSeq = Seq(sourceAnchor: expr.sourceAnchor, children: [
+                innerSeq,
+                try rvalue(identifier: tempRetId!)
+            ])
+        } else {
+            outerSeq = Seq(sourceAnchor: expr.sourceAnchor, children: [
+                innerSeq
+            ])
+        }
+        return try compile(seq: outerSeq)!
     }
 }

@@ -77,6 +77,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     public internal(set) var registerStack: [String] = []
     var nextRegisterIndex = 0
     let fp = "fp"
+    let sp = "sp"
     
     func pushRegister(_ identifier: String) {
         registerStack.append(identifier)

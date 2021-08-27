@@ -2794,6 +2794,28 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr2")
     }
     
+    func testLvalue_Get_pointee_primitive() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .pointer(.u16), offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.lvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
+                                                              member: Expression.Identifier("pointee")))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 0xabcd)
+            ])),
+            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr0")
+            ]))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr1")
+    }
+    
     func testRvalue_Get_pointee_not_primitive() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(.array(count: 1, elementType: .u16)), offset: 0xabcd, storage: .staticStorage))

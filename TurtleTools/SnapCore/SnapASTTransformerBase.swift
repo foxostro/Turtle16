@@ -9,7 +9,7 @@
 import TurtleCore
 
 public class SnapASTTransformerBase: NSObject {
-    public private(set) var symbols: SymbolTable? = nil
+    public internal(set) var symbols: SymbolTable? = nil
     
     public init(_ symbols: SymbolTable? = nil) {
         self.symbols = symbols

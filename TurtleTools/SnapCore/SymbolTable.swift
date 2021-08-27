@@ -25,7 +25,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     
     public var isPrimitive: Bool {
         switch self {
-        case .void, .u8, .bool, .u16, .pointer:
+        case .void, .u8, .constU8, .bool, .constBool, .u16, .constU16, .pointer, .constPointer:
             return true
         
         default:

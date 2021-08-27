@@ -327,11 +327,7 @@ public class Expression: AbstractSyntaxTreeNode {
         public let callee: Expression
         public let arguments: [Expression]
         
-        public convenience init(callee: Expression, arguments: [Expression]) {
-            self.init(sourceAnchor: nil, callee: callee, arguments: arguments)
-        }
-        
-        public init(sourceAnchor: SourceAnchor?, callee: Expression, arguments: [Expression]) {
+        public init(sourceAnchor: SourceAnchor? = nil, callee: Expression, arguments: [Expression] = []) {
             self.callee = callee
             self.arguments = arguments
             super.init(sourceAnchor: sourceAnchor)

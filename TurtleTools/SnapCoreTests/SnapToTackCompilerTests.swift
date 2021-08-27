@@ -129,9 +129,9 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
     
-    func testExpr_LiteralBoolFalse() throws {
+    func testRvalue_LiteralBoolFalse() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.compile(Expression.LiteralBool(false))
+        let actual = try compiler.rvalue(expr: Expression.LiteralBool(false))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0)
@@ -140,9 +140,9 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_LiteralBoolTrue() throws {
+    func testRvalue_LiteralBoolTrue() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.compile(Expression.LiteralBool(true))
+        let actual = try compiler.rvalue(expr: Expression.LiteralBool(true))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
@@ -151,9 +151,9 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_LiteralInt_Small_Positive() throws {
+    func testRvalue_LiteralInt_Small_Positive() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.compile(Expression.LiteralInt(1))
+        let actual = try compiler.rvalue(expr: Expression.LiteralInt(1))
         let expected = InstructionNode(instruction: Tack.kLI8, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
@@ -162,9 +162,9 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_LiteralInt_Small_Negative() throws {
+    func testRvalue_LiteralInt_Small_Negative() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.compile(Expression.LiteralInt(-1))
+        let actual = try compiler.rvalue(expr: Expression.LiteralInt(-1))
         let expected = InstructionNode(instruction: Tack.kLI8, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: -1)
@@ -173,9 +173,9 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_LiteralInt_Big() throws {
+    func testRvalue_LiteralInt_Big() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.compile(Expression.LiteralInt(0x1000))
+        let actual = try compiler.rvalue(expr: Expression.LiteralInt(0x1000))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0x1000)
@@ -184,10 +184,10 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_LiteralArray() throws {
+    func testRvalue_LiteralArray() throws {
         let compiler = makeCompiler()
         let arrType = Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u16))
-        let actual = try compiler.compile(Expression.LiteralArray(arrayType: arrType, elements: [Expression.LiteralInt(42)]))
+        let actual = try compiler.rvalue(expr: Expression.LiteralArray(arrayType: arrType, elements: [Expression.LiteralInt(42)]))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -219,9 +219,9 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_LiteralString() throws {
+    func testRvalue_LiteralString() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.compile(Expression.LiteralString("a"))
+        let actual = try compiler.rvalue(expr: Expression.LiteralString("a"))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -253,11 +253,11 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_StructInitializer() throws {
+    func testRvalue_StructInitializer() throws {
         let symbols = SymbolTable()
         symbols.bind(identifier: kSliceName, symbolType: kSliceType)
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.StructInitializer(identifier: Expression.Identifier(kSliceName), arguments: [
+        let actual = try compiler.rvalue(expr: Expression.StructInitializer(identifier: Expression.Identifier(kSliceName), arguments: [
             Expression.StructInitializer.Argument(name: kSliceBase,
                                                   expr: Expression.LiteralInt(0xabcd)),
             Expression.StructInitializer.Argument(name: kSliceCount,
@@ -307,12 +307,12 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr6")
     }
     
-    func testExpr_Identifier_Static_u16() throws {
+    func testRvalue_Identifier_Static_u16() throws {
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let compiler = makeCompiler(symbols: SymbolTable(tuples: [
             ("foo", Symbol(type: .u16, offset: offset, storage: .staticStorage))
         ]))
-        let actual = try compiler.compile(Expression.Identifier("foo"))
+        let actual = try compiler.rvalue(expr: Expression.Identifier("foo"))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -327,14 +327,14 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr1")
     }
     
-    func testExpr_Identifier_Stack_u16() throws {
+    func testRvalue_Identifier_Stack_u16() throws {
         let offset = 4
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .u16, offset: offset, storage: .automaticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Identifier("foo"))
+        let actual = try compiler.rvalue(expr: Expression.Identifier("foo"))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -350,12 +350,12 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr1")
     }
     
-    func testExpr_Identifier_struct() throws {
+    func testRvalue_Identifier_struct() throws {
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let compiler = makeCompiler(symbols: SymbolTable(tuples: [
             ("foo", Symbol(type: kSliceType, offset: offset, storage: .staticStorage))
         ]))
-        let actual = try compiler.compile(Expression.Identifier("foo"))
+        let actual = try compiler.rvalue(expr: Expression.Identifier("foo"))
         let expected = InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: offset)
@@ -364,14 +364,14 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_As_u8_to_u8() throws {
+    func testRvalue_As_u8_to_u8() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .u8, offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.As(expr: Expression.Identifier("foo"),
-                                                        targetType: Expression.PrimitiveType(.u8)))
+        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
+                                                             targetType: Expression.PrimitiveType(.u8)))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -386,14 +386,14 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr1")
     }
     
-    func testExpr_As_u8_to_u16() throws {
+    func testRvalue_As_u8_to_u16() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .u8, offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.As(expr: Expression.Identifier("foo"),
-                                                        targetType: Expression.PrimitiveType(.u16)))
+        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
+                                                             targetType: Expression.PrimitiveType(.u16)))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -408,14 +408,14 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr1")
     }
     
-    func testExpr_As_u16_to_u8() throws {
+    func testRvalue_As_u16_to_u8() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .u16, offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.As(expr: Expression.Identifier("foo"),
-                                                        targetType: Expression.PrimitiveType(.u8)))
+        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
+                                                             targetType: Expression.PrimitiveType(.u8)))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -435,13 +435,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr2")
     }
     
-    func testExpr_As_array_to_array_of_same_type() throws {
+    func testRvalue_As_array_to_array_of_same_type() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 1, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.As(expr: Expression.Identifier("foo"),
-                                                        targetType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u16))))
+        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
+                                                             targetType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u16))))
         let expected = InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0xabcd)
@@ -450,13 +450,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_As_array_to_array_with_different_type_that_can_be_trivially_reinterpreted() throws {
+    func testRvalue_As_array_to_array_with_different_type_that_can_be_trivially_reinterpreted() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 0, elementType: .u8), offset: 0xabcd, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.As(expr: Expression.Identifier("foo"),
-                                                        targetType: Expression.ArrayType(count: Expression.LiteralInt(0), elementType: Expression.PrimitiveType(.u16))))
+        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
+                                                             targetType: Expression.ArrayType(count: Expression.LiteralInt(0), elementType: Expression.PrimitiveType(.u16))))
         let expected = InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0xabcd)
@@ -465,13 +465,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_As_array_to_array_where_each_element_must_be_converted() throws {
+    func testRvalue_As_array_to_array_where_each_element_must_be_converted() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 1, elementType: .u16), offset: 0x1000, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.As(expr: Expression.Identifier("foo"),
-                                                        targetType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8))))
+        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
+                                                             targetType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8))))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -513,12 +513,12 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr6")
     }
     
-    func testExpr_As_array_to_dynamic_array() throws {
+    func testRvalue_As_array_to_dynamic_array() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 1, elementType: .u16), offset: 0x1000, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.DynamicArrayType(Expression.PrimitiveType(.u16))))
+        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.DynamicArrayType(Expression.PrimitiveType(.u16))))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -547,13 +547,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_As_compTimeInt_small() throws {
+    func testRvalue_As_compTimeInt_small() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .compTimeInt(42), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.As(expr: Expression.Identifier("foo"),
+        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                         targetType: Expression.PrimitiveType(.u8)))
         let expected = InstructionNode(instruction: Tack.kLI8, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
@@ -563,14 +563,14 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_As_compTimeInt_big() throws {
+    func testRvalue_As_compTimeInt_big() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .compTimeInt(1000), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.As(expr: Expression.Identifier("foo"),
-                                                        targetType: Expression.PrimitiveType(.u16)))
+        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
+                                                             targetType: Expression.PrimitiveType(.u16)))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1000)
@@ -579,14 +579,14 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_As_compTimeBool_true() throws {
+    func testRvalue_As_compTimeBool_true() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .compTimeBool(true), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.As(expr: Expression.Identifier("foo"),
-                                                        targetType: Expression.PrimitiveType(.bool)))
+        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
+                                                             targetType: Expression.PrimitiveType(.bool)))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
@@ -595,14 +595,14 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_As_compTimeBool_false() throws {
+    func testRvalue_As_compTimeBool_false() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .compTimeBool(false), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.As(expr: Expression.Identifier("foo"),
-                                                        targetType: Expression.PrimitiveType(.bool)))
+        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
+                                                             targetType: Expression.PrimitiveType(.bool)))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0)
@@ -611,35 +611,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_As_pointer_to_pointer() throws {
+    func testRvalue_As_pointer_to_pointer() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(.u16), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.As(expr: Expression.Identifier("foo"),
-                                                        targetType: Expression.PointerType(Expression.PrimitiveType(.constU16))))
-        let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
-                ParameterIdentifier(value: "vr0"),
-                ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
-                ParameterIdentifier(value: "vr1"),
-                ParameterIdentifier(value: "vr0"),
-            ]))
-        ])
-        XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
-    }
-    
-    func testExpr_Bitcast_u16_to_pointer() throws {
-        let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .u16, offset: 0xabcd, storage: .staticStorage))
-        ])
-        symbols.stackFrameIndex = 1
-        let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Bitcast(expr: Expression.Identifier("foo"),
+        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PointerType(Expression.PrimitiveType(.constU16))))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
@@ -655,9 +633,31 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr1")
     }
     
-    func testExpr_Group() throws {
+    func testRvalue_Bitcast_u16_to_pointer() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .u16, offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: Expression.Bitcast(expr: Expression.Identifier("foo"),
+                                                                  targetType: Expression.PointerType(Expression.PrimitiveType(.constU16))))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 0xabcd)
+            ])),
+            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr0"),
+            ]))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr1")
+    }
+    
+    func testRvalue_Group() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.compile(Expression.Group(Expression.LiteralBool(false)))
+        let actual = try compiler.rvalue(expr: Expression.Group(Expression.LiteralBool(false)))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0)
@@ -666,12 +666,12 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Unary_minus_u8() throws {
+    func testRvalue_Unary_minus_u8() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .u8, offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Unary(op: .minus, expression: Expression.Identifier("foo")))
+        let actual = try compiler.rvalue(expr: Expression.Unary(op: .minus, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -695,12 +695,12 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Unary_minus_u16() throws {
+    func testRvalue_Unary_minus_u16() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .u16, offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Unary(op: .minus, expression: Expression.Identifier("foo")))
+        let actual = try compiler.rvalue(expr: Expression.Unary(op: .minus, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -724,12 +724,12 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr3")
     }
     
-    func testExpr_Unary_bang_bool() throws {
+    func testRvalue_Unary_bang_bool() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .bool, offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Unary(op: .bang, expression: Expression.Identifier("foo")))
+        let actual = try compiler.rvalue(expr: Expression.Unary(op: .bang, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -748,12 +748,12 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr3")
     }
     
-    func testExpr_Unary_tilde_u8() throws {
+    func testRvalue_Unary_tilde_u8() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .u8, offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Unary(op: .tilde, expression: Expression.Identifier("foo")))
+        let actual = try compiler.rvalue(expr: Expression.Unary(op: .tilde, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -772,12 +772,12 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr3")
     }
     
-    func testExpr_Unary_tilde_u16() throws {
+    func testRvalue_Unary_tilde_u16() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .u16, offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Unary(op: .tilde, expression: Expression.Identifier("foo")))
+        let actual = try compiler.rvalue(expr: Expression.Unary(op: .tilde, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -796,12 +796,12 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr2")
     }
     
-    func testExpr_Unary_addressOf_Function() throws {
+    func testRvalue_Unary_addressOf_Function() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .void, arguments: []))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Unary(op: .ampersand, expression: Expression.Identifier("foo")))
+        let actual = try compiler.rvalue(expr: Expression.Unary(op: .ampersand, expression: Expression.Identifier("foo")))
         let expected = InstructionNode(instruction: Tack.kLA, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterIdentifier(value: "foo"),
@@ -810,12 +810,12 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Unary_addressOf_Identifier() throws {
+    func testRvalue_Unary_addressOf_Identifier() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .u16, offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Unary(op: .ampersand, expression: Expression.Identifier("foo")))
+        let actual = try compiler.rvalue(expr: Expression.Unary(op: .ampersand, expression: Expression.Identifier("foo")))
         let expected = InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 100)
@@ -824,13 +824,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Binary_add16() throws {
+    func testRvalue_Binary_add16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .plus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .plus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -858,13 +858,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_sub16() throws {
+    func testRvalue_Binary_sub16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .minus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .minus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -892,13 +892,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_mul16() throws {
+    func testRvalue_Binary_mul16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .star, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .star, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -926,13 +926,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_div16() throws {
+    func testRvalue_Binary_div16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -960,13 +960,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_mod16() throws {
+    func testRvalue_Binary_mod16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .modulus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .modulus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -994,13 +994,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_lsl16() throws {
+    func testRvalue_Binary_lsl16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .leftDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .leftDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1028,13 +1028,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_lsr16() throws {
+    func testRvalue_Binary_lsr16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .rightDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .rightDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1062,13 +1062,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_and16() throws {
+    func testRvalue_Binary_and16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .ampersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .ampersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1096,13 +1096,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_or16() throws {
+    func testRvalue_Binary_or16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .pipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .pipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1130,13 +1130,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_xor16() throws {
+    func testRvalue_Binary_xor16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .caret, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .caret, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1164,13 +1164,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_eq16() throws {
+    func testRvalue_Binary_eq16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1198,13 +1198,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_ne16() throws {
+    func testRvalue_Binary_ne16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1232,13 +1232,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_lt16() throws {
+    func testRvalue_Binary_lt16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .lt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .lt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1266,13 +1266,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_ge16() throws {
+    func testRvalue_Binary_ge16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .ge, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .ge, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1300,13 +1300,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_le16() throws {
+    func testRvalue_Binary_le16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .le, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .le, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1334,13 +1334,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_gt16() throws {
+    func testRvalue_Binary_gt16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .gt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .gt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1368,13 +1368,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_add8() throws {
+    func testRvalue_Binary_add8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .plus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .plus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1402,13 +1402,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_sub8() throws {
+    func testRvalue_Binary_sub8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .minus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .minus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1436,13 +1436,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_mul8() throws {
+    func testRvalue_Binary_mul8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .star, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .star, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1470,13 +1470,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_div8() throws {
+    func testRvalue_Binary_div8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1504,13 +1504,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_mod8() throws {
+    func testRvalue_Binary_mod8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .modulus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .modulus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1538,13 +1538,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_lsl8() throws {
+    func testRvalue_Binary_lsl8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .leftDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .leftDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1572,13 +1572,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_lsr8() throws {
+    func testRvalue_Binary_lsr8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .rightDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .rightDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1606,13 +1606,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_and8() throws {
+    func testRvalue_Binary_and8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .ampersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .ampersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1640,13 +1640,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_or8() throws {
+    func testRvalue_Binary_or8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .pipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .pipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1674,13 +1674,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_xor8() throws {
+    func testRvalue_Binary_xor8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .caret, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .caret, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1708,13 +1708,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_eq8() throws {
+    func testRvalue_Binary_eq8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1742,13 +1742,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_ne8() throws {
+    func testRvalue_Binary_ne8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1776,13 +1776,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_lt8() throws {
+    func testRvalue_Binary_lt8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .lt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .lt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1810,13 +1810,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_ge8() throws {
+    func testRvalue_Binary_ge8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .ge, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .ge, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1844,13 +1844,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_le8() throws {
+    func testRvalue_Binary_le8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .le, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .le, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1878,13 +1878,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_gt8() throws {
+    func testRvalue_Binary_gt8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .gt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .gt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -1912,13 +1912,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_comptime_eq() throws {
+    func testRvalue_Binary_comptime_eq() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .compTimeInt(1))),
             ("right", Symbol(type: .compTimeInt(1)))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
@@ -1927,13 +1927,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Binary_comptime_ne() throws {
+    func testRvalue_Binary_comptime_ne() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .compTimeInt(1))),
             ("right", Symbol(type: .compTimeInt(1)))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0)
@@ -1942,13 +1942,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Binary_comptime_lt() throws {
+    func testRvalue_Binary_comptime_lt() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .compTimeInt(1))),
             ("right", Symbol(type: .compTimeInt(2)))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .lt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .lt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
@@ -1957,13 +1957,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Binary_comptime_gt() throws {
+    func testRvalue_Binary_comptime_gt() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .compTimeInt(2))),
             ("right", Symbol(type: .compTimeInt(1)))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .gt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .gt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
@@ -1972,13 +1972,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Binary_comptime_le() throws {
+    func testRvalue_Binary_comptime_le() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .compTimeInt(1))),
             ("right", Symbol(type: .compTimeInt(1)))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .le, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .le, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
@@ -1987,13 +1987,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Binary_comptime_ge() throws {
+    func testRvalue_Binary_comptime_ge() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .compTimeInt(1))),
             ("right", Symbol(type: .compTimeInt(1)))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .ge, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .ge, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
@@ -2002,13 +2002,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Binary_comptime_add() throws {
+    func testRvalue_Binary_comptime_add() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .compTimeInt(1))),
             ("right", Symbol(type: .compTimeInt(1)))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .plus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .plus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 2)
@@ -2017,13 +2017,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Binary_comptime_sub() throws {
+    func testRvalue_Binary_comptime_sub() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .compTimeInt(1))),
             ("right", Symbol(type: .compTimeInt(1)))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .minus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .minus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0)
@@ -2032,13 +2032,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Binary_comptime_mul() throws {
+    func testRvalue_Binary_comptime_mul() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .compTimeInt(1))),
             ("right", Symbol(type: .compTimeInt(1)))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .star, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .star, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
@@ -2047,13 +2047,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Binary_comptime_div() throws {
+    func testRvalue_Binary_comptime_div() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .compTimeInt(1))),
             ("right", Symbol(type: .compTimeInt(1)))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
@@ -2062,13 +2062,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Binary_comptime_mod() throws {
+    func testRvalue_Binary_comptime_mod() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .compTimeInt(3))),
             ("right", Symbol(type: .compTimeInt(2)))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .modulus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .modulus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
@@ -2077,13 +2077,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Binary_comptime_and() throws {
+    func testRvalue_Binary_comptime_and() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .compTimeInt(0xab))),
             ("right", Symbol(type: .compTimeInt(0x0f)))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .ampersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .ampersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0xb)
@@ -2092,13 +2092,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Binary_comptime_or() throws {
+    func testRvalue_Binary_comptime_or() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .compTimeInt(0xab))),
             ("right", Symbol(type: .compTimeInt(0x0f)))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .pipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .pipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0xaf)
@@ -2107,13 +2107,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Binary_comptime_xor() throws {
+    func testRvalue_Binary_comptime_xor() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .compTimeInt(0xab))),
             ("right", Symbol(type: .compTimeInt(0xab)))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .caret, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .caret, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0)
@@ -2122,13 +2122,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Binary_comptime_lsl() throws {
+    func testRvalue_Binary_comptime_lsl() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .compTimeInt(2))),
             ("right", Symbol(type: .compTimeInt(2)))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .leftDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .leftDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 8)
@@ -2137,13 +2137,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Binary_comptime_lsr() throws {
+    func testRvalue_Binary_comptime_lsr() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .compTimeInt(8))),
             ("right", Symbol(type: .compTimeInt(2)))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .rightDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .rightDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 2)
@@ -2152,13 +2152,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Binary_eq_bool() throws {
+    func testRvalue_Binary_eq_bool() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .bool, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .bool, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -2186,13 +2186,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_ne_bool() throws {
+    func testRvalue_Binary_ne_bool() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .bool, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .bool, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -2220,13 +2220,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_logical_and() throws {
+    func testRvalue_Binary_logical_and() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .bool, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .bool, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .doubleAmpersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .doubleAmpersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -2270,13 +2270,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_logical_or() throws {
+    func testRvalue_Binary_logical_or() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .bool, offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .bool, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .doublePipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .doublePipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -2320,13 +2320,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testExpr_Binary_comptime_bool_eq() throws {
+    func testRvalue_Binary_comptime_bool_eq() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .compTimeBool(true))),
             ("right", Symbol(type: .compTimeBool(true)))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
@@ -2335,13 +2335,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Binary_comptime_bool_ne() throws {
+    func testRvalue_Binary_comptime_bool_ne() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .compTimeBool(true))),
             ("right", Symbol(type: .compTimeBool(true)))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0)
@@ -2350,13 +2350,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Binary_comptime_bool_and() throws {
+    func testRvalue_Binary_comptime_bool_and() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .compTimeBool(true))),
             ("right", Symbol(type: .compTimeBool(true)))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .doubleAmpersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .doubleAmpersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
@@ -2365,13 +2365,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Binary_comptime_bool_or() throws {
+    func testRvalue_Binary_comptime_bool_or() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .compTimeBool(true))),
             ("right", Symbol(type: .compTimeBool(true)))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Binary(op: .doublePipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .doublePipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
@@ -2380,12 +2380,12 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Is_comptime_bool() throws {
+    func testRvalue_Is_comptime_bool() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .compTimeBool(true)))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Is(expr: Expression.Identifier("foo"), testType: Expression.PrimitiveType(.compTimeBool(true))))
+        let actual = try compiler.rvalue(expr: Expression.Is(expr: Expression.Identifier("foo"), testType: Expression.PrimitiveType(.compTimeBool(true))))
         let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
@@ -2394,12 +2394,12 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Is_test_union_type_tag() throws {
+    func testRvalue_Is_test_union_type_tag() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .unionType(UnionType([.u8, .bool])), offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Is(expr: Expression.Identifier("foo"), testType: Expression.PrimitiveType(.bool)))
+        let actual = try compiler.rvalue(expr: Expression.Is(expr: Expression.Identifier("foo"), testType: Expression.PrimitiveType(.bool)))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -2423,13 +2423,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr3")
     }
     
-    func testExpr_Assignment_ToPrimitiveScalar() throws {
+    func testRvalue_Assignment_ToPrimitiveScalar() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .u16, offset: 0x1000, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Assignment(lexpr: Expression.Identifier("foo"),
-                                                                rexpr: Expression.LiteralInt(42)))
+        let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
+                                                                     rexpr: Expression.LiteralInt(42)))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -2448,14 +2448,14 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr1")
     }
     
-    func testExpr_Assignment_ArrayToArray_Size_0() throws {
+    func testRvalue_Assignment_ArrayToArray_Size_0() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 0, elementType: .u16), offset: 0x1000, storage: .staticStorage)),
             ("bar", Symbol(type: .array(count: 0, elementType: .u16), offset: 0x2000, storage: .staticStorage)),
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Assignment(lexpr: Expression.Identifier("foo"),
-                                                                rexpr: Expression.Identifier("bar")))
+        let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
+                                                                     rexpr: Expression.Identifier("bar")))
         let expected = InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0x1000)
@@ -2464,14 +2464,14 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Assignment_ArrayToArray_Size_1() throws {
+    func testRvalue_Assignment_ArrayToArray_Size_1() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 1, elementType: .u16), offset: 0x1000, storage: .staticStorage)),
             ("bar", Symbol(type: .array(count: 1, elementType: .u16), offset: 0x2000, storage: .staticStorage)),
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Assignment(lexpr: Expression.Identifier("foo"),
-                                                                rexpr: Expression.Identifier("bar")))
+        let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
+                                                                     rexpr: Expression.Identifier("bar")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -2496,14 +2496,14 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr1")
     }
     
-    func testExpr_Assignment_ArrayToArray_Size_2() throws {
+    func testRvalue_Assignment_ArrayToArray_Size_2() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 2, elementType: .u16), offset: 0x1000, storage: .staticStorage)),
             ("bar", Symbol(type: .array(count: 2, elementType: .u16), offset: 0x2000, storage: .staticStorage)),
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Assignment(lexpr: Expression.Identifier("foo"),
-                                                                rexpr: Expression.Identifier("bar")))
+        let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
+                                                                     rexpr: Expression.Identifier("bar")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -2538,13 +2538,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr1")
     }
     
-    func testExpr_SubscriptRvalue_CompileTimeIndexAndPrimitiveElement() throws {
+    func testRvalue_SubscriptRvalue_CompileTimeIndexAndPrimitiveElement() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: Expression.LiteralInt(9)))
+        let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: Expression.LiteralInt(9)))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -2560,13 +2560,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr1")
     }
     
-    func testExpr_SubscriptRvalue_RuntimeTimeIndexAndPrimitiveElement() throws {
+    func testRvalue_SubscriptRvalue_RuntimeTimeIndexAndPrimitiveElement() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
+        let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -2590,13 +2590,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr3")
     }
     
-    func testExpr_SubscriptRvalue_ZeroSizeElement() throws {
+    func testRvalue_SubscriptRvalue_ZeroSizeElement() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 10, elementType: .void), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
+        let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -2611,13 +2611,13 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr1")
     }
     
-    func testExpr_SubscriptRvalue_NestedArray() throws {
+    func testRvalue_SubscriptRvalue_NestedArray() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 10, elementType: .array(count: 2, elementType: .u16)), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
+        let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -2642,12 +2642,12 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr3")
     }
     
-    func testExpr_Assignment_ToArrayElementViaSubscript() throws {
+    func testRvalue_Assignment_ToArrayElementViaSubscript() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0x1000, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Assignment(
+        let actual = try compiler.rvalue(expr: Expression.Assignment(
             lexpr: Expression.Subscript(subscriptable: Expression.Identifier("foo"),
                                         argument: Expression.LiteralInt(9)),
             rexpr: Expression.LiteralInt(42))
@@ -2679,14 +2679,14 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr3")
     }
     
-    func testExpr_Get_array_count() throws {
+    func testRvalue_Get_array_count() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 42, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Get(expr: Expression.Identifier("foo"),
-                                                         member: Expression.Identifier("count")))
+        let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
+                                                              member: Expression.Identifier("count")))
         let expected = InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 42)
@@ -2695,14 +2695,14 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Get_dynamic_array_count() throws {
+    func testRvalue_Get_dynamic_array_count() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .dynamicArray(elementType: .u16), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Get(expr: Expression.Identifier("foo"),
-                                                         member: Expression.Identifier("count")))
+        let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
+                                                              member: Expression.Identifier("count")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -2718,14 +2718,14 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr1")
     }
     
-    func testExpr_Get_struct_member_primitive() throws {
+    func testRvalue_Get_struct_member_primitive() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: kSliceType, offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Get(expr: Expression.Identifier("foo"),
-                                                         member: Expression.Identifier("count")))
+        let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
+                                                              member: Expression.Identifier("count")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -2741,7 +2741,7 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr1")
     }
     
-    func testExpr_Get_struct_member_not_primitive() throws {
+    func testRvalue_Get_struct_member_not_primitive() throws {
         let type: SymbolType = .structType(StructType(name: "bar", symbols: SymbolTable(tuples: [
             ("wat", Symbol(type: .u16, offset: 0)),
             ("baz", Symbol(type: .array(count: 1, elementType: .u16), offset: 1))
@@ -2751,8 +2751,8 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Get(expr: Expression.Identifier("foo"),
-                                                         member: Expression.Identifier("baz")))
+        let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
+                                                              member: Expression.Identifier("baz")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -2768,14 +2768,14 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr1")
     }
     
-    func testExpr_Get_pointee_primitive() throws {
+    func testRvalue_Get_pointee_primitive() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(.u16), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Get(expr: Expression.Identifier("foo"),
-                                                         member: Expression.Identifier("pointee")))
+        let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
+                                                              member: Expression.Identifier("pointee")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -2794,14 +2794,14 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr2")
     }
     
-    func testExpr_Get_pointee_not_primitive() throws {
+    func testRvalue_Get_pointee_not_primitive() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(.array(count: 1, elementType: .u16)), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Get(expr: Expression.Identifier("foo"),
-                                                         member: Expression.Identifier("pointee")))
+        let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
+                                                              member: Expression.Identifier("pointee")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -2816,14 +2816,14 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr1")
     }
     
-    func testExpr_Get_array_count_via_pointer() throws {
+    func testRvalue_Get_array_count_via_pointer() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(.array(count: 42, elementType: .u16)), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Get(expr: Expression.Identifier("foo"),
-                                                         member: Expression.Identifier("count")))
+        let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
+                                                              member: Expression.Identifier("count")))
         let expected = InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 42)
@@ -2832,14 +2832,14 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testExpr_Get_dynamic_array_count_via_pointer() throws {
+    func testRvalue_Get_dynamic_array_count_via_pointer() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(.dynamicArray(elementType: .u16)), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Get(expr: Expression.Identifier("foo"),
-                                                         member: Expression.Identifier("count")))
+        let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
+                                                              member: Expression.Identifier("count")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -2859,14 +2859,14 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr2")
     }
     
-    func testExpr_Get_primitive_struct_member_via_pointer() throws {
+    func testRvalue_Get_primitive_struct_member_via_pointer() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(kSliceType), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Get(expr: Expression.Identifier("foo"),
-                                                         member: Expression.Identifier("count")))
+        let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
+                                                              member: Expression.Identifier("count")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -2886,7 +2886,7 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr2")
     }
     
-    func testExpr_Get_non_primitive_struct_member_via_pointer() throws {
+    func testRvalue_Get_non_primitive_struct_member_via_pointer() throws {
         let type: SymbolType = .pointer(.structType(StructType(name: "bar", symbols: SymbolTable(tuples: [
             ("wat", Symbol(type: .u16, offset: 0)),
             ("baz", Symbol(type: .array(count: 1, elementType: .u16), offset: 1))
@@ -2896,8 +2896,8 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compile(Expression.Get(expr: Expression.Identifier("foo"),
-                                                         member: Expression.Identifier("baz")))
+        let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
+                                                              member: Expression.Identifier("baz")))
         let expected = Seq(children: [
             InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
                 ParameterIdentifier(value: "vr0"),

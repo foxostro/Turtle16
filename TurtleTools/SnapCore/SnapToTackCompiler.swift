@@ -161,7 +161,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     public override func compile(expressionStatement node: Expression) throws -> AbstractSyntaxTreeNode? {
-        return try rvalue(expr: node)
+        let savedRegisterStack = registerStack
+        let result = try rvalue(expr: node)
+        registerStack = savedRegisterStack
+        return result
     }
     
     @discardableResult func typeCheck(rexpr: Expression) throws -> SymbolType {
@@ -172,7 +175,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         return try LvalueExpressionTypeChecker(symbols: symbols!).check(expression: lexpr)
     }
     
-    func lvalue(expr: Expression) throws -> AbstractSyntaxTreeNode {
+    public func lvalue(expr: Expression) throws -> AbstractSyntaxTreeNode {
         try typeCheck(lexpr: expr)
         switch expr {
         case let node as Expression.Identifier:
@@ -385,7 +388,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         return try compile(seq: Seq(sourceAnchor: expr.sourceAnchor, children: children))!
     }
     
-    func rvalue(expr: Expression) throws -> AbstractSyntaxTreeNode {
+    public func rvalue(expr: Expression) throws -> AbstractSyntaxTreeNode {
         try typeCheck(rexpr: expr)
         switch expr {
         case let group as Expression.Group:

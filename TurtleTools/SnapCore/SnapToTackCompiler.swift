@@ -1625,24 +1625,15 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         
         var children: [AbstractSyntaxTreeNode] = []
         
-        // Allocate temporaries for each argument to the function call.
-        // Evaluation of argument expressions may involve allocating memory on
-        // the stack so we evaluate first and then copy into the argument pack.
-        var tempArgIds: [Expression.Identifier] = []
+        // Evaluation of expressions for function call arguments may involve
+        // allocating memory on the stack. We first evaluate each expression
+        // and then copy the value into the function call argument pack.
+        var tempArgs: [String] = []
         for i in 0..<typ.arguments.count {
-            let tempArgId = Expression.Identifier(globalEnvironment.tempNameMaker.next())
-            let tempDecl = VarDeclaration(sourceAnchor: expr.sourceAnchor,
-                                          identifier: tempArgId,
-                                          explicitType: Expression.PrimitiveType(typ.arguments[i]),
-                                          expression: expr.arguments[i],
-                                          storage: .automaticStorage,
-                                          isMutable: false,
-                                          visibility: .privateVisibility)
-            let varDeclCompiler = SnapSubcompilerVarDeclaration(symbols: symbols!, globalEnvironment: globalEnvironment)
-            let assignmentExpr = try varDeclCompiler.compile(tempDecl)!
-            let argProc = try compile(assignmentExpr)!
-            children.append(argProc)
-            tempArgIds.append(tempArgId)
+            children += [
+                try rvalue(expr: expr.arguments[i])
+            ]
+            tempArgs.append(popRegister())
         }
         
         // Allocate storage on the stack for the return value.
@@ -1657,9 +1648,9 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             ]
         }
         
-        // Allocate stack space for another argument and copy in the argument.
+        // Allocate stack space for another argument and copy it into the pack.
         for i in 0..<typ.arguments.count {
-            let tempArgId = tempArgIds[i]
+            let tempArg = tempArgs[i]
             let argType = typ.arguments[i]
             let argTypeSize = globalEnvironment.memoryLayoutStrategy.sizeof(type: argType)
             if argTypeSize > 0 {
@@ -1668,14 +1659,24 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                         ParameterIdentifier(sp),
                         ParameterIdentifier(sp),
                         ParameterNumber(argTypeSize)
-                    ]),
-                    try lvalue(identifier: tempArgId),
-                    InstructionNode(instruction: Tack.kMEMCPY, parameters: [
-                        ParameterIdentifier(sp),
-                        ParameterIdentifier(popRegister()),
-                        ParameterNumber(argTypeSize)
                     ])
                 ]
+                if argType.isPrimitive {
+                    children += [
+                        InstructionNode(instruction: Tack.kSTORE, parameters: [
+                            ParameterIdentifier(sp),
+                            ParameterIdentifier(tempArg)
+                        ])
+                    ]
+                } else {
+                    children += [
+                        InstructionNode(instruction: Tack.kMEMCPY, parameters: [
+                            ParameterIdentifier(sp),
+                            ParameterIdentifier(tempArg),
+                            ParameterNumber(argTypeSize)
+                        ])
+                    ]
+                }
             }
         }
         

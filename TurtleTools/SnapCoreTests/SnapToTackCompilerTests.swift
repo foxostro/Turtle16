@@ -3259,4 +3259,26 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         XCTAssertEqual(actual, expected)
     }
+    
+    func testRvalue_Call_function_pointer() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .pointer(.function(FunctionType(returnType: .void, arguments: []))), offset: 0xabcd))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: []))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 0xabcd)
+            ])),
+            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr0")
+            ])),
+            InstructionNode(instruction: Tack.kCALLPTR, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1")
+            ]))
+        ])
+        XCTAssertEqual(actual, expected)
+    }
 }

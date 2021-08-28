@@ -14,6 +14,7 @@ import Turtle16SimulatorCore
 // instruction operands are taken from the following list.
 public struct Tack {
     public static let kCALL    = "TACK_CALL"
+    public static let kCALLPTR = "TACK_CALLPTR"
     public static let kENTER   = "TACK_ENTER"
     public static let kLEAVE   = "TACK_LEAVE"
     public static let kRET     = "TACK_RET"
@@ -1619,6 +1620,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     func rvalue(call expr: Expression.Call, typ: FunctionType) throws -> AbstractSyntaxTreeNode {
+        let calleeType = try typeCheck(rexpr: expr.callee)
+        
         if typ.name == "hlt" {
            return InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: kHLT)
         }
@@ -1690,11 +1693,25 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         }
         
         // Make the function call.
-        children += [
-            InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kCALL, parameters: ParameterList(parameters: [
-                ParameterIdentifier(value: typ.mangledName!)
-            ]))
-        ]
+        switch calleeType {
+        case .function:
+            children += [
+                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kCALL, parameters: ParameterList(parameters: [
+                    ParameterIdentifier(value: typ.mangledName!)
+                ]))
+            ]
+            
+        case .pointer:
+            children += [
+                try rvalue(expr: expr.callee),
+                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kCALLPTR, parameters: ParameterList(parameters: [
+                    ParameterIdentifier(value: popRegister())
+                ]))
+            ]
+            
+        default:
+            fatalError("unimplemented")
+        }
         
         // Free up stack storage allocated for arguments.
         let argPackSize = typ.arguments.reduce(0) { (result, type) in

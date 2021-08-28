@@ -75,21 +75,21 @@ class SnapToTackCompilerTests: XCTestCase {
     func testGoto() throws {
         let compiler = makeCompiler()
         let result = try compiler.compile(Goto(target: "foo"))
-        XCTAssertEqual(result, InstructionNode(instruction: Tack.kJMP, parameters: ParameterList(parameters: [ParameterIdentifier(value: "foo")])))
+        XCTAssertEqual(result, InstructionNode(instruction: Tack.kJMP, parameters: [ParameterIdentifier(value: "foo")]))
     }
     
     func testGotoIfFalse() throws {
         let compiler = makeCompiler()
         let actual = try compiler.compile(GotoIfFalse(condition: Expression.LiteralBool(false), target: "foo"))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0)
-            ])),
-            InstructionNode(instruction: Tack.kBZ, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kBZ, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterIdentifier(value: "foo")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertTrue(compiler.registerStack.isEmpty)
@@ -115,13 +115,13 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler()
         let actual = try compiler.compile(fn)
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kJMP, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kJMP, parameters: [
                 ParameterIdentifier(value: "__foo_tail")
-            ])),
+            ]),
             LabelDeclaration(identifier: "foo"),
-            InstructionNode(instruction: Tack.kENTER, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kENTER, parameters: [
                 ParameterNumber(value: 0)
-            ])),
+            ]),
             InstructionNode(instruction: Tack.kLEAVE),
             InstructionNode(instruction: Tack.kRET),
             LabelDeclaration(identifier: "__foo_tail"),
@@ -132,10 +132,10 @@ class SnapToTackCompilerTests: XCTestCase {
     func testRvalue_LiteralBoolFalse() throws {
         let compiler = makeCompiler()
         let actual = try compiler.rvalue(expr: Expression.LiteralBool(false))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -143,10 +143,10 @@ class SnapToTackCompilerTests: XCTestCase {
     func testRvalue_LiteralBoolTrue() throws {
         let compiler = makeCompiler()
         let actual = try compiler.rvalue(expr: Expression.LiteralBool(true))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -154,10 +154,10 @@ class SnapToTackCompilerTests: XCTestCase {
     func testRvalue_LiteralInt_Small_Positive() throws {
         let compiler = makeCompiler()
         let actual = try compiler.rvalue(expr: Expression.LiteralInt(1))
-        let expected = InstructionNode(instruction: Tack.kLI8, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI8, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -165,10 +165,10 @@ class SnapToTackCompilerTests: XCTestCase {
     func testRvalue_LiteralInt_Small_Negative() throws {
         let compiler = makeCompiler()
         let actual = try compiler.rvalue(expr: Expression.LiteralInt(-1))
-        let expected = InstructionNode(instruction: Tack.kLI8, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI8, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: -1)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -176,10 +176,10 @@ class SnapToTackCompilerTests: XCTestCase {
     func testRvalue_LiteralInt_Big() throws {
         let compiler = makeCompiler()
         let actual = try compiler.rvalue(expr: Expression.LiteralInt(0x1000))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0x1000)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -189,31 +189,31 @@ class SnapToTackCompilerTests: XCTestCase {
         let arrType = Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u16))
         let actual = try compiler.rvalue(expr: Expression.LiteralArray(arrayType: arrType, elements: [Expression.LiteralInt(42)]))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 272)
-            ])),
-            InstructionNode(instruction: Tack.kLI8, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLI8, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 0)
-            ])),
-            InstructionNode(instruction: Tack.kADD16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kADD16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterNumber(value: 42)
-            ])),
-            InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr3")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterNumber(value: 272)
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -223,31 +223,31 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler()
         let actual = try compiler.rvalue(expr: Expression.LiteralString("a"))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 272)
-            ])),
-            InstructionNode(instruction: Tack.kLI8, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLI8, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 0)
-            ])),
-            InstructionNode(instruction: Tack.kADD16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kADD16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLI8, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLI8, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterNumber(value: 97)
-            ])),
-            InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr3")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterNumber(value: 272)
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -264,44 +264,44 @@ class SnapToTackCompilerTests: XCTestCase {
                                                   expr: Expression.LiteralInt(0xffff))
         ]))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 272)
-            ])),
-            InstructionNode(instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kADDI16, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0)
-            ])),
-            InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterNumber(value: 272)
-            ])),
-            InstructionNode(instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kADDI16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterNumber(value: 1)
-            ])),
-            InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier(value: "vr5"),
                 ParameterNumber(value: 0xffff)
-            ])),
-            InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr5")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr6"),
                 ParameterNumber(value: 272)
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr6")
@@ -314,14 +314,14 @@ class SnapToTackCompilerTests: XCTestCase {
         ]))
         let actual = try compiler.rvalue(expr: Expression.Identifier("foo"))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: offset)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0"),
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr1")
@@ -336,15 +336,15 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Identifier("foo"))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kSUBI16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterIdentifier(value: "fp"),
                 ParameterNumber(value: offset)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0"),
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr1")
@@ -356,10 +356,10 @@ class SnapToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: kSliceType, offset: offset, storage: .staticStorage))
         ]))
         let actual = try compiler.rvalue(expr: Expression.Identifier("foo"))
-        let expected = InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLIU16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: offset)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -373,14 +373,14 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.u8)))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
-                ParameterIdentifier(value: "vr0"),
-            ]))
+                ParameterIdentifier(value: "vr0")
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr1")
@@ -395,14 +395,14 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.u16)))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0"),
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr1")
@@ -417,19 +417,19 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.u8)))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0"),
-            ])),
-            InstructionNode(instruction: Tack.kANDI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kANDI16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 0x00ff )
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr2")
@@ -442,10 +442,10 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u16))))
-        let expected = InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLIU16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0xabcd)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -457,10 +457,10 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.ArrayType(count: Expression.LiteralInt(0), elementType: Expression.PrimitiveType(.u16))))
-        let expected = InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLIU16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0xabcd)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -473,41 +473,41 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8))))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 272)
-            ])),
-            InstructionNode(instruction: Tack.kLI8, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLI8, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 0)
-            ])),
-            InstructionNode(instruction: Tack.kADD16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kADD16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterNumber(value: 0x1000)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterNumber(value: 0)
-            ])),
-            InstructionNode(instruction: Tack.kANDI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kANDI16, parameters: [
                 ParameterIdentifier(value: "vr5"),
                 ParameterIdentifier(value: "vr4"),
                 ParameterNumber(value: 0x00ff)
-            ])),
-            InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr5")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr6"),
                 ParameterNumber(value: 272)
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr6")
@@ -520,28 +520,28 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.DynamicArrayType(Expression.PrimitiveType(.u16))))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 272)
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 0x1000)
-            ])),
-            InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 0)
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 1)
-            ])),
-            InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 1)
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
@@ -555,10 +555,10 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                         targetType: Expression.PrimitiveType(.u8)))
-        let expected = InstructionNode(instruction: Tack.kLI8, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI8, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 42)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -571,10 +571,10 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.u16)))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1000)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -587,10 +587,10 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.bool)))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -603,10 +603,10 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.bool)))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -620,14 +620,14 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PointerType(Expression.PrimitiveType(.constU16))))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0"),
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr1")
@@ -641,10 +641,10 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.UnionType([Expression.PrimitiveType(.u16)])))
-        let expected = InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLIU16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0xabcd)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -658,15 +658,15 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.u16)))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 1)
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr1")
@@ -681,15 +681,15 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u16))))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kADDI16, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 1)
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr1")
@@ -703,33 +703,33 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.PrimitiveType(.u16)])))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kSUBI16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterIdentifier(value: "fp"),
                 ParameterNumber(value: 2)
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 0)
-            ])),
-            InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 0)
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterNumber(value: 1)
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
@@ -743,33 +743,33 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.PrimitiveType(.bool), Expression.PrimitiveType(.u16)])))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kSUBI16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterIdentifier(value: "fp"),
                 ParameterNumber(value: 2)
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 1)
-            ])),
-            InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 0)
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterNumber(value: 1)
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
@@ -783,34 +783,34 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.ArrayType(count: Expression.LiteralInt(2), elementType: Expression.PrimitiveType(.u16))])))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kSUBI16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterIdentifier(value: "fp"),
                 ParameterNumber(value: 3)
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 0)
-            ])),
-            InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 0)
-            ])),
-            InstructionNode(instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kADDI16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 1)
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kMEMCPY, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kMEMCPY, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterNumber(value: 2)
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
@@ -825,14 +825,14 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Bitcast(expr: Expression.Identifier("foo"),
                                                                   targetType: Expression.PointerType(Expression.PrimitiveType(.constU16))))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0"),
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr1")
@@ -841,10 +841,10 @@ class SnapToTackCompilerTests: XCTestCase {
     func testRvalue_Group() throws {
         let compiler = makeCompiler()
         let actual = try compiler.rvalue(expr: Expression.Group(Expression.LiteralBool(false)))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -856,23 +856,23 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .minus, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLI8, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLI8, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 0)
-            ])),
-            InstructionNode(instruction: Tack.kSUB8, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSUB8, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -885,23 +885,23 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .minus, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 0)
-            ])),
-            InstructionNode(instruction: Tack.kSUB16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSUB16, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr3")
@@ -914,18 +914,18 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .bang, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kNOT, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kNOT, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr1"),
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr3")
@@ -938,18 +938,18 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .tilde, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kNEG8, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kNEG8, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr1"),
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr3")
@@ -962,18 +962,18 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .tilde, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kNEG16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kNEG16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr1"),
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr2")
@@ -985,10 +985,10 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .ampersand, expression: Expression.Identifier("foo")))
-        let expected = InstructionNode(instruction: Tack.kLA, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLA, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterIdentifier(value: "foo"),
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -999,10 +999,10 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .ampersand, expression: Expression.Identifier("foo")))
-        let expected = InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLIU16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 100)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -1015,27 +1015,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .plus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kADD16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kADD16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1049,27 +1049,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .minus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kSUB16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSUB16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1083,27 +1083,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .star, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kMUL16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kMUL16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1117,27 +1117,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kDIV16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kDIV16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1151,27 +1151,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .modulus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kMOD16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kMOD16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1185,27 +1185,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .leftDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kLSL16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLSL16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1219,27 +1219,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .rightDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kLSR16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLSR16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1253,27 +1253,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ampersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kAND16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kAND16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1287,27 +1287,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .pipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kOR16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kOR16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1321,27 +1321,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .caret, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kXOR16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kXOR16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1355,27 +1355,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kEQ16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kEQ16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1389,27 +1389,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kNE16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kNE16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1423,27 +1423,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .lt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kLT16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLT16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1457,27 +1457,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ge, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kGE16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kGE16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1491,27 +1491,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .le, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kLE16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLE16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1525,27 +1525,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .gt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kGT16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kGT16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1559,27 +1559,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .plus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kADD8, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kADD8, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1593,27 +1593,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .minus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kSUB8, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSUB8, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1627,27 +1627,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .star, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kMUL8, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kMUL8, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1661,27 +1661,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kDIV8, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kDIV8, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1695,27 +1695,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .modulus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kMOD8, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kMOD8, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1729,27 +1729,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .leftDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kLSL8, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLSL8, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1763,27 +1763,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .rightDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kLSR8, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLSR8, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1797,27 +1797,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ampersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kAND8, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kAND8, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1831,27 +1831,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .pipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kOR8, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kOR8, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1865,27 +1865,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .caret, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kXOR8, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kXOR8, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1899,27 +1899,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kEQ8, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kEQ8, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1933,27 +1933,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kNE8, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kNE8, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -1967,27 +1967,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .lt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kLT8, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLT8, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -2001,27 +2001,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ge, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kGE8, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kGE8, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -2035,27 +2035,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .le, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kLE8, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLE8, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -2069,27 +2069,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .gt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kGT8, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kGT8, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -2102,10 +2102,10 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -2117,10 +2117,10 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -2132,10 +2132,10 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .lt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -2147,10 +2147,10 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .gt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -2162,10 +2162,10 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .le, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -2177,10 +2177,10 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ge, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -2192,10 +2192,10 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .plus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 2)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -2207,10 +2207,10 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .minus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -2222,10 +2222,10 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .star, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -2237,10 +2237,10 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -2252,10 +2252,10 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .modulus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -2267,10 +2267,10 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ampersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0xb)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -2282,10 +2282,10 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .pipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0xaf)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -2297,10 +2297,10 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .caret, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -2312,10 +2312,10 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .leftDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 8)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -2327,10 +2327,10 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .rightDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 2)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -2343,27 +2343,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kEQ16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kEQ16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -2377,27 +2377,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kNE16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kNE16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr4")
@@ -2411,42 +2411,42 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .doubleAmpersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kBZ, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kBZ, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: ".L0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kBZ, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kBZ, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: ".L0")
-            ])),
-            InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterNumber(value: 1)
-            ])),
-            InstructionNode(instruction: Tack.kJMP, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kJMP, parameters: [
                 ParameterIdentifier(value: ".L1")
-            ])),
+            ]),
             LabelDeclaration(identifier: ".L0"),
-            InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterNumber(value: 0)
-            ])),
+            ]),
             LabelDeclaration(identifier: ".L1")
         ])
         XCTAssertEqual(actual, expected)
@@ -2461,42 +2461,42 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .doublePipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kBNZ, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kBNZ, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: ".L0")
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 200)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ])),
-            InstructionNode(instruction: Tack.kBNZ, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kBNZ, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: ".L0")
-            ])),
-            InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterNumber(value: 0)
-            ])),
-            InstructionNode(instruction: Tack.kJMP, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kJMP, parameters: [
                 ParameterIdentifier(value: ".L1")
-            ])),
+            ]),
             LabelDeclaration(identifier: ".L0"),
-            InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterNumber(value: 1)
-            ])),
+            ]),
             LabelDeclaration(identifier: ".L1")
         ])
         XCTAssertEqual(actual, expected)
@@ -2510,10 +2510,10 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -2525,10 +2525,10 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -2540,10 +2540,10 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .doubleAmpersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -2555,10 +2555,10 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .doublePipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -2569,10 +2569,10 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Is(expr: Expression.Identifier("foo"), testType: Expression.PrimitiveType(.compTimeBool(true))))
-        let expected = InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 1)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -2584,23 +2584,23 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Is(expr: Expression.Identifier("foo"), testType: Expression.PrimitiveType(.bool)))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 1)
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 100)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr1")
-            ])),
-            InstructionNode(instruction: Tack.kEQ16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kEQ16, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr0")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr3")
@@ -2614,18 +2614,18 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
                                                                      rexpr: Expression.LiteralInt(42)))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0x1000)
-            ])),
-            InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 42)
-            ])),
-            InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr1")
@@ -2639,10 +2639,10 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
                                                                      rexpr: Expression.Identifier("bar")))
-        let expected = InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLIU16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 0x1000)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -2656,19 +2656,19 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
                                                                      rexpr: Expression.Identifier("bar")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0x1000)
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 0x2000)
-            ])),
-            InstructionNode(instruction: Tack.kMEMCPY, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kMEMCPY, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 1)
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr1")
@@ -2683,19 +2683,19 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
                                                                      rexpr: Expression.Identifier("bar")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0x1000)
-            ])),
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 0x2000)
-            ])),
-            InstructionNode(instruction: Tack.kMEMCPY, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kMEMCPY, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 2)
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr1")
@@ -2709,15 +2709,15 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: Expression.LiteralInt(9)))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 9)
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr1")
@@ -2731,23 +2731,23 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 9)
-            ])),
-            InstructionNode(instruction: Tack.kADD16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kADD16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0"),
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr3")
@@ -2761,14 +2761,14 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr1")
@@ -2782,24 +2782,24 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 9)
-            ])),
-            InstructionNode(instruction: Tack.kMULI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kMULI16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 2)
-            ])),
-            InstructionNode(instruction: Tack.kADD16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kADD16, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr0"),
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr3")
@@ -2816,27 +2816,27 @@ class SnapToTackCompilerTests: XCTestCase {
             rexpr: Expression.LiteralInt(42))
         )
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0x1000)
-            ])),
-            InstructionNode(instruction: Tack.kLI8, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLI8, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 9)
-            ])),
-            InstructionNode(instruction: Tack.kADD16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kADD16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0"),
-            ])),
-            InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterNumber(value: 42)
-            ])),
-            InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr3")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr3")
@@ -2850,10 +2850,10 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("count")))
-        let expected = InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLIU16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 42)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -2867,15 +2867,15 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("count")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 1)
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr1")
@@ -2890,15 +2890,15 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("count")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 1)
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr1")
@@ -2917,15 +2917,15 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("baz")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kADDI16, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 1)
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr1")
@@ -2940,18 +2940,18 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("pointee")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr2")
@@ -2966,14 +2966,14 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.lvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("pointee")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr1")
@@ -2988,14 +2988,14 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("pointee")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr1")
@@ -3009,10 +3009,10 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("count")))
-        let expected = InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kLIU16, parameters: [
             ParameterIdentifier(value: "vr0"),
             ParameterNumber(value: 42)
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
@@ -3026,19 +3026,19 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("count")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 1)
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr2")
@@ -3053,19 +3053,19 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("count")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 1)
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr2")
@@ -3084,19 +3084,19 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("baz")))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kADDI16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 1)
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr2")
@@ -3116,9 +3116,9 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: []))
-        let expected = InstructionNode(instruction: Tack.kCALL, parameters: ParameterList(parameters: [
+        let expected = InstructionNode(instruction: Tack.kCALL, parameters: [
             ParameterIdentifier(value: "foo")
-        ]))
+        ])
         XCTAssertEqual(actual, expected)
     }
     
@@ -3130,38 +3130,38 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: []))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kSUBI16, parameters: [
                 ParameterIdentifier(value: "sp"),
                 ParameterIdentifier(value: "sp"),
                 ParameterNumber(value: 1)
-            ])),
-            InstructionNode(instruction: Tack.kCALL, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kCALL, parameters: [
                 ParameterIdentifier(value: "foo")
-            ])),
-            InstructionNode(instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSUBI16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterIdentifier(value: "fp"),
                 ParameterNumber(value: 1)
-            ])),
-            InstructionNode(instruction: Tack.kMEMCPY, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kMEMCPY, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterIdentifier(value: "sp"),
                 ParameterNumber(value: 1)
-            ])),
-            InstructionNode(instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kADDI16, parameters: [
                 ParameterIdentifier(value: "sp"),
                 ParameterIdentifier(value: "sp"),
                 ParameterNumber(value: 1)
-            ])),
-            InstructionNode(instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSUBI16, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "fp"),
                 ParameterNumber(value: 1)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr1"),
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr2")
@@ -3175,34 +3175,34 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: []))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kSUBI16, parameters: [
                 ParameterIdentifier(value: "sp"),
                 ParameterIdentifier(value: "sp"),
                 ParameterNumber(value: 2)
-            ])),
-            InstructionNode(instruction: Tack.kCALL, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kCALL, parameters: [
                 ParameterIdentifier(value: "foo")
-            ])),
-            InstructionNode(instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSUBI16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterIdentifier(value: "fp"),
                 ParameterNumber(value: 2)
-            ])),
-            InstructionNode(instruction: Tack.kMEMCPY, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kMEMCPY, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterIdentifier(value: "sp"),
                 ParameterNumber(value: 2)
-            ])),
-            InstructionNode(instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kADDI16, parameters: [
                 ParameterIdentifier(value: "sp"),
                 ParameterIdentifier(value: "sp"),
                 ParameterNumber(value: 2)
-            ])),
-            InstructionNode(instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSUBI16, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "fp"),
                 ParameterNumber(value: 2)
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr1")
@@ -3220,42 +3220,42 @@ class SnapToTackCompilerTests: XCTestCase {
             Expression.LiteralInt(0x1000)
         ]))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kSUBI16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterIdentifier(value: "fp"),
                 ParameterNumber(value: 1)
-            ])),
-            InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 0x1000)
-            ])),
-            InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterIdentifier(value: "vr1")
-            ])),
-            InstructionNode(instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSUBI16, parameters: [
                 ParameterIdentifier(value: "sp"),
                 ParameterIdentifier(value: "sp"),
                 ParameterNumber(value: 1)
-            ])),
-            InstructionNode(instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSUBI16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "fp"),
                 ParameterNumber(value: 1)
-            ])),
-            InstructionNode(instruction: Tack.kMEMCPY, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kMEMCPY, parameters: [
                 ParameterIdentifier(value: "sp"),
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 1)
-            ])),
-            InstructionNode(instruction: Tack.kCALL, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kCALL, parameters: [
                 ParameterIdentifier(value: "foo")
-            ])),
-            InstructionNode(instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kADDI16, parameters: [
                 ParameterIdentifier(value: "sp"),
                 ParameterIdentifier(value: "sp"),
                 ParameterNumber(value: 1)
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
     }
@@ -3268,71 +3268,71 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: [Expression.LiteralInt(0xabcd)]))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kSUBI16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterIdentifier(value: "fp"),
                 ParameterNumber(value: 2)
-            ])),
-            InstructionNode(instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterIdentifier(value: "vr1"),
-            ])),
-            InstructionNode(instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSUBI16, parameters: [
                 ParameterIdentifier(value: "sp"),
                 ParameterIdentifier(value: "sp"),
                 ParameterNumber(value: 1)
-            ])),
-            InstructionNode(instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSUBI16, parameters: [
                 ParameterIdentifier(value: "sp"),
                 ParameterIdentifier(value: "sp"),
                 ParameterNumber(value: 1)
-            ])),
-            InstructionNode(instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSUBI16, parameters: [
                 ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "fp"),
                 ParameterNumber(value: 2)
-            ])),
-            InstructionNode(instruction: Tack.kMEMCPY, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kMEMCPY, parameters: [
                 ParameterIdentifier(value: "sp"),
                 ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 1)
-            ])),
-            InstructionNode(instruction: Tack.kCALL, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kCALL, parameters: [
                 ParameterIdentifier(value: "foo")
-            ])),
-            InstructionNode(instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kADDI16, parameters: [
                 ParameterIdentifier(value: "sp"),
                 ParameterIdentifier(value: "sp"),
                 ParameterNumber(value: 1)
-            ])),
-            InstructionNode(instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSUBI16, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "fp"),
                 ParameterNumber(value: 1)
-            ])),
-            InstructionNode(instruction: Tack.kMEMCPY, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kMEMCPY, parameters: [
                 ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "sp"),
                 ParameterNumber(value: 1)
-            ])),
-            InstructionNode(instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kADDI16, parameters: [
                 ParameterIdentifier(value: "sp"),
                 ParameterIdentifier(value: "sp"),
                 ParameterNumber(value: 1)
-            ])),
-            InstructionNode(instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kSUBI16, parameters: [
                 ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "fp"),
                 ParameterNumber(value: 1)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr5"),
                 ParameterIdentifier(value: "vr4"),
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr5")
@@ -3345,17 +3345,17 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: []))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0xabcd)
-            ])),
-            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
-            ])),
-            InstructionNode(instruction: Tack.kCALLPTR, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(instruction: Tack.kCALLPTR, parameters: [
                 ParameterIdentifier(value: "vr1")
-            ]))
+            ])
         ])
         XCTAssertEqual(actual, expected)
     }

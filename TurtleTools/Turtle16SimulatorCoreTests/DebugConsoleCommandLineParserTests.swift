@@ -47,7 +47,7 @@ class DebugConsoleCommandLineParserTests: XCTestCase {
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], InstructionNode(instruction: "step", parameters: ParameterList(parameters: [])))
+        XCTAssertEqual(ast.children[0], InstructionNode(instruction: "step", parameters: []))
     }
     
     func testParseS() {
@@ -55,7 +55,7 @@ class DebugConsoleCommandLineParserTests: XCTestCase {
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], InstructionNode(instruction: "s", parameters: ParameterList(parameters: [])))
+        XCTAssertEqual(ast.children[0], InstructionNode(instruction: "s", parameters: []))
     }
 
     func testParseTwoStepsYieldsTwoCommandNodes() {
@@ -63,8 +63,8 @@ class DebugConsoleCommandLineParserTests: XCTestCase {
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 2)
-        XCTAssertEqual(ast.children[0], InstructionNode(instruction: "step", parameters: ParameterList(parameters: [])))
-        XCTAssertEqual(ast.children[1], InstructionNode(instruction: "step", parameters: ParameterList(parameters: [])))
+        XCTAssertEqual(ast.children[0], InstructionNode(instruction: "step", parameters: []))
+        XCTAssertEqual(ast.children[1], InstructionNode(instruction: "step", parameters: []))
     }
     
     func testParseStepWithParameter() {
@@ -72,9 +72,9 @@ class DebugConsoleCommandLineParserTests: XCTestCase {
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children.first, InstructionNode(instruction: "step", parameters: ParameterList(parameters: [
+        XCTAssertEqual(ast.children.first, InstructionNode(instruction: "step", parameters: [
             ParameterNumber(value: 1)
-        ])))
+        ]))
     }
     
     func testParseQuit() {
@@ -82,7 +82,7 @@ class DebugConsoleCommandLineParserTests: XCTestCase {
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children.first, InstructionNode(instruction: "quit", parameters: ParameterList(parameters: [])))
+        XCTAssertEqual(ast.children.first, InstructionNode(instruction: "quit", parameters: []))
     }
     
     func testReadMemoryWithX_WithAddressAndBadLength() throws {
@@ -90,7 +90,7 @@ class DebugConsoleCommandLineParserTests: XCTestCase {
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
         XCTAssertEqual(ast.children.first, InstructionNode(instruction: "x",
-                                                           parameters: ParameterList(parameters: [ParameterSlashed(child: ParameterIdentifier(value: "foo")), ParameterNumber(value: 0x1000)])))
+                                                           parameters: [ParameterSlashed(child: ParameterIdentifier(value: "foo")), ParameterNumber(value: 0x1000)]))
     }
     
     func testLoad() throws {
@@ -98,7 +98,7 @@ class DebugConsoleCommandLineParserTests: XCTestCase {
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
         XCTAssertEqual(ast.children.first, InstructionNode(instruction: "load",
-                                                           parameters: ParameterList(parameters: [ParameterString(value: "foo")])))
+                                                           parameters: [ParameterString(value: "foo")]))
     }
     
     func testSave() throws {
@@ -106,6 +106,6 @@ class DebugConsoleCommandLineParserTests: XCTestCase {
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
         XCTAssertEqual(ast.children.first, InstructionNode(instruction: "save",
-                                                           parameters: ParameterList(parameters: [ParameterString(value: "foo")])))
+                                                           parameters: [ParameterString(value: "foo")]))
     }
 }

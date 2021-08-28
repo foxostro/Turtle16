@@ -10,16 +10,12 @@ import TurtleCore
 
 public class TurtleTTLInstructionNode: AbstractSyntaxTreeNode {
     public let instruction: String
-    public let parameters: ParameterList
+    public let parameters: [Parameter]
     public var destination: RegisterName {
-        return (parameters.elements.first as! ParameterRegister).value
+        return (parameters.first as! ParameterRegister).value
     }
     
-    public convenience init(instruction: String, parameters: ParameterList) {
-        self.init(sourceAnchor: nil, instruction: instruction, parameters: parameters)
-    }
-    
-    public required init(sourceAnchor: SourceAnchor?, instruction: String, parameters: ParameterList) {
+    public required init(sourceAnchor: SourceAnchor? = nil, instruction: String, parameters: [Parameter] = []) {
         self.instruction = instruction
         self.parameters = parameters
         super.init(sourceAnchor: sourceAnchor)

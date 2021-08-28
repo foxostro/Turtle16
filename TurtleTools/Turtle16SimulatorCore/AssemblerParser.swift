@@ -32,15 +32,15 @@ public class AssemblerParser: Parser {
         return [node]
     }
     
-    func consumeParameterList(instruction: Token) throws -> ParameterList {
+    func consumeParameterList(instruction: Token) throws -> [Parameter] {
         var parameters: [Parameter] = []
         
         if nil != accept(TokenEOF.self) {
-            return ParameterList(sourceAnchor: instruction.sourceAnchor, parameters: [])
+            return []
         }
         
         if nil != accept(TokenNewline.self) {
-            return ParameterList(sourceAnchor: instruction.sourceAnchor, parameters: [])
+            return []
         }
         
         while true {
@@ -59,7 +59,7 @@ public class AssemblerParser: Parser {
             }
         }
         
-        return ParameterList(sourceAnchor: instruction.sourceAnchor, parameters: parameters)
+        return parameters
     }
     
     func consumeSingleParameter() throws -> Parameter {

@@ -63,8 +63,8 @@ class AssemblerParserTests: XCTestCase {
             return
         }
         XCTAssertEqual(ast.children.count, 2)
-        XCTAssertEqual(ast.children[0], InstructionNode(instruction: "NOP", parameters: ParameterList(parameters: [])))
-        XCTAssertEqual(ast.children[1], InstructionNode(instruction: "HLT", parameters: ParameterList(parameters: [])))
+        XCTAssertEqual(ast.children[0], InstructionNode(instruction: "NOP", parameters: []))
+        XCTAssertEqual(ast.children[1], InstructionNode(instruction: "HLT", parameters: []))
     }
     
     func testParseOpcodeWithOneParameter1() {
@@ -75,9 +75,9 @@ class AssemblerParserTests: XCTestCase {
             return
         }
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children.first, InstructionNode(instruction: "NOP", parameters: ParameterList(parameters: [
+        XCTAssertEqual(ast.children.first, InstructionNode(instruction: "NOP", parameters: [
             ParameterNumber(value: 0xffff)
-        ])))
+        ]))
     }
     
     func testParseOpcodeWithOneParameter2() {
@@ -88,9 +88,9 @@ class AssemblerParserTests: XCTestCase {
             return
         }
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children.first, InstructionNode(instruction: "NOP", parameters: ParameterList(parameters: [
+        XCTAssertEqual(ast.children.first, InstructionNode(instruction: "NOP", parameters: [
             ParameterNumber(value: 0xffff)
-        ])))
+        ]))
     }
     
     func testParseOpcodeWithThreeParameters() {
@@ -101,11 +101,11 @@ class AssemblerParserTests: XCTestCase {
             return
         }
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children.first, InstructionNode(instruction: "NOP", parameters: ParameterList(parameters: [
+        XCTAssertEqual(ast.children.first, InstructionNode(instruction: "NOP", parameters: [
             ParameterNumber(value: 1),
             ParameterNumber(value: 2),
             ParameterIdentifier(value: "foo")
-        ])))
+        ]))
     }
     
     func testParseOpcodeWithExtraneousComma1() {
@@ -130,9 +130,9 @@ class AssemblerParserTests: XCTestCase {
             return
         }
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children.first, InstructionNode(instruction: "JR", parameters: ParameterList(parameters: [
+        XCTAssertEqual(ast.children.first, InstructionNode(instruction: "JR", parameters: [
             ParameterAddress(offset: ParameterNumber(value: 1), identifier: ParameterIdentifier(value: "r1"))
-        ])))
+        ]))
     }
     
     func testParseAddressParameterNegative() {
@@ -143,9 +143,9 @@ class AssemblerParserTests: XCTestCase {
             return
         }
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children.first, InstructionNode(instruction: "JR", parameters: ParameterList(parameters: [
+        XCTAssertEqual(ast.children.first, InstructionNode(instruction: "JR", parameters: [
             ParameterAddress(offset: ParameterNumber(value: -1), identifier: ParameterIdentifier(value: "r1"))
-        ])))
+        ]))
     }
     
     func testParseLabel() {

@@ -60,7 +60,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testNop() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "NOP",
-                            parameters: ParameterList(parameters: []))
+                            parameters: [])
         ])
         let instructions = mustCompile(ast)
         XCTAssertEqual(instructions.count, 2)
@@ -71,7 +71,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testHlt() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "HLT",
-                            parameters: ParameterList(parameters: []))
+                            parameters: [])
         ])
         let instructions = mustCompile(ast)
         XCTAssertEqual(instructions.count, 2)
@@ -82,7 +82,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testFailToCompileMOVWithNoOperands() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "MOV",
-                            parameters: ParameterList(parameters: []))
+                            parameters: [])
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `MOV'")
@@ -91,9 +91,9 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testFailToCompileMOVWithOneOperand() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "MOV",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterRegister(value: .A)
-                            ]))
+                            ])
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `MOV'")
@@ -102,11 +102,11 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testFailToCompileMOVWithTooManyOperands() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "MOV",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterRegister(value: .A),
                                 ParameterRegister(value: .B),
                                 ParameterRegister(value: .C),
-                            ]))
+                            ])
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `MOV'")
@@ -115,10 +115,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testFailToCompileMOVWithNumberInFirstOperand() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "MOV",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterNumber(value: 1),
                                 ParameterRegister(value: .A)
-                            ]))
+                            ])
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `MOV'")
@@ -127,10 +127,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testFailToCompileMOVWithNumberInSecondOperand() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "MOV",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterRegister(value: .A),
                                 ParameterNumber(value: 1)
-                            ]))
+                            ])
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `MOV'")
@@ -139,10 +139,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testFailToCompileMOVWithInvalidDestinationRegisterE() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "MOV",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterRegister(value: .E),
                                 ParameterRegister(value: .A)
-                            ]))
+                            ])
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "register cannot be used as a destination: `E'")
@@ -151,10 +151,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testFailToCompileMOVWithInvalidDestinationRegisterC() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "MOV",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterRegister(value: .C),
                                 ParameterRegister(value: .A)
-                            ]))
+                            ])
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "register cannot be used as a destination: `C'")
@@ -163,10 +163,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testFailToCompileMOVWithInvalidSourceRegisterD() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "MOV",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterRegister(value: .A),
                                 ParameterRegister(value: .D)
-                            ]))
+                            ])
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "register cannot be used as a source: `D'")
@@ -175,10 +175,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testMov() throws {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "MOV",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterRegister(value: .D),
                                 ParameterRegister(value: .A),
-                            ]))
+                            ])
         ])
         let instructions = mustCompile(ast)
         
@@ -194,7 +194,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testFailToCompileLIWithNoOperands() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "LI",
-                            parameters: ParameterList(parameters: []))
+                            parameters: [])
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `LI'")
@@ -203,9 +203,9 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testFailToCompileLIWithOneOperand() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "LI",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterNumber(value: 1)
-                            ]))
+                            ])
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `LI'")
@@ -214,10 +214,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testFailToCompileLIWhereDestinationIsANumber() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "LI",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterNumber(value: 1),
                                 ParameterRegister(value: .A)
-                            ]))
+                            ])
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `LI'")
@@ -226,10 +226,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testFailToCompileLIWhereSourceIsARegister() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "LI",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterRegister(value: .B),
                                 ParameterRegister(value: .A)
-                            ]))
+                            ])
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `LI'")
@@ -238,11 +238,11 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testFailToCompileLIWithTooManyOperands() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "LI",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterRegister(value: .A),
                                 ParameterNumber(value: 1),
                                 ParameterNumber(value: 1)
-                            ]))
+                            ])
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `LI'")
@@ -251,10 +251,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testLoadImmediate() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "LI",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterRegister(value: .D),
                                 ParameterNumber(value: 42),
-                            ]))
+                            ])
         ])
         let instructions = mustCompile(ast)
         
@@ -271,9 +271,9 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testFailToCompileADDWithIdentifierOperand() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "ADD",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterIdentifier(value: "label")
-                            ]))
+                            ])
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `ADD'")
@@ -282,9 +282,9 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testFailToCompileADDWithInvalidDestinationRegisterE() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "ADD",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterRegister(value: .E)
-                            ]))
+                            ])
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "register cannot be used as a destination: `E'")
@@ -293,9 +293,9 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testFailToCompileADDWithInvalidDestinationRegisterC() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "ADD",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterRegister(value: .C)
-                            ]))
+                            ])
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "register cannot be used as a destination: `C'")
@@ -304,9 +304,9 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testAdd() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "ADD",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterRegister(value: .D)
-                            ]))
+                            ])
         ])
         let instructions = mustCompile(ast)
         
@@ -326,15 +326,15 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         let ast = TopLevel(children: [
             LabelDeclaration(identifier: "foo"),
             TurtleTTLInstructionNode(instruction: "LXY",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterIdentifier(value: "foo")
-                            ])),
+                            ]),
             TurtleTTLInstructionNode(instruction: "JMP",
-                            parameters: ParameterList(parameters: [])),
+                            parameters: []),
             TurtleTTLInstructionNode(instruction: "NOP",
-                            parameters: ParameterList(parameters: [])),
+                            parameters: []),
             TurtleTTLInstructionNode(instruction: "NOP",
-                            parameters: ParameterList(parameters: []))])
+                            parameters: [])])
         let instructions = mustCompile(ast)
         
         XCTAssertEqual(instructions.count, 6)
@@ -361,18 +361,18 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testForwardJmp() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "LXY",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterIdentifier(value: "foo")
-                            ])),
+                            ]),
             TurtleTTLInstructionNode(instruction: "JMP",
-                            parameters: ParameterList(parameters: [])),
+                            parameters: []),
             TurtleTTLInstructionNode(instruction: "NOP",
-                            parameters: ParameterList(parameters: [])),
+                            parameters: []),
             TurtleTTLInstructionNode(instruction: "NOP",
-                            parameters: ParameterList(parameters: [])),
+                            parameters: []),
             LabelDeclaration(identifier: "foo"),
             TurtleTTLInstructionNode(instruction: "HLT",
-                            parameters: ParameterList(parameters: []))
+                            parameters: [])
         ])
         let instructions = mustCompile(ast)
         
@@ -403,15 +403,15 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testJmpToAddressZero() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "LXY",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterNumber(value: 0)
-                            ])),
+                            ]),
             TurtleTTLInstructionNode(instruction: "JMP",
-                            parameters: ParameterList(parameters: [])),
+                            parameters: []),
             TurtleTTLInstructionNode(instruction: "NOP",
-                            parameters: ParameterList(parameters: [])),
+                            parameters: []),
             TurtleTTLInstructionNode(instruction: "NOP",
-                            parameters: ParameterList(parameters: []))
+                            parameters: [])
         ])
         let instructions = mustCompile(ast)
 
@@ -439,15 +439,15 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testJmpToAddressNegative() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "LXY",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterNumber(value: -1)
-                            ])),
+                            ]),
             TurtleTTLInstructionNode(instruction: "JMP",
-                            parameters: ParameterList(parameters: [])),
+                            parameters: []),
             TurtleTTLInstructionNode(instruction: "NOP",
-                            parameters: ParameterList(parameters: [])),
+                            parameters: []),
             TurtleTTLInstructionNode(instruction: "NOP",
-                            parameters: ParameterList(parameters: []))
+                            parameters: [])
         ])
         let errors = mustFailToCompile(ast)
         let error = errors.first!
@@ -457,15 +457,15 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testJmpToAddressTooLarge() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "LXY",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterNumber(value: 0x10000)
-                            ])),
+                            ]),
             TurtleTTLInstructionNode(instruction: "JMP",
-                            parameters: ParameterList(parameters: [])),
+                            parameters: []),
             TurtleTTLInstructionNode(instruction: "NOP",
-                            parameters: ParameterList(parameters: [])),
+                            parameters: []),
             TurtleTTLInstructionNode(instruction: "NOP",
-                            parameters: ParameterList(parameters: []))
+                            parameters: [])
         ])
         let errors = mustFailToCompile(ast)
         let error = errors.first!
@@ -476,15 +476,15 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         let ast = TopLevel(children: [
             LabelDeclaration(identifier: "foo"),
             TurtleTTLInstructionNode(instruction: "LXY",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterIdentifier(value: "foo")
-                            ])),
+                            ]),
             TurtleTTLInstructionNode(instruction: "JC",
-                            parameters: ParameterList(parameters: [])),
+                            parameters: []),
             TurtleTTLInstructionNode(instruction: "NOP",
-                            parameters: ParameterList(parameters: [])),
+                            parameters: []),
             TurtleTTLInstructionNode(instruction: "NOP",
-                            parameters: ParameterList(parameters: []))
+                            parameters: [])
         ])
         let instructions = mustCompile(ast)
         
@@ -513,15 +513,15 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testJCToAddressZero() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "LXY",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterNumber(value: 0)
-                            ])),
+                            ]),
             TurtleTTLInstructionNode(instruction: "JC",
-                            parameters: ParameterList(parameters: [])),
+                            parameters: []),
             TurtleTTLInstructionNode(instruction: "NOP",
-                            parameters: ParameterList(parameters: [])),
+                            parameters: []),
             TurtleTTLInstructionNode(instruction: "NOP",
-                            parameters: ParameterList(parameters: []))
+                            parameters: [])
         ])
         let instructions = mustCompile(ast)
         
@@ -549,15 +549,15 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testJCToAddressNegative() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "LXY",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterNumber(value: -1)
-                            ])),
+                            ]),
             TurtleTTLInstructionNode(instruction: "JC",
-                            parameters: ParameterList(parameters: [])),
+                            parameters: []),
             TurtleTTLInstructionNode(instruction: "NOP",
-                            parameters: ParameterList(parameters: [])),
+                            parameters: []),
             TurtleTTLInstructionNode(instruction: "NOP",
-                            parameters: ParameterList(parameters: []))
+                            parameters: [])
         ])
         let errors = mustFailToCompile(ast)
         let error = errors.first!
@@ -567,15 +567,15 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testJCToAddressTooLarge() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "LXY",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterNumber(value: 0x10000)
-                            ])),
+                            ]),
             TurtleTTLInstructionNode(instruction: "JC",
-                            parameters: ParameterList(parameters: [])),
+                            parameters: []),
             TurtleTTLInstructionNode(instruction: "NOP",
-                            parameters: ParameterList(parameters: [])),
+                            parameters: []),
             TurtleTTLInstructionNode(instruction: "NOP",
-                            parameters: ParameterList(parameters: []))
+                            parameters: [])
         ])
         let errors = mustFailToCompile(ast)
         let error = errors.first!
@@ -585,7 +585,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testCMP() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "CMP",
-                            parameters: ParameterList(parameters: []))
+                            parameters: [])
         ])
         let instructions = mustCompile(ast)
         
@@ -603,7 +603,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testINUV() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "INUV",
-                            parameters: ParameterList(parameters: []))
+                            parameters: [])
         ])
         let instructions = mustCompile(ast)
         
@@ -617,7 +617,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testINXY() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "INXY",
-                            parameters: ParameterList(parameters: []))
+                            parameters: [])
         ])
         let instructions = mustCompile(ast)
         
@@ -631,7 +631,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testFailToCompileBLTWithNoOperands() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "BLT",
-                            parameters: ParameterList(parameters: []))
+                            parameters: [])
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `BLT'")
@@ -640,9 +640,9 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testFailToCompileBLTWithOneOperand() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "BLT",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterRegister(value: .A)
-                            ]))
+                            ])
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `BLT'")
@@ -651,11 +651,11 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testFailToCompileBLTWithTooManyOperands() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "BLT",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterRegister(value: .A),
                                 ParameterRegister(value: .B),
                                 ParameterRegister(value: .C),
-                            ]))
+                            ])
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `BLT'")
@@ -664,10 +664,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testFailToCompileBLTWithNumberInFirstOperand() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "BLT",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterNumber(value: 1),
                                 ParameterRegister(value: .A)
-                            ]))
+                            ])
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `BLT'")
@@ -676,10 +676,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testFailToCompileBLTWithNumberInSecondOperand() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "BLT",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterRegister(value: .A),
                                 ParameterNumber(value: 1)
-                            ]))
+                            ])
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "operand type mismatch: `BLT'")
@@ -688,10 +688,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testFailToCompileBLTWithInvalidDestinationRegisterE() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "BLT",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterRegister(value: .E),
                                 ParameterRegister(value: .A)
-                            ]))
+                            ])
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "register cannot be used as a destination: `E'")
@@ -700,10 +700,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testFailToCompileBLTWithInvalidDestinationRegisterC() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "BLT",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterRegister(value: .C),
                                 ParameterRegister(value: .A)
-                            ]))
+                            ])
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "register cannot be used as a destination: `C'")
@@ -712,10 +712,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testFailToCompileBLTWithInvalidSourceRegisterD() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "BLT",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterRegister(value: .A),
                                 ParameterRegister(value: .D)
-                            ]))
+                            ])
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "register cannot be used as a source: `D'")
@@ -724,10 +724,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testBLT() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "BLT",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterRegister(value: .P),
                                 ParameterRegister(value: .M),
-                            ]))
+                            ])
         ])
         let instructions = mustCompile(ast)
         
@@ -763,10 +763,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testLICannotUseUndeclaredSymbolAsSource() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "LI",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterRegister(value: .B),
                                 ParameterIdentifier(value: "foo")
-                            ]))
+                            ])
         ])
         let errors = mustFailToCompile(ast)
         XCTAssertEqual(errors.first?.message, "use of unresolved identifier: `foo'")
@@ -777,10 +777,10 @@ class AssemblerCodeGeneratorTests: XCTestCase {
             ConstantDeclaration(identifier: "foo",
                                 value: 42),
             TurtleTTLInstructionNode(instruction: "LI",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterRegister(value: .B),
                                 ParameterIdentifier(value: "foo")
-                            ]))
+                            ])
         ])
         let instructions = mustCompile(ast)
         
@@ -797,9 +797,9 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testDEA() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "DEA",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterRegister(value: .D)
-                            ]))
+                            ])
         ])
         let instructions = mustCompile(ast)
         
@@ -818,9 +818,9 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testDCA() {
         let ast = TopLevel(children: [
             TurtleTTLInstructionNode(instruction: "DCA",
-                            parameters: ParameterList(parameters: [
+                            parameters: [
                                 ParameterRegister(value: .A)
-                            ]))
+                            ])
         ])
         let instructions = mustCompile(ast)
         

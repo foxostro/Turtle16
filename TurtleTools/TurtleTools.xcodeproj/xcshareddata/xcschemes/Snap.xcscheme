@@ -32,17 +32,8 @@
       codeCoverageEnabled = "YES">
       <Testables>
          <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6F9201C62471D82C009E1410"
-               BuildableName = "TurtleCompilerToolboxTests.xctest"
-               BlueprintName = "TurtleCompilerToolboxTests"
-               ReferencedContainer = "container:TurtleTools.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "6F9201EC2471DAC7009E1410"
@@ -52,7 +43,8 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "6FB0D29224710C26003B5D5C"
@@ -62,7 +54,8 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "6FB0D35324711A23003B5D5C"
@@ -72,12 +65,13 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6FB0D2EC247115BA003B5D5C"
-               BuildableName = "TurtleAssemblerCoreTests.xctest"
-               BlueprintName = "TurtleAssemblerCoreTests"
+               BlueprintIdentifier = "6F734338259327D400B7E43F"
+               BuildableName = "Turtle16SimulatorCoreTests.xctest"
+               BlueprintName = "Turtle16SimulatorCoreTests"
                ReferencedContainer = "container:TurtleTools.xcodeproj">
             </BuildableReference>
          </TestableReference>

@@ -141,13 +141,13 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         var children: [AbstractSyntaxTreeNode] = []
         
         children += [
-            InstructionNode(sourceAnchor: node.sourceAnchor, instruction: Tack.kJMP, parameters: ParameterList(parameters: [
+            InstructionNode(sourceAnchor: node.sourceAnchor, instruction: Tack.kJMP, parameters: [
                 ParameterIdentifier(value: labelTail)
-            ])),
+            ]),
             LabelDeclaration(sourceAnchor: node.sourceAnchor, identifier: labelHead),
-            InstructionNode(sourceAnchor: node.sourceAnchor, instruction: Tack.kENTER, parameters: ParameterList(parameters: [
+            InstructionNode(sourceAnchor: node.sourceAnchor, instruction: Tack.kENTER, parameters: [
                 ParameterNumber(value: sizeOfLocalVariables)
-            ])),
+            ]),
             try compile(node.body)!,
             LabelDeclaration(sourceAnchor: node.sourceAnchor, identifier: labelTail),
         ]
@@ -156,16 +156,16 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     public override func compile(goto node: Goto) throws -> AbstractSyntaxTreeNode? {
-        return InstructionNode(sourceAnchor: node.sourceAnchor, instruction: Tack.kJMP, parameters: ParameterList(parameters: [ParameterIdentifier(value: node.target)]))
+        return InstructionNode(sourceAnchor: node.sourceAnchor, instruction: Tack.kJMP, parameters: [ParameterIdentifier(value: node.target)])
     }
     
     public override func compile(gotoIfFalse node: GotoIfFalse) throws -> AbstractSyntaxTreeNode? {
         return Seq(children: [
             try rvalue(expr: node.condition),
-            InstructionNode(sourceAnchor: node.sourceAnchor, instruction: Tack.kBZ, parameters: ParameterList(parameters: [
+            InstructionNode(sourceAnchor: node.sourceAnchor, instruction: Tack.kBZ, parameters: [
                 ParameterIdentifier(value: popRegister()),
                 ParameterIdentifier(value: "foo")
-            ]))
+            ])
         ])
     }
     
@@ -230,11 +230,11 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             let accessAddr = nextRegister()
             pushRegister(accessAddr)
             children += [
-                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kADD16, parameters: ParameterList(parameters: [
+                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kADD16, parameters: [
                     ParameterIdentifier(value: accessAddr),
                     ParameterIdentifier(value: index),
                     ParameterIdentifier(value: baseAddr)
-                ]))
+                ])
             ]
             
         default:
@@ -247,16 +247,16 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             let accessAddr = nextRegister()
             pushRegister(accessAddr)
             children += [
-                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kMULI16, parameters: ParameterList(parameters: [
+                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kMULI16, parameters: [
                     ParameterIdentifier(value: offset),
                     ParameterIdentifier(value: index),
                     ParameterNumber(value: elementSize)
-                ])),
-                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kADD16, parameters: ParameterList(parameters: [
+                ]),
+                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kADD16, parameters: [
                     ParameterIdentifier(value: accessAddr),
                     ParameterIdentifier(value: offset),
                     ParameterIdentifier(value: baseAddr)
-                ]))
+                ])
             ]
         }
         
@@ -271,10 +271,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             let temp = nextRegister()
             pushRegister(temp)
             children += [
-                InstructionNode(sourceAnchor: sourceAnchor, instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                InstructionNode(sourceAnchor: sourceAnchor, instruction: Tack.kLIU16, parameters: [
                     ParameterIdentifier(value: temp),
                     ParameterNumber(value: symbol.offset)
-                ]))
+                ])
             ]
         case .automaticStorage:
             children += [
@@ -297,19 +297,19 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             temp_framePointer = nextRegister()
             
             children += [
-                InstructionNode(sourceAnchor: sourceAnchor, instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                InstructionNode(sourceAnchor: sourceAnchor, instruction: Tack.kLOAD, parameters: [
                     ParameterIdentifier(value: temp_framePointer),
                     ParameterIdentifier(value: fp)
-                ]))
+                ])
             ]
             
             // Follow the frame pointer `depth' times.
             for _ in 1..<depth {
                 children += [
-                    InstructionNode(sourceAnchor: sourceAnchor, instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                    InstructionNode(sourceAnchor: sourceAnchor, instruction: Tack.kLOAD, parameters: [
                         ParameterIdentifier(value: temp_framePointer),
                         ParameterIdentifier(value: temp_framePointer)
-                    ]))
+                    ])
                 ]
             }
         }
@@ -318,19 +318,19 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         
         if offset >= 0 {
             children += [
-                InstructionNode(sourceAnchor: sourceAnchor, instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+                InstructionNode(sourceAnchor: sourceAnchor, instruction: Tack.kSUBI16, parameters: [
                     ParameterIdentifier(value: temp_result),
                     ParameterIdentifier(value: temp_framePointer),
                     ParameterNumber(value: offset)
-                ]))
+                ])
             ]
         } else {
             children += [
-                InstructionNode(sourceAnchor: sourceAnchor, instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+                InstructionNode(sourceAnchor: sourceAnchor, instruction: Tack.kADDI16, parameters: [
                     ParameterIdentifier(value: temp_result),
                     ParameterIdentifier(value: temp_framePointer),
                     ParameterNumber(value: -offset)
-                ]))
+                ])
             ]
         }
         
@@ -356,11 +356,11 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             let dst = nextRegister()
             pushRegister(dst)
             children += [
-                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kADDI16, parameters: [
                     ParameterIdentifier(value: dst),
                     ParameterIdentifier(value: tempStructAddress),
                     ParameterNumber(value: symbol.offset)
-                ]))
+                ])
             ]
             
         case .constPointer(let typ), .pointer(let typ):
@@ -380,11 +380,11 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                     let dst = nextRegister()
                     pushRegister(dst)
                     children += [
-                        InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+                        InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kADDI16, parameters: [
                             ParameterIdentifier(value: dst),
                             ParameterIdentifier(value: tempStructAddress),
                             ParameterNumber(value: symbol.offset)
-                        ]))
+                        ])
                     ]
                     
                 default:
@@ -445,20 +445,20 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         let dest = nextRegister()
         pushRegister(dest)
         let op = (node.value < 256) ? Tack.kLI8 : Tack.kLI16
-        let result = InstructionNode(sourceAnchor: node.sourceAnchor, instruction: op, parameters: ParameterList(parameters: [
+        let result = InstructionNode(sourceAnchor: node.sourceAnchor, instruction: op, parameters: [
             ParameterIdentifier(value: dest),
             ParameterNumber(value: node.value)
-        ]))
+        ])
         return result
     }
     
     func rvalue(literalBoolean node: Expression.LiteralBool) -> AbstractSyntaxTreeNode {
         let dest = nextRegister()
         pushRegister(dest)
-        let result = InstructionNode(sourceAnchor: node.sourceAnchor, instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        let result = InstructionNode(sourceAnchor: node.sourceAnchor, instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: dest),
             ParameterNumber(value: node.value ? 1 : 0)
-        ]))
+        ])
         return result
     }
     
@@ -518,10 +518,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             let dest = nextRegister()
             pushRegister(dest)
             children += [
-                InstructionNode(sourceAnchor: node.sourceAnchor, instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                InstructionNode(sourceAnchor: node.sourceAnchor, instruction: Tack.kLOAD, parameters: [
                     ParameterIdentifier(value: dest),
                     ParameterIdentifier(value: addr),
-                ]))
+                ])
             ]
         }
         
@@ -555,10 +555,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             // Add an instruction to load a register with that known value.
             let dst = nextRegister()
             pushRegister(dst)
-            result = InstructionNode(sourceAnchor: rexpr.sourceAnchor, instruction: Tack.kLI8, parameters: ParameterList(parameters: [
+            result = InstructionNode(sourceAnchor: rexpr.sourceAnchor, instruction: Tack.kLI8, parameters: [
                 ParameterIdentifier(value: dst),
                 ParameterNumber(value: a)
-            ]))
+            ])
             
         case (.compTimeInt(let a), .u16),
              (.compTimeInt(let a), .constU16):
@@ -566,10 +566,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             // Add an instruction to load a register with that known value.
             let dst = nextRegister()
             pushRegister(dst)
-            result = InstructionNode(sourceAnchor: rexpr.sourceAnchor, instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+            result = InstructionNode(sourceAnchor: rexpr.sourceAnchor, instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier(value: dst),
                 ParameterNumber(value: a)
-            ]))
+            ])
             
         case (.compTimeBool(let a), .bool),
              (.compTimeBool(let a), .constBool):
@@ -577,10 +577,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             // Add an instruction to load a register with that known value.
             let dst = nextRegister()
             pushRegister(dst)
-            result = InstructionNode(sourceAnchor: rexpr.sourceAnchor, instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+            result = InstructionNode(sourceAnchor: rexpr.sourceAnchor, instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier(value: dst),
                 ParameterNumber(value: a ? 1 : 0)
-            ]))
+            ])
             
         case (.constU16, .constU8),
              (.constU16, .u8),
@@ -596,11 +596,11 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             let dst = nextRegister()
             pushRegister(dst)
             children += [
-                InstructionNode(sourceAnchor: rexpr.sourceAnchor, instruction: Tack.kANDI16, parameters: ParameterList(parameters: [
+                InstructionNode(sourceAnchor: rexpr.sourceAnchor, instruction: Tack.kANDI16, parameters: [
                     ParameterIdentifier(value: dst),
                     ParameterIdentifier(value: src),
                     ParameterNumber(value: 0x00ff)
-                ]))
+                ])
             ]
             result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
             
@@ -642,24 +642,24 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             let dst = popRegister()
             children += [
                 try lvalue(expr: rexpr),
-                InstructionNode(sourceAnchor: rexpr.sourceAnchor, instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+                InstructionNode(sourceAnchor: rexpr.sourceAnchor, instruction: Tack.kSTORE, parameters: [
                     ParameterIdentifier(value: dst),
                     ParameterIdentifier(value: popRegister()),
                     ParameterNumber(value: 0),
-                ]))
+                ])
             ]
             let countReg = nextRegister()
             let countOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .u16)
             children += [
-                InstructionNode(sourceAnchor: rexpr.sourceAnchor, instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                InstructionNode(sourceAnchor: rexpr.sourceAnchor, instruction: Tack.kLIU16, parameters: [
                     ParameterIdentifier(value: countReg),
                     ParameterNumber(value: n),
-                ])),
-                InstructionNode(sourceAnchor: rexpr.sourceAnchor, instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+                ]),
+                InstructionNode(sourceAnchor: rexpr.sourceAnchor, instruction: Tack.kSTORE, parameters: [
                     ParameterIdentifier(value: dst),
                     ParameterIdentifier(value: countReg),
                     ParameterNumber(value: countOffset),
-                ]))
+                ])
             ]
             registerStack = savedRegisterStack
             result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
@@ -673,40 +673,40 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             let tempUnionTypeTag = nextRegister()
             let unionTypeTag = determineUnionTypeTag(typ, rtype)!
             children += [
-                InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                InstructionNode(instruction: Tack.kLIU16, parameters: [
                     ParameterIdentifier(value: tempUnionTypeTag),
                     ParameterNumber(value: unionTypeTag)
-                ])),
-                InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+                ]),
+                InstructionNode(instruction: Tack.kSTORE, parameters: [
                     ParameterIdentifier(value: tempUnionAddr),
                     ParameterIdentifier(value: tempUnionTypeTag),
                     ParameterNumber(value: kUnionTypeTagOffset)
-                ]))
+                ])
             ]
             if rtype.isPrimitive {
                 children += [
                     try rvalue(expr: rexpr),
-                    InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+                    InstructionNode(instruction: Tack.kSTORE, parameters: [
                         ParameterIdentifier(value: tempUnionAddr),
                         ParameterIdentifier(value: popRegister()),
                         ParameterNumber(value: kUnionPayloadOffset)
-                    ]))
+                    ])
                 ]
             } else {
                 let size = globalEnvironment.memoryLayoutStrategy.sizeof(type: rtype)
                 let tempUnionPayloadAddress = nextRegister()
                 children += [
-                    InstructionNode(instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+                    InstructionNode(instruction: Tack.kADDI16, parameters: [
                         ParameterIdentifier(value: tempUnionPayloadAddress),
                         ParameterIdentifier(value: tempUnionAddr),
                         ParameterNumber(value: kUnionPayloadOffset)
-                    ])),
+                    ]),
                     try rvalue(expr: rexpr),
-                    InstructionNode(instruction: Tack.kMEMCPY, parameters: ParameterList(parameters: [
+                    InstructionNode(instruction: Tack.kMEMCPY, parameters: [
                         ParameterIdentifier(value: tempUnionPayloadAddress),
                         ParameterIdentifier(value: popRegister()),
                         ParameterNumber(value: size)
-                    ]))
+                    ])
                 ]
             }
             pushRegister(tempUnionAddr)
@@ -721,19 +721,19 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             pushRegister(dst)
             if ltype.isPrimitive {
                 children += [
-                    InstructionNode(sourceAnchor: rexpr.sourceAnchor, instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                    InstructionNode(sourceAnchor: rexpr.sourceAnchor, instruction: Tack.kLOAD, parameters: [
                         ParameterIdentifier(value: dst),
                         ParameterIdentifier(value: tempUnionAddr),
                         ParameterNumber(value: kUnionPayloadOffset),
-                    ]))
+                    ])
                 ]
             } else {
                 children += [
-                    InstructionNode(sourceAnchor: rexpr.sourceAnchor, instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+                    InstructionNode(sourceAnchor: rexpr.sourceAnchor, instruction: Tack.kADDI16, parameters: [
                         ParameterIdentifier(value: dst),
                         ParameterIdentifier(value: tempUnionAddr),
                         ParameterNumber(value: kUnionPayloadOffset),
-                    ]))
+                    ])
                 ]
             }
             result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
@@ -817,10 +817,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             case .function(let typ):
                 let label = typ.mangledName ?? typ.name!
                 let dst = nextRegister()
-                result = InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLA, parameters: ParameterList(parameters: [
+                result = InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLA, parameters: [
                     ParameterIdentifier(value: dst),
                     ParameterIdentifier(value: label)
-                ]))
+                ])
                 pushRegister(dst)
             default:
                 result = try lvalue(expr: expr.child)
@@ -838,15 +838,15 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 let d = nextRegister()
                 pushRegister(d)
                 instructions += [
-                    InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLI8, parameters: ParameterList(parameters: [
+                    InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLI8, parameters: [
                         ParameterIdentifier(value: a),
                         ParameterNumber(value: 0)
-                    ])),
-                    InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kSUB8, parameters: ParameterList(parameters: [
+                    ]),
+                    InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kSUB8, parameters: [
                         ParameterIdentifier(value: c),
                         ParameterIdentifier(value: a),
                         ParameterIdentifier(value: b)
-                    ]))
+                    ])
                 ]
                 
             case (.u16, .minus):
@@ -854,15 +854,15 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 let c = nextRegister()
                 pushRegister(c)
                 instructions += [
-                    InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+                    InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLI16, parameters: [
                         ParameterIdentifier(value: a),
                         ParameterNumber(value: 0)
-                    ])),
-                    InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kSUB16, parameters: ParameterList(parameters: [
+                    ]),
+                    InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kSUB16, parameters: [
                         ParameterIdentifier(value: c),
                         ParameterIdentifier(value: a),
                         ParameterIdentifier(value: b)
-                    ]))
+                    ])
                 ]
                 
             case (.bool, .bang):
@@ -870,10 +870,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 let c = nextRegister()
                 pushRegister(c)
                 instructions += [
-                    InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kNOT, parameters: ParameterList(parameters: [
+                    InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kNOT, parameters: [
                         ParameterIdentifier(value: a),
                         ParameterIdentifier(value: b)
-                    ]))
+                    ])
                 ]
                 
             case (.u8, .tilde):
@@ -881,20 +881,20 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 let d = nextRegister()
                 pushRegister(d)
                 instructions += [
-                    InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kNEG8, parameters: ParameterList(parameters: [
+                    InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kNEG8, parameters: [
                         ParameterIdentifier(value: c),
                         ParameterIdentifier(value: b)
-                    ]))
+                    ])
                 ]
                 
             case (.u16, .tilde):
                 let c = nextRegister()
                 pushRegister(c)
                 instructions += [
-                    InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kNEG16, parameters: ParameterList(parameters: [
+                    InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kNEG16, parameters: [
                         ParameterIdentifier(value: c),
                         ParameterIdentifier(value: b)
-                    ]))
+                    ])
                 ]
                 
             default:
@@ -939,11 +939,11 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         pushRegister(c)
         
         let operandIns = try getOperand(binary, leftType, rightType, typeForArithmetic)
-        let op = InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: operandIns, parameters: ParameterList(parameters: [
+        let op = InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: operandIns, parameters: [
             ParameterIdentifier(value: c),
             ParameterIdentifier(value: a),
             ParameterIdentifier(value: b)
-        ]))
+        ])
         
         return Seq(sourceAnchor: binary.sourceAnchor, children: [right, left, op])
     }
@@ -1093,10 +1093,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         let dst = nextRegister()
         pushRegister(dst)
         
-        return InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: ins, parameters: ParameterList(parameters: [
+        return InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: ins, parameters: [
             ParameterIdentifier(value: dst),
             ParameterNumber(value: value)
-        ]))
+        ])
     }
     
     func compileBooleanBinaryExpression(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> AbstractSyntaxTreeNode {
@@ -1114,11 +1114,11 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             let b = popRegister()
             let c = nextRegister()
             pushRegister(c)
-            let op = InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kEQ16, parameters: ParameterList(parameters: [
+            let op = InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kEQ16, parameters: [
                 ParameterIdentifier(value: c),
                 ParameterIdentifier(value: a),
                 ParameterIdentifier(value: b)
-            ]))
+            ])
             return Seq(sourceAnchor: binary.sourceAnchor, children: [right, left, op])
             
         case .ne:
@@ -1128,11 +1128,11 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             let b = popRegister()
             let c = nextRegister()
             pushRegister(c)
-            let op = InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kNE16, parameters: ParameterList(parameters: [
+            let op = InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kNE16, parameters: [
                 ParameterIdentifier(value: c),
                 ParameterIdentifier(value: a),
                 ParameterIdentifier(value: b)
-            ]))
+            ])
             return Seq(sourceAnchor: binary.sourceAnchor, children: [right, left, op])
             
         case .doubleAmpersand:
@@ -1173,10 +1173,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         let dst = nextRegister()
         pushRegister(dst)
         
-        return InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+        return InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kLI16, parameters: [
             ParameterIdentifier(value: dst),
             ParameterNumber(value: value)
-        ]))
+        ])
     }
     
     func logicalAnd(_ binary: Expression.Binary) throws -> AbstractSyntaxTreeNode {
@@ -1186,32 +1186,32 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         instructions.append(try compileAndConvertExpression(rexpr: binary.left, ltype: .bool, isExplicitCast: false))
         let a = popRegister()
         instructions += [
-            InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kBZ, parameters: ParameterList(parameters: [
+            InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kBZ, parameters: [
                 ParameterIdentifier(value: a),
                 ParameterIdentifier(value: labelFalse)
-            ])),
+            ]),
             try compileAndConvertExpression(rexpr: binary.right, ltype: .bool, isExplicitCast: false)
         ]
         let b = popRegister()
         let c = nextRegister()
         pushRegister(c)
         instructions += [
-            InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kBZ, parameters: ParameterList(parameters: [
+            InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kBZ, parameters: [
                 ParameterIdentifier(value: b),
                 ParameterIdentifier(value: labelFalse)
-            ])),
-            InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier(value: c),
                 ParameterNumber(value: 1)
-            ])),
-            InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kJMP, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kJMP, parameters: [
                 ParameterIdentifier(value: labelTail)
-            ])),
+            ]),
             LabelDeclaration(sourceAnchor: binary.sourceAnchor, identifier: labelFalse),
-            InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+            InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier(value: c),
                 ParameterNumber(value: 0)
-            ])),
+            ]),
             LabelDeclaration(sourceAnchor: binary.sourceAnchor, identifier: labelTail)
         ]
         return Seq(sourceAnchor: binary.sourceAnchor, children: instructions)
@@ -1224,32 +1224,32 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         instructions.append(try compileAndConvertExpression(rexpr: binary.left, ltype: .bool, isExplicitCast: false))
         let a = popRegister()
         instructions += [
-            InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kBNZ, parameters: ParameterList(parameters: [
+            InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kBNZ, parameters: [
                 ParameterIdentifier(value: a),
                 ParameterIdentifier(value: labelTrue)
-            ])),
+            ]),
             try compileAndConvertExpression(rexpr: binary.right, ltype: .bool, isExplicitCast: false)
         ]
         let b = popRegister()
         let c = nextRegister()
         pushRegister(c)
         instructions += [
-            InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kBNZ, parameters: ParameterList(parameters: [
+            InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kBNZ, parameters: [
                 ParameterIdentifier(value: b),
                 ParameterIdentifier(value: labelTrue)
-            ])),
-            InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier(value: c),
                 ParameterNumber(value: 0)
-            ])),
-            InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kJMP, parameters: ParameterList(parameters: [
+            ]),
+            InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kJMP, parameters: [
                 ParameterIdentifier(value: labelTail)
-            ])),
+            ]),
             LabelDeclaration(sourceAnchor: binary.sourceAnchor, identifier: labelTrue),
-            InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+            InstructionNode(sourceAnchor: binary.sourceAnchor, instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier(value: c),
                 ParameterNumber(value: 1)
-            ])),
+            ]),
             LabelDeclaration(sourceAnchor: binary.sourceAnchor, identifier: labelTail)
         ]
         return Seq(sourceAnchor: binary.sourceAnchor, children: instructions)
@@ -1261,10 +1261,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         switch exprType {
         case .compTimeBool(let val):
             let tempResult = nextRegister()
-            let result = InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+            let result = InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier(value: tempResult),
                 ParameterNumber(value: val ? 1 : 0)
-            ]))
+            ])
             pushRegister(tempResult)
             return result
             
@@ -1287,10 +1287,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         let typeTag: Int! = determineUnionTypeTag(typ, testType)
         let tempTestTag = nextRegister()
         children += [
-            InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLI16, parameters: ParameterList(parameters: [
+            InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier(value: tempTestTag),
                 ParameterNumber(value: typeTag)
-            ]))
+            ])
         ]
         
         // Get the address of the union in memory.
@@ -1302,20 +1302,20 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         // Read the union type tag in memory.
         let tempActualTag = nextRegister()
         children += [
-            InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+            InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLOAD, parameters: [
                 ParameterIdentifier(value: tempActualTag),
                 ParameterIdentifier(value: tempUnionAddr)
-            ]))
+            ])
         ]
         
         // Compare the union's actual type tag against the tag of the test type.
         let tempResult = nextRegister()
         children += [
-            InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kEQ16, parameters: ParameterList(parameters: [
+            InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kEQ16, parameters: [
                 ParameterIdentifier(value: tempResult),
                 ParameterIdentifier(value: tempActualTag),
                 ParameterIdentifier(value: tempTestTag)
-            ]))
+            ])
         ]
         
         pushRegister(tempResult)
@@ -1357,10 +1357,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             result = Seq(sourceAnchor: expr.sourceAnchor, children: [
                 lvalueProc,
                 rvalueProc,
-                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kSTORE, parameters: [
                     ParameterIdentifier(value: dst),
                     ParameterIdentifier(value: src)
-                ]))
+                ])
             ])
         } else if size == 0 {
             result = Seq(sourceAnchor: expr.sourceAnchor, children: [
@@ -1384,11 +1384,11 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             result = Seq(sourceAnchor: expr.sourceAnchor, children: [
                 lvalueProc,
                 rvalueProc,
-                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kMEMCPY, parameters: ParameterList(parameters: [
+                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kMEMCPY, parameters: [
                     ParameterIdentifier(value: dst),
                     ParameterIdentifier(value: src),
                     ParameterNumber(value: size)
-                ]))
+                ])
             ])
         }
         
@@ -1409,11 +1409,11 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             let dst = nextRegister()
             pushRegister(dst)
             children += [
-                InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                InstructionNode(instruction: Tack.kLOAD, parameters: [
                     ParameterIdentifier(value: dst),
                     ParameterIdentifier(value: baseAddr),
                     ParameterNumber(value: index)
-                ]))
+                ])
             ]
         } else {
             children += [
@@ -1425,10 +1425,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 let dest = nextRegister()
                 pushRegister(dest)
                 children += [
-                    InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                    InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLOAD, parameters: [
                         ParameterIdentifier(value: dest),
                         ParameterIdentifier(value: addr),
-                    ]))
+                    ])
                 ]
             }
         }
@@ -1448,10 +1448,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             let countReg = nextRegister()
             pushRegister(countReg)
             children += [
-                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLIU16, parameters: [
                     ParameterIdentifier(value: countReg),
                     ParameterNumber(value: count!)
-                ]))
+                ])
             ]
             
         case .constDynamicArray, .dynamicArray:
@@ -1464,11 +1464,11 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             pushRegister(countReg)
             let countOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .u16)
             children += [
-                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLOAD, parameters: [
                     ParameterIdentifier(value: countReg),
                     ParameterIdentifier(value: sliceAddr),
                     ParameterNumber(value: countOffset)
-                ]))
+                ])
             ]
         
         case .constStructType(let typ), .structType(let typ):
@@ -1483,11 +1483,11 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 let dst = nextRegister()
                 pushRegister(dst)
                 children += [
-                    InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                    InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLOAD, parameters: [
                         ParameterIdentifier(value: dst),
                         ParameterIdentifier(value: tempStructAddress),
                         ParameterNumber(value: symbol.offset)
-                    ]))
+                    ])
                 ]
             } else {
                 children += [
@@ -1509,10 +1509,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                     let pointeeValue = nextRegister()
                     pushRegister(pointeeValue)
                     children += [
-                        InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                        InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLOAD, parameters: [
                             ParameterIdentifier(value: pointeeValue),
                             ParameterIdentifier(value: pointerValue)
-                        ]))
+                        ])
                     ]
                 }
             } else {
@@ -1522,10 +1522,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                     let countReg = nextRegister()
                     pushRegister(countReg)
                     children += [
-                        InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                        InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLIU16, parameters: [
                             ParameterIdentifier(value: countReg),
                             ParameterNumber(value: count!)
-                        ]))
+                        ])
                     ]
                     
                 case .constDynamicArray, .dynamicArray:
@@ -1538,11 +1538,11 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                     pushRegister(countReg)
                     let countOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .u16)
                     children += [
-                        InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                        InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLOAD, parameters: [
                             ParameterIdentifier(value: countReg),
                             ParameterIdentifier(value: sliceAddr),
                             ParameterNumber(value: countOffset)
-                        ]))
+                        ])
                     ]
                     
                 case .constStructType(let b), .structType(let b):
@@ -1558,15 +1558,15 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                         let dst = nextRegister()
                         pushRegister(dst)
                         children += [
-                            InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                            InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLOAD, parameters: [
                                 ParameterIdentifier(value: fieldAddr),
                                 ParameterIdentifier(value: structAddr)
-                            ])),
-                            InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                            ]),
+                            InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kLOAD, parameters: [
                                 ParameterIdentifier(value: dst),
                                 ParameterIdentifier(value: fieldAddr),
                                 ParameterNumber(value: symbol.offset)
-                            ]))
+                            ])
                         ]
                     } else {
                         children += [
@@ -1662,11 +1662,11 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         let returnTypeSize = globalEnvironment.memoryLayoutStrategy.sizeof(type: typ.returnType)
         if returnTypeSize > 0 {
             children += [
-                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kSUBI16, parameters: [
                     ParameterIdentifier(value: sp),
                     ParameterIdentifier(value: sp),
                     ParameterNumber(value: returnTypeSize)
-                ]))
+                ])
             ]
         }
         
@@ -1677,17 +1677,17 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             let argTypeSize = globalEnvironment.memoryLayoutStrategy.sizeof(type: argType)
             if argTypeSize > 0 {
                 children += [
-                    InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+                    InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kSUBI16, parameters: [
                         ParameterIdentifier(value: sp),
                         ParameterIdentifier(value: sp),
                         ParameterNumber(value: argTypeSize)
-                    ])),
+                    ]),
                     try lvalue(identifier: tempArgId),
-                    InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kMEMCPY, parameters: ParameterList(parameters: [
+                    InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kMEMCPY, parameters: [
                         ParameterIdentifier(value: sp),
                         ParameterIdentifier(value: popRegister()),
                         ParameterNumber(value: argTypeSize)
-                    ]))
+                    ])
                 ]
             }
         }
@@ -1696,17 +1696,17 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         switch calleeType {
         case .function:
             children += [
-                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kCALL, parameters: ParameterList(parameters: [
+                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kCALL, parameters: [
                     ParameterIdentifier(value: typ.mangledName!)
-                ]))
+                ])
             ]
             
         case .pointer:
             children += [
                 try rvalue(expr: expr.callee),
-                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kCALLPTR, parameters: ParameterList(parameters: [
+                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kCALLPTR, parameters: [
                     ParameterIdentifier(value: popRegister())
-                ]))
+                ])
             ]
             
         default:
@@ -1719,11 +1719,11 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         }
         if argPackSize > 0 {
             children += [
-                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kADDI16, parameters: [
                     ParameterIdentifier(value: sp),
                     ParameterIdentifier(value: sp),
                     ParameterNumber(value: argPackSize)
-                ]))
+                ])
             ]
         }
         
@@ -1732,16 +1732,16 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         if returnTypeSize > 0 {
             children += [
                 try lvalue(identifier: tempRetId!),
-                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kMEMCPY, parameters: ParameterList(parameters: [
+                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kMEMCPY, parameters: [
                     ParameterIdentifier(value: popRegister()),
                     ParameterIdentifier(value: sp),
                     ParameterNumber(value: returnTypeSize)
-                ])),
-                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+                ]),
+                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kADDI16, parameters: [
                     ParameterIdentifier(value: sp),
                     ParameterIdentifier(value: sp),
                     ParameterNumber(value: returnTypeSize)
-                ]))
+                ])
             ]
         }
         

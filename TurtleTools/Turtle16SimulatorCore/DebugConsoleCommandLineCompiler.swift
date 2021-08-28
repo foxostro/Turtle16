@@ -92,12 +92,12 @@ public class DebugConsoleCommandLineCompiler: NSObject {
     }
     
     fileprivate func acceptHelp(_ node: InstructionNode) {
-        guard node.parameters.elements.count > 0 else {
+        guard node.parameters.count > 0 else {
             instructions.append(.help(nil))
             return
         }
         
-        guard let topic = node.parameters.elements[0] as? ParameterIdentifier else {
+        guard let topic = node.parameters[0] as? ParameterIdentifier else {
             instructions.append(.help(nil))
             return
         }
@@ -148,18 +148,18 @@ public class DebugConsoleCommandLineCompiler: NSObject {
     }
     
     fileprivate func acceptQuit(_ node: InstructionNode) {
-        if node.parameters.elements.count != 0 {
-            errors.append(CompilerError(sourceAnchor: node.parameters.elements.first?.sourceAnchor, message: "instruction takes no parameters: `\(node.instruction)'"))
+        if node.parameters.count != 0 {
+            errors.append(CompilerError(sourceAnchor: node.parameters.first?.sourceAnchor, message: "instruction takes no parameters: `\(node.instruction)'"))
         } else {
             instructions.append(.quit)
         }
     }
     
     fileprivate func acceptReset(_ node: InstructionNode) {
-        if node.parameters.elements.count > 1 {
-            errors.append(CompilerError(sourceAnchor: node.parameters.elements[1].sourceAnchor, message: "instruction takes zero or one parameters: `\(node.instruction)'"))
+        if node.parameters.count > 1 {
+            errors.append(CompilerError(sourceAnchor: node.parameters[1].sourceAnchor, message: "instruction takes zero or one parameters: `\(node.instruction)'"))
         } else {
-            if let parameter = node.parameters.elements.first {
+            if let parameter = node.parameters.first {
                 if let parameterIdentifier = parameter as? ParameterIdentifier {
                     switch parameterIdentifier.value {
                     case "hard":
@@ -183,41 +183,41 @@ public class DebugConsoleCommandLineCompiler: NSObject {
     }
     
     fileprivate func acceptContinue(_ node: InstructionNode) {
-        if node.parameters.elements.count != 0 {
-            errors.append(CompilerError(sourceAnchor: node.parameters.elements.first?.sourceAnchor, message: "instruction takes no parameters: `\(node.instruction)'"))
+        if node.parameters.count != 0 {
+            errors.append(CompilerError(sourceAnchor: node.parameters.first?.sourceAnchor, message: "instruction takes no parameters: `\(node.instruction)'"))
         } else {
             instructions.append(.run)
         }
     }
     
     fileprivate func acceptStep(_ node: InstructionNode) {
-        if node.parameters.elements.count == 0 {
+        if node.parameters.count == 0 {
             instructions.append(.step(count: 1))
-        } else if node.parameters.elements.count == 1 {
-            if let parameter = node.parameters.elements.first as? ParameterNumber {
+        } else if node.parameters.count == 1 {
+            if let parameter = node.parameters.first as? ParameterNumber {
                 instructions.append(.step(count: parameter.value))
             } else {
-                errors.append(CompilerError(sourceAnchor: node.parameters.elements.first?.sourceAnchor, message: "expected a number for the step count: `\(node.instruction)'"))
+                errors.append(CompilerError(sourceAnchor: node.parameters.first?.sourceAnchor, message: "expected a number for the step count: `\(node.instruction)'"))
             }
         } else {
-            errors.append(CompilerError(sourceAnchor: node.parameters.elements[2].sourceAnchor, message: "instruction takes one optional parameter for the step count: `\(node.instruction)'"))
+            errors.append(CompilerError(sourceAnchor: node.parameters[2].sourceAnchor, message: "instruction takes one optional parameter for the step count: `\(node.instruction)'"))
         }
     }
     
     fileprivate func acceptReg(_ node: InstructionNode) {
-        if node.parameters.elements.count != 0 {
-            errors.append(CompilerError(sourceAnchor: node.parameters.elements.first?.sourceAnchor, message: "instruction takes no parameters: `\(node.instruction)'"))
+        if node.parameters.count != 0 {
+            errors.append(CompilerError(sourceAnchor: node.parameters.first?.sourceAnchor, message: "instruction takes no parameters: `\(node.instruction)'"))
         } else {
             instructions.append(.reg)
         }
     }
     
     fileprivate func acceptInfo(_ node: InstructionNode) {
-        if node.parameters.elements.count < 2 {
-            let device = node.parameters.elements.first as? ParameterIdentifier
+        if node.parameters.count < 2 {
+            let device = node.parameters.first as? ParameterIdentifier
             instructions.append(.info(device?.value))
         } else {
-            errors.append(CompilerError(sourceAnchor: node.parameters.elements[1].sourceAnchor, message: "instruction takes zero or one parameters: `\(node.instruction)'"))
+            errors.append(CompilerError(sourceAnchor: node.parameters[1].sourceAnchor, message: "instruction takes zero or one parameters: `\(node.instruction)'"))
         }
     }
     
@@ -240,20 +240,20 @@ public class DebugConsoleCommandLineCompiler: NSObject {
     }
     
     fileprivate func acceptReadMemoryParameters(_ node: InstructionNode) -> (UInt16, UInt)? {
-        if node.parameters.elements.count == 1 {
-            if let base = node.parameters.elements.first as? ParameterNumber {
+        if node.parameters.count == 1 {
+            if let base = node.parameters.first as? ParameterNumber {
                 return (UInt16(base.value), 1)
             } else {
-                errors.append(CompilerError(sourceAnchor: node.parameters.elements.first?.sourceAnchor, message: "expected a number for the memory address: `\(node.instruction)'"))
+                errors.append(CompilerError(sourceAnchor: node.parameters.first?.sourceAnchor, message: "expected a number for the memory address: `\(node.instruction)'"))
             }
             return nil
-        } else if node.parameters.elements.count == 2 {
-            guard let length = (node.parameters.elements[0] as? ParameterSlashed)?.child as? ParameterNumber else {
-                errors.append(CompilerError(sourceAnchor: node.parameters.elements[0].sourceAnchor, message: "expected a number for the length: `\(node.instruction)'"))
+        } else if node.parameters.count == 2 {
+            guard let length = (node.parameters[0] as? ParameterSlashed)?.child as? ParameterNumber else {
+                errors.append(CompilerError(sourceAnchor: node.parameters[0].sourceAnchor, message: "expected a number for the length: `\(node.instruction)'"))
                 return nil
             }
-            guard let base = node.parameters.elements[1] as? ParameterNumber else {
-                errors.append(CompilerError(sourceAnchor: node.parameters.elements[1].sourceAnchor, message: "expected a number for the memory address: `\(node.instruction)'"))
+            guard let base = node.parameters[1] as? ParameterNumber else {
+                errors.append(CompilerError(sourceAnchor: node.parameters[1].sourceAnchor, message: "expected a number for the memory address: `\(node.instruction)'"))
                     return nil
             }
             
@@ -290,17 +290,17 @@ public class DebugConsoleCommandLineCompiler: NSObject {
     }
     
     fileprivate func acceptWriteMemoryParameters(_ node: InstructionNode) -> (UInt16, [UInt16])? {
-        guard node.parameters.elements.count >= 2 else {
-            let sourceAnchor = (node.parameters.elements.first?.sourceAnchor) ?? node.sourceAnchor
+        guard node.parameters.count >= 2 else {
+            let sourceAnchor = (node.parameters.first?.sourceAnchor) ?? node.sourceAnchor
             errors.append(CompilerError(sourceAnchor: sourceAnchor, message: "expected a memory address and data words: `\(node.instruction)'"))
             return nil
         }
-        guard let base = node.parameters.elements[0] as? ParameterNumber else {
-            errors.append(CompilerError(sourceAnchor: node.parameters.elements[0].sourceAnchor, message: "expected a number for the memory address: `\(node.instruction)'"))
+        guard let base = node.parameters[0] as? ParameterNumber else {
+            errors.append(CompilerError(sourceAnchor: node.parameters[0].sourceAnchor, message: "expected a number for the memory address: `\(node.instruction)'"))
                 return nil
         }
         var words: [UInt16] = []
-        for el in node.parameters.elements[1...] {
+        for el in node.parameters[1...] {
             guard let word = el as? ParameterNumber else {
                 errors.append(CompilerError(sourceAnchor: el.sourceAnchor, message: "expected a number for the data word: `\(node.instruction)'"))
                     return nil
@@ -319,19 +319,19 @@ public class DebugConsoleCommandLineCompiler: NSObject {
     }
     
     fileprivate func acceptLoad(_ node: InstructionNode) {
-        guard (1...2).contains(node.parameters.elements.count) else {
-            let sourceAnchor = (node.parameters.elements.last?.sourceAnchor) ?? node.sourceAnchor
+        guard (1...2).contains(node.parameters.count) else {
+            let sourceAnchor = (node.parameters.last?.sourceAnchor) ?? node.sourceAnchor
             errors.append(CompilerError(sourceAnchor: sourceAnchor, message: "expected one parameter for the destination and one parameter for the file path: `\(node.instruction)'"))
             return
         }
-        guard let parameterDestination = node.parameters.elements[0] as? ParameterIdentifier else {
-            errors.append(CompilerError(sourceAnchor: node.parameters.elements.first?.sourceAnchor, message: "expected an identifier for the destination: `\(node.instruction)'"))
+        guard let parameterDestination = node.parameters[0] as? ParameterIdentifier else {
+            errors.append(CompilerError(sourceAnchor: node.parameters.first?.sourceAnchor, message: "expected an identifier for the destination: `\(node.instruction)'"))
             return
         }
         
-        if node.parameters.elements.count > 1 {
-            guard let parameterPath = node.parameters.elements[1] as? ParameterString else {
-                errors.append(CompilerError(sourceAnchor: node.parameters.elements[1].sourceAnchor, message: "expected a string for the file path: `\(node.instruction)'"))
+        if node.parameters.count > 1 {
+            guard let parameterPath = node.parameters[1] as? ParameterString else {
+                errors.append(CompilerError(sourceAnchor: node.parameters[1].sourceAnchor, message: "expected a string for the file path: `\(node.instruction)'"))
                 return
             }
             let path = NSString(string: parameterPath.value).expandingTildeInPath
@@ -349,19 +349,19 @@ public class DebugConsoleCommandLineCompiler: NSObject {
     }
     
     fileprivate func acceptSave(_ node: InstructionNode) {
-        guard (1...2).contains(node.parameters.elements.count) else {
-            let sourceAnchor = (node.parameters.elements.last?.sourceAnchor) ?? node.sourceAnchor
+        guard (1...2).contains(node.parameters.count) else {
+            let sourceAnchor = (node.parameters.last?.sourceAnchor) ?? node.sourceAnchor
             errors.append(CompilerError(sourceAnchor: sourceAnchor, message: "expected one parameter for the source and one parameter for the file path: `\(node.instruction)'"))
             return
         }
-        guard let parameterDestination = node.parameters.elements[0] as? ParameterIdentifier else {
-            errors.append(CompilerError(sourceAnchor: node.parameters.elements.first?.sourceAnchor, message: "expected an identifier for the source: `\(node.instruction)'"))
+        guard let parameterDestination = node.parameters[0] as? ParameterIdentifier else {
+            errors.append(CompilerError(sourceAnchor: node.parameters.first?.sourceAnchor, message: "expected an identifier for the source: `\(node.instruction)'"))
             return
         }
         
-        if node.parameters.elements.count > 1 {
-            guard let parameterPath = node.parameters.elements[1] as? ParameterString else {
-                errors.append(CompilerError(sourceAnchor: node.parameters.elements[1].sourceAnchor, message: "expected a string for the file path: `\(node.instruction)'"))
+        if node.parameters.count > 1 {
+            guard let parameterPath = node.parameters[1] as? ParameterString else {
+                errors.append(CompilerError(sourceAnchor: node.parameters[1].sourceAnchor, message: "expected a string for the file path: `\(node.instruction)'"))
                 return
             }
             let path = NSString(string: parameterPath.value).expandingTildeInPath
@@ -379,12 +379,12 @@ public class DebugConsoleCommandLineCompiler: NSObject {
     }
     
     fileprivate func acceptDisassemble(_ node: InstructionNode) {
-        switch node.parameters.elements.count {
+        switch node.parameters.count {
         case 0:
             instructions.append(.disassemble(.unspecified))
             
         case 1:
-            switch node.parameters.elements[0] {
+            switch node.parameters[0] {
             case let parameterBase as ParameterNumber:
                 guard parameterBase.value >= 0 else {
                     errors.append(CompilerError(sourceAnchor: parameterBase.sourceAnchor, message: "base address must not be negative: `\(node.instruction)'"))
@@ -400,11 +400,11 @@ public class DebugConsoleCommandLineCompiler: NSObject {
                 instructions.append(.disassemble(.identifier(parameterIdentifier.value)))
             
             default:
-                errors.append(CompilerError(sourceAnchor: node.parameters.elements[0].sourceAnchor, message: "expected an identifier or number for the base address: `\(node.instruction)'"))
+                errors.append(CompilerError(sourceAnchor: node.parameters[0].sourceAnchor, message: "expected an identifier or number for the base address: `\(node.instruction)'"))
             }
             
         case 2:
-            switch node.parameters.elements[0] {
+            switch node.parameters[0] {
             case let parameterBase as ParameterNumber:
                 guard parameterBase.value >= 0 else {
                     errors.append(CompilerError(sourceAnchor: parameterBase.sourceAnchor, message: "base address must not be negative: `\(node.instruction)'"))
@@ -414,8 +414,8 @@ public class DebugConsoleCommandLineCompiler: NSObject {
                     errors.append(CompilerError(sourceAnchor: parameterBase.sourceAnchor, message: "base address must be less than \(Int(UInt16.max)+1): `\(node.instruction)'"))
                     return
                 }
-                guard let parameterCount = node.parameters.elements[1] as? ParameterNumber else {
-                    errors.append(CompilerError(sourceAnchor: node.parameters.elements[1].sourceAnchor, message: "expected a number for the count: `\(node.instruction)'"))
+                guard let parameterCount = node.parameters[1] as? ParameterNumber else {
+                    errors.append(CompilerError(sourceAnchor: node.parameters[1].sourceAnchor, message: "expected a number for the count: `\(node.instruction)'"))
                     return
                 }
                 guard parameterCount.value >= 0 else {
@@ -429,8 +429,8 @@ public class DebugConsoleCommandLineCompiler: NSObject {
                 instructions.append(.disassemble(.baseCount(UInt16(parameterBase.value), UInt(parameterCount.value))))
             
             case let parameterIdentifier as ParameterIdentifier:
-                guard let parameterCount = node.parameters.elements[1] as? ParameterNumber else {
-                    errors.append(CompilerError(sourceAnchor: node.parameters.elements[1].sourceAnchor, message: "expected a number for the count: `\(node.instruction)'"))
+                guard let parameterCount = node.parameters[1] as? ParameterNumber else {
+                    errors.append(CompilerError(sourceAnchor: node.parameters[1].sourceAnchor, message: "expected a number for the count: `\(node.instruction)'"))
                     return
                 }
                 guard parameterCount.value >= 0 else {
@@ -444,11 +444,11 @@ public class DebugConsoleCommandLineCompiler: NSObject {
                 instructions.append(.disassemble(.identifierCount(parameterIdentifier.value, UInt(parameterCount.value))))
             
             default:
-                errors.append(CompilerError(sourceAnchor: node.parameters.elements[0].sourceAnchor, message: "expected an identifier or number for the base address: `\(node.instruction)'"))
+                errors.append(CompilerError(sourceAnchor: node.parameters[0].sourceAnchor, message: "expected an identifier or number for the base address: `\(node.instruction)'"))
             }
         
         default:
-            let sourceAnchor = node.parameters.elements.last?.sourceAnchor
+            let sourceAnchor = node.parameters.last?.sourceAnchor
             errors.append(CompilerError(sourceAnchor: sourceAnchor, message: "expected zero, one, or two parameters: `\(node.instruction)'"))
         }
     }

@@ -129,11 +129,11 @@ public class AssemblerCodeGenerator: NSObject {
     }
     
     func add(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 1 else {
+        guard node.parameters.count == 1 else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
-        guard let register = node.parameters.elements.first as? ParameterRegister else {
+        guard let register = node.parameters.first as? ParameterRegister else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
@@ -143,11 +143,11 @@ public class AssemblerCodeGenerator: NSObject {
     }
     
     func sub(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 1 else {
+        guard node.parameters.count == 1 else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
-        guard let register = node.parameters.elements.first as? ParameterRegister else {
+        guard let register = node.parameters.first as? ParameterRegister else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
@@ -157,11 +157,11 @@ public class AssemblerCodeGenerator: NSObject {
     }
     
     func adc(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 1 else {
+        guard node.parameters.count == 1 else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
-        guard let register = node.parameters.elements.first as? ParameterRegister else {
+        guard let register = node.parameters.first as? ParameterRegister else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
@@ -171,11 +171,11 @@ public class AssemblerCodeGenerator: NSObject {
     }
     
     func sbc(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 1 else {
+        guard node.parameters.count == 1 else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
-        guard let register = node.parameters.elements.first as? ParameterRegister else {
+        guard let register = node.parameters.first as? ParameterRegister else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
@@ -185,16 +185,16 @@ public class AssemblerCodeGenerator: NSObject {
     }
     
     func blt(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 2 else {
+        guard node.parameters.count == 2 else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
-        guard let destination = node.parameters.elements[0] as? ParameterRegister else {
+        guard let destination = node.parameters[0] as? ParameterRegister else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         try expectRegisterCanBeUsedAsDestination(destination)
         
-        guard let source = node.parameters.elements[1] as? ParameterRegister else {
+        guard let source = node.parameters[1] as? ParameterRegister else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         try expectRegisterCanBeUsedAsSource(source)
@@ -203,123 +203,123 @@ public class AssemblerCodeGenerator: NSObject {
     }
     
     func cmp(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 0 else {
+        guard node.parameters.count == 0 else {
             throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.cmp()
     }
     
     func hlt(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 0 else {
+        guard node.parameters.count == 0 else {
             throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.hlt()
     }
     
     func inuv(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 0 else {
+        guard node.parameters.count == 0 else {
             throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.inuv()
     }
     
     func inxy(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 0 else {
+        guard node.parameters.count == 0 else {
             throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.inxy()
     }
     
     func link(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 0 else {
+        guard node.parameters.count == 0 else {
             throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.link()
     }
     
     func jalr(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 0 else {
+        guard node.parameters.count == 0 else {
             throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.jalr()
     }
     
     func jc(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 0 else {
+        guard node.parameters.count == 0 else {
             throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.jc()
     }
     
     func jnc(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 0 else {
+        guard node.parameters.count == 0 else {
             throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.jnc()
     }
     
     func je(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 0 else {
+        guard node.parameters.count == 0 else {
             throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.je()
     }
     
     func jne(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 0 else {
+        guard node.parameters.count == 0 else {
             throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.jne()
     }
     
     func jg(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 0 else {
+        guard node.parameters.count == 0 else {
             throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.jg()
     }
     
     func jle(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 0 else {
+        guard node.parameters.count == 0 else {
             throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.jle()
     }
     
     func jl(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 0 else {
+        guard node.parameters.count == 0 else {
             throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.jl()
     }
     
     func jge(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 0 else {
+        guard node.parameters.count == 0 else {
             throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.jge()
     }
     
     func jmp(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 0 else {
+        guard node.parameters.count == 0 else {
             throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.jmp()
     }
     
     func li(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 2 else {
+        guard node.parameters.count == 2 else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
-        guard let destination = node.parameters.elements[0] as? ParameterRegister else {
+        guard let destination = node.parameters[0] as? ParameterRegister else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         try expectRegisterCanBeUsedAsDestination(destination)
         
-        if let immediate = node.parameters.elements[1] as? ParameterNumber {
+        if let immediate = node.parameters[1] as? ParameterNumber {
             try self.assemblerBackEnd.li(node.destination, immediate.value)
-        } else if let identifier = node.parameters.elements[1] as? ParameterIdentifier {
+        } else if let identifier = node.parameters[1] as? ParameterIdentifier {
             let value = try resolve(sourceAnchor: identifier.sourceAnchor, identifier: identifier.value)
             try self.assemblerBackEnd.li(node.destination, value)
         } else {
@@ -335,11 +335,11 @@ public class AssemblerCodeGenerator: NSObject {
     }
     
     func lxy(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 1 else {
+        guard node.parameters.count == 1 else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
-        let parameter = node.parameters.elements.first!
+        let parameter = node.parameters.first!
         
         if let identifier = parameter as? ParameterIdentifier {
             try self.setAddress(identifier: identifier)
@@ -351,16 +351,16 @@ public class AssemblerCodeGenerator: NSObject {
     }
     
     func mov(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 2 else {
+        guard node.parameters.count == 2 else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
-        guard let destination = node.parameters.elements[0] as? ParameterRegister else {
+        guard let destination = node.parameters[0] as? ParameterRegister else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         try expectRegisterCanBeUsedAsDestination(destination)
         
-        guard let source = node.parameters.elements[1] as? ParameterRegister else {
+        guard let source = node.parameters[1] as? ParameterRegister else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         try expectRegisterCanBeUsedAsSource(source)
@@ -369,7 +369,7 @@ public class AssemblerCodeGenerator: NSObject {
     }
     
     func nop(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 0 else {
+        guard node.parameters.count == 0 else {
             throw zeroOperandsExpectedError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         self.assemblerBackEnd.nop()
@@ -447,11 +447,11 @@ public class AssemblerCodeGenerator: NSObject {
     }
     
     public func dea(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 1 else {
+        guard node.parameters.count == 1 else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
-        guard let register = node.parameters.elements.first as? ParameterRegister else {
+        guard let register = node.parameters.first as? ParameterRegister else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
@@ -461,11 +461,11 @@ public class AssemblerCodeGenerator: NSObject {
     }
     
     public func dca(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 1 else {
+        guard node.parameters.count == 1 else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
-        guard let register = node.parameters.elements.first as? ParameterRegister else {
+        guard let register = node.parameters.first as? ParameterRegister else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
@@ -475,11 +475,11 @@ public class AssemblerCodeGenerator: NSObject {
     }
     
     public func and(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 1 else {
+        guard node.parameters.count == 1 else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
-        guard let register = node.parameters.elements.first as? ParameterRegister else {
+        guard let register = node.parameters.first as? ParameterRegister else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
@@ -489,11 +489,11 @@ public class AssemblerCodeGenerator: NSObject {
     }
     
     public func or(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 1 else {
+        guard node.parameters.count == 1 else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
-        guard let register = node.parameters.elements.first as? ParameterRegister else {
+        guard let register = node.parameters.first as? ParameterRegister else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
@@ -503,11 +503,11 @@ public class AssemblerCodeGenerator: NSObject {
     }
     
     public func xor(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 1 else {
+        guard node.parameters.count == 1 else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
-        guard let register = node.parameters.elements.first as? ParameterRegister else {
+        guard let register = node.parameters.first as? ParameterRegister else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
@@ -517,11 +517,11 @@ public class AssemblerCodeGenerator: NSObject {
     }
     
     public func lsl(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 1 else {
+        guard node.parameters.count == 1 else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
-        guard let register = node.parameters.elements.first as? ParameterRegister else {
+        guard let register = node.parameters.first as? ParameterRegister else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
@@ -531,11 +531,11 @@ public class AssemblerCodeGenerator: NSObject {
     }
     
     public func neg(_ node: TurtleTTLInstructionNode) throws {
-        guard node.parameters.elements.count == 1 else {
+        guard node.parameters.count == 1 else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         
-        guard let register = node.parameters.elements.first as? ParameterRegister else {
+        guard let register = node.parameters.first as? ParameterRegister else {
             throw operandTypeMismatchError(sourceAnchor: node.sourceAnchor, instruction: node.instruction)
         }
         

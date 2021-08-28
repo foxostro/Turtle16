@@ -34,15 +34,15 @@ public class AssemblerListingMaker: NSObject {
     }
     
     public func makeListing(instruction node: InstructionNode) -> String {
-        if node.parameters.elements.count > 0 {
+        if node.parameters.count > 0 {
             return node.instruction + " " + makeListing(parameterList: node.parameters)
         } else {
             return node.instruction
         }
     }
     
-    public func makeListing(parameterList node: ParameterList) -> String {
-        return node.elements.map { makeListing(parameter: $0) }.joined(separator: ", ")
+    public func makeListing(parameterList: [Parameter]) -> String {
+        return parameterList.map { makeListing(parameter: $0) }.joined(separator: ", ")
     }
     
     public func makeListing(parameter node: Parameter) -> String {

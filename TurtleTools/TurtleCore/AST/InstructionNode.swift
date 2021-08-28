@@ -10,11 +10,11 @@ import Foundation
 
 public class InstructionNode: AbstractSyntaxTreeNode {
     public let instruction: String
-    public let parameters: ParameterList
+    public let parameters: [Parameter]
     
     public init(sourceAnchor: SourceAnchor? = nil,
                 instruction: String,
-                parameters: ParameterList = ParameterList(parameters: [])) {
+                parameters: [Parameter] = []) {
         self.instruction = instruction
         self.parameters = parameters
         super.init(sourceAnchor: sourceAnchor)
@@ -39,7 +39,9 @@ public class InstructionNode: AbstractSyntaxTreeNode {
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        let param = parameters.makeIndentedDescription(depth: depth+1, wantsLeadingWhitespace: false)
+        let param = parameters.map {
+            $0.makeIndentedDescription(depth: depth+1, wantsLeadingWhitespace: false)
+        }.joined(separator: ", ")
         return "\(indent)\(instruction) \(param)"
     }
 }

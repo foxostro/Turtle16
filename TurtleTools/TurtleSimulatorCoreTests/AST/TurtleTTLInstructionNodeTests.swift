@@ -13,43 +13,43 @@ import TurtleSimulatorCore
 class TurtleTTLInstructionNodeTests: XCTestCase {
     func testEquality() {
         // Does not equal node of a different type.
-        let parameters = ParameterList(parameters: [
+        let parameters = [
             ParameterRegister(value: RegisterName.A)
-        ])
+        ]
         XCTAssertNotEqual(TurtleTTLInstructionNode(instruction: "",
                                                    parameters: parameters),
                           TurtleTTLInstructionNode(instruction: "NOP",
-                                                   parameters: ParameterList(parameters: [])))
+                                                   parameters: []))
         
         // Does not equal node with different parameters
         XCTAssertNotEqual(TurtleTTLInstructionNode(instruction: "",
-                                                   parameters: ParameterList(parameters: [
+                                                   parameters: [
                                                     ParameterRegister(value: RegisterName.A)
-                                                   ])),
+                                                   ]),
                           TurtleTTLInstructionNode(instruction: "",
-                                                   parameters: ParameterList(parameters: [
+                                                   parameters: [
                                                     ParameterRegister(value: RegisterName.B)
-                                                   ])))
+                                                   ]))
         
         // The nodes actually are the same
         XCTAssertEqual(TurtleTTLInstructionNode(instruction: "",
-                                                parameters: ParameterList(parameters: [
+                                                parameters: [
                                                     ParameterRegister(value: RegisterName.A)
-                                                ])),
+                                                ]),
                        TurtleTTLInstructionNode(instruction: "",
-                                                parameters: ParameterList(parameters: [
+                                                parameters: [
                                                         ParameterRegister(value: RegisterName.A)
-                                                ])))
+                                                ]))
     }
     
     func testHash() {
         XCTAssertEqual(TurtleTTLInstructionNode(instruction: "",
-                                                parameters: ParameterList(parameters: [
+                                                parameters: [
                                                     ParameterRegister(value: RegisterName.A)
-                                                ])).hashValue,
+                                                ]).hashValue,
                        TurtleTTLInstructionNode(instruction: "",
-                                                parameters: ParameterList(parameters: [
+                                                parameters: [
                                                     ParameterRegister(value: RegisterName.A)
-                                                ])).hashValue)
+                                                ]).hashValue)
     }
 }

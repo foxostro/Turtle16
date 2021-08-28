@@ -19,7 +19,7 @@ class AssemblerListingMakerTests: XCTestCase {
     
     func testNOP() throws {
         let ast = TopLevel(children: [
-            InstructionNode(instruction: "NOP", parameters: ParameterList(parameters: []))
+            InstructionNode(instruction: "NOP", parameters: [])
         ])
         let actual = AssemblerListingMaker().makeListing(ast)
         XCTAssertEqual(actual, "NOP")
@@ -27,11 +27,11 @@ class AssemblerListingMakerTests: XCTestCase {
     
     func testADD() throws {
         let ast = TopLevel(children: [
-            InstructionNode(instruction: "ADD", parameters: ParameterList(parameters: [
+            InstructionNode(instruction: "ADD", parameters: [
                 ParameterIdentifier(value: "r2"),
                 ParameterIdentifier(value: "r1"),
                 ParameterIdentifier(value: "r0")
-            ]))
+            ])
         ])
         let actual = AssemblerListingMaker().makeListing(ast)
         XCTAssertEqual(actual, "ADD r2, r1, r0")
@@ -39,7 +39,9 @@ class AssemblerListingMakerTests: XCTestCase {
     
     func testADDI() throws {
         let ast = TopLevel(children: [
-            InstructionNode(instruction: "ADDI", parameters: ParameterList(parameters: [ ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterNumber(value: 1)]))
+            InstructionNode(instruction: "ADDI", parameters: [
+                ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterNumber(value: 1)
+            ])
         ])
         let actual = AssemblerListingMaker().makeListing(ast)
         XCTAssertEqual(actual, "ADDI r0, r0, 1")

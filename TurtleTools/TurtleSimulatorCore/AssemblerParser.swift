@@ -38,14 +38,14 @@ public class AssemblerParser: Parser {
         }
     }
     
-    func consumeParameterList(instruction: Token) throws -> ParameterList {
+    func consumeParameterList(instruction: Token) throws -> [Parameter] {
         var parameters = try consumeOneParameterOrTheEnd(instruction: instruction)
         var previousParameterCount = 0
         while parameters.count > previousParameterCount {
             previousParameterCount = parameters.count
             parameters = try consumeCommaSeparatedParameters(instruction: instruction, parameters: parameters)
         }
-        return ParameterList(sourceAnchor: instruction.sourceAnchor, parameters: parameters)
+        return parameters
     }
     
     func consumeOneParameterOrTheEnd(instruction: Token, parameters sofar: [Parameter] = []) throws -> [Parameter] {

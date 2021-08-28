@@ -24,6 +24,7 @@ public struct Tack {
     public static let kBNZ     = "TACK_BNZ"
     public static let kLOAD    = "TACK_LOAD"
     public static let kSTORE   = "TACK_STORE"
+    public static let kMEMCPY  = "TACK_MEMCPY"
     
     public static let kANDI16  = "TACK_ANDI16"
     public static let kADDI16  = "TACK_ADDI16"
@@ -1320,33 +1321,15 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             result = Seq(sourceAnchor: expr.sourceAnchor, children: [
                 lvalueProc,
                 rvalueProc,
-                memcpy(expr.sourceAnchor, dst, src, size)
+                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kMEMCPY, parameters: ParameterList(parameters: [
+                    ParameterIdentifier(value: dst),
+                    ParameterIdentifier(value: src),
+                    ParameterNumber(value: size)
+                ]))
             ])
         }
         
         return result
-    }
-    
-    func memcpy(_ sourceAnchor: SourceAnchor?, _ dst: String, _ src: String, _ size: Int) -> AbstractSyntaxTreeNode {
-        var children: [AbstractSyntaxTreeNode] = []
-        
-        for i in 0..<size {
-            let temp = nextRegister()
-            children += [
-                InstructionNode(sourceAnchor: sourceAnchor, instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
-                    ParameterIdentifier(value: temp),
-                    ParameterIdentifier(value: src),
-                    ParameterNumber(value: i)
-                ])),
-                InstructionNode(sourceAnchor: sourceAnchor, instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
-                    ParameterIdentifier(value: dst),
-                    ParameterIdentifier(value: temp),
-                    ParameterNumber(value: i)
-                ]))
-            ]
-        }
-        
-        return Seq(children: children)
     }
     
     func rvalue(subscript expr: Expression.Subscript) throws -> AbstractSyntaxTreeNode {
@@ -1635,7 +1618,11 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                         ParameterNumber(value: argTypeSize)
                     ])),
                     try lvalue(identifier: tempArgId),
-                    memcpy(expr.sourceAnchor, sp, popRegister(), argTypeSize),
+                    InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kMEMCPY, parameters: ParameterList(parameters: [
+                        ParameterIdentifier(value: sp),
+                        ParameterIdentifier(value: popRegister()),
+                        ParameterNumber(value: argTypeSize)
+                    ]))
                 ]
             }
         }
@@ -1666,7 +1653,11 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         if returnTypeSize > 0 {
             children += [
                 try lvalue(identifier: tempRetId!),
-                memcpy(expr.sourceAnchor, popRegister(), sp, returnTypeSize),
+                InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kMEMCPY, parameters: ParameterList(parameters: [
+                    ParameterIdentifier(value: popRegister()),
+                    ParameterIdentifier(value: sp),
+                    ParameterNumber(value: returnTypeSize)
+                ])),
                 InstructionNode(sourceAnchor: expr.sourceAnchor, instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
                     ParameterIdentifier(value: sp),
                     ParameterIdentifier(value: sp),

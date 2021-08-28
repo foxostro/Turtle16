@@ -33,7 +33,7 @@ public class AssemblerParser: Parser {
             return [LabelDeclaration(sourceAnchor: identifier.sourceAnchor, identifier: identifier.lexeme)]
         } else {
             let parameters = try consumeParameterList(instruction: identifier)
-            let node = TurtleTTLInstructionNode(sourceAnchor: identifier.sourceAnchor, instruction: identifier.lexeme, parameters: parameters)
+            let node = InstructionNode(sourceAnchor: identifier.sourceAnchor, instruction: identifier.lexeme, parameters: parameters)
             return [node]
         }
     }

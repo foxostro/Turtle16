@@ -32,7 +32,7 @@ class AssemblerParserTests: XCTestCase {
         XCTAssertFalse(parser.hasError)
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
-        XCTAssertEqual(ast.children[0], TurtleTTLInstructionNode(instruction: "NOP", parameters: []))
+        XCTAssertEqual(ast.children[0], InstructionNode(instruction: "NOP", parameters: []))
     }
 
     func testParseTwoNOPsYieldsTwoNOPNodes() {
@@ -41,11 +41,11 @@ class AssemblerParserTests: XCTestCase {
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 2)
         XCTAssertEqual(ast.children[0],
-                       TurtleTTLInstructionNode(sourceAnchor: parser.lineMapper.anchor(0, 3),
+                       InstructionNode(sourceAnchor: parser.lineMapper.anchor(0, 3),
                                        instruction: "NOP",
                                        parameters: []))
         XCTAssertEqual(ast.children[1],
-                       TurtleTTLInstructionNode(sourceAnchor: parser.lineMapper.anchor(4, 7),
+                       InstructionNode(sourceAnchor: parser.lineMapper.anchor(4, 7),
                                        instruction: "NOP",
                                        parameters: []))
     }
@@ -56,7 +56,7 @@ class AssemblerParserTests: XCTestCase {
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
         XCTAssertEqual(ast.children[0],
-                       TurtleTTLInstructionNode(sourceAnchor: parser.lineMapper.anchor(0, 3),
+                       InstructionNode(sourceAnchor: parser.lineMapper.anchor(0, 3),
                                        instruction: "HLT",
                                        parameters: []))
     }
@@ -77,7 +77,7 @@ class AssemblerParserTests: XCTestCase {
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 2)
         XCTAssertEqual(ast.children[0],
-                       TurtleTTLInstructionNode(sourceAnchor: parser.lineMapper.anchor(0, 3),
+                       InstructionNode(sourceAnchor: parser.lineMapper.anchor(0, 3),
                                        instruction: "NOP",
                                        parameters: []))
         XCTAssertEqual(ast.children[1],
@@ -107,7 +107,7 @@ class AssemblerParserTests: XCTestCase {
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
         XCTAssertEqual(ast.children[0],
-                       TurtleTTLInstructionNode(sourceAnchor: parser.lineMapper.anchor(0, 8),
+                       InstructionNode(sourceAnchor: parser.lineMapper.anchor(0, 8),
                                        instruction: "LI",
                                        parameters: [
                                         ParameterRegister(sourceAnchor: parser.lineMapper.anchor(3, 4), value: .D),
@@ -122,7 +122,7 @@ class AssemblerParserTests: XCTestCase {
         
         XCTAssertEqual(ast.children.count, 1)
         XCTAssertEqual(ast.children[0],
-                       TurtleTTLInstructionNode(sourceAnchor: parser.lineMapper.anchor(0, 8),
+                       InstructionNode(sourceAnchor: parser.lineMapper.anchor(0, 8),
                                        instruction: "MOV",
                                        parameters: [
                                         ParameterRegister(sourceAnchor: parser.lineMapper.anchor(4, 5), value: .D),

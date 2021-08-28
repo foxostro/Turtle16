@@ -737,8 +737,9 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             }
             result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
             
-        case (.traitType(let a), .traitType(let b)):
-            fatalError("unimplemented: trait(\(a)) -> trait(\(b))")
+        case (.constPointer(let a), .traitType(let b)),
+             (.pointer(let a), .traitType(let b)):
+            fatalError("unimplemented: pointer(\(a)) -> trait(\(b))")
             
         default:
             fatalError("Unsupported type conversion from \(rtype) to \(ltype). Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(rexpr)")
@@ -787,7 +788,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
              (.constDynamicArray, .dynamicArray),
              (.dynamicArray, .constDynamicArray),
              (.dynamicArray, .dynamicArray),
-             (.unionType, .unionType):
+             (.unionType, .unionType),
+             (.traitType, .traitType):
             result = true
             
         case (.array(_, let a), .array(_, let b)):

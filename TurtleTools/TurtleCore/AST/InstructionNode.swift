@@ -16,8 +16,17 @@ public class InstructionNode: AbstractSyntaxTreeNode {
                 instruction: String,
                 parameters: [Parameter] = []) {
         self.instruction = instruction
-        self.parameters = parameters
+        self.parameters = parameters.map { $0.withSourceAnchor(sourceAnchor) as! Parameter }
         super.init(sourceAnchor: sourceAnchor)
+    }
+    
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> InstructionNode {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return InstructionNode(sourceAnchor: sourceAnchor,
+                               instruction: instruction,
+                               parameters: parameters)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

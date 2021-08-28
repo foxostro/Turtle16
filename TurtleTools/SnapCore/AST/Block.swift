@@ -16,8 +16,17 @@ public class Block: AbstractSyntaxTreeNode {
                 symbols: SymbolTable = SymbolTable(),
                 children: [AbstractSyntaxTreeNode] = []) {
         self.symbols = symbols
-        self.children = children
+        self.children = children.map { $0.withSourceAnchor(sourceAnchor) }
         super.init(sourceAnchor: sourceAnchor)
+    }
+    
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Block {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return Block(sourceAnchor: sourceAnchor,
+                     symbols: symbols,
+                     children: children)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

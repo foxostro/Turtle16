@@ -15,23 +15,14 @@ public class Match: AbstractSyntaxTreeNode {
         public let valueType: Expression
         public let block: Block
         
-        public convenience init(valueIdentifier: Expression.Identifier,
-                                valueType: Expression,
-                                block: Block) {
-            self.init(sourceAnchor: nil,
-                      valueIdentifier: valueIdentifier,
-                      valueType: valueType,
-                      block: block)
-        }
-        
-        public init(sourceAnchor: SourceAnchor?,
+        public init(sourceAnchor: SourceAnchor? = nil,
                     valueIdentifier: Expression.Identifier,
                     valueType: Expression,
                     block: Block) {
             self.sourceAnchor = sourceAnchor
-            self.valueIdentifier = valueIdentifier
-            self.valueType = valueType
-            self.block = block
+            self.valueIdentifier = valueIdentifier.withSourceAnchor(sourceAnchor)
+            self.valueType = valueType.withSourceAnchor(sourceAnchor)
+            self.block = block.withSourceAnchor(sourceAnchor)
         }
         
         public static func ==(lhs: Clause, rhs: Clause) -> Bool {
@@ -74,23 +65,24 @@ public class Match: AbstractSyntaxTreeNode {
     public let clauses: [Clause]
     public let elseClause: Block?
     
-    public convenience init(expr: Expression,
-                            clauses: [Clause],
-                            elseClause: Block?) {
-        self.init(sourceAnchor: nil,
-                  expr: expr,
-                  clauses: clauses,
-                  elseClause: elseClause)
+    public init(sourceAnchor: SourceAnchor? = nil,
+                expr: Expression,
+                clauses: [Clause],
+                elseClause: Block?) {
+        self.expr = expr.withSourceAnchor(sourceAnchor)
+        self.clauses = clauses
+        self.elseClause = elseClause?.withSourceAnchor(sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor)
     }
     
-    public required init(sourceAnchor: SourceAnchor?,
-                         expr: Expression,
-                         clauses: [Clause],
-                         elseClause: Block?) {
-        self.expr = expr
-        self.clauses = clauses
-        self.elseClause = elseClause
-        super.init(sourceAnchor: sourceAnchor)
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Match {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return Match(sourceAnchor: sourceAnchor,
+                     expr: expr,
+                     clauses: clauses,
+                     elseClause: elseClause)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

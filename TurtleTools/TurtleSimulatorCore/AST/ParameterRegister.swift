@@ -11,13 +11,20 @@ import TurtleCore
 public class ParameterRegister: Parameter {
     public let value: RegisterName
     
-    public convenience init(value: RegisterName) {
-        self.init(sourceAnchor: nil, value: value)
+    public convenience init(_ value: RegisterName) {
+        self.init(value: value)
     }
     
-    public init(sourceAnchor: SourceAnchor?, value: RegisterName) {
+    public init(sourceAnchor: SourceAnchor? = nil, value: RegisterName) {
         self.value = value
         super.init(sourceAnchor: sourceAnchor)
+    }
+    
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> ParameterRegister {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return ParameterRegister(sourceAnchor: sourceAnchor, value: value)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

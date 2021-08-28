@@ -13,6 +13,10 @@ open class AbstractSyntaxTreeNode : NSObject {
         self.sourceAnchor = sourceAnchor
     }
     
+    open func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> AbstractSyntaxTreeNode {
+        fatalError("unimplemented")
+    }
+    
     public static func ==(lhs: AbstractSyntaxTreeNode, rhs: AbstractSyntaxTreeNode) -> Bool {
         return lhs.isEqual(rhs)
     }

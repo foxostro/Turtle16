@@ -12,19 +12,21 @@ public class Impl: AbstractSyntaxTreeNode {
     public let identifier: Expression.Identifier
     public let children: [FunctionDeclaration]
     
-    public convenience init(identifier: Expression.Identifier,
-                            children: [FunctionDeclaration]) {
-        self.init(sourceAnchor: nil,
-                  identifier: identifier,
-                  children: children)
+    public init(sourceAnchor: SourceAnchor? = nil,
+                identifier: Expression.Identifier,
+                children: [FunctionDeclaration]) {
+        self.identifier = identifier.withSourceAnchor(sourceAnchor)
+        self.children = children.map { $0.withSourceAnchor(sourceAnchor) }
+        super.init(sourceAnchor: sourceAnchor)
     }
     
-    public required init(sourceAnchor: SourceAnchor?,
-                         identifier: Expression.Identifier,
-                         children: [FunctionDeclaration]) {
-        self.identifier = identifier
-        self.children = children
-        super.init(sourceAnchor: sourceAnchor)
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Impl {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return Impl(sourceAnchor: sourceAnchor,
+                    identifier: identifier,
+                    children: children)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

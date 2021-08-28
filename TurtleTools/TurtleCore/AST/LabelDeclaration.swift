@@ -9,13 +9,16 @@
 public class LabelDeclaration: AbstractSyntaxTreeNode {
     public let identifier: String
     
-    public convenience init(identifier: String) {
-        self.init(sourceAnchor: nil, identifier: identifier)
-    }
-    
-    public required init(sourceAnchor: SourceAnchor?, identifier: String) {
+    public required init(sourceAnchor: SourceAnchor? = nil, identifier: String) {
         self.identifier = identifier
         super.init(sourceAnchor: sourceAnchor)
+    }
+    
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> LabelDeclaration {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return LabelDeclaration(sourceAnchor: sourceAnchor, identifier: identifier)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

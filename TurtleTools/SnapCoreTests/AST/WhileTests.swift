@@ -13,22 +13,22 @@ import TurtleCore
 class WhileTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
         XCTAssertNotEqual(While(condition: Expression.LiteralInt(1),
-                                body: AbstractSyntaxTreeNode()),
-                          AbstractSyntaxTreeNode())
+                                body: CommentNode(string: "")),
+                          CommentNode(string: ""))
     }
     
     func testDoesNotEqualNodeWithDifferentCondition() {
         XCTAssertNotEqual(While(condition: Expression.LiteralInt(1),
-                                body: AbstractSyntaxTreeNode()),
+                                body: CommentNode(string: "")),
                           While(condition: Expression.LiteralInt(2),
-                          body: AbstractSyntaxTreeNode()))
+                          body: CommentNode(string: "")))
     }
     
     func testDoesNotEqualNodeWithDifferentBody() {
         XCTAssertNotEqual(While(condition: Expression.LiteralInt(1),
                                 body: Expression.LiteralInt(1)),
                           While(condition: Expression.LiteralInt(1),
-                                body: AbstractSyntaxTreeNode()))
+                                body: CommentNode(string: "")))
     }
     
     func testSame() {

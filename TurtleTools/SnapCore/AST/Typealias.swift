@@ -13,23 +13,24 @@ public class Typealias: AbstractSyntaxTreeNode {
     public let rexpr: Expression
     public let visibility: SymbolVisibility
     
-    public convenience init(lexpr: Expression.Identifier,
-                            rexpr: Expression,
-                            visibility: SymbolVisibility = .privateVisibility) {
-        self.init(sourceAnchor: nil,
-                  lexpr: lexpr,
-                  rexpr: rexpr,
-                  visibility: visibility)
-    }
-    
-    public init(sourceAnchor: SourceAnchor?,
+    public init(sourceAnchor: SourceAnchor? = nil,
                 lexpr: Expression.Identifier,
                 rexpr: Expression,
                 visibility: SymbolVisibility = .privateVisibility) {
-        self.lexpr = lexpr
-        self.rexpr = rexpr
+        self.lexpr = lexpr.withSourceAnchor(sourceAnchor)
+        self.rexpr = rexpr.withSourceAnchor(sourceAnchor)
         self.visibility = visibility
         super.init(sourceAnchor: sourceAnchor)
+    }
+    
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Typealias {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return Typealias(sourceAnchor: sourceAnchor,
+                         lexpr: lexpr,
+                         rexpr: rexpr,
+                         visibility: visibility)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

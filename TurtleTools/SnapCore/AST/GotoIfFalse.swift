@@ -12,12 +12,21 @@ public class GotoIfFalse: AbstractSyntaxTreeNode {
     public let condition: Expression
     public let target: String
     
-    public required init(sourceAnchor: SourceAnchor? = nil,
-                         condition: Expression,
-                         target: String) {
-        self.condition = condition
+    public init(sourceAnchor: SourceAnchor? = nil,
+                condition: Expression,
+                target: String) {
+        self.condition = condition.withSourceAnchor(sourceAnchor)
         self.target = target
         super.init(sourceAnchor: sourceAnchor)
+    }
+    
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> GotoIfFalse {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return GotoIfFalse(sourceAnchor: sourceAnchor,
+                           condition: condition,
+                           target: target)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

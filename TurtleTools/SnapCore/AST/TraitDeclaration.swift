@@ -53,23 +53,26 @@ public class TraitDeclaration: AbstractSyntaxTreeNode {
     public let members: [Member]
     public let visibility: SymbolVisibility
     
-    public convenience init(identifier: Expression.Identifier,
-                            members: [Member],
-                            visibility: SymbolVisibility = .privateVisibility) {
-        self.init(sourceAnchor: nil,
-                  identifier: identifier,
-                  members: members,
-                  visibility: visibility)
-    }
-    
-    public required init(sourceAnchor: SourceAnchor?,
+    public required init(sourceAnchor: SourceAnchor? = nil,
                          identifier: Expression.Identifier,
                          members: [Member],
                          visibility: SymbolVisibility = .privateVisibility) {
-        self.identifier = identifier
-        self.members = members
+        self.identifier = identifier.withSourceAnchor(sourceAnchor)
+        self.members = members.map {
+            Member(name: $0.name, type: $0.memberType.withSourceAnchor(sourceAnchor))
+        }
         self.visibility = visibility
         super.init(sourceAnchor: sourceAnchor)
+    }
+    
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> TraitDeclaration {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return TraitDeclaration(sourceAnchor: sourceAnchor,
+                                identifier: identifier,
+                                members: members,
+                                visibility: visibility)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

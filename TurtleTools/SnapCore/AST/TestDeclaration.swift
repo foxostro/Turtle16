@@ -12,14 +12,19 @@ public class TestDeclaration: AbstractSyntaxTreeNode {
     public let name: String
     public let body: Block
     
-    public convenience init(name: String, body: Block) {
-        self.init(sourceAnchor: nil, name: name, body: body)
+    public init(sourceAnchor: SourceAnchor? = nil, name: String, body: Block) {
+        self.name = name
+        self.body = body.withSourceAnchor(sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor)
     }
     
-    public init(sourceAnchor: SourceAnchor?, name: String, body: Block) {
-        self.name = name
-        self.body = body
-        super.init(sourceAnchor: sourceAnchor)
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> TestDeclaration {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return TestDeclaration(sourceAnchor: sourceAnchor,
+                               name: name,
+                               body: body)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

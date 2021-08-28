@@ -12,21 +12,21 @@ import TurtleCore
 class TopLevelTests: NSObject {
     func testDoesNotEqualAnotherNodeType() {
         XCTAssertNotEqual(TopLevel(children: []),
-                          AbstractSyntaxTreeNode())
+                          CommentNode(string: ""))
     }
     
     func testDoesNotEqualNodeWithDifferentChildren() {
         XCTAssertNotEqual(TopLevel(children: []),
-                          TopLevel(children: [AbstractSyntaxTreeNode()]))
+                          TopLevel(children: [CommentNode(string: "")]))
     }
     
     func testSame() {
-        XCTAssertEqual(TopLevel(children: [AbstractSyntaxTreeNode()]),
-                       TopLevel(children: [AbstractSyntaxTreeNode()]))
+        XCTAssertEqual(TopLevel(children: [CommentNode(string: "")]),
+                       TopLevel(children: [CommentNode(string: "")]))
     }
     
     func testHash() {
-        XCTAssertEqual(TopLevel(children: [AbstractSyntaxTreeNode()]).hash,
-                       TopLevel(children: [AbstractSyntaxTreeNode()]).hash)
+        XCTAssertEqual(TopLevel(children: [CommentNode(string: "")]).hash,
+                       TopLevel(children: [CommentNode(string: "")]).hash)
     }
 }

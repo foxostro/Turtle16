@@ -16,7 +16,7 @@ class FunctionDeclarationTests: XCTestCase {
                                               functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
                                               argumentNames: [],
                                               body: Block()),
-                          AbstractSyntaxTreeNode())
+                          CommentNode(string: ""))
     }
     
     func testDoesNotEqualNodeWithDifferentBody() {

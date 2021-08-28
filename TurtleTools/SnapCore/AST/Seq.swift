@@ -13,8 +13,15 @@ public class Seq: AbstractSyntaxTreeNode {
     
     public init(sourceAnchor: SourceAnchor? = nil,
                 children: [AbstractSyntaxTreeNode] = []) {
-        self.children = children
+        self.children = children.map { $0.withSourceAnchor(sourceAnchor) }
         super.init(sourceAnchor: sourceAnchor)
+    }
+    
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Seq {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return Seq(sourceAnchor: sourceAnchor, children: children)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

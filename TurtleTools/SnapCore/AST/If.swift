@@ -17,10 +17,20 @@ public class If: AbstractSyntaxTreeNode {
                          condition: Expression,
                          then thenBranch: AbstractSyntaxTreeNode,
                          else elseBranch: AbstractSyntaxTreeNode? = nil) {
-        self.condition = condition
-        self.thenBranch = thenBranch
-        self.elseBranch = elseBranch
+        self.condition = condition.withSourceAnchor(sourceAnchor)
+        self.thenBranch = thenBranch.withSourceAnchor(sourceAnchor)
+        self.elseBranch = elseBranch?.withSourceAnchor(sourceAnchor)
         super.init(sourceAnchor: sourceAnchor)
+    }
+    
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> If {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return If(sourceAnchor: sourceAnchor,
+                  condition: condition,
+                  then: thenBranch,
+                  else: elseBranch)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

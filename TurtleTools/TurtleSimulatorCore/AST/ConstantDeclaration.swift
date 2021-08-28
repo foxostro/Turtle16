@@ -12,16 +12,19 @@ public class ConstantDeclaration: AbstractSyntaxTreeNode {
     public let identifier: String
     public let value: Int
     
-    public convenience init(identifier: String, value: Int) {
-        self.init(sourceAnchor: nil,
-                  identifier: identifier,
-                  value: value)
-    }
-    
-    public required init(sourceAnchor: SourceAnchor?, identifier: String, value: Int) {
+    public required init(sourceAnchor: SourceAnchor? = nil, identifier: String, value: Int) {
         self.identifier = identifier
         self.value = value
         super.init(sourceAnchor: sourceAnchor)
+    }
+    
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> ConstantDeclaration {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return ConstantDeclaration(sourceAnchor: sourceAnchor,
+                                   identifier: identifier,
+                                   value: value)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

@@ -13,7 +13,7 @@ import TurtleCore
 class ExpressionTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
         XCTAssertNotEqual(Expression.LiteralInt(1),
-                          AbstractSyntaxTreeNode())
+                          CommentNode(string: ""))
     }
     
     func testLiteralWordEquality() {

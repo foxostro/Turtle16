@@ -11,13 +11,20 @@ import TurtleCore
 public class Return: AbstractSyntaxTreeNode {
     public let expression: Expression?
     
-    public convenience init(_ expression: Expression? = nil) {
-        self.init(sourceAnchor: nil, expression: expression)
+    public convenience init(_ expr: Expression?) {
+        self.init(sourceAnchor: nil, expression: expr)
     }
     
-    public required init(sourceAnchor: SourceAnchor?, expression: Expression?) {
-        self.expression = expression
+    public init(sourceAnchor: SourceAnchor? = nil, expression: Expression? = nil) {
+        self.expression = expression?.withSourceAnchor(sourceAnchor)
         super.init(sourceAnchor: sourceAnchor)
+    }
+    
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Return {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return Return(sourceAnchor: sourceAnchor, expression: expression)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

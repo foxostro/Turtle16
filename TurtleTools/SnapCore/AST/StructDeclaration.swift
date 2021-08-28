@@ -53,11 +53,25 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
                 members: [Member],
                 visibility: SymbolVisibility = .privateVisibility,
                 isConst: Bool = false) {
-        self.identifier = identifier
-        self.members = members
+        self.identifier = identifier.withSourceAnchor(sourceAnchor)
+        self.members = members.map {
+            Member(name: $0.name,
+                   type: $0.memberType.withSourceAnchor(sourceAnchor))
+        }
         self.visibility = visibility
         self.isConst = isConst
         super.init(sourceAnchor: sourceAnchor)
+    }
+    
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> StructDeclaration {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return StructDeclaration(sourceAnchor: sourceAnchor,
+                                 identifier: identifier,
+                                 members: members,
+                                 visibility: visibility,
+                                 isConst: isConst)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

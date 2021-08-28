@@ -9,13 +9,20 @@
 public class ParameterNumber: Parameter {
     public let value: Int
     
-    public convenience init(value: Int) {
-        self.init(sourceAnchor: nil, value: value)
+    public convenience init(_ value: Int) {
+        self.init(value: value)
     }
     
-    public init(sourceAnchor: SourceAnchor?, value: Int) {
+    public init(sourceAnchor: SourceAnchor? = nil, value: Int) {
         self.value = value
         super.init(sourceAnchor: sourceAnchor)
+    }
+    
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> ParameterNumber {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return ParameterNumber(sourceAnchor: sourceAnchor, value: value)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

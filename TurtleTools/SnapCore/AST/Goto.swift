@@ -11,9 +11,16 @@ import TurtleCore
 public class Goto: AbstractSyntaxTreeNode {
     public let target: String
     
-    public required init(sourceAnchor: SourceAnchor? = nil, target: String) {
+    public init(sourceAnchor: SourceAnchor? = nil, target: String) {
         self.target = target
         super.init(sourceAnchor: sourceAnchor)
+    }
+    
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Goto {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return Goto(sourceAnchor: sourceAnchor, target: target)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

@@ -11,13 +11,20 @@ import Foundation
 public class ParameterString: Parameter {
     public let value: String
     
-    public convenience init(value: String) {
-        self.init(sourceAnchor: nil, value: value)
+    public convenience init(_ value: String) {
+        self.init(value: value)
     }
     
-    public init(sourceAnchor: SourceAnchor?, value: String) {
+    public init(sourceAnchor: SourceAnchor? = nil, value: String) {
         self.value = value
         super.init(sourceAnchor: sourceAnchor)
+    }
+    
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> ParameterString {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return ParameterString(sourceAnchor: sourceAnchor, value: value)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

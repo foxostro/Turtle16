@@ -19,7 +19,7 @@ class VarDeclarationTests: XCTestCase {
                                          expression: one,
                                          storage: .staticStorage,
                                          isMutable: true),
-                          AbstractSyntaxTreeNode())
+                          CommentNode(string: ""))
     }
     
     func testDoesNotEqualNodeWithDifferentIdentifier() {

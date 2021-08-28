@@ -13,23 +13,24 @@ public class ForIn: AbstractSyntaxTreeNode {
     public let sequenceExpr: Expression
     public let body: Block
     
-    public convenience init(identifier: Expression.Identifier,
-                            sequenceExpr: Expression,
-                            body: Block) {
-        self.init(sourceAnchor: nil,
-                  identifier: identifier,
-                  sequenceExpr: sequenceExpr,
-                  body: body)
+    public init(sourceAnchor: SourceAnchor? = nil,
+                identifier: Expression.Identifier,
+                sequenceExpr: Expression,
+                body: Block) {
+        self.identifier = identifier.withSourceAnchor(sourceAnchor)
+        self.sequenceExpr = sequenceExpr.withSourceAnchor(sourceAnchor)
+        self.body = body.withSourceAnchor(sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor)
     }
     
-    public required init(sourceAnchor: SourceAnchor?,
-                         identifier: Expression.Identifier,
-                         sequenceExpr: Expression,
-                         body: Block) {
-        self.identifier = identifier
-        self.sequenceExpr = sequenceExpr
-        self.body = body
-        super.init(sourceAnchor: sourceAnchor)
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> ForIn {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return ForIn(sourceAnchor: sourceAnchor,
+                     identifier: identifier,
+                     sequenceExpr: sequenceExpr,
+                     body: body)
     }
     
     public static func ==(lhs: ForIn, rhs: ForIn) -> Bool {

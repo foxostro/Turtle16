@@ -12,14 +12,19 @@ public class While: AbstractSyntaxTreeNode {
     public let condition: Expression
     public let body: AbstractSyntaxTreeNode
     
-    public convenience init(condition: Expression, body: AbstractSyntaxTreeNode) {
-        self.init(sourceAnchor: nil, condition: condition, body: body)
+    public init(sourceAnchor: SourceAnchor? = nil, condition: Expression, body: AbstractSyntaxTreeNode) {
+        self.condition = condition.withSourceAnchor(sourceAnchor)
+        self.body = body.withSourceAnchor(sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor)
     }
     
-    public required init(sourceAnchor: SourceAnchor?, condition: Expression, body: AbstractSyntaxTreeNode) {
-        self.condition = condition
-        self.body = body
-        super.init(sourceAnchor: sourceAnchor)
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> While {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return While(sourceAnchor: sourceAnchor,
+                     condition: condition,
+                     body: body)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

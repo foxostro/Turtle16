@@ -17,10 +17,20 @@ public class Assert: AbstractSyntaxTreeNode {
                 condition: Expression,
                 message: String,
                 enclosingTestName: String? = nil) {
-        self.condition = condition
+        self.condition = condition.withSourceAnchor(sourceAnchor)
         self.message = message
         self.enclosingTestName = enclosingTestName
         super.init(sourceAnchor: sourceAnchor)
+    }
+    
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Assert {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return Assert(sourceAnchor: sourceAnchor,
+                      condition: condition,
+                      message: message,
+                      enclosingTestName: enclosingTestName)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

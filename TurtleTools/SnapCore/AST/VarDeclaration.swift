@@ -16,35 +16,33 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
     public let isMutable: Bool
     public let visibility: SymbolVisibility
     
-    public convenience init(identifier: Expression.Identifier,
-                            explicitType: Expression?,
-                            expression: Expression?,
-                            storage: SymbolStorage,
-                            isMutable: Bool,
-                            visibility: SymbolVisibility = .privateVisibility) {
-        self.init(sourceAnchor: nil,
-                  identifier: identifier,
-                  explicitType: explicitType,
-                  expression: expression,
-                  storage: storage,
-                  isMutable: isMutable,
-                  visibility: visibility)
-    }
-    
-    public required init(sourceAnchor: SourceAnchor?,
-                         identifier: Expression.Identifier,
-                         explicitType: Expression?,
-                         expression: Expression?,
-                         storage: SymbolStorage,
-                         isMutable: Bool,
-                         visibility: SymbolVisibility = .privateVisibility) {
-        self.identifier = identifier
-        self.explicitType = explicitType
+    public init(sourceAnchor: SourceAnchor? = nil,
+                identifier: Expression.Identifier,
+                explicitType: Expression?,
+                expression: Expression?,
+                storage: SymbolStorage,
+                isMutable: Bool,
+                visibility: SymbolVisibility = .privateVisibility) {
+        self.identifier = identifier.withSourceAnchor(sourceAnchor)
+        self.explicitType = explicitType?.withSourceAnchor(sourceAnchor)
+        self.expression = expression?.withSourceAnchor(sourceAnchor)
         self.storage = storage
         self.isMutable = isMutable
-        self.expression = expression
         self.visibility = visibility
         super.init(sourceAnchor: sourceAnchor)
+    }
+    
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> VarDeclaration {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return VarDeclaration(sourceAnchor: sourceAnchor,
+                              identifier: identifier,
+                              explicitType: explicitType,
+                              expression: expression,
+                              storage: storage,
+                              isMutable: isMutable,
+                              visibility: visibility)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

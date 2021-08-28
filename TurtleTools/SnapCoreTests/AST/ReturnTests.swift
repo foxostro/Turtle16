@@ -13,7 +13,7 @@ import TurtleCore
 class ReturnTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
         XCTAssertNotEqual(Return(),
-                          AbstractSyntaxTreeNode())
+                          CommentNode(string: ""))
     }
     
     func testDoesNotEqualNodeWithDifferentExpression() {

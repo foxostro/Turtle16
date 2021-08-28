@@ -15,7 +15,7 @@ class ConstantDeclarationTests: XCTestCase {
         // Does not equality node of another type.
         XCTAssertNotEqual(ConstantDeclaration(identifier: "foo",
                                               value: 1),
-                          AbstractSyntaxTreeNode())
+                          CommentNode(string: ""))
         
         
         // Does not equal node with a different identifier.

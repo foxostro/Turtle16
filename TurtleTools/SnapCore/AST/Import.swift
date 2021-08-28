@@ -11,13 +11,16 @@ import TurtleCore
 public class Import: AbstractSyntaxTreeNode {
     public let moduleName: String
     
-    public convenience init(moduleName: String) {
-        self.init(sourceAnchor: nil, moduleName: moduleName)
-    }
-    
-    public init(sourceAnchor: SourceAnchor?, moduleName: String) {
+    public init(sourceAnchor: SourceAnchor? = nil, moduleName: String) {
         self.moduleName = moduleName
         super.init(sourceAnchor: sourceAnchor)
+    }
+    
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Import {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return Import(sourceAnchor: sourceAnchor, moduleName: moduleName)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

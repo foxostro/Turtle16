@@ -12,14 +12,19 @@ public class ParameterAddress: Parameter {
     public let offset: ParameterNumber
     public let identifier: ParameterIdentifier
     
-    public convenience init(offset: ParameterNumber, identifier: ParameterIdentifier) {
-        self.init(sourceAnchor: nil, offset: offset, identifier: identifier)
+    public init(sourceAnchor: SourceAnchor? = nil, offset: ParameterNumber, identifier: ParameterIdentifier) {
+        self.offset = offset.withSourceAnchor(sourceAnchor)
+        self.identifier = identifier.withSourceAnchor(sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor)
     }
     
-    public init(sourceAnchor: SourceAnchor?, offset: ParameterNumber, identifier: ParameterIdentifier) {
-        self.offset = offset
-        self.identifier = identifier
-        super.init(sourceAnchor: sourceAnchor)
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> ParameterAddress {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return ParameterAddress(sourceAnchor: sourceAnchor,
+                                offset: offset,
+                                identifier: identifier)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

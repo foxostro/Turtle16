@@ -23,13 +23,26 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
                 body: Block,
                 visibility: SymbolVisibility = .privateVisibility,
                 symbols: SymbolTable = SymbolTable()) {
-        self.identifier = identifier
-        self.functionType = functionType
+        self.identifier = identifier.withSourceAnchor(sourceAnchor)
+        self.functionType = functionType.withSourceAnchor(sourceAnchor)
         self.argumentNames = argumentNames
-        self.body = body
+        self.body = body.withSourceAnchor(sourceAnchor)
         self.visibility = visibility
         self.symbols = symbols
         super.init(sourceAnchor: sourceAnchor)
+    }
+    
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> FunctionDeclaration {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return FunctionDeclaration(sourceAnchor: sourceAnchor,
+                                   identifier: identifier,
+                                   functionType: functionType,
+                                   argumentNames: argumentNames,
+                                   body: body,
+                                   visibility: visibility,
+                                   symbols: symbols)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

@@ -13,23 +13,24 @@ public class ImplFor: AbstractSyntaxTreeNode {
     public let structIdentifier: Expression.Identifier
     public let children: [FunctionDeclaration]
     
-    public convenience init(traitIdentifier: Expression.Identifier,
-                            structIdentifier: Expression.Identifier,
-                            children: [FunctionDeclaration]) {
-        self.init(sourceAnchor: nil,
-                  traitIdentifier: traitIdentifier,
-                  structIdentifier: structIdentifier,
-                  children: children)
+    public init(sourceAnchor: SourceAnchor? = nil,
+                traitIdentifier: Expression.Identifier,
+                structIdentifier: Expression.Identifier,
+                children: [FunctionDeclaration]) {
+        self.traitIdentifier = traitIdentifier.withSourceAnchor(sourceAnchor)
+        self.structIdentifier = structIdentifier.withSourceAnchor(sourceAnchor)
+        self.children = children.map { $0.withSourceAnchor(sourceAnchor) }
+        super.init(sourceAnchor: sourceAnchor)
     }
     
-    public required init(sourceAnchor: SourceAnchor?,
-                         traitIdentifier: Expression.Identifier,
-                         structIdentifier: Expression.Identifier,
-                         children: [FunctionDeclaration]) {
-        self.traitIdentifier = traitIdentifier
-        self.structIdentifier = structIdentifier
-        self.children = children
-        super.init(sourceAnchor: sourceAnchor)
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> ImplFor {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return ImplFor(sourceAnchor: sourceAnchor,
+                       traitIdentifier: traitIdentifier,
+                       structIdentifier: structIdentifier,
+                       children: children)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

@@ -11,13 +11,20 @@ import Foundation
 public class ParameterSlashed: Parameter {
     public let child: Parameter
     
-    public convenience init(child: Parameter) {
+    public convenience init(_ child: Parameter) {
         self.init(sourceAnchor: nil, child: child)
     }
     
-    public init(sourceAnchor: SourceAnchor?, child: Parameter) {
-        self.child = child
+    public init(sourceAnchor: SourceAnchor? = nil, child: Parameter) {
+        self.child = child.withSourceAnchor(sourceAnchor) as! Parameter
         super.init(sourceAnchor: sourceAnchor)
+    }
+    
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> ParameterSlashed {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return ParameterSlashed(sourceAnchor: sourceAnchor, child: child)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

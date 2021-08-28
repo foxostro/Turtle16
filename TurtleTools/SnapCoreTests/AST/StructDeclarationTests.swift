@@ -13,7 +13,7 @@ import TurtleCore
 class StructDeclarationTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
         XCTAssertNotEqual(StructDeclaration(identifier: Expression.Identifier("foo"), members: []),
-                          AbstractSyntaxTreeNode())
+                          CommentNode(string: ""))
     }
     
     func testDoesNotEqualNodeWithDifferentIdentifier() {

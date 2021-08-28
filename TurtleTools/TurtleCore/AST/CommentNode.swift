@@ -10,13 +10,16 @@
 public class CommentNode: AbstractSyntaxTreeNode {
     public let string: String
     
-    public convenience init(string: String) {
-        self.init(sourceAnchor: nil, string: string)
-    }
-    
-    public required init(sourceAnchor: SourceAnchor?, string: String) {
+    public required init(sourceAnchor: SourceAnchor? = nil, string: String) {
         self.string = string
         super.init(sourceAnchor: sourceAnchor)
+    }
+    
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> CommentNode {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return CommentNode(sourceAnchor: sourceAnchor, string: string)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

@@ -13,17 +13,17 @@ import TurtleCore
 class IfTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
         XCTAssertNotEqual(If(condition: Expression.LiteralInt(1),
-                             then: AbstractSyntaxTreeNode(),
+                             then: CommentNode(string: ""),
                              else: nil),
-                          AbstractSyntaxTreeNode())
+                          CommentNode(string: ""))
     }
     
     func testDoesNotEqualNodeWithDifferentCondition() {
         XCTAssertNotEqual(If(condition: Expression.LiteralInt(1),
-                             then: AbstractSyntaxTreeNode(),
+                             then: CommentNode(string: ""),
                              else: nil),
                           If(condition: Expression.LiteralInt(2),
-                             then: AbstractSyntaxTreeNode(),
+                             then: CommentNode(string: ""),
                              else: nil))
     }
     
@@ -32,34 +32,34 @@ class IfTests: XCTestCase {
                              then: Expression.LiteralInt(1),
                              else: nil),
                           If(condition: Expression.LiteralInt(2),
-                             then: AbstractSyntaxTreeNode(),
+                             then: CommentNode(string: ""),
                              else: nil))
     }
     
     func testDoesNotEqualNodeWithDifferentElseBranch() {
         XCTAssertNotEqual(If(condition: Expression.LiteralInt(1),
-                             then: AbstractSyntaxTreeNode(),
-                             else: AbstractSyntaxTreeNode()),
+                             then: CommentNode(string: ""),
+                             else: CommentNode(string: "")),
                           If(condition: Expression.LiteralInt(2),
-                             then: AbstractSyntaxTreeNode(),
+                             then: CommentNode(string: ""),
                              else: nil))
     }
     
     func testSame() {
         XCTAssertEqual(If(condition: Expression.LiteralInt(1),
-                          then: AbstractSyntaxTreeNode(),
-                          else: AbstractSyntaxTreeNode()),
+                          then: CommentNode(string: ""),
+                          else: CommentNode(string: "")),
                        If(condition: Expression.LiteralInt(1),
-                          then: AbstractSyntaxTreeNode(),
-                          else: AbstractSyntaxTreeNode()))
+                          then: CommentNode(string: ""),
+                          else: CommentNode(string: "")))
     }
     
     func testHash() {
         XCTAssertEqual(If(condition: Expression.LiteralInt(1),
-                          then: AbstractSyntaxTreeNode(),
+                          then: CommentNode(string: ""),
                           else: nil).hash,
                        If(condition: Expression.LiteralInt(1),
-                          then: AbstractSyntaxTreeNode(),
+                          then: CommentNode(string: ""),
                           else: nil).hash)
     }
     

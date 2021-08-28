@@ -633,6 +633,189 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr1")
     }
     
+    func testRvalue_As_union_to_union() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .unionType(UnionType([.u16])), offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
+                                                             targetType: Expression.UnionType([Expression.PrimitiveType(.u16)])))
+        let expected = InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+            ParameterIdentifier(value: "vr0"),
+            ParameterNumber(value: 0xabcd)
+        ]))
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr0")
+    }
+    
+    func testRvalue_As_union_to_primitive() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .unionType(UnionType([.u16])), offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
+                                                             targetType: Expression.PrimitiveType(.u16)))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 0xabcd)
+            ])),
+            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 1)
+            ]))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr1")
+    }
+    
+    func testRvalue_As_union_to_non_primitive() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .unionType(UnionType([.array(count: 1, elementType: .u16)])), offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
+                                                             targetType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u16))))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 0xabcd)
+            ])),
+            InstructionNode(instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 1)
+            ]))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr1")
+    }
+    
+    func testRvalue_As_convert_primitive_value_to_union() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .u16, offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.PrimitiveType(.u16)])))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterIdentifier(value: "fp"),
+                ParameterNumber(value: 2)
+            ])),
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterNumber(value: 0)
+            ])),
+            InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterIdentifier(value: "vr1"),
+                ParameterNumber(value: 0)
+            ])),
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr2"),
+                ParameterNumber(value: 0xabcd)
+            ])),
+            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr3"),
+                ParameterIdentifier(value: "vr2")
+            ])),
+            InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterIdentifier(value: "vr3"),
+                ParameterNumber(value: 1)
+            ]))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr0")
+    }
+    
+    func testRvalue_As_determine_union_type_tag() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .u16, offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.PrimitiveType(.bool), Expression.PrimitiveType(.u16)])))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterIdentifier(value: "fp"),
+                ParameterNumber(value: 2)
+            ])),
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterNumber(value: 1)
+            ])),
+            InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterIdentifier(value: "vr1"),
+                ParameterNumber(value: 0)
+            ])),
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr2"),
+                ParameterNumber(value: 0xabcd)
+            ])),
+            InstructionNode(instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr3"),
+                ParameterIdentifier(value: "vr2")
+            ])),
+            InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterIdentifier(value: "vr3"),
+                ParameterNumber(value: 1)
+            ]))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr0")
+    }
+    
+    func testRvalue_As_convert_non_primitive_value_to_union() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 2, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.ArrayType(count: Expression.LiteralInt(2), elementType: Expression.PrimitiveType(.u16))])))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kSUBI16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterIdentifier(value: "fp"),
+                ParameterNumber(value: 3)
+            ])),
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterNumber(value: 0)
+            ])),
+            InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterIdentifier(value: "vr1"),
+                ParameterNumber(value: 0)
+            ])),
+            InstructionNode(instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr2"),
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 1)
+            ])),
+            InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr3"),
+                ParameterNumber(value: 0xabcd)
+            ])),
+            InstructionNode(instruction: Tack.kMEMCPY, parameters: ParameterList(parameters: [
+                ParameterIdentifier(value: "vr2"),
+                ParameterIdentifier(value: "vr3"),
+                ParameterNumber(value: 2)
+            ]))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr0")
+    }
+    
     func testRvalue_Bitcast_u16_to_pointer() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .u16, offset: 0xabcd, storage: .staticStorage))

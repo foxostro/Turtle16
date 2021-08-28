@@ -79,6 +79,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     var nextRegisterIndex = 0
     let fp = "fp"
     let sp = "sp"
+    let kUnionPayloadOffset: Int
+    let kUnionTypeTagOffset: Int
     
     func pushRegister(_ identifier: String) {
         registerStack.append(identifier)
@@ -102,6 +104,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     
     public init(symbols: SymbolTable, globalEnvironment: GlobalEnvironment) {
         self.globalEnvironment = globalEnvironment
+        kUnionTypeTagOffset = 0
+        kUnionPayloadOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .u16)
         super.init(symbols)
     }
     
@@ -659,24 +663,79 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             registerStack = savedRegisterStack
             result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
             
-        case (.constStructType(let a), .constStructType(let b)),
-             (.constStructType(let a), .structType(let b)),
-             (.structType(let a), .constStructType(let b)),
-             (.structType(let a), .structType(let b)):
-            fatalError("unimplemented: structType(\(a)) -> structType(\(b))")
-            
-        case (.unionType, .unionType):
-            fatalError("unimplemented: unionType -> unionType")
-            
         case (_, .unionType(let typ)):
-            fatalError("unimplemented: * -> unionType(\(typ))")
+            let tempArrayId = try makeCompilerTemporary(rexpr.sourceAnchor, Expression.PrimitiveType(ltype))
+            var children: [AbstractSyntaxTreeNode] = [
+                try lvalue(expr: tempArrayId)
+            ]
+            let tempUnionAddr = popRegister()
+            let tempUnionTypeTag = nextRegister()
+            let unionTypeTag = determineUnionTypeTag(typ, rtype)!
+            children += [
+                InstructionNode(instruction: Tack.kLIU16, parameters: ParameterList(parameters: [
+                    ParameterIdentifier(value: tempUnionTypeTag),
+                    ParameterNumber(value: unionTypeTag)
+                ])),
+                InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+                    ParameterIdentifier(value: tempUnionAddr),
+                    ParameterIdentifier(value: tempUnionTypeTag),
+                    ParameterNumber(value: kUnionTypeTagOffset)
+                ]))
+            ]
+            if rtype.isPrimitive {
+                children += [
+                    try rvalue(expr: rexpr),
+                    InstructionNode(instruction: Tack.kSTORE, parameters: ParameterList(parameters: [
+                        ParameterIdentifier(value: tempUnionAddr),
+                        ParameterIdentifier(value: popRegister()),
+                        ParameterNumber(value: kUnionPayloadOffset)
+                    ]))
+                ]
+            } else {
+                let size = globalEnvironment.memoryLayoutStrategy.sizeof(type: rtype)
+                let tempUnionPayloadAddress = nextRegister()
+                children += [
+                    InstructionNode(instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+                        ParameterIdentifier(value: tempUnionPayloadAddress),
+                        ParameterIdentifier(value: tempUnionAddr),
+                        ParameterNumber(value: kUnionPayloadOffset)
+                    ])),
+                    try rvalue(expr: rexpr),
+                    InstructionNode(instruction: Tack.kMEMCPY, parameters: ParameterList(parameters: [
+                        ParameterIdentifier(value: tempUnionPayloadAddress),
+                        ParameterIdentifier(value: popRegister()),
+                        ParameterNumber(value: size)
+                    ]))
+                ]
+            }
+            pushRegister(tempUnionAddr)
+            result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
             
         case (.unionType, _):
-            fatalError("unimplemented: unionType -> *")
-            
-        case (.constPointer(let a), .traitType(let b)),
-             (.pointer(let a), .traitType(let b)):
-            fatalError("unimplemented: pointer(\(a)) -> pointer(\(b))")
+            var children: [AbstractSyntaxTreeNode] = [
+                try lvalue(expr: rexpr)
+            ]
+            let tempUnionAddr = popRegister()
+            let dst = nextRegister()
+            pushRegister(dst)
+            if ltype.isPrimitive {
+                children += [
+                    InstructionNode(sourceAnchor: rexpr.sourceAnchor, instruction: Tack.kLOAD, parameters: ParameterList(parameters: [
+                        ParameterIdentifier(value: dst),
+                        ParameterIdentifier(value: tempUnionAddr),
+                        ParameterNumber(value: kUnionPayloadOffset),
+                    ]))
+                ]
+            } else {
+                children += [
+                    InstructionNode(sourceAnchor: rexpr.sourceAnchor, instruction: Tack.kADDI16, parameters: ParameterList(parameters: [
+                        ParameterIdentifier(value: dst),
+                        ParameterIdentifier(value: tempUnionAddr),
+                        ParameterNumber(value: kUnionPayloadOffset),
+                    ]))
+                ]
+            }
+            result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
             
         case (.traitType(let a), .traitType(let b)):
             fatalError("unimplemented: trait(\(a)) -> trait(\(b))")
@@ -727,7 +786,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
              (.constDynamicArray, .constDynamicArray),
              (.constDynamicArray, .dynamicArray),
              (.dynamicArray, .constDynamicArray),
-             (.dynamicArray, .dynamicArray):
+             (.dynamicArray, .dynamicArray),
+             (.unionType, .unionType):
             result = true
             
         case (.array(_, let a), .array(_, let b)):

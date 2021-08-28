@@ -69,36 +69,12 @@ public class SnapASTTransformerBase: NSObject {
     
     public func compile(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {
         let children: [AbstractSyntaxTreeNode] = try node.children.compactMap { try compile($0) }
-        var flatChildren: [AbstractSyntaxTreeNode] = []
-        
-        for node in children {
-            if let seq = node as? Seq {
-                flatChildren += seq.children
-            } else {
-                flatChildren.append(node)
-            }
-        }
-        
-        return TopLevel(sourceAnchor: node.sourceAnchor, children: flatChildren)
+        return TopLevel(sourceAnchor: node.sourceAnchor, children: children)
     }
     
     public func compile(seq node: Seq) throws -> AbstractSyntaxTreeNode? {
         let children: [AbstractSyntaxTreeNode] = try node.children.compactMap { try compile($0) }
-        
-        if children.count < 2 {
-            return children.first
-        }
-        
-        var flatChildren: [AbstractSyntaxTreeNode] = []
-        for node in children {
-            if let seq = node as? Seq {
-                flatChildren += seq.children
-            } else {
-                flatChildren.append(node)
-            }
-        }
-        
-        return Seq(sourceAnchor: node.sourceAnchor, children: flatChildren)
+        return Seq(sourceAnchor: node.sourceAnchor, children: children)
     }
     
     public func compile(varDecl node: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
@@ -132,20 +108,10 @@ public class SnapASTTransformerBase: NSObject {
     public func compile(block node: Block) throws -> AbstractSyntaxTreeNode? {
         let parent = symbols
         symbols = node.symbols
-        
         let children: [AbstractSyntaxTreeNode] = try node.children.compactMap { try compile($0) }
-        var flatChildren: [AbstractSyntaxTreeNode] = []
-        for node in children {
-            if let seq = node as? Seq {
-                flatChildren += seq.children
-            } else {
-                flatChildren.append(node)
-            }
-        }
         let result = Block(sourceAnchor: node.sourceAnchor,
                            symbols: node.symbols,
-                           children: flatChildren)
-
+                           children: children)
         symbols = parent
         if let symbols = symbols, node.symbols.stackFrameIndex == symbols.stackFrameIndex {
             symbols.highwaterMark = max(symbols.highwaterMark, node.symbols.highwaterMark)

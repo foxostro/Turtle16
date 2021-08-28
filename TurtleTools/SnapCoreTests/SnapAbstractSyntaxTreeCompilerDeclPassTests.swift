@@ -208,7 +208,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         // expectations. We could also examine the type expression in the
         // uncompiled VarDeclaration node, but this ensures we evaluate that
         // expression in the same way it would be in the full compiler.
-        guard let vtableDeclaration = block.children.last as? VarDeclaration else {
+        guard let vtableDeclaration = (block.children.last as? Seq)?.children.last as? VarDeclaration else {
             XCTFail()
             return
         }

@@ -104,14 +104,17 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         super.init(symbols)
     }
     
+    public override func compile(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
+        return flatten(try super.compile(node0))
+    }
+    
+    func flatten(_ node: AbstractSyntaxTreeNode?) -> AbstractSyntaxTreeNode {
+        return try! SnapASTTransformerFlattenSeq().compile(node)!
+    }
+    
     public override func compile(block node: Block) throws -> AbstractSyntaxTreeNode? {
-        let result = try super.compile(block: node) as! Block
-        
-        if result.children.count < 2 {
-            return result.children.first
-        }
-        
-        return Seq(sourceAnchor: node.sourceAnchor, children: result.children)
+        let block = try super.compile(block: node) as! Block
+        return Seq(sourceAnchor: node.sourceAnchor, children: block.children)
     }
     
     public override func compile(return node: Return) throws -> AbstractSyntaxTreeNode? {
@@ -139,11 +142,11 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             InstructionNode(sourceAnchor: node.sourceAnchor, instruction: Tack.kENTER, parameters: ParameterList(parameters: [
                 ParameterNumber(value: sizeOfLocalVariables)
             ])),
-            node.body,
+            try compile(node.body)!,
             LabelDeclaration(sourceAnchor: node.sourceAnchor, identifier: labelTail),
         ]
         
-        return try compile(seq: Seq(sourceAnchor: node.sourceAnchor, children: children))
+        return Seq(sourceAnchor: node.sourceAnchor, children: children)
     }
     
     public override func compile(goto node: Goto) throws -> AbstractSyntaxTreeNode? {
@@ -177,16 +180,18 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     
     public func lvalue(expr: Expression) throws -> AbstractSyntaxTreeNode {
         try typeCheck(lexpr: expr)
+        let result: AbstractSyntaxTreeNode
         switch expr {
         case let node as Expression.Identifier:
-            return try lvalue(identifier: node)
+            result = try lvalue(identifier: node)
         case let node as Expression.Subscript:
-            return try lvalue(subscript: node)
+            result = try lvalue(subscript: node)
         case let node as Expression.Get:
-            return try lvalue(get: node)
+            result = try lvalue(get: node)
         default:
             fatalError("unimplemented")
         }
+        return flatten(result)
     }
     
     func lvalue(identifier node: Expression.Identifier) throws -> AbstractSyntaxTreeNode {
@@ -385,47 +390,49 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             fatalError("unimplemented")
         }
         
-        return try compile(seq: Seq(sourceAnchor: expr.sourceAnchor, children: children))!
+        return Seq(sourceAnchor: expr.sourceAnchor, children: children)
     }
     
     public func rvalue(expr: Expression) throws -> AbstractSyntaxTreeNode {
         try typeCheck(rexpr: expr)
+        let result: AbstractSyntaxTreeNode
         switch expr {
         case let group as Expression.Group:
-            return try rvalue(expr: group.expression)
+            result = try rvalue(expr: group.expression)
         case let literal as Expression.LiteralInt:
-            return rvalue(literalInt: literal)
+            result = rvalue(literalInt: literal)
         case let literal as Expression.LiteralBool:
-            return rvalue(literalBoolean: literal)
+            result = rvalue(literalBoolean: literal)
         case let literal as Expression.LiteralArray:
-            return try rvalue(literalArray: literal)
+            result = try rvalue(literalArray: literal)
         case let literal as Expression.LiteralString:
-            return try rvalue(literalString: literal)
+            result = try rvalue(literalString: literal)
         case let node as Expression.Identifier:
-            return try rvalue(identifier: node)
+            result = try rvalue(identifier: node)
         case let node as Expression.As:
-            return try rvalue(as: node)
+            result = try rvalue(as: node)
         case let node as Expression.Bitcast:
-            return try rvalue(bitcast: node)
+            result = try rvalue(bitcast: node)
         case let node as Expression.Unary:
-            return try rvalue(unary: node)
+            result = try rvalue(unary: node)
         case let node as Expression.Binary:
-            return try rvalue(binary: node)
+            result = try rvalue(binary: node)
         case let expr as Expression.Is:
-            return try rvalue(is: expr)
+            result = try rvalue(is: expr)
         case let expr as Expression.Assignment:
-            return try rvalue(assignment: expr)
+            result = try rvalue(assignment: expr)
         case let expr as Expression.Subscript:
-            return try rvalue(subscript: expr)
+            result = try rvalue(subscript: expr)
         case let expr as Expression.Get:
-            return try rvalue(get: expr)
+            result = try rvalue(get: expr)
         case let node as Expression.StructInitializer:
-            return try rvalue(structInitializer: node)
+            result = try rvalue(structInitializer: node)
         case let node as Expression.Call:
-            return try rvalue(call: node)
+            result = try rvalue(call: node)
         default:
             throw CompilerError(message: "unimplemented: `\(expr)'")
         }
+        return flatten(result)
     }
     
     func rvalue(literalInt node: Expression.LiteralInt) -> AbstractSyntaxTreeNode {
@@ -466,7 +473,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         children += [
             try lvalue(identifier: tempArrayId)
         ]
-        return try compile(seq: Seq(sourceAnchor: expr.sourceAnchor, children: children))!
+        return Seq(sourceAnchor: expr.sourceAnchor, children: children)
     }
     
     func makeCompilerTemporary(_ sourceAnchor: SourceAnchor?, _ type: Expression) throws -> Expression.Identifier {
@@ -512,7 +519,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             ]
         }
         
-        return try compile(seq: Seq(sourceAnchor: node.sourceAnchor, children: children))!
+        return Seq(sourceAnchor: node.sourceAnchor, children: children)
     }
     
     func rvalue(as expr: Expression.As) throws -> AbstractSyntaxTreeNode {
@@ -589,7 +596,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                     ParameterNumber(value: 0x00ff)
                 ]))
             ]
-            result = try compile(seq: Seq(sourceAnchor: rexpr.sourceAnchor, children: children))!
+            result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
             
         case (.array(let n, _), .array(let m, let b)):
             guard n == m || m == nil, let n = n else {
@@ -616,7 +623,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             children += [
                 try lvalue(identifier: tempArrayId)
             ]
-            result = try compile(seq: Seq(sourceAnchor: rexpr.sourceAnchor, children: children))!
+            result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
             
         case (.array(let n?, let a), .constDynamicArray(let b)),
              (.array(let n?, let a), .dynamicArray(let b)):
@@ -649,7 +656,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 ]))
             ]
             registerStack = savedRegisterStack
-            result = try compile(seq: Seq(sourceAnchor: rexpr.sourceAnchor, children: children))!
+            result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
             
         case (.constStructType(let a), .constStructType(let b)),
              (.constStructType(let a), .structType(let b)),
@@ -830,7 +837,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 fatalError("`\(expr.op)' is not a prefix unary operator. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(expr)")
             }
             
-            result = try compile(seq: Seq(sourceAnchor: expr.sourceAnchor, children: instructions))!
+            result = Seq(sourceAnchor: expr.sourceAnchor, children: instructions)
         }
         
         return result
@@ -874,7 +881,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             ParameterIdentifier(value: b)
         ]))
         
-        return try compile(seq: Seq(sourceAnchor: binary.sourceAnchor, children: [right, left, op]))!
+        return Seq(sourceAnchor: binary.sourceAnchor, children: [right, left, op])
     }
     
     func getOperand(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType, _ typeForArithmetic: SymbolType) throws -> String {
@@ -1048,7 +1055,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 ParameterIdentifier(value: a),
                 ParameterIdentifier(value: b)
             ]))
-            return try compile(seq: Seq(sourceAnchor: binary.sourceAnchor, children: [right, left, op]))!
+            return Seq(sourceAnchor: binary.sourceAnchor, children: [right, left, op])
             
         case .ne:
             let right = try compileAndConvertExpression(rexpr: binary.right, ltype: .bool, isExplicitCast: false)
@@ -1062,7 +1069,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 ParameterIdentifier(value: a),
                 ParameterIdentifier(value: b)
             ]))
-            return try compile(seq: Seq(sourceAnchor: binary.sourceAnchor, children: [right, left, op]))!
+            return Seq(sourceAnchor: binary.sourceAnchor, children: [right, left, op])
             
         case .doubleAmpersand:
             return try logicalAnd(binary)
@@ -1143,7 +1150,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             ])),
             LabelDeclaration(sourceAnchor: binary.sourceAnchor, identifier: labelTail)
         ]
-        return try compile(seq: Seq(sourceAnchor: binary.sourceAnchor, children: instructions))!
+        return Seq(sourceAnchor: binary.sourceAnchor, children: instructions)
     }
     
     func logicalOr(_ binary: Expression.Binary) throws -> AbstractSyntaxTreeNode {
@@ -1181,7 +1188,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             ])),
             LabelDeclaration(sourceAnchor: binary.sourceAnchor, identifier: labelTail)
         ]
-        return try compile(seq: Seq(sourceAnchor: binary.sourceAnchor, children: instructions))!
+        return Seq(sourceAnchor: binary.sourceAnchor, children: instructions)
     }
     
     func rvalue(is expr: Expression.Is) throws -> AbstractSyntaxTreeNode {
@@ -1249,7 +1256,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         
         pushRegister(tempResult)
         
-        return try compile(seq: Seq(sourceAnchor: expr.sourceAnchor, children: children))!
+        return Seq(sourceAnchor: expr.sourceAnchor, children: children)
     }
     
     // Given a type and a related union, determine the corresponding type tag.
@@ -1317,7 +1324,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             ])
         }
         
-        return try compile(seq: result)!
+        return result
     }
     
     func memcpy(_ sourceAnchor: SourceAnchor?, _ dst: String, _ src: String, _ size: Int) -> AbstractSyntaxTreeNode {
@@ -1380,7 +1387,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             }
         }
         
-        return try compile(seq: Seq(sourceAnchor: expr.sourceAnchor, children: children))!
+        return Seq(sourceAnchor: expr.sourceAnchor, children: children)
     }
     
     func rvalue(get expr: Expression.Get) throws -> AbstractSyntaxTreeNode {
@@ -1530,7 +1537,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             fatalError("unimplemented")
         }
         
-        return try compile(seq: Seq(sourceAnchor: expr.sourceAnchor, children: children))!
+        return Seq(sourceAnchor: expr.sourceAnchor, children: children)
     }
     
     func rvalue(structInitializer expr: Expression.StructInitializer) throws -> AbstractSyntaxTreeNode {
@@ -1551,7 +1558,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         children += [
             try lvalue(identifier: tempArrayId)
         ]
-        return try compile(seq: Seq(sourceAnchor: expr.sourceAnchor, children: children))!
+        return Seq(sourceAnchor: expr.sourceAnchor, children: children)
     }
     
     func rvalue(call expr: Expression.Call) throws -> AbstractSyntaxTreeNode {
@@ -1668,7 +1675,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             ]
         }
         
-        let innerSeq = try compile(seq: Seq(sourceAnchor: expr.sourceAnchor, children: children))!
+        let innerSeq = Seq(sourceAnchor: expr.sourceAnchor, children: children)
         
         symbols = parent
         if let symbols = symbols, innerBlock.stackFrameIndex == symbols.stackFrameIndex {
@@ -1689,6 +1696,6 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 innerSeq
             ])
         }
-        return try compile(seq: outerSeq)!
+        return outerSeq
     }
 }

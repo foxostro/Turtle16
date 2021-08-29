@@ -85,6 +85,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     let kPanic = "panic"
     let kUnionPayloadOffset: Int
     let kUnionTypeTagOffset: Int
+    let kSliceBaseAddrOffset: Int
+    let kSliceCountOffset: Int
     
     func pushRegister(_ identifier: String) {
         registerStack.append(identifier)
@@ -110,6 +112,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         self.globalEnvironment = globalEnvironment
         kUnionTypeTagOffset = 0
         kUnionPayloadOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .u16)
+        kSliceBaseAddrOffset = 0
+        kSliceCountOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .pointer(.void))
         super.init(symbols)
     }
     
@@ -215,52 +219,145 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     func lvalue(subscript expr: Expression.Subscript) throws -> AbstractSyntaxTreeNode {
         let elementType = try typeCheck(rexpr: expr)
         let elementSize = globalEnvironment.memoryLayoutStrategy.sizeof(type: elementType)
+        let subscriptableType = try typeCheck(rexpr: expr.subscriptable)
+        let argumentType = try typeCheck(rexpr: expr.argument)
+        
+        // Can we determine the index at compile time?
+        let maybeStaticIndex: Int?
+        if case .compTimeInt(let index) = argumentType {
+            maybeStaticIndex = index
+        } else {
+            maybeStaticIndex = nil
+        }
+        
+        // Can we determine the upper bound at compile time?
+        let maybeUpperBound: Int?
+        if case .array(count: let n, elementType: _) = subscriptableType {
+            maybeUpperBound = n
+        } else {
+            maybeUpperBound = nil
+        }
+        
+        // We can catch some out of bounds errors at compile time
+        if let index = maybeStaticIndex {
+            if index < 0 {
+                throw CompilerError(sourceAnchor: expr.argument.sourceAnchor, message: "Array index is always out of bounds: `\(index)' is less than zero")
+            }
+            
+            if let n = maybeUpperBound, index >= n {
+                throw CompilerError(sourceAnchor: expr.argument.sourceAnchor, message: "Array index is always out of bounds: `\(index)' is not in 0..\(n)")
+            }
+        }
         
         var children: [AbstractSyntaxTreeNode] = [
             try lvalue(expr: expr.subscriptable)
         ]
         
-        switch elementSize {
-        case 0:
-            break
-            
-        case 1:
+        if elementSize > 0 {
             let baseAddr = popRegister()
             children += [
                 try rvalue(expr: expr.argument)
             ]
             let index = popRegister()
-            let accessAddr = nextRegister()
-            pushRegister(accessAddr)
-            children += [
-                InstructionNode(instruction: Tack.kADD16, parameters: [
-                    ParameterIdentifier(accessAddr),
-                    ParameterIdentifier(index),
-                    ParameterIdentifier(baseAddr)
-                ])
-            ]
             
-        default:
-            let baseAddr = popRegister()
-            children += [
-                try rvalue(expr: expr.argument)
-            ]
-            let index = popRegister()
-            let offset = nextRegister()
-            let accessAddr = nextRegister()
-            pushRegister(accessAddr)
-            children += [
-                InstructionNode(instruction: Tack.kMULI16, parameters: [
-                    ParameterIdentifier(offset),
-                    ParameterIdentifier(index),
-                    ParameterNumber(elementSize)
-                ]),
-                InstructionNode(instruction: Tack.kADD16, parameters: [
-                    ParameterIdentifier(accessAddr),
-                    ParameterIdentifier(offset),
-                    ParameterIdentifier(baseAddr)
-                ])
-            ]
+            // We may need to insert a run time bounds checks.
+            if maybeStaticIndex == nil {
+                // Lower bound
+                let tempLowerBound = nextRegister()
+                let tempComparison1 = nextRegister()
+                let labelPassesLowerBoundsCheck = globalEnvironment.labelMaker.next()
+                children += [
+                    InstructionNode(instruction: Tack.kLI16, parameters: [
+                        ParameterIdentifier(tempLowerBound),
+                        ParameterNumber(0)
+                    ]),
+                    InstructionNode(instruction: Tack.kGE16, parameters: [
+                        ParameterIdentifier(tempComparison1),
+                        ParameterIdentifier(index),
+                        ParameterIdentifier(tempLowerBound)
+                    ]),
+                    InstructionNode(instruction: Tack.kBNZ, parameters: [
+                        ParameterIdentifier(tempComparison1),
+                        ParameterIdentifier(labelPassesLowerBoundsCheck)
+                    ]),
+                    InstructionNode(instruction: Tack.kCALL, parameters: [
+                        ParameterIdentifier(kPanic)
+                    ]),
+                    LabelDeclaration(identifier: labelPassesLowerBoundsCheck)
+                ]
+                
+                // Upper bound
+                let tempUpperBound = nextRegister()
+                switch subscriptableType {
+                case .array(count: let n?, elementType: _):
+                    // The upper bound is known at compile time
+                    children += [
+                        InstructionNode(instruction: Tack.kLI16, parameters: [
+                            ParameterIdentifier(tempUpperBound),
+                            ParameterNumber(n)
+                        ])
+                    ]
+                    
+                case .dynamicArray, .constDynamicArray:
+                    // The upper bound is embedded in the slice object
+                    children += [
+                        InstructionNode(instruction: Tack.kLOAD, parameters: [
+                            ParameterIdentifier(tempUpperBound),
+                            ParameterIdentifier(baseAddr),
+                            ParameterNumber(kSliceCountOffset)
+                        ])
+                    ]
+                    
+                default:
+                    fatalError("unimplemented")
+                }
+                
+                let tempComparison2 = nextRegister()
+                let labelPassesUpperBoundsCheck = globalEnvironment.labelMaker.next()
+                children += [
+                    InstructionNode(instruction: Tack.kLT16, parameters: [
+                        ParameterIdentifier(tempComparison2),
+                        ParameterIdentifier(index),
+                        ParameterIdentifier(tempUpperBound)
+                    ]),
+                    InstructionNode(instruction: Tack.kBNZ, parameters: [
+                        ParameterIdentifier(tempComparison2),
+                        ParameterIdentifier(labelPassesUpperBoundsCheck)
+                    ]),
+                    InstructionNode(instruction: Tack.kCALL, parameters: [
+                        ParameterIdentifier(kPanic)
+                    ]),
+                    LabelDeclaration(identifier: labelPassesUpperBoundsCheck),
+                ]
+            }
+            
+            if elementSize == 1 {
+                let accessAddr = nextRegister()
+                pushRegister(accessAddr)
+                children += [
+                    InstructionNode(instruction: Tack.kADD16, parameters: [
+                        ParameterIdentifier(accessAddr),
+                        ParameterIdentifier(index),
+                        ParameterIdentifier(baseAddr)
+                    ])
+                ]
+            } else {
+                let offset = nextRegister()
+                let accessAddr = nextRegister()
+                pushRegister(accessAddr)
+                children += [
+                    InstructionNode(instruction: Tack.kMULI16, parameters: [
+                        ParameterIdentifier(offset),
+                        ParameterIdentifier(index),
+                        ParameterNumber(elementSize)
+                    ]),
+                    InstructionNode(instruction: Tack.kADD16, parameters: [
+                        ParameterIdentifier(accessAddr),
+                        ParameterIdentifier(offset),
+                        ParameterIdentifier(baseAddr)
+                    ])
+                ]
+            }
         }
         
         return Seq(sourceAnchor: expr.sourceAnchor, children: children)
@@ -1490,18 +1587,32 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     func rvalue(subscript expr: Expression.Subscript) throws -> AbstractSyntaxTreeNode {
         let elementType = try typeCheck(rexpr: expr)
         let argumentType = try typeCheck(rexpr: expr.argument)
+        let subscriptableType = try typeCheck(rexpr: expr.subscriptable)
+        
+        // Can we determine the index at compile time?
+        let maybeStaticIndex: Int?
+        if case .compTimeInt(let index) = argumentType {
+            maybeStaticIndex = index
+        } else {
+            maybeStaticIndex = nil
+        }
+        
+        // Can we determine the upper bound at compile time?
+        let maybeUpperBound: Int?
+        if case .array(count: let n, elementType: _) = subscriptableType {
+            maybeUpperBound = n
+        } else {
+            maybeUpperBound = nil
+        }
         
         // We can catch some out of bounds errors at compile time
-        if case .compTimeInt(let index) = argumentType {
+        if let index = maybeStaticIndex {
             if index < 0 {
                 throw CompilerError(sourceAnchor: expr.argument.sourceAnchor, message: "Array index is always out of bounds: `\(index)' is less than zero")
             }
             
-            let subscriptableType = try typeCheck(rexpr: expr.subscriptable)
-            if case .array(count: let n, elementType: _) = subscriptableType {
-                if let n = n, index >= n {
-                    throw CompilerError(sourceAnchor: expr.argument.sourceAnchor, message: "Array index is always out of bounds: `\(index)' is not in 0..\(n)")
-                }
+            if let n = maybeUpperBound, index >= n {
+                throw CompilerError(sourceAnchor: expr.argument.sourceAnchor, message: "Array index is always out of bounds: `\(index)' is not in 0..\(n)")
             }
         }
         

@@ -2810,18 +2810,52 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr1"),
                 ParameterNumber(9)
             ]),
-            InstructionNode(instruction: Tack.kADD16, parameters: [
+            InstructionNode(instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier("vr2"),
+                ParameterNumber(0)
+            ]),
+            InstructionNode(instruction: Tack.kGE16, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr2")
+            ]),
+            InstructionNode(instruction: Tack.kBNZ, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier(".L0")
+            ]),
+            InstructionNode(instruction: Tack.kCALL, parameters: [
+                ParameterIdentifier("panic")
+            ]),
+            LabelDeclaration(identifier: ".L0"),
+            InstructionNode(instruction: Tack.kLI16, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterNumber(10)
+            ]),
+            InstructionNode(instruction: Tack.kLT16, parameters: [
+                ParameterIdentifier("vr5"),
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr4")
+            ]),
+            InstructionNode(instruction: Tack.kBNZ, parameters: [
+                ParameterIdentifier("vr5"),
+                ParameterIdentifier(".L1")
+            ]),
+            InstructionNode(instruction: Tack.kCALL, parameters: [
+                ParameterIdentifier("panic")
+            ]),
+            LabelDeclaration(identifier: ".L1"),
+            InstructionNode(instruction: Tack.kADD16, parameters: [
+                ParameterIdentifier("vr6"),
                 ParameterIdentifier("vr1"),
                 ParameterIdentifier("vr0"),
             ]),
             InstructionNode(instruction: Tack.kLOAD, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
+                ParameterIdentifier("vr7"),
+                ParameterIdentifier("vr6")
             ])
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr3")
+        XCTAssertEqual(compiler.registerStack.last, "vr7")
     }
     
     func testRvalue_SubscriptRvalue_ZeroSizeElement() throws {
@@ -2861,19 +2895,118 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr1"),
                 ParameterNumber(9)
             ]),
-            InstructionNode(instruction: Tack.kMULI16, parameters: [
+            InstructionNode(instruction: Tack.kLI16, parameters: [
                 ParameterIdentifier("vr2"),
+                ParameterNumber(0)
+            ]),
+            InstructionNode(instruction: Tack.kGE16, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr2")
+            ]),
+            InstructionNode(instruction: Tack.kBNZ, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier(".L0")
+            ]),
+            InstructionNode(instruction: Tack.kCALL, parameters: [
+                ParameterIdentifier("panic")
+            ]),
+            LabelDeclaration(identifier: ".L0"),
+            InstructionNode(instruction: Tack.kLI16, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterNumber(10)
+            ]),
+            InstructionNode(instruction: Tack.kLT16, parameters: [
+                ParameterIdentifier("vr5"),
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr4")
+            ]),
+            InstructionNode(instruction: Tack.kBNZ, parameters: [
+                ParameterIdentifier("vr5"),
+                ParameterIdentifier(".L1")
+            ]),
+            InstructionNode(instruction: Tack.kCALL, parameters: [
+                ParameterIdentifier("panic")
+            ]),
+            LabelDeclaration(identifier: ".L1"),
+            InstructionNode(instruction: Tack.kMULI16, parameters: [
+                ParameterIdentifier("vr6"),
                 ParameterIdentifier("vr1"),
                 ParameterNumber(2)
             ]),
             InstructionNode(instruction: Tack.kADD16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2"),
+                ParameterIdentifier("vr7"),
+                ParameterIdentifier("vr6"),
                 ParameterIdentifier("vr0"),
             ])
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr3")
+        XCTAssertEqual(compiler.registerStack.last, "vr7")
+    }
+    
+    func testRvalue_SubscriptRvalue_DynamicArray() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .dynamicArray(elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(0xabcd)
+            ]),
+            InstructionNode(instruction: Tack.kLI16, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterNumber(9)
+            ]),
+            InstructionNode(instruction: Tack.kLI16, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterNumber(0)
+            ]),
+            InstructionNode(instruction: Tack.kGE16, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr2")
+            ]),
+            InstructionNode(instruction: Tack.kBNZ, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier(".L0")
+            ]),
+            InstructionNode(instruction: Tack.kCALL, parameters: [
+                ParameterIdentifier("panic")
+            ]),
+            LabelDeclaration(identifier: ".L0"),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterIdentifier("vr0"),
+                ParameterNumber(1)
+            ]),
+            InstructionNode(instruction: Tack.kLT16, parameters: [
+                ParameterIdentifier("vr5"),
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr4")
+            ]),
+            InstructionNode(instruction: Tack.kBNZ, parameters: [
+                ParameterIdentifier("vr5"),
+                ParameterIdentifier(".L1")
+            ]),
+            InstructionNode(instruction: Tack.kCALL, parameters: [
+                ParameterIdentifier("panic")
+            ]),
+            LabelDeclaration(identifier: ".L1"),
+            InstructionNode(instruction: Tack.kADD16, parameters: [
+                ParameterIdentifier("vr6"),
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr0"),
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
+                ParameterIdentifier("vr7"),
+                ParameterIdentifier("vr6"),
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr7")
     }
     
     func testRvalue_compiler_error_when_index_is_known_negative_at_compile_time() throws {
@@ -2894,6 +3027,30 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         XCTAssertThrowsError(try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: Expression.LiteralInt(100)))) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "Array index is always out of bounds: `100' is not in 0..10")
+        }
+    }
+    
+    func testLvalue_compiler_error_when_index_is_known_negative_at_compile_time() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .dynamicArray(elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        XCTAssertThrowsError(try compiler.lvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: Expression.LiteralInt(-1)))) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "Array index is always out of bounds: `-1' is less than zero")
+        }
+    }
+    
+    func testLvalue_compiler_error_when_index_is_known_oob_at_compile_time() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        XCTAssertThrowsError(try compiler.lvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: Expression.LiteralInt(100)))) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "Array index is always out of bounds: `100' is not in 0..10")

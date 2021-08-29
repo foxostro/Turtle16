@@ -2876,6 +2876,30 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr3")
     }
     
+    func testRvalue_compiler_error_when_index_is_known_negative_at_compile_time() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .dynamicArray(elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        XCTAssertThrowsError(try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: Expression.LiteralInt(-1)))) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "Array index is always out of bounds: `-1' is less than zero")
+        }
+    }
+    
+    func testRvalue_compiler_error_when_index_is_known_oob_at_compile_time() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        XCTAssertThrowsError(try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: Expression.LiteralInt(100)))) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "Array index is always out of bounds: `100' is not in 0..10")
+        }
+    }
+    
     func testRvalue_Assignment_ToArrayElementViaSubscript() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0x1000, storage: .staticStorage))

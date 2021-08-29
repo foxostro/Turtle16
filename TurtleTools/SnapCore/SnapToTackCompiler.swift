@@ -1491,6 +1491,20 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         let elementType = try typeCheck(rexpr: expr)
         let argumentType = try typeCheck(rexpr: expr.argument)
         
+        // We can catch some out of bounds errors at compile time
+        if case .compTimeInt(let index) = argumentType {
+            if index < 0 {
+                throw CompilerError(sourceAnchor: expr.argument.sourceAnchor, message: "Array index is always out of bounds: `\(index)' is less than zero")
+            }
+            
+            let subscriptableType = try typeCheck(rexpr: expr.subscriptable)
+            if case .array(count: let n, elementType: _) = subscriptableType {
+                if let n = n, index >= n {
+                    throw CompilerError(sourceAnchor: expr.argument.sourceAnchor, message: "Array index is always out of bounds: `\(index)' is not in 0..\(n)")
+                }
+            }
+        }
+        
         var children: [AbstractSyntaxTreeNode] = []
         
         if case .compTimeInt(let index) = argumentType, elementType.isPrimitive {

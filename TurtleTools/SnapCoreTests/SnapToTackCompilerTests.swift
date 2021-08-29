@@ -129,6 +129,17 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
     
+    func testExpr_LiteralBoolFalse() throws {
+        let compiler = makeCompiler()
+        let actual = try compiler.compile(Expression.LiteralBool(false))
+        let expected = InstructionNode(instruction: Tack.kLI16, parameters: [
+            ParameterIdentifier("vr0"),
+            ParameterNumber(0)
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertNil(compiler.registerStack.last)
+    }
+    
     func testRvalue_LiteralBoolFalse() throws {
         let compiler = makeCompiler()
         let actual = try compiler.rvalue(expr: Expression.LiteralBool(false))

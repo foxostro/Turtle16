@@ -263,13 +263,14 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             // We may need to insert a run time bounds checks.
             if maybeStaticIndex == nil {
                 // Lower bound
+                let lowerBound = 0
                 let tempLowerBound = nextRegister()
                 let tempComparison1 = nextRegister()
                 let labelPassesLowerBoundsCheck = globalEnvironment.labelMaker.next()
                 children += [
                     InstructionNode(instruction: Tack.kLI16, parameters: [
                         ParameterIdentifier(tempLowerBound),
-                        ParameterNumber(0)
+                        ParameterNumber(lowerBound)
                     ]),
                     InstructionNode(instruction: Tack.kGE16, parameters: [
                         ParameterIdentifier(tempComparison1),
@@ -767,7 +768,6 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 ])
             ]
             let countReg = nextRegister()
-            let countOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .u16)
             children += [
                 InstructionNode(instruction: Tack.kLIU16, parameters: [
                     ParameterIdentifier(countReg),
@@ -776,7 +776,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 InstructionNode(instruction: Tack.kSTORE, parameters: [
                     ParameterIdentifier(dst),
                     ParameterIdentifier(countReg),
-                    ParameterNumber(countOffset),
+                    ParameterNumber(kSliceCountOffset),
                 ])
             ]
             registerStack = savedRegisterStack
@@ -1681,12 +1681,11 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             let sliceAddr = popRegister()
             let countReg = nextRegister()
             pushRegister(countReg)
-            let countOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .u16)
             children += [
                 InstructionNode(instruction: Tack.kLOAD, parameters: [
                     ParameterIdentifier(countReg),
                     ParameterIdentifier(sliceAddr),
-                    ParameterNumber(countOffset)
+                    ParameterNumber(kSliceCountOffset)
                 ])
             ]
         
@@ -1755,12 +1754,11 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                     let sliceAddr = popRegister()
                     let countReg = nextRegister()
                     pushRegister(countReg)
-                    let countOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .u16)
                     children += [
                         InstructionNode(instruction: Tack.kLOAD, parameters: [
                             ParameterIdentifier(countReg),
                             ParameterIdentifier(sliceAddr),
-                            ParameterNumber(countOffset)
+                            ParameterNumber(kSliceCountOffset)
                         ])
                     ]
                     

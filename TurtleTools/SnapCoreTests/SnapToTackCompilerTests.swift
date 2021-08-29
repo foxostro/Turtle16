@@ -3102,14 +3102,6 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr2")
     }
     
-    func testRvalue_Call_hlt() throws {
-        let symbols = CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable())
-        let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("hlt"), arguments: []))
-        let expected = InstructionNode(instruction: kHLT)
-        XCTAssertEqual(actual, expected)
-    }
-    
     func testRvalue_Call_no_return_no_args() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .void, arguments: []))))

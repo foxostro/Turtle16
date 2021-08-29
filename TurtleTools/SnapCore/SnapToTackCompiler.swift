@@ -1609,10 +1609,6 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     func rvalue(call expr: Expression.Call, typ: FunctionType) throws -> AbstractSyntaxTreeNode {
         let calleeType = try typeCheck(rexpr: expr.callee)
         
-        if typ.name == "hlt" {
-           return InstructionNode(instruction: kHLT)
-        }
-        
         // Allocate a temporary to hold the function call return value.
         var tempRetId: Expression.Identifier! = nil
         if typ.returnType != .void {

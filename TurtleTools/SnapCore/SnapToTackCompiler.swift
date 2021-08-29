@@ -763,7 +763,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 InstructionNode(instruction: Tack.kSTORE, parameters: [
                     ParameterIdentifier(dst),
                     ParameterIdentifier(popRegister()),
-                    ParameterNumber(0),
+                    ParameterNumber(kSliceBaseAddrOffset),
                 ])
             ]
             let countReg = nextRegister()
@@ -840,6 +840,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             // If the union can contain more than one type then insert a runtime
             // check that the tag matches that of the requested type.
             if typ.members.count > 1 {
+                let targetType = determineUnionTargetType(typ, ltype)!
+                let unionTypeTag = determineUnionTypeTag(typ, targetType)!
                 let tempUnionTag = nextRegister()
                 let tempComparison = nextRegister()
                 let labelSkipPanic = globalEnvironment.labelMaker.next()
@@ -852,7 +854,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                     InstructionNode(instruction: Tack.kSUBI16, parameters: [
                         ParameterIdentifier(tempComparison),
                         ParameterIdentifier(tempUnionTag),
-                        ParameterNumber(1)
+                        ParameterNumber(unionTypeTag)
                     ]),
                     InstructionNode(instruction: Tack.kBZ, parameters: [
                         ParameterIdentifier(tempComparison),

@@ -195,7 +195,7 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
-    func testRvalue_LiteralArray() throws {
+    func testRvalue_LiteralArray_primitive_type() throws {
         let compiler = makeCompiler()
         let arrType = Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u16))
         let actual = try compiler.rvalue(expr: Expression.LiteralArray(arrayType: arrType, elements: [Expression.LiteralInt(42)]))
@@ -216,6 +216,54 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
+    }
+    
+    func testRvalue_LiteralArray_non_primitive_type() throws {
+        let compiler = makeCompiler()
+        let inner = Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u16))
+        let outer = Expression.ArrayType(count: Expression.LiteralInt(1), elementType: inner)
+        let actual = try compiler.rvalue(expr: Expression.LiteralArray(arrayType: outer, elements: [
+            Expression.LiteralArray(arrayType: inner, elements: [Expression.LiteralInt(42)])
+        ]))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(272)
+            ]),
+            InstructionNode(instruction: Tack.kLI8, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterNumber(0)
+            ]),
+            InstructionNode(instruction: Tack.kADD16, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr0")
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterNumber(273)
+            ]),
+            InstructionNode(instruction: Tack.kLI16, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterNumber(42)
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr4"),
+                ParameterNumber(0)
+            ]),
+            InstructionNode(instruction: Tack.kMEMCPY, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterIdentifier("vr3"),
+                ParameterNumber(1)
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
+                ParameterIdentifier("vr5"),
+                ParameterNumber(272)
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr5")
     }
     
     func testRvalue_LiteralString() throws {

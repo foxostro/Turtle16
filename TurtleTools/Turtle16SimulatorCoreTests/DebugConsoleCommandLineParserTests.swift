@@ -73,7 +73,7 @@ class DebugConsoleCommandLineParserTests: XCTestCase {
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
         XCTAssertEqual(ast.children.first, InstructionNode(instruction: "step", parameters: [
-            ParameterNumber(value: 1)
+            ParameterNumber(1)
         ]))
     }
     
@@ -90,7 +90,7 @@ class DebugConsoleCommandLineParserTests: XCTestCase {
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
         XCTAssertEqual(ast.children.first, InstructionNode(instruction: "x",
-                                                           parameters: [ParameterSlashed(child: ParameterIdentifier(value: "foo")), ParameterNumber(value: 0x1000)]))
+                                                           parameters: [ParameterSlashed(child: ParameterIdentifier("foo")), ParameterNumber(0x1000)]))
     }
     
     func testLoad() throws {

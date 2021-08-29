@@ -28,9 +28,9 @@ class AssemblerListingMakerTests: XCTestCase {
     func testADD() throws {
         let ast = TopLevel(children: [
             InstructionNode(instruction: "ADD", parameters: [
-                ParameterIdentifier(value: "r2"),
-                ParameterIdentifier(value: "r1"),
-                ParameterIdentifier(value: "r0")
+                ParameterIdentifier("r2"),
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("r0")
             ])
         ])
         let actual = AssemblerListingMaker().makeListing(ast)
@@ -40,7 +40,7 @@ class AssemblerListingMakerTests: XCTestCase {
     func testADDI() throws {
         let ast = TopLevel(children: [
             InstructionNode(instruction: "ADDI", parameters: [
-                ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterNumber(value: 1)
+                ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(1)
             ])
         ])
         let actual = AssemblerListingMaker().makeListing(ast)

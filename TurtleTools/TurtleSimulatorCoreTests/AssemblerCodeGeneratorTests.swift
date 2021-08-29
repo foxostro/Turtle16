@@ -116,7 +116,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         let ast = TopLevel(children: [
             InstructionNode(instruction: "MOV",
                             parameters: [
-                                ParameterNumber(value: 1),
+                                ParameterNumber(1),
                                 ParameterRegister(value: .A)
                             ])
         ])
@@ -129,7 +129,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
             InstructionNode(instruction: "MOV",
                             parameters: [
                                 ParameterRegister(value: .A),
-                                ParameterNumber(value: 1)
+                                ParameterNumber(1)
                             ])
         ])
         let errors = mustFailToCompile(ast)
@@ -204,7 +204,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         let ast = TopLevel(children: [
             InstructionNode(instruction: "LI",
                             parameters: [
-                                ParameterNumber(value: 1)
+                                ParameterNumber(1)
                             ])
         ])
         let errors = mustFailToCompile(ast)
@@ -215,7 +215,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         let ast = TopLevel(children: [
             InstructionNode(instruction: "LI",
                             parameters: [
-                                ParameterNumber(value: 1),
+                                ParameterNumber(1),
                                 ParameterRegister(value: .A)
                             ])
         ])
@@ -240,8 +240,8 @@ class AssemblerCodeGeneratorTests: XCTestCase {
             InstructionNode(instruction: "LI",
                             parameters: [
                                 ParameterRegister(value: .A),
-                                ParameterNumber(value: 1),
-                                ParameterNumber(value: 1)
+                                ParameterNumber(1),
+                                ParameterNumber(1)
                             ])
         ])
         let errors = mustFailToCompile(ast)
@@ -253,7 +253,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
             InstructionNode(instruction: "LI",
                             parameters: [
                                 ParameterRegister(value: .D),
-                                ParameterNumber(value: 42),
+                                ParameterNumber(42),
                             ])
         ])
         let instructions = mustCompile(ast)
@@ -272,7 +272,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         let ast = TopLevel(children: [
             InstructionNode(instruction: "ADD",
                             parameters: [
-                                ParameterIdentifier(value: "label")
+                                ParameterIdentifier("label")
                             ])
         ])
         let errors = mustFailToCompile(ast)
@@ -327,7 +327,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
             LabelDeclaration(identifier: "foo"),
             InstructionNode(instruction: "LXY",
                             parameters: [
-                                ParameterIdentifier(value: "foo")
+                                ParameterIdentifier("foo")
                             ]),
             InstructionNode(instruction: "JMP",
                             parameters: []),
@@ -362,7 +362,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         let ast = TopLevel(children: [
             InstructionNode(instruction: "LXY",
                             parameters: [
-                                ParameterIdentifier(value: "foo")
+                                ParameterIdentifier("foo")
                             ]),
             InstructionNode(instruction: "JMP",
                             parameters: []),
@@ -404,7 +404,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         let ast = TopLevel(children: [
             InstructionNode(instruction: "LXY",
                             parameters: [
-                                ParameterNumber(value: 0)
+                                ParameterNumber(0)
                             ]),
             InstructionNode(instruction: "JMP",
                             parameters: []),
@@ -440,7 +440,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         let ast = TopLevel(children: [
             InstructionNode(instruction: "LXY",
                             parameters: [
-                                ParameterNumber(value: -1)
+                                ParameterNumber(-1)
                             ]),
             InstructionNode(instruction: "JMP",
                             parameters: []),
@@ -458,7 +458,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         let ast = TopLevel(children: [
             InstructionNode(instruction: "LXY",
                             parameters: [
-                                ParameterNumber(value: 0x10000)
+                                ParameterNumber(0x10000)
                             ]),
             InstructionNode(instruction: "JMP",
                             parameters: []),
@@ -477,7 +477,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
             LabelDeclaration(identifier: "foo"),
             InstructionNode(instruction: "LXY",
                             parameters: [
-                                ParameterIdentifier(value: "foo")
+                                ParameterIdentifier("foo")
                             ]),
             InstructionNode(instruction: "JC",
                             parameters: []),
@@ -514,7 +514,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         let ast = TopLevel(children: [
             InstructionNode(instruction: "LXY",
                             parameters: [
-                                ParameterNumber(value: 0)
+                                ParameterNumber(0)
                             ]),
             InstructionNode(instruction: "JC",
                             parameters: []),
@@ -550,7 +550,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         let ast = TopLevel(children: [
             InstructionNode(instruction: "LXY",
                             parameters: [
-                                ParameterNumber(value: -1)
+                                ParameterNumber(-1)
                             ]),
             InstructionNode(instruction: "JC",
                             parameters: []),
@@ -568,7 +568,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         let ast = TopLevel(children: [
             InstructionNode(instruction: "LXY",
                             parameters: [
-                                ParameterNumber(value: 0x10000)
+                                ParameterNumber(0x10000)
                             ]),
             InstructionNode(instruction: "JC",
                             parameters: []),
@@ -665,7 +665,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         let ast = TopLevel(children: [
             InstructionNode(instruction: "BLT",
                             parameters: [
-                                ParameterNumber(value: 1),
+                                ParameterNumber(1),
                                 ParameterRegister(value: .A)
                             ])
         ])
@@ -678,7 +678,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
             InstructionNode(instruction: "BLT",
                             parameters: [
                                 ParameterRegister(value: .A),
-                                ParameterNumber(value: 1)
+                                ParameterNumber(1)
                             ])
         ])
         let errors = mustFailToCompile(ast)
@@ -765,7 +765,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
             InstructionNode(instruction: "LI",
                             parameters: [
                                 ParameterRegister(value: .B),
-                                ParameterIdentifier(value: "foo")
+                                ParameterIdentifier("foo")
                             ])
         ])
         let errors = mustFailToCompile(ast)
@@ -779,7 +779,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
             InstructionNode(instruction: "LI",
                             parameters: [
                                 ParameterRegister(value: .B),
-                                ParameterIdentifier(value: "foo")
+                                ParameterIdentifier("foo")
                             ])
         ])
         let instructions = mustCompile(ast)

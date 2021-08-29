@@ -59,7 +59,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testNOPExpectsZeroOperands() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "NOP", parameters: [ParameterNumber(value: 0)])
+            InstructionNode(instruction: "NOP", parameters: [ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -82,7 +82,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testHLTExpectsZeroOperands() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "HLT", parameters: [ParameterNumber(value: 0)])
+            InstructionNode(instruction: "HLT", parameters: [ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -93,7 +93,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testLOADExpectsTwoOrThreeOperands() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "LOAD", parameters: [ParameterIdentifier(value: "r0")])
+            InstructionNode(instruction: "LOAD", parameters: [ParameterIdentifier("r0")])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -104,7 +104,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testLOADExpectsFirstOperandToBeAnIdentifier() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "LOAD", parameters: [ParameterNumber(value: 0), ParameterIdentifier(value: "r0"), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "LOAD", parameters: [ParameterNumber(0), ParameterIdentifier("r0"), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -115,7 +115,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testLOADExpectsFirstOperandToBeTheDestination() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "LOAD", parameters: [ParameterIdentifier(value: "a"), ParameterIdentifier(value: "r0"), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "LOAD", parameters: [ParameterIdentifier("a"), ParameterIdentifier("r0"), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -126,7 +126,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testLOADExpectsSecondOperandToBeTheSourceAddress() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "LOAD", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "a"), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "LOAD", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("a"), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -137,7 +137,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testLOADExpectsThirdOperandToBeAnImmediateValueOffset() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "LOAD", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r1"), ParameterIdentifier(value: "r2")])
+            InstructionNode(instruction: "LOAD", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r1"), ParameterIdentifier("r2")])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -148,7 +148,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testLOADExpectsOffsetToBeLessThanFifteen() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "LOAD", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r1"), ParameterNumber(value: 16)])
+            InstructionNode(instruction: "LOAD", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r1"), ParameterNumber(16)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -159,7 +159,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCompileLOAD() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "LOAD", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r1"), ParameterNumber(value: 1)])
+            InstructionNode(instruction: "LOAD", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r1"), ParameterNumber(1)])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -171,7 +171,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testSTOREExpectsTwoOrThreeOperands() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "STORE", parameters: [ParameterIdentifier(value: "r0")])
+            InstructionNode(instruction: "STORE", parameters: [ParameterIdentifier("r0")])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -182,7 +182,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testSTOREExpectsFirstOperandToBeAnIdentifier() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "STORE", parameters: [ParameterNumber(value: 0), ParameterIdentifier(value: "r0"), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "STORE", parameters: [ParameterNumber(0), ParameterIdentifier("r0"), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -193,7 +193,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testSTOREExpectsFirstOperandToBeTheDestinationAddressRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "STORE", parameters: [ParameterIdentifier(value: "a"), ParameterIdentifier(value: "r0"), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "STORE", parameters: [ParameterIdentifier("a"), ParameterIdentifier("r0"), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -204,7 +204,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testSTOREExpectsSecondOperandToBeTheSource() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "STORE", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "a"), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "STORE", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("a"), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -215,7 +215,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testSTOREExpectsThirdOperandToBeAnImmediateValueOffset() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "STORE", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r1"), ParameterIdentifier(value: "r2")])
+            InstructionNode(instruction: "STORE", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r1"), ParameterIdentifier("r2")])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -226,7 +226,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCompileSTORE() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "STORE", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r1"), ParameterNumber(value: 1)])
+            InstructionNode(instruction: "STORE", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r1"), ParameterNumber(1)])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -249,7 +249,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testLIExpectsFirstOperandToBeTheDestinationAddressRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "LI", parameters: [ParameterIdentifier(value: "a"), ParameterIdentifier(value: "a")])
+            InstructionNode(instruction: "LI", parameters: [ParameterIdentifier("a"), ParameterIdentifier("a")])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -260,7 +260,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testLIExpectsSecondOperandToBeAnImmediateValue() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "LI", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "a")])
+            InstructionNode(instruction: "LI", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("a")])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -271,7 +271,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCompileLI() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "LI", parameters: [ParameterIdentifier(value: "r0"), ParameterNumber(value: -1)])
+            InstructionNode(instruction: "LI", parameters: [ParameterIdentifier("r0"), ParameterNumber(-1)])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -294,7 +294,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testLIUExpectsFirstOperandToBeTheDestinationAddressRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "LIU", parameters: [ParameterIdentifier(value: "a"), ParameterIdentifier(value: "a")])
+            InstructionNode(instruction: "LIU", parameters: [ParameterIdentifier("a"), ParameterIdentifier("a")])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -305,7 +305,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testLIUExpectsSecondOperandToBeAnImmediateValue() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "LIU", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "a")])
+            InstructionNode(instruction: "LIU", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("a")])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -316,7 +316,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCompileLIU() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "LIU", parameters: [ParameterIdentifier(value: "r0"), ParameterNumber(value: 255)])
+            InstructionNode(instruction: "LIU", parameters: [ParameterIdentifier("r0"), ParameterNumber(255)])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -339,7 +339,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testLUIExpectsFirstOperandToBeTheDestinationAddressRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "LUI", parameters: [ParameterIdentifier(value: "a"), ParameterIdentifier(value: "a")])
+            InstructionNode(instruction: "LUI", parameters: [ParameterIdentifier("a"), ParameterIdentifier("a")])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -350,7 +350,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testLUIExpectsSecondOperandToBeAnImmediateValue() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "LUI", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "a")])
+            InstructionNode(instruction: "LUI", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("a")])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -361,7 +361,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCompileLUI() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "LUI", parameters: [ParameterIdentifier(value: "r0"), ParameterNumber(value: 255)])
+            InstructionNode(instruction: "LUI", parameters: [ParameterIdentifier("r0"), ParameterNumber(255)])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -384,7 +384,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCMPExpectsFirstOperandToBeTheLeftOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "CMP", parameters: [ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "CMP", parameters: [ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -395,7 +395,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCMPExpectsSecondOperandToBeTheRightOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "CMP", parameters: [ParameterIdentifier(value: "r0"), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "CMP", parameters: [ParameterIdentifier("r0"), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -406,7 +406,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCompileCMP() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "CMP", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0")])
+            InstructionNode(instruction: "CMP", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0")])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -429,7 +429,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testADDExpectsFirstOperandToBeTheDestination() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "ADD", parameters: [ParameterNumber(value: 0), ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "ADD", parameters: [ParameterNumber(0), ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -440,7 +440,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testADDExpectsSecondOperandToBeTheLeftOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "ADD", parameters: [ParameterIdentifier(value: "r0"), ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "ADD", parameters: [ParameterIdentifier("r0"), ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -451,7 +451,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testADDExpectsThirdOperandToBeTheRightOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "ADD", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "ADD", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -462,7 +462,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCompileADD() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "ADD", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0")])
+            InstructionNode(instruction: "ADD", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -485,7 +485,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testSUBExpectsFirstOperandToBeTheDestination() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "SUB", parameters: [ParameterNumber(value: 0), ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "SUB", parameters: [ParameterNumber(0), ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -496,7 +496,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testSUBExpectsSecondOperandToBeTheLeftOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "SUB", parameters: [ParameterIdentifier(value: "r0"), ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "SUB", parameters: [ParameterIdentifier("r0"), ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -507,7 +507,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testSUBExpectsThirdOperandToBeTheRightOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "SUB", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "SUB", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -518,7 +518,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCompileSUB() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "SUB", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0")])
+            InstructionNode(instruction: "SUB", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -541,7 +541,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testANDExpectsFirstOperandToBeTheDestination() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "AND", parameters: [ParameterNumber(value: 0), ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "AND", parameters: [ParameterNumber(0), ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -552,7 +552,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testANDExpectsSecondOperandToBeTheLeftOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "AND", parameters: [ParameterIdentifier(value: "r0"), ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "AND", parameters: [ParameterIdentifier("r0"), ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -563,7 +563,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testANDExpectsThirdOperandToBeTheRightOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "AND", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "AND", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -574,7 +574,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCompileAND() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "AND", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0")])
+            InstructionNode(instruction: "AND", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -597,7 +597,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testORExpectsFirstOperandToBeTheDestination() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "OR", parameters: [ParameterNumber(value: 0), ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "OR", parameters: [ParameterNumber(0), ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -608,7 +608,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testORExpectsSecondOperandToBeTheLeftOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "OR", parameters: [ParameterIdentifier(value: "r0"), ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "OR", parameters: [ParameterIdentifier("r0"), ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -619,7 +619,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testORExpectsThirdOperandToBeTheRightOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "OR", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "OR", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -630,7 +630,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCompileOR() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "OR", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0")])
+            InstructionNode(instruction: "OR", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -653,7 +653,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testXORExpectsFirstOperandToBeTheDestination() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "XOR", parameters: [ParameterNumber(value: 0), ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "XOR", parameters: [ParameterNumber(0), ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -664,7 +664,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testXORExpectsSecondOperandToBeTheLeftOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "XOR", parameters: [ParameterIdentifier(value: "r0"), ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "XOR", parameters: [ParameterIdentifier("r0"), ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -675,7 +675,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testXORExpectsThirdOperandToBeTheRightOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "XOR", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "XOR", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -686,7 +686,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCompileXOR() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "XOR", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0")])
+            InstructionNode(instruction: "XOR", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -709,7 +709,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testNOTExpectsFirstOperandToBeTheDestination() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "NOT", parameters: [ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "NOT", parameters: [ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -720,7 +720,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testNOTExpectsSecondOperandToBeTheSourceRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "NOT", parameters: [ParameterIdentifier(value: "r0"), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "NOT", parameters: [ParameterIdentifier("r0"), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -731,7 +731,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCompileNOT() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "NOT", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0")])
+            InstructionNode(instruction: "NOT", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0")])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -754,7 +754,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCMPIExpectsFirstOperandToBeTheLeftOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "CMPI", parameters: [ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "CMPI", parameters: [ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -765,7 +765,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCMPIExpectsSecondOperandToBeTheRightOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "CMPI", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0")])
+            InstructionNode(instruction: "CMPI", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0")])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -776,7 +776,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCompileCMPI() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "CMPI", parameters: [ParameterIdentifier(value: "r0"), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "CMPI", parameters: [ParameterIdentifier("r0"), ParameterNumber(0)])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -799,7 +799,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testADDIExpectsFirstOperandToBeTheDestination() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "ADDI", parameters: [ParameterNumber(value: 0), ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "ADDI", parameters: [ParameterNumber(0), ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -810,7 +810,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testADDIExpectsSecondOperandToBeTheLeftOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "ADDI", parameters: [ParameterIdentifier(value: "r0"), ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "ADDI", parameters: [ParameterIdentifier("r0"), ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -821,7 +821,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testADDIExpectsThirdOperandToBeTheRightOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "ADDI", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0")])
+            InstructionNode(instruction: "ADDI", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -832,7 +832,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCompileADDI() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "ADDI", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "ADDI", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0)])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -855,7 +855,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testSUBIExpectsFirstOperandToBeTheDestination() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "SUBI", parameters: [ParameterNumber(value: 0), ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "SUBI", parameters: [ParameterNumber(0), ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -866,7 +866,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testSUBIExpectsSecondOperandToBeTheLeftOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "SUBI", parameters: [ParameterIdentifier(value: "r0"), ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "SUBI", parameters: [ParameterIdentifier("r0"), ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -877,7 +877,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testSUBIExpectsThirdOperandToBeTheRightOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "SUBI", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0")])
+            InstructionNode(instruction: "SUBI", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -888,7 +888,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCompileSUBI() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "SUBI", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "SUBI", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0)])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -911,7 +911,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testANDIExpectsFirstOperandToBeTheDestination() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "ANDI", parameters: [ParameterNumber(value: 0), ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "ANDI", parameters: [ParameterNumber(0), ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -922,7 +922,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testANDIExpectsSecondOperandToBeTheLeftOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "ANDI", parameters: [ParameterIdentifier(value: "r0"), ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "ANDI", parameters: [ParameterIdentifier("r0"), ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -933,7 +933,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testANDIExpectsThirdOperandToBeTheRightOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "ANDI", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0")])
+            InstructionNode(instruction: "ANDI", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -944,7 +944,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCompileANDI() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "ANDI", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "ANDI", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0)])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -967,7 +967,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testORIExpectsFirstOperandToBeTheDestination() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "ORI", parameters: [ParameterNumber(value: 0), ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "ORI", parameters: [ParameterNumber(0), ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -978,7 +978,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testORIExpectsSecondOperandToBeTheLeftOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "ORI", parameters: [ParameterIdentifier(value: "r0"), ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "ORI", parameters: [ParameterIdentifier("r0"), ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -989,7 +989,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testORIExpectsThirdOperandToBeTheRightOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "ORI", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0")])
+            InstructionNode(instruction: "ORI", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -1000,7 +1000,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCompileORI() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "ORI", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "ORI", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0)])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -1023,7 +1023,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testXORIExpectsFirstOperandToBeTheDestination() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "XORI", parameters: [ParameterNumber(value: 0), ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "XORI", parameters: [ParameterNumber(0), ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -1034,7 +1034,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testXORIExpectsSecondOperandToBeTheLeftOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "XORI", parameters: [ParameterIdentifier(value: "r0"), ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "XORI", parameters: [ParameterIdentifier("r0"), ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -1045,7 +1045,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testXORIExpectsThirdOperandToBeTheRightOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "XORI", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0")])
+            InstructionNode(instruction: "XORI", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -1056,7 +1056,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCompileXORI() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "XORI", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "XORI", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0)])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -1079,7 +1079,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testJMPExpectsTheFirstOperandToBeLabelIdentifier() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "JMP", parameters: [ParameterIdentifier(value: "r0")])
+            InstructionNode(instruction: "JMP", parameters: [ParameterIdentifier("r0")])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -1090,7 +1090,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCompileJMPWithUndefinedLabel() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "JMP", parameters: [ParameterIdentifier(value: "foo")])
+            InstructionNode(instruction: "JMP", parameters: [ParameterIdentifier("foo")])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -1101,7 +1101,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCompileJMPWithLabel_ForwardJump() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "JMP", parameters: [ParameterIdentifier(value: "foo")]),
+            InstructionNode(instruction: "JMP", parameters: [ParameterIdentifier("foo")]),
             LabelDeclaration(identifier: "foo"),
             InstructionNode(instruction: "HLT")
         ])
@@ -1119,7 +1119,7 @@ class AssemblerCompilerTests: XCTestCase {
             LabelDeclaration(identifier: "foo"),
             InstructionNode(instruction: "NOP"),
             InstructionNode(instruction: "NOP"),
-            InstructionNode(instruction: "JMP", parameters: [ParameterIdentifier(value: "foo")])
+            InstructionNode(instruction: "JMP", parameters: [ParameterIdentifier("foo")])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -1144,7 +1144,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testJRExpectsFirstOperandToBeTheDestinationAddress() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "JR", parameters: [ParameterNumber(value: 0)])
+            InstructionNode(instruction: "JR", parameters: [ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -1155,7 +1155,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testJRExpectsSecondOperandToBeAnImmediateValueOffset() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "JR", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0")])
+            InstructionNode(instruction: "JR", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0")])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -1166,7 +1166,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCompileJR() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "JR", parameters: [ParameterIdentifier(value: "r0"), ParameterNumber(value: -1)])
+            InstructionNode(instruction: "JR", parameters: [ParameterIdentifier("r0"), ParameterNumber(-1)])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -1189,7 +1189,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testJALRExpectsFirstOperandToBeTheLinkRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "JALR", parameters: [ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "JALR", parameters: [ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -1200,7 +1200,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testJALRExpectsSecondOperandToBeTheDestinationAddress() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "JALR", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "a")])
+            InstructionNode(instruction: "JALR", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("a")])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -1211,7 +1211,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testJALRExpectsThirdOperandToBeAnImmediateValueOffset() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "JALR", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0")])
+            InstructionNode(instruction: "JALR", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -1222,7 +1222,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCompileJALR() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "JALR", parameters: [ParameterIdentifier(value: "r7"), ParameterIdentifier(value: "r0"), ParameterNumber(value: -1)])
+            InstructionNode(instruction: "JALR", parameters: [ParameterIdentifier("r7"), ParameterIdentifier("r0"), ParameterNumber(-1)])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -1245,7 +1245,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testBEQExpectsFirstOperandToBeLabelIdentifier() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "BEQ", parameters: [ParameterNumber(value: 0)])
+            InstructionNode(instruction: "BEQ", parameters: [ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -1257,7 +1257,7 @@ class AssemblerCompilerTests: XCTestCase {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
             LabelDeclaration(identifier: "foo"),
-            InstructionNode(instruction: "BEQ", parameters: [ParameterIdentifier(value: "foo")])
+            InstructionNode(instruction: "BEQ", parameters: [ParameterIdentifier("foo")])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -1280,7 +1280,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testBNEExpectsFirstOperandToBeLabelIdentifier() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "BNE", parameters: [ParameterNumber(value: 0)])
+            InstructionNode(instruction: "BNE", parameters: [ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -1292,7 +1292,7 @@ class AssemblerCompilerTests: XCTestCase {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
             LabelDeclaration(identifier: "foo"),
-            InstructionNode(instruction: "BNE", parameters: [ParameterIdentifier(value: "foo")])
+            InstructionNode(instruction: "BNE", parameters: [ParameterIdentifier("foo")])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -1315,7 +1315,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testBLTExpectsFirstOperandToBeLabelIdentifier() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "BLT", parameters: [ParameterNumber(value: 0)])
+            InstructionNode(instruction: "BLT", parameters: [ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -1327,7 +1327,7 @@ class AssemblerCompilerTests: XCTestCase {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
             LabelDeclaration(identifier: "foo"),
-            InstructionNode(instruction: "BLT", parameters: [ParameterIdentifier(value: "foo")])
+            InstructionNode(instruction: "BLT", parameters: [ParameterIdentifier("foo")])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -1350,7 +1350,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testBGEExpectsFirstOperandToBeLabelIdentifier() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "BGE", parameters: [ParameterNumber(value: 0)])
+            InstructionNode(instruction: "BGE", parameters: [ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -1362,7 +1362,7 @@ class AssemblerCompilerTests: XCTestCase {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
             LabelDeclaration(identifier: "foo"),
-            InstructionNode(instruction: "BGE", parameters: [ParameterIdentifier(value: "foo")])
+            InstructionNode(instruction: "BGE", parameters: [ParameterIdentifier("foo")])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -1385,7 +1385,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testBLTUExpectsFirstOperandToBeLabelIdentifier() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "BLTU", parameters: [ParameterNumber(value: 0)])
+            InstructionNode(instruction: "BLTU", parameters: [ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -1397,7 +1397,7 @@ class AssemblerCompilerTests: XCTestCase {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
             LabelDeclaration(identifier: "foo"),
-            InstructionNode(instruction: "BLTU", parameters: [ParameterIdentifier(value: "foo")])
+            InstructionNode(instruction: "BLTU", parameters: [ParameterIdentifier("foo")])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -1420,7 +1420,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testBGEUExpectsFirstOperandToBeLabelIdentifier() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "BGEU", parameters: [ParameterNumber(value: 0)])
+            InstructionNode(instruction: "BGEU", parameters: [ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -1432,7 +1432,7 @@ class AssemblerCompilerTests: XCTestCase {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
             LabelDeclaration(identifier: "foo"),
-            InstructionNode(instruction: "BGEU", parameters: [ParameterIdentifier(value: "foo")])
+            InstructionNode(instruction: "BGEU", parameters: [ParameterIdentifier("foo")])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -1455,7 +1455,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testADCExpectsFirstOperandToBeTheDestination() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "ADC", parameters: [ParameterNumber(value: 0), ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "ADC", parameters: [ParameterNumber(0), ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -1466,7 +1466,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testADCExpectsSecondOperandToBeTheLeftOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "ADC", parameters: [ParameterIdentifier(value: "r0"), ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "ADC", parameters: [ParameterIdentifier("r0"), ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -1477,7 +1477,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testADCExpectsThirdOperandToBeTheRightOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "ADC", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "ADC", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -1488,7 +1488,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCompileADC() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "ADC", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0")])
+            InstructionNode(instruction: "ADC", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -1511,7 +1511,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testSBCExpectsFirstOperandToBeTheDestination() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "SBC", parameters: [ParameterNumber(value: 0), ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "SBC", parameters: [ParameterNumber(0), ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -1522,7 +1522,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testSBCExpectsSecondOperandToBeTheLeftOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "SBC", parameters: [ParameterIdentifier(value: "r0"), ParameterNumber(value: 0), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "SBC", parameters: [ParameterIdentifier("r0"), ParameterNumber(0), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -1533,7 +1533,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testSBCExpectsThirdOperandToBeTheRightOperandRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "SBC", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterNumber(value: 0)])
+            InstructionNode(instruction: "SBC", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
@@ -1544,7 +1544,7 @@ class AssemblerCompilerTests: XCTestCase {
     func testCompileSBC() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "SBC", parameters: [ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0"), ParameterIdentifier(value: "r0")])
+            InstructionNode(instruction: "SBC", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r0"), ParameterIdentifier("r0")])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)

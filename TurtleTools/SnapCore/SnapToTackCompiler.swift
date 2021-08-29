@@ -748,21 +748,21 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 let labelSkipPanic = globalEnvironment.labelMaker.next()
                 children += [
                     InstructionNode(instruction: Tack.kLOAD, parameters: [
-                        ParameterIdentifier(value: tempUnionTag),
-                        ParameterIdentifier(value: tempUnionAddr),
-                        ParameterNumber(value: kUnionTypeTagOffset)
+                        ParameterIdentifier(tempUnionTag),
+                        ParameterIdentifier(tempUnionAddr),
+                        ParameterNumber(kUnionTypeTagOffset)
                     ]),
                     InstructionNode(instruction: Tack.kSUBI16, parameters: [
-                        ParameterIdentifier(value: tempComparison),
-                        ParameterIdentifier(value: tempUnionTag),
-                        ParameterNumber(value: 1)
+                        ParameterIdentifier(tempComparison),
+                        ParameterIdentifier(tempUnionTag),
+                        ParameterNumber(1)
                     ]),
                     InstructionNode(instruction: Tack.kBZ, parameters: [
-                        ParameterIdentifier(value: tempComparison),
-                        ParameterIdentifier(value: labelSkipPanic)
+                        ParameterIdentifier(tempComparison),
+                        ParameterIdentifier(labelSkipPanic)
                     ]),
                     InstructionNode(instruction: Tack.kCALL, parameters: [
-                        ParameterIdentifier(value: kPanic)
+                        ParameterIdentifier(kPanic)
                     ]),
                     LabelDeclaration(identifier: labelSkipPanic)
                 ]

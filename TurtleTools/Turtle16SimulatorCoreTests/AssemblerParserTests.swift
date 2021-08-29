@@ -76,7 +76,7 @@ class AssemblerParserTests: XCTestCase {
         }
         XCTAssertEqual(ast.children.count, 1)
         XCTAssertEqual(ast.children.first, InstructionNode(instruction: "NOP", parameters: [
-            ParameterNumber(value: 0xffff)
+            ParameterNumber(0xffff)
         ]))
     }
     
@@ -89,7 +89,7 @@ class AssemblerParserTests: XCTestCase {
         }
         XCTAssertEqual(ast.children.count, 1)
         XCTAssertEqual(ast.children.first, InstructionNode(instruction: "NOP", parameters: [
-            ParameterNumber(value: 0xffff)
+            ParameterNumber(0xffff)
         ]))
     }
     
@@ -102,9 +102,9 @@ class AssemblerParserTests: XCTestCase {
         }
         XCTAssertEqual(ast.children.count, 1)
         XCTAssertEqual(ast.children.first, InstructionNode(instruction: "NOP", parameters: [
-            ParameterNumber(value: 1),
-            ParameterNumber(value: 2),
-            ParameterIdentifier(value: "foo")
+            ParameterNumber(1),
+            ParameterNumber(2),
+            ParameterIdentifier("foo")
         ]))
     }
     
@@ -131,7 +131,7 @@ class AssemblerParserTests: XCTestCase {
         }
         XCTAssertEqual(ast.children.count, 1)
         XCTAssertEqual(ast.children.first, InstructionNode(instruction: "JR", parameters: [
-            ParameterAddress(offset: ParameterNumber(value: 1), identifier: ParameterIdentifier(value: "r1"))
+            ParameterAddress(offset: ParameterNumber(1), identifier: ParameterIdentifier("r1"))
         ]))
     }
     
@@ -144,7 +144,7 @@ class AssemblerParserTests: XCTestCase {
         }
         XCTAssertEqual(ast.children.count, 1)
         XCTAssertEqual(ast.children.first, InstructionNode(instruction: "JR", parameters: [
-            ParameterAddress(offset: ParameterNumber(value: -1), identifier: ParameterIdentifier(value: "r1"))
+            ParameterAddress(offset: ParameterNumber(-1), identifier: ParameterIdentifier("r1"))
         ]))
     }
     

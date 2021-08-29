@@ -25,6 +25,7 @@ public struct Tack {
     public static let kBNZ     = "TACK_BNZ"
     public static let kLOAD    = "TACK_LOAD"
     public static let kSTORE   = "TACK_STORE"
+    public static let kSTSTR   = "TACK_STSTR"
     public static let kMEMCPY  = "TACK_MEMCPY"
     public static let kALLOCA  = "TACK_ALLOCA"
     public static let kFREE    = "TACK_FREE"
@@ -520,8 +521,14 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     func rvalue(literalString expr: Expression.LiteralString) throws -> AbstractSyntaxTreeNode {
         let arrayType = Expression.ArrayType(count: Expression.LiteralInt(expr.value.count),
                                              elementType: Expression.PrimitiveType(.u8))
-        let elements = expr.value.utf8.map { Expression.LiteralInt(Int($0)) }
-        return try rvalue(literalArray: Expression.LiteralArray(arrayType: arrayType, elements: elements))
+        let tempArrayId = try makeCompilerTemporary(expr.sourceAnchor, arrayType)
+        return Seq(sourceAnchor: expr.sourceAnchor, children: [
+            try lvalue(identifier: tempArrayId),
+            InstructionNode(instruction: Tack.kSTSTR, parameters: [
+                ParameterIdentifier(peekRegister()),
+                ParameterString(expr.value)
+            ])
+        ])
     }
     
     func rvalue(identifier node: Expression.Identifier) throws -> AbstractSyntaxTreeNode {
@@ -1372,24 +1379,24 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     // Given a type and a related union, determine the type to which to convert
     // when inserting into the union. This is necessary because many types
     // can automatically promote and convert to other types. For example, if
-    // the union an hold a u16 then we should automatically convert
+    // the union can hold a u16 then we should automatically convert
     // LiteralInt(1) to u16 in order to insert into the union.
     func determineUnionTargetType(_ typ: UnionType, _ rtype: SymbolType) -> SymbolType? {
-        // Check for an exact match
+        // Find the first type that is an exact match
         for ltype in typ.members {
             if rtype == ltype {
                 return ltype
             }
         }
         
-        // Check for something that matches except for const-ness
+        // Find the first type that matches except for its const-ness
         for ltype in typ.members {
             if rtype.correspondingConstType == ltype {
                 return ltype
             }
         }
         
-        // Check for the first type that can be automatically converted in an assignment
+        // Find the first type that can be automatically converted in an assignment
         for ltype in typ.members {
             let typeChecker = RvalueExpressionTypeChecker(symbols: symbols!)
             let status = typeChecker.convertBetweenTypes(ltype: ltype,

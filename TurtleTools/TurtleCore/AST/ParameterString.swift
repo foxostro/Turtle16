@@ -45,5 +45,10 @@ public class ParameterString: Parameter {
     public override var description: String {
         return "\"\(value)\""
     }
+    
+    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+        let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        return "\(indent)\"\(value)\""
+    }
 }
 

@@ -215,14 +215,9 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 272)
             ]),
-            InstructionNode(instruction: Tack.kLI8, parameters: [
-                ParameterIdentifier(value: "vr1"),
-                ParameterNumber(value: 97)
-            ]),
-            InstructionNode(instruction: Tack.kSTORE, parameters: [
+            InstructionNode(instruction: Tack.kSTSTR, parameters: [
                 ParameterIdentifier(value: "vr0"),
-                ParameterIdentifier(value: "vr1"),
-                ParameterNumber(value: 0)
+                ParameterString("a")
             ])
         ])
         XCTAssertEqual(actual, expected)
@@ -3419,50 +3414,9 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier(value: "fp"),
                 ParameterNumber(value: 7)
             ]),
-            InstructionNode(instruction: Tack.kLI8, parameters: [
-                ParameterIdentifier(value: "vr2"),
-                ParameterNumber(value: 112)
-            ]),
-            InstructionNode(instruction: Tack.kSTORE, parameters: [
-                ParameterIdentifier(value: "vr1"),
-                ParameterIdentifier(value: "vr2"),
-                ParameterNumber(value: 0)
-            ]),
-            InstructionNode(instruction: Tack.kLI8, parameters: [
-                ParameterIdentifier(value: "vr3"),
-                ParameterNumber(value: 97)
-            ]),
-            InstructionNode(instruction: Tack.kSTORE, parameters: [
-                ParameterIdentifier(value: "vr1"),
-                ParameterIdentifier(value: "vr3"),
-                ParameterNumber(value: 1)
-            ]),
-            InstructionNode(instruction: Tack.kLI8, parameters: [
-                ParameterIdentifier(value: "vr4"),
-                ParameterNumber(value: 110)
-            ]),
-            InstructionNode(instruction: Tack.kSTORE, parameters: [
-                ParameterIdentifier(value: "vr1"),
-                ParameterIdentifier(value: "vr4"),
-                ParameterNumber(value: 2)
-            ]),
-            InstructionNode(instruction: Tack.kLI8, parameters: [
-                ParameterIdentifier(value: "vr5"),
-                ParameterNumber(value: 105)
-            ]),
-            InstructionNode(instruction: Tack.kSTORE, parameters: [
-                ParameterIdentifier(value: "vr1"),
-                ParameterIdentifier(value: "vr5"),
-                ParameterNumber(value: 3)
-            ]),
-            InstructionNode(instruction: Tack.kLI8, parameters: [
-                ParameterIdentifier(value: "vr6"),
-                ParameterNumber(value: 99)
-            ]),
-            InstructionNode(instruction: Tack.kSTORE, parameters: [
-                ParameterIdentifier(value: "vr1"),
-                ParameterIdentifier(value: "vr6"),
-                ParameterNumber(value: 4)
+            InstructionNode(instruction: Tack.kSTSTR, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterString("panic")
             ]),
             InstructionNode(instruction: Tack.kSTORE, parameters: [
                 ParameterIdentifier(value: "vr0"),
@@ -3470,20 +3424,20 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterNumber(value: 0)
             ]),
             InstructionNode(instruction: Tack.kLIU16, parameters: [
-                ParameterIdentifier(value: "vr7"),
+                ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 5)
             ]),
             InstructionNode(instruction: Tack.kSTORE, parameters: [
                 ParameterIdentifier(value: "vr0"),
-                ParameterIdentifier(value: "vr7"),
+                ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 1)
             ]),
             InstructionNode(instruction: Tack.kALLOCA, parameters: [ // TODO: This ALLOCA and MEMCPY are not actually necessary since vr0 contains the address of the dynamic array in memory already.
-                ParameterIdentifier(value: "vr8"),
+                ParameterIdentifier(value: "vr3"),
                 ParameterNumber(value: 2)
             ]),
             InstructionNode(instruction: Tack.kMEMCPY, parameters: [
-                ParameterIdentifier(value: "vr8"),
+                ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 2)
             ]),

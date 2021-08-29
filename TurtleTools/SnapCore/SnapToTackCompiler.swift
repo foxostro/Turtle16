@@ -26,6 +26,8 @@ public struct Tack {
     public static let kLOAD    = "TACK_LOAD"
     public static let kSTORE   = "TACK_STORE"
     public static let kMEMCPY  = "TACK_MEMCPY"
+    public static let kALLOCA  = "TACK_ALLOCA"
+    public static let kFREE    = "TACK_FREE"
     
     public static let kANDI16  = "TACK_ANDI16"
     public static let kADDI16  = "TACK_ADDI16"
@@ -79,7 +81,6 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     public internal(set) var registerStack: [String] = []
     var nextRegisterIndex = 0
     let fp = "fp"
-    let sp = "sp"
     let kUnionPayloadOffset: Int
     let kUnionTypeTagOffset: Int
     
@@ -1634,11 +1635,12 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         
         // Allocate storage on the stack for the return value.
         let returnTypeSize = globalEnvironment.memoryLayoutStrategy.sizeof(type: typ.returnType)
+        var tempReturnValueAddr: String!
         if returnTypeSize > 0 {
+            tempReturnValueAddr = nextRegister()
             children += [
-                InstructionNode(instruction: Tack.kSUBI16, parameters: [
-                    ParameterIdentifier(sp),
-                    ParameterIdentifier(sp),
+                InstructionNode(instruction: Tack.kALLOCA, parameters: [
+                    ParameterIdentifier(tempReturnValueAddr),
                     ParameterNumber(returnTypeSize)
                 ])
             ]
@@ -1649,25 +1651,25 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             let tempArg = tempArgs[i]
             let argType = typ.arguments[i]
             let argTypeSize = globalEnvironment.memoryLayoutStrategy.sizeof(type: argType)
+            let dst = nextRegister()
             if argTypeSize > 0 {
                 children += [
-                    InstructionNode(instruction: Tack.kSUBI16, parameters: [
-                        ParameterIdentifier(sp),
-                        ParameterIdentifier(sp),
+                    InstructionNode(instruction: Tack.kALLOCA, parameters: [
+                        ParameterIdentifier(dst),
                         ParameterNumber(argTypeSize)
                     ])
                 ]
                 if argType.isPrimitive {
                     children += [
                         InstructionNode(instruction: Tack.kSTORE, parameters: [
-                            ParameterIdentifier(sp),
+                            ParameterIdentifier(dst),
                             ParameterIdentifier(tempArg)
                         ])
                     ]
                 } else {
                     children += [
                         InstructionNode(instruction: Tack.kMEMCPY, parameters: [
-                            ParameterIdentifier(sp),
+                            ParameterIdentifier(dst),
                             ParameterIdentifier(tempArg),
                             ParameterNumber(argTypeSize)
                         ])
@@ -1697,20 +1699,6 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             fatalError("unimplemented")
         }
         
-        // Free up stack storage allocated for arguments.
-        let argPackSize = typ.arguments.reduce(0) { (result, type) in
-            result + globalEnvironment.memoryLayoutStrategy.sizeof(type: type)
-        }
-        if argPackSize > 0 {
-            children += [
-                InstructionNode(instruction: Tack.kADDI16, parameters: [
-                    ParameterIdentifier(sp),
-                    ParameterIdentifier(sp),
-                    ParameterNumber(argPackSize)
-                ])
-            ]
-        }
-        
         // Copy the function call return value to the compiler temporary we
         // allocated earlier. Free stack storage allocated earlier.
         if returnTypeSize > 0 {
@@ -1718,13 +1706,20 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 try lvalue(identifier: tempRetId!),
                 InstructionNode(instruction: Tack.kMEMCPY, parameters: [
                     ParameterIdentifier(popRegister()),
-                    ParameterIdentifier(sp),
+                    ParameterIdentifier(tempReturnValueAddr),
                     ParameterNumber(returnTypeSize)
-                ]),
-                InstructionNode(instruction: Tack.kADDI16, parameters: [
-                    ParameterIdentifier(sp),
-                    ParameterIdentifier(sp),
-                    ParameterNumber(returnTypeSize)
+                ])
+            ]
+        }
+        
+        // Free up stack storage allocated for arguments and return value.
+        let argPackSize = typ.arguments.reduce(0) { (result, type) in
+            result + globalEnvironment.memoryLayoutStrategy.sizeof(type: type)
+        }
+        if argPackSize + returnTypeSize > 0 {
+            children += [
+                InstructionNode(instruction: Tack.kFREE, parameters: [
+                    ParameterNumber(argPackSize + returnTypeSize)
                 ])
             ]
         }

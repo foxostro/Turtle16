@@ -3122,41 +3122,38 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: []))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kSUBI16, parameters: [
-                ParameterIdentifier(value: "sp"),
-                ParameterIdentifier(value: "sp"),
+            InstructionNode(instruction: Tack.kALLOCA, parameters: [
+                ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 1)
             ]),
             InstructionNode(instruction: Tack.kCALL, parameters: [
                 ParameterIdentifier(value: "foo")
             ]),
             InstructionNode(instruction: Tack.kSUBI16, parameters: [
-                ParameterIdentifier(value: "vr0"),
+                ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "fp"),
                 ParameterNumber(value: 1)
             ]),
             InstructionNode(instruction: Tack.kMEMCPY, parameters: [
+                ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0"),
-                ParameterIdentifier(value: "sp"),
                 ParameterNumber(value: 1)
             ]),
-            InstructionNode(instruction: Tack.kADDI16, parameters: [
-                ParameterIdentifier(value: "sp"),
-                ParameterIdentifier(value: "sp"),
+            InstructionNode(instruction: Tack.kFREE, parameters: [
                 ParameterNumber(value: 1)
             ]),
             InstructionNode(instruction: Tack.kSUBI16, parameters: [
-                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "fp"),
                 ParameterNumber(value: 1)
             ]),
             InstructionNode(instruction: Tack.kLOAD, parameters: [
+                ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr2"),
-                ParameterIdentifier(value: "vr1"),
             ])
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr2")
+        XCTAssertEqual(compiler.registerStack.last, "vr3")
     }
     
     func testRvalue_Call_return_some_non_primitive_value_and_no_args() throws {
@@ -3167,37 +3164,34 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: []))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kSUBI16, parameters: [
-                ParameterIdentifier(value: "sp"),
-                ParameterIdentifier(value: "sp"),
+            InstructionNode(instruction: Tack.kALLOCA, parameters: [
+                ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 2)
             ]),
             InstructionNode(instruction: Tack.kCALL, parameters: [
                 ParameterIdentifier(value: "foo")
             ]),
             InstructionNode(instruction: Tack.kSUBI16, parameters: [
-                ParameterIdentifier(value: "vr0"),
+                ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "fp"),
                 ParameterNumber(value: 2)
             ]),
             InstructionNode(instruction: Tack.kMEMCPY, parameters: [
+                ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0"),
-                ParameterIdentifier(value: "sp"),
                 ParameterNumber(value: 2)
             ]),
-            InstructionNode(instruction: Tack.kADDI16, parameters: [
-                ParameterIdentifier(value: "sp"),
-                ParameterIdentifier(value: "sp"),
+            InstructionNode(instruction: Tack.kFREE, parameters: [
                 ParameterNumber(value: 2)
             ]),
             InstructionNode(instruction: Tack.kSUBI16, parameters: [
-                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "fp"),
                 ParameterNumber(value: 2)
             ])
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
+        XCTAssertEqual(compiler.registerStack.last, "vr2")
     }
     
     func testRvalue_Call_one_primitive_arg() throws {
@@ -3216,21 +3210,18 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0x1000)
             ]),
-            InstructionNode(instruction: Tack.kSUBI16, parameters: [
-                ParameterIdentifier(value: "sp"),
-                ParameterIdentifier(value: "sp"),
+            InstructionNode(instruction: Tack.kALLOCA, parameters: [
+                ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 1)
             ]),
             InstructionNode(instruction: Tack.kSTORE, parameters: [
-                ParameterIdentifier(value: "sp"),
+                ParameterIdentifier(value: "vr1"),
                 ParameterIdentifier(value: "vr0")
             ]),
             InstructionNode(instruction: Tack.kCALL, parameters: [
                 ParameterIdentifier(value: "foo")
             ]),
-            InstructionNode(instruction: Tack.kADDI16, parameters: [
-                ParameterIdentifier(value: "sp"),
-                ParameterIdentifier(value: "sp"),
+            InstructionNode(instruction: Tack.kFREE, parameters: [
                 ParameterNumber(value: 1)
             ])
         ])
@@ -3250,55 +3241,46 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 0xabcd)
             ]),
-            InstructionNode(instruction: Tack.kSUBI16, parameters: [
-                ParameterIdentifier(value: "sp"),
-                ParameterIdentifier(value: "sp"),
+            InstructionNode(instruction: Tack.kALLOCA, parameters: [
+                ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 1)
             ]),
-            InstructionNode(instruction: Tack.kSUBI16, parameters: [
-                ParameterIdentifier(value: "sp"),
-                ParameterIdentifier(value: "sp"),
+            InstructionNode(instruction: Tack.kALLOCA, parameters: [
+                ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 1)
             ]),
             InstructionNode(instruction: Tack.kSTORE, parameters: [
-                ParameterIdentifier(value: "sp"),
+                ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr0"),
             ]),
             InstructionNode(instruction: Tack.kCALL, parameters: [
                 ParameterIdentifier(value: "foo")
             ]),
-            InstructionNode(instruction: Tack.kADDI16, parameters: [
-                ParameterIdentifier(value: "sp"),
-                ParameterIdentifier(value: "sp"),
-                ParameterNumber(value: 1)
-            ]),
             InstructionNode(instruction: Tack.kSUBI16, parameters: [
-                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "fp"),
                 ParameterNumber(value: 1)
             ]),
             InstructionNode(instruction: Tack.kMEMCPY, parameters: [
+                ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1"),
-                ParameterIdentifier(value: "sp"),
                 ParameterNumber(value: 1)
             ]),
-            InstructionNode(instruction: Tack.kADDI16, parameters: [
-                ParameterIdentifier(value: "sp"),
-                ParameterIdentifier(value: "sp"),
-                ParameterNumber(value: 1)
+            InstructionNode(instruction: Tack.kFREE, parameters: [
+                ParameterNumber(value: 2)
             ]),
             InstructionNode(instruction: Tack.kSUBI16, parameters: [
-                ParameterIdentifier(value: "vr2"),
+                ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "fp"),
                 ParameterNumber(value: 1)
             ]),
             InstructionNode(instruction: Tack.kLOAD, parameters: [
-                ParameterIdentifier(value: "vr3"),
-                ParameterIdentifier(value: "vr2"),
+                ParameterIdentifier(value: "vr5"),
+                ParameterIdentifier(value: "vr4"),
             ])
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr3")
+        XCTAssertEqual(compiler.registerStack.last, "vr5")
     }
     
     func testRvalue_Call_return_value_and_one_non_primitive_arg() throws {
@@ -3316,56 +3298,47 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 1000)
             ]),
-            InstructionNode(instruction: Tack.kSUBI16, parameters: [
-                ParameterIdentifier(value: "sp"),
-                ParameterIdentifier(value: "sp"),
+            InstructionNode(instruction: Tack.kALLOCA, parameters: [
+                ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 1)
             ]),
-            InstructionNode(instruction: Tack.kSUBI16, parameters: [
-                ParameterIdentifier(value: "sp"),
-                ParameterIdentifier(value: "sp"),
+            InstructionNode(instruction: Tack.kALLOCA, parameters: [
+                ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 2)
             ]),
             InstructionNode(instruction: Tack.kMEMCPY, parameters: [
-                ParameterIdentifier(value: "sp"),
+                ParameterIdentifier(value: "vr2"),
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 2)
             ]),
             InstructionNode(instruction: Tack.kCALL, parameters: [
                 ParameterIdentifier(value: "foo")
             ]),
-            InstructionNode(instruction: Tack.kADDI16, parameters: [
-                ParameterIdentifier(value: "sp"),
-                ParameterIdentifier(value: "sp"),
-                ParameterNumber(value: 2)
-            ]),
             InstructionNode(instruction: Tack.kSUBI16, parameters: [
-                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "fp"),
                 ParameterNumber(value: 1)
             ]),
             InstructionNode(instruction: Tack.kMEMCPY, parameters: [
+                ParameterIdentifier(value: "vr3"),
                 ParameterIdentifier(value: "vr1"),
-                ParameterIdentifier(value: "sp"),
                 ParameterNumber(value: 1)
             ]),
-            InstructionNode(instruction: Tack.kADDI16, parameters: [
-                ParameterIdentifier(value: "sp"),
-                ParameterIdentifier(value: "sp"),
-                ParameterNumber(value: 1)
+            InstructionNode(instruction: Tack.kFREE, parameters: [
+                ParameterNumber(value: 3)
             ]),
             InstructionNode(instruction: Tack.kSUBI16, parameters: [
-                ParameterIdentifier(value: "vr2"),
+                ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "fp"),
                 ParameterNumber(value: 1)
             ]),
             InstructionNode(instruction: Tack.kLOAD, parameters: [
-                ParameterIdentifier(value: "vr3"),
-                ParameterIdentifier(value: "vr2"),
+                ParameterIdentifier(value: "vr5"),
+                ParameterIdentifier(value: "vr4"),
             ])
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr3")
+        XCTAssertEqual(compiler.registerStack.last, "vr5")
     }
     
     func testRvalue_Call_function_pointer() throws {

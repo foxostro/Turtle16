@@ -81,6 +81,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     public internal(set) var registerStack: [String] = []
     var nextRegisterIndex = 0
     let fp = "fp"
+    let kPanic = "panic"
     let kUnionPayloadOffset: Int
     let kUnionTypeTagOffset: Int
     
@@ -464,21 +465,42 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     func rvalue(literalArray expr: Expression.LiteralArray) throws -> AbstractSyntaxTreeNode {
-        let savedRegisterStack = registerStack
-        let tempArrayId = try makeCompilerTemporary(expr.sourceAnchor, expr.arrayType)
-        var children: [AbstractSyntaxTreeNode] = []
-        for i in 0..<expr.elements.count {
-            let slot = Expression.Subscript(subscriptable: tempArrayId,
-                                            argument: Expression.LiteralInt(i))
-            let child =  try rvalue(expr: Expression.Assignment(lexpr: slot,
-                                                                rexpr: expr.elements[i]))
-            children.append(child)
+        let arrayElementType = try typeCheck(rexpr: expr.arrayType).arrayElementType
+        if arrayElementType.isPrimitive {
+            let tempArrayId = try makeCompilerTemporary(expr.sourceAnchor, expr.arrayType)
+            var children: [AbstractSyntaxTreeNode] = [
+                try lvalue(identifier: tempArrayId)
+            ]
+            let tempArrayAddr = popRegister()
+            for i in 0..<expr.elements.count {
+                children += [
+                    try rvalue(as: Expression.As(expr: expr.elements[i], targetType: Expression.PrimitiveType(arrayElementType))),
+                    InstructionNode(instruction: Tack.kSTORE, parameters: [
+                        ParameterIdentifier(tempArrayAddr),
+                        ParameterIdentifier(popRegister()),
+                        ParameterNumber(i)
+                    ])
+                ]
+            }
+            pushRegister(tempArrayAddr)
+            return Seq(sourceAnchor: expr.sourceAnchor, children: children)
+        } else {
+            let savedRegisterStack = registerStack
+            let tempArrayId = try makeCompilerTemporary(expr.sourceAnchor, expr.arrayType)
+            var children: [AbstractSyntaxTreeNode] = []
+            for i in 0..<expr.elements.count {
+                let slot = Expression.Subscript(subscriptable: tempArrayId,
+                                                argument: Expression.LiteralInt(i))
+                let child =  try rvalue(expr: Expression.Assignment(lexpr: slot,
+                                                                    rexpr: expr.elements[i]))
+                children.append(child)
+            }
+            registerStack = savedRegisterStack
+            children += [
+                try lvalue(identifier: tempArrayId)
+            ]
+            return Seq(sourceAnchor: expr.sourceAnchor, children: children)
         }
-        registerStack = savedRegisterStack
-        children += [
-            try lvalue(identifier: tempArrayId)
-        ]
-        return Seq(sourceAnchor: expr.sourceAnchor, children: children)
     }
     
     func makeCompilerTemporary(_ sourceAnchor: SourceAnchor?, _ type: Expression) throws -> Expression.Identifier {
@@ -498,9 +520,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     func rvalue(literalString expr: Expression.LiteralString) throws -> AbstractSyntaxTreeNode {
         let arrayType = Expression.ArrayType(count: Expression.LiteralInt(expr.value.count),
                                              elementType: Expression.PrimitiveType(.u8))
-        let elements = expr.value.utf8.map { Expression.LiteralInt(sourceAnchor: expr.sourceAnchor, value: Int($0)) }
-        return try rvalue(literalArray: Expression.LiteralArray(arrayType: arrayType,
-                                                                elements: elements))
+        let elements = expr.value.utf8.map { Expression.LiteralInt(Int($0)) }
+        return try rvalue(literalArray: Expression.LiteralArray(arrayType: arrayType, elements: elements))
     }
     
     func rvalue(identifier node: Expression.Identifier) throws -> AbstractSyntaxTreeNode {
@@ -634,7 +655,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             let savedRegisterStack = registerStack
             let dst = popRegister()
             children += [
-                try lvalue(expr: rexpr),
+                try rvalue(expr: rexpr),
                 InstructionNode(instruction: Tack.kSTORE, parameters: [
                     ParameterIdentifier(dst),
                     ParameterIdentifier(popRegister()),
@@ -664,7 +685,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             ]
             let tempUnionAddr = popRegister()
             let tempUnionTypeTag = nextRegister()
-            let unionTypeTag = determineUnionTypeTag(typ, rtype)!
+            let targetType = determineUnionTargetType(typ, rtype)!
+            let unionTypeTag = determineUnionTypeTag(typ, targetType)!
             children += [
                 InstructionNode(instruction: Tack.kLIU16, parameters: [
                     ParameterIdentifier(tempUnionTypeTag),
@@ -676,9 +698,9 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                     ParameterNumber(kUnionTypeTagOffset)
                 ])
             ]
-            if rtype.isPrimitive {
+            if targetType.isPrimitive {
                 children += [
-                    try rvalue(expr: rexpr),
+                    try rvalue(as: Expression.As(expr: rexpr, targetType: Expression.PrimitiveType(targetType))),
                     InstructionNode(instruction: Tack.kSTORE, parameters: [
                         ParameterIdentifier(tempUnionAddr),
                         ParameterIdentifier(popRegister()),
@@ -694,7 +716,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                         ParameterIdentifier(tempUnionAddr),
                         ParameterNumber(kUnionPayloadOffset)
                     ]),
-                    try rvalue(expr: rexpr),
+                    try rvalue(as: Expression.As(expr: rexpr, targetType: Expression.PrimitiveType(targetType))),
                     InstructionNode(instruction: Tack.kMEMCPY, parameters: [
                         ParameterIdentifier(tempUnionPayloadAddress),
                         ParameterIdentifier(popRegister()),
@@ -705,13 +727,43 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             pushRegister(tempUnionAddr)
             result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
             
-        case (.unionType, _):
+        case (.unionType(let typ), _):
             var children: [AbstractSyntaxTreeNode] = [
                 try lvalue(expr: rexpr)
             ]
             let tempUnionAddr = popRegister()
+            
+            // If the union can contain more than one type then insert a runtime
+            // check that the tag matches that of the requested type.
+            if typ.members.count > 1 {
+                let tempUnionTag = nextRegister()
+                let tempComparison = nextRegister()
+                let labelSkipPanic = globalEnvironment.labelMaker.next()
+                children += [
+                    InstructionNode(instruction: Tack.kLOAD, parameters: [
+                        ParameterIdentifier(value: tempUnionTag),
+                        ParameterIdentifier(value: tempUnionAddr),
+                        ParameterNumber(value: kUnionTypeTagOffset)
+                    ]),
+                    InstructionNode(instruction: Tack.kSUBI16, parameters: [
+                        ParameterIdentifier(value: tempComparison),
+                        ParameterIdentifier(value: tempUnionTag),
+                        ParameterNumber(value: 1)
+                    ]),
+                    InstructionNode(instruction: Tack.kBZ, parameters: [
+                        ParameterIdentifier(value: tempComparison),
+                        ParameterIdentifier(value: labelSkipPanic)
+                    ]),
+                    InstructionNode(instruction: Tack.kCALL, parameters: [
+                        ParameterIdentifier(value: kPanic)
+                    ]),
+                    LabelDeclaration(identifier: labelSkipPanic)
+                ]
+            }
+            
             let dst = nextRegister()
             pushRegister(dst)
+            
             if ltype.isPrimitive {
                 children += [
                     InstructionNode(instruction: Tack.kLOAD, parameters: [
@@ -729,6 +781,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                     ])
                 ]
             }
+            
             result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
             
         case (.constPointer(let a), .traitType(let b)),
@@ -1316,12 +1369,52 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         return Seq(sourceAnchor: expr.sourceAnchor, children: children)
     }
     
+    // Given a type and a related union, determine the type to which to convert
+    // when inserting into the union. This is necessary because many types
+    // can automatically promote and convert to other types. For example, if
+    // the union an hold a u16 then we should automatically convert
+    // LiteralInt(1) to u16 in order to insert into the union.
+    func determineUnionTargetType(_ typ: UnionType, _ rtype: SymbolType) -> SymbolType? {
+        // Check for an exact match
+        for ltype in typ.members {
+            if rtype == ltype {
+                return ltype
+            }
+        }
+        
+        // Check for something that matches except for const-ness
+        for ltype in typ.members {
+            if rtype.correspondingConstType == ltype {
+                return ltype
+            }
+        }
+        
+        // Check for the first type that can be automatically converted in an assignment
+        for ltype in typ.members {
+            let typeChecker = RvalueExpressionTypeChecker(symbols: symbols!)
+            let status = typeChecker.convertBetweenTypes(ltype: ltype,
+                                                         rtype: rtype,
+                                                         sourceAnchor: nil,
+                                                         messageWhenNotConvertible: "",
+                                                         isExplicitCast: false)
+            switch status {
+            case .acceptable(let symbolType):
+                return symbolType
+                
+            case .unacceptable:
+                break
+            }
+        }
+        
+        return nil
+    }
+    
     // Given a type and a related union, determine the corresponding type tag.
     // Return nil if the type does not match the union after all.
     func determineUnionTypeTag(_ typ: UnionType, _ testType: SymbolType) -> Int? {
         for i in 0..<typ.members.count {
             let member = typ.members[i]
-            if testType == member || testType.correspondingConstType == member {
+            if testType == member {
                 return i
             }
         }
@@ -1627,8 +1720,9 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         // and then copy the value into the function call argument pack.
         var tempArgs: [String] = []
         for i in 0..<typ.arguments.count {
+            let argType = typ.arguments[i]
             children += [
-                try rvalue(expr: expr.arguments[i])
+                try rvalue(expr: Expression.As(expr: expr.arguments[i], targetType: Expression.PrimitiveType(argType)))
             ]
             tempArgs.append(popRegister())
         }

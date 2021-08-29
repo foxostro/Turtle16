@@ -193,30 +193,18 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 272)
             ]),
-            InstructionNode(instruction: Tack.kLI8, parameters: [
-                ParameterIdentifier(value: "vr1"),
-                ParameterNumber(value: 0)
-            ]),
-            InstructionNode(instruction: Tack.kADD16, parameters: [
-                ParameterIdentifier(value: "vr2"),
-                ParameterIdentifier(value: "vr1"),
-                ParameterIdentifier(value: "vr0")
-            ]),
             InstructionNode(instruction: Tack.kLI16, parameters: [
-                ParameterIdentifier(value: "vr3"),
+                ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 42)
             ]),
             InstructionNode(instruction: Tack.kSTORE, parameters: [
-                ParameterIdentifier(value: "vr2"),
-                ParameterIdentifier(value: "vr3")
-            ]),
-            InstructionNode(instruction: Tack.kLIU16, parameters: [
-                ParameterIdentifier(value: "vr4"),
-                ParameterNumber(value: 272)
+                ParameterIdentifier(value: "vr0"),
+                ParameterIdentifier(value: "vr1"),
+                ParameterNumber(value: 0)
             ])
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
     func testRvalue_LiteralString() throws {
@@ -229,28 +217,16 @@ class SnapToTackCompilerTests: XCTestCase {
             ]),
             InstructionNode(instruction: Tack.kLI8, parameters: [
                 ParameterIdentifier(value: "vr1"),
-                ParameterNumber(value: 0)
-            ]),
-            InstructionNode(instruction: Tack.kADD16, parameters: [
-                ParameterIdentifier(value: "vr2"),
-                ParameterIdentifier(value: "vr1"),
-                ParameterIdentifier(value: "vr0")
-            ]),
-            InstructionNode(instruction: Tack.kLI8, parameters: [
-                ParameterIdentifier(value: "vr3"),
                 ParameterNumber(value: 97)
             ]),
             InstructionNode(instruction: Tack.kSTORE, parameters: [
-                ParameterIdentifier(value: "vr2"),
-                ParameterIdentifier(value: "vr3")
-            ]),
-            InstructionNode(instruction: Tack.kLIU16, parameters: [
-                ParameterIdentifier(value: "vr4"),
-                ParameterNumber(value: 272)
+                ParameterIdentifier(value: "vr0"),
+                ParameterIdentifier(value: "vr1"),
+                ParameterNumber(value: 0)
             ])
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
     func testRvalue_StructInitializer() throws {
@@ -814,6 +790,47 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
+    }
+    
+    func testRvalue_As_union_to_primitive_with_dynamic_type_check() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .unionType(UnionType([.bool, .u16])), offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
+                                                             targetType: Expression.PrimitiveType(.u16)))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 0xabcd)
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 0)
+            ]),
+            InstructionNode(instruction: Tack.kSUBI16, parameters: [
+                ParameterIdentifier(value: "vr2"),
+                ParameterIdentifier(value: "vr1"),
+                ParameterNumber(value: 1)
+            ]),
+            InstructionNode(instruction: Tack.kBZ, parameters: [
+                ParameterIdentifier(value: "vr2"),
+                ParameterIdentifier(value: ".L0")
+            ]),
+            InstructionNode(instruction: Tack.kCALL, parameters: [
+                ParameterIdentifier(value: "panic")
+            ]),
+            LabelDeclaration(identifier: ".L0"),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
+                ParameterIdentifier(value: "vr3"),
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 1)
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr3")
     }
     
     func testRvalue_Bitcast_u16_to_pointer() throws {
@@ -3294,20 +3311,39 @@ class SnapToTackCompilerTests: XCTestCase {
             Expression.LiteralInt(1000)
         ]))
         let expected = Seq(children: [
-            InstructionNode(instruction: Tack.kLI16, parameters: [
+            InstructionNode(instruction: Tack.kSUBI16, parameters: [
                 ParameterIdentifier(value: "vr0"),
+                ParameterIdentifier(value: "fp"),
+                ParameterNumber(value: 3)
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterNumber(value: 0)
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterIdentifier(value: "vr1"),
+                ParameterNumber(value: 0)
+            ]),
+            InstructionNode(instruction: Tack.kLI16, parameters: [
+                ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 1000)
             ]),
-            InstructionNode(instruction: Tack.kALLOCA, parameters: [
-                ParameterIdentifier(value: "vr1"),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterIdentifier(value: "vr2"),
                 ParameterNumber(value: 1)
             ]),
             InstructionNode(instruction: Tack.kALLOCA, parameters: [
-                ParameterIdentifier(value: "vr2"),
+                ParameterIdentifier(value: "vr3"),
+                ParameterNumber(value: 1)
+            ]),
+            InstructionNode(instruction: Tack.kALLOCA, parameters: [
+                ParameterIdentifier(value: "vr4"),
                 ParameterNumber(value: 2)
             ]),
             InstructionNode(instruction: Tack.kMEMCPY, parameters: [
-                ParameterIdentifier(value: "vr2"),
+                ParameterIdentifier(value: "vr4"),
                 ParameterIdentifier(value: "vr0"),
                 ParameterNumber(value: 2)
             ]),
@@ -3315,30 +3351,30 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier(value: "foo")
             ]),
             InstructionNode(instruction: Tack.kSUBI16, parameters: [
-                ParameterIdentifier(value: "vr3"),
+                ParameterIdentifier(value: "vr5"),
                 ParameterIdentifier(value: "fp"),
                 ParameterNumber(value: 1)
             ]),
             InstructionNode(instruction: Tack.kMEMCPY, parameters: [
+                ParameterIdentifier(value: "vr5"),
                 ParameterIdentifier(value: "vr3"),
-                ParameterIdentifier(value: "vr1"),
                 ParameterNumber(value: 1)
             ]),
             InstructionNode(instruction: Tack.kFREE, parameters: [
                 ParameterNumber(value: 3)
             ]),
             InstructionNode(instruction: Tack.kSUBI16, parameters: [
-                ParameterIdentifier(value: "vr4"),
+                ParameterIdentifier(value: "vr6"),
                 ParameterIdentifier(value: "fp"),
                 ParameterNumber(value: 1)
             ]),
             InstructionNode(instruction: Tack.kLOAD, parameters: [
-                ParameterIdentifier(value: "vr5"),
-                ParameterIdentifier(value: "vr4"),
+                ParameterIdentifier(value: "vr7"),
+                ParameterIdentifier(value: "vr6"),
             ])
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr5")
+        XCTAssertEqual(compiler.registerStack.last, "vr7")
     }
     
     func testRvalue_Call_function_pointer() throws {
@@ -3361,5 +3397,104 @@ class SnapToTackCompilerTests: XCTestCase {
             ])
         ])
         XCTAssertEqual(actual, expected)
+    }
+    
+    func testRvalue_Call_panic_with_string_arg() throws {
+        let symbols = SymbolTable(tuples: [
+            ("panic", Symbol(type: .function(FunctionType(name: "panic", mangledName: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .constU8)]))))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("panic"), arguments: [
+            Expression.LiteralString("panic")
+        ]))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kSUBI16, parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterIdentifier(value: "fp"),
+                ParameterNumber(value: 2)
+            ]),
+            InstructionNode(instruction: Tack.kSUBI16, parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "fp"),
+                ParameterNumber(value: 7)
+            ]),
+            InstructionNode(instruction: Tack.kLI8, parameters: [
+                ParameterIdentifier(value: "vr2"),
+                ParameterNumber(value: 112)
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr2"),
+                ParameterNumber(value: 0)
+            ]),
+            InstructionNode(instruction: Tack.kLI8, parameters: [
+                ParameterIdentifier(value: "vr3"),
+                ParameterNumber(value: 97)
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr3"),
+                ParameterNumber(value: 1)
+            ]),
+            InstructionNode(instruction: Tack.kLI8, parameters: [
+                ParameterIdentifier(value: "vr4"),
+                ParameterNumber(value: 110)
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr4"),
+                ParameterNumber(value: 2)
+            ]),
+            InstructionNode(instruction: Tack.kLI8, parameters: [
+                ParameterIdentifier(value: "vr5"),
+                ParameterNumber(value: 105)
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr5"),
+                ParameterNumber(value: 3)
+            ]),
+            InstructionNode(instruction: Tack.kLI8, parameters: [
+                ParameterIdentifier(value: "vr6"),
+                ParameterNumber(value: 99)
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
+                ParameterIdentifier(value: "vr1"),
+                ParameterIdentifier(value: "vr6"),
+                ParameterNumber(value: 4)
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterIdentifier(value: "vr1"),
+                ParameterNumber(value: 0)
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
+                ParameterIdentifier(value: "vr7"),
+                ParameterNumber(value: 5)
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
+                ParameterIdentifier(value: "vr0"),
+                ParameterIdentifier(value: "vr7"),
+                ParameterNumber(value: 1)
+            ]),
+            InstructionNode(instruction: Tack.kALLOCA, parameters: [ // TODO: This ALLOCA and MEMCPY are not actually necessary since vr0 contains the address of the dynamic array in memory already.
+                ParameterIdentifier(value: "vr8"),
+                ParameterNumber(value: 2)
+            ]),
+            InstructionNode(instruction: Tack.kMEMCPY, parameters: [
+                ParameterIdentifier(value: "vr8"),
+                ParameterIdentifier(value: "vr0"),
+                ParameterNumber(value: 2)
+            ]),
+            InstructionNode(instruction: Tack.kCALL, parameters: [
+                ParameterIdentifier(value: "panic")
+            ]),
+            InstructionNode(instruction: Tack.kFREE, parameters: [
+                ParameterNumber(value: 2)
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertNil(compiler.registerStack.last)
     }
 }

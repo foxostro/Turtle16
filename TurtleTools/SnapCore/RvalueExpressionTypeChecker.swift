@@ -581,32 +581,19 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
     
     private func check(call: Expression.Call, typ: FunctionType) throws -> SymbolType {
-        if typ.arguments.count > 0 {
-            let selfExpr: Expression?
-            switch call.callee {
-            case let expr as Expression.Get:
-                selfExpr = expr.expr
-            case let expr as Expression.Identifier:
-                selfExpr = expr
-            default:
-                selfExpr = nil
-            }
-            if let selfExpr = selfExpr {
-                var selfType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: selfExpr)
-                if case .traitType(let typ) = selfType {
-                    selfType = try symbols.resolveType(identifier: typ.nameOfTraitObjectType)
-                }
-                let argType0 = typ.arguments[0]
-                if argType0 == selfType || argType0.correspondingConstType == selfType {
-                    return try checkStructMemberFunctionCall(call, selfExpr)
-                }
-                if argType0 == .pointer(selfType) || argType0 == .pointer(selfType.correspondingConstType) || argType0.correspondingConstType == .pointer(selfType.correspondingConstType) {
-                    let addressOf = Expression.Bitcast(expr: Expression.Unary(sourceAnchor: selfExpr.sourceAnchor, op: .ampersand, expression: selfExpr), targetType: Expression.PrimitiveType(argType0))
-                    return try checkStructMemberFunctionCall(call, addressOf)
-                }
+        do {
+            return try checkInner(call: call, typ: typ)
+        }
+        catch let err as CompilerError {
+            if let rewritten = try rewriteStructMemberFunctionCallIfPossible(call) {
+                return try checkInner(call: rewritten, typ: typ)
+            } else {
+                throw err
             }
         }
-        
+    }
+    
+    func checkInner(call: Expression.Call, typ: FunctionType) throws -> SymbolType {
         if call.arguments.count != typ.arguments.count {
             let message: String
             if let name = typ.name {
@@ -635,55 +622,16 @@ public class RvalueExpressionTypeChecker: NSObject {
         return typ.returnType
     }
     
-    // TODO: checkStructMemberFunctionCall() is similar to a normal function call and perhaps some of these two can be consolidated by extracting some helper methods.
-    public func checkStructMemberFunctionCall(_ call: Expression.Call, _ selfExpr: Expression) throws -> SymbolType {
-        let calleeType = try check(expression: call.callee)
-        switch calleeType {
-        case .function(let typ), .pointer(.function(let typ)), .constPointer(.function(let typ)):
-            if call.arguments.count != typ.arguments.count-1 {
-                let message: String
-                if let name = typ.name {
-                    message = "incorrect number of arguments in call to `\(name)'"
-                } else {
-                    message = "incorrect number of arguments in call to function of type `\(typ)'"
-                }
-                throw CompilerError(sourceAnchor: call.sourceAnchor, message: message)
-            }
-            
-            // Insert the object into the first argument in a UFCS call.
-            let rtype0 = try rvalueContext().check(expression: selfExpr)
-            let ltype0 = typ.arguments[0]
-            let message0: String
-            if let name = typ.name {
-                message0 = "cannot convert value of type `\(rtype0)' to expected argument type `\(ltype0)' in call to `\(name)'"
-            } else {
-                message0 = "cannot convert value of type `\(rtype0)' to expected argument type `\(ltype0)' in call to function of type `\(typ)'"
-            }
-            _ = try checkTypesAreConvertibleInAssignment(ltype: ltype0,
-                                                         rtype: rtype0,
-                                                         sourceAnchor: selfExpr.sourceAnchor,
-                                                         messageWhenNotConvertible: message0)
-            
-            // The remaining arguments come from the parameter list as usual.
-            for i in 0..<call.arguments.count {
-                let rtype = try rvalueContext().check(expression: call.arguments[i])
-                let ltype = typ.arguments[i+1]
-                let message: String
-                if let name = typ.name {
-                    message = "cannot convert value of type `\(rtype)' to expected argument type `\(ltype)' in call to `\(name)'"
-                } else {
-                    message = "cannot convert value of type `\(rtype)' to expected argument type `\(ltype)' in call to function of type `\(typ)'"
-                }
-                _ = try checkTypesAreConvertibleInAssignment(ltype: ltype,
-                                                             rtype: rtype,
-                                                             sourceAnchor: call.arguments[i].sourceAnchor,
-                                                             messageWhenNotConvertible: message)
-            }
-            
-            return typ.returnType
-        default:
-            throw CompilerError(sourceAnchor: call.sourceAnchor, message: "cannot call value of non-function type `\(calleeType)'")
+    fileprivate func rewriteStructMemberFunctionCallIfPossible(_ expr: Expression.Call) throws -> Expression.Call? {
+        guard let match = try StructMemberFunctionCallMatcher(call: expr, typeChecker: self).match() else {
+            return nil
         }
+        
+        return Expression.Call(sourceAnchor: match.callExpr.sourceAnchor,
+                               callee: Expression.Get(sourceAnchor: match.callExpr.sourceAnchor,
+                                                      expr: match.getExpr.expr,
+                                                      member: match.getExpr.member),
+                               arguments: [match.getExpr.expr] + match.callExpr.arguments)
     }
         
     public func check(as expr: Expression.As) throws -> SymbolType {

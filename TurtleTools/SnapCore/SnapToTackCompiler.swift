@@ -1853,6 +1853,21 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     func rvalue(call expr: Expression.Call, typ: FunctionType) throws -> AbstractSyntaxTreeNode {
+        do {
+            return try rvalueInner(call: expr, typ: typ)
+        }
+        catch let err as CompilerError {
+            if let rewritten = try rewriteStructMemberFunctionCallIfPossible(expr) {
+                return rewritten
+            } else {
+                throw err
+            }
+        }
+    }
+    
+    fileprivate func rvalueInner(call expr: Expression.Call, typ: FunctionType) throws -> AbstractSyntaxTreeNode {
+        _ = try RvalueExpressionTypeChecker(symbols: symbols!).checkInner(call: expr, typ: typ)
+        
         let calleeType = try typeCheck(rexpr: expr.callee)
         
         // Allocate a temporary to hold the function call return value.
@@ -1870,11 +1885,13 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         // Evaluation of expressions for function call arguments may involve
         // allocating memory on the stack. We first evaluate each expression
         // and then copy the value into the function call argument pack.
+        assert(expr.arguments.count == typ.arguments.count)
         var tempArgs: [String] = []
         for i in 0..<typ.arguments.count {
             let argType = typ.arguments[i]
+            let argExpr = expr.arguments[i]
             children += [
-                try rvalue(expr: Expression.As(expr: expr.arguments[i], targetType: Expression.PrimitiveType(argType)))
+                try rvalue(expr: Expression.As(expr: argExpr, targetType: Expression.PrimitiveType(argType)))
             ]
             tempArgs.append(popRegister())
         }
@@ -1992,5 +2009,32 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             ])
         }
         return outerSeq
+    }
+    
+    fileprivate func rewriteStructMemberFunctionCallIfPossible(_ expr: Expression.Call) throws -> AbstractSyntaxTreeNode? {
+        func matchStructMemberFunctionCall(_ expr: Expression.Call) throws -> StructMemberFunctionCallMatcher.Match? {
+            return try StructMemberFunctionCallMatcher(call: expr, typeChecker: RvalueExpressionTypeChecker(symbols: symbols!)).match()
+        }
+        
+        func rewriteStructMemberFunctionCall(_ match: StructMemberFunctionCallMatcher.Match) throws -> AbstractSyntaxTreeNode {
+            let expr = match.callExpr
+            let tempSelf = try makeCompilerTemporary(expr.sourceAnchor, Expression.PrimitiveType(match.firstArgumentType))
+            let assign = try rvalue(assignment: Expression.InitialAssignment(sourceAnchor: expr.sourceAnchor, lexpr: tempSelf, rexpr: match.getExpr.expr))
+            registerStack.removeLast()
+            return Seq(sourceAnchor: expr.sourceAnchor, children: [
+                assign,
+                try rvalue(call: Expression.Call(sourceAnchor: expr.sourceAnchor,
+                                                 callee: Expression.Get(sourceAnchor: expr.sourceAnchor,
+                                                                        expr: tempSelf,
+                                                                        member: match.getExpr.member),
+                                                 arguments: [tempSelf] + expr.arguments),
+                           typ: match.fnType)
+            ])
+        }
+        
+        guard let match = try matchStructMemberFunctionCall(expr) else {
+            return nil
+        }
+        return try rewriteStructMemberFunctionCall(match)
     }
 }

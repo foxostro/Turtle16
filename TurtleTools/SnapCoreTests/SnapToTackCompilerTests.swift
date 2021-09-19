@@ -3772,4 +3772,192 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(actual, expected)
         XCTAssertNil(compiler.registerStack.last)
     }
+    
+    func testRvalue_Call_struct_member_function_call_1() throws {
+        // Define an instance `foo' of a struct `Foo' which contains a function
+        // pointer member `bar(*const Foo)'.
+        // Because the first parameter of Bar is `*Foo', we can call the
+        // function with a convenient syntax. A call of the form `foo.bar()' is
+        // equivalent to a call `foo.bar(&foo)'.
+        //
+        // This test is for the case where the callee of the Call expression is
+        // A Get expression where expr is of the type `Foo' and the function's
+        // first argument is of the type `*Foo'
+        let globalSymbols = SymbolTable()
+        let fooSymbols = SymbolTable()
+        let fooType = SymbolType.structType(StructType(name: "Foo", symbols: fooSymbols))
+        let fnType = FunctionType(name: "bar", mangledName: "bar", returnType: .void, arguments: [
+            .pointer(fooType)
+        ])
+        fooSymbols.bind(identifier: "bar", symbol: Symbol(type: .function(fnType)))
+        globalSymbols.bind(identifier: "Foo", symbolType: fooType)
+        globalSymbols.bind(identifier: "foo", symbol: Symbol(type: fooType, offset: 0x1000, storage: .staticStorage))
+        
+        let compiler = makeCompiler(symbols: globalSymbols)
+        let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Get(expr: Expression.Identifier("foo"), member: Expression.Identifier("bar")), arguments: []))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(272)
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterNumber(0x1000)
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterIdentifier("vr1")
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterNumber(272)
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr2")
+            ]),
+            InstructionNode(instruction: Tack.kALLOCA, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterNumber(1)
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterIdentifier("vr3")
+            ]),
+            InstructionNode(instruction: Tack.kCALL, parameters: [
+                ParameterIdentifier("bar")
+            ]),
+            InstructionNode(instruction: Tack.kFREE, parameters: [
+                ParameterNumber(1)
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertNil(compiler.registerStack.last)
+    }
+    
+    func testRvalue_Call_struct_member_function_call_2() throws {
+        // Define an instance `foo' of a struct `Foo' which contains a function
+        // pointer member `bar(*const Foo)'.
+        // Because the first parameter of Bar is `*const Foo', we can call the
+        // function with a convenient syntax. A call of the form `foo.bar()' is
+        // equivalent to a call `foo.bar(&foo)'.
+        //
+        // This test is for the case where the callee of the Call expression is
+        // A Get expression where expr is of the type `Foo' and the function's
+        // first argument is of the type `*const Foo'
+        let globalSymbols = SymbolTable()
+        let fooSymbols = SymbolTable()
+        let fooType = SymbolType.structType(StructType(name: "Foo", symbols: fooSymbols))
+        let fnType = FunctionType(name: "bar", mangledName: "bar", returnType: .void, arguments: [
+            .constPointer(fooType)
+        ])
+        fooSymbols.bind(identifier: "bar", symbol: Symbol(type: .function(fnType)))
+        globalSymbols.bind(identifier: "Foo", symbolType: fooType)
+        globalSymbols.bind(identifier: "foo", symbol: Symbol(type: fooType, offset: 0x1000, storage: .staticStorage))
+        
+        let compiler = makeCompiler(symbols: globalSymbols)
+        let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Get(expr: Expression.Identifier("foo"), member: Expression.Identifier("bar")), arguments: []))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(272)
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterNumber(0x1000)
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterIdentifier("vr1")
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterNumber(272)
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr2")
+            ]),
+            InstructionNode(instruction: Tack.kALLOCA, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterNumber(1)
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterIdentifier("vr3")
+            ]),
+            InstructionNode(instruction: Tack.kCALL, parameters: [
+                ParameterIdentifier("bar")
+            ]),
+            InstructionNode(instruction: Tack.kFREE, parameters: [
+                ParameterNumber(1)
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertNil(compiler.registerStack.last)
+    }
+    
+    func testRvalue_Call_struct_member_function_call_3() throws {
+        // Define an instance `foo' of a struct `Foo' which contains a function
+        // pointer member `bar(const *const Foo)'.
+        // Because the first parameter of Bar is `const *const Foo', we can call
+        // the function with a convenient syntax. A call of the form `foo.bar()'
+        // is equivalent to a call `foo.bar(&foo)'.
+        //
+        // This test is for the case where the callee of the Call expression is
+        // A Get expression where expr is of the type `Foo' and the function's
+        // first argument is of the type `*const Foo'
+        let globalSymbols = SymbolTable()
+        let fooSymbols = SymbolTable()
+        let fooType = SymbolType.structType(StructType(name: "Foo", symbols: fooSymbols))
+        let fnType = FunctionType(name: "bar", mangledName: "bar", returnType: .void, arguments: [
+            .constPointer(fooType.correspondingConstType)
+        ])
+        fooSymbols.bind(identifier: "bar", symbol: Symbol(type: .function(fnType)))
+        globalSymbols.bind(identifier: "Foo", symbolType: fooType)
+        globalSymbols.bind(identifier: "foo", symbol: Symbol(type: fooType, offset: 0x1000, storage: .staticStorage))
+        
+        let compiler = makeCompiler(symbols: globalSymbols)
+        let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Get(expr: Expression.Identifier("foo"), member: Expression.Identifier("bar")), arguments: []))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(272)
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterNumber(0x1000)
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterIdentifier("vr1")
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterNumber(272)
+            ]),
+            InstructionNode(instruction: Tack.kLOAD, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr2")
+            ]),
+            InstructionNode(instruction: Tack.kALLOCA, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterNumber(1)
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterIdentifier("vr3")
+            ]),
+            InstructionNode(instruction: Tack.kCALL, parameters: [
+                ParameterIdentifier("bar")
+            ]),
+            InstructionNode(instruction: Tack.kFREE, parameters: [
+                ParameterNumber(1)
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertNil(compiler.registerStack.last)
+    }
+    
+    // TODO: Need to implement a struct member function call where the caller is an instance of a trait type, as seen in testTraitsDemo. Do this by implementing an automatic conversion from an instance of a trait to a pointer to the corresponding trait object struct.
 }

@@ -4687,4 +4687,45 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .pointer(.u16))
     }
+    
+    func testAssignment_automatic_conversion_from_object_to_pointer() {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .pointer(.u16), offset: 0x1000, storage: .staticStorage)),
+            ("bar", Symbol(type: .u16, offset: 0x2000, storage: .staticStorage))
+        ])
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        let expr = Expression.Assignment(lexpr: Expression.Identifier("foo"),
+                                         rexpr: Expression.Identifier("bar"))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .pointer(.u16))
+    }
+    
+    func testAssignment_automatic_conversion_from_trait_to_pointer() throws {
+        let symbols = SymbolTable()
+        let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Foo"),
+                                         members: [],
+                                         visibility: .privateVisibility)
+        let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+        let seq = try SnapSubcompilerTraitDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols).compile(traitDecl)
+        let vtableDecl = seq.children[0] as! StructDeclaration
+        let objectDecl = seq.children[1] as! StructDeclaration
+        let impl = seq.children[2] as! Impl
+        _ = try SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols).compile(vtableDecl)
+        _ = try SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols).compile(objectDecl)
+        _ = try SnapSubcompilerImpl(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols).compile(impl)
+        
+        let traitObjectType = try symbols.resolveType(identifier: traitDecl.nameOfTraitObjectType)
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .pointer(traitObjectType), offset: 0x1000, storage: .staticStorage))
+        
+        let traitType = try symbols.resolveType(identifier: traitDecl.identifier.identifier)
+        symbols.bind(identifier: "bar", symbol: Symbol(type: traitType, offset: 0x2000, storage: .staticStorage))
+        
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        let expr = Expression.Assignment(lexpr: Expression.Identifier("foo"),
+                                         rexpr: Expression.Identifier("bar"))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .pointer(traitObjectType))
+    }
 }

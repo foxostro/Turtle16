@@ -509,6 +509,18 @@ public class RvalueExpressionTypeChecker: NSObject {
                 }
             }
             return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
+        case (_, .constPointer(let b)),
+             (_, .pointer(let b)):
+            if rtype.correspondingConstType == b.correspondingConstType {
+                return .acceptable(ltype)
+            }
+            else if case .traitType(let a) = rtype {
+                let traitObjectType = try? symbols.resolveType(identifier: a.nameOfTraitObjectType)
+                if traitObjectType == b {
+                    return .acceptable(ltype)
+                }
+            }
+            return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
         default:
             return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
         }

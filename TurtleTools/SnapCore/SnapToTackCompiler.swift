@@ -192,7 +192,9 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     public func lvalue(expr: Expression) throws -> AbstractSyntaxTreeNode {
-        try typeCheck(lexpr: expr)
+        guard try typeCheck(lexpr: expr) != nil else {
+            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "lvalue required")
+        }
         let result: AbstractSyntaxTreeNode
         switch expr {
         case let node as Expression.Identifier:
@@ -893,6 +895,24 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         case (.constPointer(let a), .traitType(let b)),
              (.pointer(let a), .traitType(let b)):
             fatalError("unimplemented: pointer(\(a)) -> trait(\(b))")
+            
+        case (_, .constPointer(let b)),
+             (_, .pointer(let b)):
+            if rtype.correspondingConstType == b.correspondingConstType {
+                result = try lvalue(expr: rexpr)
+            }
+            else if case .traitType(let a) = rtype {
+                let traitObjectType = try? symbols!.resolveType(identifier: a.nameOfTraitObjectType)
+                if traitObjectType == b {
+                    result = try lvalue(expr: rexpr)
+                }
+                else {
+                    fatalError("Unsupported type conversion from \(rtype) to \(ltype). Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(rexpr)")
+                }
+            }
+            else {
+                fatalError("Unsupported type conversion from \(rtype) to \(ltype). Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(rexpr)")
+            }
             
         default:
             fatalError("Unsupported type conversion from \(rtype) to \(ltype). Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(rexpr)")
@@ -1913,7 +1933,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 ])
             ]
             
-        case .pointer:
+        case .pointer, .constPointer:
             children += [
                 try rvalue(expr: expr.callee),
                 InstructionNode(instruction: Tack.kCALLPTR, parameters: [

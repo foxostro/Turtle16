@@ -3094,6 +3094,87 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr3")
     }
     
+    func testRvalue_Assignment_automatic_conversion_from_object_to_pointer() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .pointer(.u16), offset: 0x1000, storage: .staticStorage)),
+            ("bar", Symbol(type: .u16, offset: 0x2000, storage: .staticStorage))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
+                                                                     rexpr: Expression.Identifier("bar")))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(0x1000)
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterNumber(0x2000)
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterIdentifier("vr1")
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr1")
+    }
+    
+    func testRvalue_Assignment_automatic_conversion_from_object_to_pointer_requires_lvalue() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .pointer(.u16), offset: 0x1000, storage: .staticStorage))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let expr = Expression.Assignment(lexpr: Expression.Identifier("foo"),
+                                         rexpr: ExprUtils.makeU16(value: 42))
+        XCTAssertThrowsError(try compiler.lvalue(expr: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "lvalue required")
+        }
+    }
+    
+    func testRvalue_Assignment_automatic_conversion_from_trait_to_pointer() throws {
+        let symbols = SymbolTable()
+        let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Foo"),
+                                         members: [],
+                                         visibility: .privateVisibility)
+        let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+        let seq = try SnapSubcompilerTraitDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols).compile(traitDecl)
+        let vtableDecl = seq.children[0] as! StructDeclaration
+        let objectDecl = seq.children[1] as! StructDeclaration
+        let impl = seq.children[2] as! Impl
+        _ = try SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols).compile(vtableDecl)
+        _ = try SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols).compile(objectDecl)
+        _ = try SnapSubcompilerImpl(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols).compile(impl)
+        
+        let traitObjectType = try symbols.resolveType(identifier: traitDecl.nameOfTraitObjectType)
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .pointer(traitObjectType), offset: 0x1000, storage: .staticStorage))
+        
+        let traitType = try symbols.resolveType(identifier: traitDecl.identifier.identifier)
+        symbols.bind(identifier: "bar", symbol: Symbol(type: traitType, offset: 0x2000, storage: .staticStorage))
+        
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
+                                                                     rexpr: Expression.Identifier("bar")))
+        let expected = Seq(children: [
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(0x1000)
+            ]),
+            InstructionNode(instruction: Tack.kLIU16, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterNumber(0x2000)
+            ]),
+            InstructionNode(instruction: Tack.kSTORE, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterIdentifier("vr1")
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr1")
+    }
+    
     func testRvalue_Get_array_count() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 42, elementType: .u16), offset: 0xabcd, storage: .staticStorage))

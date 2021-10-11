@@ -3958,6 +3958,4 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(actual, expected)
         XCTAssertNil(compiler.registerStack.last)
     }
-    
-    // TODO: Need to implement a struct member function call where the caller is an instance of a trait type, as seen in testTraitsDemo. Do this by implementing an automatic conversion from an instance of a trait to a pointer to the corresponding trait object struct.
 }

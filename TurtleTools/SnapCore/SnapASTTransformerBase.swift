@@ -60,6 +60,8 @@ public class SnapASTTransformerBase: NSObject {
             result = try compile(goto: node)
         case let node as GotoIfFalse:
             result = try compile(gotoIfFalse: node)
+        case let node as InstructionNode:
+            result = try compile(instruction: node)
         default:
             result = genericNode
         }
@@ -193,6 +195,10 @@ public class SnapASTTransformerBase: NSObject {
     }
     
     public func compile(gotoIfFalse node: GotoIfFalse) throws -> AbstractSyntaxTreeNode? {
+        return node
+    }
+    
+    public func compile(instruction node: InstructionNode) throws -> AbstractSyntaxTreeNode? {
         return node
     }
     

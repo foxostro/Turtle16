@@ -44,6 +44,7 @@ public let kSBC = "SBC"
 
 // Various high-level macro instruction opcodes
 public let kCALL = "CALL"
+public let kCALLPTR = "CALLPTR"
 public let kENTER = "ENTER"
 public let kLEAVE = "LEAVE"
 public let kRET = "RET"

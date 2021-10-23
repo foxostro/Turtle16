@@ -676,11 +676,95 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
     }
     
     func lsl16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
-        fatalError("unimplemented")
+        let N = 16
+        let b = corresponding(param: node.parameters[0])
+        let a = corresponding(param: node.parameters[1])
+        let n = corresponding(param: node.parameters[2])
+        let temp = ParameterIdentifier(nextRegister())
+        let mask1 = ParameterIdentifier(nextRegister())
+        let mask2 = ParameterIdentifier(nextRegister())
+        let i = ParameterIdentifier(nextRegister())
+        let head_shift = ParameterIdentifier(labelMaker.next())
+        let tail_shift = ParameterIdentifier(labelMaker.next())
+        let head_body = ParameterIdentifier(labelMaker.next())
+        let skip = ParameterIdentifier(labelMaker.next())
+        let tail_body = ParameterIdentifier(labelMaker.next())
+        
+        return Seq(sourceAnchor: node.sourceAnchor, children: [
+            InstructionNode(instruction: kLIU, parameters: [b, ParameterNumber(0)]),
+            InstructionNode(instruction: kLIU, parameters: [mask1, ParameterNumber(1)]),
+            InstructionNode(instruction: kLIU, parameters: [mask2, ParameterNumber(1)]),
+            InstructionNode(instruction: kADDI, parameters: [temp, n, ParameterNumber(0)]),
+            LabelDeclaration(head_shift),
+            InstructionNode(instruction: kCMPI, parameters: [temp, ParameterNumber(0)]),
+            InstructionNode(instruction: kBEQ, parameter: tail_shift),
+            InstructionNode(instruction: kADD, parameters: [mask2, mask2, mask2]),
+            InstructionNode(instruction: kSUBI, parameters: [temp, temp, ParameterNumber(1)]),
+            InstructionNode(instruction: kJMP, parameter: head_shift),
+            LabelDeclaration(tail_shift),
+            InstructionNode(instruction: kLIU, parameters: [i, ParameterNumber(0)]),
+            LabelDeclaration(head_body),
+            InstructionNode(instruction: kLIU, parameters: [temp, ParameterNumber(N)]),
+            InstructionNode(instruction: kSUB, parameters: [temp, temp, n]),
+            InstructionNode(instruction: kCMP, parameters: [i, temp]),
+            InstructionNode(instruction: kBGE, parameter: tail_body),
+            InstructionNode(instruction: kAND, parameters: [temp, a, mask1]),
+            InstructionNode(instruction: kCMPI, parameters: [temp, ParameterNumber(0)]),
+            InstructionNode(instruction: kBEQ, parameter: skip),
+            InstructionNode(instruction: kOR, parameters: [b, b, mask2]),
+            LabelDeclaration(skip),
+            InstructionNode(instruction: kADD, parameters: [mask1, mask1, mask1]),
+            InstructionNode(instruction: kADD, parameters: [mask2, mask2, mask2]),
+            InstructionNode(instruction: kADDI, parameters: [i, i, ParameterNumber(1)]),
+            InstructionNode(instruction: kJMP, parameter: head_body),
+            LabelDeclaration(tail_body)
+        ])
     }
     
     func lsr16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
-        fatalError("unimplemented")
+        let N = 16
+        let b = corresponding(param: node.parameters[0])
+        let a = corresponding(param: node.parameters[1])
+        let n = corresponding(param: node.parameters[2])
+        let temp = ParameterIdentifier(nextRegister())
+        let mask1 = ParameterIdentifier(nextRegister())
+        let mask2 = ParameterIdentifier(nextRegister())
+        let i = ParameterIdentifier(nextRegister())
+        let head_shift = ParameterIdentifier(labelMaker.next())
+        let tail_shift = ParameterIdentifier(labelMaker.next())
+        let head_body = ParameterIdentifier(labelMaker.next())
+        let skip = ParameterIdentifier(labelMaker.next())
+        let tail_body = ParameterIdentifier(labelMaker.next())
+        
+        return Seq(sourceAnchor: node.sourceAnchor, children: [
+            InstructionNode(instruction: kLIU, parameters: [b, ParameterNumber(0)]),
+            InstructionNode(instruction: kLIU, parameters: [mask1, ParameterNumber(1)]),
+            InstructionNode(instruction: kLIU, parameters: [mask2, ParameterNumber(1)]),
+            InstructionNode(instruction: kADDI, parameters: [temp, n, ParameterNumber(0)]),
+            LabelDeclaration(head_shift),
+            InstructionNode(instruction: kCMPI, parameters: [temp, ParameterNumber(0)]),
+            InstructionNode(instruction: kBEQ, parameter: tail_shift),
+            InstructionNode(instruction: kADD, parameters: [mask2, mask2, mask2]),
+            InstructionNode(instruction: kSUBI, parameters: [temp, temp, ParameterNumber(1)]),
+            InstructionNode(instruction: kJMP, parameter: head_shift),
+            LabelDeclaration(tail_shift),
+            InstructionNode(instruction: kLIU, parameters: [i, ParameterNumber(0)]),
+            LabelDeclaration(head_body),
+            InstructionNode(instruction: kLIU, parameters: [temp, ParameterNumber(N)]),
+            InstructionNode(instruction: kSUB, parameters: [temp, temp, n]),
+            InstructionNode(instruction: kCMP, parameters: [i, temp]),
+            InstructionNode(instruction: kBGE, parameter: tail_body),
+            InstructionNode(instruction: kAND, parameters: [temp, a, mask2]),
+            InstructionNode(instruction: kCMPI, parameters: [temp, ParameterNumber(0)]),
+            InstructionNode(instruction: kBEQ, parameter: skip),
+            InstructionNode(instruction: kOR, parameters: [b, b, mask1]),
+            LabelDeclaration(skip),
+            InstructionNode(instruction: kADD, parameters: [mask1, mask1, mask1]),
+            InstructionNode(instruction: kADD, parameters: [mask2, mask2, mask2]),
+            InstructionNode(instruction: kADDI, parameters: [i, i, ParameterNumber(1)]),
+            InstructionNode(instruction: kJMP, parameter: head_body),
+            LabelDeclaration(tail_body)
+        ])
     }
     
     func eq16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {

@@ -9,6 +9,10 @@
 public class LabelDeclaration: AbstractSyntaxTreeNode {
     public let identifier: String
     
+    public convenience init(sourceAnchor: SourceAnchor? = nil, _ ident: ParameterIdentifier) {
+        self.init(sourceAnchor: sourceAnchor, identifier: ident.value)
+    }
+    
     public required init(sourceAnchor: SourceAnchor? = nil, identifier: String) {
         self.identifier = identifier
         super.init(sourceAnchor: sourceAnchor)

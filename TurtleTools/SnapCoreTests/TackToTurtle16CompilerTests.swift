@@ -1133,4 +1133,115 @@ class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
+    
+    func testLSL16_0_shift_0() throws {
+        let input = InstructionNode(instruction: Tack.kLSL16, parameters:[
+            ParameterIdentifier("vr2"),
+            ParameterIdentifier("vr1"),
+            ParameterIdentifier("vr0")
+        ])
+        let debugger = makeDebugger(assembly: try compile(input))
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(1, 0)
+        debugger.computer.setRegister(2, 0)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(2), 0)
+    }
+    
+    func test_left_shift_algorithm() throws {
+        let N = 16
+        var b = 0
+        let a = 2
+        let n = 1
+        var mask1 = 1
+        var mask2 = 1 << n
+        var i = 0
+        while i < N-n {
+            if (a & mask1) != 0 {
+                b |= mask2
+            }
+            mask1 += mask1
+            mask2 += mask2
+            i += 1
+        }
+        XCTAssertEqual(b, 4)
+    }
+    
+    func testLSL16_2_shift_1() throws {
+        let input = InstructionNode(instruction: Tack.kLSL16, parameters:[
+            ParameterIdentifier("vr0"),
+            ParameterIdentifier("vr1"),
+            ParameterIdentifier("vr2")
+        ])
+        let assembly = try compile(input)
+        let debugger = makeDebugger(assembly: assembly)
+        debugger.logger = PrintLogger()
+        let b = 0
+        let a = 1
+        let n = 2
+        let temp = 3
+        let mask1 = 4
+        let mask2 = 5
+        let i = 6
+        debugger.computer.setRegister(b, 0)
+        debugger.computer.setRegister(a, 2)
+        debugger.computer.setRegister(n, 1)
+        debugger.computer.setRegister(temp, 0)
+        debugger.computer.setRegister(mask2, 0)
+        debugger.computer.setRegister(mask1, 0)
+        debugger.computer.setRegister(i, 0)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(b), 4)
+        XCTAssertEqual(debugger.computer.getRegister(a), 2)
+        XCTAssertEqual(debugger.computer.getRegister(n), 1)
+    }
+    
+    func test_right_shift_algorithm() throws {
+        let N = 16
+        var b = 0
+        let a = 2
+        let n = 1
+        var mask1 = 1
+        var mask2 = 1 << n
+        var i = 0
+        while i < N-n {
+            if (a & mask2) != 0 {
+                b |= mask1
+            }
+            mask1 += mask1
+            mask2 += mask2
+            i += 1
+        }
+        XCTAssertEqual(b, 1)
+    }
+    
+    func testLSR16_2_shift_1() throws {
+        let input = InstructionNode(instruction: Tack.kLSR16, parameters:[
+            ParameterIdentifier("vr0"),
+            ParameterIdentifier("vr1"),
+            ParameterIdentifier("vr2")
+        ])
+        let assembly = try compile(input)
+        let debugger = makeDebugger(assembly: assembly)
+        debugger.logger = PrintLogger()
+        let b = 0
+        let a = 1
+        let n = 2
+        let temp = 3
+        let mask1 = 4
+        let mask2 = 5
+        let i = 6
+        debugger.computer.setRegister(b, 0)
+        debugger.computer.setRegister(a, 2)
+        debugger.computer.setRegister(n, 1)
+        debugger.computer.setRegister(temp, 0)
+        debugger.computer.setRegister(mask2, 0)
+        debugger.computer.setRegister(mask1, 0)
+        debugger.computer.setRegister(i, 0)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(b), 1)
+        XCTAssertEqual(debugger.computer.getRegister(a), 2)
+        XCTAssertEqual(debugger.computer.getRegister(n), 1)
+    }
 }

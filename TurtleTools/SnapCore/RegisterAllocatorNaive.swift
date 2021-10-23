@@ -30,9 +30,9 @@ public class RegisterAllocatorNaive: SnapASTTransformerBase {
         case "vr2": return "r2"
         case "vr3": return "r3"
         case "vr4": return "r4"
-        case "ra":  return "r5"
-        case "sp":  return "r6"
-        case "fp":  return "r7"
+        case "vr5", "ra":  return "r5"
+        case "vr6", "sp":  return "r6"
+        case "vr7", "fp":  return "r7"
         default: return nil
         }
     }

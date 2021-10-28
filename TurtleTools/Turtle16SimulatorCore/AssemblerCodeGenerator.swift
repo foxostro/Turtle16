@@ -191,9 +191,9 @@ public class AssemblerCodeGenerator: NSObject {
         instructions.append(try gen.blt(offset))
     }
     
-    public func bge(offset: Int) throws {
+    public func bgt(offset: Int) throws {
         assert(isAssembling)
-        instructions.append(try gen.bge(offset))
+        instructions.append(try gen.bgt(offset))
     }
     
     public func bltu(offset: Int) throws {
@@ -201,9 +201,9 @@ public class AssemblerCodeGenerator: NSObject {
         instructions.append(try gen.bltu(offset))
     }
     
-    public func bgeu(offset: Int) throws {
+    public func bgtu(offset: Int) throws {
         assert(isAssembling)
-        instructions.append(try gen.bgeu(offset))
+        instructions.append(try gen.bgtu(offset))
     }
     
     public func adc(_ dst: Register, _ left: Register, _ right: Register) throws {
@@ -260,16 +260,16 @@ public class AssemblerCodeGenerator: NSObject {
         try branch(name, { try self.gen.blt($0) })
     }
     
-    public func bge(_ name: String) throws {
-        try branch(name, { try self.gen.bge($0) })
+    public func bgt(_ name: String) throws {
+        try branch(name, { try self.gen.bgt($0) })
     }
     
     public func bltu(_ name: String) throws {
         try branch(name, { try self.gen.bltu($0) })
     }
     
-    public func bgeu(_ name: String) throws {
-        try branch(name, { try self.gen.bgeu($0) })
+    public func bgtu(_ name: String) throws {
+        try branch(name, { try self.gen.bgtu($0) })
     }
     
     public func la(_ destination: Register, _ name: String) throws {

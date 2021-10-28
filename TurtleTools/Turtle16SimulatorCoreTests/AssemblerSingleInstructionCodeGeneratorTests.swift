@@ -273,9 +273,9 @@ class AssemblerSingleInstructionCodeGeneratorTests: XCTestCase {
         XCTAssertEqual(try? codeGen.blt(1023), 0b1101001111111111) // BLT 1023
     }
     
-    func testBge() throws {
+    func testBgt() throws {
         let codeGen = AssemblerSingleInstructionCodeGenerator()
-        XCTAssertEqual(try? codeGen.bge(1023), 0b1101101111111111) // BGE 1023
+        XCTAssertEqual(try? codeGen.bgt(1023), 0b1101101111111111) // BGT 1023
     }
     
     func testBltu() throws {
@@ -283,8 +283,8 @@ class AssemblerSingleInstructionCodeGeneratorTests: XCTestCase {
         XCTAssertEqual(try? codeGen.bltu(1023), 0b1110001111111111) // BLTU 1023
     }
     
-    func testBgeu() throws {
+    func testBgtu() throws {
         let codeGen = AssemblerSingleInstructionCodeGenerator()
-        XCTAssertEqual(try? codeGen.bgeu(1023), 0b1110101111111111) // BGEU 1023
+        XCTAssertEqual(try? codeGen.bgtu(1023), 0b1110101111111111) // BGTU 1023
     }
 }

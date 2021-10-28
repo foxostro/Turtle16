@@ -80,9 +80,9 @@ public class DecoderGenerator: NSObject {
     public static let opcodeBeq = 24
     public static let opcodeBne = 25
     public static let opcodeBlt = 26
-    public static let opcodeBge = 27
+    public static let opcodeBgt = 27
     public static let opcodeBltu = 28
-    public static let opcodeBgeu = 29
+    public static let opcodeBgtu = 29
     public static let opcodeAdc = 30
     public static let opcodeSbc = 31
     
@@ -383,16 +383,18 @@ public class DecoderGenerator: NSObject {
             DecoderGenerator.ALUControl(fn: .add, rs: .zb, c0: 0),
             DecoderGenerator.J
         ]
+        
         let bits = [UInt(0), UInt(1)]
+        
         for carry in bits {
             for ovf in bits {
                 for z in bits {
                     makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: carry, z: 1, ovf: ovf, opcode: DecoderGenerator.opcodeBeq), signals: signalsForRelativeJump)
                     makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: carry, z: 0, ovf: ovf, opcode: DecoderGenerator.opcodeBne), signals: signalsForRelativeJump)
                     makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: carry, z: z, ovf: 1, opcode: DecoderGenerator.opcodeBlt), signals: signalsForRelativeJump)
-                    makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: carry, z: z, ovf: 0, opcode: DecoderGenerator.opcodeBge), signals: signalsForRelativeJump)
                     makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: 1, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeBltu), signals: signalsForRelativeJump)
-                    makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: 0, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeBgeu), signals: signalsForRelativeJump)
+                    makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: carry, z: 0, ovf: 0, opcode: DecoderGenerator.opcodeBgt), signals: signalsForRelativeJump)
+                    makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: 1, z: 0, ovf: ovf, opcode: DecoderGenerator.opcodeBgtu), signals: signalsForRelativeJump)
                     
                     makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: 0, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeAdc), signals: [
                         DecoderGenerator.SelRightOp(.b),

@@ -735,19 +735,22 @@ class DecoderGeneratorTests: XCTestCase {
         }
     }
     
-    func testOpcodeBge() throws {
+    func testOpcodeBgt() throws {
         let generator = DecoderGenerator()
         let decoder = generator.generate()
         
         let bits = [UInt(0), UInt(1)]
         for carry in bits {
             for z in bits {
-                let indexForFailCondition = generator.makeIndex(rst: 1, carry: carry, z: z, ovf: 1, opcode: DecoderGenerator.opcodeBge)
-                XCTAssertEqual(decoder[indexForFailCondition], ID.nopControlWord_ID)
-                
-                let indexForPassCondition = generator.makeIndex(rst: 1, carry: carry, z: z, ovf: 0, opcode: DecoderGenerator.opcodeBge)
-                let ctlHighZ = decoder[indexForPassCondition]
-                XCTAssertTrue(isRelativeJump(ctlHighZ))
+                for ovf in bits {
+                    let index = generator.makeIndex(rst: 1, carry: carry, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeBgt)
+                    let ctlHighZ = decoder[index]
+                    if z == 0 && ovf == 0 {
+                        XCTAssertTrue(isRelativeJump(ctlHighZ))
+                    } else {
+                        XCTAssertEqual(decoder[index], ID.nopControlWord_ID)
+                    }
+                }
             }
         }
     }
@@ -769,19 +772,22 @@ class DecoderGeneratorTests: XCTestCase {
         }
     }
     
-    func testOpcodeBgeu() throws {
+    func testOpcodeBgtu() throws {
         let generator = DecoderGenerator()
         let decoder = generator.generate()
         
         let bits = [UInt(0), UInt(1)]
-        for ovf in bits {
+        for carry in bits {
             for z in bits {
-                let indexForFailCondition = generator.makeIndex(rst: 1, carry: 1, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeBgeu)
-                XCTAssertEqual(decoder[indexForFailCondition], ID.nopControlWord_ID)
-                
-                let indexForPassCondition = generator.makeIndex(rst: 1, carry: 0, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeBgeu)
-                let ctlHighZ = decoder[indexForPassCondition]
-                XCTAssertTrue(isRelativeJump(ctlHighZ))
+                for ovf in bits {
+                    let index = generator.makeIndex(rst: 1, carry: carry, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeBgtu)
+                    let ctlHighZ = decoder[index]
+                    if z == 0 && carry == 1 {
+                        XCTAssertTrue(isRelativeJump(ctlHighZ))
+                    } else {
+                        XCTAssertEqual(decoder[index], ID.nopControlWord_ID)
+                    }
+                }
             }
         }
     }

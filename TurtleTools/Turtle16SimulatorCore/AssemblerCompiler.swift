@@ -36,9 +36,9 @@ public let kJALR = "JALR"
 public let kBEQ = "BEQ"
 public let kBNE = "BNE"
 public let kBLT = "BLT"
-public let kBGE = "BGE"
+public let kBGT = "BGT"
 public let kBLTU = "BLTU"
-public let kBGEU = "BGEU"
+public let kBGTU = "BGTU"
 public let kADC = "ADC"
 public let kSBC = "SBC"
 
@@ -180,14 +180,14 @@ public class AssemblerCompiler: NSObject {
         case kBLT:
             try compileBLT(node)
 
-        case kBGE:
-            try compileBGE(node)
+        case kBGT:
+            try compileBGT(node)
 
         case kBLTU:
             try compileBLTU(node)
 
-        case kBGEU:
-            try compileBGEU(node)
+        case kBGTU:
+            try compileBGTU(node)
             
         case kADC:
             try compileADC(node)
@@ -579,7 +579,7 @@ public class AssemblerCompiler: NSObject {
         try codeGenerator.blt(name)
     }
     
-    fileprivate func compileBGE(_ node: InstructionNode) throws {
+    fileprivate func compileBGT(_ node: InstructionNode) throws {
         guard node.parameters.count == 1 else {
             throw errorExpectsOneOperand(node)
         }
@@ -589,7 +589,7 @@ public class AssemblerCompiler: NSObject {
         guard let name = (node.parameters[0] as? ParameterIdentifier)?.value else {
             throw errorExpectsFirstOperandToBeLabelIdentifier(node)
         }
-        try codeGenerator.bge(name)
+        try codeGenerator.bgt(name)
     }
     
     fileprivate func compileBLTU(_ node: InstructionNode) throws {
@@ -605,7 +605,7 @@ public class AssemblerCompiler: NSObject {
         try codeGenerator.bltu(name)
     }
     
-    fileprivate func compileBGEU(_ node: InstructionNode) throws {
+    fileprivate func compileBGTU(_ node: InstructionNode) throws {
         guard node.parameters.count == 1 else {
             throw errorExpectsOneOperand(node)
         }
@@ -615,7 +615,7 @@ public class AssemblerCompiler: NSObject {
         guard let name = (node.parameters[0] as? ParameterIdentifier)?.value else {
             throw errorExpectsFirstOperandToBeLabelIdentifier(node)
         }
-        try codeGenerator.bgeu(name)
+        try codeGenerator.bgtu(name)
     }
     
     fileprivate func compileADC(_ node: InstructionNode) throws {

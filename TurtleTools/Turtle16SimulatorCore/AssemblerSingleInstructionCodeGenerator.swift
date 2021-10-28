@@ -217,16 +217,16 @@ public class AssemblerSingleInstructionCodeGenerator: NSObject {
         return try makeInstructionIII(opcode: DecoderGenerator.opcodeBlt, imm: offset)
     }
     
-    public func bge(_ offset: Int) throws -> UInt16 {
-        return try makeInstructionIII(opcode: DecoderGenerator.opcodeBge, imm: offset)
+    public func bgt(_ offset: Int) throws -> UInt16 {
+        return try makeInstructionIII(opcode: DecoderGenerator.opcodeBgt, imm: offset)
     }
     
     public func bltu(_ offset: Int) throws -> UInt16 {
         return try makeInstructionIII(opcode: DecoderGenerator.opcodeBltu, imm: offset)
     }
     
-    public func bgeu(_ offset: Int) throws -> UInt16 {
-        return try makeInstructionIII(opcode: DecoderGenerator.opcodeBgeu, imm: offset)
+    public func bgtu(_ offset: Int) throws -> UInt16 {
+        return try makeInstructionIII(opcode: DecoderGenerator.opcodeBgtu, imm: offset)
     }
     
     public func adc(_ dst: Register, _ left: Register, _ right: Register) throws -> UInt16 {

@@ -1097,148 +1097,39 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertTrue(cpu.isHalted)
     }
     
-    func testBeq_takeTheJump() {
+    func testBeq() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b0000000000000000, // NOP
             0b1100001111111111  // BEQ 1023
         ]
         
-        cpu.reset()
-        cpu.carry = 0
-        cpu.ovf = 0
-        cpu.z = 1
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1026, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1027, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1028, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 1
-        cpu.ovf = 0
-        cpu.z = 1
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1026, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1027, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1028, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 0
-        cpu.ovf = 1
-        cpu.z = 1
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1026, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1027, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1028, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 1
-        cpu.ovf = 1
-        cpu.z = 1
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1026, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1027, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1028, cpu.pc)
-    }
-    
-    func testBeq_dontTakeTheJump() {
-        let cpu = SchematicLevelCPUModel()
-        cpu.instructions = [
-            0b0000000000000000, // NOP
-            0b1100001111111111  // BEQ 1023
-        ]
-        
-        cpu.reset()
-        cpu.carry = 0
-        cpu.ovf = 0
-        cpu.z = 0
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(4, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 1
-        cpu.ovf = 0
-        cpu.z = 0
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(4, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 0
-        cpu.ovf = 1
-        cpu.z = 0
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(4, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 1
-        cpu.ovf = 1
-        cpu.z = 0
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(4, cpu.pc)
+        let bits = [UInt(0), UInt(1)]
+        for carry in bits {
+            for z in bits {
+                for ovf in bits {
+                    cpu.reset()
+                    cpu.carry = carry
+                    cpu.ovf = ovf
+                    cpu.z = z
+                    
+                    XCTAssertEqual(0, cpu.pc)
+                    cpu.step()
+                    XCTAssertEqual(1, cpu.pc)
+                    cpu.step()
+                    XCTAssertEqual(2, cpu.pc)
+                    cpu.step()
+                    XCTAssertEqual(3, cpu.pc)
+                    cpu.step()
+                    
+                    if z == 1 {
+                        XCTAssertEqual(1026, cpu.pc)
+                    } else {
+                        XCTAssertEqual(4, cpu.pc)
+                    }
+                }
+            }
+        }
     }
     
     func testBne_takeTheJump() {
@@ -1248,715 +1139,172 @@ class SchematicLevelCPUModelTests: XCTestCase {
             0b1100101111111111  // BNE 1023
         ]
         
-        cpu.reset()
-        cpu.carry = 0
-        cpu.ovf = 0
-        cpu.z = 0
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1026, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1027, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1028, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 1
-        cpu.ovf = 0
-        cpu.z = 0
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1026, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1027, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1028, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 0
-        cpu.ovf = 1
-        cpu.z = 0
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1026, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1027, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1028, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 1
-        cpu.ovf = 1
-        cpu.z = 0
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1026, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1027, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1028, cpu.pc)
+        let bits = [UInt(0), UInt(1)]
+        for carry in bits {
+            for z in bits {
+                for ovf in bits {
+                    cpu.reset()
+                    cpu.carry = carry
+                    cpu.ovf = ovf
+                    cpu.z = z
+                    
+                    XCTAssertEqual(0, cpu.pc)
+                    cpu.step()
+                    XCTAssertEqual(1, cpu.pc)
+                    cpu.step()
+                    XCTAssertEqual(2, cpu.pc)
+                    cpu.step()
+                    XCTAssertEqual(3, cpu.pc)
+                    cpu.step()
+                    
+                    if z == 0 {
+                        XCTAssertEqual(1026, cpu.pc)
+                    } else {
+                        XCTAssertEqual(4, cpu.pc)
+                    }
+                }
+            }
+        }
     }
     
-    func testBne_dontTakeTheJump() {
-        let cpu = SchematicLevelCPUModel()
-        cpu.instructions = [
-            0b0000000000000000, // NOP
-            0b1100101111111111  // BNE 1023
-        ]
-        
-        cpu.reset()
-        cpu.carry = 0
-        cpu.ovf = 0
-        cpu.z = 1
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 1
-        cpu.ovf = 0
-        cpu.z = 1
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(4, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 0
-        cpu.ovf = 1
-        cpu.z = 1
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(4, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 1
-        cpu.ovf = 1
-        cpu.z = 1
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(4, cpu.pc)
-    }
-    
-    func testBlt_takeTheJump() {
+    func testBlt() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b0000000000000000, // NOP
             0b1101001111111111  // BLT 1023
         ]
         
-        cpu.reset()
-        cpu.carry = 0
-        cpu.ovf = 1
-        cpu.z = 0
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1026, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1027, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1028, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 1
-        cpu.ovf = 1
-        cpu.z = 0
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1026, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1027, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1028, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 0
-        cpu.ovf = 1
-        cpu.z = 1
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1026, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1027, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1028, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 1
-        cpu.ovf = 1
-        cpu.z = 1
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1026, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1027, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1028, cpu.pc)
+        let bits = [UInt(0), UInt(1)]
+        for carry in bits {
+            for z in bits {
+                for ovf in bits {
+                    cpu.reset()
+                    cpu.carry = carry
+                    cpu.ovf = ovf
+                    cpu.z = z
+                    
+                    XCTAssertEqual(0, cpu.pc)
+                    cpu.step()
+                    XCTAssertEqual(1, cpu.pc)
+                    cpu.step()
+                    XCTAssertEqual(2, cpu.pc)
+                    cpu.step()
+                    XCTAssertEqual(3, cpu.pc)
+                    cpu.step()
+                    
+                    if ovf == 1 {
+                        XCTAssertEqual(1026, cpu.pc)
+                    } else {
+                        XCTAssertEqual(4, cpu.pc)
+                    }
+                }
+            }
+        }
     }
     
-    func testBlt_dontTakeTheJump() {
+    func testBgt() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b0000000000000000, // NOP
-            0b1101001111111111  // BLT 1023
+            0b1101101111111111  // BGT 1023
         ]
-        
-        cpu.reset()
-        cpu.carry = 0
-        cpu.ovf = 0
-        cpu.z = 0
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(4, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 1
-        cpu.ovf = 0
-        cpu.z = 0
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(4, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 0
-        cpu.ovf = 0
-        cpu.z = 1
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(4, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 1
-        cpu.ovf = 0
-        cpu.z = 1
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(4, cpu.pc)
+            
+        let bits = [UInt(0), UInt(1)]
+        for carry in bits {
+            for z in bits {
+                for ovf in bits {
+                    cpu.reset()
+                    cpu.carry = carry
+                    cpu.ovf = ovf
+                    cpu.z = z
+                    
+                    XCTAssertEqual(0, cpu.pc)
+                    cpu.step()
+                    XCTAssertEqual(1, cpu.pc)
+                    cpu.step()
+                    XCTAssertEqual(2, cpu.pc)
+                    cpu.step()
+                    XCTAssertEqual(3, cpu.pc)
+                    cpu.step()
+                    
+                    if z == 0 && ovf == 0 {
+                        XCTAssertEqual(1026, cpu.pc)
+                    } else {
+                        XCTAssertEqual(4, cpu.pc)
+                    }
+                }
+            }
+        }
     }
     
-    func testBge_takeTheJump() {
-        let cpu = SchematicLevelCPUModel()
-        cpu.instructions = [
-            0b0000000000000000, // NOP
-            0b1101101111111111  // BGE 1023
-        ]
-        
-        cpu.reset()
-        cpu.carry = 0
-        cpu.ovf = 0
-        cpu.z = 0
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1026, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1027, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1028, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 1
-        cpu.ovf = 0
-        cpu.z = 0
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1026, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1027, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1028, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 0
-        cpu.ovf = 0
-        cpu.z = 1
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1026, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1027, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1028, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 1
-        cpu.ovf = 0
-        cpu.z = 1
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1026, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1027, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1028, cpu.pc)
-    }
-    
-    func testBge_dontTakeTheJump() {
-        let cpu = SchematicLevelCPUModel()
-        cpu.instructions = [
-            0b0000000000000000, // NOP
-            0b1101101111111111  // BGE 1023
-        ]
-        
-        cpu.reset()
-        cpu.carry = 0
-        cpu.ovf = 1
-        cpu.z = 0
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(4, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 1
-        cpu.ovf = 1
-        cpu.z = 0
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(4, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 0
-        cpu.ovf = 1
-        cpu.z = 1
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(4, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 1
-        cpu.ovf = 1
-        cpu.z = 1
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(4, cpu.pc)
-    }
-    
-    func testBltu_takeTheJump() {
+    func testBltu() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b0000000000000000, // NOP
             0b1110001111111111  // BLTU 1023
         ]
         
-        cpu.reset()
-        cpu.carry = 1
-        cpu.ovf = 0
-        cpu.z = 0
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1026, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1027, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1028, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 1
-        cpu.ovf = 1
-        cpu.z = 0
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1026, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1027, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1028, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 1
-        cpu.ovf = 0
-        cpu.z = 1
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1026, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1027, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1028, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 1
-        cpu.ovf = 1
-        cpu.z = 1
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1026, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1027, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1028, cpu.pc)
+        let bits = [UInt(0), UInt(1)]
+        for carry in bits {
+            for z in bits {
+                for ovf in bits {
+                    cpu.reset()
+                    cpu.carry = carry
+                    cpu.ovf = ovf
+                    cpu.z = z
+                    
+                    XCTAssertEqual(0, cpu.pc)
+                    cpu.step()
+                    XCTAssertEqual(1, cpu.pc)
+                    cpu.step()
+                    XCTAssertEqual(2, cpu.pc)
+                    cpu.step()
+                    XCTAssertEqual(3, cpu.pc)
+                    cpu.step()
+                    
+                    if carry == 1 {
+                        XCTAssertEqual(1026, cpu.pc)
+                    } else {
+                        XCTAssertEqual(4, cpu.pc)
+                    }
+                }
+            }
+        }
     }
     
-    func testBltu_dontTakeTheJump() {
+    func testBgtu() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b0000000000000000, // NOP
-            0b1110001111111111  // BLTU 1023
+            0b1110101111111111  // BGTU 1023
         ]
         
-        cpu.reset()
-        cpu.carry = 0
-        cpu.ovf = 0
-        cpu.z = 0
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(4, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 0
-        cpu.ovf = 1
-        cpu.z = 0
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(4, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 0
-        cpu.ovf = 0
-        cpu.z = 1
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(4, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 0
-        cpu.ovf = 1
-        cpu.z = 1
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(4, cpu.pc)
-    }
-    
-    func testBgeu_takeTheJump() {
-        let cpu = SchematicLevelCPUModel()
-        cpu.instructions = [
-            0b0000000000000000, // NOP
-            0b1110101111111111  // BGEU 1023
-        ]
-        
-        cpu.reset()
-        cpu.carry = 0
-        cpu.ovf = 0
-        cpu.z = 0
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1026, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1027, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1028, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 0
-        cpu.ovf = 1
-        cpu.z = 0
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1026, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1027, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1028, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 0
-        cpu.ovf = 0
-        cpu.z = 1
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1026, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1027, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1028, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 0
-        cpu.ovf = 1
-        cpu.z = 1
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1026, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1027, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1028, cpu.pc)
-    }
-    
-    func testBgeu_dontTakeTheJump() {
-        let cpu = SchematicLevelCPUModel()
-        cpu.instructions = [
-            0b0000000000000000, // NOP
-            0b1110101111111111  // BGEU 1023
-        ]
-        
-        cpu.reset()
-        cpu.carry = 1
-        cpu.ovf = 0
-        cpu.z = 0
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(4, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 1
-        cpu.ovf = 1
-        cpu.z = 0
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(4, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 1
-        cpu.ovf = 0
-        cpu.z = 1
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(4, cpu.pc)
-        
-        cpu.reset()
-        cpu.carry = 1
-        cpu.ovf = 1
-        cpu.z = 1
-        XCTAssertEqual(0, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(1, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(2, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(3, cpu.pc)
-        cpu.step()
-        XCTAssertEqual(4, cpu.pc)
+        let bits = [UInt(0), UInt(1)]
+        for carry in bits {
+            for z in bits {
+                for ovf in bits {
+                    cpu.reset()
+                    cpu.carry = carry
+                    cpu.ovf = ovf
+                    cpu.z = z
+                    
+                    XCTAssertEqual(0, cpu.pc)
+                    cpu.step()
+                    XCTAssertEqual(1, cpu.pc)
+                    cpu.step()
+                    XCTAssertEqual(2, cpu.pc)
+                    cpu.step()
+                    XCTAssertEqual(3, cpu.pc)
+                    cpu.step()
+                    
+                    if z == 0 && carry == 1 {
+                        XCTAssertEqual(1026, cpu.pc)
+                    } else {
+                        XCTAssertEqual(4, cpu.pc)
+                    }
+                }
+            }
+        }
     }
     
     func testDemonstrateHazard_RAW() {

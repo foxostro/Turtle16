@@ -1336,33 +1336,33 @@ class AssemblerCompilerTests: XCTestCase {
         ])
     }
     
-    func testBGEExpectsOneOperand() throws {
+    func testBGTExpectsOneOperand() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "BGE")
+            InstructionNode(instruction: "BGT")
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "instruction expects one operand: `BGE'")
+        XCTAssertEqual(compiler.errors.first?.message, "instruction expects one operand: `BGT'")
         XCTAssertEqual(compiler.instructions, [])
     }
     
-    func testBGEExpectsFirstOperandToBeLabelIdentifier() throws {
+    func testBGTExpectsFirstOperandToBeLabelIdentifier() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "BGE", parameters: [ParameterNumber(0)])
+            InstructionNode(instruction: "BGT", parameters: [ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "instruction expects the first operand to be a label identifier: `BGE'")
+        XCTAssertEqual(compiler.errors.first?.message, "instruction expects the first operand to be a label identifier: `BGT'")
         XCTAssertEqual(compiler.instructions, [])
     }
     
-    func testCompileBGE() throws {
+    func testCompileBGT() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
             LabelDeclaration(identifier: "foo"),
-            InstructionNode(instruction: "BGE", parameters: [ParameterIdentifier("foo")])
+            InstructionNode(instruction: "BGT", parameters: [ParameterIdentifier("foo")])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
@@ -1406,33 +1406,33 @@ class AssemblerCompilerTests: XCTestCase {
         ])
     }
     
-    func testBGEUExpectsOneOperand() throws {
+    func testBGTUExpectsOneOperand() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "BGEU")
+            InstructionNode(instruction: "BGTU")
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "instruction expects one operand: `BGEU'")
+        XCTAssertEqual(compiler.errors.first?.message, "instruction expects one operand: `BGTU'")
         XCTAssertEqual(compiler.instructions, [])
     }
     
-    func testBGEUExpectsFirstOperandToBeLabelIdentifier() throws {
+    func testBGTUExpectsFirstOperandToBeLabelIdentifier() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
-            InstructionNode(instruction: "BGEU", parameters: [ParameterNumber(0)])
+            InstructionNode(instruction: "BGTU", parameters: [ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "instruction expects the first operand to be a label identifier: `BGEU'")
+        XCTAssertEqual(compiler.errors.first?.message, "instruction expects the first operand to be a label identifier: `BGTU'")
         XCTAssertEqual(compiler.instructions, [])
     }
     
-    func testCompileBGEU() throws {
+    func testCompileBGTU() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
             LabelDeclaration(identifier: "foo"),
-            InstructionNode(instruction: "BGEU", parameters: [ParameterIdentifier("foo")])
+            InstructionNode(instruction: "BGTU", parameters: [ParameterIdentifier("foo")])
         ])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)

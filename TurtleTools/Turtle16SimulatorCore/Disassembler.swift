@@ -35,9 +35,9 @@ public class Disassembler: NSObject {
         DecoderGenerator.opcodeBeq : "BEQ",
         DecoderGenerator.opcodeBne : "BNE",
         DecoderGenerator.opcodeBlt : "BLT",
-        DecoderGenerator.opcodeBge : "BGE",
+        DecoderGenerator.opcodeBgt : "BGT",
         DecoderGenerator.opcodeBltu : "BLTU",
-        DecoderGenerator.opcodeBgeu : "BGEU",
+        DecoderGenerator.opcodeBgtu : "BGTU",
         DecoderGenerator.opcodeAdc : "ADC",
         DecoderGenerator.opcodeSbc : "SBC"
     ]
@@ -81,9 +81,9 @@ public class Disassembler: NSObject {
         DecoderGenerator.opcodeBeq,
         DecoderGenerator.opcodeBne,
         DecoderGenerator.opcodeBlt,
-        DecoderGenerator.opcodeBge,
+        DecoderGenerator.opcodeBgt,
         DecoderGenerator.opcodeBltu,
-        DecoderGenerator.opcodeBgeu
+        DecoderGenerator.opcodeBgtu
     ]
     
     let formatXRI: Set<Int> = [

@@ -382,12 +382,12 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         XCTAssertEqual(codeGen.instructions.first, 0b1101001111111111) // BLT 1023
     }
     
-    func testBge() throws {
+    func testBgt() throws {
         let codeGen = AssemblerCodeGenerator()
         codeGen.begin()
-        XCTAssertNoThrow(try codeGen.bge(offset: 1023))
+        XCTAssertNoThrow(try codeGen.bgt(offset: 1023))
         XCTAssertEqual(codeGen.instructions.count, 1)
-        XCTAssertEqual(codeGen.instructions.first, 0b1101101111111111) // BGE 1023
+        XCTAssertEqual(codeGen.instructions.first, 0b1101101111111111) // BGT 1023
     }
     
     func testBltu() throws {
@@ -398,12 +398,12 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         XCTAssertEqual(codeGen.instructions.first, 0b1110001111111111) // BLTU 1023
     }
     
-    func testBgeu() throws {
+    func testBgtu() throws {
         let codeGen = AssemblerCodeGenerator()
         codeGen.begin()
-        XCTAssertNoThrow(try codeGen.bgeu(offset: 1023))
+        XCTAssertNoThrow(try codeGen.bgtu(offset: 1023))
         XCTAssertEqual(codeGen.instructions.count, 1)
-        XCTAssertEqual(codeGen.instructions.first, 0b1110101111111111) // BGEU 1023
+        XCTAssertEqual(codeGen.instructions.first, 0b1110101111111111) // BGTU 1023
     }
     
     func testLabel() throws {
@@ -541,13 +541,13 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         XCTAssertEqual(codeGen.instructions.first, 0b1101000000000000) // BLT 0
     }
     
-    func testBgeToLabel() throws {
+    func testBgtToLabel() throws {
         let codeGen = AssemblerCodeGenerator()
         codeGen.symbols["foo"] = 2
         codeGen.begin()
-        XCTAssertNoThrow(try codeGen.bge("foo"))
+        XCTAssertNoThrow(try codeGen.bgt("foo"))
         XCTAssertEqual(codeGen.instructions.count, 1)
-        XCTAssertEqual(codeGen.instructions.first, 0b1101100000000000) // BGE 0
+        XCTAssertEqual(codeGen.instructions.first, 0b1101100000000000) // BGT 0
     }
     
     func testBltuToLabel() throws {
@@ -559,13 +559,13 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         XCTAssertEqual(codeGen.instructions.first, 0b1110000000000000) // BLTU 0
     }
     
-    func testBgeuToLabel() throws {
+    func testBgtuToLabel() throws {
         let codeGen = AssemblerCodeGenerator()
         codeGen.symbols["foo"] = 2
         codeGen.begin()
-        XCTAssertNoThrow(try codeGen.bgeu("foo"))
+        XCTAssertNoThrow(try codeGen.bgtu("foo"))
         XCTAssertEqual(codeGen.instructions.count, 1)
-        XCTAssertEqual(codeGen.instructions.first, 0b1110100000000000) // BGEU 0
+        XCTAssertEqual(codeGen.instructions.first, 0b1110100000000000) // BGTU 0
     }
     
     func testLaWithNoPatching() throws {

@@ -63,94 +63,93 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         return parameters.reversed().map({ corresponding(param: $0) }).reversed()
     }
     
-    public override func compile(instruction node: InstructionNode) throws -> AbstractSyntaxTreeNode? {
+    public override func compile(tack node: TackInstructionNode) throws -> AbstractSyntaxTreeNode? {
         switch node.instruction {
-        case Tack.kCALL: return call(node)
-        case Tack.kCALLPTR: return callptr(node)
-        case Tack.kENTER: return enter(node)
-        case Tack.kLEAVE: return leave(node)
-        case Tack.kRET: return ret(node)
-        case Tack.kJMP: return jmp(node)
-        case Tack.kNOT: return not(node)
-        case Tack.kLA: return la(node)
-        case Tack.kBZ: return bz(node)
-        case Tack.kBNZ: return bnz(node)
-        case Tack.kLOAD: return load(node)
-        case Tack.kSTORE: return store(node)
-        case Tack.kSTSTR: return ststr(node)
-        case Tack.kMEMCPY: return memcpy(node)
-        case Tack.kALLOCA: return alloca(node)
-        case Tack.kFREE: return free(node)
-        case Tack.kANDI16: return andi16(node)
-        case Tack.kADDI16: return addi16(node)
-        case Tack.kSUBI16: return subi16(node)
-        case Tack.kMULI16: return muli16(node)
-        case Tack.kLI16: return li16(node)
-        case Tack.kLIU16: return liu16(node)
-        case Tack.kAND16: return and16(node)
-        case Tack.kOR16: return or16(node)
-        case Tack.kXOR16: return xor16(node)
-        case Tack.kNEG16: return neg16(node)
-        case Tack.kADD16: return add16(node)
-        case Tack.kSUB16: return sub16(node)
-        case Tack.kMUL16: return mul16(node)
-        case Tack.kDIV16: return div16(node)
-        case Tack.kMOD16: return mod16(node)
-        case Tack.kLSL16: return lsl16(node)
-        case Tack.kLSR16: return lsr16(node)
-        case Tack.kEQ16: return eq16(node)
-        case Tack.kNE16: return ne16(node)
-        case Tack.kLT16: return lt16(node)
-        case Tack.kGE16: return ge16(node)
-        case Tack.kLE16: return le16(node)
-        case Tack.kGT16: return gt16(node)
-        case Tack.kLI8: return li8(node)
-        case Tack.kAND8: return and8(node)
-        case Tack.kOR8: return or8(node)
-        case Tack.kXOR8: return xor8(node)
-        case Tack.kNEG8: return neg8(node)
-        case Tack.kADD8: return add8(node)
-        case Tack.kSUB8: return sub8(node)
-        case Tack.kMUL8: return mul8(node)
-        case Tack.kDIV8: return div8(node)
-        case Tack.kMOD8: return mod8(node)
-        case Tack.kLSL8: return lsl8(node)
-        case Tack.kLSR8: return lsr8(node)
-        case Tack.kEQ8: return eq8(node)
-        case Tack.kNE8: return ne8(node)
-        case Tack.kLT8: return lt8(node)
-        case Tack.kGE8: return ge8(node)
-        case Tack.kLE8: return le8(node)
-        case Tack.kGT8: return gt8(node)
-        default: return node
+        case .call: return call(node)
+        case .callptr: return callptr(node)
+        case .enter: return enter(node)
+        case .leave: return leave(node)
+        case .ret: return ret(node)
+        case .jmp: return jmp(node)
+        case .not: return not(node)
+        case .la: return la(node)
+        case .bz: return bz(node)
+        case .bnz: return bnz(node)
+        case .load: return load(node)
+        case .store: return store(node)
+        case .ststr: return ststr(node)
+        case .memcpy: return memcpy(node)
+        case .alloca: return alloca(node)
+        case .free: return free(node)
+        case .andi16: return andi16(node)
+        case .addi16: return addi16(node)
+        case .subi16: return subi16(node)
+        case .muli16: return muli16(node)
+        case .li16: return li16(node)
+        case .liu16: return liu16(node)
+        case .and16: return and16(node)
+        case .or16: return or16(node)
+        case .xor16: return xor16(node)
+        case .neg16: return neg16(node)
+        case .add16: return add16(node)
+        case .sub16: return sub16(node)
+        case .mul16: return mul16(node)
+        case .div16: return div16(node)
+        case .mod16: return mod16(node)
+        case .lsl16: return lsl16(node)
+        case .lsr16: return lsr16(node)
+        case .eq16: return eq16(node)
+        case .ne16: return ne16(node)
+        case .lt16: return lt16(node)
+        case .ge16: return ge16(node)
+        case .le16: return le16(node)
+        case .gt16: return gt16(node)
+        case .li8: return li8(node)
+        case .and8: return and8(node)
+        case .or8: return or8(node)
+        case .xor8: return xor8(node)
+        case .neg8: return neg8(node)
+        case .add8: return add8(node)
+        case .sub8: return sub8(node)
+        case .mul8: return mul8(node)
+        case .div8: return div8(node)
+        case .mod8: return mod8(node)
+        case .lsl8: return lsl8(node)
+        case .lsr8: return lsr8(node)
+        case .eq8: return eq8(node)
+        case .ne8: return ne8(node)
+        case .lt8: return lt8(node)
+        case .ge8: return ge8(node)
+        case .le8: return le8(node)
+        case .gt8: return gt8(node)
         }
     }
     
-    func call(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func call(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kCALL, parameters: node.parameters)
     }
     
-    func callptr(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func callptr(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kCALLPTR, parameters: corresponding(parameters: node.parameters))
     }
     
-    func enter(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func enter(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kENTER, parameters: corresponding(parameters: node.parameters))
     }
     
-    func leave(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func leave(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kLEAVE, parameters: corresponding(parameters: node.parameters))
     }
     
-    func ret(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func ret(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kRET, parameters: corresponding(parameters: node.parameters))
     }
     
-    func jmp(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func jmp(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kJMP, parameters: node.parameters)
     }
     
-    func not(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func not(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         assert(node.parameters.count == 2)
         let src = corresponding((node.parameters[1] as! ParameterIdentifier).value)
         let tmp = nextRegister()
@@ -169,11 +168,11 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func la(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func la(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kLA, parameters: node.parameters)
     }
     
-    func bz(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func bz(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         assert(node.parameters.count == 2)
         let test = corresponding((node.parameters[0] as! ParameterIdentifier).value)
         let label = node.parameters[1]
@@ -189,7 +188,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func bnz(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func bnz(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         assert(node.parameters.count == 2)
         let test = corresponding((node.parameters[0] as! ParameterIdentifier).value)
         let label = node.parameters[1]
@@ -205,7 +204,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func load(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func load(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         if node.parameters.count == 3, let imm = (node.parameters[2] as? ParameterNumber)?.value, (imm > 15 || imm < -16) {
             let imm16: UInt16 = (imm < 0) ? (UInt16(0) &- UInt16(-imm)) : UInt16(imm)
             let addr1 = corresponding(param: node.parameters[1])
@@ -236,7 +235,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         return InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kLOAD, parameters: corresponding(parameters: node.parameters))
     }
     
-    func store(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func store(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         if node.parameters.count == 3, let imm = (node.parameters[2] as? ParameterNumber)?.value, (imm > 15 || imm < -16) {
             let imm16: UInt16 = (imm < 0) ? (UInt16(0) &- UInt16(-imm)) : UInt16(imm)
             let addr1 = corresponding(param: node.parameters[1])
@@ -267,7 +266,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         return InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kSTORE, parameters: corresponding(parameters: node.parameters))
     }
     
-    func ststr(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func ststr(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         // TODO: Use the offset parameter of the STORE instruction to improve STSTR performance.
         let originalDst = corresponding(param: node.parameters[0])
         let dst = ParameterIdentifier(nextRegister())
@@ -293,7 +292,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         return Seq(children: children)
     }
     
-    func memcpy(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func memcpy(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         // TODO: Use the offset parameter of the STORE instruction to improve MEMCPY performance.
         let originalDst = corresponding(param: node.parameters[0])
         let originalSrc = corresponding(param: node.parameters[1])
@@ -333,7 +332,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         }
     }
     
-    func alloca(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func alloca(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return Seq(children: [
             InstructionNode(instruction: kSUBI, parameters:[
                 ParameterIdentifier("sp"),
@@ -348,7 +347,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func free(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func free(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return InstructionNode(instruction: kADDI, parameters:[
             ParameterIdentifier("sp"),
             ParameterIdentifier("sp"),
@@ -356,7 +355,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    fileprivate func opWithImm16(_ node: InstructionNode, _ rrr: String, _ rri: String) -> AbstractSyntaxTreeNode? {
+    fileprivate func opWithImm16(_ node: TackInstructionNode, _ rrr: String, _ rri: String) -> AbstractSyntaxTreeNode? {
         assert(node.parameters.count == 3)
         let imm = (node.parameters[2] as! ParameterNumber).value
         if imm > 15 || imm < -16 {
@@ -384,19 +383,19 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         return InstructionNode(sourceAnchor: node.sourceAnchor, instruction: rri, parameters: corresponding(parameters: node.parameters))
     }
     
-    func andi16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func andi16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return opWithImm16(node, kAND, kANDI)
     }
     
-    func addi16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func addi16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return opWithImm16(node, kADD, kADDI)
     }
     
-    func subi16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func subi16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return opWithImm16(node, kSUB, kSUBI)
     }
     
-    func muli16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func muli16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         assert(node.parameters.count == 3)
         let imm = (node.parameters[2] as! ParameterNumber).value
         
@@ -442,7 +441,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         return muli16_pow2(node, imm)
     }
     
-    fileprivate func muli16_pow2(_ node: InstructionNode, _ imm: Int) -> AbstractSyntaxTreeNode? {
+    fileprivate func muli16_pow2(_ node: TackInstructionNode, _ imm: Int) -> AbstractSyntaxTreeNode? {
         // Adding a number to itself is a quick way to multiply by two.
         // Decompose the multiplication into the sum of powers of two to take
         // advantage of this fact.
@@ -535,7 +534,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         return Seq(children: children)
     }
     
-    func li16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func li16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         if let imm = (node.parameters[1] as? ParameterNumber)?.value, (imm > 127 || imm < -128) {
             let imm16: UInt16 = (imm < 0) ? (UInt16(0) &- UInt16(-imm)) : UInt16(imm)
             let dst = corresponding(param: node.parameters[0])
@@ -564,7 +563,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         return InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kLI, parameters: corresponding(parameters: node.parameters))
     }
     
-    func liu16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func liu16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         if let imm = (node.parameters[1] as? ParameterNumber)?.value, imm > 255 {
             let imm16 = UInt16(imm)
             let dst = corresponding(param: node.parameters[0])
@@ -585,33 +584,33 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         return InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kLIU, parameters: corresponding(parameters: node.parameters))
     }
     
-    func and16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func and16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kAND, parameters: corresponding(parameters: node.parameters))
     }
     
-    func or16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func or16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kOR, parameters: corresponding(parameters: node.parameters))
     }
     
-    func xor16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func xor16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kXOR, parameters: corresponding(parameters: node.parameters))
     }
     
-    func neg16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func neg16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kNOT, parameters: corresponding(parameters: node.parameters))
     }
     
-    func add16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func add16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kADD, parameters: corresponding(parameters: node.parameters))
     }
     
-    func sub16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func sub16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kSUB, parameters: corresponding(parameters: node.parameters))
     }
     
     fileprivate let labelMaker = LabelMaker(prefix: ".LL")
     
-    func mul16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func mul16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         let right = corresponding(param: node.parameters[2])
         let left = corresponding(param: node.parameters[1])
         let counter = ParameterIdentifier(nextRegister())
@@ -653,7 +652,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func div16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func div16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         let right = corresponding(param: node.parameters[2])
         let left = corresponding(param: node.parameters[1])
         let tempLeft = ParameterIdentifier(nextRegister())
@@ -702,7 +701,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func mod16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func mod16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         let right = corresponding(param: node.parameters[2])
         let left = corresponding(param: node.parameters[1])
         let tempLeft = corresponding(param: node.parameters[0])
@@ -741,7 +740,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func lsl16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func lsl16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         let N = 16
         let b = corresponding(param: node.parameters[0])
         let a = corresponding(param: node.parameters[1])
@@ -787,7 +786,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func lsr16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func lsr16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         let N = 16
         let b = corresponding(param: node.parameters[0])
         let a = corresponding(param: node.parameters[1])
@@ -833,7 +832,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func eq16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func eq16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         let c = corresponding(param: node.parameters[0])
         let a = corresponding(param: node.parameters[1])
         let b = corresponding(param: node.parameters[2])
@@ -844,7 +843,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func ne16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func ne16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         let c = corresponding(param: node.parameters[0])
         let a = corresponding(param: node.parameters[1])
         let b = corresponding(param: node.parameters[2])
@@ -854,7 +853,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func lt16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func lt16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         let c = corresponding(param: node.parameters[0])
         let a = corresponding(param: node.parameters[1])
         let b = corresponding(param: node.parameters[2])
@@ -868,7 +867,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func ge16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func ge16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         let c = corresponding(param: node.parameters[0])
         let a = corresponding(param: node.parameters[1])
         let b = corresponding(param: node.parameters[2])
@@ -882,7 +881,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func le16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func le16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         let c = corresponding(param: node.parameters[0])
         let a = corresponding(param: node.parameters[1])
         let b = corresponding(param: node.parameters[2])
@@ -896,7 +895,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func gt16(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func gt16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         let c = corresponding(param: node.parameters[0])
         let a = corresponding(param: node.parameters[1])
         let b = corresponding(param: node.parameters[2])
@@ -910,11 +909,11 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func li8(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func li8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kLI, parameters: corresponding(parameters: node.parameters))
     }
     
-    func and8(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func and8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return Seq(children: [
             InstructionNode(instruction: kAND, parameters: corresponding(parameters: node.parameters)),
             InstructionNode(instruction: kLUI, parameters: [
@@ -924,7 +923,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func or8(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func or8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return Seq(children: [
             InstructionNode(instruction: kOR, parameters: corresponding(parameters: node.parameters)),
             InstructionNode(instruction: kLUI, parameters: [
@@ -934,7 +933,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func xor8(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func xor8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return Seq(children: [
             InstructionNode(instruction: kXOR, parameters: corresponding(parameters: node.parameters)),
             InstructionNode(instruction: kLUI, parameters: [
@@ -944,7 +943,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func neg8(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func neg8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return Seq(children: [
             InstructionNode(instruction: kNOT, parameters: corresponding(parameters: node.parameters)),
             InstructionNode(instruction: kLUI, parameters: [
@@ -982,7 +981,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func add8(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func add8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         let b = corresponding(param: node.parameters[2])
         let a = corresponding(param: node.parameters[1])
         let c = corresponding(param: node.parameters[0])
@@ -993,7 +992,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func sub8(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func sub8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         let b = corresponding(param: node.parameters[2])
         let a = corresponding(param: node.parameters[1])
         let c = corresponding(param: node.parameters[0])
@@ -1004,30 +1003,30 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func mul8(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func mul8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return Seq(children: [
-            mul16(InstructionNode(instruction: Tack.kMUL16, parameters: node.parameters))!,
+            mul16(TackInstructionNode(instruction: .mul16, parameters: node.parameters))!,
             signExtend8(node.parameters[0])
         ])
     }
     
-    func div8(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func div8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return Seq(children: [
-            div16(InstructionNode(instruction: Tack.kDIV16, parameters: node.parameters))!,
+            div16(TackInstructionNode(instruction: .div16, parameters: node.parameters))!,
             signExtend8(node.parameters[0])
         ])
     }
     
-    func mod8(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func mod8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return Seq(children: [
-            mod16(InstructionNode(instruction: Tack.kMOD16, parameters: node.parameters))!,
+            mod16(TackInstructionNode(instruction: .mod16, parameters: node.parameters))!,
             signExtend8(node.parameters[0])
         ])
     }
     
-    func lsl8(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func lsl8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return Seq(children: [
-            lsl16(InstructionNode(instruction: Tack.kLSL16, parameters: node.parameters))!,
+            lsl16(TackInstructionNode(instruction: .lsl16, parameters: node.parameters))!,
             InstructionNode(instruction: kLUI, parameters: [
                 node.parameters[0],
                 ParameterNumber(0)
@@ -1035,9 +1034,9 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func lsr8(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func lsr8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return Seq(children: [
-            lsr16(InstructionNode(instruction: Tack.kLSR16, parameters: node.parameters))!,
+            lsr16(TackInstructionNode(instruction: .lsr16, parameters: node.parameters))!,
             InstructionNode(instruction: kLUI, parameters: [
                 node.parameters[0],
                 ParameterNumber(0)
@@ -1045,7 +1044,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func eq8(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func eq8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         let c = corresponding(param: node.parameters[0])
         return Seq(children: [
             sub8(node)!,
@@ -1054,7 +1053,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func ne8(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func ne8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         let c = corresponding(param: node.parameters[0])
         return Seq(children: [
             sub8(node)!,
@@ -1062,19 +1061,19 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func lt8(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func lt8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return lt16(node)!
     }
     
-    func ge8(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func ge8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return ge16(node)!
     }
     
-    func le8(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func le8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return le16(node)!
     }
     
-    func gt8(_ node: InstructionNode) -> AbstractSyntaxTreeNode? {
+    func gt8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return gt16(node)!
     }
 }

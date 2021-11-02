@@ -6,70 +6,183 @@
 //  Copyright © 2021 Andrew Fox. All rights reserved.
 //
 
-import Cocoa
+import Foundation
+import TurtleCore
 
-// Program are compiled to an intermediate language called Tack which uses
-// InstructionNode, similar to the representation of an assembly program. The
-// instruction operands are taken from the following list.
-public struct Tack {
-    public static let kCALL    = "TACK_CALL"
-    public static let kCALLPTR = "TACK_CALLPTR"
-    public static let kENTER   = "TACK_ENTER"
-    public static let kLEAVE   = "TACK_LEAVE"
-    public static let kRET     = "TACK_RET"
-    public static let kJMP     = "TACK_JMP"
-    public static let kNOT     = "TACK_NOT"
-    public static let kLA      = "TACK_LA"
-    public static let kBZ      = "TACK_BZ"
-    public static let kBNZ     = "TACK_BNZ"
-    public static let kLOAD    = "TACK_LOAD"
-    public static let kSTORE   = "TACK_STORE"
-    public static let kSTSTR   = "TACK_STSTR"
-    public static let kMEMCPY  = "TACK_MEMCPY"
-    public static let kALLOCA  = "TACK_ALLOCA"
-    public static let kFREE    = "TACK_FREE"
+// Program are compiled to an intermediate language called Tack
+public enum TackInstruction {
+    case call
+    case callptr
+    case enter
+    case leave
+    case ret
+    case jmp
+    case not
+    case la
+    case bz
+    case bnz
+    case load
+    case store
+    case ststr
+    case memcpy
+    case alloca
+    case free
+    case andi16
+    case addi16
+    case subi16
+    case muli16
+    case li16
+    case liu16
+    case and16
+    case or16
+    case xor16
+    case neg16
+    case add16
+    case sub16
+    case mul16
+    case div16
+    case mod16
+    case lsl16
+    case lsr16
+    case eq16
+    case ne16
+    case lt16
+    case ge16
+    case le16
+    case gt16
+    case li8
+    case and8
+    case or8
+    case xor8
+    case neg8
+    case add8
+    case sub8
+    case mul8
+    case div8
+    case mod8
+    case lsl8
+    case lsr8
+    case eq8
+    case ne8
+    case lt8
+    case ge8
+    case le8
+    case gt8
     
-    public static let kANDI16  = "TACK_ANDI16"
-    public static let kADDI16  = "TACK_ADDI16"
-    public static let kSUBI16  = "TACK_SUBI16"
-    public static let kMULI16  = "TACK_MULI16"
+    public var description: String {
+        switch self {
+        case .call: return "CALL"
+        case .callptr: return "CALLPTR"
+        case .enter: return "ENTER"
+        case .leave: return "LEAVE"
+        case .ret: return "RET"
+        case .jmp: return "JMP"
+        case .not: return "NOT"
+        case .la: return "LA"
+        case .bz: return "BZ"
+        case .bnz: return "BNZ"
+        case .load: return "LOAD"
+        case .store: return "STORE"
+        case .ststr: return "STSTR"
+        case .memcpy: return "MEMCPY"
+        case .alloca: return "ALLOCA"
+        case .free: return "FREE"
+        case .andi16: return "ANDI16"
+        case .addi16: return "ADDI16"
+        case .subi16: return "SUBI16"
+        case .muli16: return "MULI16"
+        case .li16: return "LI16"
+        case .liu16: return "LIU16"
+        case .and16: return "AND16"
+        case .or16: return "OR16"
+        case .xor16: return "XOR16"
+        case .neg16: return "NEG16"
+        case .add16: return "ADD16"
+        case .sub16: return "SUB16"
+        case .mul16: return "MUL16"
+        case .div16: return "DIV16"
+        case .mod16: return "MOD16"
+        case .lsl16: return "LSL16"
+        case .lsr16: return "LSR16"
+        case .eq16: return "EQ16"
+        case .ne16: return "NE16"
+        case .lt16: return "LT16"
+        case .ge16: return "GE16"
+        case .le16: return "LE16"
+        case .gt16: return "GT16"
+        case .li8: return "LI8"
+        case .and8: return "AND8"
+        case .or8: return "OR8"
+        case .xor8: return "XOR8"
+        case .neg8: return "NEG8"
+        case .add8: return "ADD8"
+        case .sub8: return "SUB8"
+        case .mul8: return "MUL8"
+        case .div8: return "DIV8"
+        case .mod8: return "MOD8"
+        case .lsl8: return "LSL8"
+        case .lsr8: return "LSR8"
+        case .eq8: return "EQ8"
+        case .ne8: return "NE8"
+        case .lt8: return "LT8"
+        case .ge8: return "GE8"
+        case .le8: return "LE8"
+        case .gt8: return "GT8"
+        }
+    }
+}
+
+public class TackInstructionNode: AbstractSyntaxTreeNode {
+    public let instruction: TackInstruction
+    public let parameters: [Parameter]
     
-    public static let kLI16    = "TACK_LI16"
-    public static let kLIU16   = "TACK_LIU16"
-    public static let kAND16   = "TACK_AND16"
-    public static let kOR16    = "TACK_OR16"
-    public static let kXOR16   = "TACK_XOR16"
-    public static let kNEG16   = "TACK_NEG16"
-    public static let kADD16   = "TACK_ADD16"
-    public static let kSUB16   = "TACK_SUB16"
-    public static let kMUL16   = "TACK_MUL16"
-    public static let kDIV16   = "TACK_DIV16"
-    public static let kMOD16   = "TACK_MOD16"
-    public static let kLSL16   = "TACK_LSL16"
-    public static let kLSR16   = "TACK_LSR16"
-    public static let kEQ16    = "TACK_EQ16"
-    public static let kNE16    = "TACK_NE16"
-    public static let kLT16    = "TACK_LT16"
-    public static let kGE16    = "TACK_GE16"
-    public static let kLE16    = "TACK_LE16"
-    public static let kGT16    = "TACK_GT16"
+    public convenience init(sourceAnchor: SourceAnchor? = nil,
+                            instruction: TackInstruction,
+                            parameter: Parameter) {
+        self.init(sourceAnchor: sourceAnchor,
+                  instruction: instruction,
+                  parameters: [parameter])
+    }
     
-    public static let kLI8     = "TACK_LI8"
-    public static let kAND8    = "TACK_AND8"
-    public static let kOR8     = "TACK_OR8"
-    public static let kXOR8    = "TACK_XOR8"
-    public static let kNEG8    = "TACK_NEG8"
-    public static let kADD8    = "TACK_ADD8"
-    public static let kSUB8    = "TACK_SUB8"
-    public static let kMUL8    = "TACK_MUL8"
-    public static let kDIV8    = "TACK_DIV8"
-    public static let kMOD8    = "TACK_MOD8"
-    public static let kLSL8    = "TACK_LSL8"
-    public static let kLSR8    = "TACK_LSR8"
-    public static let kEQ8     = "TACK_EQ8"
-    public static let kNE8     = "TACK_NE8"
-    public static let kLT8     = "TACK_LT8"
-    public static let kGE8     = "TACK_GE8"
-    public static let kLE8     = "TACK_LE8"
-    public static let kGT8     = "TACK_GT8"
+    public init(sourceAnchor: SourceAnchor? = nil,
+                instruction: TackInstruction,
+                parameters: [Parameter] = []) {
+        self.instruction = instruction
+        self.parameters = parameters.map { $0.withSourceAnchor(sourceAnchor) as! Parameter }
+        super.init(sourceAnchor: sourceAnchor)
+    }
+    
+    public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> TackInstructionNode {
+        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+            return self
+        }
+        return TackInstructionNode(sourceAnchor: sourceAnchor,
+                                   instruction: instruction,
+                                   parameters: parameters)
+    }
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
+        guard let rhs = rhs as? TackInstructionNode else { return false }
+        guard instruction == rhs.instruction else { return false }
+        guard parameters == rhs.parameters else { return false }
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(instruction)
+        hasher.combine(parameters)
+        hasher.combine(super.hash)
+        return hasher.finalize()
+    }
+    
+    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+        let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let param = parameters.map {
+            $0.makeIndentedDescription(depth: depth+1, wantsLeadingWhitespace: false)
+        }.joined(separator: ", ")
+        return "\(indent)\(instruction) \(param)"
+    }
 }

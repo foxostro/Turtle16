@@ -72,7 +72,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testADD16() throws {
-        let input = InstructionNode(instruction: Tack.kADD16, parameters:[
+        let input = TackInstructionNode(instruction: .add16, parameters:[
             ParameterIdentifier("vr2"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0")
@@ -87,7 +87,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testADD16_sp_and_fp_and_ra() throws {
-        let input = InstructionNode(instruction: Tack.kADD16, parameters:[
+        let input = TackInstructionNode(instruction: .add16, parameters:[
             ParameterIdentifier("sp"),
             ParameterIdentifier("fp"),
             ParameterIdentifier("ra")
@@ -103,7 +103,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testSUB16() throws {
-        let input = InstructionNode(instruction: Tack.kSUB16, parameters:[
+        let input = TackInstructionNode(instruction: .sub16, parameters:[
             ParameterIdentifier("vr2"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0")
@@ -118,7 +118,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testNEG16() throws {
-        let input = InstructionNode(instruction: Tack.kNEG16, parameters:[
+        let input = TackInstructionNode(instruction: .neg16, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0")
         ])
@@ -131,7 +131,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testXOR16() throws {
-        let input = InstructionNode(instruction: Tack.kXOR16, parameters:[
+        let input = TackInstructionNode(instruction: .xor16, parameters:[
             ParameterIdentifier("vr2"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0")
@@ -146,7 +146,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testOR16() throws {
-        let input = InstructionNode(instruction: Tack.kOR16, parameters:[
+        let input = TackInstructionNode(instruction: .or16, parameters:[
             ParameterIdentifier("vr2"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0")
@@ -161,7 +161,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testAND16() throws {
-        let input = InstructionNode(instruction: Tack.kAND16, parameters:[
+        let input = TackInstructionNode(instruction: .and16, parameters:[
             ParameterIdentifier("vr2"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0")
@@ -176,7 +176,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testJMP() throws {
-        let input = InstructionNode(instruction: Tack.kJMP, parameters:[
+        let input = TackInstructionNode(instruction: .jmp, parameters:[
             ParameterIdentifier("foo")
         ])
         let expected = InstructionNode(instruction: kJMP, parameters:[
@@ -187,28 +187,28 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testRET() throws {
-        let input = InstructionNode(instruction: Tack.kRET)
+        let input = TackInstructionNode(instruction: .ret)
         let expected = InstructionNode(instruction: kRET)
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
     
     func testENTER() throws {
-        let input = InstructionNode(instruction: Tack.kENTER)
+        let input = TackInstructionNode(instruction: .enter)
         let expected = InstructionNode(instruction: kENTER)
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
     
     func testLEAVE() throws {
-        let input = InstructionNode(instruction: Tack.kLEAVE)
+        let input = TackInstructionNode(instruction: .leave)
         let expected = InstructionNode(instruction: kLEAVE)
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
     
     func testNOT() throws {
-        let input = InstructionNode(instruction: Tack.kNOT, parameters:[
+        let input = TackInstructionNode(instruction: .not, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0")
         ])
@@ -230,11 +230,11 @@ class TackToTurtle16CompilerTests: XCTestCase {
     
     func testNOT_subsequent_use_of_registers_map_correctly() throws {
         let input = Seq(children: [
-            InstructionNode(instruction: Tack.kNOT, parameters:[
+            TackInstructionNode(instruction: .not, parameters:[
                 ParameterIdentifier("vr1"),
                 ParameterIdentifier("vr0")
             ]),
-            InstructionNode(instruction: Tack.kCALLPTR, parameters:[
+            TackInstructionNode(instruction: .callptr, parameters:[
                 ParameterIdentifier("vr1")
             ])
         ])
@@ -258,7 +258,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testLA() throws {
-        let input = InstructionNode(instruction: Tack.kLA, parameters:[
+        let input = TackInstructionNode(instruction: .la, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("foo")
         ])
@@ -271,7 +271,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testCALL() throws {
-        let input = InstructionNode(instruction: Tack.kCALL, parameters:[
+        let input = TackInstructionNode(instruction: .call, parameters:[
             ParameterIdentifier("foo")
         ])
         let expected = InstructionNode(instruction: kCALL, parameters:[
@@ -282,7 +282,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testCALLPTR() throws {
-        let input = InstructionNode(instruction: Tack.kCALLPTR, parameters:[
+        let input = TackInstructionNode(instruction: .callptr, parameters:[
             ParameterIdentifier("vr0")
         ])
         let expected = InstructionNode(instruction: kCALLPTR, parameters:[
@@ -293,7 +293,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testBZ() throws {
-        let input = InstructionNode(instruction: Tack.kBZ, parameters:[
+        let input = TackInstructionNode(instruction: .bz, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("foo")
         ])
@@ -311,7 +311,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testBNZ() throws {
-        let input = InstructionNode(instruction: Tack.kBNZ, parameters:[
+        let input = TackInstructionNode(instruction: .bnz, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("foo")
         ])
@@ -329,7 +329,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testLOAD_small_offset_pos() throws {
-        let input = InstructionNode(instruction: Tack.kLOAD, parameters:[
+        let input = TackInstructionNode(instruction: .load, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(15)
@@ -344,7 +344,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testLOAD_small_offset_neg() throws {
-        let input = InstructionNode(instruction: Tack.kLOAD, parameters:[
+        let input = TackInstructionNode(instruction: .load, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(-16)
@@ -359,7 +359,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testLOAD_large_offset_pos() throws {
-        let input = InstructionNode(instruction: Tack.kLOAD, parameters:[
+        let input = TackInstructionNode(instruction: .load, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(16)
@@ -388,7 +388,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testLOAD_large_offset_neg() throws {
-        let input = InstructionNode(instruction: Tack.kLOAD, parameters:[
+        let input = TackInstructionNode(instruction: .load, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(-17)
@@ -417,7 +417,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testSTORE_small_offset_pos() throws {
-        let input = InstructionNode(instruction: Tack.kSTORE, parameters:[
+        let input = TackInstructionNode(instruction: .store, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(15)
@@ -432,7 +432,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testSTORE_small_offset_neg() throws {
-        let input = InstructionNode(instruction: Tack.kSTORE, parameters:[
+        let input = TackInstructionNode(instruction: .store, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(-16)
@@ -447,7 +447,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testSTORE_large_offset_pos() throws {
-        let input = InstructionNode(instruction: Tack.kSTORE, parameters:[
+        let input = TackInstructionNode(instruction: .store, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(16)
@@ -476,7 +476,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testSTORE_large_offset_neg() throws {
-        let input = InstructionNode(instruction: Tack.kSTORE, parameters:[
+        let input = TackInstructionNode(instruction: .store, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(-17)
@@ -505,7 +505,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testSTSTR() throws {
-        let input = InstructionNode(instruction: Tack.kSTSTR, parameters:[
+        let input = TackInstructionNode(instruction: .ststr, parameters:[
             ParameterIdentifier("vr0"),
             ParameterString("ABC")
         ])
@@ -520,7 +520,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testSTSTR_empty_string() throws {
-        let input = InstructionNode(instruction: Tack.kSTSTR, parameters:[
+        let input = TackInstructionNode(instruction: .ststr, parameters:[
             ParameterIdentifier("vr0"),
             ParameterString("")
         ])
@@ -529,7 +529,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testMEMCPY_zero_words() throws {
-        let input = InstructionNode(instruction: Tack.kMEMCPY, parameters:[
+        let input = TackInstructionNode(instruction: .memcpy, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterNumber(0)
@@ -539,7 +539,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testMEMCPY_one_word() throws {
-        let input = InstructionNode(instruction: Tack.kMEMCPY, parameters:[
+        let input = TackInstructionNode(instruction: .memcpy, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterNumber(1)
@@ -555,7 +555,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testMEMCPY_multiple_words() throws {
-        let input = InstructionNode(instruction: Tack.kMEMCPY, parameters:[
+        let input = TackInstructionNode(instruction: .memcpy, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterNumber(3)
@@ -576,7 +576,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     
     func testALLOCA() throws {
         let sp = "r6"
-        let input = InstructionNode(instruction: Tack.kALLOCA, parameters:[
+        let input = TackInstructionNode(instruction: .alloca, parameters:[
             ParameterIdentifier("vr0"),
             ParameterNumber(2)
         ])
@@ -598,7 +598,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     
     func testFREE() throws {
         let sp = "r6"
-        let input = InstructionNode(instruction: Tack.kFREE, parameters:[
+        let input = TackInstructionNode(instruction: .free, parameters:[
             ParameterNumber(2)
         ])
         let expected = InstructionNode(instruction: kADDI, parameters:[
@@ -611,7 +611,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testADDI16_small_imm_pos() throws {
-        let input = InstructionNode(instruction: Tack.kADDI16, parameters:[
+        let input = TackInstructionNode(instruction: .addi16, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(15)
@@ -626,7 +626,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testADDI16_small_imm_neg() throws {
-        let input = InstructionNode(instruction: Tack.kADDI16, parameters:[
+        let input = TackInstructionNode(instruction: .addi16, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(-16)
@@ -641,7 +641,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testADDI16_large_imm_pos() throws {
-        let input = InstructionNode(instruction: Tack.kADDI16, parameters:[
+        let input = TackInstructionNode(instruction: .addi16, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(16)
@@ -666,7 +666,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testADDI16_large_imm_neg() throws {
-        let input = InstructionNode(instruction: Tack.kADDI16, parameters:[
+        let input = TackInstructionNode(instruction: .addi16, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(-17)
@@ -691,7 +691,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testSUBI16() throws {
-        let input = InstructionNode(instruction: Tack.kSUBI16, parameters:[
+        let input = TackInstructionNode(instruction: .subi16, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(15)
@@ -706,7 +706,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testANDI16() throws {
-        let input = InstructionNode(instruction: Tack.kANDI16, parameters:[
+        let input = TackInstructionNode(instruction: .andi16, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(15)
@@ -721,7 +721,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testMULI16_zero() throws {
-        let input = InstructionNode(instruction: Tack.kMULI16, parameters:[
+        let input = TackInstructionNode(instruction: .muli16, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(0)
@@ -735,7 +735,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testMULI16_pos_one() throws {
-        let input = InstructionNode(instruction: Tack.kMULI16, parameters:[
+        let input = TackInstructionNode(instruction: .muli16, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(1)
@@ -750,7 +750,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testMULI16_pos_two() throws {
-        let input = InstructionNode(instruction: Tack.kMULI16, parameters:[
+        let input = TackInstructionNode(instruction: .muli16, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(2)
@@ -765,7 +765,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testMULI16_pos_three() throws {
-        let input = InstructionNode(instruction: Tack.kMULI16, parameters:[
+        let input = TackInstructionNode(instruction: .muli16, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(3)
@@ -787,7 +787,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testMULI16_pos_four() throws {
-        let input = InstructionNode(instruction: Tack.kMULI16, parameters:[
+        let input = TackInstructionNode(instruction: .muli16, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(4)
@@ -809,7 +809,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testMULI16_pos_five() throws {
-        let input = InstructionNode(instruction: Tack.kMULI16, parameters:[
+        let input = TackInstructionNode(instruction: .muli16, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(5)
@@ -836,7 +836,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testMULI16_pos_six() throws {
-        let input = InstructionNode(instruction: Tack.kMULI16, parameters:[
+        let input = TackInstructionNode(instruction: .muli16, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(6)
@@ -868,7 +868,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testMULI16_pos_seven() throws {
-        let input = InstructionNode(instruction: Tack.kMULI16, parameters:[
+        let input = TackInstructionNode(instruction: .muli16, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(7)
@@ -905,7 +905,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testMULI16_pos_eight() throws {
-        let input = InstructionNode(instruction: Tack.kMULI16, parameters:[
+        let input = TackInstructionNode(instruction: .muli16, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(8)
@@ -932,7 +932,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testMULI16_neg_one() throws {
-        let input = InstructionNode(instruction: Tack.kMULI16, parameters:[
+        let input = TackInstructionNode(instruction: .muli16, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(-1)
@@ -953,7 +953,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testMULI16_neg_two() throws {
-        let input = InstructionNode(instruction: Tack.kMULI16, parameters:[
+        let input = TackInstructionNode(instruction: .muli16, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(-2)
@@ -979,7 +979,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testMULI16_three_element_sum() throws {
-        let input = InstructionNode(instruction: Tack.kMULI16, parameters:[
+        let input = TackInstructionNode(instruction: .muli16, parameters:[
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0"),
             ParameterNumber(14)
@@ -1031,7 +1031,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testLI16_small_pos() throws {
-        let input = InstructionNode(instruction: Tack.kLI16, parameters:[
+        let input = TackInstructionNode(instruction: .li16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterNumber(127)
         ])
@@ -1044,7 +1044,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testLI16_small_neg() throws {
-        let input = InstructionNode(instruction: Tack.kLI16, parameters:[
+        let input = TackInstructionNode(instruction: .li16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterNumber(-128)
         ])
@@ -1057,7 +1057,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testLI16_med_pos() throws {
-        let input = InstructionNode(instruction: Tack.kLI16, parameters:[
+        let input = TackInstructionNode(instruction: .li16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterNumber(255)
         ])
@@ -1070,7 +1070,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testLI16_large_pos() throws {
-        let input = InstructionNode(instruction: Tack.kLI16, parameters:[
+        let input = TackInstructionNode(instruction: .li16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterNumber(0x7fff)
         ])
@@ -1089,7 +1089,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testLIU16_small_pos() throws {
-        let input = InstructionNode(instruction: Tack.kLIU16, parameters:[
+        let input = TackInstructionNode(instruction: .liu16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterNumber(255)
         ])
@@ -1102,7 +1102,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testLIU16_large_pos() throws {
-        let input = InstructionNode(instruction: Tack.kLIU16, parameters:[
+        let input = TackInstructionNode(instruction: .liu16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterNumber(0x8000)
         ])
@@ -1121,7 +1121,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testMUL16_0_x_0() throws {
-        let input = InstructionNode(instruction: Tack.kMUL16, parameters:[
+        let input = TackInstructionNode(instruction: .mul16, parameters:[
             ParameterIdentifier("vr2"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0")
@@ -1135,7 +1135,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testMUL16_1_x_1() throws {
-        let input = InstructionNode(instruction: Tack.kMUL16, parameters:[
+        let input = TackInstructionNode(instruction: .mul16, parameters:[
             ParameterIdentifier("vr2"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0")
@@ -1150,7 +1150,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testMUL16_2_x_2() throws {
-        let input = InstructionNode(instruction: Tack.kMUL16, parameters:[
+        let input = TackInstructionNode(instruction: .mul16, parameters:[
             ParameterIdentifier("vr2"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0")
@@ -1165,7 +1165,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testDIV16_0_div_0() throws {
-        let input = InstructionNode(instruction: Tack.kDIV16, parameters:[
+        let input = TackInstructionNode(instruction: .div16, parameters:[
             ParameterIdentifier("vr2"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0")
@@ -1187,7 +1187,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testDIV16_1_div_1() throws {
-        let input = InstructionNode(instruction: Tack.kDIV16, parameters:[
+        let input = TackInstructionNode(instruction: .div16, parameters:[
             ParameterIdentifier("vr2"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0")
@@ -1203,7 +1203,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testDIV16_12_div_4() throws {
-        let input = InstructionNode(instruction: Tack.kDIV16, parameters:[
+        let input = TackInstructionNode(instruction: .div16, parameters:[
             ParameterIdentifier("vr2"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0")
@@ -1219,7 +1219,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testMOD16_0_mod_0() throws {
-        let input = InstructionNode(instruction: Tack.kMOD16, parameters:[
+        let input = TackInstructionNode(instruction: .mod16, parameters:[
             ParameterIdentifier("vr2"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0")
@@ -1234,7 +1234,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testMOD16_3_mod_2() throws {
-        let input = InstructionNode(instruction: Tack.kMOD16, parameters:[
+        let input = TackInstructionNode(instruction: .mod16, parameters:[
             ParameterIdentifier("vr2"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0")
@@ -1249,7 +1249,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testLSL16_0_shift_0() throws {
-        let input = InstructionNode(instruction: Tack.kLSL16, parameters:[
+        let input = TackInstructionNode(instruction: .lsl16, parameters:[
             ParameterIdentifier("vr2"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0")
@@ -1283,7 +1283,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testLSL16_2_shift_1() throws {
-        let input = InstructionNode(instruction: Tack.kLSL16, parameters:[
+        let input = TackInstructionNode(instruction: .lsl16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1331,7 +1331,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testLSR16_2_shift_1() throws {
-        let input = InstructionNode(instruction: Tack.kLSR16, parameters:[
+        let input = TackInstructionNode(instruction: .lsr16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1360,7 +1360,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testEQ16_equal() throws {
-        let input = InstructionNode(instruction: Tack.kEQ16, parameters:[
+        let input = TackInstructionNode(instruction: .eq16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1376,7 +1376,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testEQ16_not_equal() throws {
-        let input = InstructionNode(instruction: Tack.kEQ16, parameters:[
+        let input = TackInstructionNode(instruction: .eq16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1392,7 +1392,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testNE16_equal() throws {
-        let input = InstructionNode(instruction: Tack.kNE16, parameters:[
+        let input = TackInstructionNode(instruction: .ne16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1408,7 +1408,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testNE16_not_equal() throws {
-        let input = InstructionNode(instruction: Tack.kNE16, parameters:[
+        let input = TackInstructionNode(instruction: .ne16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1424,7 +1424,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testLT16_less_than() throws {
-        let input = InstructionNode(instruction: Tack.kLT16, parameters:[
+        let input = TackInstructionNode(instruction: .lt16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1440,7 +1440,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testLT16_equal() throws {
-        let input = InstructionNode(instruction: Tack.kLT16, parameters:[
+        let input = TackInstructionNode(instruction: .lt16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1456,7 +1456,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testLT16_greater_than() throws {
-        let input = InstructionNode(instruction: Tack.kLT16, parameters:[
+        let input = TackInstructionNode(instruction: .lt16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1472,7 +1472,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testGE16_less_than() throws {
-        let input = InstructionNode(instruction: Tack.kGE16, parameters:[
+        let input = TackInstructionNode(instruction: .ge16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1488,7 +1488,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testGE16_equal() throws {
-        let input = InstructionNode(instruction: Tack.kGE16, parameters:[
+        let input = TackInstructionNode(instruction: .ge16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1504,7 +1504,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testGE16_greater_than() throws {
-        let input = InstructionNode(instruction: Tack.kGE16, parameters:[
+        let input = TackInstructionNode(instruction: .ge16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1520,7 +1520,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testLE16_less_than() throws {
-        let input = InstructionNode(instruction: Tack.kLE16, parameters:[
+        let input = TackInstructionNode(instruction: .le16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1536,7 +1536,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testLE16_equal() throws {
-        let input = InstructionNode(instruction: Tack.kLE16, parameters:[
+        let input = TackInstructionNode(instruction: .le16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1552,7 +1552,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testLE16_greater_than() throws {
-        let input = InstructionNode(instruction: Tack.kLE16, parameters:[
+        let input = TackInstructionNode(instruction: .le16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1568,7 +1568,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testGT16_less_than() throws {
-        let input = InstructionNode(instruction: Tack.kGT16, parameters:[
+        let input = TackInstructionNode(instruction: .gt16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1584,7 +1584,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testGT16_equal() throws {
-        let input = InstructionNode(instruction: Tack.kGT16, parameters:[
+        let input = TackInstructionNode(instruction: .gt16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1600,7 +1600,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testGT16_greater_than() throws {
-        let input = InstructionNode(instruction: Tack.kGT16, parameters:[
+        let input = TackInstructionNode(instruction: .gt16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1616,7 +1616,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     fileprivate func doTestLI8(_ value: Int) throws {
-        let input = InstructionNode(instruction: Tack.kLI8, parameters:[
+        let input = TackInstructionNode(instruction: .li8, parameters:[
             ParameterIdentifier("vr0"),
             ParameterNumber(value)
         ])
@@ -1655,7 +1655,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testAND8() throws {
-        let input = InstructionNode(instruction: Tack.kAND8, parameters:[
+        let input = TackInstructionNode(instruction: .and8, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1673,7 +1673,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testOR8() throws {
-        let input = InstructionNode(instruction: Tack.kOR8, parameters:[
+        let input = TackInstructionNode(instruction: .or8, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1691,7 +1691,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testXOR8() throws {
-        let input = InstructionNode(instruction: Tack.kXOR8, parameters:[
+        let input = TackInstructionNode(instruction: .xor8, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1709,7 +1709,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testNEG8() throws {
-        let input = InstructionNode(instruction: Tack.kNEG8, parameters:[
+        let input = TackInstructionNode(instruction: .neg8, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1")
         ])
@@ -1724,7 +1724,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testADD8_positive_result() throws {
-        let input = InstructionNode(instruction: Tack.kADD8, parameters:[
+        let input = TackInstructionNode(instruction: .add8, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1742,7 +1742,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testADD8_negative_result() throws {
-        let input = InstructionNode(instruction: Tack.kADD8, parameters:[
+        let input = TackInstructionNode(instruction: .add8, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1760,7 +1760,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testSUB8_positive_result() throws {
-        let input = InstructionNode(instruction: Tack.kSUB8, parameters:[
+        let input = TackInstructionNode(instruction: .sub8, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1778,7 +1778,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testSUB8_negative_result() throws {
-        let input = InstructionNode(instruction: Tack.kSUB8, parameters:[
+        let input = TackInstructionNode(instruction: .sub8, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1796,7 +1796,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testMUL8() throws {
-        let input = InstructionNode(instruction: Tack.kMUL8, parameters:[
+        let input = TackInstructionNode(instruction: .mul8, parameters:[
             ParameterIdentifier("vr2"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0")
@@ -1813,7 +1813,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testDIV8() throws {
-        let input = InstructionNode(instruction: Tack.kDIV8, parameters:[
+        let input = TackInstructionNode(instruction: .div8, parameters:[
             ParameterIdentifier("vr2"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0")
@@ -1829,7 +1829,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testMOD8() throws {
-        let input = InstructionNode(instruction: Tack.kMOD8, parameters:[
+        let input = TackInstructionNode(instruction: .mod8, parameters:[
             ParameterIdentifier("vr2"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0")
@@ -1844,7 +1844,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testLSL8_2_shift_1() throws {
-        let input = InstructionNode(instruction: Tack.kLSL8, parameters:[
+        let input = TackInstructionNode(instruction: .lsl8, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1873,7 +1873,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testLSR8_2_shift_1() throws {
-        let input = InstructionNode(instruction: Tack.kLSR8, parameters:[
+        let input = TackInstructionNode(instruction: .lsr8, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1902,7 +1902,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testEQ8_equal() throws {
-        let input = InstructionNode(instruction: Tack.kEQ8, parameters:[
+        let input = TackInstructionNode(instruction: .eq8, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1918,7 +1918,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testEQ8_not_equal() throws {
-        let input = InstructionNode(instruction: Tack.kEQ8, parameters:[
+        let input = TackInstructionNode(instruction: .eq8, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1934,7 +1934,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testNE8_equal() throws {
-        let input = InstructionNode(instruction: Tack.kNE8, parameters:[
+        let input = TackInstructionNode(instruction: .ne8, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1950,7 +1950,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testNE8_not_equal() throws {
-        let input = InstructionNode(instruction: Tack.kNE8, parameters:[
+        let input = TackInstructionNode(instruction: .ne8, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")

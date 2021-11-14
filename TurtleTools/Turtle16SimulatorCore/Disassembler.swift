@@ -7,6 +7,7 @@
 //
 
 public class Disassembler: NSObject {
+    public var shouldUseConventionalRegisterNames = false
     public typealias Register = AssemblerSingleInstructionCodeGenerator.Register
     
     let mnemonics = [
@@ -117,14 +118,27 @@ public class Disassembler: NSObject {
         return disassembleOne(pc: nil, ins: ins)
     }
     
+    public func registerName(_ index: Int) -> String {
+        if shouldUseConventionalRegisterNames {
+            switch index {
+            case 5: return "ra"
+            case 6: return "sp"
+            case 7: return "fp"
+            default: return Register(rawValue: index)!.description
+            }
+        } else {
+            return Register(rawValue: index)!.description
+        }
+    }
+    
     public func disassembleOne(pc maybeProgramCounter: Int?, ins: UInt16) -> String? {
         let opcode: Int = Int((ins & 0b1111100000000000) >> 11)
         let c = Int((ins & 0b0000011100000000) >> 8)
-        let regC = Register(rawValue: c)!.description
+        let regC = registerName(c)
         let a = Int((ins & 0b0000000011100000) >> 5)
-        let regA = Register(rawValue: a)!.description
+        let regA = registerName(a)
         let b = Int((ins & 0b0000000000011100) >> 2)
-        let regB = Register(rawValue: b)!.description
+        let regB = registerName(b)
         let imm5_0 = Int(ins & 0b0000000000011111)
         let tcImm5_0: Int = (imm5_0 > 15) ? (((~0 >> 5) << 5) | imm5_0) : imm5_0
         let imm10_8_1_0 = Int(((ins & 0b0000011100000000) >> 6) | (ins & 0b0000000000000011))
@@ -208,5 +222,18 @@ public class Disassembler: NSObject {
             Entry(address: $0.address, word: $0.word, label: labels[$0.address], mnemonic: $0.mnemonic)
         }
         return result
+    }
+    
+    public func disassembleToText(_ program: [UInt16]) -> String {
+        return disassemble(program).map { entry in
+            var str = ""
+            if let label = entry.label {
+                str += label + ": "
+            }
+            if let mnemonic = entry.mnemonic {
+                str += mnemonic
+            }
+            return str
+        }.joined(separator: "\n")
     }
 }

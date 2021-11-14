@@ -404,6 +404,8 @@
 		6FD5AE6E26A24AB500670CEB /* CommentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD5AE6D26A24AB500670CEB /* CommentNode.swift */; };
 		6FDB699D2543616000D532C2 /* CrackleInstructionListingMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDB699C2543616000D532C2 /* CrackleInstructionListingMaker.swift */; };
 		6FDB69AD2543618300D532C2 /* CrackleInstructionListingMakerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDB69AC2543618300D532C2 /* CrackleInstructionListingMakerTests.swift */; };
+		6FDC6AAC27331637003A8ABF /* SnapToTurtle16Compiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDC6AAB27331637003A8ABF /* SnapToTurtle16Compiler.swift */; };
+		6FDC6AAE27331640003A8ABF /* SnapToTurtle16CompilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDC6AAD27331640003A8ABF /* SnapToTurtle16CompilerTests.swift */; };
 		6FDF61E1266D86DC002E7A17 /* Disassembler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDF61E0266D86DC002E7A17 /* Disassembler.swift */; };
 		6FDF61E3266D86E8002E7A17 /* DisassemblerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDF61E2266D86E8002E7A17 /* DisassemblerTests.swift */; };
 		6FDF61E8266ECACC002E7A17 /* DisassemblyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDF61E6266ECACC002E7A17 /* DisassemblyViewController.swift */; };
@@ -1073,6 +1075,8 @@
 		6FD5AE6D26A24AB500670CEB /* CommentNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentNode.swift; sourceTree = "<group>"; };
 		6FDB699C2543616000D532C2 /* CrackleInstructionListingMaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleInstructionListingMaker.swift; sourceTree = "<group>"; };
 		6FDB69AC2543618300D532C2 /* CrackleInstructionListingMakerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleInstructionListingMakerTests.swift; sourceTree = "<group>"; };
+		6FDC6AAB27331637003A8ABF /* SnapToTurtle16Compiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapToTurtle16Compiler.swift; sourceTree = "<group>"; };
+		6FDC6AAD27331640003A8ABF /* SnapToTurtle16CompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapToTurtle16CompilerTests.swift; sourceTree = "<group>"; };
 		6FDF61E0266D86DC002E7A17 /* Disassembler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Disassembler.swift; sourceTree = "<group>"; };
 		6FDF61E2266D86E8002E7A17 /* DisassemblerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisassemblerTests.swift; sourceTree = "<group>"; };
 		6FDF61E6266ECACC002E7A17 /* DisassemblyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisassemblyViewController.swift; sourceTree = "<group>"; };
@@ -1576,6 +1580,7 @@
 				6F15422126B5EBA800BA9572 /* SnapASTTransformerTestDeclaration.swift */,
 				6FF75BA52486C31000F55625 /* SnapCommandLineArgumentParser.swift */,
 				6F4B5CB32471DE33000C57EB /* SnapCompiler.swift */,
+				6FDC6AAB27331637003A8ABF /* SnapToTurtle16Compiler.swift */,
 				6F24B628254E3C4E00295D49 /* SnapCompilerMetrics.swift */,
 				6F16B9FF251E945C00A26850 /* SnapDebugInfo.swift */,
 				6FCB6818247204F900798905 /* SnapLexer.swift */,
@@ -1646,6 +1651,7 @@
 				6F15422326B5EBC300BA9572 /* SnapASTTransformerTestDeclarationTests.swift */,
 				6FF75BA72486C35400F55625 /* SnapCommandLineArgumentParserTests.swift */,
 				6F4B5CBC2471DF2A000C57EB /* SnapCompilerTests.swift */,
+				6FDC6AAD27331640003A8ABF /* SnapToTurtle16CompilerTests.swift */,
 				6F16BA0F251E946000A26850 /* SnapDebugInfoTests.swift */,
 				6F238ADA248C94650040250D /* SnapExecutor.swift */,
 				6FCB681B2472051200798905 /* SnapLexerTests.swift */,
@@ -2552,6 +2558,7 @@
 				6F924E7A248B42D400F43741 /* RvalueExpressionTypeChecker.swift in Sources */,
 				6F15422A26B8902A00BA9572 /* SnapAbstractSyntaxTreeCompilerDeclPass.swift in Sources */,
 				6F4B5CB42471DE33000C57EB /* SnapCompiler.swift in Sources */,
+				6FDC6AAC27331637003A8ABF /* SnapToTurtle16Compiler.swift in Sources */,
 				6F2940CE2483A0DB00C50ABA /* TokenMisc.swift in Sources */,
 				6F2940A9248306EC00C50ABA /* While.swift in Sources */,
 				6F915D4A24D14F99002B3850 /* BaseExpressionCompiler.swift in Sources */,
@@ -2664,6 +2671,7 @@
 				6F18DD8D2484154F0014C585 /* SnapToCrackleCompilerTests.swift in Sources */,
 				6F924E7C248B42E100F43741 /* RvalueExpressionTypeCheckerTests.swift in Sources */,
 				6FBCFA5E26F7F5FC00193819 /* TackToTurtle16CompilerTests.swift in Sources */,
+				6FDC6AAE27331640003A8ABF /* SnapToTurtle16CompilerTests.swift in Sources */,
 				6F0D519F2506D57F00AB1C7E /* TypeContextTypeCheckerTests.swift in Sources */,
 				6F83480D26FD3B1200EB466E /* RegisterAllocatorNaiveTests.swift in Sources */,
 				6F9E287F2543CFD000946974 /* AssemblyListingMakerTests.swift in Sources */,

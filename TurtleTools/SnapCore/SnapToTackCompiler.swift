@@ -53,8 +53,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         return flatten(try super.compile(node0))
     }
     
-    func flatten(_ node: AbstractSyntaxTreeNode?) -> AbstractSyntaxTreeNode {
-        return try! SnapASTTransformerFlattenSeq().compile(node)!
+    func flatten(_ node: AbstractSyntaxTreeNode?) -> AbstractSyntaxTreeNode? {
+        return try! SnapASTTransformerFlattenSeq().compile(node)
     }
     
     public override func compile(block node: Block) throws -> AbstractSyntaxTreeNode? {
@@ -138,7 +138,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         default:
             fatalError("unimplemented")
         }
-        return flatten(result)
+        return flatten(result)!
     }
     
     func lvalue(identifier node: Expression.Identifier) throws -> AbstractSyntaxTreeNode {
@@ -473,7 +473,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         default:
             throw CompilerError(message: "unimplemented: `\(expr)'")
         }
-        return flatten(result)
+        return flatten(result)!
     }
     
     func rvalue(literalInt node: Expression.LiteralInt) -> AbstractSyntaxTreeNode {

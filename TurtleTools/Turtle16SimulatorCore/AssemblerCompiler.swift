@@ -13,7 +13,6 @@ public let kNOP = "NOP"
 public let kHLT = "HLT"
 public let kLOAD = "LOAD"
 public let kSTORE = "STORE"
-public let kLA = "LA"
 public let kLI = "LI"
 public let kLIU = "LIU"
 public let kLUI = "LUI"
@@ -43,6 +42,7 @@ public let kADC = "ADC"
 public let kSBC = "SBC"
 
 // Various high-level macro instruction opcodes
+public let kLA = "LA"
 public let kCALL = "CALL"
 public let kCALLPTR = "CALLPTR"
 public let kENTER = "ENTER"
@@ -195,6 +195,24 @@ public class AssemblerCompiler: NSObject {
         case kSBC:
             try compileSBC(node)
             
+        case kLA:
+            try compileLA(node)
+            
+        case kCALL:
+            try compileCALL(node)
+            
+        case kCALLPTR:
+            try compileCALLPTR(node)
+            
+        case kENTER:
+            try compileENTER(node)
+            
+        case kLEAVE:
+            try compileLEAVE(node)
+            
+        case kRET:
+            try compileRET(node)
+            
         default:
             throw errorUnknownInstruction(node)
         }
@@ -240,8 +258,14 @@ public class AssemblerCompiler: NSObject {
         guard let source = lookupRegister(node.parameters[1]) else {
             throw errorExpectsSecondOperandToBeTheSource(node)
         }
-        guard let offset = ((node.parameters.count > 2 ? node.parameters[2] : nil) as? ParameterNumber)?.value else {
-            throw errorExpectsThirdOperandToBeAnImmediateValueOffset(node)
+        let offset: Int
+        if node.parameters.count > 2 {
+            guard let offset0 = (node.parameters[2] as? ParameterNumber)?.value else {
+                throw errorExpectsThirdOperandToBeAnImmediateValueOffset(node)
+            }
+            offset = offset0
+        } else {
+            offset = 0
         }
         try codeGenerator.store(destinationAddress, source, offset)
     }
@@ -650,6 +674,125 @@ public class AssemblerCompiler: NSObject {
         try codeGenerator.sbc(destination, left, right)
     }
     
+    fileprivate func compileLA(_ node: InstructionNode) throws {
+        guard node.parameters.count == 2 else {
+            throw errorExpectsTwoOperands(node)
+        }
+        guard let destination = lookupRegister(node.parameters[0]) else {
+            throw errorExpectsFirstOperandToBeTheDestination(node)
+        }
+        guard let name = (node.parameters[1] as? ParameterIdentifier)?.value else {
+            throw errorExpectsSecondOperandToBeLabelIdentifier(node)
+        }
+        try codeGenerator.la(destination, name)
+    }
+    
+    fileprivate func compileCALL(_ node: InstructionNode) throws {
+        try compileNodes([
+            InstructionNode(instruction: kLA, parameters: [
+                ParameterIdentifier("ra"),
+                node.parameters[0]
+            ]),
+            InstructionNode(instruction: kJALR, parameters: [
+                ParameterIdentifier("ra"),
+                ParameterIdentifier("ra"),
+                ParameterNumber(0)
+            ])
+        ])
+    }
+    
+    fileprivate func compileCALLPTR(_ node: InstructionNode) throws {
+        try compileNodes([
+            InstructionNode(instruction: kJALR, parameters: [
+                ParameterIdentifier("ra"),
+                node.parameters[0],
+                ParameterNumber(0)
+            ])
+        ])
+    }
+    
+    fileprivate func compileENTER(_ node: InstructionNode) throws {
+        // The ENTER instructions saves the return address register, ra, to the
+        // stack. It's restored on LEAVE.
+        // TODO: It would be better to establish a convention where ra and other registers are caller-saved. In this case, insert code around a function call to save/restore live registers.
+        // TODO: Also, perhaps, consider passing parameters in registers since their values have already been saved and they would other be unused.
+        guard node.parameters.count == 1 else {
+            throw errorExpectsOneOperand(node)
+        }
+        guard let size = (node.parameters[0] as? ParameterNumber)?.value else {
+            throw errorExpectsFirstOperandToBeTheSize(node)
+        }
+        var instructions: [InstructionNode] = [
+            InstructionNode(instruction: kSTORE, parameters: [
+                ParameterIdentifier("sp"),
+                ParameterIdentifier("ra"),
+                ParameterNumber(0)
+            ]),
+            InstructionNode(instruction: kSTORE, parameters: [
+                ParameterIdentifier("sp"),
+                ParameterIdentifier("fp"),
+                ParameterNumber(-1)
+            ]),
+            InstructionNode(instruction: kSUBI, parameters: [
+                ParameterIdentifier("sp"),
+                ParameterIdentifier("sp"),
+                ParameterNumber(2)
+            ]),
+            InstructionNode(instruction: kADDI, parameters: [
+                ParameterIdentifier("fp"),
+                ParameterIdentifier("sp"),
+                ParameterNumber(0)
+            ])
+        ]
+        if size != 0 {
+            instructions += [
+                InstructionNode(instruction: kSUBI, parameters: [
+                    ParameterIdentifier("sp"),
+                    ParameterIdentifier("sp"),
+                    node.parameters[0]
+                ])
+            ]
+        }
+        try compileNodes(instructions)
+    }
+    
+    fileprivate func compileLEAVE(_ node: InstructionNode) throws {
+        try compileNodes([
+            InstructionNode(instruction: kADDI, parameters: [
+                ParameterIdentifier("sp"),
+                ParameterIdentifier("fp"),
+                ParameterNumber(0)
+            ]),
+            InstructionNode(instruction: kLOAD, parameters: [
+                ParameterIdentifier("fp"),
+                ParameterIdentifier("sp"),
+                ParameterNumber(0)
+            ]),
+            InstructionNode(instruction: kLOAD, parameters: [
+                ParameterIdentifier("ra"),
+                ParameterIdentifier("sp"),
+                ParameterNumber(1)
+            ]),
+            InstructionNode(instruction: kADDI, parameters: [
+                ParameterIdentifier("sp"),
+                ParameterIdentifier("sp"),
+                ParameterNumber(2)
+            ]),
+        ])
+    }
+    
+    fileprivate func compileRET(_ node: InstructionNode) throws {
+        try compileNodes([
+            InstructionNode(instruction: kJR, parameter: ParameterIdentifier("ra"))
+        ])
+    }
+    
+    fileprivate func compileNodes(_ nodes: [InstructionNode]) throws {
+        for ins in nodes {
+            try compileNode(ins)
+        }
+    }
+    
     fileprivate func lookupRegister(_ parameter: Parameter) -> AssemblerCodeGenerator.Register? {
         guard let identifier = (parameter as? ParameterIdentifier)?.value else {
             return nil
@@ -670,13 +813,13 @@ public class AssemblerCompiler: NSObject {
         case "r4":
             return .r4
             
-        case "r5":
+        case "r5", "ra":
             return .r5
             
-        case "r6":
+        case "r6", "sp":
             return .r6
             
-        case "r7":
+        case "r7", "fp":
             return .r7
             
         default:
@@ -720,6 +863,10 @@ public class AssemblerCompiler: NSObject {
         return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects the first operand to be a label identifier: `\(node.instruction)'")
     }
     
+    fileprivate func errorExpectsSecondOperandToBeLabelIdentifier(_ node: InstructionNode) -> CompilerError {
+        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects the second operand to be a label identifier: `\(node.instruction)'")
+    }
+    
     fileprivate func errorExpectsFirstOperandToBeTheLinkRegister(_ node: InstructionNode) -> CompilerError {
         return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects the first operand to be the link register: `\(node.instruction)'")
     }
@@ -734,6 +881,10 @@ public class AssemblerCompiler: NSObject {
     
     fileprivate func errorExpectsFirstOperandToBeTheLeftOperand(_ node: InstructionNode) -> CompilerError {
         return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects the first operand to be a register containing the left operand: `\(node.instruction)'")
+    }
+    
+    fileprivate func errorExpectsFirstOperandToBeTheSize(_ node: InstructionNode) -> CompilerError {
+        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects the operand to be the size: `\(node.instruction)'")
     }
     
     fileprivate func errorExpectsSecondOperandToBeTheSource(_ node: InstructionNode) -> CompilerError {

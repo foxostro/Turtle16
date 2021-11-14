@@ -11,6 +11,13 @@ import TurtleCore
 import Turtle16SimulatorCore
 
 class AssemblerCompilerTests: XCTestCase {
+    fileprivate func disassemble(_ instructions: [UInt16]) -> String {
+        let disassembler = Disassembler()
+        disassembler.shouldUseConventionalRegisterNames = true
+        let result = disassembler.disassembleToText(instructions)
+        return result
+    }
+    
     func testCompileEmptyAST() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [])
@@ -1551,5 +1558,177 @@ class AssemblerCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [
             0b1111100000000000
         ])
+    }
+    
+    func testLAExpectsTwoOperands() throws {
+        let compiler = AssemblerCompiler()
+        compiler.compile(ast: [
+            InstructionNode(instruction: "LA")
+        ])
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "instruction expects two operands: `LA'")
+        XCTAssertEqual(compiler.instructions, [])
+    }
+    
+    func testLAExpectsFirstOperandToBeTheDestinationAddressRegister() throws {
+        let compiler = AssemblerCompiler()
+        compiler.compile(ast: [
+            InstructionNode(instruction: "LA", parameters: [ParameterIdentifier("a"), ParameterNumber(0)])
+        ])
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "instruction expects the first operand to be the destination register: `LA'")
+        XCTAssertEqual(compiler.instructions, [])
+    }
+    
+    func testLAExpectsSecondOperandToBeAnIdentifier() throws {
+        let compiler = AssemblerCompiler()
+        compiler.compile(ast: [
+            InstructionNode(instruction: "LA", parameters: [ParameterIdentifier("r0"), ParameterNumber(0)])
+        ])
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "instruction expects the second operand to be a label identifier: `LA'")
+        XCTAssertEqual(compiler.instructions, [])
+    }
+    
+    func testCompileLAWithUndefinedLabel() throws {
+        let compiler = AssemblerCompiler()
+        compiler.compile(ast: [
+            InstructionNode(instruction: "LA", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("foo")])
+        ])
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "use of unresolved identifier: `foo'")
+        XCTAssertEqual(compiler.instructions, [])
+    }
+    
+    func testCompileLA() throws {
+        let compiler = AssemblerCompiler()
+        compiler.compile(ast: [
+            InstructionNode(instruction: "LA", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("foo")]),
+            LabelDeclaration(identifier: "foo"),
+            InstructionNode(instruction: "HLT")
+        ])
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 0)
+        XCTAssertEqual(compiler.instructions, [
+            0b0010000000000010, // LI
+            0b0010100000000000, // LUI
+            0b0000100000000000  // HLT
+        ])
+        XCTAssertEqual(disassemble(compiler.instructions), """
+            LI r0, 2
+            LUI r0, 0
+            HLT
+            """)
+    }
+    
+    func testCompileCALL() throws {
+        let compiler = AssemblerCompiler()
+        compiler.compile(ast: [
+            InstructionNode(instruction: "CALL", parameters: [ParameterIdentifier("foo")]),
+            LabelDeclaration(identifier: "foo"),
+        ])
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 0)
+        XCTAssertEqual(disassemble(compiler.instructions), """
+            LI ra, 3
+            LUI ra, 0
+            JALR ra, ra, 0
+            """)
+    }
+    
+    func testCompileCALLPTR() throws {
+        let compiler = AssemblerCompiler()
+        compiler.compile(ast: [
+            InstructionNode(instruction: "CALLPTR", parameters: [ParameterIdentifier("r1")])
+        ])
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 0)
+        XCTAssertEqual(disassemble(compiler.instructions), """
+            JALR ra, r1, 0
+            """)
+    }
+    
+    func testCompileENTER_no_parameter() throws {
+        let compiler = AssemblerCompiler()
+        compiler.compile(ast: [
+            InstructionNode(instruction: "ENTER")
+        ])
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "instruction expects one operand: `ENTER'")
+        XCTAssertEqual(compiler.instructions, [])
+    }
+    
+    func testCompileENTER_parameter_must_be_number() throws {
+        let compiler = AssemblerCompiler()
+        compiler.compile(ast: [
+            InstructionNode(instruction: "ENTER", parameter: ParameterIdentifier(""))
+        ])
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.message, "instruction expects the operand to be the size: `ENTER'")
+        XCTAssertEqual(compiler.instructions, [])
+    }
+    
+    func testCompileENTER_0() throws {
+        let compiler = AssemblerCompiler()
+        compiler.compile(ast: [
+            InstructionNode(instruction: "ENTER", parameter: ParameterNumber(0))
+        ])
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 0)
+        XCTAssertEqual(disassemble(compiler.instructions), """
+            STORE sp, ra, 0
+            STORE sp, fp, -1
+            SUBI sp, sp, 2
+            ADDI fp, sp, 0
+            """)
+    }
+    
+    func testCompileENTER_1() throws {
+        let compiler = AssemblerCompiler()
+        compiler.compile(ast: [
+            InstructionNode(instruction: "ENTER", parameter: ParameterNumber(1))
+        ])
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 0)
+        XCTAssertEqual(disassemble(compiler.instructions), """
+            STORE sp, ra, 0
+            STORE sp, fp, -1
+            SUBI sp, sp, 2
+            ADDI fp, sp, 0
+            SUBI sp, sp, 1
+            """)
+    }
+    
+    func testCompileLEAVE() throws {
+        let compiler = AssemblerCompiler()
+        compiler.compile(ast: [
+            InstructionNode(instruction: "LEAVE")
+        ])
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 0)
+        XCTAssertEqual(disassemble(compiler.instructions), """
+            ADDI sp, fp, 0
+            LOAD fp, sp, 0
+            LOAD ra, sp, 1
+            ADDI sp, sp, 2
+            """)
+    }
+    
+    func testCompileRET() throws {
+        let compiler = AssemblerCompiler()
+        compiler.compile(ast: [
+            InstructionNode(instruction: "RET")
+        ])
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 0)
+        XCTAssertEqual(disassemble(compiler.instructions), """
+            JR ra, 0
+            """)
     }
 }

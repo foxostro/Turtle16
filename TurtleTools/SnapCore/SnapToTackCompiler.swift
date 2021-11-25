@@ -95,20 +95,15 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         
         let mangledName = (try TypeContextTypeChecker(symbols: symbols!).check(expression: node.functionType).unwrapFunctionType()).mangledName!
         let labelHead = mangledName
-        let labelTail = "__\(mangledName)_tail"
         
         var children: [AbstractSyntaxTreeNode] = []
         
         children += [
-            TackInstructionNode(instruction: .jmp, parameters: [
-                ParameterIdentifier(labelTail)
-            ]),
             LabelDeclaration(identifier: labelHead),
             TackInstructionNode(instruction: .enter, parameters: [
                 ParameterNumber(sizeOfLocalVariables)
             ]),
-            try compile(node.body)!,
-            LabelDeclaration(identifier: labelTail),
+            try compile(node.body)!
         ]
         
         let function = Seq(sourceAnchor: node.sourceAnchor, children: children)

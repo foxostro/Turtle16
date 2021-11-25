@@ -15,6 +15,7 @@ public class SnapToTurtle16Compiler: NSObject {
     public var shouldRunSpecificTest: String? = nil
     public var shouldEnableOptimizations = true
     public private(set) var testNames: [String] = []
+    public private(set) var assembly: Result<TopLevel, Error>! = nil
     public private(set) var instructions: [UInt16] = []
     public var sandboxAccessManager: SandboxAccessManager? = nil
     public let globalSymbols = SymbolTable()
@@ -35,13 +36,17 @@ public class SnapToTurtle16Compiler: NSObject {
         instructions = []
         errors = []
         
-        let result = lex(text, url)
+        let assembly = lex(text, url)
             .flatMap(parse)
             .flatMap(contract)
             .flatMap(compileSnapToTack)
             .flatMap(compileTackToAssembly)
             .flatMap(registerAllocation)
             .flatMap(compileToLowerAssembly)
+        
+        self.assembly = assembly
+        
+        let result = assembly
             .flatMap(compileAssemblyToMachineCode)
         
         switch result {

@@ -47,13 +47,26 @@ func foo() {
 }
 """)
         XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(AssemblerListingMaker().makeListing(try compiler.assembly.get()), """
+            NOP
+            NOP
+            HLT
+            foo:
+            ENTER 1
+            SUBI r0, r7, 1
+            LI r1, 1
+            STORE r0, r1
+            LEAVE
+            RET
+            NOP
+            HLT
+            """)
         let disassembler = Disassembler()
         disassembler.shouldUseConventionalRegisterNames = true
         XCTAssertEqual(disassembler.disassembleToText(compiler.instructions), """
             NOP
             NOP
             HLT
-            JMP L0
             STORE sp, ra, 0
             STORE sp, fp, -1
             SUBI sp, sp, 2
@@ -67,7 +80,7 @@ func foo() {
             LOAD ra, sp, 1
             ADDI sp, sp, 2
             JR ra, 0
-            L0: NOP
+            NOP
             HLT
             """)
     }

@@ -117,18 +117,14 @@ public class SnapToTurtle16Compiler: NSObject {
     }
     
     func compileToLowerAssembly(_ input: AbstractSyntaxTreeNode?) -> Result<TopLevel, Error> {
-        // The hardware requires us to place a NOP at the first instruction.
-        // Terminate the program with a NOP, to allow the CPU to commit changes
-        // to the register file from instructions in-flight, and a HLT to stop
-        // the clock.
-        let topLevel0 = TopLevel(children: [
-            InstructionNode(instruction: kNOP),
-            input ?? Seq(),
-            InstructionNode(instruction: kNOP),
-            InstructionNode(instruction: kHLT)
-        ])
         return Result(catching: {
-            try SnapASTTransformerFlattenSeq().compile(topLevel0) as! TopLevel
+            let topLevel0 = try SnapASTTransformerFlattenSeq().compile(TopLevel(children: [
+                // The hardware requires us to place a NOP at the first instruction.
+                InstructionNode(instruction: kNOP),
+                input ?? Seq()
+            ])) as! TopLevel
+            let topLevel1 = try SnapSubcompilerSubroutine().compile(topLevel0) as! TopLevel
+            return topLevel1
         })
     }
     

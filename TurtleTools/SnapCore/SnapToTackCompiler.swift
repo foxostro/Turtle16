@@ -19,7 +19,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     let kUnionTypeTagOffset: Int
     let kSliceBaseAddrOffset: Int
     let kSliceCountOffset: Int
-    var subroutines: [AbstractSyntaxTreeNode] = []
+    var subroutines: [Subroutine] = []
     
     func pushRegister(_ identifier: String) {
         registerStack.append(identifier)
@@ -106,8 +106,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             try compile(node.body)!
         ]
         
-        let function = Seq(sourceAnchor: node.sourceAnchor, children: children)
-        subroutines.append(function)
+        let subroutine = Subroutine(sourceAnchor: node.sourceAnchor, children: children)
+        subroutines.append(subroutine)
         
         return nil
     }

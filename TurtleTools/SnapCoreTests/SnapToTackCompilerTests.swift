@@ -116,12 +116,14 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.compile(fn)
         let expected = Seq(children: [
             TackInstructionNode(instruction: .hlt),
-            LabelDeclaration(identifier: "foo"),
-            TackInstructionNode(instruction: .enter, parameters: [
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .leave),
-            TackInstructionNode(instruction: .ret)
+            Subroutine(children: [
+                LabelDeclaration(identifier: "foo"),
+                TackInstructionNode(instruction: .enter, parameters: [
+                    ParameterNumber(0)
+                ]),
+                TackInstructionNode(instruction: .leave),
+                TackInstructionNode(instruction: .ret)
+            ])
         ])
         XCTAssertEqual(actual, expected)
     }

@@ -51,6 +51,8 @@ func foo() {
         disassembler.shouldUseConventionalRegisterNames = true
         XCTAssertEqual(disassembler.disassembleToText(compiler.instructions), """
             NOP
+            NOP
+            HLT
             JMP L0
             STORE sp, ra, 0
             STORE sp, fp, -1

@@ -115,6 +115,7 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler()
         let actual = try compiler.compile(fn)
         let expected = Seq(children: [
+            TackInstructionNode(instruction: .hlt),
             TackInstructionNode(instruction: .jmp, parameters: [
                 ParameterIdentifier("__foo_tail")
             ]),

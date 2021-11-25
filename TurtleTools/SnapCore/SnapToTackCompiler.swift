@@ -19,6 +19,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     let kUnionTypeTagOffset: Int
     let kSliceBaseAddrOffset: Int
     let kSliceCountOffset: Int
+    var subroutines: [AbstractSyntaxTreeNode] = []
     
     func pushRegister(_ identifier: String) {
         registerStack.append(identifier)
@@ -49,8 +50,27 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         super.init(symbols)
     }
     
+    var depth = 0
+    
     public override func compile(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
-        return flatten(try super.compile(node0))
+        depth += 1
+        let compiledNode = try super.compile(node0)
+        depth -= 1
+        if depth == 0 {
+            var children: [AbstractSyntaxTreeNode] = []
+            if let compiledNode = compiledNode {
+                children.append(compiledNode)
+            }
+            if !subroutines.isEmpty {
+                children.append(TackInstructionNode(sourceAnchor: node0?.sourceAnchor, instruction: .hlt))
+                children += subroutines
+            }
+            let seq = Seq(sourceAnchor: node0?.sourceAnchor, children: children)
+            let result = flatten(seq)
+            return result
+        } else {
+            return flatten(compiledNode)
+        }
     }
     
     func flatten(_ node: AbstractSyntaxTreeNode?) -> AbstractSyntaxTreeNode? {
@@ -91,7 +111,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             LabelDeclaration(identifier: labelTail),
         ]
         
-        return Seq(sourceAnchor: node.sourceAnchor, children: children)
+        let function = Seq(sourceAnchor: node.sourceAnchor, children: children)
+        subroutines.append(function)
+        
+        return nil
     }
     
     public override func compile(goto node: Goto) throws -> AbstractSyntaxTreeNode? {

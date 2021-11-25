@@ -15,6 +15,9 @@ class AssemblyListingMakerTests: XCTestCase {
         let compiler = SnapCompiler()
         compiler.shouldEnableOptimizations = false
         compiler.compile(snapSource)
+        if compiler.hasError {
+            XCTFail(compiler.errors.map({$0.message}).joined(separator: ", "))
+        }
         let listing = AssemblyListingMaker.makeListing(base, compiler.instructions, compiler.programDebugInfo)
         return listing
     }

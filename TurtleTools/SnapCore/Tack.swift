@@ -11,6 +11,7 @@ import TurtleCore
 
 // Program are compiled to an intermediate language called Tack
 public enum TackInstruction {
+    case hlt
     case call
     case callptr
     case enter
@@ -71,6 +72,7 @@ public enum TackInstruction {
     
     public var description: String {
         switch self {
+        case .hlt: return "HLT"
         case .call: return "CALL"
         case .callptr: return "CALLPTR"
         case .enter: return "ENTER"

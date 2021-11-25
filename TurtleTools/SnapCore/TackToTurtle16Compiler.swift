@@ -65,6 +65,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
     
     public override func compile(tack node: TackInstructionNode) throws -> AbstractSyntaxTreeNode? {
         switch node.instruction {
+        case .hlt: return hlt(node)
         case .call: return call(node)
         case .callptr: return callptr(node)
         case .enter: return enter(node)
@@ -123,6 +124,13 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         case .le8: return le8(node)
         case .gt8: return gt8(node)
         }
+    }
+    
+    func hlt(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
+        return Seq(sourceAnchor: node.sourceAnchor, children: [
+            InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kNOP, parameters: node.parameters),
+            InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kHLT, parameters: node.parameters)
+        ])
     }
     
     func call(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {

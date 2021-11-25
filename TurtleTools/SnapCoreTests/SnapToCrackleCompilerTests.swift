@@ -213,7 +213,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.errors.first?.message, "inappropriate use of a function type (Try taking the function's address instead.)")
     }
     
-    func testCompileConstantDeclaration_AssignStringLiteralToDynamicArray() {
+    func testCompileConstantDeclaration_AssignStringLiteralToDynamicArray() throws {
         let elements = "Hello, World!".utf8.map({
             Expression.LiteralInt(Int($0))
         })
@@ -238,7 +238,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(crackle: ir)
+        let computer = try executor.execute(crackle: ir)
         
         // The statement puts the string on the stack.
         XCTAssertEqual(computer.stackPointer, Int(UInt16(0) &- UInt16(0xd)))
@@ -321,7 +321,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         ])
     }
     
-    func testCompileVarDeclaration_LocalVarsAreAllocatedStorageInOrderInTheStackFrame_1() {
+    func testCompileVarDeclaration_LocalVarsAreAllocatedStorageInOrderInTheStackFrame_1() throws {
         let one = Expression.LiteralInt(1)
         let two = Expression.LiteralInt(2)
         let three = Expression.LiteralInt(3)
@@ -358,11 +358,11 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(crackle: ir)
+        let computer = try executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 2)
     }
     
-    func testCompileVarDeclaration_LocalVarsAreAllocatedStorageInOrderInTheStackFrame_2() {
+    func testCompileVarDeclaration_LocalVarsAreAllocatedStorageInOrderInTheStackFrame_2() throws {
         let one = Expression.LiteralInt(1)
         let two = Expression.LiteralInt(2)
         let three = Expression.LiteralInt(3)
@@ -403,11 +403,11 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(crackle: ir)
+        let computer = try executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 3)
     }
     
-    func testCompileVarDeclaration_ShadowsExistingSymbolInEnclosingScope() {
+    func testCompileVarDeclaration_ShadowsExistingSymbolInEnclosingScope() throws {
         let one = Expression.LiteralInt(1)
         let two = Expression.LiteralInt(2)
         let ast = TopLevel(children: [
@@ -428,7 +428,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(crackle: ir)
+        let computer = try executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
     }
     
@@ -453,7 +453,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertEqual(symbol, Symbol(type: .bool, offset: addressFoo))
     }
     
-    func testCompileVarDeclaration_ConvertLiteralArrayTypeOnDeclaration() {
+    func testCompileVarDeclaration_ConvertLiteralArrayTypeOnDeclaration() throws {
         let arr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(3), elementType: Expression.PrimitiveType(.u16)),
                                           elements: [Expression.LiteralInt(1000),
                                                      ExprUtils.makeU8(value: 1),
@@ -471,7 +471,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(crackle: ir)
+        let computer = try executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+0), 1000)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+2), 1)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+4), 2)
@@ -644,7 +644,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         ])
     }
     
-    func testCompileFunctionDeclaration_WithSideEffects() {
+    func testCompileFunctionDeclaration_WithSideEffects() throws {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: Expression.Identifier("a"),
                            explicitType: nil,
@@ -664,11 +664,11 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(crackle: ir)
+        let computer = try executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
     }
     
-    func testCompileFunctionWithReturnValueU8() {
+    func testCompileFunctionWithReturnValueU8() throws {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
@@ -687,11 +687,11 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(crackle: ir)
+        let computer = try executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa)
     }
     
-    func testCompileFunctionWithReturnValueU16() {
+    func testCompileFunctionWithReturnValueU16() throws {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u16), arguments: []),
@@ -710,11 +710,11 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(crackle: ir)
+        let computer = try executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 0xabcd)
     }
     
-    func testCompileFunctionWithReturnValueU8PromotedToU16() {
+    func testCompileFunctionWithReturnValueU8PromotedToU16() throws {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u16), arguments: []),
@@ -733,7 +733,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(crackle: ir)
+        let computer = try executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 0x00aa)
     }
     
@@ -750,7 +750,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
     }
     
-    func testCompileFunctionWithParameters_1() {
+    func testCompileFunctionWithParameters_1() throws {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: [Expression.PrimitiveType(.u8)]),
@@ -769,12 +769,12 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(crackle: ir)
+        let computer = try executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa)
     }
     
     // We take steps to ensure parameters and local variables do not overlap.
-    func testCompileFunctionWithParameters_2() {
+    func testCompileFunctionWithParameters_2() throws {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: [Expression.PrimitiveType(.u8)]),
@@ -798,11 +798,11 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(crackle: ir)
+        let computer = try executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa)
     }
     
-    func testCompileFunctionWithParameters_3_ConvertIntegerConstantsToMatchingConcreteTypes() {
+    func testCompileFunctionWithParameters_3_ConvertIntegerConstantsToMatchingConcreteTypes() throws {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: [Expression.PrimitiveType(.u8)]),
@@ -821,11 +821,11 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(crackle: ir)
+        let computer = try executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa)
     }
     
-    func testCompileNestedFunction() {
+    func testCompileNestedFunction() throws {
         // This AST is equivalent to the following code:
         //    func foo() -> u8 {
         //        let a = 0xaa
@@ -865,11 +865,11 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(crackle: ir)
+        let computer = try executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xaa)
     }
     
-    func testFunctionNamesAreNotUnique() {
+    func testFunctionNamesAreNotUnique() throws {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                 functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
@@ -906,11 +906,11 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(crackle: ir)
+        let computer = try executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xbb)
     }
     
-    func testMutuallyRecursiveFunctions() {
+    func testMutuallyRecursiveFunctions() throws {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("isEven"),
                                 functionType: Expression.FunctionType(name: "isEven", returnType: Expression.PrimitiveType(.bool), arguments: [Expression.PrimitiveType(.u8)]),
@@ -956,12 +956,12 @@ class SnapToCrackleCompilerTests: XCTestCase {
         } else {
             let ir = compiler.instructions
             let executor = CrackleExecutor()
-            let computer = try! executor.execute(crackle: ir)
+            let computer = try executor.execute(crackle: ir)
             XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
         }
     }
         
-    func test_SixteenBitGreaterThan() {
+    func test_SixteenBitGreaterThan() throws {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: Expression.Identifier("a"),
                            explicitType: nil,
@@ -977,12 +977,12 @@ class SnapToCrackleCompilerTests: XCTestCase {
         } else {
             let ir = compiler.instructions
             let executor = CrackleExecutor()
-            let computer = try! executor.execute(crackle: ir)
+            let computer = try executor.execute(crackle: ir)
             XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 1)
         }
     }
         
-    func testCompilePeekMemory() {
+    func testCompilePeekMemory() throws {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: Expression.Identifier("a"),
                            explicitType: nil,
@@ -1012,13 +1012,13 @@ class SnapToCrackleCompilerTests: XCTestCase {
                 .copyWordsIndirectDestination(t0, t2, 1)
             ])
             let executor = CrackleExecutor()
-            let computer = try! executor.execute(crackle: ir)
+            let computer = try executor.execute(crackle: ir)
             XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+0), 0xaa)
             XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress+1), 0xaa)
         }
     }
         
-    func testCompilePokeMemory() {
+    func testCompilePokeMemory() throws {
         let ast = TopLevel(children: [
             Expression.Call(callee: Expression.Identifier("pokeMemory"),
                             arguments: [Expression.LiteralInt(0xab),
@@ -1036,12 +1036,12 @@ class SnapToCrackleCompilerTests: XCTestCase {
                 .copyWordsIndirectDestination(t1, t0, 1)
             ])
             let executor = CrackleExecutor()
-            let computer = try! executor.execute(crackle: ir)
+            let computer = try executor.execute(crackle: ir)
             XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xab)
         }
     }
         
-    func testCompilePokePeripheral() {
+    func testCompilePokePeripheral() throws {
         let ast = TopLevel(children: [
             Expression.Call(callee: Expression.Identifier("pokePeripheral"),
                             arguments: [
@@ -1063,13 +1063,13 @@ class SnapToCrackleCompilerTests: XCTestCase {
         } else {
             let ir = compiler.instructions
             let executor = CrackleExecutor()
-            let computer = try! executor.execute(crackle: ir)
+            let computer = try executor.execute(crackle: ir)
             XCTAssertEqual(computer.lowerInstructionRAM.load(from: 0xffff), 0xff)
             XCTAssertEqual(computer.upperInstructionRAM.load(from: 0xffff), 0xff)
         }
     }
         
-    func testCompileHlt() {
+    func testCompileHlt() throws {
         let ast = TopLevel(children: [
             Expression.Call(callee: Expression.Identifier("pokeMemory"),
                             arguments: [Expression.LiteralInt(0xab),
@@ -1087,12 +1087,12 @@ class SnapToCrackleCompilerTests: XCTestCase {
         } else {
             let ir = compiler.instructions
             let executor = CrackleExecutor()
-            let computer = try! executor.execute(crackle: ir)
+            let computer = try executor.execute(crackle: ir)
             XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 0xab)
         }
     }
         
-    func testCompileGetArrayLength() {
+    func testCompileGetArrayLength() throws {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: Expression.Identifier("r"),
                            explicitType: Expression.PrimitiveType(.u16),
@@ -1126,11 +1126,11 @@ class SnapToCrackleCompilerTests: XCTestCase {
         }
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(crackle: ir)
+        let computer = try executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress), 3)
     }
         
-    func testCompileEmptyStructAddsToTypeTable() {
+    func testCompileEmptyStructAddsToTypeTable() throws {
         let ast = TopLevel(children: [
             StructDeclaration(identifier: Expression.Identifier("foo"), members: [])
         ])
@@ -1140,7 +1140,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
             return
         }
-        let symbolType = try! compiler.globalSymbols.resolveType(identifier: "foo")
+        let symbolType = try compiler.globalSymbols.resolveType(identifier: "foo")
         
         let expectedStructSymbols = SymbolTable()
         expectedStructSymbols.enclosingFunctionNameMode = .set("foo")
@@ -1149,7 +1149,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertEqual(symbolType, expected)
     }
         
-    func testCompileStructAddsToTypeTable() {
+    func testCompileStructAddsToTypeTable() throws {
         let ast = TopLevel(children: [
             StructDeclaration(identifier: Expression.Identifier("foo"), members: [
                 StructDeclaration.Member(name: "bar", type: Expression.PrimitiveType(.u8))
@@ -1161,7 +1161,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
             print(CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors).message)
             return
         }
-        let symbolType = try! compiler.globalSymbols.resolveType(identifier: "foo")
+        let symbolType = try compiler.globalSymbols.resolveType(identifier: "foo")
         
         let expectedSymbols = SymbolTable(tuples: [
             ("bar", Symbol(type: .u8, offset: 0, storage: .automaticStorage))
@@ -1173,7 +1173,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         XCTAssertEqual(symbolType, expected)
     }
     
-    func testCompileConstantDeclaration_PointerToU8_UndefinedValueAtInitialization() {
+    func testCompileConstantDeclaration_PointerToU8_UndefinedValueAtInitialization() throws {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: Expression.PointerType(Expression.PrimitiveType(.u8)),
@@ -1191,7 +1191,7 @@ class SnapToCrackleCompilerTests: XCTestCase {
         // It's enough to check that the expression compiles.
     }
     
-    func testCompileConstantDeclaration_PointerToU8_GivenAddressOfAnotherVariable() {
+    func testCompileConstantDeclaration_PointerToU8_GivenAddressOfAnotherVariable() throws {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: Expression.PrimitiveType(.u8),
@@ -1212,11 +1212,11 @@ class SnapToCrackleCompilerTests: XCTestCase {
         }
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(crackle: ir)
+        let computer = try executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load16(from: kStaticStorageStartAddress+1), UInt16(kStaticStorageStartAddress))
     }
     
-    func testCompileCallStructMemberFunction() {
+    func testCompileCallStructMemberFunction() throws {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: Expression.Identifier("result"),
                            explicitType: Expression.PrimitiveType(.u8),
@@ -1243,11 +1243,11 @@ class SnapToCrackleCompilerTests: XCTestCase {
         }
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(crackle: ir)
+        let computer = try executor.execute(crackle: ir)
         XCTAssertEqual(computer.dataRAM.load(from: kStaticStorageStartAddress), 42)
     }
     
-    func testPassingAssertDoesNothing() {
+    func testPassingAssertDoesNothing() throws {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
@@ -1272,13 +1272,13 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let ir = compiler.instructions
         let executor = CrackleExecutor()
         executor.injectPanicStub = false
-        let computer = try! executor.execute(crackle: ir)
+        let computer = try executor.execute(crackle: ir)
         
-        let addressOfFoo = try! compiler.globalSymbols.resolve(identifier: "foo").offset
+        let addressOfFoo = try compiler.globalSymbols.resolve(identifier: "foo").offset
         XCTAssertEqual(computer.dataRAM.load(from: addressOfFoo), 42)
     }
     
-    func testFailingAssertPanics() {
+    func testFailingAssertPanics() throws {
         let ast = TopLevel(children: [
             VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
@@ -1304,13 +1304,13 @@ class SnapToCrackleCompilerTests: XCTestCase {
         let ir = compiler.instructions
         let executor = CrackleExecutor()
         executor.injectPanicStub = false
-        let computer = try! executor.execute(crackle: ir)
+        let computer = try executor.execute(crackle: ir)
         
-        let addressOfFoo = try! compiler.globalSymbols.resolve(identifier: "foo").offset
+        let addressOfFoo = try compiler.globalSymbols.resolve(identifier: "foo").offset
         XCTAssertEqual(computer.dataRAM.load(from: addressOfFoo), 2)
     }
     
-    func testDeclareAFunctionPointerVariable() {
+    func testDeclareAFunctionPointerVariable() throws {
         let ast = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("myfunc"), functionType: Expression.FunctionType(name: "myfunc", returnType: .PrimitiveType(.void), arguments: []), argumentNames: [], body: Block()),
             VarDeclaration(identifier: Expression.Identifier("foo"),
@@ -1327,9 +1327,9 @@ class SnapToCrackleCompilerTests: XCTestCase {
         }
         let ir = compiler.instructions
         let executor = CrackleExecutor()
-        let computer = try! executor.execute(crackle: ir)
+        let computer = try executor.execute(crackle: ir)
         
-        let addressOfFoo = try! compiler.globalSymbols.resolve(identifier: "foo").offset
+        let addressOfFoo = try compiler.globalSymbols.resolve(identifier: "foo").offset
         XCTAssertEqual(computer.dataRAM.load16(from: addressOfFoo), 10)
     }
 }

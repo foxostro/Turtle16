@@ -1657,9 +1657,24 @@ class AssemblerCompilerTests: XCTestCase {
         compiler.compile(ast: [
             InstructionNode(instruction: "ENTER")
         ])
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 0)
+        XCTAssertEqual(disassemble(compiler.instructions), """
+            STORE sp, ra, 0
+            STORE sp, fp, -1
+            SUBI sp, sp, 2
+            ADDI fp, sp, 0
+            """)
+    }
+    
+    func testCompileENTER_too_many_parameters() throws {
+        let compiler = AssemblerCompiler()
+        compiler.compile(ast: [
+            InstructionNode(instruction: "ENTER", parameters: [ParameterNumber(0), ParameterNumber(1)])
+        ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "instruction expects one operand: `ENTER'")
+        XCTAssertEqual(compiler.errors.first?.message, "instruction expects zero or one operands: `ENTER'")
         XCTAssertEqual(compiler.instructions, [])
     }
     

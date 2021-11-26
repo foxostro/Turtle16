@@ -716,11 +716,17 @@ public class AssemblerCompiler: NSObject {
         // stack. It's restored on LEAVE.
         // TODO: It would be better to establish a convention where ra and other registers are caller-saved. In this case, insert code around a function call to save/restore live registers.
         // TODO: Also, perhaps, consider passing parameters in registers since their values have already been saved and they would other be unused.
-        guard node.parameters.count == 1 else {
-            throw errorExpectsOneOperand(node)
+        guard node.parameters.count < 2 else {
+            throw errorExpectsZeroOrOneOperands(node)
         }
-        guard let size = (node.parameters[0] as? ParameterNumber)?.value else {
-            throw errorExpectsFirstOperandToBeTheSize(node)
+        let size: Int
+        if node.parameters.count == 0 {
+            size = 0
+        } else {
+            guard let sizeArg = node.parameters[0] as? ParameterNumber else {
+                throw errorExpectsFirstOperandToBeTheSize(node)
+            }
+            size = sizeArg.value
         }
         var instructions: [InstructionNode] = [
             InstructionNode(instruction: kSTORE, parameters: [
@@ -841,6 +847,10 @@ public class AssemblerCompiler: NSObject {
     
     fileprivate func errorExpectsOneOperand(_ node: InstructionNode) -> CompilerError {
         return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects one operand: `\(node.instruction)'")
+    }
+    
+    fileprivate func errorExpectsZeroOrOneOperands(_ node: InstructionNode) -> CompilerError {
+        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects zero or one operands: `\(node.instruction)'")
     }
     
     fileprivate func errorExpectsOneOrTwoOperands(_ node: InstructionNode) -> CompilerError {

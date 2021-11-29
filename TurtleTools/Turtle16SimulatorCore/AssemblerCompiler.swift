@@ -711,11 +711,12 @@ public class AssemblerCompiler: NSObject {
         ])
     }
     
+    fileprivate let kSizeOfSavedRegisters = 7
+    
     fileprivate func compileENTER(_ node: InstructionNode) throws {
-        // The ENTER instructions saves the return address register, ra, to the
-        // stack. It's restored on LEAVE.
-        // TODO: It would be better to establish a convention where ra and other registers are caller-saved. In this case, insert code around a function call to save/restore live registers.
-        // TODO: Also, perhaps, consider passing parameters in registers since their values have already been saved and they would other be unused.
+        // The ENTER instructions pushes physical registers on the stack and
+        // then establishes a new stack frame by `fp <- sp ; sp <- sp - size`.
+        // TODO: While this scheme will work, it would be more efficient to only save/restore registers which are actually used in a function.
         guard node.parameters.count < 2 else {
             throw errorExpectsZeroOrOneOperands(node)
         }
@@ -729,20 +730,45 @@ public class AssemblerCompiler: NSObject {
             size = sizeArg.value
         }
         var instructions: [InstructionNode] = [
-            InstructionNode(instruction: kSTORE, parameters: [
-                ParameterIdentifier("sp"),
-                ParameterIdentifier("ra"),
-                ParameterNumber(0)
-            ]),
-            InstructionNode(instruction: kSTORE, parameters: [
-                ParameterIdentifier("sp"),
-                ParameterIdentifier("fp"),
-                ParameterNumber(-1)
-            ]),
             InstructionNode(instruction: kSUBI, parameters: [
                 ParameterIdentifier("sp"),
                 ParameterIdentifier("sp"),
+                ParameterNumber(kSizeOfSavedRegisters)
+            ]),
+            InstructionNode(instruction: kSTORE, parameters: [
+                ParameterIdentifier("r0"),
+                ParameterIdentifier("sp"),
+                ParameterNumber(6)
+            ]),
+            InstructionNode(instruction: kSTORE, parameters: [
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("sp"),
+                ParameterNumber(5)
+            ]),
+            InstructionNode(instruction: kSTORE, parameters: [
+                ParameterIdentifier("r2"),
+                ParameterIdentifier("sp"),
+                ParameterNumber(4)
+            ]),
+            InstructionNode(instruction: kSTORE, parameters: [
+                ParameterIdentifier("r3"),
+                ParameterIdentifier("sp"),
+                ParameterNumber(3)
+            ]),
+            InstructionNode(instruction: kSTORE, parameters: [
+                ParameterIdentifier("r4"),
+                ParameterIdentifier("sp"),
                 ParameterNumber(2)
+            ]),
+            InstructionNode(instruction: kSTORE, parameters: [
+                ParameterIdentifier("ra"),
+                ParameterIdentifier("sp"),
+                ParameterNumber(1)
+            ]),
+            InstructionNode(instruction: kSTORE, parameters: [
+                ParameterIdentifier("fp"),
+                ParameterIdentifier("sp"),
+                ParameterNumber(0)
             ]),
             InstructionNode(instruction: kADDI, parameters: [
                 ParameterIdentifier("fp"),
@@ -755,7 +781,7 @@ public class AssemblerCompiler: NSObject {
                 InstructionNode(instruction: kSUBI, parameters: [
                     ParameterIdentifier("sp"),
                     ParameterIdentifier("sp"),
-                    node.parameters[0]
+                    ParameterNumber(size)
                 ])
             ]
         }
@@ -763,6 +789,9 @@ public class AssemblerCompiler: NSObject {
     }
     
     fileprivate func compileLEAVE(_ node: InstructionNode) throws {
+        // The LEAVE instructions tears down the stack frame by doing
+        // `sp <- fp` and then restores physical register values by popping
+        // them off the stack.
         try compileNodes([
             InstructionNode(instruction: kADDI, parameters: [
                 ParameterIdentifier("sp"),
@@ -770,20 +799,45 @@ public class AssemblerCompiler: NSObject {
                 ParameterNumber(0)
             ]),
             InstructionNode(instruction: kLOAD, parameters: [
-                ParameterIdentifier("fp"),
+                ParameterIdentifier("r0"),
                 ParameterIdentifier("sp"),
-                ParameterNumber(0)
+                ParameterNumber(6)
+            ]),
+            InstructionNode(instruction: kLOAD, parameters: [
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("sp"),
+                ParameterNumber(5)
+            ]),
+            InstructionNode(instruction: kLOAD, parameters: [
+                ParameterIdentifier("r2"),
+                ParameterIdentifier("sp"),
+                ParameterNumber(4)
+            ]),
+            InstructionNode(instruction: kLOAD, parameters: [
+                ParameterIdentifier("r3"),
+                ParameterIdentifier("sp"),
+                ParameterNumber(3)
+            ]),
+            InstructionNode(instruction: kLOAD, parameters: [
+                ParameterIdentifier("r4"),
+                ParameterIdentifier("sp"),
+                ParameterNumber(2)
             ]),
             InstructionNode(instruction: kLOAD, parameters: [
                 ParameterIdentifier("ra"),
                 ParameterIdentifier("sp"),
                 ParameterNumber(1)
             ]),
+            InstructionNode(instruction: kLOAD, parameters: [
+                ParameterIdentifier("fp"),
+                ParameterIdentifier("sp"),
+                ParameterNumber(0)
+            ]),
             InstructionNode(instruction: kADDI, parameters: [
                 ParameterIdentifier("sp"),
                 ParameterIdentifier("sp"),
-                ParameterNumber(2)
-            ]),
+                ParameterNumber(kSizeOfSavedRegisters)
+            ])
         ])
     }
     

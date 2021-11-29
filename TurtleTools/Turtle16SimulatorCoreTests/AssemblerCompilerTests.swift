@@ -10,7 +10,29 @@ import XCTest
 import TurtleCore
 import Turtle16SimulatorCore
 
+class PrintLogger: NSObject, Logger {
+    public func append(_ format: String, _ args: CVarArg...) {
+        let message = String(format:format, arguments:args)
+        print(message)
+    }
+}
+
 class AssemblerCompilerTests: XCTestCase {
+    fileprivate func makeDebugger(instructions: [UInt16]) -> DebugConsole {
+        let cpu = SchematicLevelCPUModel()
+        let computer = Turtle16Computer(cpu)
+        cpu.store = {(value: UInt16, addr: UInt16) in
+            computer.ram[Int(addr)] = value
+        }
+        cpu.load = {(addr: UInt16) in
+            return computer.ram[Int(addr)]
+        }
+        computer.instructions = instructions
+        computer.reset()
+        let debugger = DebugConsole(computer: computer)
+        return debugger
+    }
+    
     fileprivate func disassemble(_ instructions: [UInt16]) -> String {
         let disassembler = Disassembler()
         disassembler.shouldUseConventionalRegisterNames = true
@@ -1660,9 +1682,14 @@ class AssemblerCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
         XCTAssertEqual(disassemble(compiler.instructions), """
-            STORE sp, ra, 0
-            STORE sp, fp, -1
-            SUBI sp, sp, 2
+            SUBI sp, sp, 7
+            STORE r0, sp, 6
+            STORE r1, sp, 5
+            STORE r2, sp, 4
+            STORE r3, sp, 3
+            STORE r4, sp, 2
+            STORE ra, sp, 1
+            STORE fp, sp, 0
             ADDI fp, sp, 0
             """)
     }
@@ -1697,9 +1724,14 @@ class AssemblerCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
         XCTAssertEqual(disassemble(compiler.instructions), """
-            STORE sp, ra, 0
-            STORE sp, fp, -1
-            SUBI sp, sp, 2
+            SUBI sp, sp, 7
+            STORE r0, sp, 6
+            STORE r1, sp, 5
+            STORE r2, sp, 4
+            STORE r3, sp, 3
+            STORE r4, sp, 2
+            STORE ra, sp, 1
+            STORE fp, sp, 0
             ADDI fp, sp, 0
             """)
     }
@@ -1712,9 +1744,14 @@ class AssemblerCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
         XCTAssertEqual(disassemble(compiler.instructions), """
-            STORE sp, ra, 0
-            STORE sp, fp, -1
-            SUBI sp, sp, 2
+            SUBI sp, sp, 7
+            STORE r0, sp, 6
+            STORE r1, sp, 5
+            STORE r2, sp, 4
+            STORE r3, sp, 3
+            STORE r4, sp, 2
+            STORE ra, sp, 1
+            STORE fp, sp, 0
             ADDI fp, sp, 0
             SUBI sp, sp, 1
             """)
@@ -1729,10 +1766,123 @@ class AssemblerCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.errors.count, 0)
         XCTAssertEqual(disassemble(compiler.instructions), """
             ADDI sp, fp, 0
-            LOAD fp, sp, 0
+            LOAD r0, sp, 6
+            LOAD r1, sp, 5
+            LOAD r2, sp, 4
+            LOAD r3, sp, 3
+            LOAD r4, sp, 2
             LOAD ra, sp, 1
-            ADDI sp, sp, 2
+            LOAD fp, sp, 0
+            ADDI sp, sp, 7
             """)
+    }
+    
+    func test_ENTER_writes_registers_to_memory() throws {
+        let compiler = AssemblerCompiler()
+        compiler.compile(ast: [
+            InstructionNode(instruction: "NOP"),
+            InstructionNode(instruction: "ENTER", parameter: ParameterNumber(8)),
+            InstructionNode(instruction: "NOP"),
+            InstructionNode(instruction: "HLT")
+        ])
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 0)
+        let debugger = makeDebugger(instructions: compiler.instructions)
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, 1000)
+        debugger.computer.setRegister(1, 1001)
+        debugger.computer.setRegister(2, 1002)
+        debugger.computer.setRegister(3, 1003)
+        debugger.computer.setRegister(4, 1004)
+        debugger.computer.setRegister(5, 1005)
+        debugger.computer.setRegister(6, 0)
+        debugger.computer.setRegister(7, 42)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(0), 1000)
+        XCTAssertEqual(debugger.computer.getRegister(1), 1001)
+        XCTAssertEqual(debugger.computer.getRegister(2), 1002)
+        XCTAssertEqual(debugger.computer.getRegister(3), 1003)
+        XCTAssertEqual(debugger.computer.getRegister(4), 1004)
+        XCTAssertEqual(debugger.computer.getRegister(5), 1005)
+        XCTAssertEqual(debugger.computer.getRegister(6), 0xfff1)
+        XCTAssertEqual(debugger.computer.getRegister(7), 0xfff9)
+        XCTAssertEqual(debugger.computer.ram[0xffff], 1000) // r0
+        XCTAssertEqual(debugger.computer.ram[0xfffe], 1001) // r1
+        XCTAssertEqual(debugger.computer.ram[0xfffd], 1002) // r2
+        XCTAssertEqual(debugger.computer.ram[0xfffc], 1003) // r3
+        XCTAssertEqual(debugger.computer.ram[0xfffb], 1004) // r4
+        XCTAssertEqual(debugger.computer.ram[0xfffa], 1005) // r5
+        XCTAssertEqual(debugger.computer.ram[0xfff9], 42)   // fp
+    }
+    
+    func test_LEAVE_pops_registers_from_memory() throws {
+        let compiler = AssemblerCompiler()
+        compiler.compile(ast: [
+            InstructionNode(instruction: "NOP"),
+            InstructionNode(instruction: "LEAVE"),
+            InstructionNode(instruction: "NOP"),
+            InstructionNode(instruction: "HLT")
+        ])
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 0)
+        let debugger = makeDebugger(instructions: compiler.instructions)
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(1, 0)
+        debugger.computer.setRegister(2, 0)
+        debugger.computer.setRegister(3, 0)
+        debugger.computer.setRegister(4, 0)
+        debugger.computer.setRegister(5, 0)
+        debugger.computer.setRegister(6, 0xfff9)
+        debugger.computer.setRegister(7, 0xfff9)
+        debugger.computer.ram[0xffff] = 1000 // r0
+        debugger.computer.ram[0xfffe] = 1001 // r1
+        debugger.computer.ram[0xfffd] = 1002 // r2
+        debugger.computer.ram[0xfffc] = 1003 // r3
+        debugger.computer.ram[0xfffb] = 1004 // r4
+        debugger.computer.ram[0xfffa] = 1005 // r5
+        debugger.computer.ram[0xfff9] = 42   // fp
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(0), 1000)
+        XCTAssertEqual(debugger.computer.getRegister(1), 1001)
+        XCTAssertEqual(debugger.computer.getRegister(2), 1002)
+        XCTAssertEqual(debugger.computer.getRegister(3), 1003)
+        XCTAssertEqual(debugger.computer.getRegister(4), 1004)
+        XCTAssertEqual(debugger.computer.getRegister(5), 1005)
+        XCTAssertEqual(debugger.computer.getRegister(6), 0)
+        XCTAssertEqual(debugger.computer.getRegister(7), 42)
+    }
+    
+    func test_ENTER_then_LEAVE_restores_prev_state() throws {
+        let compiler = AssemblerCompiler()
+        compiler.compile(ast: [
+            InstructionNode(instruction: "NOP"),
+            InstructionNode(instruction: "ENTER", parameter: ParameterNumber(8)),
+            InstructionNode(instruction: "LEAVE"),
+            InstructionNode(instruction: "NOP"),
+            InstructionNode(instruction: "HLT")
+        ])
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 0)
+        let debugger = makeDebugger(instructions: compiler.instructions)
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, 1000)
+        debugger.computer.setRegister(1, 1001)
+        debugger.computer.setRegister(2, 1002)
+        debugger.computer.setRegister(3, 1003)
+        debugger.computer.setRegister(4, 1004)
+        debugger.computer.setRegister(5, 1005)
+        debugger.computer.setRegister(6, 0)
+        debugger.computer.setRegister(7, 0)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(0), 1000)
+        XCTAssertEqual(debugger.computer.getRegister(1), 1001)
+        XCTAssertEqual(debugger.computer.getRegister(2), 1002)
+        XCTAssertEqual(debugger.computer.getRegister(3), 1003)
+        XCTAssertEqual(debugger.computer.getRegister(4), 1004)
+        XCTAssertEqual(debugger.computer.getRegister(5), 1005)
+        XCTAssertEqual(debugger.computer.getRegister(6), 0)
+        XCTAssertEqual(debugger.computer.getRegister(7), 0)
     }
     
     func testCompileRET() throws {

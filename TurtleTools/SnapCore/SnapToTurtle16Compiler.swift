@@ -102,29 +102,33 @@ public class SnapToTurtle16Compiler: NSObject {
         })
     }
     
-    func compileTackToAssembly(_ input: AbstractSyntaxTreeNode?) -> Result<AbstractSyntaxTreeNode?, Error> {
+    func compileTackToAssembly(_ input: AbstractSyntaxTreeNode?) -> Result<TopLevel, Error> {
         let compiler = TackToTurtle16Compiler(globalSymbols)
         return Result(catching: {
-            try compiler.compile(input)
-        })
-    }
-    
-    func registerAllocation(_ input: AbstractSyntaxTreeNode?) -> Result<AbstractSyntaxTreeNode?, Error> {
-        let registerAllocator = RegisterAllocatorNaive()
-        return Result(catching: {
-            try registerAllocator.compile(input)
-        })
-    }
-    
-    func compileToLowerAssembly(_ input: AbstractSyntaxTreeNode?) -> Result<TopLevel, Error> {
-        return Result(catching: {
-            let topLevel0 = try SnapASTTransformerFlattenSeq().compile(TopLevel(children: [
-                // The hardware requires us to place a NOP at the first instruction.
-                InstructionNode(instruction: kNOP),
+            try compiler.compile(TopLevel(children: [
                 input ?? Seq()
             ])) as! TopLevel
-            let topLevel1 = try SnapSubcompilerSubroutine().compile(topLevel0) as! TopLevel
-            return topLevel1
+        })
+    }
+    
+    func registerAllocation(_ input: TopLevel) -> Result<TopLevel, Error> {
+        let registerAllocator = RegisterAllocatorNaive()
+        return Result(catching: {
+            try registerAllocator.compile(input) as! TopLevel
+        })
+    }
+    
+    func compileToLowerAssembly(_ input: TopLevel) -> Result<TopLevel, Error> {
+        return Result(catching: {
+            //try SnapASTTransformerFlattenSeq().compile(
+            var topLevel = try SnapSubcompilerSubroutine().compile(input) as! TopLevel
+            
+            // The hardware requires us to place a NOP at the first instruction.
+            if topLevel.children.first != InstructionNode(instruction: kNOP) {
+                topLevel = TopLevel(children: [InstructionNode(instruction: kNOP)] + topLevel.children) 
+            }
+            
+            return topLevel
         })
     }
     

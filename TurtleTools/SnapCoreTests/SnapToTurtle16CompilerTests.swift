@@ -48,7 +48,6 @@ func foo() {
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(AssemblerListingMaker().makeListing(try compiler.assembly.get()), """
             NOP
-            NOP
             HLT
             foo:
             ENTER 1

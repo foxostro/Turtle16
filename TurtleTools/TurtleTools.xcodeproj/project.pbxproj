@@ -177,6 +177,8 @@
 		6F3F0102275FD40C00875339 /* RegisterLiveIntervalCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3F0101275FD40C00875339 /* RegisterLiveIntervalCalculator.swift */; };
 		6F3F0104275FD42A00875339 /* RegisterLiveIntervalCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3F0103275FD42A00875339 /* RegisterLiveIntervalCalculatorTests.swift */; };
 		6F3F0106275FD47300875339 /* LiveInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3F0105275FD47300875339 /* LiveInterval.swift */; };
+		6F3F0108275FEC5700875339 /* RegisterSpiller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3F0107275FEC5700875339 /* RegisterSpiller.swift */; };
+		6F3F010A275FEC8000875339 /* RegisterSpillerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3F0109275FEC8000875339 /* RegisterSpillerTests.swift */; };
 		6F3F010C2760675400875339 /* RegisterUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3F010B2760675400875339 /* RegisterUtils.swift */; };
 		6F3F010E2760676000875339 /* RegisterUtilsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3F010D2760676000875339 /* RegisterUtilsTests.swift */; };
 		6F40730126ADE09D007D8382 /* MemoryLayoutStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F40730026ADE09D007D8382 /* MemoryLayoutStrategy.swift */; };
@@ -819,6 +821,8 @@
 		6F3F0101275FD40C00875339 /* RegisterLiveIntervalCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterLiveIntervalCalculator.swift; sourceTree = "<group>"; };
 		6F3F0103275FD42A00875339 /* RegisterLiveIntervalCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterLiveIntervalCalculatorTests.swift; sourceTree = "<group>"; };
 		6F3F0105275FD47300875339 /* LiveInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveInterval.swift; sourceTree = "<group>"; };
+		6F3F0107275FEC5700875339 /* RegisterSpiller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterSpiller.swift; sourceTree = "<group>"; };
+		6F3F0109275FEC8000875339 /* RegisterSpillerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterSpillerTests.swift; sourceTree = "<group>"; };
 		6F3F010B2760675400875339 /* RegisterUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterUtils.swift; sourceTree = "<group>"; };
 		6F3F010D2760676000875339 /* RegisterUtilsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterUtilsTests.swift; sourceTree = "<group>"; };
 		6F40730026ADE09D007D8382 /* MemoryLayoutStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryLayoutStrategy.swift; sourceTree = "<group>"; };
@@ -1593,6 +1597,7 @@
 				6F4F7B3F254D21970030E3CB /* PopLocalOptimizer.swift */,
 				6F83480A26FD3B0100EB466E /* RegisterAllocatorNaive.swift */,
 				6F3F0101275FD40C00875339 /* RegisterLiveIntervalCalculator.swift */,
+				6F3F0107275FEC5700875339 /* RegisterSpiller.swift */,
 				6F3F010B2760675400875339 /* RegisterUtils.swift */,
 				6F41B69524784B230043A8D7 /* RvalueExpressionCompiler.swift */,
 				6F924E79248B42D400F43741 /* RvalueExpressionTypeChecker.swift */,
@@ -1668,6 +1673,7 @@
 				6F24B60A254E005100295D49 /* PopDeadStoreEliminationOptimizationPassTests.swift */,
 				6F83480C26FD3B1200EB466E /* RegisterAllocatorNaiveTests.swift */,
 				6F3F0103275FD42A00875339 /* RegisterLiveIntervalCalculatorTests.swift */,
+				6F3F0109275FEC8000875339 /* RegisterSpillerTests.swift */,
 				6F3F010D2760676000875339 /* RegisterUtilsTests.swift */,
 				6F41B69724784B680043A8D7 /* RvalueExpressionCompilerTests.swift */,
 				6F924E7B248B42E100F43741 /* RvalueExpressionTypeCheckerTests.swift */,
@@ -2609,6 +2615,7 @@
 				6F2B443626D9ACFE009ACF08 /* SnapASTTransformerFlattenSeq.swift in Sources */,
 				6FBCFA5C26F7F52400193819 /* TackToTurtle16Compiler.swift in Sources */,
 				6F4F7B40254D21970030E3CB /* PopLocalOptimizer.swift in Sources */,
+				6F3F0108275FEC5700875339 /* RegisterSpiller.swift in Sources */,
 				6F15422226B5EBA800BA9572 /* SnapASTTransformerTestDeclaration.swift in Sources */,
 				6F15421E26B34E3300BA9572 /* SymbolTablesReconnector.swift in Sources */,
 				6F40730326ADE0B7007D8382 /* MemoryLayoutStrategyTurtleTTL.swift in Sources */,
@@ -2711,6 +2718,7 @@
 				6F4F7B22254D1F490030E3CB /* PopBasicBlockPartitionerTests.swift in Sources */,
 				6F16BA10251E946100A26850 /* SnapDebugInfoTests.swift in Sources */,
 				6FF179C926BA344D0026F284 /* SnapSubcompilerImportTests.swift in Sources */,
+				6F3F010A275FEC8000875339 /* RegisterSpillerTests.swift in Sources */,
 				6F4B5CBD2471DF2A000C57EB /* SnapCompilerTests.swift in Sources */,
 				6F40731926B281C1007D8382 /* SnapAbstractSyntaxTreeCompilerTests.swift in Sources */,
 				6F469E0126BBAC450004613B /* SnapSubcompilerImplTests.swift in Sources */,

@@ -257,6 +257,10 @@
 		6F6956FB24F965B3006D66FC /* UInt8Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6956FA24F965B3006D66FC /* UInt8Extension.swift */; };
 		6F6AED40251696C5002E3AC5 /* Impl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6AED3F251696C5002E3AC5 /* Impl.swift */; };
 		6F6DD22524809731004B1703 /* VarDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6DD22424809731004B1703 /* VarDeclaration.swift */; };
+		6F6EA40727653EFA00B2ABE4 /* Snap in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6F9201D92471DA22009E1410 /* Snap */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		6F6EA40827653F0000B2ABE4 /* Turtle16Assembler in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6F300DC0266A906F00BFBAC4 /* Turtle16Assembler */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		6F6EA40D27653FB700B2ABE4 /* SnapCore.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6F9201E52471DAC7009E1410 /* SnapCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6F6EA41227653FDE00B2ABE4 /* TurtleSimulatorCore.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6FB0D34C24711A23003B5D5C /* TurtleSimulatorCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6F72FBEA250EB05900130501 /* SnapCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F9201E52471DAC7009E1410 /* SnapCore.framework */; };
 		6F73433A259327D400B7E43F /* Turtle16SimulatorCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F734331259327D400B7E43F /* Turtle16SimulatorCore.framework */; };
 		6F734341259327D400B7E43F /* Turtle16SimulatorCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 6F734333259327D400B7E43F /* Turtle16SimulatorCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -561,6 +565,34 @@
 			remoteGlobalIDString = 6FB0D34B24711A23003B5D5C;
 			remoteInfo = TurtleSimulatorCore;
 		};
+		6F6EA40927653F2100B2ABE4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F9201D82471DA22009E1410;
+			remoteInfo = Snap;
+		};
+		6F6EA40B27653F2500B2ABE4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F300DBF266A906F00BFBAC4;
+			remoteInfo = Turtle16Assembler;
+		};
+		6F6EA40E27653FBD00B2ABE4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F9201E42471DAC7009E1410;
+			remoteInfo = SnapCore;
+		};
+		6F6EA41027653FD400B2ABE4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FB0D34B24711A23003B5D5C;
+			remoteInfo = TurtleSimulatorCore;
+		};
 		6F72FBE8250EB05300130501 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
@@ -647,6 +679,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				6F6EA41227653FDE00B2ABE4 /* TurtleSimulatorCore.framework in CopyFiles */,
+				6F6EA40D27653FB700B2ABE4 /* SnapCore.framework in CopyFiles */,
 				6F2100EF2675B5E1004CFB5D /* TurtleCore.framework in CopyFiles */,
 				6F2100EE2675B5DC004CFB5D /* Turtle16SimulatorCore.framework in CopyFiles */,
 			);
@@ -671,6 +705,17 @@
 				6F300DCC266A90CC00BFBAC4 /* TurtleCore.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6F6EA40627653EF100B2ABE4 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				6F6EA40827653F0000B2ABE4 /* Turtle16Assembler in CopyFiles */,
+				6F6EA40727653EFA00B2ABE4 /* Snap in CopyFiles */,
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		6F9201D72471DA22009E1410 /* CopyFiles */ = {
@@ -1985,11 +2030,16 @@
 				6F1698A7262897ED00C96D07 /* Frameworks */,
 				6F1698A8262897ED00C96D07 /* Resources */,
 				6F2100ED2675B5BD004CFB5D /* CopyFiles */,
+				6F6EA40627653EF100B2ABE4 /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				6F6EA40C27653F2500B2ABE4 /* PBXTargetDependency */,
+				6F6EA40A27653F2100B2ABE4 /* PBXTargetDependency */,
+				6F6EA40F27653FBD00B2ABE4 /* PBXTargetDependency */,
 				6F35B4752628AD7A004EA0AB /* PBXTargetDependency */,
+				6F6EA41127653FD400B2ABE4 /* PBXTargetDependency */,
 				6F35B4252628AA01004EA0AB /* PBXTargetDependency */,
 			);
 			name = Simulator16;
@@ -3009,6 +3059,26 @@
 			isa = PBXTargetDependency;
 			target = 6FB0D34B24711A23003B5D5C /* TurtleSimulatorCore */;
 			targetProxy = 6F4B5CB92471DE62000C57EB /* PBXContainerItemProxy */;
+		};
+		6F6EA40A27653F2100B2ABE4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F9201D82471DA22009E1410 /* Snap */;
+			targetProxy = 6F6EA40927653F2100B2ABE4 /* PBXContainerItemProxy */;
+		};
+		6F6EA40C27653F2500B2ABE4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F300DBF266A906F00BFBAC4 /* Turtle16Assembler */;
+			targetProxy = 6F6EA40B27653F2500B2ABE4 /* PBXContainerItemProxy */;
+		};
+		6F6EA40F27653FBD00B2ABE4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F9201E42471DAC7009E1410 /* SnapCore */;
+			targetProxy = 6F6EA40E27653FBD00B2ABE4 /* PBXContainerItemProxy */;
+		};
+		6F6EA41127653FD400B2ABE4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FB0D34B24711A23003B5D5C /* TurtleSimulatorCore */;
+			targetProxy = 6F6EA41027653FD400B2ABE4 /* PBXContainerItemProxy */;
 		};
 		6F72FBE9250EB05300130501 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

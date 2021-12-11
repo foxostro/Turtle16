@@ -112,9 +112,8 @@ public class SnapToTurtle16Compiler: NSObject {
     }
     
     func registerAllocation(_ input: TopLevel) -> Result<TopLevel, Error> {
-        let registerAllocator = RegisterAllocatorNaive()
         return Result(catching: {
-            try registerAllocator.compile(input) as! TopLevel
+            try RegisterAllocatorDriver().compile(topLevel: input)
         })
     }
     

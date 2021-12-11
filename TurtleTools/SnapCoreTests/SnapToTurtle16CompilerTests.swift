@@ -51,7 +51,7 @@ func foo() {
             HLT
             foo:
             ENTER 1
-            SUBI r0, r7, 1
+            SUBI r0, fp, 1
             LI r1, 1
             STORE r0, r1
             LEAVE

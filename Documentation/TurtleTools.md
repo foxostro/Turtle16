@@ -43,6 +43,21 @@ Please refer to the TurtleTools/Examples/ directory for more example code.
 
 # Snap
 
+```
+USAGE:
+Snap [test] [options] file...
+
+OPTIONS:
+	test       Compile the program for testing and run immediately in a VM.
+	-h         Display available options
+	-o <file>  Specify the output filename
+	-S         Output assembly code
+	-ir        Output intermediate representation
+	-ast-dump  Print the abstract syntax tree to stdout
+	-q         Quiet. Do not print progress to stdout
+	-O0        Disable optimizations
+```
+
 There is also a compiler for a new high-level language called Snap. Currently, the compiler can compile programs to TurtleTTL machine code, an earlier homebrew CPU of mine. Support for the Turtle16 CPU is a work in progress. It can now compile to an appropriate three-address code IR language, and it can mostly compile that to Turtle16 machine code. I expect this will be working soon.
 
 Example Snap program:

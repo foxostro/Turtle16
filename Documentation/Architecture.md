@@ -66,6 +66,16 @@ Operand selection is implemented by using banks of bus transceivers to select on
 The ALU result feeds back into the IF stage to allow it to be used by the program counter on a branch.
 
 
+## Memory (MEM)
+
+The MEM stage accesses memory. If the CPU is in the halted state then it does not assert signals on the address or data lines, instead effectively disconnecting by putting a bus transceiver into a high impedence state.
+
+
+## Writeback (WB)
+
+The WB stage writes a result back to the register file. This must be done in time to read that same value from the register file in the same clock cycle.
+
+
 ## Peripherals
 
 Peripheral devices may halt the CPU by pulling the shared RDY signal low using an open-drain buffer such as 74AHCT07A. While halted this way, the CPU disconnects from the bus so that peripheral devices may drive the bus as they see fit. The CPU's Phi1 clock immediately drops to zero and stops. The CPU's Phi2 clock is unaffected, and this is the one exposed to peripheral devices.

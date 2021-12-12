@@ -21,7 +21,7 @@ Pipeline Stages:
 
 On paper, I estimate the CPU clock can run at speeds up to 12MHz. This has not yet been tested.
 
-Peripheral devices may halt the CPU by pulling the shared RDY signal low using an open-drain buffer such as 74AHCT07A. While halted this way, the CPU disconnects from the bus so that peripheral devices may drive the bus as they see fit. The CPU's Phi1 clock immediately drops to zero and stops. The CPU's Phi2 clock is unaffected, and this is the one exposed to peripheral devices.
+Peripheral devices may halt the CPU by pulling the shared RDY signal low using an open-drain buffer such as 74AHCT07A. While halted this way, the CPU disconnects from the bus so that peripheral devices may drive the bus as they see fit. The CPU's Phi1 and Phi2 clocks immediately drop to zero and stop. The CPU's Phi2 is exposed on the bus to peripheral devices and so these will stop operating as well.
 
 The clock module ensures /RDY only takes affect on the clock edge so devices may acquire and release /RDY at any time.
 
@@ -73,8 +73,6 @@ The control unit will take care to resolve various hazards automatically. Hazard
 
 The register file is implemented in two dual port SRAMs operating in parallel. This allows for a triple-port register file with one write port and two read ports. With careful design, a write in the write-back stage can be assured to be committed before a register file read in the same cycle. Due to space limitations in the instruction word, only three bits can be devoted to the register index. The register file can only provide eight homogeneous, general-purpose registers.
 
-As an aside, the implementation of the reigster file is one of the weaker points of the CPU design. These dual port SRAMs are currently difficult to source and can be expensive. A different design based on time-shared multiplexed SRAM would be a better solution, equivalent performance at a lower cost.
-
 
 ## Execute (EX)
 
@@ -110,8 +108,15 @@ The main board does not include RAM or peripherals. The intention is that these 
 
 The HLT test program isn't halting. There must be some bug in the Halt/Resume circuit yet to be understood.
 
+Perhaps it was a mistake to have the RDY signal halt the Phi2 clock. If it did not halt then peripheral devices could drive the bus, and other peripheral devices, independently of the CPU. This is necesary to implement DMA.
+
+
+## Hardware Limitations and Weaknesses
+
 The CPU is not capable of forwarding the Store Operand. The Hazard Control Unit works around this limitation by introducing a pipeline stall whenever a Read-After-Write hazard involves the Store Operand.
+
+The implementation of the reigster file is one of the weaker points of the CPU design. These dual port SRAMs are currently difficult to source and can be expensive. A different design based on time-shared multiplexed SRAM would be a better solution, equivalent performance at a lower cost.
 
 While not a bug, a weakness of the CPU is the limited number of general-purpose registers. There is space for three three-bit fields in the instruction word. It would also be possible to have the instruction use two operands, where one operand is used an implicit destination register, as is done in some other ISAs. Taking this approach, the two register fields could both be five bits wide, allowing the number of registers to expand from eight to thirty two. In practical terms, this will greatly reduce register spilling, which is always quite slow.
 
-While not a bug, another weakness of the CPU is that it does not include a hardware shifter. This means, unintuitively, that left and right shift are very slow operations implemented in terms of addition and bitwise logical operations. The addition of a one cycle barrel shifter would greatly improve performance.
+Another weakness of the CPU is that it does not include a hardware shifter. This means, unintuitively, that left and right shift are very slow operations implemented in terms of addition and bitwise logical operations. The addition of a one cycle barrel shifter would greatly improve performance.

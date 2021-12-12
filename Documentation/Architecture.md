@@ -4,7 +4,7 @@ Turtle16 is a sixteen-bit microcomputer built from discrete logic ICs and other 
 
 The CPU uses a Load/Store architecture based on the classic RISC pipeline. There are eight general-purpose registers, each sixteen bits wide. The load/store unit fetches sixteen-bit words from a sixteen-bit address space. Instructions and Data are split into two separate address spaces, avoiding any possible structural hazard from accessing instructions and data simultaneously.
 
-![CPU block diagram](CPU_Block_Diagram.png?raw=true "CPU block diagram")
+[![CPU block diagram](CPU_Block_Diagram_Small.png?raw=true "CPU block diagram")](CPU_Block_Diagram.png)
 
 Pipeline Stages:
 
@@ -17,7 +17,7 @@ Pipeline Stages:
 
 ## Clock
 
-![Clock](WB.png?raw=true "Clock module")
+[![Clock](Clock_Small.png?raw=true "Clock module")](Clock.png)
 
 On paper, I estimate the CPU clock can run at speeds up to 12MHz. This has not yet been tested.
 
@@ -30,14 +30,14 @@ The HLT instruction will halt the clock. Pressing the resume button permits exec
 
 ## Instruction Fetch (IF)
 
-![Instruction Fetch](IF.png?raw=true "Instruction Fetch pipeline stage")
+[![Instruction Fetch](IF_Small.png?raw=true "Instruction Fetch pipeline stage")](IF.png)
 
 The Program Counter uses the IDT 7831. This is configured in various modes of operation to implement functionality for increment, reset, jump to an absolute branch target, or jump to a relative branch target.
 
 
 ## Instruction Decode (ID)
 
-![Instruction Decode](ID.png?raw=true "Instruction Decode pipeline stage")
+[![Instruction Decode](ID_Small.png?raw=true "Instruction Decode pipeline stage")](ID.png)
 
 The ID stage uses a ROM to decode a five-bit opcode in the instruction word to a set of twenty one control signals.
 
@@ -78,7 +78,7 @@ As an aside, the implementation of the reigster file is one of the weaker points
 
 ## Execute (EX)
 
-![Execute](EX.png?raw=true "Execute pipeline stage")
+[![Execute](EX_Small.png?raw=true "Execute pipeline stage")](EX.png)
 
 The ALU is built around an IDT 7831. This is a monolithic, sixteen-bit ALU IC that was produced in the early 90's. This IC is slightly easier to work with than the venerable 74x181 used in other "7400-series computer" designs.
 
@@ -89,14 +89,14 @@ The ALU result feeds back into the IF stage to allow it to be used by the progra
 
 ## Memory (MEM)
 
-![Memory](MEM.png?raw=true "Memory pipeline stage")
+[![Memory](MEM_Small.png?raw=true "Memory pipeline stage")](MEM.png)
 
 The MEM stage accesses memory. If the CPU is in the halted state then it does not assert signals on the address or data lines, instead effectively disconnecting by putting a bus transceiver into a high impedence state.
 
 
 ## Writeback (WB)
 
-![Writeback](WB.png?raw=true "Writeback pipeline stage")
+[![Writeback](WB_Small.png?raw=true "Writeback pipeline stage")](WB.png)
 
 The WB stage writes a result back to the register file. This must be done in time to read that same value from the register file in the same clock cycle.
 

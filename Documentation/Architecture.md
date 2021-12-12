@@ -113,3 +113,5 @@ The HLT test program isn't halting. There must be some bug in the Halt/Resume ci
 The CPU is not capable of forwarding the Store Operand. The Hazard Control Unit works around this limitation by introducing a pipeline stall whenever a Read-After-Write hazard involves the Store Operand.
 
 While not a bug, a weakness of the CPU is the limited number of general-purpose registers. There is space for three three-bit fields in the instruction word. It would also be possible to have the instruction use two operands, where one operand is used an implicit destination register, as is done in some other ISAs. Taking this approach, the two register fields could both be five bits wide, allowing the number of registers to expand from eight to thirty two. In practical terms, this will greatly reduce register spilling, which is always quite slow.
+
+While not a bug, another weakness of the CPU is that it does not include a hardware shifter. This means, unintuitively, that left and right shift are very slow operations implemented in terms of addition and bitwise logical operations. The addition of a one cycle barrel shifter would greatly improve performance.

@@ -4,6 +4,8 @@ Turtle16 is a sixteen-bit microcomputer built from discrete logic ICs and other 
 
 The CPU uses a Load/Store architecture based on the classic RISC pipeline. There are eight general-purpose registers, each sixteen bits wide. The load/store unit fetches sixteen-bit words from a sixteen-bit address space. Instructions and Data are split into two separate address spaces, avoiding any possible structural hazard from accessing instructions and data simultaneously.
 
+![CPU block diagram](CPU_Block_Diagram.png?raw=true "CPU block diagram")
+
 Pipeline Stages:
 
 1. IF — Fetch an instruction from Instruction Memory via the Program Counter. This stage is split into a Program Counter part and an Instruction Memory part and takes two clock cycles to complete. This is sometimes written in diagrams as two pipeline stages, PC and IF.
@@ -13,12 +15,29 @@ Pipeline Stages:
 5. WB — Write results back to the register file
 
 
+## Clock
+
+![Clock](WB.png?raw=true "Clock module")
+
+On paper, I estimate the CPU clock can run at speeds up to 12MHz. This has not yet been tested.
+
+Peripheral devices may halt the CPU by pulling the shared RDY signal low using an open-drain buffer such as 74AHCT07A. While halted this way, the CPU disconnects from the bus so that peripheral devices may drive the bus as they see fit. The CPU's Phi1 clock immediately drops to zero and stops. The CPU's Phi2 clock is unaffected, and this is the one exposed to peripheral devices.
+
+The clock module ensures /RDY only takes affect on the clock edge so devices may acquire and release /RDY at any time.
+
+The HLT instruction will halt the clock. Pressing the resume button permits execution for one clock cycle, giving the CPU enough time to clear the HLT and continue execution. This allows programs to have breakpoints in them for debugging.
+
+
 ## Instruction Fetch (IF)
+
+![Instruction Fetch](IF.png?raw=true "Instruction Fetch pipeline stage")
 
 The Program Counter uses the IDT 7831. This is configured in various modes of operation to implement functionality for increment, reset, jump to an absolute branch target, or jump to a relative branch target.
 
 
 ## Instruction Decode (ID)
+
+![Instruction Decode](ID.png?raw=true "Instruction Decode pipeline stage")
 
 The ID stage uses a ROM to decode a five-bit opcode in the instruction word to a set of twenty one control signals.
 
@@ -59,6 +78,8 @@ As an aside, the implementation of the reigster file is one of the weaker points
 
 ## Execute (EX)
 
+![Execute](EX.png?raw=true "Execute pipeline stage")
+
 The ALU is built around an IDT 7831. This is a monolithic, sixteen-bit ALU IC that was produced in the early 90's. This IC is slightly easier to work with than the venerable 74x181 used in other "7400-series computer" designs.
 
 Operand selection is implemented by using banks of bus transceivers to select one of several sources as input to the ALU. The result is latched in an inter-stage pipeline register. The flags are latched in their own register which feeds back into the ID stage.
@@ -68,23 +89,25 @@ The ALU result feeds back into the IF stage to allow it to be used by the progra
 
 ## Memory (MEM)
 
+![Memory](MEM.png?raw=true "Memory pipeline stage")
+
 The MEM stage accesses memory. If the CPU is in the halted state then it does not assert signals on the address or data lines, instead effectively disconnecting by putting a bus transceiver into a high impedence state.
 
 
 ## Writeback (WB)
+
+![Writeback](WB.png?raw=true "Writeback pipeline stage")
 
 The WB stage writes a result back to the register file. This must be done in time to read that same value from the register file in the same clock cycle.
 
 
 ## Peripherals
 
-Peripheral devices may halt the CPU by pulling the shared RDY signal low using an open-drain buffer such as 74AHCT07A. While halted this way, the CPU disconnects from the bus so that peripheral devices may drive the bus as they see fit. The CPU's Phi1 clock immediately drops to zero and stops. The CPU's Phi2 clock is unaffected, and this is the one exposed to peripheral devices.
-
-The clock module ensures /RDY only takes affect on the clock edge so devices may acquire and release /RDY at any time.
-
 The main board does not include RAM or peripherals. The intention is that these devices would be implemented on separate boards and connected to the main board through an external peripheral connector.
 
 
 ## Hardware Bugs
 
-There is no circuitry for forwarding the Store Operand. The Hazard Control Unit works around this limitation by introducing a pipeline stall whenever a Read-After-Write hazard involves the Store Operand.
+The CPU is not capable of forwarding the Store Operand. The Hazard Control Unit works around this limitation by introducing a pipeline stall whenever a Read-After-Write hazard involves the Store Operand.
+
+The HLT test program isn't halting. There must be some bug in the Halt/Resume circuit yet to be understood.

@@ -32,7 +32,7 @@ The HLT instruction will halt the clock. Pressing the resume button permits exec
 
 [![Instruction Fetch](IF_Small.png?raw=true "Instruction Fetch pipeline stage")](IF.png)
 
-The Program Counter uses the IDT 7831. This is configured in various modes of operation to implement functionality for increment, reset, jump to an absolute branch target, or jump to a relative branch target.
+The Program Counter uses the IDT 7381. This is configured in various modes of operation to implement functionality for increment, reset, jump to an absolute branch target, or jump to a relative branch target.
 
 
 ## Instruction Decode (ID)
@@ -80,7 +80,7 @@ As an aside, the implementation of the reigster file is one of the weaker points
 
 [![Execute](EX_Small.png?raw=true "Execute pipeline stage")](EX.png)
 
-The ALU is built around an IDT 7831. This is a monolithic, sixteen-bit ALU IC that was produced in the early 90's. This IC is slightly easier to work with than the venerable 74x181 used in other "7400-series computer" designs.
+The ALU is built around an IDT 7381. This is a monolithic, sixteen-bit ALU IC that was produced in the early 90's. This IC is slightly easier to work with than the venerable 74x181 used in other "7400-series computer" designs.
 
 Operand selection is implemented by using banks of bus transceivers to select one of several sources as input to the ALU. The result is latched in an inter-stage pipeline register. The flags are latched in their own register which feeds back into the ID stage.
 

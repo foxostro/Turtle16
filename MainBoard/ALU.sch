@@ -11,7 +11,7 @@ Comp ""
 Comment1 ""
 Comment2 "are latched in registers in other parts of the circuit."
 Comment3 "This is configured for pure combinatorial operation where operands and outputs"
-Comment4 "The ALU is built around the IDT 7831 sixteen-bit monolithic ALU IC."
+Comment4 "The ALU is built around the IDT 7381 sixteen-bit monolithic ALU IC."
 $EndDescr
 Text HLabel 3200 1150 0    50   Input ~ 0
 RightOp[0..15]

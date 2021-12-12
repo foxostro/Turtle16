@@ -4,7 +4,7 @@ Turtle16 is a sixteen-bit microcomputer built from discrete logic ICs and other 
 
 The CPU uses a Load/Store architecture based on the classic RISC pipeline. There are eight general-purpose registers, each sixteen bits wide. The load/store unit fetches sixteen-bit words from a sixteen-bit address space. Instructions and Data are split into two separate address spaces, avoiding any possible structural hazard from accessing instructions and data simultaneously.
 
-[![CPU block diagram](CPU_Block_Diagram_Small.png?raw=true "CPU block diagram")](CPU_Block_Diagram.png)
+[CPU block diagram](CPU_Block_Diagram.png)
 
 Pipeline Stages:
 

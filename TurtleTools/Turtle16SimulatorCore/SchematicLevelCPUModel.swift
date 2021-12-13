@@ -334,7 +334,6 @@ public class SchematicLevelCPUModel: NSObject, CPU {
                                ovf: ovf,
                                z: z,
                                carry: carry,
-                               rst: rst,
                                associatedPC: outputIF.associatedPC)
         outputID = stageID.step(input: inputID)
         

@@ -149,7 +149,6 @@ public class ID: NSObject, NSSecureCoding {
         public let ovf: UInt
         public let z: UInt
         public let carry: UInt
-        public let rst: UInt
         public let associatedPC: UInt16?
         
         public init(ins: UInt16) {
@@ -164,7 +163,6 @@ public class ID: NSObject, NSSecureCoding {
             self.ovf = 0
             self.z = 0
             self.carry = 0
-            self.rst = 1
             self.associatedPC = nil
         }
         
@@ -180,7 +178,6 @@ public class ID: NSObject, NSSecureCoding {
             self.ovf = 0
             self.z = 0
             self.carry = 0
-            self.rst = rst
             self.associatedPC = nil
         }
         
@@ -196,7 +193,6 @@ public class ID: NSObject, NSSecureCoding {
             self.ovf = 0
             self.z = 0
             self.carry = 0
-            self.rst = 1
             self.associatedPC = nil
         }
         
@@ -212,7 +208,6 @@ public class ID: NSObject, NSSecureCoding {
             self.ovf = 0
             self.z = 0
             self.carry = 0
-            self.rst = 1
             self.associatedPC = nil
         }
         
@@ -228,7 +223,6 @@ public class ID: NSObject, NSSecureCoding {
             self.ovf = 0
             self.z = 0
             self.carry = 0
-            self.rst = 1
             self.associatedPC = nil
         }
         
@@ -244,7 +238,6 @@ public class ID: NSObject, NSSecureCoding {
             self.ovf = 0
             self.z = 0
             self.carry = 0
-            self.rst = 1
             self.associatedPC = nil
         }
         
@@ -259,7 +252,6 @@ public class ID: NSObject, NSSecureCoding {
                     ovf: UInt,
                     z: UInt,
                     carry: UInt,
-                    rst: UInt,
                     associatedPC: UInt16? = nil) {
             self.ins = ins
             self.y_EX = y_EX
@@ -272,7 +264,6 @@ public class ID: NSObject, NSSecureCoding {
             self.ovf = ovf
             self.z = z
             self.carry = carry
-            self.rst = rst
             self.associatedPC = associatedPC
         }
     }
@@ -352,10 +343,9 @@ public class ID: NSObject, NSSecureCoding {
     }
     
     public func decodeOpcode(input: Input) -> UInt {
-        let address = UInt(input.rst << 8)
-                    | UInt(input.carry << 7)
+        let address = UInt(input.ovf << 7)
                     | UInt(input.z << 6)
-                    | UInt(input.ovf << 5)
+                    | UInt(input.carry << 5)
                     | UInt((input.ins >> 11) & 31)
         let ctl_ID = opcodeDecodeROM[Int(address)]
         return ctl_ID

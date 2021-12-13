@@ -43,7 +43,8 @@ class SchematicLevelCPUModelTests: XCTestCase {
     func testExitsResetStateAfterSomeTime() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
-            0b0000100000000000 // HLT
+            0b0000000000000000, // NOP
+            0b0000100000000000  // HLT
         ]
         cpu.reset()
         XCTAssertFalse(cpu.isResetting)

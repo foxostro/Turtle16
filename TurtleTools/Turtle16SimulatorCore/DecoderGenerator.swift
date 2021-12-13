@@ -389,14 +389,14 @@ public class DecoderGenerator: NSObject {
         for carry in bits {
             for ovf in bits {
                 for z in bits {
-                    makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: carry, z: 1, ovf: ovf, opcode: DecoderGenerator.opcodeBeq), signals: signalsForRelativeJump)
-                    makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: carry, z: 0, ovf: ovf, opcode: DecoderGenerator.opcodeBne), signals: signalsForRelativeJump)
-                    makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: carry, z: z, ovf: 1, opcode: DecoderGenerator.opcodeBlt), signals: signalsForRelativeJump)
-                    makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: 1, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeBltu), signals: signalsForRelativeJump)
-                    makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: carry, z: 0, ovf: 0, opcode: DecoderGenerator.opcodeBgt), signals: signalsForRelativeJump)
-                    makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: 1, z: 0, ovf: ovf, opcode: DecoderGenerator.opcodeBgtu), signals: signalsForRelativeJump)
+                    makeControlWord(&controlWords, index: makeIndex(carry: carry, z: 1, ovf: ovf, opcode: DecoderGenerator.opcodeBeq), signals: signalsForRelativeJump)
+                    makeControlWord(&controlWords, index: makeIndex(carry: carry, z: 0, ovf: ovf, opcode: DecoderGenerator.opcodeBne), signals: signalsForRelativeJump)
+                    makeControlWord(&controlWords, index: makeIndex(carry: carry, z: z, ovf: 1, opcode: DecoderGenerator.opcodeBlt), signals: signalsForRelativeJump)
+                    makeControlWord(&controlWords, index: makeIndex(carry: 1, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeBltu), signals: signalsForRelativeJump)
+                    makeControlWord(&controlWords, index: makeIndex(carry: carry, z: 0, ovf: 0, opcode: DecoderGenerator.opcodeBgt), signals: signalsForRelativeJump)
+                    makeControlWord(&controlWords, index: makeIndex(carry: 1, z: 0, ovf: ovf, opcode: DecoderGenerator.opcodeBgtu), signals: signalsForRelativeJump)
                     
-                    makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: 0, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeAdc), signals: [
+                    makeControlWord(&controlWords, index: makeIndex(carry: 0, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeAdc), signals: [
                         DecoderGenerator.SelRightOp(.b),
                         DecoderGenerator.ALUControl(fn: .add, rs: .ab, c0: 0),
                         DecoderGenerator.FI,
@@ -407,7 +407,7 @@ public class DecoderGenerator: NSObject {
                         DecoderGenerator.LeftOperandIsUnused,
                         DecoderGenerator.RightOperandIsUnused
                     ])
-                    makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: 1, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeAdc), signals: [
+                    makeControlWord(&controlWords, index: makeIndex(carry: 1, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeAdc), signals: [
                         DecoderGenerator.SelRightOp(.b),
                         DecoderGenerator.ALUControl(fn: .add, rs: .ab, c0: 1),
                         DecoderGenerator.FI,
@@ -419,7 +419,7 @@ public class DecoderGenerator: NSObject {
                         DecoderGenerator.RightOperandIsUnused
                     ])
                     
-                    makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: 0, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeSbc), signals: [
+                    makeControlWord(&controlWords, index: makeIndex(carry: 0, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeSbc), signals: [
                         DecoderGenerator.SelRightOp(.b),
                         DecoderGenerator.ALUControl(fn: .sub, rs: .ab, c0: 1),
                         DecoderGenerator.FI,
@@ -430,7 +430,7 @@ public class DecoderGenerator: NSObject {
                         DecoderGenerator.LeftOperandIsUnused,
                         DecoderGenerator.RightOperandIsUnused
                     ])
-                    makeControlWord(&controlWords, index: makeIndex(rst: 1, carry: 1, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeSbc), signals: [
+                    makeControlWord(&controlWords, index: makeIndex(carry: 1, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeSbc), signals: [
                         DecoderGenerator.SelRightOp(.b),
                         DecoderGenerator.ALUControl(fn: .sub, rs: .ab, c0: 0),
                         DecoderGenerator.FI,
@@ -491,53 +491,28 @@ public class DecoderGenerator: NSObject {
         }
     }
     
-    public func makeIndex(rst: UInt,
-                          carry: UInt,
+    public func makeIndex(carry: UInt,
                           z: UInt,
                           ovf: UInt,
                           opcode: Int) -> Int {
-        assert(rst <= 1)
         assert(carry <= 1)
         assert(z <= 1)
         assert(ovf <= 1)
         assert(opcode >= 0)
         assert(opcode <= 31)
-        let index = UInt(rst << 8)
-                  | UInt(carry << 7)
+        let index = UInt(ovf << 7)
                   | UInt(z << 6)
-                  | UInt(ovf << 5)
+                  | UInt(carry << 5)
                   | UInt(opcode)
         return Int(index)
     }
     
-    public func indicesForReset() -> [Int] {
-        var indices: [Int] = []
-        let rst: UInt = 0
-        for opcode in 0..<32 {
-            for ovf in [0, 1] {
-                for z in [0, 1] {
-                    for carry in [0, 1] {
-                        let index = makeIndex(rst: UInt(rst),
-                                              carry: UInt(carry),
-                                              z: UInt(z),
-                                              ovf: UInt(ovf),
-                                              opcode: opcode)
-                        indices.append(Int(index))
-                    }
-                }
-            }
-        }
-        return indices
-    }
-    
     public func indicesForAllConditions(_ opcode: Int) -> [Int] {
         var indices: [Int] = []
-        let rst: UInt = 1
         for ovf in [0, 1] {
             for z in [0, 1] {
                 for carry in [0, 1] {
-                    let index = makeIndex(rst: UInt(rst),
-                                          carry: UInt(carry),
+                    let index = makeIndex(carry: UInt(carry),
                                           z: UInt(z),
                                           ovf: UInt(ovf),
                                           opcode: opcode)

@@ -82,8 +82,7 @@ class IDTests: XCTestCase {
     
     func testDecodeControlWordForNOP() throws {
         let id = ID()
-        let rst = 1
-        let index = UInt(rst << 8) | UInt(0)
+        let index = UInt(0)
         id.opcodeDecodeROM[Int(index)] = ID.nopControlWord
         let output = id.step(input: ID.Input(ins: 0))
         XCTAssertEqual(output.ctl_EX, 0b111111111111111111111) // no active control lines
@@ -106,8 +105,7 @@ class IDTests: XCTestCase {
     func testDecodeHaltInstruction() throws {
         let id = ID()
         let hltOpcode: UInt = 1
-        let rst = 1
-        let entry: UInt = UInt(rst << 8) + hltOpcode
+        let entry: UInt = hltOpcode
         id.opcodeDecodeROM[Int(entry)] = 1
         let ins: UInt16 = UInt16(hltOpcode << 11)
         let output = id.step(input: ID.Input(ins: ins))
@@ -117,7 +115,7 @@ class IDTests: XCTestCase {
     func testFlushOnJump() throws {
         let id = ID()
         let hltOpcode: UInt = 1
-        let entry: UInt = (1<<8) + hltOpcode
+        let entry: UInt = hltOpcode
         id.opcodeDecodeROM[Int(entry)] = 1
         let ins: UInt16 = UInt16(hltOpcode << 11)
         let output = id.step(input: ID.Input(ins: ins, j: 0))
@@ -128,7 +126,7 @@ class IDTests: XCTestCase {
     func testOperandForwarding_Forward_Y_EX_Instead_Of_rA() throws {
         let id = ID()
         let opcode: UInt = 1
-        let entry: UInt = (1<<8) + opcode
+        let entry: UInt = opcode
         id.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
         
         // The instruction in ID want to read r7 on port A
@@ -148,7 +146,7 @@ class IDTests: XCTestCase {
     func testStallOnRAWHazard_A_and_EX_In_StoreOp_Case() throws {
         let id = ID()
         let opcode: UInt = 1
-        let entry: UInt = (1<<8) + opcode
+        let entry: UInt = opcode
         id.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
         
         // The instruction in ID want to read r7 on port A
@@ -167,7 +165,7 @@ class IDTests: XCTestCase {
     func testOperandForwarding_Forward_Y_MEM_Instead_Of_rA() throws {
         let id = ID()
         let opcode: UInt = 1
-        let entry: UInt = (1<<8) + opcode
+        let entry: UInt = opcode
         id.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
         
         // The instruction in ID want to read r7 on port A
@@ -187,7 +185,7 @@ class IDTests: XCTestCase {
     func testStallOnRAWHazard_A_and_MEM_In_StoreOp_Case() throws {
         let id = ID()
         let opcode: UInt = 1
-        let entry: UInt = (1<<8) + opcode
+        let entry: UInt = opcode
         id.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
         
         // The instruction in ID want to read r7 on port A
@@ -206,7 +204,7 @@ class IDTests: XCTestCase {
     func testOperandForwarding_Forward_Y_EX_Instead_Of_rB() throws {
         let id = ID()
         let opcode: UInt = 1
-        let entry: UInt = (1<<8) + opcode
+        let entry: UInt = opcode
         id.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
         
         // The instruction in ID want to read r7 on port B
@@ -226,7 +224,7 @@ class IDTests: XCTestCase {
     func testStallOnRAWHazard_B_and_EX_In_StoreOp_Case() throws {
         let id = ID()
         let opcode: UInt = 1
-        let entry: UInt = (1<<8) + opcode
+        let entry: UInt = opcode
         id.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
         
         // The instruction in ID want to read r7 on port B
@@ -245,7 +243,7 @@ class IDTests: XCTestCase {
     func testOperandForwarding_Forward_Y_MEM_Instead_Of_rB() throws {
         let id = ID()
         let opcode: UInt = 1
-        let entry: UInt = (1<<8) + opcode
+        let entry: UInt = opcode
         id.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
         
         // The instruction in ID want to read r7 on port B
@@ -265,7 +263,7 @@ class IDTests: XCTestCase {
     func testStallOnRAWHazard_B_and_MEM_In_StoreOp_Case() throws {
         let id = ID()
         let opcode: UInt = 1
-        let entry: UInt = (1<<8) + opcode
+        let entry: UInt = opcode
         id.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
         
         // The instruction in ID want to read r7 on port B
@@ -284,7 +282,7 @@ class IDTests: XCTestCase {
     func testOperandForwarding_Forward_Y_EX_Instead_Of_rA_and_rB() throws {
         let id = ID()
         let opcode: UInt = 1
-        let entry: UInt = (1<<8) + opcode
+        let entry: UInt = opcode
         id.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
         
         // The instruction in ID want to read r7 on port A and on port B
@@ -305,7 +303,7 @@ class IDTests: XCTestCase {
     func testStallOnRAWHazard_A_and_B_and_EX_In_StoreOp_Case() throws {
         let id = ID()
         let opcode: UInt = 1
-        let entry: UInt = (1<<8) + opcode
+        let entry: UInt = opcode
         id.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
         
         // The instruction in ID want to read r7 on port A and on port B
@@ -324,7 +322,7 @@ class IDTests: XCTestCase {
     func testOperandForwarding_Forward_Y_MEM_Instead_Of_rA_and_rB() throws {
         let id = ID()
         let opcode: UInt = 1
-        let entry: UInt = (1<<8) + opcode
+        let entry: UInt = opcode
         id.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
         
         // The instruction in ID want to read r7 on port A and on port B
@@ -345,7 +343,7 @@ class IDTests: XCTestCase {
     func testStallOnRAWHazard_A_and_B_and_MEM_In_StoreOp_Case() throws {
         let id = ID()
         let opcode: UInt = 1
-        let entry: UInt = (1<<8) + opcode
+        let entry: UInt = opcode
         id.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
         
         // The instruction in ID want to read r7 on port A and on port B

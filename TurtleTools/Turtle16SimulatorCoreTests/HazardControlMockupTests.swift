@@ -273,8 +273,7 @@ class HazardControlMockupTests: XCTestCase {
                              j: 1,
                              ovf: 0,
                              z: 0,
-                             carry: 0,
-                             rst: 1)
+                             carry: 0)
         
         let unit = makeHazardControl()
         let output = unit.step(input: input,
@@ -312,8 +311,7 @@ class HazardControlMockupTests: XCTestCase {
                              j: 1,
                              ovf: 0,
                              z: 0,
-                             carry: 0,
-                             rst: 1)
+                             carry: 0)
         
         let unit = makeHazardControl()
         let output = unit.step(input: input,

@@ -27,3 +27,4 @@ To run the simulator, open the TurtleTools Xcode project and run the Simulator16
 * [Instruction Set Architecture](Documentation/ISA.md)
 * [Programming](Documentation/Programming.md)
 * [Tool Chain](Documentation/TurtleTools.md)
+* [Bugs](Documentation/Bugs.md)

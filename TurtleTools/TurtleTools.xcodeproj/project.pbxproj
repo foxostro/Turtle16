@@ -310,8 +310,8 @@
 		6FA220CF254CDC480017DDDF /* CrackleToPopCompilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA220CE254CDC480017DDDF /* CrackleToPopCompilerTests.swift */; };
 		6FA5D28B2593F6F300044B17 /* IF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA5D28A2593F6F300044B17 /* IF.swift */; };
 		6FA5D29D2593F7E900044B17 /* IFTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA5D29C2593F7E900044B17 /* IFTests.swift */; };
-		6FA5D2CF2593FAAA00044B17 /* IDT7831.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA5D2CE2593FAAA00044B17 /* IDT7831.swift */; };
-		6FA5D2E12593FAB500044B17 /* IDT7831Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA5D2E02593FAB500044B17 /* IDT7831Tests.swift */; };
+		6FA5D2CF2593FAAA00044B17 /* IDT7381.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA5D2CE2593FAAA00044B17 /* IDT7381.swift */; };
+		6FA5D2E12593FAB500044B17 /* IDT7381Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA5D2E02593FAB500044B17 /* IDT7381Tests.swift */; };
 		6FA6B5B024DE77C700695BFB /* ProgramDebugInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA6B5AF24DE77C700695BFB /* ProgramDebugInfo.swift */; };
 		6FA6B5B124DE77F500695BFB /* SourceLineRangeMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7F356F24D33CC800BA8E37 /* SourceLineRangeMapper.swift */; };
 		6FA6B5B224DE77F500695BFB /* SourceAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7F356D24D33C7700BA8E37 /* SourceAnchor.swift */; };
@@ -1076,8 +1076,8 @@
 		6FA220CE254CDC480017DDDF /* CrackleToPopCompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleToPopCompilerTests.swift; sourceTree = "<group>"; };
 		6FA5D28A2593F6F300044B17 /* IF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IF.swift; sourceTree = "<group>"; };
 		6FA5D29C2593F7E900044B17 /* IFTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IFTests.swift; sourceTree = "<group>"; };
-		6FA5D2CE2593FAAA00044B17 /* IDT7831.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDT7831.swift; sourceTree = "<group>"; };
-		6FA5D2E02593FAB500044B17 /* IDT7831Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDT7831Tests.swift; sourceTree = "<group>"; };
+		6FA5D2CE2593FAAA00044B17 /* IDT7381.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDT7381.swift; sourceTree = "<group>"; };
+		6FA5D2E02593FAB500044B17 /* IDT7381Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDT7381Tests.swift; sourceTree = "<group>"; };
 		6FA6B5AF24DE77C700695BFB /* ProgramDebugInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramDebugInfo.swift; sourceTree = "<group>"; };
 		6FAABCA025318CDB00A66FAF /* TestDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDeclaration.swift; sourceTree = "<group>"; };
 		6FAC109425A25E9300BB3836 /* DecoderGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecoderGenerator.swift; sourceTree = "<group>"; };
@@ -1520,7 +1520,7 @@
 				6F87A545261E23A40093750D /* HazardControl.swift */,
 				6F87A5CF261E47140093750D /* HazardControlGAL.swift */,
 				6F87A557261E26F40093750D /* HazardControlMockup.swift */,
-				6FA5D2CE2593FAAA00044B17 /* IDT7831.swift */,
+				6FA5D2CE2593FAAA00044B17 /* IDT7381.swift */,
 				6F47D8F2261CC6F2008EFFF2 /* JEDECFuseFileParser.swift */,
 				6FAE8DFD261B943600A8A23D /* OutputLogicMacroCell.swift */,
 				6FAE8E31261BA6F500A8A23D /* ProductTermFuseMap.swift */,
@@ -1557,7 +1557,7 @@
 				6F47D8C0261CC135008EFFF2 /* FuseListMakerTests.swift */,
 				6F87A5BD261E46DC0093750D /* HazardControlGALTests.swift */,
 				6F87A569261E2B390093750D /* HazardControlMockupTests.swift */,
-				6FA5D2E02593FAB500044B17 /* IDT7831Tests.swift */,
+				6FA5D2E02593FAB500044B17 /* IDT7381Tests.swift */,
 				6F47D904261CC6FC008EFFF2 /* JEDECFuseFileParserTests.swift */,
 				6FAE8E0F261B944A00A8A23D /* OutputLogicMacroCellTests.swift */,
 				6FAE8E43261BA70100A8A23D /* ProductTermFuseMapTests.swift */,
@@ -2541,7 +2541,7 @@
 			files = (
 				6F452B21262516AE003732B3 /* DebugConsoleHelpTopic.swift in Sources */,
 				6F87A5D0261E47140093750D /* HazardControlGAL.swift in Sources */,
-				6FA5D2CF2593FAAA00044B17 /* IDT7831.swift in Sources */,
+				6FA5D2CF2593FAAA00044B17 /* IDT7381.swift in Sources */,
 				6FAE8EA6261BC4FD00A8A23D /* ATF22V10.swift in Sources */,
 				6F889D56259D494900EB647C /* SchematicLevelCPUModel.swift in Sources */,
 				6F7343592593283D00B7E43F /* WB.swift in Sources */,
@@ -2583,7 +2583,7 @@
 				6F982BE0265EB6BE0029ED5F /* AssemblerCompilerTests.swift in Sources */,
 				6F300DBB26689B9200BFBAC4 /* AssemblerTests.swift in Sources */,
 				6F42B8E12651F01B004A7B12 /* AssemblerParserTests.swift in Sources */,
-				6FA5D2E12593FAB500044B17 /* IDT7831Tests.swift in Sources */,
+				6FA5D2E12593FAB500044B17 /* IDT7381Tests.swift in Sources */,
 				6F42B8E326531532004A7B12 /* AssemblerLexerTests.swift in Sources */,
 				6F73436B2593289400B7E43F /* WBTests.swift in Sources */,
 				6F889D44259D308B00EB647C /* IDTests.swift in Sources */,

@@ -95,7 +95,7 @@ public class IF: NSObject, NSSecureCoding {
         }
     }
     
-    public var alu = IDT7831()
+    public var alu = IDT7381()
     public var prevPC: UInt16 = 0
     public var prevIns: UInt16 = 0
     public var prevAssociatedPC: UInt16? = nil
@@ -129,8 +129,8 @@ public class IF: NSObject, NSSecureCoding {
         return IF_Output(ins: ins, pc: pc, associatedPC: associatedPC)
     }
     
-    public func driveALU(input: Input) -> IDT7831.Input {
-        let aluInput = IDT7831.Input(a: prevPC,
+    public func driveALU(input: Input) -> IDT7381.Input {
+        let aluInput = IDT7381.Input(a: prevPC,
                                      b: input.y,
                                      c0: input.j & 1,
                                      i0: input.rst & 1,
@@ -151,7 +151,7 @@ public class IF: NSObject, NSSecureCoding {
     }
     
     public required init?(coder: NSCoder) {
-        guard let alu = coder.decodeObject(of: IDT7831.self, forKey: "alu"),
+        guard let alu = coder.decodeObject(of: IDT7381.self, forKey: "alu"),
               let prevPC = coder.decodeObject(forKey: "prevPC") as? UInt16,
               let prevIns = coder.decodeObject(forKey: "prevIns") as? UInt16,
               let prevAssociatedPC = coder.decodeObject(forKey: "prevAssociatedPC") as? UInt16?,

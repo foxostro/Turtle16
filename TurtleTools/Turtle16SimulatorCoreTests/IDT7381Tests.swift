@@ -1,5 +1,5 @@
 //
-//  IDT7831Tests.swift
+//  IDT7381Tests.swift
 //  Turtle16SimulatorCoreTests
 //
 //  Created by Andrew Fox on 12/23/20.
@@ -9,10 +9,10 @@
 import XCTest
 import Turtle16SimulatorCore
 
-class IDT7831Tests: XCTestCase {
+class IDT7381Tests: XCTestCase {
     func testOutputCanBeDisabled() {
-        let alu = IDT7831()
-        let input = IDT7831.Input(a: 0,
+        let alu = IDT7381()
+        let input = IDT7381.Input(a: 0,
                                   b: 0,
                                   c0: 0,
                                   i0: 0,
@@ -31,8 +31,8 @@ class IDT7831Tests: XCTestCase {
     }
     
     func testCombinatorialOperationFequalZero() {
-        let alu = IDT7831()
-        let input = IDT7831.Input(a: 0,
+        let alu = IDT7381()
+        let input = IDT7381.Input(a: 0,
                                   b: 0,
                                   c0: 0,
                                   i0: 0,
@@ -52,8 +52,8 @@ class IDT7831Tests: XCTestCase {
     
     func testCombinatorialOperationNotRplusS() {
         let c0: UInt = 1
-        let alu = IDT7831()
-        let input = IDT7831.Input(a: 1,
+        let alu = IDT7381()
+        let input = IDT7381.Input(a: 1,
                                   b: 2,
                                   c0: c0,
                                   i0: 1,
@@ -77,8 +77,8 @@ class IDT7831Tests: XCTestCase {
     
     func testCombinatorialOperationRplusNotS() {
         let c0: UInt = 1
-        let alu = IDT7831()
-        let input = IDT7831.Input(a: 1,
+        let alu = IDT7381()
+        let input = IDT7381.Input(a: 1,
                                   b: 2,
                                   c0: c0,
                                   i0: 0,
@@ -102,8 +102,8 @@ class IDT7831Tests: XCTestCase {
     
     func testCombinatorialOperationRplusS() {
         let c0: UInt = 1
-        let alu = IDT7831()
-        let input = IDT7831.Input(a: 1,
+        let alu = IDT7381()
+        let input = IDT7381.Input(a: 1,
                                   b: 2,
                                   c0: c0,
                                   i0: 1,
@@ -126,8 +126,8 @@ class IDT7831Tests: XCTestCase {
     }
     
     func testCombinatorialOperationRxorS() {
-        let alu = IDT7831()
-        let input = IDT7831.Input(a: 1,
+        let alu = IDT7381()
+        let input = IDT7381.Input(a: 1,
                                   b: 2,
                                   c0: 0,
                                   i0: 0,
@@ -150,8 +150,8 @@ class IDT7831Tests: XCTestCase {
     }
     
     func testCombinatorialOperationRorS() {
-        let alu = IDT7831()
-        let input = IDT7831.Input(a: 1,
+        let alu = IDT7381()
+        let input = IDT7381.Input(a: 1,
                                   b: 2,
                                   c0: 0,
                                   i0: 1,
@@ -174,8 +174,8 @@ class IDT7831Tests: XCTestCase {
     }
     
     func testCombinatorialOperationRandS() {
-        let alu = IDT7831()
-        let input = IDT7831.Input(a: 1,
+        let alu = IDT7381()
+        let input = IDT7381.Input(a: 1,
                                   b: 2,
                                   c0: 0,
                                   i0: 0,
@@ -198,8 +198,8 @@ class IDT7831Tests: XCTestCase {
     }
     
     func testCombinatorialOperationFequalOnes() {
-        let alu = IDT7831()
-        let input = IDT7831.Input(a: 0,
+        let alu = IDT7381()
+        let input = IDT7381.Input(a: 0,
                                   b: 0,
                                   c0: 0,
                                   i0: 1,
@@ -218,9 +218,9 @@ class IDT7831Tests: XCTestCase {
     }
     
     func testRS00() {
-        let alu = IDT7831()
+        let alu = IDT7381()
         alu.f = 0xffff
-        let input = IDT7831.Input(a: 0xaaaa,
+        let input = IDT7381.Input(a: 0xaaaa,
                                   b: 0xbbbb,
                                   c0: 0,
                                   i0: 0,
@@ -241,8 +241,8 @@ class IDT7831Tests: XCTestCase {
     }
     
     func testRS01() {
-        let alu = IDT7831()
-        let input = IDT7831.Input(a: 0xaaaa,
+        let alu = IDT7381()
+        let input = IDT7381.Input(a: 0xaaaa,
                                   b: 0xbbbb,
                                   c0: 0,
                                   i0: 0,
@@ -263,8 +263,8 @@ class IDT7831Tests: XCTestCase {
     }
     
     func testRS10() {
-        let alu = IDT7831()
-        let input = IDT7831.Input(a: 0xaaaa,
+        let alu = IDT7381()
+        let input = IDT7381.Input(a: 0xaaaa,
                                   b: 0xbbbb,
                                   c0: 0,
                                   i0: 0,
@@ -285,8 +285,8 @@ class IDT7831Tests: XCTestCase {
     }
     
     func testRS11() {
-        let alu = IDT7831()
-        let input = IDT7831.Input(a: 0xaaaa,
+        let alu = IDT7381()
+        let input = IDT7381.Input(a: 0xaaaa,
                                   b: 0xbbbb,
                                   c0: 0,
                                   i0: 0,
@@ -307,10 +307,10 @@ class IDT7831Tests: XCTestCase {
     }
     
     func testFTABaffectsFlowThroughForAandB() {
-        let alu = IDT7831()
+        let alu = IDT7381()
         alu.a = 0xcccc
         alu.b = 0xdddd
-        let input = IDT7831.Input(a: 0xaaaa,
+        let input = IDT7381.Input(a: 0xaaaa,
                                   b: 0xbbbb,
                                   c0: 0,
                                   i0: 0,
@@ -331,9 +331,9 @@ class IDT7831Tests: XCTestCase {
     }
     
     func testFTFaffectsFlowThroughForF() {
-        let alu = IDT7831()
+        let alu = IDT7381()
         alu.f = 0xaaaa
-        let input = IDT7831.Input(a: 0,
+        let input = IDT7381.Input(a: 0,
                                   b: 0,
                                   c0: 0,
                                   i0: 1,
@@ -352,8 +352,8 @@ class IDT7831Tests: XCTestCase {
     }
     
     func testRegisterOnlyUpdateWhenEnabled() {
-        let alu = IDT7831()
-        let input = IDT7831.Input(a: 0xaaaa,
+        let alu = IDT7381()
+        let input = IDT7381.Input(a: 0xaaaa,
                                   b: 0xbbbb,
                                   c0: 0,
                                   i0: 1,
@@ -374,8 +374,8 @@ class IDT7831Tests: XCTestCase {
     }
     
     func testAdditionWhichDoesNotRaiseTheCarryFlag() {
-        let alu = IDT7831()
-        let input = IDT7831.Input(a: 1,
+        let alu = IDT7381()
+        let input = IDT7381.Input(a: 1,
                                   b: 1,
                                   c0: 0,
                                   i0: 1,
@@ -394,8 +394,8 @@ class IDT7831Tests: XCTestCase {
     }
     
     func testAdditionWhichDoesRaiseTheCarryFlag() {
-        let alu = IDT7831()
-        let input = IDT7831.Input(a: 0xffff,
+        let alu = IDT7381()
+        let input = IDT7381.Input(a: 0xffff,
                                   b: 1,
                                   c0: 0,
                                   i0: 1,
@@ -414,8 +414,8 @@ class IDT7831Tests: XCTestCase {
     }
     
     func testAdditionWhichDoesRaiseTheCarryFlag_notR() {
-        let alu = IDT7831()
-        let input = IDT7831.Input(a: 0,
+        let alu = IDT7381()
+        let input = IDT7381.Input(a: 0,
                                   b: 1,
                                   c0: 0,
                                   i0: 1,
@@ -434,8 +434,8 @@ class IDT7831Tests: XCTestCase {
     }
     
     func testAdditionWhichDoesRaiseTheCarryFlag_notS() {
-        let alu = IDT7831()
-        let input = IDT7831.Input(a: 1,
+        let alu = IDT7381()
+        let input = IDT7381.Input(a: 1,
                                   b: 0,
                                   c0: 0,
                                   i0: 0,
@@ -454,8 +454,8 @@ class IDT7831Tests: XCTestCase {
     }
     
     func testSubtractionYieldingZeroRaisesTheZFlag() {
-        let alu = IDT7831()
-        let input = IDT7831.Input(a: 42,
+        let alu = IDT7381()
+        let input = IDT7381.Input(a: 42,
                                   b: 42,
                                   c0: 1,
                                   i0: 0,
@@ -475,8 +475,8 @@ class IDT7831Tests: XCTestCase {
     }
     
     func testAdditionResultingInTwosComplementArithmeticOverflow() {
-        let alu = IDT7831()
-        let input = IDT7831.Input(a: 0x7fff,
+        let alu = IDT7381()
+        let input = IDT7381.Input(a: 0x7fff,
                                   b: 1,
                                   c0: 0,
                                   i0: 1,
@@ -496,10 +496,10 @@ class IDT7831Tests: XCTestCase {
     }
     
     func testEquality_Equal() throws {
-        let alu1 = IDT7831()
+        let alu1 = IDT7381()
         alu1.a = 1
         
-        let alu2 = IDT7831()
+        let alu2 = IDT7381()
         alu2.a = 1
         
         XCTAssertEqual(alu1, alu2)
@@ -507,10 +507,10 @@ class IDT7831Tests: XCTestCase {
     }
     
     func testEquality_NotEqual() throws {
-        let alu1 = IDT7831()
+        let alu1 = IDT7381()
         alu1.a = 1
         
-        let alu2 = IDT7831()
+        let alu2 = IDT7381()
         alu2.a = 2
         
         XCTAssertNotEqual(alu1, alu2)
@@ -518,7 +518,7 @@ class IDT7831Tests: XCTestCase {
     }
     
     func testEncodeDecodeRoundTrip() throws {
-        let alu1 = IDT7831()
+        let alu1 = IDT7381()
         alu1.a = 1
         
         var data: Data! = nil
@@ -527,8 +527,8 @@ class IDT7831Tests: XCTestCase {
             XCTFail()
             return
         }
-        var alu2: IDT7831! = nil
-        XCTAssertNoThrow(alu2 = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? IDT7831)
+        var alu2: IDT7381! = nil
+        XCTAssertNoThrow(alu2 = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? IDT7381)
         XCTAssertEqual(alu1, alu2)
     }
 }

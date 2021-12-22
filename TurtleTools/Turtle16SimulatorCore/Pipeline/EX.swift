@@ -215,8 +215,8 @@ public class EX: NSObject, NSSecureCoding {
         let jabs = (input.ctl >> 13) & 1
         let hlt = input.ctl & 1
         let right = selectRightOperand(input: input)
-        let alu = IDT7831()
-        let aluOutput = alu.step(input: IDT7831.Input(a: input.a,
+        let alu = IDT7381()
+        let aluOutput = alu.step(input: IDT7381.Input(a: input.a,
                                                       b: right,
                                                       c0: c0,
                                                       i0: i0,

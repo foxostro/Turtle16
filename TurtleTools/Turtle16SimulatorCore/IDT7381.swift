@@ -1,5 +1,5 @@
 //
-//  IDT7831.swift
+//  IDT7381.swift
 //  Turtle16SimulatorCore
 //
 //  Created by Andrew Fox on 12/23/20.
@@ -8,10 +8,10 @@
 
 import Foundation
 
-// Models the IDFT7831 sixteen-bit ALU IC in the Turtle16 computer.
+// Models the IDT7381 sixteen-bit ALU IC in the Turtle16 computer.
 // Classes in the simulator intentionally model specific pieces of hardware,
 // following naming conventions and organization that matches the schematics.
-public class IDT7831: NSObject, NSSecureCoding {
+public class IDT7381: NSObject, NSSecureCoding {
     public static var supportsSecureCoding = true
     
     public struct Input {
@@ -247,7 +247,7 @@ public class IDT7831: NSObject, NSSecureCoding {
         return input.b
     }
     
-    public static func ==(lhs: IDT7831, rhs: IDT7831) -> Bool {
+    public static func ==(lhs: IDT7381, rhs: IDT7381) -> Bool {
         return lhs.isEqual(rhs)
     }
     
@@ -255,7 +255,7 @@ public class IDT7831: NSObject, NSSecureCoding {
         guard rhs != nil else {
             return false
         }
-        guard let rhs = rhs as? IDT7831 else {
+        guard let rhs = rhs as? IDT7381 else {
             return false
         }
         guard a == rhs.a,

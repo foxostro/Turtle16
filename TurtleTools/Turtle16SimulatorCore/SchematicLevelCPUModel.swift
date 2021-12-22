@@ -282,9 +282,9 @@ public class SchematicLevelCPUModel: NSObject, CPU {
     }
     
     public func run() {
-        while !isHalted {
+        repeat {
             step()
-        }
+        } while !isHalted
     }
     
     public func step() {

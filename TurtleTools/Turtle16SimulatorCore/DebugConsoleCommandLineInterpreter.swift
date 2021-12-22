@@ -43,7 +43,7 @@ public class DebugConsoleCommandLineInterpreter: NSObject {
             computer.reset(type)
             
         case .run:
-            computer.run()
+            run()
             
         case .step(let count):
             step(count: count)
@@ -92,13 +92,19 @@ public class DebugConsoleCommandLineInterpreter: NSObject {
         }
     }
     
+    fileprivate func run() {
+        computer.run()
+        if computer.isHalted {
+            logger.append("cpu is halted\n")
+        }
+    }
+    
     fileprivate func step(count: Int) {
         for _ in 0..<count {
+            computer.step()
             if computer.isHalted {
                 logger.append("cpu is halted\n")
-                return
-            } else {
-                computer.step()
+                break
             }
         }
     }

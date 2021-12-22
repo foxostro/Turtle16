@@ -447,6 +447,7 @@ Syntax: writememi <address> <word> [<word>...]
             .info("cpu")
         ])
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
+cpu is halted
 isStalling: false
 isHalted: true
 isResetting: false
@@ -493,6 +494,7 @@ The file doesn’t exist.
         ])
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
 Wrote 65536 words to instruction memory.
+cpu is halted
 isStalling: false
 isHalted: true
 isResetting: false

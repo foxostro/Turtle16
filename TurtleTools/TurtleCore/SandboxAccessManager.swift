@@ -26,7 +26,7 @@ public class ConcreteSandboxAccessManager: NSObject, SandboxAccessManager {
         do {
             let maybeBookmarksData = UserDefaults.standard.object(forKey: kBookmarksKey) as? Data
             if let bookmarksData = maybeBookmarksData {
-                bookmarks = try NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSDictionary.self, NSURL.self], from: bookmarksData) as! [URL: Data]
+                bookmarks = try NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSDictionary.self, NSURL.self, NSData.self], from: bookmarksData) as! [URL: Data]
                 for bookmark in bookmarks {
                     var isStale = false
                     let url = try URL.init(resolvingBookmarkData: bookmark.value, options: NSURL.BookmarkResolutionOptions.withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)

@@ -20,10 +20,10 @@ The data sheet for the '245 and '374 recommend a pull-up resistor on OE to ensur
 
 The PCB could benefit from many more test points. For example, a test point for the raw clock signal, and test points for the program counter. The test points should be small plated holes with a nearby point for GND. This would make it easy to connect a scope probe with spring ground clip.
 
-I notice a stray trace on an internal layer to left of program counter. What’s this doing here?
-
 There's not enough space aorund the two 7381 ICs and the two ZIF sockets. This makes rework and debugging difficult. There's not enough room for PLCC-68 sockets either, for example.
 
 The SMD PLCC-32 sockets are a pain to install. Can I do anything differently to make this easier next time? Also, it's really hard to remove chips from these PLCC-32 sockets with the extractor. Use different sockets next time?
+
+~~I notice a stray trace on an internal layer to left of program counter. What’s this doing here?~~ (Fixed in eb44b2d9)
 
 ~~The memory bus connector is a low profile connector, and a standard header doesn’t lock in place as expected. Update the part number on the schematics to instead use the standard version of this connector.~~ (Fixed in 4b85c66e)

@@ -323,4 +323,58 @@ class RegisterSpillerTests: XCTestCase {
             XCTAssertEqual(error, .outOfTemporaries)
         }
     }
+    
+    func testSpillOffsetIsVeryLarge_LoadCase() throws {
+        let spillSlot = 0
+        let spillOffset = 108
+        let spilledIntervals = [
+            LiveInterval(range: 1..<2, virtualRegisterName: "vr0", physicalRegisterName: nil, spillSlot: spillSlot)
+        ]
+        let nodes = [
+            InstructionNode(instruction: kENTER, parameters: [ParameterNumber(100)]),
+            InstructionNode(instruction: kADD, parameters: [ParameterIdentifier("r2"), ParameterIdentifier("r1"), ParameterIdentifier("vr0")])
+        ]
+        let expected = [
+            InstructionNode(instruction: kENTER, parameters: [ParameterNumber(101)]),
+            InstructionNode(instruction: kLIU, parameters: [ParameterIdentifier("ra"), ParameterNumber(spillOffset & 0x00ff)]),
+            InstructionNode(instruction: kLUI, parameters: [ParameterIdentifier("ra"), ParameterNumber((spillOffset & 0xff) >> 8)]),
+            InstructionNode(instruction: kADD, parameters: [ParameterIdentifier("ra"), ParameterIdentifier("ra"), ParameterIdentifier("fp")]),
+            InstructionNode(instruction: kLOAD, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("ra")]),
+            InstructionNode(instruction: kADD, parameters: [ParameterIdentifier("r2"), ParameterIdentifier("r1"), ParameterIdentifier("r4")])
+        ]
+        switch RegisterSpiller.spill(spilledIntervals: spilledIntervals, temporaries: [4], nodes: nodes) {
+        case .success(let result):
+            XCTAssertEqual(result, expected)
+            
+        case .failure(let error):
+            XCTFail("error: \(error)")
+        }
+    }
+    
+    func testSpillOffsetIsVeryLarge_StoreCase() throws {
+        let spillSlot = 0
+        let spillOffset = 108
+        let spilledIntervals = [
+            LiveInterval(range: 1..<2, virtualRegisterName: "vr2", physicalRegisterName: nil, spillSlot: spillSlot)
+        ]
+        let nodes = [
+            InstructionNode(instruction: kENTER, parameters: [ParameterNumber(100)]),
+            InstructionNode(instruction: kADD, parameters: [ParameterIdentifier("vr2"), ParameterIdentifier("r1"), ParameterIdentifier("r0")])
+        ]
+        let expected = [
+            InstructionNode(instruction: kENTER, parameters: [ParameterNumber(101)]),
+            InstructionNode(instruction: kADD, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("r1"), ParameterIdentifier("r0")]),
+            InstructionNode(instruction: kLIU, parameters: [ParameterIdentifier("ra"), ParameterNumber(spillOffset & 0x00ff)]),
+            InstructionNode(instruction: kLUI, parameters: [ParameterIdentifier("ra"), ParameterNumber((spillOffset & 0xff) >> 8)]),
+            InstructionNode(instruction: kADD, parameters: [ParameterIdentifier("ra"), ParameterIdentifier("ra"), ParameterIdentifier("fp")]),
+            InstructionNode(instruction: kSTORE, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("ra")])
+        ]
+        switch RegisterSpiller.spill(spilledIntervals: spilledIntervals, temporaries: [4], nodes: nodes) {
+        case .success(let result):
+            XCTAssertEqual(result, expected)
+            
+        case .failure(let error):
+            XCTFail("error: \(error)")
+        }
+    }
 }

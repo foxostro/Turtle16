@@ -38,6 +38,7 @@ public class RegisterSpiller: NSObject {
         }
         
         let fp = ParameterIdentifier("fp")
+        let ra = ParameterIdentifier("ra")
         
         // Reserve memory for spills by updating the leading ENTER instruction.
         var nodes1 = nodes0
@@ -90,9 +91,20 @@ public class RegisterSpiller: NSObject {
                     let tempReg = ParameterIdentifier("r\(temporary)")
                     _ = temporaries.removeFirst()
                     currentInstruction = RegisterUtils.rewrite(node: currentInstruction, from: spilledInterval.virtualRegisterName, to: tempReg.value)
-                    let spillLoadCode: [AbstractSyntaxTreeNode] = [
-                        InstructionNode(instruction: kLOAD, parameters: [tempReg, fp, ParameterNumber(spillSlotOffset + spillSlot)])
-                    ]
+                    let offset = spillSlotOffset + spillSlot
+                    let spillLoadCode: [AbstractSyntaxTreeNode]
+                    if offset > 15 {
+                        spillLoadCode = [
+                            InstructionNode(instruction: kLIU, parameters: [ra, ParameterNumber(offset & 0x00ff)]),
+                            InstructionNode(instruction: kLUI, parameters: [ra, ParameterNumber((offset & 0xff) >> 8)]),
+                            InstructionNode(instruction: kADD, parameters: [ra, ra, fp]),
+                            InstructionNode(instruction: kLOAD, parameters: [tempReg, ra]),
+                        ]
+                    } else {
+                        spillLoadCode = [
+                            InstructionNode(instruction: kLOAD, parameters: [tempReg, fp, ParameterNumber(offset)])
+                        ]
+                    }
                     prefix = prefix + spillLoadCode
                 }
                 
@@ -107,9 +119,20 @@ public class RegisterSpiller: NSObject {
                     }
                     let tempReg = ParameterIdentifier("r\(temporary)")
                     currentInstruction = RegisterUtils.rewrite(node: currentInstruction, from: spilledInterval.virtualRegisterName, to: tempReg.value)
-                    let spillStoreCode: [AbstractSyntaxTreeNode] = [
-                        InstructionNode(instruction: kSTORE, parameters: [tempReg, fp, ParameterNumber(spillSlotOffset + spillSlot)])
-                    ]
+                    let offset = spillSlotOffset + spillSlot
+                    let spillStoreCode: [AbstractSyntaxTreeNode]
+                    if offset > 15 {
+                        spillStoreCode = [
+                            InstructionNode(instruction: kLIU, parameters: [ra, ParameterNumber(offset & 0x00ff)]),
+                            InstructionNode(instruction: kLUI, parameters: [ra, ParameterNumber((offset & 0xff) >> 8)]),
+                            InstructionNode(instruction: kADD, parameters: [ra, ra, fp]),
+                            InstructionNode(instruction: kSTORE, parameters: [tempReg, ra]),
+                        ]
+                    } else {
+                        spillStoreCode = [
+                            InstructionNode(instruction: kSTORE, parameters: [tempReg, fp, ParameterNumber(offset)])
+                        ]
+                    }
                     postfix = spillStoreCode + postfix
                 }
             }

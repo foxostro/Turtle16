@@ -39,17 +39,6 @@
       </MacroExpansion>
       <Testables>
          <TestableReference
-            skipped = "YES"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6FF1996422ECB37000C255A2"
-               BuildableName = "SimulatorTests.xctest"
-               BlueprintName = "SimulatorTests"
-               ReferencedContainer = "container:TurtleTools.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
             skipped = "NO"
             parallelizable = "YES">
             <BuildableReference

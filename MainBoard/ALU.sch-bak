@@ -5,13 +5,13 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 20 39
 Title "ALU"
-Date "2021-06-18"
-Rev "B (2a1292a9)"
+Date "2021-06-22"
+Rev "B (cb021f9a)"
 Comp ""
 Comment1 ""
 Comment2 "are latched in registers in other parts of the circuit."
 Comment3 "This is configured for pure combinatorial operation where operands and outputs"
-Comment4 "The ALU is built around the IDT 7831 sixteen-bit monolithic ALU IC."
+Comment4 "The ALU is built around the IDT 7381 sixteen-bit monolithic ALU IC."
 $EndDescr
 Text HLabel 3200 1150 0    50   Input ~ 0
 RightOp[0..15]

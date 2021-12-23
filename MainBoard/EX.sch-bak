@@ -5,8 +5,8 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 15 39
 Title "EX"
-Date "2021-06-18"
-Rev "B (2a1292a9)"
+Date "2021-06-22"
+Rev "B (cb021f9a)"
 Comp ""
 Comment1 ""
 Comment2 "ID stage of the CPU pipeline."

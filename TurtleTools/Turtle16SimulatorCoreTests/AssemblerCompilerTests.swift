@@ -119,7 +119,7 @@ class AssemblerCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [])
     }
     
-    func testLOADExpectsTwoOrThreeOperands() throws {
+    func testLOADExpectsTwoOrThreeOperands_1() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
             InstructionNode(instruction: "LOAD", parameters: [ParameterIdentifier("r0")])
@@ -185,7 +185,7 @@ class AssemblerCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [])
     }
     
-    func testCompileLOAD() throws {
+    func testCompileLOAD_1() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
             InstructionNode(instruction: "LOAD", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r1"), ParameterNumber(1)])
@@ -194,6 +194,21 @@ class AssemblerCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.errors.count, 0)
         XCTAssertEqual(compiler.instructions, [
             0b0001000000100001
+        ])
+    }
+    
+    func testCompileLOAD_2() throws {
+        let compiler = AssemblerCompiler()
+        compiler.compile(ast: [
+            InstructionNode(instruction: "LOAD", parameters: [
+                ParameterIdentifier("r0"),
+                ParameterIdentifier("r1")
+            ])
+        ])
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 0)
+        XCTAssertEqual(compiler.instructions, [
+            0b0001000000100000
         ])
     }
     
@@ -252,7 +267,7 @@ class AssemblerCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [])
     }
     
-    func testCompileSTORE() throws {
+    func testCompileSTORE_1() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
             InstructionNode(instruction: "STORE", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("r1"), ParameterNumber(1)])
@@ -261,6 +276,21 @@ class AssemblerCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.errors.count, 0)
         XCTAssertEqual(compiler.instructions, [
             0b0001100000100001
+        ])
+    }
+    
+    func testCompileSTORE_2() throws {
+        let compiler = AssemblerCompiler()
+        compiler.compile(ast: [
+            InstructionNode(instruction: "STORE", parameters: [
+                ParameterIdentifier("r0"),
+                ParameterIdentifier("r1")
+            ])
+        ])
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 0)
+        XCTAssertEqual(compiler.instructions, [
+            0b0001100000100000
         ])
     }
     

@@ -242,8 +242,14 @@ public class AssemblerCompiler: NSObject {
         guard let sourceAddress = lookupRegister(node.parameters[1]) else {
             throw errorExpectsSecondOperandToBeTheSourceAddress(node)
         }
-        guard let offset = ((node.parameters.count > 2 ? node.parameters[2] : nil) as? ParameterNumber)?.value else {
-            throw errorExpectsThirdOperandToBeAnImmediateValueOffset(node)
+        let offset: Int
+        if node.parameters.count > 2 {
+            guard let offset0 = (node.parameters[2] as? ParameterNumber)?.value else {
+                throw errorExpectsThirdOperandToBeAnImmediateValueOffset(node)
+            }
+            offset = offset0
+        } else {
+            offset = 0
         }
         try codeGenerator.load(destination, sourceAddress, offset)
     }

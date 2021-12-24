@@ -58,4 +58,103 @@ func foo() {
             RET
             """)
     }
+    
+    func testFib() throws {
+        // Compile a simple fibonacci program. Note that the generated program
+        // has a lot of seemingly superfluous instructions because it wants to
+        // use u8 for all the integer types.
+        // TODO: The compiler should default to the u16 type instead of u8.
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: """
+var a = 1
+var b = 1
+for i in 0..10 {
+    var fib = b + a
+    a = b
+    b = fib
+}
+""")
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(AssemblerListingMaker().makeListing(try compiler.assembly.get()), """
+            NOP
+            LIU r0, 16
+            LUI r0, 1
+            LI r1, 1
+            STORE r0, r1
+            LIU r0, 17
+            LUI r0, 1
+            LI r1, 1
+            STORE r0, r1
+            LIU r0, 18
+            LUI r0, 1
+            ADDI r1, r0, 0
+            LI r0, 0
+            STORE r1, r0
+            LIU r0, 18
+            LUI r0, 1
+            ADDI r1, r0, 2
+            LI r0, 10
+            STORE r1, r0
+            LIU r0, 22
+            LUI r0, 1
+            LIU r1, 18
+            LUI r1, 1
+            LOAD r2, r1, 2
+            STORE r0, r2
+            LIU r0, 24
+            LUI r0, 1
+            LI r1, 0
+            STORE r0, r1
+            .L0:
+            LIU r0, 22
+            LUI r0, 1
+            LOAD r1, r0
+            LIU r0, 24
+            LUI r0, 1
+            LOAD r2, r0
+            SUB r0, r2, r1
+            ANDI r0, r0, 1
+            CMPI r0, 0
+            BEQ .L1
+            LIU r0, 26
+            LUI r0, 1
+            LIU r1, 16
+            LUI r1, 1
+            LOAD r2, r1
+            LIU r1, 17
+            LUI r1, 1
+            LOAD r3, r1
+            ADD r1, r3, r2
+            LIU r2, 128
+            LUI r2, 0
+            LUI r1, 0
+            XOR r1, r1, r2
+            SUB r1, r1, r2
+            STORE r0, r1
+            LIU r0, 16
+            LUI r0, 1
+            LIU r1, 17
+            LUI r1, 1
+            LOAD r2, r1
+            STORE r0, r2
+            LIU r0, 17
+            LUI r0, 1
+            LIU r1, 26
+            LUI r1, 1
+            LOAD r2, r1
+            STORE r0, r2
+            LIU r0, 24
+            LUI r0, 1
+            LI r1, 1
+            LIU r2, 24
+            LUI r2, 1
+            LOAD r3, r2
+            ADD r2, r3, r1
+            STORE r0, r2
+            JMP .L0
+            .L1:
+            NOP
+            HLT
+            """)
+    }
 }

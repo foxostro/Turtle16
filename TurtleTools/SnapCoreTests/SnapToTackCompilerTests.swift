@@ -80,7 +80,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testGotoIfFalse() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.compile(GotoIfFalse(condition: Expression.LiteralBool(false), target: "foo"))
+        let actual = try compiler.compile(GotoIfFalse(condition: Expression.LiteralBool(false), target: "bar"))
         let expected = Seq(children: [
             TackInstructionNode(instruction: .li16, parameters: [
                 ParameterIdentifier("vr0"),
@@ -88,7 +88,7 @@ class SnapToTackCompilerTests: XCTestCase {
             ]),
             TackInstructionNode(instruction: .bz, parameters: [
                 ParameterIdentifier("vr0"),
-                ParameterIdentifier("foo")
+                ParameterIdentifier("bar")
             ])
         ])
         XCTAssertEqual(actual, expected)

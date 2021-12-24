@@ -121,7 +121,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             try rvalue(expr: node.condition),
             TackInstructionNode(instruction: .bz, parameters: [
                 ParameterIdentifier(popRegister()),
-                ParameterIdentifier("foo")
+                ParameterIdentifier(node.target)
             ])
         ])
     }

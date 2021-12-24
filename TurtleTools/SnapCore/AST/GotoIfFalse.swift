@@ -49,6 +49,8 @@ public class GotoIfFalse: AbstractSyntaxTreeNode {
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        return "\(indent)ifFalse \(condition) goto \(target)"
+        let indent1 = makeIndent(depth: depth + 1)
+        let expr = condition.makeIndentedDescription(depth: depth + 1, wantsLeadingWhitespace: false)
+        return "\(indent)ifFalse goto \(target)\n\(indent1)condition: \(expr)"
     }
 }

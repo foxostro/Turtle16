@@ -3957,4 +3957,57 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(actual, expected)
         XCTAssertNil(compiler.registerStack.last)
     }
+    
+    func testRvalue_Assignment_with_StructInitializer() throws {
+        let symbols = SymbolTable()
+        symbols.bind(identifier: "foo", symbol: Symbol(type: kSliceType, offset: 0x1000, storage: .staticStorage))
+        symbols.bind(identifier: kSliceName, symbolType: kSliceType)
+        let compiler = makeCompiler(symbols: symbols)
+        let lexpr = Expression.Identifier("foo")
+        let rexpr = Expression.StructInitializer(identifier: Expression.Identifier(kSliceName), arguments: [
+            Expression.StructInitializer.Argument(name: kSliceBase,
+                                                  expr: Expression.LiteralInt(0xabcd)),
+            Expression.StructInitializer.Argument(name: kSliceCount,
+                                                  expr: Expression.LiteralInt(0xffff))
+        ])
+        let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: lexpr, rexpr: rexpr))
+        let expected = Seq(children: [
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(0x1000)
+            ]),
+            TackInstructionNode(instruction: .addi16, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr0"),
+                ParameterNumber(0)
+            ]),
+            TackInstructionNode(instruction: .li16, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterNumber(0xabcd)
+            ]),
+            TackInstructionNode(instruction: .store, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr2")
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterNumber(0x1000)
+            ]),
+            TackInstructionNode(instruction: .addi16, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterIdentifier("vr3"),
+                ParameterNumber(1)
+            ]),
+            TackInstructionNode(instruction: .li16, parameters: [
+                ParameterIdentifier("vr5"),
+                ParameterNumber(0xffff)
+            ]),
+            TackInstructionNode(instruction: .store, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterIdentifier("vr5")
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr5")
+    }
 }

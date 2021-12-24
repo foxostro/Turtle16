@@ -1529,13 +1529,16 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 try lvalue(expr: expr.lexpr)
             ])
         } else if let structInitializer = expr.rexpr as? Expression.StructInitializer {
-            let children = structInitializer.arguments.map {
+            let children = try structInitializer.arguments.map {
                 Expression.Assignment(lexpr: Expression.Get(sourceAnchor: expr.lexpr.sourceAnchor,
                                                             expr: expr.lexpr,
                                                             member: Expression.Identifier($0.name)),
                                       rexpr: $0.expr)
             }
-            result = Seq(sourceAnchor: expr.sourceAnchor, children: children)
+            .map {
+                try rvalue(expr: $0)
+            }
+            result = Seq(sourceAnchor: expr.sourceAnchor, children: children) 
         } else {
             let lvalueProc = try lvalue(expr: expr.lexpr)
             let dst = popRegister()

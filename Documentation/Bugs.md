@@ -16,11 +16,13 @@ It may have been a mistake to have the RDY signal halt the Phi2 clock. If the Ph
 
 There was a hardware bug on Rev A where a program must begin with a single leading NOP at address zero to ensure correct operation during the reset cycle. I'm not sure yet that I've completely solved this problem on Rev B.
 
-I'm considering replacing all 74ABT parts on the PCB with their 74AHCT equivalents. The clock slew rate is incompatible with 74ABT logic, leading to incorrect operation in Rev B.
-
 The data sheet for the '245 and '374 recommend a pull-up resistor on OE to ensure high impedance state during power up. I should look for places on the PCB, e.g. EX stage, which could benefit from such a change.
 
 The PCB could benefit from many more test points. For example, a test point for the raw clock signal, and test points for the program counter. The test points should be small plated holes with a nearby point for GND. This would make it easy to connect a scope probe with spring ground clip.
+
+Test points should have been placed on the front side of the PCB for convenience during debugging. Flipping the PCB to touch a probe to a test point is a very awkward thing to do.
+
+For that matter, all components should have been placed on the front side of the PCB. This would greatly simplify assembly.
 
 There's not enough space aorund the two 7381 ICs and the two ZIF sockets. This makes rework and debugging difficult. There's not enough room for PLCC-68 sockets either, for example.
 

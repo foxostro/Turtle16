@@ -15,6 +15,7 @@ public class SnapToTurtle16Compiler: NSObject {
     public var shouldRunSpecificTest: String? = nil
     public var shouldEnableOptimizations = true
     public private(set) var testNames: [String] = []
+    public private(set) var tack: Result<AbstractSyntaxTreeNode?, Error>! = nil
     public private(set) var assembly: Result<TopLevel, Error>! = nil
     public private(set) var instructions: [UInt16] = []
     public var sandboxAccessManager: SandboxAccessManager? = nil
@@ -99,9 +100,11 @@ public class SnapToTurtle16Compiler: NSObject {
     
     func compileSnapToTack(_ ast: AbstractSyntaxTreeNode?) -> Result<AbstractSyntaxTreeNode?, Error> {
         let compiler = SnapToTackCompiler(symbols: globalSymbols, globalEnvironment: globalEnvironment)
-        return Result(catching: {
+        let tack = Result(catching: {
             try compiler.compile(ast)
         })
+        self.tack = tack
+        return tack
     }
     
     func compileTackToAssembly(_ input: AbstractSyntaxTreeNode?) -> Result<TopLevel, Error> {

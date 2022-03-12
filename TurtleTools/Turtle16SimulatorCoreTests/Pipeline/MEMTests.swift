@@ -23,8 +23,8 @@ class MEMTests: XCTestCase {
     func testStore() {
         let mem = MEM()
         var storeValue: UInt16? = nil
-        var storeAddress: UInt16? = nil
-        mem.store = {(value: UInt16, addr: UInt16) in
+        var storeAddress: MemoryAddress? = nil
+        mem.store = {(value: UInt16, addr: MemoryAddress) in
             storeValue = value
             storeAddress = addr
         }
@@ -36,7 +36,7 @@ class MEMTests: XCTestCase {
         XCTAssertEqual(output.selC, input.selC)
         XCTAssertEqual(output.ctl, input.ctl)
         XCTAssertEqual(storeValue, 0xcdcd)
-        XCTAssertEqual(storeAddress, 0xabab)
+        XCTAssertEqual(storeAddress?.value, 0xabab)
     }
     
     func testLoad() {

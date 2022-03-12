@@ -21,11 +21,11 @@ class AssemblerCompilerTests: XCTestCase {
     fileprivate func makeDebugger(instructions: [UInt16]) -> DebugConsole {
         let cpu = SchematicLevelCPUModel()
         let computer = Turtle16Computer(cpu)
-        cpu.store = {(value: UInt16, addr: UInt16) in
-            computer.ram[Int(addr)] = value
+        cpu.store = {(value: UInt16, addr: MemoryAddress) in
+            computer.ram[addr.value] = value
         }
-        cpu.load = {(addr: UInt16) in
-            return computer.ram[Int(addr)]
+        cpu.load = {(addr: MemoryAddress) in
+            return computer.ram[addr.value]
         }
         computer.instructions = instructions
         computer.reset()

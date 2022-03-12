@@ -60,7 +60,7 @@ public class SchematicLevelCPUModel: NSObject, CPU {
         return stageID.registerFile[idx]
     }
     
-    public var load: (UInt16) -> UInt16 {
+    public var load: (MemoryAddress) -> UInt16 {
         get {
             return stageMEM.load
         }
@@ -69,7 +69,7 @@ public class SchematicLevelCPUModel: NSObject, CPU {
         }
     }
     
-    public var store: (UInt16, UInt16) -> Void {
+    public var store: (UInt16, MemoryAddress) -> Void {
         get {
             return stageMEM.store
         }

@@ -34,11 +34,11 @@ class TackToTurtle16CompilerTests: XCTestCase {
         }
         let cpu = SchematicLevelCPUModel()
         var ram = Array<UInt16>(repeating: 0, count: 65536)
-        cpu.store = {(value: UInt16, addr: UInt16) in
-            ram[Int(addr)] = value
+        cpu.store = {(value: UInt16, addr: MemoryAddress) in
+            ram[addr.value] = value
         }
-        cpu.load = {(addr: UInt16) in
-            return ram[Int(addr)]
+        cpu.load = {(addr: MemoryAddress) in
+            return ram[addr.value]
         }
         let computer = Turtle16Computer(cpu)
         computer.instructions = assembler.instructions
@@ -514,9 +514,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 0x1000)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.cpu.load(0x1000), 65)
-        XCTAssertEqual(debugger.computer.cpu.load(0x1001), 66)
-        XCTAssertEqual(debugger.computer.cpu.load(0x1002), 67)
+        XCTAssertEqual(debugger.computer.cpu.load(MemoryAddress(0x1000)), 65)
+        XCTAssertEqual(debugger.computer.cpu.load(MemoryAddress(0x1001)), 66)
+        XCTAssertEqual(debugger.computer.cpu.load(MemoryAddress(0x1002)), 67)
     }
     
     func testSTSTR_empty_string() throws {
@@ -549,9 +549,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 0x1000)
         debugger.computer.setRegister(1, 0x2000)
-        debugger.computer.cpu.store(65, 0x2000)
+        debugger.computer.cpu.store(65, MemoryAddress(0x2000))
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.cpu.load(0x1000), 65)
+        XCTAssertEqual(debugger.computer.cpu.load(MemoryAddress(0x1000)), 65)
     }
     
     func testMEMCPY_multiple_words() throws {
@@ -565,13 +565,13 @@ class TackToTurtle16CompilerTests: XCTestCase {
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 0x1000)
         debugger.computer.setRegister(1, 0x2000)
-        debugger.computer.cpu.store(65, 0x2000)
-        debugger.computer.cpu.store(66, 0x2001)
-        debugger.computer.cpu.store(67, 0x2002)
+        debugger.computer.cpu.store(65, MemoryAddress(0x2000))
+        debugger.computer.cpu.store(66, MemoryAddress(0x2001))
+        debugger.computer.cpu.store(67, MemoryAddress(0x2002))
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.cpu.load(0x1000), 65)
-        XCTAssertEqual(debugger.computer.cpu.load(0x1001), 66)
-        XCTAssertEqual(debugger.computer.cpu.load(0x1002), 67)
+        XCTAssertEqual(debugger.computer.cpu.load(MemoryAddress(0x1000)), 65)
+        XCTAssertEqual(debugger.computer.cpu.load(MemoryAddress(0x1001)), 66)
+        XCTAssertEqual(debugger.computer.cpu.load(MemoryAddress(0x1002)), 67)
     }
     
     func testALLOCA() throws {

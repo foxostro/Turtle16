@@ -527,8 +527,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 children += [
                     try rvalue(as: Expression.As(expr: expr.elements[i], targetType: Expression.PrimitiveType(arrayElementType))),
                     TackInstructionNode(instruction: .store, parameters: [
-                        ParameterIdentifier(tempArrayAddr),
                         ParameterIdentifier(popRegister()),
+                        ParameterIdentifier(tempArrayAddr),
                         ParameterNumber(i)
                     ])
                 ]
@@ -714,8 +714,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             children += [
                 try rvalue(expr: rexpr),
                 TackInstructionNode(instruction: .store, parameters: [
-                    ParameterIdentifier(dst),
                     ParameterIdentifier(popRegister()),
+                    ParameterIdentifier(dst),
                     ParameterNumber(kSliceBaseAddrOffset),
                 ])
             ]
@@ -726,8 +726,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                     ParameterNumber(n),
                 ]),
                 TackInstructionNode(instruction: .store, parameters: [
-                    ParameterIdentifier(dst),
                     ParameterIdentifier(countReg),
+                    ParameterIdentifier(dst),
                     ParameterNumber(kSliceCountOffset),
                 ])
             ]
@@ -749,8 +749,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                     ParameterNumber(unionTypeTag)
                 ]),
                 TackInstructionNode(instruction: .store, parameters: [
-                    ParameterIdentifier(tempUnionAddr),
                     ParameterIdentifier(tempUnionTypeTag),
+                    ParameterIdentifier(tempUnionAddr),
                     ParameterNumber(kUnionTypeTagOffset)
                 ])
             ]
@@ -758,8 +758,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 children += [
                     try rvalue(as: Expression.As(expr: rexpr, targetType: Expression.PrimitiveType(targetType))),
                     TackInstructionNode(instruction: .store, parameters: [
-                        ParameterIdentifier(tempUnionAddr),
                         ParameterIdentifier(popRegister()),
+                        ParameterIdentifier(tempUnionAddr),
                         ParameterNumber(kUnionPayloadOffset)
                     ])
                 ]
@@ -1520,8 +1520,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 lvalueProc,
                 rvalueProc,
                 TackInstructionNode(instruction: .store, parameters: [
-                    ParameterIdentifier(dst),
-                    ParameterIdentifier(src)
+                    ParameterIdentifier(src),
+                    ParameterIdentifier(dst)
                 ])
             ])
         } else if size == 0 {
@@ -1878,8 +1878,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 if argType.isPrimitive {
                     children += [
                         TackInstructionNode(instruction: .store, parameters: [
-                            ParameterIdentifier(dst),
-                            ParameterIdentifier(tempArg)
+                            ParameterIdentifier(tempArg),
+                            ParameterIdentifier(dst)
                         ])
                     ]
                 } else {

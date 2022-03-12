@@ -32,7 +32,7 @@ let a = 1
             LI r0, 16
             LUI r0, 1
             LI r1, 1
-            STORE r0, r1, 0
+            STORE r1, r0, 0
             NOP
             HLT
             """)
@@ -53,7 +53,7 @@ func foo() {
             ENTER 1
             SUBI r0, fp, 1
             LI r1, 1
-            STORE r0, r1
+            STORE r1, r0
             LEAVE
             RET
             """)
@@ -80,31 +80,31 @@ for i in 0..10 {
             LIU r0, 16
             LUI r0, 1
             LI r1, 1
-            STORE r0, r1
+            STORE r1, r0
             LIU r0, 17
             LUI r0, 1
             LI r1, 1
-            STORE r0, r1
+            STORE r1, r0
             LIU r0, 18
             LUI r0, 1
             ADDI r1, r0, 0
             LI r0, 0
-            STORE r1, r0
+            STORE r0, r1
             LIU r0, 18
             LUI r0, 1
             ADDI r1, r0, 2
             LI r0, 10
-            STORE r1, r0
+            STORE r0, r1
             LIU r0, 22
             LUI r0, 1
             LIU r1, 18
             LUI r1, 1
             LOAD r2, r1, 2
-            STORE r0, r2
+            STORE r2, r0
             LIU r0, 24
             LUI r0, 1
             LI r1, 0
-            STORE r0, r1
+            STORE r1, r0
             .L0:
             LIU r0, 22
             LUI r0, 1
@@ -130,19 +130,19 @@ for i in 0..10 {
             LUI r1, 0
             XOR r1, r1, r2
             SUB r1, r1, r2
-            STORE r0, r1
+            STORE r1, r0
             LIU r0, 16
             LUI r0, 1
             LIU r1, 17
             LUI r1, 1
             LOAD r2, r1
-            STORE r0, r2
+            STORE r2, r0
             LIU r0, 17
             LUI r0, 1
             LIU r1, 26
             LUI r1, 1
             LOAD r2, r1
-            STORE r0, r2
+            STORE r2, r0
             LIU r0, 24
             LUI r0, 1
             LI r1, 1
@@ -150,7 +150,7 @@ for i in 0..10 {
             LUI r2, 1
             LOAD r3, r2
             ADD r2, r3, r1
-            STORE r0, r2
+            STORE r2, r0
             JMP .L0
             .L1:
             NOP

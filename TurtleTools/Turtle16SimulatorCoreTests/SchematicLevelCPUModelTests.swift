@@ -54,11 +54,11 @@ class SchematicLevelCPUModelTests: XCTestCase {
     func testSetAndGetMemoryAccessClosures() {
         let cpu = SchematicLevelCPUModel()
         var count = 0
-        let load: (UInt16) -> UInt16 = {(addr: UInt16) in
+        let load: (MemoryAddress) -> UInt16 = {(addr: MemoryAddress) in
             count += 1
             return 0 // do nothing
         }
-        let store: (UInt16, UInt16) -> Void = {(value: UInt16, addr: UInt16) in
+        let store: (UInt16, MemoryAddress) -> Void = {(value: UInt16, addr: MemoryAddress) in
             count += 1
         }
         cpu.load = load
@@ -74,7 +74,7 @@ class SchematicLevelCPUModelTests: XCTestCase {
             XCTFail()
             return 0 // do nothing
         }
-        cpu.store = {(value: UInt16, addr: UInt16) in
+        cpu.store = {(value: UInt16, addr: MemoryAddress) in
             XCTFail()
         }
         cpu.reset()
@@ -169,7 +169,7 @@ class SchematicLevelCPUModelTests: XCTestCase {
             observedLoadAddr = addr
             return 0xabcd
         }
-        cpu.store = {(value: UInt16, addr: UInt16) in
+        cpu.store = {(value: UInt16, addr: MemoryAddress) in
             XCTFail()
         }
         cpu.instructions = [
@@ -189,10 +189,10 @@ class SchematicLevelCPUModelTests: XCTestCase {
     }
     
     func testStore() {
-        var observedStoreAddr: UInt16? = nil
+        var observedStoreAddr: MemoryAddress? = nil
         var observedStoreVal: UInt16? = nil
         let cpu = SchematicLevelCPUModel()
-        cpu.store = {(value: UInt16, addr: UInt16) in
+        cpu.store = {(value: UInt16, addr: MemoryAddress) in
             if observedStoreVal != nil {
                 XCTFail()
             }
@@ -218,7 +218,7 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // EX
         cpu.step() // MEM
         
-        XCTAssertEqual(observedStoreAddr, 0xffff)
+        XCTAssertEqual(observedStoreAddr?.value, 0xffff)
         XCTAssertEqual(observedStoreVal,  0xabcd)
     }
     

@@ -273,7 +273,7 @@ public class AssemblerCompiler: NSObject {
         } else {
             offset = 0
         }
-        try codeGenerator.store(destinationAddress, source, offset)
+        try codeGenerator.store(source, destinationAddress, offset)
     }
     
     fileprivate func compileLI(_ node: InstructionNode) throws {

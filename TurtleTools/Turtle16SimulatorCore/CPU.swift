@@ -14,6 +14,14 @@ public struct PipelineStageInfo {
     public let status: String
 }
 
+public struct MemoryAddress {
+    public let value: Int
+    
+    public init(_ value: UInt16) {
+        self.value = Int(value)
+    }
+}
+
 // Provides an abstract interface to a model of the Turtle16 CPU.
 public protocol CPU: NSObject, NSSecureCoding {
     var timeStamp: UInt { get }
@@ -27,8 +35,8 @@ public protocol CPU: NSObject, NSSecureCoding {
     var ovf: UInt { get }
     var opcodeDecodeROM: [UInt] { get set }
     
-    var load: (UInt16) -> UInt16 { get set }
-    var store: (UInt16, UInt16) -> Void { get set }
+    var load: (MemoryAddress) -> UInt16 { get set }
+    var store: (UInt16, MemoryAddress) -> Void { get set }
     
     var numberOfRegisters: Int { get }
     func setRegister(_ idx: Int, _ val: UInt16)

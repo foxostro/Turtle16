@@ -111,11 +111,11 @@ public class MEM: NSObject, NSSecureCoding {
         }
     }
     
-    public var load: (UInt16) -> UInt16 = {(addr: UInt16) in
+    public var load: (MemoryAddress) -> UInt16 = {(addr: MemoryAddress) in
         return 0 // do nothing
     }
     
-    public var store: (UInt16, UInt16) -> Void = {(value: UInt16, addr: UInt16) in
+    public var store: (UInt16, MemoryAddress) -> Void = {(value: UInt16, addr: MemoryAddress) in
         // do nothing
     }
     
@@ -129,11 +129,11 @@ public class MEM: NSObject, NSSecureCoding {
                 storeOp = input.storeOp
             }
             if isStore {
-                store(storeOp, input.y)
+                store(storeOp, MemoryAddress(input.y))
             }
             if isLoad {
                 assert(!isAssertingStoreOp)
-                storeOp = load(input.y)
+                storeOp = load(MemoryAddress(input.y))
             }
         }
         associatedPC = input.associatedPC

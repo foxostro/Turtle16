@@ -21,6 +21,36 @@ class SnapToTurtle16CompilerTests: XCTestCase {
             """)
     }
     
+    func testCompileFailsDuringLexing() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: "@")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "@")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
+        XCTAssertEqual(compiler.errors.first?.message, "unexpected character: `@'")
+    }
+    
+    func testCompileFailsDuringParsing() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: ":")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, ":")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
+        XCTAssertEqual(compiler.errors.first?.message, "operand type mismatch: `:'")
+    }
+    
+    func testCompileFailsDuringCodeGeneration() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: "foo")
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "foo")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
+        XCTAssertEqual(compiler.errors.first?.message, "use of unresolved identifier: `foo'")
+    }
+    
     func testSimpleProgram() throws {
         let compiler = SnapToTurtle16Compiler()
         compiler.compile(program: """
@@ -156,5 +186,36 @@ for i in 0..10 {
             NOP
             HLT
             """)
+    }
+    
+    func test_EndToEndIntegration_SimplestProgram() {
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        computer.cpu.store = {(value: UInt16, addr: MemoryAddress) in
+            computer.ram[addr.value] = value
+        }
+        computer.cpu.load = {(addr: MemoryAddress) in
+            return computer.ram[addr.value]
+        }
+        
+        let compiler = SnapToTurtle16Compiler()
+        
+        compiler.compile(program: """
+let a = 42
+""")
+        XCTAssertFalse(compiler.hasError)
+        guard !compiler.hasError else {
+            return
+        }
+        
+        computer.instructions = compiler.instructions
+        computer.reset()
+        computer.run()
+            
+        guard let offset = compiler.lookupSymbols(line: 1)?.maybeResolve(identifier: "a")?.offset else {
+            XCTFail("failed to resolve symbol \"a\"")
+            return
+        }
+        
+        XCTAssertEqual(computer.ram[offset], 42)
     }
 }

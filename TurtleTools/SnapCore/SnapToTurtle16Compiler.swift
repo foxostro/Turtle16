@@ -19,6 +19,7 @@ public class SnapToTurtle16Compiler: NSObject {
     public private(set) var instructions: [UInt16] = []
     public var sandboxAccessManager: SandboxAccessManager? = nil
     public let globalSymbols = SymbolTable()
+    public private(set) var symbolTableRoot: SymbolTable? = nil
     public let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
     
     public private(set) var errors: [CompilerError] = []
@@ -91,6 +92,7 @@ public class SnapToTurtle16Compiler: NSObject {
         if let error = contractionStep.errors.first {
             return .failure(error)
         }
+        self.symbolTableRoot = ast.symbols
         self.testNames = testNames
         return .success(ast)
     }
@@ -138,5 +140,9 @@ public class SnapToTurtle16Compiler: NSObject {
             return .failure(error)
         }
         return .success(compiler.instructions)
+    }
+    
+    public func lookupSymbols(line: Int) -> SymbolTable? {
+        return symbolTableRoot
     }
 }

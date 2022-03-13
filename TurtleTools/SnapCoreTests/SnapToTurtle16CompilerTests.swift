@@ -122,31 +122,31 @@ for i in 0..10 {
             STORE r0, r1
             LIU r0, 18
             LUI r0, 1
-            ADDI r1, r0, 2
+            ADDI r1, r0, 1
             LI r0, 10
             STORE r0, r1
-            LIU r0, 22
+            LIU r0, 20
             LUI r0, 1
             LIU r1, 18
             LUI r1, 1
-            LOAD r2, r1, 2
+            LOAD r2, r1, 1
             STORE r2, r0
-            LIU r0, 24
+            LIU r0, 21
             LUI r0, 1
             LI r1, 0
             STORE r1, r0
             .L0:
-            LIU r0, 22
+            LIU r0, 20
             LUI r0, 1
             LOAD r1, r0
-            LIU r0, 24
+            LIU r0, 21
             LUI r0, 1
             LOAD r2, r0
             SUB r0, r2, r1
             ANDI r0, r0, 1
             CMPI r0, 0
             BEQ .L1
-            LIU r0, 26
+            LIU r0, 22
             LUI r0, 1
             LIU r1, 16
             LUI r1, 1
@@ -169,14 +169,14 @@ for i in 0..10 {
             STORE r2, r0
             LIU r0, 17
             LUI r0, 1
-            LIU r1, 26
+            LIU r1, 22
             LUI r1, 1
             LOAD r2, r1
             STORE r2, r0
-            LIU r0, 24
+            LIU r0, 21
             LUI r0, 1
             LI r1, 1
-            LIU r2, 24
+            LIU r2, 21
             LUI r2, 1
             LOAD r3, r2
             ADD r2, r3, r1

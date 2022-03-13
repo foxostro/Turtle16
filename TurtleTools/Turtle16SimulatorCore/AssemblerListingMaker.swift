@@ -22,7 +22,6 @@ public class AssemblerListingMaker: NSObject {
             
         case let node as CommentNode:
             return makeListing(comment: node)
-
         
         default:
             fatalError("unimplemented node: \(node)")

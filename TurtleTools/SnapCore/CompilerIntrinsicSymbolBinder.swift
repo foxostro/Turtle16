@@ -7,6 +7,12 @@
 //
 
 public class CompilerIntrinsicSymbolBinder: NSObject {
+    public let memoryLayoutStrategy: MemoryLayoutStrategy
+    
+    public init(memoryLayoutStrategy: MemoryLayoutStrategy) {
+        self.memoryLayoutStrategy = memoryLayoutStrategy
+    }
+    
     public func bindCompilerIntrinsics(symbols: SymbolTable) -> SymbolTable {
         var result: SymbolTable
         result = bindCompilerInstrinsicPeekMemory(symbols: symbols)
@@ -19,10 +25,11 @@ public class CompilerIntrinsicSymbolBinder: NSObject {
     }
     
     func bindCompilerIntrinsicRangeType(symbols: SymbolTable) -> SymbolTable {
+        let sizeOfU16 = memoryLayoutStrategy.sizeof(type: .u16)
         let name = "Range"
         let typ: SymbolType = .structType(StructType(name: name, symbols: SymbolTable(tuples: [
-            ("begin", Symbol(type: .u16, offset: 0, storage: .automaticStorage)),
-            ("limit", Symbol(type: .u16, offset: 2, storage: .automaticStorage))
+            ("begin", Symbol(type: .u16, offset: 0*sizeOfU16, storage: .automaticStorage)),
+            ("limit", Symbol(type: .u16, offset: 1*sizeOfU16, storage: .automaticStorage))
         ])))
         symbols.bind(identifier: name, symbolType: typ, visibility: .privateVisibility)
         return symbols

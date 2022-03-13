@@ -54,7 +54,7 @@ public class SnapAbstractSyntaxTreeCompiler: NSObject {
     
     func tryCompile(_ t0: AbstractSyntaxTreeNode) throws -> AbstractSyntaxTreeNode? {
         // Erase test declarations and replace with a synthesized test runner.
-        let testDeclarationTransformer = SnapASTTransformerTestDeclaration(shouldRunSpecificTest: shouldRunSpecificTest, isUsingStandardLibrary: isUsingStandardLibrary)
+        let testDeclarationTransformer = SnapASTTransformerTestDeclaration(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy, shouldRunSpecificTest: shouldRunSpecificTest, isUsingStandardLibrary: isUsingStandardLibrary)
         let t1 = try testDeclarationTransformer.compile(t0)
         testNames = testDeclarationTransformer.testNames
         

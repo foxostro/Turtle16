@@ -39,7 +39,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
     }
     
     func makeCompiler(symbols: SymbolTable = SymbolTable()) -> RvalueExpressionCompiler {
-        let symbols2 = CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: symbols)
+        let binder = CompilerIntrinsicSymbolBinder(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let symbols2 = binder.bindCompilerIntrinsics(symbols: symbols)
         let compiler = RvalueExpressionCompiler(symbols: symbols2, memoryLayoutStrategy: memoryLayoutStrategy)
         return compiler
     }
@@ -4904,7 +4905,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let n = 10
         let elementType = SymbolType.u8
         
-        let symbols = CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
+        let binder = CompilerIntrinsicSymbolBinder(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let symbols = binder.bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: n, elementType: elementType), offset: arrayBase)),
             ("__oob", Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         ]))
@@ -4942,7 +4944,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let n = 10
         let elementType = SymbolType.u16
         
-        let symbols = CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
+        let binder = CompilerIntrinsicSymbolBinder(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let symbols = binder.bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: n, elementType: elementType), offset: arrayBase)),
             ("__oob", Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         ]))
@@ -4979,7 +4982,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let arrayBase = SnapCompilerMetrics.kStaticStorageStartAddress
         let elementType = SymbolType.u16
         
-        let symbols = CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
+        let binder = CompilerIntrinsicSymbolBinder(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let symbols = binder.bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 10, elementType: elementType), offset: arrayBase)),
             ("__oob", Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         ]))
@@ -5000,7 +5004,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let arrayBase = SnapCompilerMetrics.kStaticStorageStartAddress
         let elementType = SymbolType.u16
         
-        let symbols = CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
+        let binder = CompilerIntrinsicSymbolBinder(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let symbols = binder.bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 10, elementType: elementType), offset: arrayBase)),
             ("__oob", Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         ]))
@@ -5025,7 +5030,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let arrayBaseAddress = 0x1000
         let arrayCount = 10
         
-        let symbols = CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
+        let binder = CompilerIntrinsicSymbolBinder(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let symbols = binder.bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
             ("foo", Symbol(type: .dynamicArray(elementType: elementType), offset: offset)),
             ("__oob", Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         ]))
@@ -5062,7 +5068,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let arrayBaseAddress = 0x1000
         let arrayCount = 10
         
-        let symbols = CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
+        let binder = CompilerIntrinsicSymbolBinder(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let symbols = binder.bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
             ("foo", Symbol(type: .dynamicArray(elementType: elementType), offset: offset)),
             ("__oob", Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         ]))
@@ -5092,7 +5099,8 @@ class RvalueExpressionCompilerTests: XCTestCase {
         let arrayBaseAddress = 0x1000
         let arrayCount = 10
         
-        let symbols = CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
+        let binder = CompilerIntrinsicSymbolBinder(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let symbols = binder.bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
             ("foo", Symbol(type: .dynamicArray(elementType: elementType), offset: offset)),
             ("__oob", Symbol(type: .function(FunctionType(name: "__oob", returnType: .void, arguments: [])), offset: 0))
         ]))

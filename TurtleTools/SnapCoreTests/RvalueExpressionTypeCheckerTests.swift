@@ -4602,7 +4602,8 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testSubscriptAnArrayWithARange() {
-        let symbols = CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
+        let binder = CompilerIntrinsicSymbolBinder(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let symbols = binder.bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 10, elementType: .u8), offset: 0x0010))
         ]))
         let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
@@ -4618,7 +4619,8 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testSubscriptADynamicArrayWithARange_1() {
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
-        let symbols = CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
+        let binder = CompilerIntrinsicSymbolBinder(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let symbols = binder.bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
             ("foo", Symbol(type: .dynamicArray(elementType: .u16), offset: offset))
         ]))
         let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [

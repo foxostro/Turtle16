@@ -15,14 +15,19 @@ public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
     var currentTest: TestDeclaration? = nil
     var depth = 0
     let shouldRunSpecificTest: String?
+    let memoryLayoutStrategy: MemoryLayoutStrategy
     
-    public init(shouldRunSpecificTest: String? = nil, isUsingStandardLibrary: Bool = false) {
+    public init(memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL(),
+                shouldRunSpecificTest: String? = nil,
+                isUsingStandardLibrary: Bool = false) {
+        self.memoryLayoutStrategy = memoryLayoutStrategy
         self.shouldRunSpecificTest = shouldRunSpecificTest
         self.isUsingStandardLibrary = isUsingStandardLibrary
     }
     
     public override func compile(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {
-        let globalSymbols = CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable())
+        let binder = CompilerIntrinsicSymbolBinder(memoryLayoutStrategy: memoryLayoutStrategy)
+        let globalSymbols = binder.bindCompilerIntrinsics(symbols: SymbolTable())
         var children = node.children
         if isUsingStandardLibrary {
             let importStmt = Import(moduleName: kStandardLibraryModuleName)

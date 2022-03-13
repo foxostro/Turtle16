@@ -21,7 +21,7 @@ public class SnapToTurtle16Compiler: NSObject {
     public var sandboxAccessManager: SandboxAccessManager? = nil
     public let globalSymbols = SymbolTable()
     public private(set) var symbolTableRoot: SymbolTable? = nil
-    public let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+    public let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
     
     public private(set) var errors: [CompilerError] = []
     public var hasError:Bool {

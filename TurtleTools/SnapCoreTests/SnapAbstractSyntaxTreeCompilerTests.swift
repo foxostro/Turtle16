@@ -11,18 +11,14 @@ import SnapCore
 import TurtleCore
 
 class SnapAbstractSyntaxTreeCompilerTests: XCTestCase {
-    fileprivate func makeCompiler() -> SnapAbstractSyntaxTreeCompiler {
+    func testExample() throws {
         let globalEnvironment = GlobalEnvironment()
         let compiler = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
-        return compiler
-    }
-    
-    func testExample() throws {
-        let compiler = makeCompiler()
         let input = TopLevel(children: [CommentNode(string: "")])
         compiler.compile(input)
         let actual = compiler.ast
-        let expectedGlobalSymbols = CompilerIntrinsicSymbolBinder().bindCompilerIntrinsics(symbols: SymbolTable())
+        let binder = CompilerIntrinsicSymbolBinder(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy)
+        let expectedGlobalSymbols = binder.bindCompilerIntrinsics(symbols: SymbolTable())
         let expected = Block(symbols: expectedGlobalSymbols,
                              children: [CommentNode(string: "")])
         XCTAssertFalse(compiler.hasError)
@@ -30,7 +26,8 @@ class SnapAbstractSyntaxTreeCompilerTests: XCTestCase {
     }
     
     func testExpectTopLevelNodeAtRoot() throws {
-        let compiler = makeCompiler()
+        let globalEnvironment = GlobalEnvironment()
+        let compiler = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
         compiler.compile(CommentNode(string: ""))
         XCTAssertTrue(compiler.hasError)
     }

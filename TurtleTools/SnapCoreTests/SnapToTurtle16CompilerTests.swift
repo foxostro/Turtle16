@@ -189,22 +189,21 @@ for i in 0..10 {
     }
     
     func test_EndToEndIntegration_SimplestProgram() {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
-        computer.cpu.store = {(value: UInt16, addr: MemoryAddress) in
-            computer.ram[addr.value] = value
-        }
-        computer.cpu.load = {(addr: MemoryAddress) in
-            return computer.ram[addr.value]
-        }
-        
         let compiler = SnapToTurtle16Compiler()
-        
         compiler.compile(program: """
 let a = 42
 """)
         XCTAssertFalse(compiler.hasError)
         guard !compiler.hasError else {
             return
+        }
+        
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        computer.cpu.store = {(value: UInt16, addr: MemoryAddress) in
+            computer.ram[addr.value] = value
+        }
+        computer.cpu.load = {(addr: MemoryAddress) in
+            return computer.ram[addr.value]
         }
         
         computer.instructions = compiler.instructions
@@ -217,5 +216,42 @@ let a = 42
         }
         
         XCTAssertEqual(computer.ram[offset], 42)
+    }
+    
+    func test_EndToEndIntegration_ForIn_Range_1() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: """
+var a: u16 = 100
+for i in 0..10 {
+    a = i
+}
+""")
+        XCTAssertFalse(compiler.hasError)
+        guard !compiler.hasError else {
+            return
+        }
+        
+        print(AssemblerListingMaker().makeListing(try! compiler.assembly.get()))
+        print((try! compiler.tack.get() as! Seq).makeChildDescriptions())
+        
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        computer.cpu.store = {(value: UInt16, addr: MemoryAddress) in
+            print("computer.ram[\(addr.value)] = \(value)")
+            computer.ram[addr.value] = value
+        }
+        computer.cpu.load = {(addr: MemoryAddress) in
+            return computer.ram[addr.value]
+        }
+        
+        computer.instructions = compiler.instructions
+        computer.reset()
+        computer.run()
+            
+        guard let offset = compiler.lookupSymbols(line: 1)?.maybeResolve(identifier: "a")?.offset else {
+            XCTFail("failed to resolve symbol \"a\"")
+            return
+        }
+        
+        XCTAssertEqual(computer.ram[offset], 9)
     }
 }

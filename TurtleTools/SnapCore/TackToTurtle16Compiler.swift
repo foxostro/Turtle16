@@ -1060,20 +1060,11 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
     }
     
     func eq8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
-        let c = corresponding(param: node.parameters[0])
-        return Seq(children: [
-            sub8(node)!,
-            InstructionNode(instruction: kNOT, parameters: [c, c]),
-            InstructionNode(instruction: kANDI, parameters: [c, c, ParameterNumber(1)])
-        ])
+        return eq16(node)!
     }
     
     func ne8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
-        let c = corresponding(param: node.parameters[0])
-        return Seq(children: [
-            sub8(node)!,
-            InstructionNode(instruction: kANDI, parameters: [c, c, ParameterNumber(1)])
-        ])
+        return ne16(node)!
     }
     
     func lt8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {

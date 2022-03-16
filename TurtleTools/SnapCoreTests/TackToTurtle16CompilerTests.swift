@@ -1912,7 +1912,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 0)
         debugger.computer.setRegister(1, 0xab42)
-        debugger.computer.setRegister(2, 0xcd42)
+        debugger.computer.setRegister(2, 0xab42)
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(0), 1)
     }
@@ -1944,7 +1944,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 0)
         debugger.computer.setRegister(1, 0xab42)
-        debugger.computer.setRegister(2, 0xcd42)
+        debugger.computer.setRegister(2, 0xab42)
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(0), 0)
     }

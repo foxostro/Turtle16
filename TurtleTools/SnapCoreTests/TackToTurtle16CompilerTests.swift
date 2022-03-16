@@ -1402,9 +1402,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 0)
         debugger.computer.setRegister(1, 42)
-        debugger.computer.setRegister(2, 43)
+        debugger.computer.setRegister(2, 42)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+        XCTAssertEqual(debugger.computer.getRegister(0), 0)
     }
     
     func testNE16_not_equal() throws {
@@ -1418,9 +1418,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 0)
         debugger.computer.setRegister(1, 42)
-        debugger.computer.setRegister(2, 42)
+        debugger.computer.setRegister(2, 43)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+        XCTAssertEqual(debugger.computer.getRegister(0), 1)
     }
     
     func testLT16_less_than() throws {

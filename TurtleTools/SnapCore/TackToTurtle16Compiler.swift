@@ -844,10 +844,13 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         let c = corresponding(param: node.parameters[0])
         let a = corresponding(param: node.parameters[1])
         let b = corresponding(param: node.parameters[2])
+        let ll0 = ParameterIdentifier(labelMaker.next())
         return Seq(sourceAnchor: node.sourceAnchor, children: [
-            InstructionNode(instruction: kSUB, parameters: [c, a, b]),
-            InstructionNode(instruction: kNOT, parameters: [c, c]),
-            InstructionNode(instruction: kANDI, parameters: [c, c, ParameterNumber(1)])
+            InstructionNode(instruction: kCMP, parameters: [a, b]),
+            InstructionNode(instruction: kLIU, parameters: [c, ParameterNumber(1)]),
+            InstructionNode(instruction: kBEQ, parameter: ll0),
+            InstructionNode(instruction: kLIU, parameters: [c, ParameterNumber(0)]),
+            LabelDeclaration(ll0)
         ])
     }
     
@@ -855,9 +858,13 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         let c = corresponding(param: node.parameters[0])
         let a = corresponding(param: node.parameters[1])
         let b = corresponding(param: node.parameters[2])
+        let ll0 = ParameterIdentifier(labelMaker.next())
         return Seq(sourceAnchor: node.sourceAnchor, children: [
-            InstructionNode(instruction: kSUB, parameters: [c, a, b]),
-            InstructionNode(instruction: kANDI, parameters: [c, c, ParameterNumber(1)])
+            InstructionNode(instruction: kCMP, parameters: [a, b]),
+            InstructionNode(instruction: kLIU, parameters: [c, ParameterNumber(1)]),
+            InstructionNode(instruction: kBNE, parameter: ll0),
+            InstructionNode(instruction: kLIU, parameters: [c, ParameterNumber(0)]),
+            LabelDeclaration(ll0)
         ])
     }
     

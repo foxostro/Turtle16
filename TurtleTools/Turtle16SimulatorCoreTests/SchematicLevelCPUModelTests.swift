@@ -63,14 +63,14 @@ class SchematicLevelCPUModelTests: XCTestCase {
         }
         cpu.load = load
         cpu.store = store
-        _ = cpu.load(0)
-        cpu.store(0, 0)
+        _ = cpu.load(MemoryAddress(0))
+        cpu.store(0, MemoryAddress(0))
         XCTAssertEqual(count, 2)
     }
     
     func testNoStoresOrLoadsDuringReset() {
         let cpu = SchematicLevelCPUModel()
-        cpu.load = {(addr: UInt16) in
+        cpu.load = {(addr: MemoryAddress) in
             XCTFail()
             return 0 // do nothing
         }
@@ -162,11 +162,11 @@ class SchematicLevelCPUModelTests: XCTestCase {
     func testLoad() {
         var observedLoadAddr: UInt16? = nil
         let cpu = SchematicLevelCPUModel()
-        cpu.load = {(addr: UInt16) in
+        cpu.load = {(addr: MemoryAddress) in
             if observedLoadAddr != nil {
                 XCTFail()
             }
-            observedLoadAddr = addr
+            observedLoadAddr = UInt16(addr.value)
             return 0xabcd
         }
         cpu.store = {(value: UInt16, addr: MemoryAddress) in
@@ -1407,7 +1407,7 @@ class SchematicLevelCPUModelTests: XCTestCase {
     
     func testDemonstrateHazard_MemoryLoad() {
         let cpu = SchematicLevelCPUModel()
-        cpu.load = {(addr: UInt16) in
+        cpu.load = {(addr: MemoryAddress) in
             return 1
         }
         cpu.instructions = [

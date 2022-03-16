@@ -41,8 +41,8 @@ class MEMTests: XCTestCase {
     
     func testLoad() {
         let mem = MEM()
-        mem.load = {(addr: UInt16) in
-            return ~addr
+        mem.load = {(addr: MemoryAddress) in
+            return ~UInt16(addr.value)
         }
         let ctl = ~UInt(1<<14)
         let input = MEM.Input(rdy: 0, y: 0xabab, storeOp: 0xcdcd, selC: 3, ctl: ctl)

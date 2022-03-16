@@ -230,29 +230,29 @@ class AssemblerCompilerTests: XCTestCase {
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "instruction expects the first operand to be the register containing the destination address: `STORE'")
+        XCTAssertEqual(compiler.errors.first?.message, "instruction expects the first operand to be the source register: `STORE'")
         XCTAssertEqual(compiler.instructions, [])
     }
     
-    func testSTOREExpectsFirstOperandToBeTheDestinationAddressRegister() throws {
+    func testSTOREExpectsFirstOperandToBeTheSource() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
             InstructionNode(instruction: "STORE", parameters: [ParameterIdentifier("a"), ParameterIdentifier("r0"), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "instruction expects the first operand to be the register containing the destination address: `STORE'")
+        XCTAssertEqual(compiler.errors.first?.message, "instruction expects the first operand to be the source register: `STORE'")
         XCTAssertEqual(compiler.instructions, [])
     }
     
-    func testSTOREExpectsSecondOperandToBeTheSource() throws {
+    func testSTOREExpectsSecondOperandToBeTheDestinationAddressRegister() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [
             InstructionNode(instruction: "STORE", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("a"), ParameterNumber(0)])
         ])
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "instruction expects the second operand to be the source register: `STORE'")
+        XCTAssertEqual(compiler.errors.first?.message, "instruction expects the second operand to be the register containing the destination address: `STORE'")
         XCTAssertEqual(compiler.instructions, [])
     }
     

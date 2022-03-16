@@ -126,7 +126,7 @@ public class AssemblerSingleInstructionCodeGenerator: NSObject {
     }
     
     public func store(_ val: Register, _ addr: Register, _ offset: Int) throws -> UInt16 {
-        return try makeInstructionIRR(opcode: DecoderGenerator.opcodeStore, a: val, b: addr, imm: offset)
+        return try makeInstructionIRR(opcode: DecoderGenerator.opcodeStore, a: addr, b: val, imm: offset)
     }
     
     public func li(_ destination: Register, _ value: Int) throws -> UInt16 {

@@ -258,11 +258,11 @@ public class AssemblerCompiler: NSObject {
         guard (2...3).contains(node.parameters.count) else {
             throw errorExpectsTwoOrThreeOperands(node)
         }
-        guard let destinationAddress = lookupRegister(node.parameters[0]) else {
-            throw errorExpectsFirstOperandToBeTheDestinationAddress(node)
+        guard let source = lookupRegister(node.parameters[0]) else {
+            throw errorExpectsFirstOperandToBeTheSource(node)
         }
-        guard let source = lookupRegister(node.parameters[1]) else {
-            throw errorExpectsSecondOperandToBeTheSource(node)
+        guard let destinationAddress = lookupRegister(node.parameters[1]) else {
+            throw errorExpectsSecondOperandToBeTheDestinationAddress(node)
         }
         let offset: Int
         if node.parameters.count > 2 {
@@ -955,6 +955,10 @@ public class AssemblerCompiler: NSObject {
     
     fileprivate func errorExpectsFirstOperandToBeTheSize(_ node: InstructionNode) -> CompilerError {
         return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects the operand to be the size: `\(node.instruction)'")
+    }
+    
+    fileprivate func errorExpectsFirstOperandToBeTheSource(_ node: InstructionNode) -> CompilerError {
+        return CompilerError(sourceAnchor: node.sourceAnchor, message: "instruction expects the first operand to be the source register: `\(node.instruction)'")
     }
     
     fileprivate func errorExpectsSecondOperandToBeTheSource(_ node: InstructionNode) -> CompilerError {

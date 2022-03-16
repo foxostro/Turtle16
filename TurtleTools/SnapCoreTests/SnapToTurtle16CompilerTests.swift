@@ -142,8 +142,11 @@ for i in 0..10 {
             LIU r0, 21
             LUI r0, 1
             LOAD r2, r0
-            SUB r0, r2, r1
-            ANDI r0, r0, 1
+            CMP r2, r1
+            LIU r0, 1
+            BNE .LL0
+            LIU r0, 0
+            .LL0:
             CMPI r0, 0
             BEQ .L1
             LIU r0, 22
@@ -231,12 +234,12 @@ for i in 0..10 {
             return
         }
         
-        print(AssemblerListingMaker().makeListing(try! compiler.assembly.get()))
-        print((try! compiler.tack.get() as! Seq).makeChildDescriptions())
+//        print(AssemblerListingMaker().makeListing(try! compiler.assembly.get()))
+//        print((try! compiler.tack.get() as! Seq).makeChildDescriptions())
         
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         computer.cpu.store = {(value: UInt16, addr: MemoryAddress) in
-            print("computer.ram[\(addr.value)] = \(value)")
+//            print("computer.ram[\(addr.value)] = \(value)")
             computer.ram[addr.value] = value
         }
         computer.cpu.load = {(addr: MemoryAddress) in

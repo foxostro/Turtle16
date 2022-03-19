@@ -52,7 +52,7 @@ public class SnapSubcompilerForIn: NSObject {
                            explicitType: nil,
                            expression: stmt.sequenceExpr,
                            storage: .automaticStorage,
-                           isMutable: true),
+                           isMutable: false),
             VarDeclaration(identifier: limit,
                            explicitType: nil,
                            expression: Expression.Get(expr: sequence, member: Expression.Identifier("limit")),

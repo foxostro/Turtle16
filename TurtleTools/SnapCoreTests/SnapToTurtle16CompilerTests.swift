@@ -9,6 +9,7 @@
 import XCTest
 import SnapCore
 import Turtle16SimulatorCore
+import TurtleCore
 
 class SnapToTurtle16CompilerTests: XCTestCase {
     func testEmptyProgram() throws {
@@ -191,47 +192,14 @@ for i in 0..10 {
             """)
     }
     
-    func test_EndToEndIntegration_SimplestProgram() {
+    fileprivate func executeAndLookupSymbolOffset(identifier: String, program: String) -> (Turtle16Computer, Int)? {
         let compiler = SnapToTurtle16Compiler()
-        compiler.compile(program: """
-let a = 42
-""")
+        compiler.compile(program: program)
         XCTAssertFalse(compiler.hasError)
         guard !compiler.hasError else {
-            return
-        }
-        
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
-        computer.cpu.store = {(value: UInt16, addr: MemoryAddress) in
-            computer.ram[addr.value] = value
-        }
-        computer.cpu.load = {(addr: MemoryAddress) in
-            return computer.ram[addr.value]
-        }
-        
-        computer.instructions = compiler.instructions
-        computer.reset()
-        computer.run()
-            
-        guard let offset = compiler.lookupSymbols(line: 1)?.maybeResolve(identifier: "a")?.offset else {
-            XCTFail("failed to resolve symbol \"a\"")
-            return
-        }
-        
-        XCTAssertEqual(computer.ram[offset], 42)
-    }
-    
-    func test_EndToEndIntegration_ForIn_Range_1() {
-        let compiler = SnapToTurtle16Compiler()
-        compiler.compile(program: """
-var a: u16 = 100
-for i in 0..10 {
-    a = i
-}
-""")
-        XCTAssertFalse(compiler.hasError)
-        guard !compiler.hasError else {
-            return
+            let error = CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors)
+            print("compile error: \(error.message)")
+            return nil
         }
         
 //        print(AssemblerListingMaker().makeListing(try! compiler.assembly.get()))
@@ -250,11 +218,63 @@ for i in 0..10 {
         computer.reset()
         computer.run()
             
-        guard let offset = compiler.lookupSymbols(line: 1)?.maybeResolve(identifier: "a")?.offset else {
-            XCTFail("failed to resolve symbol \"a\"")
-            return
+        guard let offset = compiler.lookupSymbols(line: 1)?.maybeResolve(identifier: identifier)?.offset else {
+            XCTFail("failed to resolve symbol \"\(identifier)\"")
+            return nil
         }
         
-        XCTAssertEqual(computer.ram[offset], 9)
+        return (computer, offset)
+    }
+    
+    fileprivate func executeAndLookupSymbolU8(identifier: String, program: String) -> UInt8? {
+        guard let (computer, offset) = executeAndLookupSymbolOffset(identifier: identifier, program: program) else {
+            return nil
+        }
+        let word = computer.ram[offset]
+        return UInt8(word)
+    }
+    
+    fileprivate func executeAndLookupSymbolU16(identifier: String, program: String) -> UInt16? {
+        guard let (computer, offset) = executeAndLookupSymbolOffset(identifier: identifier, program: program) else {
+            return nil
+        }
+        return computer.ram[offset]
+    }
+    
+    func test_EndToEndIntegration_SimplestProgram() {
+        let a = executeAndLookupSymbolU8(identifier: "a", program: """
+            let a = 42
+            """)
+        XCTAssertEqual(a, 42)
+    }
+    
+    func test_EndToEndIntegration_ForIn_Range_1() {
+        let a = executeAndLookupSymbolU16(identifier: "a", program: """
+            var a: u16 = 100
+            for i in 0..10 {
+                a = i
+            }
+            """)
+        XCTAssertEqual(a, 9)
+    }
+    
+    func test_EndToEndIntegration_ForIn_Range_2() {
+        let a = executeAndLookupSymbolU16(identifier: "a", program: """
+            var a: u16 = 255
+            let range = 0..10
+            for i in range {
+                a = i
+            }
+            """)
+        XCTAssertEqual(a, 9)
+    }
+    
+    func test_EndToEndIntegration_ForIn_Range_SingleStatement() {
+        let a = executeAndLookupSymbolU16(identifier: "a", program: """
+            var a: u16 = 255
+            for i in 0..10
+                a = i
+            """)
+        XCTAssertEqual(a, 9)
     }
 }

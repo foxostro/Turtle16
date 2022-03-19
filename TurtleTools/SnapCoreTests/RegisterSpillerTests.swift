@@ -336,7 +336,7 @@ class RegisterSpillerTests: XCTestCase {
         ]
         let expected = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(101)]),
-            InstructionNode(instruction: kLIU, parameters: [ParameterIdentifier("ra"), ParameterNumber(spillOffset & 0x00ff)]),
+            InstructionNode(instruction: kLI, parameters: [ParameterIdentifier("ra"), ParameterNumber(spillOffset & 0x00ff)]),
             InstructionNode(instruction: kLUI, parameters: [ParameterIdentifier("ra"), ParameterNumber((spillOffset & 0xff) >> 8)]),
             InstructionNode(instruction: kADD, parameters: [ParameterIdentifier("ra"), ParameterIdentifier("ra"), ParameterIdentifier("fp")]),
             InstructionNode(instruction: kLOAD, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("ra")]),
@@ -364,7 +364,7 @@ class RegisterSpillerTests: XCTestCase {
         let expected = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(101)]),
             InstructionNode(instruction: kADD, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("r1"), ParameterIdentifier("r0")]),
-            InstructionNode(instruction: kLIU, parameters: [ParameterIdentifier("ra"), ParameterNumber(spillOffset & 0x00ff)]),
+            InstructionNode(instruction: kLI, parameters: [ParameterIdentifier("ra"), ParameterNumber(spillOffset & 0x00ff)]),
             InstructionNode(instruction: kLUI, parameters: [ParameterIdentifier("ra"), ParameterNumber((spillOffset & 0xff) >> 8)]),
             InstructionNode(instruction: kADD, parameters: [ParameterIdentifier("ra"), ParameterIdentifier("ra"), ParameterIdentifier("fp")]),
             InstructionNode(instruction: kSTORE, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("ra")])

@@ -339,51 +339,6 @@ class AssemblerCompilerTests: XCTestCase {
         ])
     }
     
-    func testLIUExpectsTwoOperands() throws {
-        let compiler = AssemblerCompiler()
-        compiler.compile(ast: [
-            InstructionNode(instruction: "LIU")
-        ])
-        XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "instruction expects two operands: `LIU'")
-        XCTAssertEqual(compiler.instructions, [])
-    }
-    
-    func testLIUExpectsFirstOperandToBeTheDestinationAddressRegister() throws {
-        let compiler = AssemblerCompiler()
-        compiler.compile(ast: [
-            InstructionNode(instruction: "LIU", parameters: [ParameterIdentifier("a"), ParameterIdentifier("a")])
-        ])
-        XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "instruction expects the first operand to be the destination register: `LIU'")
-        XCTAssertEqual(compiler.instructions, [])
-    }
-    
-    func testLIUExpectsSecondOperandToBeAnImmediateValue() throws {
-        let compiler = AssemblerCompiler()
-        compiler.compile(ast: [
-            InstructionNode(instruction: "LIU", parameters: [ParameterIdentifier("r0"), ParameterIdentifier("a")])
-        ])
-        XCTAssertTrue(compiler.hasError)
-        XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.message, "instruction expects the second operand to be an immediate value: `LIU'")
-        XCTAssertEqual(compiler.instructions, [])
-    }
-    
-    func testCompileLIU() throws {
-        let compiler = AssemblerCompiler()
-        compiler.compile(ast: [
-            InstructionNode(instruction: "LIU", parameters: [ParameterIdentifier("r0"), ParameterNumber(255)])
-        ])
-        XCTAssertFalse(compiler.hasError)
-        XCTAssertEqual(compiler.errors.count, 0)
-        XCTAssertEqual(compiler.instructions, [
-            0b0010000011111111
-        ])
-    }
-    
     func testLUIExpectsTwoOperands() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [

@@ -15,7 +15,7 @@ public class RegisterUtils: NSObject {
             return []
         }
         switch ins.instruction {
-        case kLOAD, kSTORE, kLI, kLIU, kLUI, kCMP, kADD, kSUB, kAND, kOR, kXOR, kNOT, kCMPI, kADDI, kSUBI, kANDI, kORI, kXORI, kJR, kJALR, kADC, kSBC, kCALLPTR:
+        case kLOAD, kSTORE, kLI, kLUI, kCMP, kADD, kSUB, kAND, kOR, kXOR, kNOT, kCMPI, kADDI, kSUBI, kANDI, kORI, kXORI, kJR, kJALR, kADC, kSBC, kCALLPTR:
             return ins.parameters.reversed().compactMap { ($0 as? ParameterIdentifier)?.value }
             
         case kLA:
@@ -50,7 +50,7 @@ public class RegisterUtils: NSObject {
             return []
         }
         switch ins.instruction {
-        case kLOAD, kSTORE, kLI, kLIU, kLUI, kADD, kSUB, kAND, kOR, kXOR, kNOT, kADDI, kSUBI, kANDI, kORI, kXORI, kJR, kJALR, kADC, kSBC, kCALLPTR, kLA:
+        case kLOAD, kSTORE, kLI, kLUI, kADD, kSUB, kAND, kOR, kXOR, kNOT, kADDI, kSUBI, kANDI, kORI, kXORI, kJR, kJALR, kADC, kSBC, kCALLPTR, kLA:
             return [ins.parameters.first].compactMap { ($0 as? ParameterIdentifier)?.value }
             
         default:
@@ -70,7 +70,7 @@ public class RegisterUtils: NSObject {
             return node
         }
         switch instruction.instruction {
-        case kLOAD, kSTORE, kLI, kLIU, kLUI, kCMP, kADD, kSUB, kAND, kOR, kXOR, kNOT, kCMPI, kADDI, kSUBI, kANDI, kORI, kXORI, kJR, kJALR, kADC, kSBC, kCALLPTR:
+        case kLOAD, kSTORE, kLI, kLUI, kCMP, kADD, kSUB, kAND, kOR, kXOR, kNOT, kCMPI, kADDI, kSUBI, kANDI, kORI, kXORI, kJR, kJALR, kADC, kSBC, kCALLPTR:
             let updatedParameters = instruction.parameters.map { rewriteRegisterIdentifier($0, currName, updatedName) }
             return InstructionNode(sourceAnchor: instruction.sourceAnchor,
                                    instruction: instruction.instruction,

@@ -440,13 +440,13 @@ class RegisterUtilsTests: XCTestCase {
     
     func testRewriteLIU() throws {
         let input = [
-            InstructionNode(instruction: kLIU, parameters:[
+            InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr0"),
                 ParameterNumber(1)
             ])
         ]
         let expected = [
-            InstructionNode(instruction: kLIU, parameters:[
+            InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("r0"),
                 ParameterNumber(1)
             ])

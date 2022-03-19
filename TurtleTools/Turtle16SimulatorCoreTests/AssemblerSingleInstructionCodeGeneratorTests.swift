@@ -75,9 +75,9 @@ class AssemblerSingleInstructionCodeGeneratorTests: XCTestCase {
     
     func testLiWithOffsetExceedingPositiveLimit() throws {
         let codeGen = AssemblerSingleInstructionCodeGenerator()
-        XCTAssertThrowsError(try codeGen.li(.r3, 128)) {
+        XCTAssertThrowsError(try codeGen.li(.r3, 256)) {
             let compilerError = $0 as? CompilerError
-            XCTAssertEqual(compilerError?.message, "offset exceeds positive limit of 127: `128'")
+            XCTAssertEqual(compilerError?.message, "offset exceeds positive limit of 255: `256'")
         }
     }
     
@@ -89,11 +89,6 @@ class AssemblerSingleInstructionCodeGeneratorTests: XCTestCase {
         }
     }
     
-    func testLiu() throws {
-        let codeGen = AssemblerSingleInstructionCodeGenerator()
-        XCTAssertEqual(try? codeGen.liu(.r3, 0xff), 0b0010001111111111) // LIU r3, 0xff
-    }
-    
     func testLui() throws {
         let codeGen = AssemblerSingleInstructionCodeGenerator()
         XCTAssertEqual(try? codeGen.lui(.r3, 127), 0b0010101101111111) // LUI r3, 127
@@ -103,15 +98,15 @@ class AssemblerSingleInstructionCodeGeneratorTests: XCTestCase {
         let codeGen = AssemblerSingleInstructionCodeGenerator()
         XCTAssertThrowsError(try codeGen.lui(.r3, 256)) {
             let compilerError = $0 as? CompilerError
-            XCTAssertEqual(compilerError?.message, "immediate value exceeds upper limit of 255: `256'")
+            XCTAssertEqual(compilerError?.message, "offset exceeds positive limit of 255: `256'")
         }
     }
     
     func testLuiWithOffsetExceedingNegativeLimit() throws {
         let codeGen = AssemblerSingleInstructionCodeGenerator()
-        XCTAssertThrowsError(try codeGen.lui(.r3, -1)) {
+        XCTAssertThrowsError(try codeGen.lui(.r3, -129)) {
             let compilerError = $0 as? CompilerError
-            XCTAssertEqual(compilerError?.message, "immediate value must be positive: `-1'")
+            XCTAssertEqual(compilerError?.message, "offset exceeds negative limit of -128: `-129'")
         }
     }
     

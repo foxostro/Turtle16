@@ -117,7 +117,7 @@ public class RegisterAllocatorDriver: NSObject {
     func compile(_ index: Int, _ node: InstructionNode, _ liveIntervals: [LiveInterval]) -> InstructionNode {
         // TODO: rewrite in terms of RegisterUtils.rewrite()
         switch node.instruction {
-        case kLOAD, kSTORE, kLI, kLIU, kLUI, kCMP, kADD, kSUB, kAND, kOR, kXOR, kNOT, kCMPI, kADDI, kSUBI, kANDI, kORI, kXORI, kJR, kJALR, kADC, kSBC, kCALLPTR:
+        case kLOAD, kSTORE, kLI, kLUI, kCMP, kADD, kSUB, kAND, kOR, kXOR, kNOT, kCMPI, kADDI, kSUBI, kANDI, kORI, kXORI, kJR, kJALR, kADC, kSBC, kCALLPTR:
             return InstructionNode(sourceAnchor: node.sourceAnchor,
                                    instruction: node.instruction,
                                    parameters: node.parameters.map { rewriteRegisterIdentifier($0, index, liveIntervals) })

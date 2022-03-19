@@ -95,7 +95,7 @@ public class RegisterSpiller: NSObject {
                     let spillLoadCode: [AbstractSyntaxTreeNode]
                     if offset > 15 {
                         spillLoadCode = [
-                            InstructionNode(instruction: kLIU, parameters: [ra, ParameterNumber(offset & 0x00ff)]),
+                            InstructionNode(instruction: kLI, parameters: [ra, ParameterNumber(offset & 0x00ff)]),
                             InstructionNode(instruction: kLUI, parameters: [ra, ParameterNumber((offset & 0xff) >> 8)]),
                             InstructionNode(instruction: kADD, parameters: [ra, ra, fp]),
                             InstructionNode(instruction: kLOAD, parameters: [tempReg, ra]),
@@ -123,7 +123,7 @@ public class RegisterSpiller: NSObject {
                     let spillStoreCode: [AbstractSyntaxTreeNode]
                     if offset > 15 {
                         spillStoreCode = [
-                            InstructionNode(instruction: kLIU, parameters: [ra, ParameterNumber(offset & 0x00ff)]),
+                            InstructionNode(instruction: kLI, parameters: [ra, ParameterNumber(offset & 0x00ff)]),
                             InstructionNode(instruction: kLUI, parameters: [ra, ParameterNumber((offset & 0xff) >> 8)]),
                             InstructionNode(instruction: kADD, parameters: [ra, ra, fp]),
                             InstructionNode(instruction: kSTORE, parameters: [tempReg, ra]),

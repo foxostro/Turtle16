@@ -60,26 +60,12 @@ public class AssemblerSingleInstructionCodeGenerator: NSObject {
     }
     
     fileprivate func makeInstructionRII(opcode: Int, c: Register, imm: Int) throws -> UInt16 {
-        if imm > 127 {
-            throw CompilerError(sourceAnchor: sourceAnchor, message: "offset exceeds positive limit of 127: `\(imm)'")
+        if imm > 255 {
+            throw CompilerError(sourceAnchor: sourceAnchor, message: "offset exceeds positive limit of 255: `\(imm)'")
         }
         if imm < -128 {
             throw CompilerError(sourceAnchor: sourceAnchor, message: "offset exceeds negative limit of -128: `\(imm)'")
         }
-        let partOpcode = UInt16((opcode & 0b11111) << kOpcodeShift)
-        let partC = UInt16((c.rawValue & 0b111) << kOperandShiftC)
-        let partImm = UInt16(imm & 0b11111111)
-        return partOpcode | partC | partImm
-    }
-    
-    fileprivate func makeInstructionRIIU(opcode: Int, c: Register, imm: Int) throws -> UInt16 {
-        if imm > 255 {
-            throw CompilerError(sourceAnchor: sourceAnchor, message: "immediate value exceeds upper limit of 255: `\(imm)'")
-        }
-        if imm < 0 {
-            throw CompilerError(sourceAnchor: sourceAnchor, message: "immediate value must be positive: `\(imm)'")
-        }
-        
         let partOpcode = UInt16((opcode & 0b11111) << kOpcodeShift)
         let partC = UInt16((c.rawValue & 0b111) << kOperandShiftC)
         let partImm = UInt16(imm & 0b11111111)
@@ -133,12 +119,8 @@ public class AssemblerSingleInstructionCodeGenerator: NSObject {
         return try makeInstructionRII(opcode: DecoderGenerator.opcodeLi, c: destination, imm: value)
     }
     
-    public func liu(_ destination: Register, _ value: Int) throws -> UInt16 {
-        return try makeInstructionRIIU(opcode: DecoderGenerator.opcodeLi, c: destination, imm: value)
-    }
-    
     public func lui(_ destination: Register, _ value: Int) throws -> UInt16 {
-        return try makeInstructionRIIU(opcode: DecoderGenerator.opcodeLui, c: destination, imm: value)
+        return try makeInstructionRII(opcode: DecoderGenerator.opcodeLui, c: destination, imm: value)
     }
     
     public func cmp(_ left: Register, _ right: Register) throws -> UInt16 {

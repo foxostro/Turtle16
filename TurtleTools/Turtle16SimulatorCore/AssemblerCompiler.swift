@@ -14,7 +14,6 @@ public let kHLT = "HLT"
 public let kLOAD = "LOAD"
 public let kSTORE = "STORE"
 public let kLI = "LI"
-public let kLIU = "LIU"
 public let kLUI = "LUI"
 public let kCMP = "CMP"
 public let kADD = "ADD"
@@ -116,9 +115,6 @@ public class AssemblerCompiler: NSObject {
             
         case kLI:
             try compileLI(node)
-            
-        case kLIU:
-            try compileLIU(node)
             
         case kLUI:
             try compileLUI(node)
@@ -287,19 +283,6 @@ public class AssemblerCompiler: NSObject {
             throw errorExpectsSecondOperandToBeAnImmediateValue(node)
         }
         try codeGenerator.li(destination, immediate)
-    }
-    
-    fileprivate func compileLIU(_ node: InstructionNode) throws {
-        guard node.parameters.count == 2 else {
-            throw errorExpectsTwoOperands(node)
-        }
-        guard let destination = lookupRegister(node.parameters[0]) else {
-            throw errorExpectsFirstOperandToBeTheDestination(node)
-        }
-        guard let immediate = (node.parameters[1] as? ParameterNumber)?.value else {
-            throw errorExpectsSecondOperandToBeAnImmediateValue(node)
-        }
-        try codeGenerator.liu(destination, immediate)
     }
     
     fileprivate func compileLUI(_ node: InstructionNode) throws {

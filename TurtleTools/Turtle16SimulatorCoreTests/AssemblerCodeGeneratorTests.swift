@@ -103,9 +103,9 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testLiWithOffsetExceedingPositiveLimit() throws {
         let codeGen = AssemblerCodeGenerator()
         codeGen.begin()
-        XCTAssertThrowsError(try codeGen.li(.r3, 128)) {
+        XCTAssertThrowsError(try codeGen.li(.r3, 256)) {
             let compilerError = $0 as? CompilerError
-            XCTAssertEqual(compilerError?.message, "offset exceeds positive limit of 127: `128'")
+            XCTAssertEqual(compilerError?.message, "offset exceeds positive limit of 255: `256'")
         }
     }
     
@@ -116,14 +116,6 @@ class AssemblerCodeGeneratorTests: XCTestCase {
             let compilerError = $0 as? CompilerError
             XCTAssertEqual(compilerError?.message, "offset exceeds negative limit of -128: `-129'")
         }
-    }
-    
-    func testLiu() throws {
-        let codeGen = AssemblerCodeGenerator()
-        codeGen.begin()
-        XCTAssertNoThrow(try codeGen.liu(.r3, 0xff))
-        XCTAssertEqual(codeGen.instructions.count, 1)
-        XCTAssertEqual(codeGen.instructions.first, 0b0010001111111111) // LIU r3, 0xff
     }
     
     func testLui() throws {
@@ -139,7 +131,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         codeGen.begin()
         XCTAssertThrowsError(try codeGen.lui(.r3, 256)) {
             let compilerError = $0 as? CompilerError
-            XCTAssertEqual(compilerError?.message, "immediate value exceeds upper limit of 255: `256'")
+            XCTAssertEqual(compilerError?.message, "offset exceeds positive limit of 255: `256'")
         }
     }
     
@@ -148,7 +140,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         codeGen.begin()
         XCTAssertThrowsError(try codeGen.lui(.r3, -129)) {
             let compilerError = $0 as? CompilerError
-            XCTAssertEqual(compilerError?.message, "immediate value must be positive: `-129'")
+            XCTAssertEqual(compilerError?.message, "offset exceeds negative limit of -128: `-129'")
         }
     }
     

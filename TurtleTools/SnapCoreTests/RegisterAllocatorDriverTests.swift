@@ -391,13 +391,13 @@ class RegisterAllocatorDriverTests: XCTestCase {
     func testLIU() throws {
         let driver = RegisterAllocatorDriver()
         let input = TopLevel(children: [
-            InstructionNode(instruction: kLIU, parameters:[
+            InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr1"),
                 ParameterNumber(1)
             ])
         ])
         let expected = TopLevel(children: [
-            InstructionNode(instruction: kLIU, parameters:[
+            InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("r0"),
                 ParameterNumber(1)
             ])

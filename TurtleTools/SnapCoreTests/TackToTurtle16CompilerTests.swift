@@ -365,7 +365,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
             ParameterNumber(16)
         ])
         let expected = Seq(children: [
-            InstructionNode(instruction: kLIU, parameters:[
+            InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr1"),
                 ParameterNumber(16)
             ]),
@@ -394,7 +394,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
             ParameterNumber(-17)
         ])
         let expected = Seq(children: [
-            InstructionNode(instruction: kLIU, parameters:[
+            InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr1"),
                 ParameterNumber(Int((UInt16(0) &- 17) & 0x00ff))
             ]),
@@ -453,7 +453,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
             ParameterNumber(16)
         ])
         let expected = Seq(children: [
-            InstructionNode(instruction: kLIU, parameters:[
+            InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr1"),
                 ParameterNumber(16)
             ]),
@@ -482,7 +482,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
             ParameterNumber(-17)
         ])
         let expected = Seq(children: [
-            InstructionNode(instruction: kLIU, parameters:[
+            InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr1"),
                 ParameterNumber(Int((UInt16(0) &- 17) & 0x00ff))
             ]),
@@ -647,7 +647,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
             ParameterNumber(16)
         ])
         let expected = Seq(children: [
-            InstructionNode(instruction: kLIU, parameters:[
+            InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("r1"),
                 ParameterNumber(16)
             ]),
@@ -672,7 +672,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
             ParameterNumber(-17)
         ])
         let expected = Seq(children: [
-            InstructionNode(instruction: kLIU, parameters:[
+            InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("r1"),
                 ParameterNumber(Int((UInt16(0) &- 17) & 0x00ff))
             ]),
@@ -1059,23 +1059,42 @@ class TackToTurtle16CompilerTests: XCTestCase {
     func testLI16_med_pos() throws {
         let input = TackInstructionNode(instruction: .li16, parameters:[
             ParameterIdentifier("vr0"),
-            ParameterNumber(255)
+            ParameterNumber(127)
         ])
-        let expected = InstructionNode(instruction: kLIU, parameters:[
+        let expected = InstructionNode(instruction: kLI, parameters:[
             ParameterIdentifier("r0"),
-            ParameterNumber(255)
+            ParameterNumber(127)
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
     
-    func testLI16_large_pos() throws {
+    func testLI16_large_pos_1() throws {
+        let input = TackInstructionNode(instruction: .li16, parameters:[
+            ParameterIdentifier("vr0"),
+            ParameterNumber(255)
+        ])
+        let expected = Seq(children: [
+            InstructionNode(instruction: kLI, parameters:[
+                ParameterIdentifier("r0"),
+                ParameterNumber(255)
+            ]),
+            InstructionNode(instruction: kLUI, parameters:[
+                ParameterIdentifier("r0"),
+                ParameterNumber(0)
+            ])
+        ])
+        let actual = try compile(input)
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testLI16_large_pos_2() throws {
         let input = TackInstructionNode(instruction: .li16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterNumber(0x7fff)
         ])
         let expected = Seq(children: [
-            InstructionNode(instruction: kLIU, parameters:[
+            InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("r0"),
                 ParameterNumber(0xff)
             ]),
@@ -1093,7 +1112,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
             ParameterIdentifier("vr0"),
             ParameterNumber(255)
         ])
-        let expected = InstructionNode(instruction: kLIU, parameters:[
+        let expected = InstructionNode(instruction: kLI, parameters:[
             ParameterIdentifier("r0"),
             ParameterNumber(255)
         ])
@@ -1107,7 +1126,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
             ParameterNumber(0x8000)
         ])
         let expected = Seq(children: [
-            InstructionNode(instruction: kLIU, parameters:[
+            InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("r0"),
                 ParameterNumber(0x00)
             ]),

@@ -108,79 +108,79 @@ for i in 0..10 {
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(AssemblerListingMaker().makeListing(try compiler.assembly.get()), """
             NOP
-            LIU r0, 16
+            LI r0, 16
             LUI r0, 1
             LI r1, 1
             STORE r1, r0
-            LIU r0, 17
+            LI r0, 17
             LUI r0, 1
             LI r1, 1
             STORE r1, r0
-            LIU r0, 18
+            LI r0, 18
             LUI r0, 1
             ADDI r1, r0, 0
             LI r0, 0
             STORE r0, r1
-            LIU r0, 18
+            LI r0, 18
             LUI r0, 1
             ADDI r1, r0, 1
             LI r0, 10
             STORE r0, r1
-            LIU r0, 20
+            LI r0, 20
             LUI r0, 1
-            LIU r1, 18
+            LI r1, 18
             LUI r1, 1
             LOAD r2, r1, 1
             STORE r2, r0
-            LIU r0, 21
+            LI r0, 21
             LUI r0, 1
             LI r1, 0
             STORE r1, r0
             .L0:
-            LIU r0, 20
+            LI r0, 20
             LUI r0, 1
             LOAD r1, r0
-            LIU r0, 21
+            LI r0, 21
             LUI r0, 1
             LOAD r2, r0
             CMP r2, r1
-            LIU r0, 1
+            LI r0, 1
             BNE .LL0
-            LIU r0, 0
+            LI r0, 0
             .LL0:
             CMPI r0, 0
             BEQ .L1
-            LIU r0, 22
+            LI r0, 22
             LUI r0, 1
-            LIU r1, 16
+            LI r1, 16
             LUI r1, 1
             LOAD r2, r1
-            LIU r1, 17
+            LI r1, 17
             LUI r1, 1
             LOAD r3, r1
             ADD r1, r3, r2
-            LIU r2, 128
+            LI r2, 128
             LUI r2, 0
             LUI r1, 0
             XOR r1, r1, r2
             SUB r1, r1, r2
             STORE r1, r0
-            LIU r0, 16
+            LI r0, 16
             LUI r0, 1
-            LIU r1, 17
+            LI r1, 17
             LUI r1, 1
             LOAD r2, r1
             STORE r2, r0
-            LIU r0, 17
+            LI r0, 17
             LUI r0, 1
-            LIU r1, 22
+            LI r1, 22
             LUI r1, 1
             LOAD r2, r1
             STORE r2, r0
-            LIU r0, 21
+            LI r0, 21
             LUI r0, 1
             LI r1, 1
-            LIU r2, 21
+            LI r2, 21
             LUI r2, 1
             LOAD r3, r2
             ADD r2, r3, r1
@@ -276,5 +276,12 @@ for i in 0..10 {
                 a = i
             """)
         XCTAssertEqual(a, 9)
+    }
+    
+    func test_EndToEndIntegration_AssignLiteral255ToU16Variable() {
+        let a = executeAndLookupSymbolU16(identifier: "a", program: """
+            let a: u16 = 255
+            """)
+        XCTAssertEqual(a, 255)
     }
 }

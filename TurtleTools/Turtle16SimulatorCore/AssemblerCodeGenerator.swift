@@ -86,11 +86,6 @@ public class AssemblerCodeGenerator: NSObject {
         instructions.append(try gen.li(destination, value))
     }
     
-    public func liu(_ destination: Register, _ value: Int) throws {
-        assert(isAssembling)
-        instructions.append(try gen.liu(destination, value))
-    }
-    
     public func lui(_ destination: Register, _ value: Int) throws {
         assert(isAssembling)
         instructions.append(try gen.lui(destination, value))
@@ -301,7 +296,7 @@ public class AssemblerCodeGenerator: NSObject {
                               offset: 0)
             ]
         }
-        instructions.append(try gen.liu(destination, lo))
+        instructions.append(try gen.li(destination, lo))
         instructions.append(try gen.lui(destination, hi))
     }
 }

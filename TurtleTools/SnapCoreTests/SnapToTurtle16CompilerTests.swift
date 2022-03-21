@@ -284,4 +284,14 @@ for i in 0..10 {
             """)
         XCTAssertEqual(a, 255)
     }
+    
+    func test_EndToEndIntegration_ForIn_String() {
+        let a = executeAndLookupSymbolU8(identifier: "a", program: """
+var a = 255
+for i in "hello" {
+    a = i
+}
+""")
+        XCTAssertEqual(a, UInt8("o".utf8.first!))
+    }
 }

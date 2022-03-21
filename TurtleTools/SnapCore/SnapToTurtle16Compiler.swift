@@ -38,17 +38,13 @@ public class SnapToTurtle16Compiler: NSObject {
         instructions = []
         errors = []
         
-        let assembly = lex(text, url)
+        let result = lex(text, url)
             .flatMap(parse)
             .flatMap(contract)
             .flatMap(compileSnapToTack)
             .flatMap(compileTackToAssembly)
             .flatMap(registerAllocation)
             .flatMap(compileToLowerAssembly)
-        
-        self.assembly = assembly
-        
-        let result = assembly
             .flatMap(compileAssemblyToMachineCode)
         
         switch result {
@@ -100,11 +96,10 @@ public class SnapToTurtle16Compiler: NSObject {
     
     func compileSnapToTack(_ ast: AbstractSyntaxTreeNode?) -> Result<AbstractSyntaxTreeNode?, Error> {
         let compiler = SnapToTackCompiler(symbols: globalSymbols, globalEnvironment: globalEnvironment)
-        let tack = Result(catching: {
+        self.tack = Result(catching: {
             try compiler.compile(ast)
         })
-        self.tack = tack
-        return tack
+        return self.tack
     }
     
     func compileTackToAssembly(_ input: AbstractSyntaxTreeNode?) -> Result<TopLevel, Error> {
@@ -123,7 +118,7 @@ public class SnapToTurtle16Compiler: NSObject {
     }
     
     func compileToLowerAssembly(_ input: TopLevel) -> Result<TopLevel, Error> {
-        return Result(catching: {
+        self.assembly = Result(catching: {
             //try SnapASTTransformerFlattenSeq().compile(
             var topLevel = try SnapSubcompilerSubroutine().compile(input) as! TopLevel
             
@@ -134,6 +129,7 @@ public class SnapToTurtle16Compiler: NSObject {
             
             return topLevel
         })
+        return self.assembly
     }
     
     func compileAssemblyToMachineCode(_ topLevel: TopLevel) -> Result<[UInt16], Error> {

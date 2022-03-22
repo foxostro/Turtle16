@@ -920,7 +920,19 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
     }
     
     func li8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
-        return InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kLI, parameters: corresponding(parameters: node.parameters))
+        let imm = node.parameters[1] as! ParameterNumber
+        if imm.value > 127 {
+            return Seq(children: [
+                InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kLI, parameters: corresponding(parameters: node.parameters)),
+                InstructionNode(instruction: kLUI, parameters: [
+                    corresponding(param: node.parameters[0]),
+                    ParameterNumber(0)
+                ])
+            ])
+        }
+        else {
+            return InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kLI, parameters: corresponding(parameters: node.parameters))
+        }
     }
     
     func and8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {

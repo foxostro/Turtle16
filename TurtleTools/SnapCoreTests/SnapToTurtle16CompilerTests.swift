@@ -285,6 +285,13 @@ for i in 0..10 {
         XCTAssertEqual(a, 255)
     }
     
+    func test_EndToEndIntegration_AssignLiteral255ToU8Variable() {
+        let a = executeAndLookupSymbolU8(identifier: "a", program: """
+            var a: u8 = 255
+            """)
+        XCTAssertEqual(a, 255)
+    }
+    
     func test_EndToEndIntegration_ForIn_String() {
         let a = executeAndLookupSymbolU8(identifier: "a", program: """
 var a = 255

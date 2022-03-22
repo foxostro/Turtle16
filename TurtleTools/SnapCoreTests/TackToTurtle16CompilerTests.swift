@@ -1665,8 +1665,12 @@ class TackToTurtle16CompilerTests: XCTestCase {
         try doTestLI8(-1)
     }
     
-    func testLI8_max() throws {
+    func testLI8_max_signed() throws {
         try doTestLI8(127)
+    }
+    
+    func testLI8_max_unsigned() throws {
+        try doTestLI8(255)
     }
     
     func testLI8_min() throws {

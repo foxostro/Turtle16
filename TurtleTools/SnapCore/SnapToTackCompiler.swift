@@ -10,6 +10,7 @@ import TurtleCore
 import Turtle16SimulatorCore
 
 public class SnapToTackCompiler: SnapASTTransformerBase {
+    public let isBoundsCheckEnabled: Bool
     public let globalEnvironment: GlobalEnvironment
     public internal(set) var registerStack: [String] = []
     var nextRegisterIndex = 0
@@ -41,7 +42,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         return result
     }
     
-    public init(symbols: SymbolTable, globalEnvironment: GlobalEnvironment) {
+    public init(symbols: SymbolTable, isBoundsCheckEnabled: Bool, globalEnvironment: GlobalEnvironment) {
+        self.isBoundsCheckEnabled = isBoundsCheckEnabled
         self.globalEnvironment = globalEnvironment
         kUnionTypeTagOffset = 0
         kUnionPayloadOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .u16)
@@ -213,7 +215,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             let index = popRegister()
             
             // We may need to insert a run time bounds checks.
-            if maybeStaticIndex == nil {
+            if isBoundsCheckEnabled && maybeStaticIndex == nil {
                 // Lower bound
                 let lowerBound = 0
                 let tempLowerBound = nextRegister()
@@ -791,7 +793,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             
             // If the union can contain more than one type then insert a runtime
             // check that the tag matches that of the requested type.
-            if typ.members.count > 1 {
+            if isBoundsCheckEnabled && typ.members.count > 1 {
                 let targetType = determineUnionTargetType(typ, ltype)!
                 let unionTypeTag = determineUnionTypeTag(typ, targetType)!
                 let tempUnionTag = nextRegister()

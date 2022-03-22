@@ -194,6 +194,7 @@ func foo() {
     
     fileprivate func executeAndLookupSymbolOffset(identifier: String, program: String) -> (Turtle16Computer, Int)? {
         let compiler = SnapToTurtle16Compiler()
+        compiler.isBoundsCheckEnabled = false
         compiler.compile(program: program)
         XCTAssertFalse(compiler.hasError)
         guard !compiler.hasError else {

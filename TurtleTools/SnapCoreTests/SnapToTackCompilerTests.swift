@@ -519,27 +519,35 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr3"),
                 ParameterNumber(0x1000)
             ]),
-            TackInstructionNode(instruction: .load, parameters: [
+            TackInstructionNode(instruction: .li8, parameters: [
                 ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
                 ParameterNumber(0)
             ]),
-            TackInstructionNode(instruction: .andi16, parameters: [
+            TackInstructionNode(instruction: .add16, parameters: [
                 ParameterIdentifier("vr5"),
                 ParameterIdentifier("vr4"),
+                ParameterIdentifier("vr3")
+            ]),
+            TackInstructionNode(instruction: .load, parameters: [
+                ParameterIdentifier("vr6"),
+                ParameterIdentifier("vr5")
+            ]),
+            TackInstructionNode(instruction: .andi16, parameters: [
+                ParameterIdentifier("vr7"),
+                ParameterIdentifier("vr6"),
                 ParameterNumber(0x00ff)
             ]),
             TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr5"),
+                ParameterIdentifier("vr7"),
                 ParameterIdentifier("vr2")
             ]),
             TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr6"),
+                ParameterIdentifier("vr8"),
                 ParameterNumber(272)
             ])
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr6")
+        XCTAssertEqual(compiler.registerStack.last, "vr8")
     }
     
     func testRvalue_As_array_to_dynamic_array() throws {
@@ -2783,14 +2791,22 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr0"),
                 ParameterNumber(0xabcd)
             ]),
-            TackInstructionNode(instruction: .load, parameters: [
+            TackInstructionNode(instruction: .li8, parameters: [
                 ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
                 ParameterNumber(9)
+            ]),
+            TackInstructionNode(instruction: .add16, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr0")
+            ]),
+            TackInstructionNode(instruction: .load, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr2")
             ])
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
+        XCTAssertEqual(compiler.registerStack.last, "vr3")
     }
     
     func testRvalue_SubscriptRvalue_RuntimeTimeIndexAndPrimitiveElement() throws {
@@ -2955,21 +2971,26 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr0"),
                 ParameterNumber(0xabcd)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .load, parameters: [
                 ParameterIdentifier("vr1"),
-                ParameterNumber(9)
+                ParameterIdentifier("vr0"),
+                ParameterNumber(0)
             ]),
             TackInstructionNode(instruction: .li16, parameters: [
                 ParameterIdentifier("vr2"),
+                ParameterNumber(9)
+            ]),
+            TackInstructionNode(instruction: .li16, parameters: [
+                ParameterIdentifier("vr3"),
                 ParameterNumber(0)
             ]),
             TackInstructionNode(instruction: .ge16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr2")
+                ParameterIdentifier("vr4"),
+                ParameterIdentifier("vr2"),
+                ParameterIdentifier("vr3")
             ]),
             TackInstructionNode(instruction: .bnz, parameters: [
-                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr4"),
                 ParameterIdentifier(".L0")
             ]),
             TackInstructionNode(instruction: .call, parameters: [
@@ -2977,17 +2998,17 @@ class SnapToTackCompilerTests: XCTestCase {
             ]),
             LabelDeclaration(identifier: ".L0"),
             TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr4"),
+                ParameterIdentifier("vr5"),
                 ParameterIdentifier("vr0"),
                 ParameterNumber(1)
             ]),
             TackInstructionNode(instruction: .lt16, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr4")
+                ParameterIdentifier("vr6"),
+                ParameterIdentifier("vr2"),
+                ParameterIdentifier("vr5")
             ]),
             TackInstructionNode(instruction: .bnz, parameters: [
-                ParameterIdentifier("vr5"),
+                ParameterIdentifier("vr6"),
                 ParameterIdentifier(".L1")
             ]),
             TackInstructionNode(instruction: .call, parameters: [
@@ -2995,17 +3016,17 @@ class SnapToTackCompilerTests: XCTestCase {
             ]),
             LabelDeclaration(identifier: ".L1"),
             TackInstructionNode(instruction: .add16, parameters: [
-                ParameterIdentifier("vr6"),
+                ParameterIdentifier("vr7"),
+                ParameterIdentifier("vr2"),
                 ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
             ]),
             TackInstructionNode(instruction: .load, parameters: [
+                ParameterIdentifier("vr8"),
                 ParameterIdentifier("vr7"),
-                ParameterIdentifier("vr6"),
             ])
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr7")
+        XCTAssertEqual(compiler.registerStack.last, "vr8")
     }
     
     func testRvalue_compiler_error_when_index_is_known_negative_at_compile_time() throws {

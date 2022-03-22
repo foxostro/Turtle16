@@ -207,6 +207,28 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             try lvalue(expr: expr.subscriptable)
         ]
         
+        // If this is a dynamic array then we must dereference the slice.
+        // The slice is a structure that contains a pointer and a count, and the
+        // slice lvalue is the address of this structure. We must perform
+        // another load to extract the base address.
+        let sliceAddr: String!
+        switch subscriptableType {
+        case .dynamicArray, .constDynamicArray:
+            sliceAddr = popRegister()
+            let baseAddr = nextRegister()
+            pushRegister(baseAddr)
+            children += [
+                TackInstructionNode(instruction: .load, parameters: [
+                    ParameterIdentifier(baseAddr),
+                    ParameterIdentifier(sliceAddr),
+                    ParameterNumber(kSliceBaseAddrOffset)
+                ])
+            ]
+            
+        default:
+            sliceAddr = nil
+        }
+        
         if elementSize > 0 {
             let baseAddr = popRegister()
             children += [
@@ -258,7 +280,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                     children += [
                         TackInstructionNode(instruction: .load, parameters: [
                             ParameterIdentifier(tempUpperBound),
-                            ParameterIdentifier(baseAddr),
+                            ParameterIdentifier(sliceAddr),
                             ParameterNumber(kSliceCountOffset)
                         ])
                     ]
@@ -1562,69 +1584,22 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     func rvalue(subscript expr: Expression.Subscript) throws -> AbstractSyntaxTreeNode {
+        var children: [AbstractSyntaxTreeNode] = [
+            try lvalue(subscript: expr)
+        ]
+        
         let elementType = try typeCheck(rexpr: expr)
-        let argumentType = try typeCheck(rexpr: expr.argument)
-        let subscriptableType = try typeCheck(rexpr: expr.subscriptable)
         
-        // Can we determine the index at compile time?
-        let maybeStaticIndex: Int?
-        if case .compTimeInt(let index) = argumentType {
-            maybeStaticIndex = index
-        } else {
-            maybeStaticIndex = nil
-        }
-        
-        // Can we determine the upper bound at compile time?
-        let maybeUpperBound: Int?
-        if case .array(count: let n, elementType: _) = subscriptableType {
-            maybeUpperBound = n
-        } else {
-            maybeUpperBound = nil
-        }
-        
-        // We can catch some out of bounds errors at compile time
-        if let index = maybeStaticIndex {
-            if index < 0 {
-                throw CompilerError(sourceAnchor: expr.argument.sourceAnchor, message: "Array index is always out of bounds: `\(index)' is less than zero")
-            }
-            
-            if let n = maybeUpperBound, index >= n {
-                throw CompilerError(sourceAnchor: expr.argument.sourceAnchor, message: "Array index is always out of bounds: `\(index)' is not in 0..\(n)")
-            }
-        }
-        
-        var children: [AbstractSyntaxTreeNode] = []
-        
-        if case .compTimeInt(let index) = argumentType, elementType.isPrimitive {
-            children += [
-                try lvalue(expr: expr.subscriptable)
-            ]
-            let baseAddr = popRegister()
-            let dst = nextRegister()
-            pushRegister(dst)
+        if elementType.isPrimitive {
+            let addr = popRegister()
+            let dest = nextRegister()
+            pushRegister(dest)
             children += [
                 TackInstructionNode(instruction: .load, parameters: [
-                    ParameterIdentifier(dst),
-                    ParameterIdentifier(baseAddr),
-                    ParameterNumber(index)
+                    ParameterIdentifier(dest),
+                    ParameterIdentifier(addr),
                 ])
             ]
-        } else {
-            children += [
-                try lvalue(expr: expr)
-            ]
-            
-            if elementType.isPrimitive {
-                let addr = popRegister()
-                let dest = nextRegister()
-                pushRegister(dest)
-                children += [
-                    TackInstructionNode(instruction: .load, parameters: [
-                        ParameterIdentifier(dest),
-                        ParameterIdentifier(addr),
-                    ])
-                ]
-            }
         }
         
         return Seq(sourceAnchor: expr.sourceAnchor, children: children)

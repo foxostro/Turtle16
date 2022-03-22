@@ -323,4 +323,45 @@ func foo() {
             """)
         XCTAssertEqual(a, UInt16(0x5000))
     }
+    
+    func test_EndToEndIntegration_SubscriptArray() {
+        let a = executeAndLookupSymbolU16(identifier: "a", program: """
+            let arr = [_]u16{0x1000}
+            let a: u16 = arr[0]
+            """)
+        XCTAssertEqual(a, UInt16(0x1000))
+    }
+    
+    func test_EndToEndIntegration_SubscriptSlice() {
+        let a = executeAndLookupSymbolU16(identifier: "a", program: """
+            let arr = [_]u16{0x1000}
+            let slice: []u16 = arr
+            let a: u16 = slice[0]
+            """)
+        XCTAssertEqual(a, UInt16(0x1000))
+    }
+    
+    func test_EndToEndIntegration_ForIn_DynamicArray_1() {
+        let a = executeAndLookupSymbolU16(identifier: "a", program: """
+            var a: u16 = 0xffff
+            let arr = [_]u16{0x1000}
+            let slice: []u16 = arr
+            for i in slice {
+                a = i
+            }
+            """)
+        XCTAssertEqual(a, UInt16(0x1000))
+    }
+    
+    func test_EndToEndIntegration_ForIn_DynamicArray_2() {
+        let a = executeAndLookupSymbolU16(identifier: "a", program: """
+            var a: u16 = 0xffff
+            let arr = [_]u16{1, 2}
+            let slice: []u16 = arr
+            for i in slice {
+                a = i
+            }
+            """)
+        XCTAssertEqual(a, UInt16(2))
+    }
 }

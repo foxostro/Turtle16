@@ -97,14 +97,14 @@ func foo() {
         // TODO: The compiler should default to the u16 type instead of u8.
         let compiler = SnapToTurtle16Compiler()
         compiler.compile(program: """
-var a = 1
-var b = 1
-for i in 0..10 {
-    var fib = b + a
-    a = b
-    b = fib
-}
-""")
+            var a = 1
+            var b = 1
+            for i in 0..10 {
+                var fib = b + a
+                a = b
+                b = fib
+            }
+            """)
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(AssemblerListingMaker().makeListing(try compiler.assembly.get()), """
             NOP

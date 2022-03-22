@@ -218,6 +218,17 @@ func foo() {
         computer.instructions = compiler.instructions
         computer.reset()
         computer.run()
+        
+//        let debugger = DebugConsole(computer: computer)
+//        debugger.logger = ConsoleLogger()
+//        while !computer.isHalted {
+//            debugger.interpreter.runOne(instruction: .disassemble(.baseCount(computer.pc, 1)))
+//            var pc = computer.pc
+//            while computer.pc == pc {
+//                pc = computer.pc
+//                debugger.interpreter.runOne(instruction: .step(count: 1))
+//            }
+//        }
             
         guard let offset = compiler.lookupSymbols(line: 1)?.maybeResolve(identifier: identifier)?.offset else {
             XCTFail("failed to resolve symbol \"\(identifier)\"")
@@ -295,11 +306,11 @@ func foo() {
     
     func test_EndToEndIntegration_ForIn_String() {
         let a = executeAndLookupSymbolU8(identifier: "a", program: """
-var a = 255
-for i in "hello" {
-    a = i
-}
-""")
+            var a = 255
+            for i in "hello" {
+                a = i
+            }
+            """)
         XCTAssertEqual(a, UInt8("o".utf8.first!))
     }
 }

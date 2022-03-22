@@ -269,7 +269,7 @@ public class EX: NSObject, NSSecureCoding {
         case 0b11:
             var val = UInt16(input.ins & 2047)
             if (val & (1<<10)) != 0 {
-                val = val | 0b1111111111100000
+                val = val | 0b1111100000000000
             }
             return val
         default:

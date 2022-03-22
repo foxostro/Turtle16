@@ -113,6 +113,13 @@ class EXTests: XCTestCase {
         XCTAssertEqual(right, 0xfffe)
     }
     
+    func testSelectRightOperand_3_signExtended_2() {
+        let ex = EX()
+        let input = EX.Input(ins: 0b0000011111011010, b: 0, ctl: 0b11 << 3)
+        let right = ex.selectRightOperand(input: input)
+        XCTAssertEqual(Int(right), 65536 - 38)
+    }
+    
     func testSelectRightOperand_3_notExtended() {
         let ex = EX()
         let input = EX.Input(ins: 0b0000001111111111, b: 0, ctl: 0b11 << 3)

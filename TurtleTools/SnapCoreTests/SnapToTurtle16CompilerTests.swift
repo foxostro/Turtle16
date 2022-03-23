@@ -355,4 +355,15 @@ func foo() {
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 3..<4)
         XCTAssertEqual(compiler.errors.first?.message, "use of unresolved identifier: `i'")
     }
+    
+    func test_EndToEndIntegration_SimpleFunctionCall() {
+        let debugger = run(program: """
+            var a: u16 = 0
+            func foo() {
+                a = 0xaa
+            }
+            foo()
+            """)
+        XCTAssertEqual(debugger?.loadSymbolU16("a"), 0xaa)
+    }
 }

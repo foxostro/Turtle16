@@ -377,4 +377,22 @@ func foo() {
         let word = debugger?.computer.ram[SnapCompilerMetrics.kStaticStorageStartAddress]
         XCTAssertEqual(word, 0xaa) // var a
     }
+    
+    // Local variables declared in a local scope are not necessarily associated
+    // with a new stack frame. In many cases, these variables are allocated in
+    // the same stack frame, or in the next slot of the static storage area.
+    func test_EndToEndIntegration_BlocksAreNotStackFrames_0() {
+        let debugger = run(program: """
+            var a = 0xaa
+            {
+                var b = 0xbb
+                {
+                    var c = 0xcc
+                }
+            }
+            """)
+        XCTAssertEqual(debugger?.computer.ram[SnapCompilerMetrics.kStaticStorageStartAddress+0], 0xaa) // var a
+        XCTAssertEqual(debugger?.computer.ram[SnapCompilerMetrics.kStaticStorageStartAddress+1], 0xbb) // var b
+        XCTAssertEqual(debugger?.computer.ram[SnapCompilerMetrics.kStaticStorageStartAddress+2], 0xcc) // var c
+    }
 }

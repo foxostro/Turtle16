@@ -366,4 +366,15 @@ func foo() {
             """)
         XCTAssertEqual(debugger?.loadSymbolU16("a"), 0xaa)
     }
+    
+    func test_EndToEndIntegration_StaticVarInAFunctionContextIsStoredInStaticDataArea() {
+        let debugger = run(program: """
+            func foo() {
+                static var a: u16 = 0xaa
+            }
+            foo()
+            """)
+        let word = debugger?.computer.ram[SnapCompilerMetrics.kStaticStorageStartAddress]
+        XCTAssertEqual(word, 0xaa) // var a
+    }
 }

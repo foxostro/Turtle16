@@ -9,7 +9,7 @@
 import Foundation
 import TurtleCore
 
-public class DebugConsole: NSObject, NSSecureCoding {
+open class DebugConsole: NSObject, NSSecureCoding {
     public static var supportsSecureCoding = true
     
     public var sandboxAccessManager: SandboxAccessManager? {

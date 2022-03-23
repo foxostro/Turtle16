@@ -192,7 +192,7 @@ func foo() {
             """)
     }
     
-    fileprivate func executeAndLookupSymbolOffset(identifier: String, program: String) -> (Turtle16Computer, Int)? {
+    fileprivate func makeDebugger(program: String) -> SnapDebugConsole? {
         let compiler = SnapToTurtle16Compiler()
         compiler.isBoundsCheckEnabled = false
         compiler.compile(program: program)
@@ -208,7 +208,6 @@ func foo() {
         
         let computer = Turtle16Computer(SchematicLevelCPUModel())
         computer.cpu.store = {(value: UInt16, addr: MemoryAddress) in
-//            print("computer.ram[\(addr.value)] = \(value)")
             computer.ram[addr.value] = value
         }
         computer.cpu.load = {(addr: MemoryAddress) in
@@ -217,132 +216,122 @@ func foo() {
         
         computer.instructions = compiler.instructions
         computer.reset()
-        computer.run()
         
-//        let debugger = DebugConsole(computer: computer)
-//        debugger.logger = ConsoleLogger()
-//        while !computer.isHalted {
-//            debugger.interpreter.runOne(instruction: .disassemble(.baseCount(computer.pc, 1)))
-//            var pc = computer.pc
-//            while computer.pc == pc {
-//                pc = computer.pc
-//                debugger.interpreter.runOne(instruction: .step(count: 1))
-//            }
-//        }
-            
-        guard let offset = compiler.lookupSymbols(line: 1)?.maybeResolve(identifier: identifier)?.offset else {
-            XCTFail("failed to resolve symbol \"\(identifier)\"")
-            return nil
-        }
+        let debugger = SnapDebugConsole(computer: computer)
+        debugger.logger = PrintLogger()
+        debugger.symbols = compiler.symbolTableRoot
         
-        return (computer, offset)
+        return debugger
     }
     
-    fileprivate func executeAndLookupSymbolU8(identifier: String, program: String) -> UInt8? {
-        guard let (computer, offset) = executeAndLookupSymbolOffset(identifier: identifier, program: program) else {
+    fileprivate func run(program: String) -> SnapDebugConsole? {
+        guard let debugger = makeDebugger(program: program) else {
             return nil
         }
-        let word = computer.ram[offset]
-        return UInt8(word)
-    }
-    
-    fileprivate func executeAndLookupSymbolU16(identifier: String, program: String) -> UInt16? {
-        guard let (computer, offset) = executeAndLookupSymbolOffset(identifier: identifier, program: program) else {
-            return nil
-        }
-        return computer.ram[offset]
+        debugger.interpreter.runOne(instruction: .run)
+        return debugger
     }
     
     func test_EndToEndIntegration_SimplestProgram() {
-        let a = executeAndLookupSymbolU8(identifier: "a", program: """
+        let debugger = run(program: """
             let a = 42
             """)
+        let a = debugger?.loadSymbolU8("a")
         XCTAssertEqual(a, 42)
     }
     
     func test_EndToEndIntegration_ForIn_Range_1() {
-        let a = executeAndLookupSymbolU16(identifier: "a", program: """
+        let debugger = run(program: """
             var a: u16 = 100
             for i in 0..10 {
                 a = i
             }
             """)
+        let a = debugger?.loadSymbolU16("a")
         XCTAssertEqual(a, 9)
     }
     
     func test_EndToEndIntegration_ForIn_Range_2() {
-        let a = executeAndLookupSymbolU16(identifier: "a", program: """
+        let debugger = run(program: """
             var a: u16 = 255
             let range = 0..10
             for i in range {
                 a = i
             }
             """)
+        let a = debugger?.loadSymbolU16("a")
         XCTAssertEqual(a, 9)
     }
     
     func test_EndToEndIntegration_ForIn_Range_SingleStatement() {
-        let a = executeAndLookupSymbolU16(identifier: "a", program: """
+        let debugger = run(program: """
             var a: u16 = 255
             for i in 0..10
                 a = i
             """)
+        let a = debugger?.loadSymbolU16("a")
         XCTAssertEqual(a, 9)
     }
     
     func test_EndToEndIntegration_AssignLiteral255ToU16Variable() {
-        let a = executeAndLookupSymbolU16(identifier: "a", program: """
+        let debugger = run(program: """
             let a: u16 = 255
             """)
+        let a = debugger?.loadSymbolU16("a")
         XCTAssertEqual(a, 255)
     }
     
     func test_EndToEndIntegration_AssignLiteral255ToU8Variable() {
-        let a = executeAndLookupSymbolU8(identifier: "a", program: """
+        let debugger = run(program: """
             var a: u8 = 255
             """)
+        let a = debugger?.loadSymbolU8("a")
         XCTAssertEqual(a, 255)
     }
     
     func test_EndToEndIntegration_ForIn_String() {
-        let a = executeAndLookupSymbolU8(identifier: "a", program: """
+        let debugger = run(program: """
             var a = 255
             for i in "hello" {
                 a = i
             }
             """)
+        let a = debugger?.loadSymbolU8("a")
         XCTAssertEqual(a, UInt8("o".utf8.first!))
     }
     
     func test_EndToEndIntegration_ForIn_ArrayOfU16() {
-        let a = executeAndLookupSymbolU16(identifier: "a", program: """
+        let debugger = run(program: """
             var a: u16 = 0xffff
             for i in [_]u16{0x1000, 0x2000, 0x3000, 0x4000, 0x5000} {
                 a = i
             }
             """)
+        let a = debugger?.loadSymbolU16("a")
         XCTAssertEqual(a, UInt16(0x5000))
     }
     
     func test_EndToEndIntegration_SubscriptArray() {
-        let a = executeAndLookupSymbolU16(identifier: "a", program: """
+        let debugger = run(program: """
             let arr = [_]u16{0x1000}
             let a: u16 = arr[0]
             """)
+        let a = debugger?.loadSymbolU16("a")
         XCTAssertEqual(a, UInt16(0x1000))
     }
     
     func test_EndToEndIntegration_SubscriptSlice() {
-        let a = executeAndLookupSymbolU16(identifier: "a", program: """
+        let debugger = run(program: """
             let arr = [_]u16{0x1000}
             let slice: []u16 = arr
             let a: u16 = slice[0]
             """)
+        let a = debugger?.loadSymbolU16("a")
         XCTAssertEqual(a, UInt16(0x1000))
     }
     
     func test_EndToEndIntegration_ForIn_DynamicArray_1() {
-        let a = executeAndLookupSymbolU16(identifier: "a", program: """
+        let debugger = run(program: """
             var a: u16 = 0xffff
             let arr = [_]u16{0x1000}
             let slice: []u16 = arr
@@ -350,11 +339,12 @@ func foo() {
                 a = i
             }
             """)
+        let a = debugger?.loadSymbolU16("a")
         XCTAssertEqual(a, UInt16(0x1000))
     }
     
     func test_EndToEndIntegration_ForIn_DynamicArray_2() {
-        let a = executeAndLookupSymbolU16(identifier: "a", program: """
+        let debugger = run(program: """
             var a: u16 = 0xffff
             let arr = [_]u16{1, 2}
             let slice: []u16 = arr
@@ -362,6 +352,7 @@ func foo() {
                 a = i
             }
             """)
+        let a = debugger?.loadSymbolU16("a")
         XCTAssertEqual(a, UInt16(2))
     }
 }

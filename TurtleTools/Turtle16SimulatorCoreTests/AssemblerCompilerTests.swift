@@ -10,13 +10,6 @@ import XCTest
 import TurtleCore
 import Turtle16SimulatorCore
 
-class PrintLogger: NSObject, Logger {
-    public func append(_ format: String, _ args: CVarArg...) {
-        let message = String(format:format, arguments:args)
-        print(message)
-    }
-}
-
 class AssemblerCompilerTests: XCTestCase {
     fileprivate func makeDebugger(instructions: [UInt16]) -> DebugConsole {
         let cpu = SchematicLevelCPUModel()

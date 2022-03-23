@@ -11,13 +11,6 @@ import SnapCore
 import TurtleCore
 import Turtle16SimulatorCore
 
-class PrintLogger: NSObject, Logger {
-    public func append(_ format: String, _ args: CVarArg...) {
-        let message = String(format:format, arguments:args)
-        print(message)
-    }
-}
-
 class TackToTurtle16CompilerTests: XCTestCase {
     fileprivate func makeDebugger(assembly: AbstractSyntaxTreeNode?) -> DebugConsole {
         let topLevel0 = TopLevel(children: [

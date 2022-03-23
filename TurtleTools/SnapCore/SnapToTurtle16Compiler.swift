@@ -141,8 +141,4 @@ public class SnapToTurtle16Compiler: NSObject {
         }
         return .success(compiler.instructions)
     }
-    
-    public func lookupSymbols(line: Int) -> SymbolTable? {
-        return symbolTableRoot
-    }
 }

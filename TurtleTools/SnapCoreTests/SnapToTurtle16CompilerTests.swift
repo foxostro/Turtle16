@@ -284,4 +284,44 @@ func foo() {
         XCTAssertEqual(debugger?.loadSymbolU16("a"), 89)
         XCTAssertEqual(debugger?.loadSymbolU16("b"), 144)
     }
+    
+    func test_EndToEndIntegration_Fibonacci_U8_1() {
+        let debugger = run(program: """
+            var a: u8 = 1
+            var b: u8 = 1
+            var fib: u8 = 0
+            for i in 0..9 {
+                fib = b + a
+                a = b
+                b = fib
+            }
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU8("a"), 55)
+        XCTAssertEqual(debugger?.loadSymbolU8("b"), 89)
+    }
+    
+    func test_EndToEndIntegration_Fibonacci_U8_2() {
+        // TODO: The u8 type should always use unsigned arithmetic. Add new i8 and i16 types to the compiler for signed arithmetic.
+        // If we do 0..10 then b will be 144 which exceeds the maximum value of
+        // 127 for a signed eight-bit integer. The compiler doesn't draw a good
+        // enough distinction between signed and unsigned numbers which leads
+        // this value to being sign-extended in memory to sixteen bits wide.
+        // While this allows for efficient conversion from u8 to u16 by simply
+        // reinterpreting the in-memory value, it is definitely not the behavior
+        // we expect from a u8 type.
+        let debugger = run(program: """
+            var a: u8 = 1
+            var b: u8 = 1
+            var fib: u8 = 0
+            for i in 0..10 {
+                fib = b + a
+                a = b
+                b = fib
+            }
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU8("a"), 89)
+        XCTAssertEqual(debugger?.loadSymbolU8("b"), 144)
+    }
 }

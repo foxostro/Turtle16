@@ -19,7 +19,7 @@ public class SnapDebugConsole : DebugConsole {
             return nil
         }
         let word = computer.ram[symbol.offset]
-        return UInt8(word)
+        return UInt8(word & 0x00ff)
     }
     
     public func loadSymbolU16(_ identifier: String) -> UInt16? {

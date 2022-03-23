@@ -285,7 +285,7 @@ public class AssemblerCodeGenerator: NSObject {
                               upperLimit: 0xffff,
                               mask: 0x00ff,
                               shift: 0,
-                              offset: 0),
+                              offset: instructions.count+0),
                 PatcherAction(index: instructions.count+1,
                               sourceAnchor: sourceAnchor,
                               identifier: name,
@@ -293,7 +293,7 @@ public class AssemblerCodeGenerator: NSObject {
                               upperLimit: 0xffff,
                               mask: 0xff00,
                               shift: 8,
-                              offset: 0)
+                              offset: instructions.count+1)
             ]
         }
         instructions.append(try gen.li(destination, lo))

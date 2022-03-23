@@ -567,7 +567,7 @@ class AssemblerCodeGeneratorTests: XCTestCase {
         XCTAssertNoThrow(try codeGen.la(.r3, "foo"))
         XCTAssertEqual(codeGen.instructions.count, 2)
         XCTAssertEqual(codeGen.instructions, [
-            0b0010001111001101, // LIU r3, 0xcd
+            0b0010001111001101, // LI r3, 0xcd
             0b0010101110101011, // LUI r3, 0xab
         ])
     }
@@ -575,12 +575,14 @@ class AssemblerCodeGeneratorTests: XCTestCase {
     func testLaWithPatching() throws {
         let codeGen = AssemblerCodeGenerator()
         codeGen.begin()
+        codeGen.nop() // necessary so index of LA instruction is not zero
         XCTAssertNoThrow(try codeGen.la(.r3, "foo"))
         codeGen.symbols["foo"] = 0xabcd
         XCTAssertNoThrow(try codeGen.end())
-        XCTAssertEqual(codeGen.instructions.count, 2)
+        XCTAssertEqual(codeGen.instructions.count, 3)
         XCTAssertEqual(codeGen.instructions, [
-            0b0010001111001101, // LIU r3, 0xcd
+            0b0000000000000000, // NOP
+            0b0010001111001101, // LI r3, 0xcd
             0b0010101110101011, // LUI r3, 0xab
         ])
     }

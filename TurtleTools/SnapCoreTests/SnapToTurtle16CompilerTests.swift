@@ -90,108 +90,6 @@ func foo() {
             """)
     }
     
-    func testFib() throws {
-        // Compile a simple fibonacci program. Note that the generated program
-        // has a lot of seemingly superfluous instructions because it wants to
-        // use u8 for all the integer types.
-        // TODO: The compiler should default to the u16 type instead of u8.
-        let compiler = SnapToTurtle16Compiler()
-        compiler.compile(program: """
-            var a = 1
-            var b = 1
-            for i in 0..10 {
-                var fib = b + a
-                a = b
-                b = fib
-            }
-            """)
-        XCTAssertFalse(compiler.hasError)
-        XCTAssertEqual(AssemblerListingMaker().makeListing(try compiler.assembly.get()), """
-            NOP
-            LI r0, 16
-            LUI r0, 1
-            LI r1, 1
-            STORE r1, r0
-            LI r0, 17
-            LUI r0, 1
-            LI r1, 1
-            STORE r1, r0
-            LI r0, 18
-            LUI r0, 1
-            ADDI r1, r0, 0
-            LI r0, 0
-            STORE r0, r1
-            LI r0, 18
-            LUI r0, 1
-            ADDI r1, r0, 1
-            LI r0, 10
-            STORE r0, r1
-            LI r0, 20
-            LUI r0, 1
-            LI r1, 18
-            LUI r1, 1
-            LOAD r2, r1, 1
-            STORE r2, r0
-            LI r0, 21
-            LUI r0, 1
-            LI r1, 0
-            STORE r1, r0
-            .L0:
-            LI r0, 20
-            LUI r0, 1
-            LOAD r1, r0
-            LI r0, 21
-            LUI r0, 1
-            LOAD r2, r0
-            CMP r2, r1
-            LI r0, 1
-            BNE .LL0
-            LI r0, 0
-            .LL0:
-            CMPI r0, 0
-            BEQ .L1
-            LI r0, 22
-            LUI r0, 1
-            LI r1, 16
-            LUI r1, 1
-            LOAD r2, r1
-            LI r1, 17
-            LUI r1, 1
-            LOAD r3, r1
-            ADD r1, r3, r2
-            LI r2, 128
-            LUI r2, 0
-            LUI r1, 0
-            XOR r1, r1, r2
-            SUB r1, r1, r2
-            STORE r1, r0
-            LI r0, 16
-            LUI r0, 1
-            LI r1, 17
-            LUI r1, 1
-            LOAD r2, r1
-            STORE r2, r0
-            LI r0, 17
-            LUI r0, 1
-            LI r1, 22
-            LUI r1, 1
-            LOAD r2, r1
-            STORE r2, r0
-            LI r0, 21
-            LUI r0, 1
-            LI r1, 1
-            LI r2, 21
-            LUI r2, 1
-            LOAD r3, r2
-            ADD r2, r3, r1
-            STORE r2, r0
-            JMP .L0
-            .L1:
-            NOP
-            HLT
-            """)
-    }
-    
     fileprivate func makeDebugger(program: String) -> SnapDebugConsole? {
         let compiler = SnapToTurtle16Compiler()
         compiler.isBoundsCheckEnabled = false
@@ -354,5 +252,36 @@ func foo() {
             """)
         let a = debugger?.loadSymbolU16("a")
         XCTAssertEqual(a, UInt16(2))
+    }
+    
+    func test_EndToEndIntegration_Fibonacci() {
+        let debugger = run(program: """
+            var a: u16 = 1
+            var b: u16 = 1
+            var fib: u16 = 0
+            for i in 0..10 {
+                fib = b + a
+                a = b
+                b = fib
+            }
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("a"), 89)
+        XCTAssertEqual(debugger?.loadSymbolU16("b"), 144)
+    }
+    
+    func test_EndToEndIntegration_Fibonacci_ExercisingStaticKeyword() {
+        let debugger = run(program: """
+            var a: u16 = 1
+            var b: u16 = 1
+            for i in 0..10 {
+                static var fib: u16 = b + a
+                a = b
+                b = fib
+            }
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("a"), 89)
+        XCTAssertEqual(debugger?.loadSymbolU16("b"), 144)
     }
 }

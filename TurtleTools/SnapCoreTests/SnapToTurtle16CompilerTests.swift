@@ -418,4 +418,32 @@ func foo() {
         XCTAssertEqual(debugger?.computer.ram[SnapCompilerMetrics.kStaticStorageStartAddress+1], 0xaa) // var b
         XCTAssertEqual(debugger?.computer.ram[SnapCompilerMetrics.kStaticStorageStartAddress+2], 0xaa) // var c
     }
+    
+    func test_EndToEndIntegration_FunctionCallAndReturnValue() {
+        let debugger = run(program: """
+            func foo() -> u8 {
+                return 42
+            }
+            let a = foo()
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU8("a"), 42) // var a
+    }
+    
+    func test_EndToEndIntegration_StoreLocalVariableDefinedSeveralScopesUp_StackFramesNotEqualToScopes() {
+        let debugger = run(program: """
+            func foo() -> u8 {
+                var b = 0xaa
+                func bar() -> u8 {
+                    {
+                        return b
+                    }
+                }
+                return bar()
+            }
+            let a = foo()
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU8("a"), 0xaa) // var a
+    }
 }

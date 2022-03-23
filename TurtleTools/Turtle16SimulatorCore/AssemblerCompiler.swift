@@ -832,7 +832,10 @@ public class AssemblerCompiler: NSObject {
     
     fileprivate func compileRET(_ node: InstructionNode) throws {
         try compileNodes([
-            InstructionNode(instruction: kJR, parameter: ParameterIdentifier("ra"))
+            InstructionNode(instruction: kJR, parameters: [
+                ParameterIdentifier("ra"),
+                ParameterNumber(-1)
+            ])
         ])
     }
     

@@ -8,4 +8,7 @@
 
 public protocol MemoryLayoutStrategy: NSObject {
     func sizeof(type: SymbolType) -> Int
+    
+    // The number of words to reserve in the stack frame to save registers.
+    var sizeOfSaveArea: Int { get }
 }

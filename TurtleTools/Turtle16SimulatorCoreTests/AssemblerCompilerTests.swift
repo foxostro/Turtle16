@@ -1871,7 +1871,7 @@ class AssemblerCompilerTests: XCTestCase {
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 0)
         XCTAssertEqual(disassemble(compiler.instructions), """
-            JR ra, 0
+            JR ra, -1
             """)
     }
 }

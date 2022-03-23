@@ -43,4 +43,6 @@ public class MemoryLayoutStrategyTurtleTTL: NSObject, MemoryLayoutStrategy {
         }
         return kTagSize + kBufferSize
     }
+    
+    public var sizeOfSaveArea: Int { 4 }
 }

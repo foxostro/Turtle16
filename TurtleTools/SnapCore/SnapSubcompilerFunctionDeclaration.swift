@@ -64,9 +64,7 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
     }
     
     func bindFunctionArguments(functionType: FunctionType, argumentNames: [String]) {
-        let kReturnAddressSize = 2
-        let kFramePointerSize = 2
-        var offset = kReturnAddressSize + kFramePointerSize
+        var offset = memoryLayoutStrategy.sizeOfSaveArea
         
         for i in (0..<functionType.arguments.count).reversed() {
             let argumentType = functionType.arguments[i]

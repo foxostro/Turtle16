@@ -324,4 +324,20 @@ func foo() {
         XCTAssertEqual(debugger?.loadSymbolU8("a"), 89)
         XCTAssertEqual(debugger?.loadSymbolU8("b"), 144)
     }
+    
+    func testLocalVariablesDoNotSurviveTheLocalScope() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: """
+            {
+                var a = 1
+                a = 2
+            }
+            a = 3
+            """)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "a")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 4..<5)
+        XCTAssertEqual(compiler.errors.first?.message, "use of unresolved identifier: `a'")
+    }
 }

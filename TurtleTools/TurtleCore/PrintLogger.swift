@@ -9,6 +9,6 @@
 public class PrintLogger: NSObject, Logger {
     public func append(_ format: String, _ args: CVarArg...) {
         let message = String(format:format, arguments:args)
-        print(message)
+        print(message, terminator: "")
     }
 }

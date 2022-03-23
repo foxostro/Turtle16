@@ -306,20 +306,6 @@ class RegisterAllocatorNaiveTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
     
-    func testLIU() throws {
-        let registerAllocator = RegisterAllocatorNaive()
-        let input = InstructionNode(instruction: kLI, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterNumber(1)
-        ])
-        let expected = InstructionNode(instruction: kLI, parameters:[
-            ParameterIdentifier("r1"),
-            ParameterNumber(1)
-        ])
-        let actual = try registerAllocator.compile(input)
-        XCTAssertEqual(actual, expected)
-    }
-    
     func testLUI() throws {
         let registerAllocator = RegisterAllocatorNaive()
         let input = InstructionNode(instruction: kLUI, parameters:[

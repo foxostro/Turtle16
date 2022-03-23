@@ -388,24 +388,6 @@ class RegisterAllocatorDriverTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
     
-    func testLIU() throws {
-        let driver = RegisterAllocatorDriver()
-        let input = TopLevel(children: [
-            InstructionNode(instruction: kLI, parameters:[
-                ParameterIdentifier("vr1"),
-                ParameterNumber(1)
-            ])
-        ])
-        let expected = TopLevel(children: [
-            InstructionNode(instruction: kLI, parameters:[
-                ParameterIdentifier("r0"),
-                ParameterNumber(1)
-            ])
-        ])
-        let actual = try driver.compile(topLevel: input)
-        XCTAssertEqual(actual, expected)
-    }
-    
     func testLUI() throws {
         let driver = RegisterAllocatorDriver()
         let input = TopLevel(children: [

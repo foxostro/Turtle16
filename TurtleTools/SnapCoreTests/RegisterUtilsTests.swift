@@ -438,23 +438,6 @@ class RegisterUtilsTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
     
-    func testRewriteLIU() throws {
-        let input = [
-            InstructionNode(instruction: kLI, parameters:[
-                ParameterIdentifier("vr0"),
-                ParameterNumber(1)
-            ])
-        ]
-        let expected = [
-            InstructionNode(instruction: kLI, parameters:[
-                ParameterIdentifier("r0"),
-                ParameterNumber(1)
-            ])
-        ]
-        let actual = RegisterUtils.rewrite(nodes: input, from: "vr0", to: "r0")
-        XCTAssertEqual(actual, expected)
-    }
-    
     func testRewriteLUI() throws {
         let input = [
             InstructionNode(instruction: kLUI, parameters:[

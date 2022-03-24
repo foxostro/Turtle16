@@ -90,9 +90,8 @@ func foo() {
             """)
     }
     
-    fileprivate func makeDebugger(program: String) -> SnapDebugConsole? {
-        let compiler = SnapToTurtle16Compiler()
-        compiler.isBoundsCheckEnabled = false
+    fileprivate func makeDebugger(options: SnapCompilerOptions, program: String) -> SnapDebugConsole? {
+        let compiler = SnapToTurtle16Compiler(options: options)
         compiler.compile(program: program)
         XCTAssertFalse(compiler.hasError)
         guard !compiler.hasError else {
@@ -122,8 +121,8 @@ func foo() {
         return debugger
     }
     
-    fileprivate func run(program: String) -> SnapDebugConsole? {
-        guard let debugger = makeDebugger(program: program) else {
+    fileprivate func run(options: SnapCompilerOptions = SnapCompilerOptions(), program: String) -> SnapDebugConsole? {
+        guard let debugger = makeDebugger(options: options, program: program) else {
             return nil
         }
         debugger.interpreter.runOne(instruction: .run)
@@ -756,5 +755,16 @@ func foo() {
         XCTAssertEqual(debugger?.loadSymbolPointer("pointer"), 0x5000)
         XCTAssertEqual(debugger?.computer.ram[0x5000], 0xabcd)
         XCTAssertEqual(debugger?.loadSymbolU16("value"), 0xabcd)
+    }
+    
+    func test_EndToEndIntegration_Hlt() {
+        let opts = SnapCompilerOptions(shouldDefineCompilerIntrinsicFunctions: true)
+        let debugger = run(options: opts, program: """
+            var a: u16 = 0
+            hlt()
+            a = 1
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("a"), 0)
     }
 }

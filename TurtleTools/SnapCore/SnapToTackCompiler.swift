@@ -9,13 +9,25 @@
 import TurtleCore
 import Turtle16SimulatorCore
 
-public class SnapToTackCompiler: SnapASTTransformerBase {
+public struct SnapCompilerOptions {
     public let isBoundsCheckEnabled: Bool
+    public let shouldDefineCompilerIntrinsicFunctions: Bool
+    
+    public init(isBoundsCheckEnabled: Bool = false,
+                shouldDefineCompilerIntrinsicFunctions: Bool = false) {
+        self.isBoundsCheckEnabled = isBoundsCheckEnabled
+        self.shouldDefineCompilerIntrinsicFunctions = shouldDefineCompilerIntrinsicFunctions
+    }
+}
+
+public class SnapToTackCompiler: SnapASTTransformerBase {
+    public let options: SnapCompilerOptions
     public let globalEnvironment: GlobalEnvironment
     public internal(set) var registerStack: [String] = []
     var nextRegisterIndex = 0
     let fp = "fp"
     let kPanic = "panic"
+    let kHalt = "hlt"
     let kUnionPayloadOffset: Int
     let kUnionTypeTagOffset: Int
     let kSliceBaseAddrOffset: Int
@@ -42,9 +54,9 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         return result
     }
     
-    public init(symbols: SymbolTable, isBoundsCheckEnabled: Bool, globalEnvironment: GlobalEnvironment) {
-        self.isBoundsCheckEnabled = isBoundsCheckEnabled
+    public init(symbols: SymbolTable, globalEnvironment: GlobalEnvironment, options: SnapCompilerOptions = SnapCompilerOptions()) {
         self.globalEnvironment = globalEnvironment
+        self.options = options
         kUnionTypeTagOffset = 0
         kUnionPayloadOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .u16)
         kSliceBaseAddrOffset = 0
@@ -63,16 +75,38 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             if let compiledNode = compiledNode {
                 children.append(compiledNode)
             }
-            if !subroutines.isEmpty {
-                children.append(TackInstructionNode(sourceAnchor: node0?.sourceAnchor, instruction: .hlt))
-                children += subroutines
+            if options.shouldDefineCompilerIntrinsicFunctions {
+                defineCompilerIntrinsicFunctions()
             }
+            children += collectSubroutineBodies()
             let seq = Seq(sourceAnchor: node0?.sourceAnchor, children: children)
             let result = flatten(seq)
             return result
         } else {
             return flatten(compiledNode)
         }
+    }
+    
+    func defineCompilerIntrinsicFunctions() {
+        // Define the other compiler intrinsic functions with stub implementations that immediately halt the running program.
+        // TODO: Provide implementations of these functions that actually work.
+        for name in [kHalt, kPanic] {
+            subroutines.append(Subroutine(children: [
+                LabelDeclaration(identifier: name),
+                TackInstructionNode(instruction: .hlt)
+            ]))
+        }
+    }
+    
+    func collectSubroutineBodies() -> [AbstractSyntaxTreeNode] {
+        var nodes: [AbstractSyntaxTreeNode] = []
+        
+        if !subroutines.isEmpty {
+            nodes.append(TackInstructionNode(instruction: .hlt))
+            nodes += subroutines
+        }
+        
+        return nodes
     }
     
     func flatten(_ node: AbstractSyntaxTreeNode?) -> AbstractSyntaxTreeNode? {
@@ -237,7 +271,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             let index = popRegister()
             
             // We may need to insert a run time bounds checks.
-            if isBoundsCheckEnabled && maybeStaticIndex == nil {
+            if options.isBoundsCheckEnabled && maybeStaticIndex == nil {
                 // Lower bound
                 let lowerBound = 0
                 let tempLowerBound = nextRegister()
@@ -815,7 +849,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             
             // If the union can contain more than one type then insert a runtime
             // check that the tag matches that of the requested type.
-            if isBoundsCheckEnabled && typ.members.count > 1 {
+            if options.isBoundsCheckEnabled && typ.members.count > 1 {
                 let targetType = determineUnionTargetType(typ, ltype)!
                 let unionTypeTag = determineUnionTypeTag(typ, targetType)!
                 let tempUnionTag = nextRegister()

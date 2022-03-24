@@ -12,7 +12,7 @@ import Turtle16SimulatorCore
 
 public class SnapToTurtle16Compiler: NSObject {
     public var isUsingStandardLibrary = false
-    public var isBoundsCheckEnabled = true
+    public let options: SnapCompilerOptions
     public var shouldRunSpecificTest: String? = nil
     public var shouldEnableOptimizations = true
     public private(set) var testNames: [String] = []
@@ -33,6 +33,10 @@ public class SnapToTurtle16Compiler: NSObject {
     
     public func injectModule(name: String, sourceCode: String) {
         injectedModules[name] = sourceCode
+    }
+    
+    public init(options: SnapCompilerOptions = SnapCompilerOptions()) {
+        self.options = options
     }
     
     public func compile(program text: String, base: Int = 0, url: URL? = nil) {
@@ -96,7 +100,7 @@ public class SnapToTurtle16Compiler: NSObject {
     }
     
     func compileSnapToTack(_ ast: AbstractSyntaxTreeNode?) -> Result<AbstractSyntaxTreeNode?, Error> {
-        let compiler = SnapToTackCompiler(symbols: globalSymbols, isBoundsCheckEnabled: isBoundsCheckEnabled, globalEnvironment: globalEnvironment)
+        let compiler = SnapToTackCompiler(symbols: globalSymbols, globalEnvironment: globalEnvironment, options: options)
         self.tack = Result(catching: {
             try compiler.compile(ast)
         })

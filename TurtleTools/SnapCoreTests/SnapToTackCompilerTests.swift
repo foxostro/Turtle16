@@ -27,7 +27,9 @@ let kSliceType: SymbolType = .structType(StructType(name: kSliceName, symbols: S
 
 class SnapToTackCompilerTests: XCTestCase {
     func makeCompiler(symbols: SymbolTable = SymbolTable()) -> SnapToTackCompiler {
-        return SnapToTackCompiler(symbols: symbols, isBoundsCheckEnabled: true, globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()))
+        return SnapToTackCompiler(symbols: symbols,
+                                  globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()),
+                                  options: SnapCompilerOptions(isBoundsCheckEnabled: true))
     }
     
     func testLabelDeclaration() throws {

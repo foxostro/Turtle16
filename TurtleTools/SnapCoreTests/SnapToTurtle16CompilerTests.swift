@@ -544,4 +544,13 @@ func foo() {
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 1..<2)
         XCTAssertEqual(compiler.errors.first?.message, "unexpected non-void return value in void function")
     }
+    
+    func test_EndToEndIntegration_PromoteInAssignmentStatement() {
+        let debugger = run(program: """
+            var result = 0xabcd
+            result = 42
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("result"), 42)
+    }
 }

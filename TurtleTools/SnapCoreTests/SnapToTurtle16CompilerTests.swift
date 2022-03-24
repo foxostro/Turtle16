@@ -742,4 +742,19 @@ func foo() {
         XCTAssertEqual(debugger?.loadSymbolU16("foo"), 1)
         XCTAssertEqual(debugger?.loadSymbolU8("bar"), 1)
     }
+    
+    func test_EndToEndIntegration_RawMemoryAccess() {
+        // TODO: Add a platform-dependent type `usize' and use that to store the address here
+        let debugger = run(program: """
+            let address: u16 = 0x5000
+            let pointer: *u16 = address bitcastAs *u16
+            pointer.pointee = 0xabcd
+            let value: u16 = pointer.pointee
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("address"), 0x5000)
+        XCTAssertEqual(debugger?.loadSymbolPointer("pointer"), 0x5000)
+        XCTAssertEqual(debugger?.computer.ram[0x5000], 0xabcd)
+        XCTAssertEqual(debugger?.loadSymbolU16("value"), 0xabcd)
+    }
 }

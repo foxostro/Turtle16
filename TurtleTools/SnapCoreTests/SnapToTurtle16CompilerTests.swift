@@ -704,4 +704,12 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolU16("foo"), 0xffff)
     }
+    
+    func test_EndToEndIntegration_DeclareVariableWithExplicitType_PromoteU8ToU16() {
+        let debugger = run(program: """
+            let foo: u16 = 10
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("foo"), 10)
+    }
 }

@@ -498,4 +498,50 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolU8("a"), 0xaa)
     }
+    
+    func testMissingReturn_1() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: """
+            func foo() -> u8 {
+            }
+            """)
+        
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "foo")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
+        XCTAssertEqual(compiler.errors.first?.message, "missing return in a function expected to return `u8'")
+    }
+    
+    func testMissingReturn_2() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: """
+            func foo() -> u8 {
+                if false {
+                    return 1
+                }
+            }
+            """)
+        
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "foo")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
+        XCTAssertEqual(compiler.errors.first?.message, "missing return in a function expected to return `u8'")
+    }
+    
+    func testUnexpectedNonVoidReturnValueInVoidFunction() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: """
+            func foo() {
+                return 1
+            }
+            """)
+        
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "1")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 1..<2)
+        XCTAssertEqual(compiler.errors.first?.message, "unexpected non-void return value in void function")
+    }
 }

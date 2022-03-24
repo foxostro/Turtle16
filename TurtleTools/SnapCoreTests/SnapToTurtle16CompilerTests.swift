@@ -483,4 +483,19 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolU8("a"), 0xaa)
     }
+    
+    func test_EndToEndIntegration_ReturnFromInsideIfStmt() {
+        let debugger = run(program: """
+            func foo() -> u8 {
+                if 1 + 1 == 2 {
+                    return 0xaa
+                } else {
+                    return 0xbb
+                }
+            }
+            let a = foo()
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU8("a"), 0xaa)
+    }
 }

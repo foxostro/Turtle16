@@ -576,4 +576,28 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolU16("result"), 42)
     }
+    
+    func test_EndToEndIntegration_MutuallyRecursiveFunctions() {
+        let debugger = run(program: """
+            func isEven(n: u8) -> bool {
+                if n == 0 {
+                    return true
+                } else {
+                    return isOdd(n - 1)
+                }
+            }
+
+            func isOdd(n: u8) -> bool {
+                if n == 0 {
+                    return false
+                } else {
+                    return isEven(n - 1)
+                }
+            }
+
+            let a = isOdd(7)
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolBool("a"), true)
+    }
 }

@@ -720,4 +720,16 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolBool("foo"), true)
     }
+    
+    func test_EndToEndIntegration_DeclareVariableWithExplicitType_CannotConvertU16ToBool() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: """
+            let foo: bool = 0xffff
+            """)
+        
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "0xffff")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
+        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `integer constant 65535' to type `const bool'")
+    }
 }

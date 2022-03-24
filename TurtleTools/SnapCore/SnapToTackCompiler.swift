@@ -9,19 +9,19 @@
 import TurtleCore
 import Turtle16SimulatorCore
 
-public struct SnapCompilerOptions {
-    public let isBoundsCheckEnabled: Bool
-    public let shouldDefineCompilerIntrinsicFunctions: Bool
-    
-    public init(isBoundsCheckEnabled: Bool = false,
-                shouldDefineCompilerIntrinsicFunctions: Bool = false) {
-        self.isBoundsCheckEnabled = isBoundsCheckEnabled
-        self.shouldDefineCompilerIntrinsicFunctions = shouldDefineCompilerIntrinsicFunctions
-    }
-}
-
 public class SnapToTackCompiler: SnapASTTransformerBase {
-    public let options: SnapCompilerOptions
+    public struct Options {
+        public let isBoundsCheckEnabled: Bool
+        public let shouldDefineCompilerIntrinsicFunctions: Bool
+        
+        public init(isBoundsCheckEnabled: Bool = false,
+                    shouldDefineCompilerIntrinsicFunctions: Bool = false) {
+            self.isBoundsCheckEnabled = isBoundsCheckEnabled
+            self.shouldDefineCompilerIntrinsicFunctions = shouldDefineCompilerIntrinsicFunctions
+        }
+    }
+    
+    public let options: Options
     public let globalEnvironment: GlobalEnvironment
     public internal(set) var registerStack: [String] = []
     var nextRegisterIndex = 0
@@ -54,7 +54,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         return result
     }
     
-    public init(symbols: SymbolTable, globalEnvironment: GlobalEnvironment, options: SnapCompilerOptions = SnapCompilerOptions()) {
+    public init(symbols: SymbolTable, globalEnvironment: GlobalEnvironment, options: SnapToTackCompiler.Options = SnapToTackCompiler.Options()) {
         self.globalEnvironment = globalEnvironment
         self.options = options
         kUnionTypeTagOffset = 0

@@ -11,10 +11,24 @@ import TurtleSimulatorCore
 import Turtle16SimulatorCore
 
 public class SnapToTurtle16Compiler: NSObject {
-    public var isUsingStandardLibrary = false
-    public let options: SnapCompilerOptions
-    public var shouldRunSpecificTest: String? = nil
-    public var shouldEnableOptimizations = true
+    public struct Options {
+        public let isBoundsCheckEnabled: Bool
+        public let shouldDefineCompilerIntrinsicFunctions: Bool
+        public let isUsingStandardLibrary: Bool
+        public let shouldRunSpecificTest: String?
+        
+        public init(isBoundsCheckEnabled: Bool = false,
+                    shouldDefineCompilerIntrinsicFunctions: Bool = false,
+                    isUsingStandardLibrary: Bool = false,
+                    shouldRunSpecificTest: String? = nil) {
+            self.isBoundsCheckEnabled = isBoundsCheckEnabled
+            self.shouldDefineCompilerIntrinsicFunctions = shouldDefineCompilerIntrinsicFunctions
+            self.isUsingStandardLibrary = isUsingStandardLibrary
+            self.shouldRunSpecificTest = shouldRunSpecificTest
+        }
+    }
+    
+    public let options: Options
     public private(set) var testNames: [String] = []
     public private(set) var tack: Result<AbstractSyntaxTreeNode?, Error>! = nil
     public private(set) var assembly: Result<TopLevel, Error>! = nil
@@ -35,7 +49,7 @@ public class SnapToTurtle16Compiler: NSObject {
         injectedModules[name] = sourceCode
     }
     
-    public init(options: SnapCompilerOptions = SnapCompilerOptions()) {
+    public init(options: Options = Options()) {
         self.options = options
     }
     
@@ -83,9 +97,9 @@ public class SnapToTurtle16Compiler: NSObject {
     }
     
     func contract(_ syntaxTree: AbstractSyntaxTreeNode?) -> Result<AbstractSyntaxTreeNode?, Error> {
-        let contractionStep = SnapAbstractSyntaxTreeCompiler(shouldRunSpecificTest: shouldRunSpecificTest,
+        let contractionStep = SnapAbstractSyntaxTreeCompiler(shouldRunSpecificTest: options.shouldRunSpecificTest,
                                                              injectModules: Array(injectedModules),
-                                                             isUsingStandardLibrary: isUsingStandardLibrary,
+                                                             isUsingStandardLibrary: options.isUsingStandardLibrary,
                                                              sandboxAccessManager: sandboxAccessManager,
                                                              globalEnvironment: globalEnvironment)
         contractionStep.compile(syntaxTree)
@@ -100,7 +114,11 @@ public class SnapToTurtle16Compiler: NSObject {
     }
     
     func compileSnapToTack(_ ast: AbstractSyntaxTreeNode?) -> Result<AbstractSyntaxTreeNode?, Error> {
-        let compiler = SnapToTackCompiler(symbols: globalSymbols, globalEnvironment: globalEnvironment, options: options)
+        let opts = SnapToTackCompiler.Options(isBoundsCheckEnabled: self.options.isBoundsCheckEnabled,
+                                              shouldDefineCompilerIntrinsicFunctions: self.options.shouldDefineCompilerIntrinsicFunctions)
+        let compiler = SnapToTackCompiler(symbols: globalSymbols,
+                                          globalEnvironment: globalEnvironment,
+                                          options: opts)
         self.tack = Result(catching: {
             try compiler.compile(ast)
         })

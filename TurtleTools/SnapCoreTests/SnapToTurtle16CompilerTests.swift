@@ -90,7 +90,9 @@ func foo() {
             """)
     }
     
-    fileprivate func makeDebugger(options: SnapCompilerOptions, program: String) -> SnapDebugConsole? {
+    fileprivate typealias Options = SnapToTurtle16Compiler.Options
+    
+    fileprivate func makeDebugger(options: Options, program: String) -> SnapDebugConsole? {
         let compiler = SnapToTurtle16Compiler(options: options)
         compiler.compile(program: program)
         XCTAssertFalse(compiler.hasError)
@@ -121,7 +123,7 @@ func foo() {
         return debugger
     }
     
-    fileprivate func run(options: SnapCompilerOptions = SnapCompilerOptions(), program: String) -> SnapDebugConsole? {
+    fileprivate func run(options: Options = Options(), program: String) -> SnapDebugConsole? {
         guard let debugger = makeDebugger(options: options, program: program) else {
             return nil
         }
@@ -758,7 +760,7 @@ func foo() {
     }
     
     func test_EndToEndIntegration_Hlt() {
-        let opts = SnapCompilerOptions(shouldDefineCompilerIntrinsicFunctions: true)
+        let opts = Options(shouldDefineCompilerIntrinsicFunctions: true)
         let debugger = run(options: opts, program: """
             var a: u16 = 0
             hlt()

@@ -679,4 +679,13 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolU8("count"), 1)
     }
+    
+    func test_EndToEndIntegration_ReturnInVoidFunction() {
+        _ = run(program: """
+            func foo() {
+                return
+            }
+            foo()
+            """)
+    }
 }

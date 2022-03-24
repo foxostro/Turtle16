@@ -43,4 +43,15 @@ public class SnapDebugConsole : DebugConsole {
         let word = computer.ram[symbol.offset]
         return word != 0
     }
+    
+    public func loadSymbolPointer(_ identifier: String) -> UInt16? {
+        guard let symbol = symbols?.maybeResolve(identifier: identifier) else {
+            return nil
+        }
+        guard case .constPointer = symbol.type.correspondingConstType else {
+            return nil
+        }
+        let word = computer.ram[symbol.offset]
+        return word
+    }
 }

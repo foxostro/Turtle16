@@ -419,17 +419,6 @@ func foo() {
         XCTAssertEqual(debugger?.computer.ram[SnapCompilerMetrics.kStaticStorageStartAddress+2], 0xaa) // var c
     }
     
-    func test_EndToEndIntegration_FunctionCallAndReturnValue() {
-        let debugger = run(program: """
-            func foo() -> u8 {
-                return 42
-            }
-            let a = foo()
-            """)
-        
-        XCTAssertEqual(debugger?.loadSymbolU8("a"), 42) // var a
-    }
-    
     func test_EndToEndIntegration_StoreLocalVariableDefinedSeveralScopesUp_StackFramesNotEqualToScopes() {
         let debugger = run(program: """
             func foo() -> u8 {
@@ -444,6 +433,55 @@ func foo() {
             let a = foo()
             """)
         
-        XCTAssertEqual(debugger?.loadSymbolU8("a"), 0xaa) // var a
+        XCTAssertEqual(debugger?.loadSymbolU8("a"), 0xaa)
+    }
+    
+    func test_EndToEndIntegration_FunctionCall_NoArgs_ReturnU8() {
+        let debugger = run(program: """
+            func foo() -> u8 {
+                return 42
+            }
+            let a = foo()
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU8("a"), 42)
+    }
+    
+    func test_EndToEndIntegration_FunctionCall_NoArgs_ReturnU16() {
+        let debugger = run(program: """
+            func foo() -> u16 {
+                return 0xabcd
+            }
+            let a = foo()
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("a"), 0xabcd)
+    }
+    
+    func test_EndToEndIntegration_FunctionCall_NoArgs_ReturnU8PromotedToU16() {
+        let debugger = run(program: """
+            func foo() -> u16 {
+                return 0xaa
+            }
+            let a = foo()
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("a"), 0x00aa)
+    }
+    
+    func test_EndToEndIntegration_NestedFunctionDeclarations() {
+        let debugger = run(program: """
+            func foo() -> u8 {
+                let val = 0xaa
+                func bar() -> u8 {
+                    return val
+                }
+                return bar()
+            }
+            let a = foo()
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU8("a"), 0xaa)
+    }
     }
 }

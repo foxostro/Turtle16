@@ -565,4 +565,15 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolU16("result"), 42)
     }
+    
+    func test_EndToEndIntegration_PromoteReturnValue() {
+        let debugger = run(program: """
+            func foo(n: u8) -> u16 {
+                return n
+            }
+            let result = foo(42)
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("result"), 42)
+    }
 }

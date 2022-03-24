@@ -654,4 +654,15 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolU8("count"), 10)
     }
+    
+    func test_EndToEndIntegration_FunctionCallsInExpression() {
+        let debugger = run(program: """
+            func foo(n: u8) -> u8 {
+                return n
+            }
+            let r = foo(2) + 1
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU8("r"), 3)
+    }
 }

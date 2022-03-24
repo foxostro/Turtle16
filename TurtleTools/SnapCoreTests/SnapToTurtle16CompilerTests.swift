@@ -712,4 +712,12 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolU16("foo"), 10)
     }
+    
+    func test_EndToEndIntegration_DeclareVariableWithExplicitType_Bool() {
+        let debugger = run(program: """
+            let foo: bool = true
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolBool("foo"), true)
+    }
 }

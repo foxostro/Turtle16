@@ -624,4 +624,19 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolBool("a"), true)
     }
+    
+    func test_EndToEndIntegration_RecursiveFunctions_u8() {
+        let debugger = run(program: """
+            var count = 0
+            func foo(n: u8) {
+                if n > 0 {
+                    count = count + 1
+                    foo(n - 1)
+                }
+            }
+            foo(10)
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU8("count"), 10)
+    }
 }

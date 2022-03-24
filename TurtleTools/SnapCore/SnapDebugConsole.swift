@@ -32,4 +32,15 @@ public class SnapDebugConsole : DebugConsole {
         let word = computer.ram[symbol.offset]
         return word
     }
+    
+    public func loadSymbolBool(_ identifier: String) -> Bool? {
+        guard let symbol = symbols?.maybeResolve(identifier: identifier) else {
+            return nil
+        }
+        guard symbol.type.correspondingConstType == .constBool else {
+            return nil
+        }
+        let word = computer.ram[symbol.offset]
+        return word != 0
+    }
 }

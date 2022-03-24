@@ -483,5 +483,4 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolU8("a"), 0xaa)
     }
-    }
 }

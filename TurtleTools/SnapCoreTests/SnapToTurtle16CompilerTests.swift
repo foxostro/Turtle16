@@ -732,4 +732,14 @@ func foo() {
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
         XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `integer constant 65535' to type `const bool'")
     }
+    
+    func test_EndToEndIntegration_CastU16DownToU8() {
+        let debugger = run(program: """
+            var foo: u16 = 1
+            let bar: u8 = foo as u8
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("foo"), 1)
+        XCTAssertEqual(debugger?.loadSymbolU8("bar"), 1)
+    }
 }

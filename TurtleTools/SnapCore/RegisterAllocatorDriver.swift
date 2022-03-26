@@ -74,6 +74,9 @@ public class RegisterAllocatorDriver: NSObject {
                 }
                 temporaries.append(registerPool.removeLast())
                 
+            case .failure(.missingLeadingEnter):
+                children.insert(InstructionNode(instruction: kENTER), at: 0)
+                
             case .failure(let e):
                 throw CompilerError(sourceAnchor: children0.first?.sourceAnchor,
                                     message: "Register allocation failed: \(e.description)")

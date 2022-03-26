@@ -587,6 +587,7 @@ class RegisterAllocatorDriverTests: XCTestCase {
     }
     
     func testSpillFails_MissingLeadingEnter() throws {
+        // When there is no leading ENTER instruction, insert one.
         let driver = RegisterAllocatorDriver(numRegisters: 2)
         let input = TopLevel(children: [
             InstructionNode(instruction: kLI, parameters:[
@@ -610,11 +611,68 @@ class RegisterAllocatorDriverTests: XCTestCase {
                 ParameterIdentifier("vr0")
             ])
         ])
-        XCTAssertThrowsError(try driver.compile(topLevel: input)) {
-            let compilerError = $0 as? CompilerError
-            XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "Register allocation failed: missing leading enter")
-        }
+        let expected = TopLevel(children: [
+            InstructionNode(instruction: kENTER, parameters:[
+                ParameterNumber(3)
+            ]),
+            InstructionNode(instruction: kLI, parameters:[
+                ParameterIdentifier("r1"),
+                ParameterNumber(0)
+            ]),
+            InstructionNode(instruction: kSTORE, parameters:[
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("fp"),
+                ParameterNumber(8)
+            ]),
+            InstructionNode(instruction: kLI, parameters:[
+                ParameterIdentifier("r1"),
+                ParameterNumber(1)
+            ]),
+            InstructionNode(instruction: kSTORE, parameters:[
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("fp"),
+                ParameterNumber(9)
+            ]),
+            InstructionNode(instruction: kLI, parameters:[
+                ParameterIdentifier("r1"),
+                ParameterNumber(2)
+            ]),
+            InstructionNode(instruction: kSTORE, parameters:[
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("fp"),
+                ParameterNumber(10)
+            ]),
+            InstructionNode(instruction: kLOAD, parameters:[
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("fp"),
+                ParameterNumber(8)
+            ]),
+            InstructionNode(instruction: kLOAD, parameters:[
+                ParameterIdentifier("r0"),
+                ParameterIdentifier("fp"),
+                ParameterNumber(9)
+            ]),
+            InstructionNode(instruction: kCMP, parameters:[
+                ParameterIdentifier("r0"),
+                ParameterIdentifier("r1")
+            ]),
+            InstructionNode(instruction: kLOAD, parameters:[
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("fp"),
+                ParameterNumber(8)
+            ]),
+            InstructionNode(instruction: kLOAD, parameters:[
+                ParameterIdentifier("r0"),
+                ParameterIdentifier("fp"),
+                ParameterNumber(10)
+            ]),
+            InstructionNode(instruction: kCMP, parameters:[
+                ParameterIdentifier("r0"),
+                ParameterIdentifier("r1")
+            ])
+        ])
+        let actual = try driver.compile(topLevel: input)
+        XCTAssertEqual(actual, expected)
     }
     
     func testSpill() throws {

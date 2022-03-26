@@ -64,6 +64,7 @@ public class RegisterAllocatorDriver: NSObject {
             switch spillResult {
             case .success(let r):
                 children = r
+                allocations = allocateRegisters(numRegisters, determineLiveIntervals(children))
                 done = true
                 
             case .failure(.outOfTemporaries):

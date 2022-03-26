@@ -825,4 +825,18 @@ func foo() {
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 3..<4)
         XCTAssertEqual(compiler.errors.first?.message, "inappropriate use of a function type (Try taking the function's address instead.)")
     }
+    
+    func test_EndToEndIntegration_CannotAddArrayToInteger() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: """
+            let foo = [_]u8{1, 2, 3}
+            let bar = 1 + foo
+            """)
+        
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "1 + foo")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 1..<2)
+        XCTAssertEqual(compiler.errors.first?.message, "binary operator `+' cannot be applied to operands of types `integer constant 1' and `[3]const u8'")
+    }
 }

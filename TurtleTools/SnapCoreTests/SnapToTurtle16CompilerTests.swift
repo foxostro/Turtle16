@@ -794,4 +794,17 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolArrayOfU8(3, "arr"), [1, 2, 3])
     }
+    
+    func test_EndToEndIntegration_FailToAssignScalarToArray() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: """
+            let arr: [_]u8 = 1
+            """)
+        
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "1")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
+        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `integer constant 1' to type `[_]const u8'")
+    }
 }

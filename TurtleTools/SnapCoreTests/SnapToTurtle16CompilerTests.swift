@@ -847,4 +847,12 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolArrayOfU16(10, "arr"), [100, 101, 102, 103, 104, 105, 106, 107, 108, 109])
     }
+    
+    func test_EndToEndIntegration_ArrayOfU8ConvertedToArrayOfU16OnInitialAssignment() {
+        let debugger = run(program: """
+            let arr: [_]u16 = [_]u16{42 as u8}
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolArrayOfU16(1, "arr"), [42])
+    }
 }

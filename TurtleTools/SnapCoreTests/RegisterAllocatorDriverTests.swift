@@ -513,8 +513,7 @@ class RegisterAllocatorDriverTests: XCTestCase {
     func testSubroutine() throws {
         let driver = RegisterAllocatorDriver()
         let input = TopLevel(children: [
-            Subroutine(children: [
-                LabelDeclaration(identifier: ""),
+            Subroutine(identifier: "", children: [
                 InstructionNode(instruction: kADD, parameters:[
                     ParameterIdentifier("sp"),
                     ParameterIdentifier("fp"),
@@ -523,8 +522,7 @@ class RegisterAllocatorDriverTests: XCTestCase {
             ])
         ])
         let expected = TopLevel(children: [
-            Subroutine(children: [
-                LabelDeclaration(identifier: ""),
+            Subroutine(identifier: "", children: [
                 InstructionNode(instruction: kADD, parameters:[
                     ParameterIdentifier("sp"),
                     ParameterIdentifier("fp"),

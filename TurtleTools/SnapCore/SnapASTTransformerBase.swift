@@ -80,7 +80,7 @@ public class SnapASTTransformerBase: NSObject {
     
     public func compile(subroutine node: Subroutine) throws -> AbstractSyntaxTreeNode? {
         let children: [AbstractSyntaxTreeNode] = try node.children.compactMap { try compile($0) }
-        return Subroutine(sourceAnchor: node.sourceAnchor, children: children)
+        return Subroutine(sourceAnchor: node.sourceAnchor, identifier: node.identifier, children: children)
     }
     
     public func compile(seq node: Seq) throws -> AbstractSyntaxTreeNode? {

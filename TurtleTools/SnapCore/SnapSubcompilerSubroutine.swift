@@ -14,18 +14,15 @@ public class SnapSubcompilerSubroutine: SnapASTTransformerBase {
     
     public override func compile(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {
         var children: [AbstractSyntaxTreeNode] = try node.children.compactMap { try compile($0) }
-        if children.count == 1 {
-            children += [
-                InstructionNode(instruction: kHLT)
-            ]
-        } else {
-            if subroutines.count == 0 {
-                children += [
-                    InstructionNode(instruction: kNOP),
-                    InstructionNode(instruction: kHLT)
-                ]
-            }
-            children += subroutines.flatMap { $0.children }
+        
+        children += [
+            InstructionNode(instruction: kNOP),
+            InstructionNode(instruction: kHLT)
+        ]
+        
+        for subroutine in subroutines {
+            children.append(LabelDeclaration(identifier: subroutine.identifier))
+            children += subroutine.children
         }
         
         return TopLevel(sourceAnchor: node.sourceAnchor, children: children)

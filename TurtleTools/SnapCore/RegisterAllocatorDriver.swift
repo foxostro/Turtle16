@@ -23,6 +23,7 @@ public class RegisterAllocatorDriver: NSObject {
         let topLevel1 = TopLevel(sourceAnchor: topLevel0.sourceAnchor, children: children1)
         let children2 = try iterateSubroutineNodes(topLevel1.children) { subroutine in
             Subroutine(sourceAnchor: subroutine.sourceAnchor,
+                       identifier: subroutine.identifier,
                        children: try compile(children: subroutine.children))
         }
         let topLevel2 = TopLevel(sourceAnchor: topLevel1.sourceAnchor, children: children2)

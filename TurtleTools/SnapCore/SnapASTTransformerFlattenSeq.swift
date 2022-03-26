@@ -16,7 +16,7 @@ public class SnapASTTransformerFlattenSeq: SnapASTTransformerBase {
     
     public override func compile(subroutine node: Subroutine) throws -> AbstractSyntaxTreeNode? {
         let flatChildren = flatten(node.children)
-        return Subroutine(sourceAnchor: node.sourceAnchor, children: flatChildren)
+        return Subroutine(sourceAnchor: node.sourceAnchor, identifier: node.identifier, children: flatChildren)
     }
     
     public override func compile(seq node: Seq) throws -> AbstractSyntaxTreeNode? {

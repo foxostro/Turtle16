@@ -78,7 +78,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             if options.shouldDefineCompilerIntrinsicFunctions {
                 defineCompilerIntrinsicFunctions()
             }
-            children += collectSubroutineBodies()
+            children += subroutines
             let seq = Seq(sourceAnchor: node0?.sourceAnchor, children: children)
             let result = flatten(seq)
             return result
@@ -91,22 +91,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         // Define the other compiler intrinsic functions with stub implementations that immediately halt the running program.
         // TODO: Provide implementations of these functions that actually work.
         for name in [kHalt, kPanic] {
-            subroutines.append(Subroutine(children: [
-                LabelDeclaration(identifier: name),
+            subroutines.append(Subroutine(identifier: name, children: [
                 TackInstructionNode(instruction: .hlt)
             ]))
         }
-    }
-    
-    func collectSubroutineBodies() -> [AbstractSyntaxTreeNode] {
-        var nodes: [AbstractSyntaxTreeNode] = []
-        
-        if !subroutines.isEmpty {
-            nodes.append(TackInstructionNode(instruction: .hlt))
-            nodes += subroutines
-        }
-        
-        return nodes
     }
     
     func flatten(_ node: AbstractSyntaxTreeNode?) -> AbstractSyntaxTreeNode? {
@@ -130,19 +118,17 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         let sizeOfLocalVariables = node.symbols.highwaterMark
         
         let mangledName = (try TypeContextTypeChecker(symbols: symbols!).check(expression: node.functionType).unwrapFunctionType()).mangledName!
-        let labelHead = mangledName
         
         var children: [AbstractSyntaxTreeNode] = []
         
         children += [
-            LabelDeclaration(identifier: labelHead),
             TackInstructionNode(instruction: .enter, parameters: [
                 ParameterNumber(sizeOfLocalVariables)
             ]),
             try compile(node.body)!
         ]
         
-        let subroutine = Subroutine(sourceAnchor: node.sourceAnchor, children: children)
+        let subroutine = Subroutine(sourceAnchor: node.sourceAnchor, identifier: mangledName, children: children)
         subroutines.append(subroutine)
         
         return nil

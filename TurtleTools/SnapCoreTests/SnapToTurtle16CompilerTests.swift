@@ -873,4 +873,17 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolArrayOfU16(3, "foo"), [1, 2, 3])
     }
+    
+    func test_EndToEndIntegration_FailToCastIntegerLiteralToArrayOfU8BecauseOfOverflow() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: """
+            let foo = [_]u8{0x1001, 0x1002, 0x1003} as [_]u8
+            """)
+        
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "0x1001")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
+        XCTAssertEqual(compiler.errors.first?.message, "integer constant `4097' overflows when stored into `u8'")
+    }
 }

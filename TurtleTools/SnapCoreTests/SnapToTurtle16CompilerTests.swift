@@ -964,4 +964,28 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolU8("foo"), 3)
     }
+    
+    // TODO: Does anything ever set the initial values of sp and fp? The program needs to do that before calling alloca.
+    
+    func test_EndToEndIntegration_PassArrayAsFunctionParameter_0() {
+        let debugger = run(program: """
+            func sum(a: [1]u16) -> u16 {
+                return a[0]
+            }
+            let foo = sum([_]u16{0xabcd})
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("foo"), 0xabcd)
+    }
+    
+    func test_EndToEndIntegration_PassArrayAsFunctionParameter_0a() {
+        let debugger = run(program: """
+            func sum(a: [2]u16) -> u16 {
+                return a[0] + a[1]
+            }
+            let foo = sum([_]u16{1, 2})
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("foo"), 3)
+    }
 }

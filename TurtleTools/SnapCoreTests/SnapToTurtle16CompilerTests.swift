@@ -786,4 +786,12 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolArrayOfU8(3, "arr"), [1, 2, 3])
     }
+    
+    func test_EndToEndIntegration_DeclareArrayType_ExplicitType() {
+        let debugger = run(program: """
+            let arr: [_]u8 = [_]u8{1, 2, 3}
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolArrayOfU8(3, "arr"), [1, 2, 3])
+    }
 }

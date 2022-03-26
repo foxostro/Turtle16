@@ -949,4 +949,19 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolU16("bar"), 42)
     }
+    
+    func test_EndToEndIntegration_SumLoop() {
+        let debugger = run(program: """
+            func sum() -> u8 {
+                var accum = 0
+                for i in 0..3 {
+                    accum = accum + 1
+                }
+                return accum
+            }
+            let foo = sum()
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU8("foo"), 3)
+    }
 }

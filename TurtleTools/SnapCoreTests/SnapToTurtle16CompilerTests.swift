@@ -915,4 +915,14 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolArrayOfU16(10, "a"), [100, 101, 102, 103, 104, 105, 106, 107, 108, 109])
     }
+    
+    func test_EndToEndIntegration_ReassignArrayContents_ConvertingFromArrayOfU8ToArrayOfU16() {
+        let debugger = run(program: """
+            var a: [_]u16 = [_]u16{0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff}
+            let b = [_]u8{100, 101, 102, 103, 104, 105, 106, 107, 108, 109}
+            a = b
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolArrayOfU16(10, "a"), [100, 101, 102, 103, 104, 105, 106, 107, 108, 109])
+    }
 }

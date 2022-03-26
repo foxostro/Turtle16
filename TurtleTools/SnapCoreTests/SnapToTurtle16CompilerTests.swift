@@ -886,4 +886,14 @@ func foo() {
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
         XCTAssertEqual(compiler.errors.first?.message, "integer constant `4097' overflows when stored into `u8'")
     }
+    
+    // TODO: Eliminate LvalueExpressionTypeChecker and RvalueExpressionTypeChecker. Replace with functions lvalueType() and rvalueType() which work like in a manner similar to existing lvalue() and rvalue() functions.
+    
+    func test_EndToEndIntegration_CastArrayOfU16ToArrayOfU8() {
+        let debugger = run(program: """
+            let foo = [_]u16{0x1001 as u16, 0x1002 as u16, 0x1003 as u16} as [_]u8
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolArrayOfU8(3, "foo"), [1, 2, 3])
+    }
 }

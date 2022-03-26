@@ -4035,4 +4035,32 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr5")
     }
+    
+    func testRvalue_As_LiteralArray() throws {
+        let compiler = makeCompiler()
+        let literalArrayType = Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8))
+        let literalArray = Expression.LiteralArray(arrayType: literalArrayType, elements: [
+            Expression.LiteralInt(42)
+        ])
+        let targetType = Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u16))
+        let asExpr = Expression.As(expr: literalArray, targetType: targetType)
+        let actual = try compiler.rvalue(expr: asExpr)
+        let expected = Seq(children: [
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(0x0110)
+            ]),
+            TackInstructionNode(instruction: .li16, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterNumber(42)
+            ]),
+            TackInstructionNode(instruction: .store, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr0"),
+                ParameterNumber(0)
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr0")
+    }
 }

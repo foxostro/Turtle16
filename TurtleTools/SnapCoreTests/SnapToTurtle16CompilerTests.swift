@@ -807,4 +807,22 @@ func foo() {
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
         XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `integer constant 1' to type `[_]const u8'")
     }
+    
+    // TODO: Consider changing SnapToTurtle16Compiler.compile() so it returns either the compiled program or a compiler error. Eliminate the irregular `hasError' and `errors' properties.
+    
+    func test_EndToEndIntegration_FailToAssignFunctionToArray() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: """
+            func foo(bar: u8, baz: u16) -> bool {
+                return false
+            }
+            let arr: [_]u16 = foo
+            """)
+        
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "foo")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 3..<4)
+        XCTAssertEqual(compiler.errors.first?.message, "inappropriate use of a function type (Try taking the function's address instead.)")
+    }
 }

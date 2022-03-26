@@ -937,4 +937,16 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolU8("bar"), 42)
     }
+    
+    func test_EndToEndIntegration_AccessVariableInFunction_U16() {
+        let debugger = run(program: """
+            func foo() -> u16 {
+                let result: u16 = 42
+                return result
+            }
+            let bar: u16 = foo()
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("bar"), 42)
+    }
 }

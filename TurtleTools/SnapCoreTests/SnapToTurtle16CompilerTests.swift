@@ -896,4 +896,13 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolArrayOfU8(3, "foo"), [1, 2, 3])
     }
+    
+    func test_EndToEndIntegration_ReassignArrayContentsWithLiteralArray() {
+        let debugger = run(program: """
+            var arr: [_]u16 = [_]u16{0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff}
+            arr = [_]u16{100, 101, 102, 103, 104, 105, 106, 107, 108, 109}
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolArrayOfU16(10, "arr"), [100, 101, 102, 103, 104, 105, 106, 107, 108, 109])
+    }
 }

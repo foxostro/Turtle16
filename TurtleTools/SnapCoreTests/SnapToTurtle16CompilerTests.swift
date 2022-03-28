@@ -12,6 +12,8 @@ import Turtle16SimulatorCore
 import TurtleCore
 
 class SnapToTurtle16CompilerTests: XCTestCase {
+    let isVerboseLogging = false
+    
     func testEmptyProgram() throws {
         let compiler = SnapToTurtle16Compiler()
         compiler.compile(program: "")
@@ -102,14 +104,23 @@ func foo() {
             return nil
         }
         
-//        print(AssemblerListingMaker().makeListing(try! compiler.assembly.get()))
-//        print((try! compiler.tack.get() as! Seq).makeChildDescriptions())
+        if isVerboseLogging {
+            print(AssemblerListingMaker().makeListing(try! compiler.assembly.get()))
+            print((try! compiler.tack.get() as! Seq).makeChildDescriptions())
+        }
         
         let computer = Turtle16Computer(SchematicLevelCPUModel())
-        computer.cpu.store = {(value: UInt16, addr: MemoryAddress) in
+        let isVerboseLogging = self.isVerboseLogging
+        computer.cpu.store = { (value: UInt16, addr: MemoryAddress) in
+            if isVerboseLogging {
+                print("store ram[\(addr.value)] <- \(value)")
+            }
             computer.ram[addr.value] = value
         }
-        computer.cpu.load = {(addr: MemoryAddress) in
+        computer.cpu.load = { (addr: MemoryAddress) in
+            if isVerboseLogging {
+                print("load ram[\(addr.value)] -> \(computer.ram[addr.value])")
+            }
             return computer.ram[addr.value]
         }
         
@@ -127,7 +138,22 @@ func foo() {
         guard let debugger = makeDebugger(options: options, program: program) else {
             return nil
         }
-        debugger.interpreter.runOne(instruction: .run)
+        
+        if isVerboseLogging {
+            while !debugger.computer.isHalted {
+                print("---")
+                let pc = debugger.computer.pc
+                debugger.interpreter.runOne(instruction: .disassemble(.baseCount(pc, 1)))
+                debugger.interpreter.runOne(instruction: .reg)
+                while pc == debugger.computer.pc {
+                    debugger.interpreter.runOne(instruction: .step(count: 1))
+                }
+            }
+        }
+        else {
+            debugger.interpreter.runOne(instruction: .run)
+        }
+        
         return debugger
     }
     

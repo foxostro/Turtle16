@@ -1074,4 +1074,17 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolArrayOfU16(3, "foo"), [0x1234, 0x5678, 0x9abc])
     }
+    
+    // TODO: An instruction sequence like LI+LUI is used to load a sixteen-bit value into a register. This should be replaced with a new macro instruction LIU16 which is only expanded into LI+LIU after register allocation is complete. First, this is much more ergonomic. Second, when the destination register is spilled, this leads to more efficient code avoiding an unnecessary STORE.
+    
+    func test_EndToEndIntegration_PassTwoArraysAsFunctionParameters_1() {
+        let debugger = run(program: """
+            func sum(a: [3]u16, b: [3]u16, c: u16) -> u16 {
+                return (a[0] + b[0] + a[1] + b[1] + a[2] + b[2]) * c
+            }
+            let foo = sum([_]u16{1, 2, 3}, [_]u16{4, 5, 6}, 2)
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("foo"), 42)
+    }
 }

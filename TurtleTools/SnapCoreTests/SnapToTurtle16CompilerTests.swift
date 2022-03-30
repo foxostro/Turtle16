@@ -1311,4 +1311,15 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolU8("r"), 6)
     }
+    
+    func test_EndToEndIntegration_CannotMakeMutatingPointerFromConstant_1() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: """
+            let foo: u16 = 0xabcd
+            var bar: *u16 = &foo
+            """)
+        
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `*const u16' to type `*u16'")
+    }
 }

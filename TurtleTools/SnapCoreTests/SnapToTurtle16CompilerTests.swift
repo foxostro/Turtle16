@@ -1026,4 +1026,15 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolU16("foo"), 1)
     }
+    
+    func test_EndToEndIntegration_PassArrayAsFunctionParameter_1() {
+        let debugger = run(program: """
+            func sum(a: [3]u16) -> u16 {
+                return a[0] + a[1] + a[2]
+            }
+            let foo = sum([_]u16{1, 2, 3})
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("foo"), 6)
+    }
 }

@@ -10,8 +10,6 @@ import TurtleCore
 import Turtle16SimulatorCore
 
 public class RegisterSpiller: NSObject {
-    public static let kSpillSlotBaseOffset = 8
-    
     public enum SpillError : Error {
         case missingLeadingEnter
         case missingSpillSlot
@@ -42,7 +40,7 @@ public class RegisterSpiller: NSObject {
         
         // Reserve memory for spills by updating the leading ENTER instruction.
         var nodes1 = nodes0
-        var spillSlotOffset = kSpillSlotBaseOffset
+        var spillSlotOffset = 0
         if spilledIntervals.count > 0 {
             guard let oldEnter = nodes1.first as? InstructionNode, oldEnter.instruction == kENTER else {
                 return .failure(.missingLeadingEnter)
@@ -91,9 +89,9 @@ public class RegisterSpiller: NSObject {
                     let tempReg = ParameterIdentifier("r\(temporary)")
                     _ = temporaries.removeFirst()
                     currentInstruction = RegisterUtils.rewrite(node: currentInstruction, from: spilledInterval.virtualRegisterName, to: tempReg.value)
-                    let offset = spillSlotOffset + spillSlot
+                    let offset = -(spillSlotOffset + spillSlot + 1)
                     let spillLoadCode: [AbstractSyntaxTreeNode]
-                    if offset > 15 {
+                    if offset > 15 || offset < -16 {
                         spillLoadCode = [
                             InstructionNode(instruction: kLI, parameters: [ra, ParameterNumber(offset & 0x00ff)]),
                             InstructionNode(instruction: kLUI, parameters: [ra, ParameterNumber((offset & 0xff) >> 8)]),
@@ -119,9 +117,9 @@ public class RegisterSpiller: NSObject {
                     }
                     let tempReg = ParameterIdentifier("r\(temporary)")
                     currentInstruction = RegisterUtils.rewrite(node: currentInstruction, from: spilledInterval.virtualRegisterName, to: tempReg.value)
-                    let offset = spillSlotOffset + spillSlot
+                    let offset = -(spillSlotOffset + spillSlot + 1)
                     let spillStoreCode: [AbstractSyntaxTreeNode]
-                    if offset > 15 {
+                    if offset > 15 || offset < -16 {
                         spillStoreCode = [
                             InstructionNode(instruction: kLI, parameters: [ra, ParameterNumber(offset & 0x00ff)]),
                             InstructionNode(instruction: kLUI, parameters: [ra, ParameterNumber((offset & 0xff) >> 8)]),

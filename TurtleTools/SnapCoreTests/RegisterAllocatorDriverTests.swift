@@ -622,7 +622,7 @@ class RegisterAllocatorDriverTests: XCTestCase {
             InstructionNode(instruction: kSTORE, parameters:[
                 ParameterIdentifier("r1"),
                 ParameterIdentifier("fp"),
-                ParameterNumber(8)
+                ParameterNumber(-1)
             ]),
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("r1"),
@@ -631,7 +631,7 @@ class RegisterAllocatorDriverTests: XCTestCase {
             InstructionNode(instruction: kSTORE, parameters:[
                 ParameterIdentifier("r1"),
                 ParameterIdentifier("fp"),
-                ParameterNumber(9)
+                ParameterNumber(-2)
             ]),
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("r1"),
@@ -640,17 +640,17 @@ class RegisterAllocatorDriverTests: XCTestCase {
             InstructionNode(instruction: kSTORE, parameters:[
                 ParameterIdentifier("r1"),
                 ParameterIdentifier("fp"),
-                ParameterNumber(10)
+                ParameterNumber(-3)
             ]),
             InstructionNode(instruction: kLOAD, parameters:[
                 ParameterIdentifier("r1"),
                 ParameterIdentifier("fp"),
-                ParameterNumber(8)
+                ParameterNumber(-1)
             ]),
             InstructionNode(instruction: kLOAD, parameters:[
                 ParameterIdentifier("r0"),
                 ParameterIdentifier("fp"),
-                ParameterNumber(9)
+                ParameterNumber(-2)
             ]),
             InstructionNode(instruction: kCMP, parameters:[
                 ParameterIdentifier("r0"),
@@ -659,12 +659,12 @@ class RegisterAllocatorDriverTests: XCTestCase {
             InstructionNode(instruction: kLOAD, parameters:[
                 ParameterIdentifier("r1"),
                 ParameterIdentifier("fp"),
-                ParameterNumber(8)
+                ParameterNumber(-1)
             ]),
             InstructionNode(instruction: kLOAD, parameters:[
                 ParameterIdentifier("r0"),
                 ParameterIdentifier("fp"),
-                ParameterNumber(10)
+                ParameterNumber(-3)
             ]),
             InstructionNode(instruction: kCMP, parameters:[
                 ParameterIdentifier("r0"),
@@ -709,7 +709,7 @@ class RegisterAllocatorDriverTests: XCTestCase {
             InstructionNode(instruction: kSTORE, parameters:[
                 ParameterIdentifier("r1"),
                 ParameterIdentifier("fp"),
-                ParameterNumber(8)
+                ParameterNumber(-1)
             ]),
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("r1"),
@@ -718,7 +718,7 @@ class RegisterAllocatorDriverTests: XCTestCase {
             InstructionNode(instruction: kSTORE, parameters:[
                 ParameterIdentifier("r1"),
                 ParameterIdentifier("fp"),
-                ParameterNumber(9)
+                ParameterNumber(-2)
             ]),
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("r1"),
@@ -727,17 +727,17 @@ class RegisterAllocatorDriverTests: XCTestCase {
             InstructionNode(instruction: kSTORE, parameters:[
                 ParameterIdentifier("r1"),
                 ParameterIdentifier("fp"),
-                ParameterNumber(10)
+                ParameterNumber(-3)
             ]),
             InstructionNode(instruction: kLOAD, parameters:[
                 ParameterIdentifier("r1"),
                 ParameterIdentifier("fp"),
-                ParameterNumber(8)
+                ParameterNumber(-1)
             ]),
             InstructionNode(instruction: kLOAD, parameters:[
                 ParameterIdentifier("r0"),
                 ParameterIdentifier("fp"),
-                ParameterNumber(9)
+                ParameterNumber(-2)
             ]),
             InstructionNode(instruction: kCMP, parameters:[
                 ParameterIdentifier("r0"),
@@ -746,12 +746,12 @@ class RegisterAllocatorDriverTests: XCTestCase {
             InstructionNode(instruction: kLOAD, parameters:[
                 ParameterIdentifier("r1"),
                 ParameterIdentifier("fp"),
-                ParameterNumber(8)
+                ParameterNumber(-1)
             ]),
             InstructionNode(instruction: kLOAD, parameters:[
                 ParameterIdentifier("r0"),
                 ParameterIdentifier("fp"),
-                ParameterNumber(10)
+                ParameterNumber(-3)
             ]),
             InstructionNode(instruction: kCMP, parameters:[
                 ParameterIdentifier("r0"),
@@ -1207,7 +1207,7 @@ class RegisterAllocatorDriverTests: XCTestCase {
                 InstructionNode(instruction: kSTORE, parameters:[
                     ParameterIdentifier("r4"),
                     ParameterIdentifier("fp"),
-                    ParameterNumber(8)
+                    ParameterNumber(-1)
                 ]),
                 InstructionNode(instruction: kADDI, parameters:[
                     ParameterIdentifier("r0"),
@@ -1230,7 +1230,7 @@ class RegisterAllocatorDriverTests: XCTestCase {
                 InstructionNode(instruction: kSTORE, parameters:[
                     ParameterIdentifier("r4"),
                     ParameterIdentifier("fp"),
-                    ParameterNumber(9)
+                    ParameterNumber(-2)
                 ]),
                 InstructionNode(instruction: kADDI, parameters:[
                     ParameterIdentifier("r0"),
@@ -1276,7 +1276,7 @@ class RegisterAllocatorDriverTests: XCTestCase {
                 InstructionNode(instruction: kLOAD, parameters:[
                     ParameterIdentifier("r4"),
                     ParameterIdentifier("fp"),
-                    ParameterNumber(9)
+                    ParameterNumber(-2)
                 ]),
                 InstructionNode(instruction: kADD, parameters:[
                     ParameterIdentifier("r0"),
@@ -1286,7 +1286,7 @@ class RegisterAllocatorDriverTests: XCTestCase {
                 InstructionNode(instruction: kLOAD, parameters:[
                     ParameterIdentifier("r4"),
                     ParameterIdentifier("fp"),
-                    ParameterNumber(8)
+                    ParameterNumber(-1)
                 ]),
                 InstructionNode(instruction: kSTORE, parameters:[
                     ParameterIdentifier("r0"),

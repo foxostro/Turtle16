@@ -76,10 +76,8 @@ class RegisterSpillerTests: XCTestCase {
     }
     
     func testSpillOneDestinationRegister() throws {
-        let spillSlot = 0
-        let spillSlotBaseOffset = 9
         let spilledIntervals = [
-            LiveInterval(range: 1..<2, virtualRegisterName: "vr0", physicalRegisterName: nil, spillSlot: spillSlot)
+            LiveInterval(range: 1..<2, virtualRegisterName: "vr0", physicalRegisterName: nil, spillSlot: 0)
         ]
         let nodes = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(1)]),
@@ -88,7 +86,7 @@ class RegisterSpillerTests: XCTestCase {
         let expected = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(2)]),
             InstructionNode(instruction: kLI, parameters: [ParameterIdentifier("r4"), ParameterNumber(0)]),
-            InstructionNode(instruction: kSTORE, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(spillSlotBaseOffset + spillSlot)])
+            InstructionNode(instruction: kSTORE, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2)])
         ]
         switch RegisterSpiller.spill(spilledIntervals: spilledIntervals, temporaries: [4], nodes: nodes) {
         case .success(let result):
@@ -100,10 +98,8 @@ class RegisterSpillerTests: XCTestCase {
     }
     
     func testSpillWhenEnterHasNoParameters() throws {
-        let spillSlot = 0
-        let spillSlotBaseOffset = 8
         let spilledIntervals = [
-            LiveInterval(range: 1..<2, virtualRegisterName: "vr0", physicalRegisterName: nil, spillSlot: spillSlot)
+            LiveInterval(range: 1..<2, virtualRegisterName: "vr0", physicalRegisterName: nil, spillSlot: 0)
         ]
         let nodes = [
             InstructionNode(instruction: kENTER),
@@ -112,7 +108,7 @@ class RegisterSpillerTests: XCTestCase {
         let expected = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(1)]),
             InstructionNode(instruction: kLI, parameters: [ParameterIdentifier("r4"), ParameterNumber(0)]),
-            InstructionNode(instruction: kSTORE, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(spillSlotBaseOffset + spillSlot)])
+            InstructionNode(instruction: kSTORE, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-1)])
         ]
         switch RegisterSpiller.spill(spilledIntervals: spilledIntervals, temporaries: [4], nodes: nodes) {
         case .success(let result):
@@ -124,10 +120,8 @@ class RegisterSpillerTests: XCTestCase {
     }
     
     func testSpillOneDestinationRegisterTwice() throws {
-        let spillSlot = 0
-        let spillSlotBaseOffset = 9
         let spilledIntervals = [
-            LiveInterval(range: 1..<3, virtualRegisterName: "vr0", physicalRegisterName: nil, spillSlot: spillSlot)
+            LiveInterval(range: 1..<3, virtualRegisterName: "vr0", physicalRegisterName: nil, spillSlot: 0)
         ]
         let nodes = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(1)]),
@@ -137,9 +131,9 @@ class RegisterSpillerTests: XCTestCase {
         let expected = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(2)]),
             InstructionNode(instruction: kLI, parameters: [ParameterIdentifier("r4"), ParameterNumber(0)]),
-            InstructionNode(instruction: kSTORE, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(spillSlotBaseOffset + spillSlot)]),
+            InstructionNode(instruction: kSTORE, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2)]),
             InstructionNode(instruction: kLI, parameters: [ParameterIdentifier("r4"), ParameterNumber(1)]),
-            InstructionNode(instruction: kSTORE, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(spillSlotBaseOffset + spillSlot)])
+            InstructionNode(instruction: kSTORE, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2)])
         ]
         switch RegisterSpiller.spill(spilledIntervals: spilledIntervals, temporaries: [4], nodes: nodes) {
         case .success(let result):
@@ -151,12 +145,9 @@ class RegisterSpillerTests: XCTestCase {
     }
     
     func testSpillTwoDestinationRegisters() throws {
-        let spillSlot0 = 0
-        let spillSlot1 = 1
-        let spillSlotBaseOffset = 9
         let spilledIntervals = [
-            LiveInterval(range: 1..<2, virtualRegisterName: "vr0", physicalRegisterName: nil, spillSlot: spillSlot0),
-            LiveInterval(range: 2..<3, virtualRegisterName: "vr1", physicalRegisterName: nil, spillSlot: spillSlot1)
+            LiveInterval(range: 1..<2, virtualRegisterName: "vr0", physicalRegisterName: nil, spillSlot: 0),
+            LiveInterval(range: 2..<3, virtualRegisterName: "vr1", physicalRegisterName: nil, spillSlot: 1)
         ]
         let nodes = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(1)]),
@@ -166,9 +157,9 @@ class RegisterSpillerTests: XCTestCase {
         let expected = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(3)]),
             InstructionNode(instruction: kLI, parameters: [ParameterIdentifier("r4"), ParameterNumber(0)]),
-            InstructionNode(instruction: kSTORE, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(spillSlotBaseOffset + spillSlot0)]),
+            InstructionNode(instruction: kSTORE, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2)]),
             InstructionNode(instruction: kLI, parameters: [ParameterIdentifier("r4"), ParameterNumber(1)]),
-            InstructionNode(instruction: kSTORE, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(spillSlotBaseOffset + spillSlot1)])
+            InstructionNode(instruction: kSTORE, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-3)])
         ]
         switch RegisterSpiller.spill(spilledIntervals: spilledIntervals, temporaries: [4], nodes: nodes) {
         case .success(let result):
@@ -180,10 +171,8 @@ class RegisterSpillerTests: XCTestCase {
     }
     
     func testSpillOneSourceRegister() throws {
-        let spillSlot = 0
-        let spillSlotBaseOffset = 9
         let spilledIntervals = [
-            LiveInterval(range: 1..<2, virtualRegisterName: "vr0", physicalRegisterName: nil, spillSlot: spillSlot)
+            LiveInterval(range: 1..<2, virtualRegisterName: "vr0", physicalRegisterName: nil, spillSlot: 0)
         ]
         let nodes = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(1)]),
@@ -191,7 +180,7 @@ class RegisterSpillerTests: XCTestCase {
         ]
         let expected = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(2)]),
-            InstructionNode(instruction: kLOAD, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(spillSlotBaseOffset + spillSlot)]),
+            InstructionNode(instruction: kLOAD, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2)]),
             InstructionNode(instruction: kADD, parameters: [ParameterIdentifier("r2"), ParameterIdentifier("r1"), ParameterIdentifier("r4")])
         ]
         switch RegisterSpiller.spill(spilledIntervals: spilledIntervals, temporaries: [4], nodes: nodes) {
@@ -204,10 +193,8 @@ class RegisterSpillerTests: XCTestCase {
     }
     
     func testSpillBothSourceAndDestinationRegister() throws {
-        let spillSlot = 0
-        let spillSlotBaseOffset = 9
         let spilledIntervals = [
-            LiveInterval(range: 1..<2, virtualRegisterName: "vr0", physicalRegisterName: nil, spillSlot: spillSlot)
+            LiveInterval(range: 1..<2, virtualRegisterName: "vr0", physicalRegisterName: nil, spillSlot: 0)
         ]
         let nodes = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(1)]),
@@ -215,9 +202,9 @@ class RegisterSpillerTests: XCTestCase {
         ]
         let expected = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(2)]),
-            InstructionNode(instruction: kLOAD, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(spillSlotBaseOffset + spillSlot)]),
+            InstructionNode(instruction: kLOAD, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2)]),
             InstructionNode(instruction: kADD, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("r1"), ParameterIdentifier("r4")]),
-            InstructionNode(instruction: kSTORE, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(spillSlotBaseOffset + spillSlot)])
+            InstructionNode(instruction: kSTORE, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2)])
         ]
         switch RegisterSpiller.spill(spilledIntervals: spilledIntervals, temporaries: [4], nodes: nodes) {
         case .success(let result):
@@ -229,10 +216,8 @@ class RegisterSpillerTests: XCTestCase {
     }
     
     func testSpillBothSourceAndDestinationRegisterTwice() throws {
-        let spillSlot = 0
-        let spillSlotBaseOffset = 9
         let spilledIntervals = [
-            LiveInterval(range: 1..<3, virtualRegisterName: "vr0", physicalRegisterName: nil, spillSlot: spillSlot)
+            LiveInterval(range: 1..<3, virtualRegisterName: "vr0", physicalRegisterName: nil, spillSlot: 0)
         ]
         let nodes = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(1)]),
@@ -242,13 +227,13 @@ class RegisterSpillerTests: XCTestCase {
         let expected = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(2)]),
             
-            InstructionNode(instruction: kLOAD, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(spillSlotBaseOffset + spillSlot)]),
+            InstructionNode(instruction: kLOAD, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2)]),
             InstructionNode(instruction: kADD, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("r1"), ParameterIdentifier("r4")]),
-            InstructionNode(instruction: kSTORE, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(spillSlotBaseOffset + spillSlot)]),
+            InstructionNode(instruction: kSTORE, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2)]),
             // Storing and then immediately loading again is inefficient. Rely on the optimizer to clean this up later.
-            InstructionNode(instruction: kLOAD, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(spillSlotBaseOffset + spillSlot)]),
+            InstructionNode(instruction: kLOAD, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2)]),
             InstructionNode(instruction: kADD, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("r2"), ParameterIdentifier("r4")]),
-            InstructionNode(instruction: kSTORE, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(spillSlotBaseOffset + spillSlot)])
+            InstructionNode(instruction: kSTORE, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2)])
         ]
         switch RegisterSpiller.spill(spilledIntervals: spilledIntervals, temporaries: [4], nodes: nodes) {
         case .success(let result):
@@ -280,12 +265,9 @@ class RegisterSpillerTests: XCTestCase {
     }
     
     func testSpillTwoSourceRegisters() throws {
-        let spillSlotBaseOffset = 8
-        let spillSlot0 = 0
-        let spillSlot1 = 1
         let spilledIntervals = [
-            LiveInterval(range: 1..<2, virtualRegisterName: "vr0", physicalRegisterName: nil, spillSlot: spillSlot0),
-            LiveInterval(range: 1..<2, virtualRegisterName: "vr1", physicalRegisterName: nil, spillSlot: spillSlot1)
+            LiveInterval(range: 1..<2, virtualRegisterName: "vr0", physicalRegisterName: nil, spillSlot: 0),
+            LiveInterval(range: 1..<2, virtualRegisterName: "vr1", physicalRegisterName: nil, spillSlot: 1)
         ]
         let nodes = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(0)]),
@@ -293,8 +275,8 @@ class RegisterSpillerTests: XCTestCase {
         ]
         let expected = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(2)]),
-            InstructionNode(instruction: kLOAD, parameters: [ParameterIdentifier("r3"), ParameterIdentifier("fp"), ParameterNumber(spillSlotBaseOffset + spillSlot0)]),
-            InstructionNode(instruction: kLOAD, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(spillSlotBaseOffset + spillSlot1)]),
+            InstructionNode(instruction: kLOAD, parameters: [ParameterIdentifier("r3"), ParameterIdentifier("fp"), ParameterNumber(-1)]),
+            InstructionNode(instruction: kLOAD, parameters: [ParameterIdentifier("r4"), ParameterIdentifier("fp"), ParameterNumber(-2)]),
             InstructionNode(instruction: kADD, parameters: [ParameterIdentifier("vr2"), ParameterIdentifier("r4"), ParameterIdentifier("r3")])
         ]
         switch RegisterSpiller.spill(spilledIntervals: spilledIntervals, temporaries: [3, 4], nodes: nodes) {
@@ -325,10 +307,9 @@ class RegisterSpillerTests: XCTestCase {
     }
     
     func testSpillOffsetIsVeryLarge_LoadCase() throws {
-        let spillSlot = 0
-        let spillOffset = 108
+        let spillOffset = Int(UInt16(bitPattern: -101))
         let spilledIntervals = [
-            LiveInterval(range: 1..<2, virtualRegisterName: "vr0", physicalRegisterName: nil, spillSlot: spillSlot)
+            LiveInterval(range: 1..<2, virtualRegisterName: "vr0", physicalRegisterName: nil, spillSlot: 0)
         ]
         let nodes = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(100)]),
@@ -352,10 +333,9 @@ class RegisterSpillerTests: XCTestCase {
     }
     
     func testSpillOffsetIsVeryLarge_StoreCase() throws {
-        let spillSlot = 0
-        let spillOffset = 108
+        let spillOffset = Int(UInt16(bitPattern: -101))
         let spilledIntervals = [
-            LiveInterval(range: 1..<2, virtualRegisterName: "vr2", physicalRegisterName: nil, spillSlot: spillSlot)
+            LiveInterval(range: 1..<2, virtualRegisterName: "vr2", physicalRegisterName: nil, spillSlot: 0)
         ]
         let nodes = [
             InstructionNode(instruction: kENTER, parameters: [ParameterNumber(100)]),

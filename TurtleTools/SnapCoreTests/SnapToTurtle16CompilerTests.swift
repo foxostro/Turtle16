@@ -1430,5 +1430,17 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolU16("r"), 4)
     }
+    
+    func test_EndToEndIntegration_GetPointeeOfAPointerThroughAPointer() {
+        let debugger = run(program: """
+            var r: u16 = 0
+            let foo: u16 = 0xcafe
+            let bar = &foo
+            let baz = &bar
+            r = baz.pointee.pointee
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("r"), 0xcafe)
+    }
     }
 }

@@ -1052,4 +1052,15 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolU16("foo"), 6)
     }
+    
+    func test_EndToEndIntegration_ReturnArrayByValue_U8() {
+        let debugger = run(program: """
+            func makeArray() -> [3]u8 {
+                return [_]u8{1, 2, 3}
+            }
+            let foo = makeArray()
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolArrayOfU8(3, "foo"), [1, 2, 3])
+    }
 }

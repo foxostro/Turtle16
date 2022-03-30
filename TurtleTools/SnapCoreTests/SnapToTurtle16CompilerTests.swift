@@ -1564,5 +1564,28 @@ func foo() {
         
         XCTAssertEqual(debugger?.computer.ram[symbol.offset+kUnionPayloadOffset], 0x002a)
     }
+    
+    func test_EndToEndIntegration_Match_WithExtraneousClause() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: """
+            var r: u8 = 0
+            var a: u8 = 0
+            match a {
+                (foo: u8) -> {
+                    a = 1
+                },
+                (foo: bool) -> {
+                    a = 2
+                },
+                else -> {
+                    a = 3
+                }
+            }
+            """)
+        
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "foo: bool")
+        XCTAssertEqual(compiler.errors.first?.message, "extraneous clause in match statement: bool")
+    }
     }
 }

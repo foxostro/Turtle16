@@ -1337,4 +1337,17 @@ func foo() {
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "cannot convert value of type `*const Foo' to expected argument type `*Foo' in call to `doTheThing'")
     }
+    
+    func test_EndToEndIntegration_MutateThePointeeThroughAPointer() {
+        let debugger = run(program: """
+            struct Foo { x: u8, y: u8, z: u8 }
+            var bar = Foo { .x = 1, .y = 2, .z = 3 }
+            func doTheThing(foo: *Foo) {
+                foo.x = foo.y * foo.z
+            }
+            doTheThing(&bar)
+            """)
+        
+        XCTAssertEqual(debugger?.computer.ram[SnapCompilerMetrics.kStaticStorageStartAddress], 6)
+    }
 }

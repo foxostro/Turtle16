@@ -984,7 +984,9 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
              (.dynamicArray, .constDynamicArray),
              (.dynamicArray, .dynamicArray),
              (.unionType, .unionType),
-             (.traitType, .traitType):
+             (.traitType, .traitType),
+             (.structType, .constStructType),
+             (.constStructType, .structType):
             result = true
             
         case (.array(_, let a), .array(_, let b)):

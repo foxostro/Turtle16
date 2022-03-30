@@ -13,6 +13,7 @@ import TurtleCore
 
 class SnapToTurtle16CompilerTests: XCTestCase {
     let kRuntime = "runtime"
+    let kUnionPayloadOffset = 1
     
     func testEmptyProgram() throws {
         let compiler = SnapToTurtle16Compiler()
@@ -1511,6 +1512,57 @@ func foo() {
             """)
         
         XCTAssertEqual(debugger?.loadSymbolU8("r"), 42)
+    }
+    
+    func test_EndToEndIntegration_LinkedList() {
+        let debugger = run(program: """
+            struct None {}
+            let none = None {}
+            var r: u8 | None = none
+            struct LinkedList {
+                next: *const LinkedList | None,
+                key: u8,
+                value: u8
+            }
+            let c = LinkedList {
+                .next = none,
+                .key = 2,
+                .value = 42
+            }
+            let b = LinkedList {
+                .next = &c,
+                .key = 1,
+                .value = 0
+            }
+            let a = LinkedList {
+                .next = &b,
+                .key = 0,
+                .value = 0
+            }
+            impl LinkedList {
+                func lookup(self: *const LinkedList, key: u8) -> u8 | None {
+                    if self.key == key {
+                        return self.value
+                    }
+                    else match self.next {
+                        (next: *const LinkedList) -> {
+                            return next.lookup(key)
+                        },
+                        else -> {
+                            return none
+                        }
+                    }
+                }
+            }
+            r = a.lookup(2)
+            """)
+        
+        guard let symbol = debugger?.symbols?.maybeResolve(identifier: "r") else {
+            XCTFail("failed to resolve identifier \"r\"")
+            return
+        }
+        
+        XCTAssertEqual(debugger?.computer.ram[symbol.offset+kUnionPayloadOffset], 0x002a)
     }
     }
 }

@@ -4077,4 +4077,59 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = compiler.globalEnvironment.memoryLayoutStrategy.sizeof(type: type)
         XCTAssertEqual(actual, 2)
     }
+    
+    func testAssignConstStructToNonConstStructElementOfUnion() throws {
+        let None = SymbolType.structType(StructType(name: "None", symbols: SymbolTable()))
+        let OptU8 = SymbolType.unionType(UnionType([.u8, None]))
+        let symbols = SymbolTable(tuples: [
+            ("none", Symbol(type: None.correspondingConstType, offset: SnapCompilerMetrics.kStaticStorageStartAddress, storage: .staticStorage)),
+            ("r", Symbol(type: OptU8, offset: SnapCompilerMetrics.kStaticStorageStartAddress+1, storage: .staticStorage))
+        ],
+        typeDict: [
+            "None" : None
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let expr = Expression.InitialAssignment(lexpr: Expression.Identifier("r"), rexpr: Expression.Identifier("none"))
+        let actual = try compiler.rvalue(expr: expr)
+        let expected = Seq(children: [
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(0x0111)
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterNumber(0x0110)
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterNumber(1)
+            ]),
+            TackInstructionNode(instruction: .store, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterIdentifier("vr1"),
+                ParameterNumber(0)
+            ]),
+            TackInstructionNode(instruction: .addi16, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr1"),
+                ParameterNumber(1)
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterNumber(0x0110)
+            ]),
+            TackInstructionNode(instruction: .memcpy, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr4"),
+                ParameterNumber(0)
+            ]),
+            TackInstructionNode(instruction: .memcpy, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterIdentifier("vr1"),
+                ParameterNumber(2)
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr1")
+    }
 }

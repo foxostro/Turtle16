@@ -1274,4 +1274,16 @@ func foo() {
         
         XCTAssertEqual(debugger?.computer.ram[SnapCompilerMetrics.kStaticStorageStartAddress], 42)
     }
+    
+    func test_EndToEndIntegration_ReadStructMembersThroughPointer() {
+        let debugger = run(program: """
+            struct Foo { x: u8, y: u8, z: u8 }
+            var r: u8 = 0
+            var foo = Foo { .x = 1, .y = 2, .z = 3 }
+            var bar = &foo
+            r = bar.x
+            """)
+        
+        XCTAssertEqual(debugger?.computer.ram[SnapCompilerMetrics.kStaticStorageStartAddress], 1)
+    }
 }

@@ -1322,4 +1322,19 @@ func foo() {
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `*const u16' to type `*u16'")
     }
+    
+    func test_EndToEndIntegration_CannotMakeMutatingPointerFromConstant_2() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: """
+            struct Foo { x: u8, y: u8, z: u8 }
+            let bar = Foo { .x = 1, .y = 2, .z = 3 }
+            func doTheThing(foo: *Foo) {
+                foo.x = foo.y * foo.z
+            }
+            doTheThing(&bar)
+            """)
+        
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.message, "cannot convert value of type `*const Foo' to expected argument type `*Foo' in call to `doTheThing'")
+    }
 }

@@ -1442,5 +1442,19 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolU16("r"), 0xcafe)
     }
+    
+    func test_EndToEndIntegration_FunctionParameterIsPointerToConstType() {
+        let debugger = run(program: """
+            struct Foo { x: u8, y: u8, z: u8 }
+            var r = 0
+            var foo = Foo { .x = 1, .y = 2, .z = 3 }
+            func doTheThing(foo: *const Foo) -> *const Foo {
+                return foo
+            }
+            r = doTheThing(&foo).x
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU8("r"), 1)
+    }
     }
 }

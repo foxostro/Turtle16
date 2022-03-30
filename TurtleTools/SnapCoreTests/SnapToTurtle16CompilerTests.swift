@@ -1615,5 +1615,15 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolU8("r"), 42)
     }
+    
+    func testAssignmentExpressionItselfHasAValue() {
+        let debugger = run(program: """
+            var foo: u8 = 0
+            var bar: u8 = (foo = 42)
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU8("foo"), 42)
+        XCTAssertEqual(debugger?.loadSymbolU8("bar"), 42)
+    }
     }
 }

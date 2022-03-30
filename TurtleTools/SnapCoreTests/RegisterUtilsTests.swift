@@ -82,6 +82,15 @@ class RegisterUtilsTests: XCTestCase {
         XCTAssertTrue(result.isEmpty)
     }
     
+    func testGetSourceRegisters_STORE() throws {
+        let result = RegisterUtils.getSourceRegisters(InstructionNode(instruction: kSTORE, parameters: [
+            ParameterIdentifier("r0"),
+            ParameterIdentifier("r1"),
+            ParameterNumber(42)
+        ]))
+        XCTAssertEqual(result, ["r1", "r0"])
+    }
+    
     func testGetDestinationRegisters_Label() throws {
         let result = RegisterUtils.getDestinationRegisters(LabelDeclaration(identifier: ""))
         XCTAssertTrue(result.isEmpty)
@@ -115,6 +124,15 @@ class RegisterUtilsTests: XCTestCase {
     func testGetDestinationRegisters_CMPI() throws {
         let result = RegisterUtils.getDestinationRegisters(InstructionNode(instruction: kCMPI, parameters: [
             ParameterIdentifier("r0"),
+            ParameterNumber(42)
+        ]))
+        XCTAssertEqual(result, [])
+    }
+    
+    func testGetDestinationRegisters_STORE() throws {
+        let result = RegisterUtils.getDestinationRegisters(InstructionNode(instruction: kSTORE, parameters: [
+            ParameterIdentifier("r0"),
+            ParameterIdentifier("r1"),
             ParameterNumber(42)
         ]))
         XCTAssertEqual(result, [])

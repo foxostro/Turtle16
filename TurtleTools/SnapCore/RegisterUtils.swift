@@ -31,10 +31,10 @@ public class RegisterUtils: NSObject {
             return []
         }
         switch ins.instruction {
-        case kLOAD, kSTORE, kADD, kSUB, kAND, kOR, kXOR, kNOT, kADDI, kSUBI, kANDI, kORI, kXORI, kJR, kJALR, kADC, kSBC, kCALLPTR:
+        case kLOAD, kADD, kSUB, kAND, kOR, kXOR, kNOT, kADDI, kSUBI, kANDI, kORI, kXORI, kJR, kJALR, kADC, kSBC, kCALLPTR:
             return ins.parameters[1...].reversed().compactMap { ($0 as? ParameterIdentifier)?.value }
             
-        case kCMPI, kCMP:
+        case kSTORE, kCMPI, kCMP:
             return ins.parameters.reversed().compactMap { ($0 as? ParameterIdentifier)?.value }
             
         case kLA:
@@ -50,7 +50,7 @@ public class RegisterUtils: NSObject {
             return []
         }
         switch ins.instruction {
-        case kLOAD, kSTORE, kLI, kLUI, kADD, kSUB, kAND, kOR, kXOR, kNOT, kADDI, kSUBI, kANDI, kORI, kXORI, kJR, kJALR, kADC, kSBC, kCALLPTR, kLA:
+        case kLOAD, kLI, kLUI, kADD, kSUB, kAND, kOR, kXOR, kNOT, kADDI, kSUBI, kANDI, kORI, kXORI, kJR, kJALR, kADC, kSBC, kCALLPTR, kLA:
             return [ins.parameters.first].compactMap { ($0 as? ParameterIdentifier)?.value }
             
         default:

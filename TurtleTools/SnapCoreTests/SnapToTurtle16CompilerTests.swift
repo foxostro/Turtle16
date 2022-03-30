@@ -1472,5 +1472,25 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolU8("r"), 42)
     }
+    
+    func test_EndToEndIntegration_CallAStructMemberFunction_2() {
+        let debugger = run(program: """
+            var r: u8 = 0
+            struct Foo {
+                aa: u8
+            }
+            impl Foo {
+                func bar(self: *const Foo, offset: u8) -> u8 {
+                    return self.aa + offset
+                }
+            }
+            let foo = Foo {
+                .aa = 41
+            }
+            r = foo.bar(1)
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU8("r"), 42)
+    }
     }
 }

@@ -1587,5 +1587,22 @@ func foo() {
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "foo: bool")
         XCTAssertEqual(compiler.errors.first?.message, "extraneous clause in match statement: bool")
     }
+    
+    func test_EndToEndIntegration_Match_WithMissingClause() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: """
+            var r: u8 = 0
+            var a: u8 | bool = 0
+            match a {
+                (foo: u8) -> {
+                    a = 1
+                }
+            }
+            """)
+        
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "a")
+        XCTAssertEqual(compiler.errors.first?.message, "match statement is not exhaustive. Missing clause: bool")
+    }
     }
 }

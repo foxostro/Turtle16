@@ -1260,7 +1260,12 @@ func foo() {
             let foo = Foo { .bar = 42 }
             """)
         
-        XCTAssertEqual(debugger?.computer.ram[SnapCompilerMetrics.kStaticStorageStartAddress], 42)
+        guard let symbol = debugger?.symbols?.maybeResolve(identifier: "foo") else {
+            XCTFail("failed to resolve identifier \"foo\"")
+            return
+        }
+        
+        XCTAssertEqual(debugger?.computer.ram[symbol.offset], 42)
     }
     
     func test_EndToEndIntegration_AssignStructInitializerToStructInstance() {
@@ -1272,7 +1277,12 @@ func foo() {
             foo = Foo { .bar = 42 }
             """)
         
-        XCTAssertEqual(debugger?.computer.ram[SnapCompilerMetrics.kStaticStorageStartAddress], 42)
+        guard let symbol = debugger?.symbols?.maybeResolve(identifier: "foo") else {
+            XCTFail("failed to resolve identifier \"foo\"")
+            return
+        }
+        
+        XCTAssertEqual(debugger?.computer.ram[symbol.offset], 42)
     }
     
     func test_EndToEndIntegration_ReadStructMembersThroughPointer() {
@@ -1284,7 +1294,12 @@ func foo() {
             r = bar.x
             """)
         
-        XCTAssertEqual(debugger?.computer.ram[SnapCompilerMetrics.kStaticStorageStartAddress], 1)
+        guard let symbol = debugger?.symbols?.maybeResolve(identifier: "r") else {
+            XCTFail("failed to resolve identifier \"r\"")
+            return
+        }
+        
+        XCTAssertEqual(debugger?.computer.ram[symbol.offset], 1)
     }
     
     func test_EndToEndIntegration_WriteStructMembersThroughPointer() {
@@ -1295,7 +1310,12 @@ func foo() {
             bar.x = 2
             """)
         
-        XCTAssertEqual(debugger?.computer.ram[SnapCompilerMetrics.kStaticStorageStartAddress], 2)
+        guard let symbol = debugger?.symbols?.maybeResolve(identifier: "foo") else {
+            XCTFail("failed to resolve identifier \"foo\"")
+            return
+        }
+        
+        XCTAssertEqual(debugger?.computer.ram[symbol.offset], 2)
     }
     
     func test_EndToEndIntegration_PassPointerToStructAsFunctionParameter() {
@@ -1348,7 +1368,12 @@ func foo() {
             doTheThing(&bar)
             """)
         
-        XCTAssertEqual(debugger?.computer.ram[SnapCompilerMetrics.kStaticStorageStartAddress], 6)
+        guard let symbol = debugger?.symbols?.maybeResolve(identifier: "bar") else {
+            XCTFail("failed to resolve identifier \"bar\"")
+            return
+        }
+        
+        XCTAssertEqual(debugger?.computer.ram[symbol.offset], 6)
     }
     
     func test_EndToEndIntegration_FunctionReturnsPointerToStruct_Right() {
@@ -1375,6 +1400,12 @@ func foo() {
             doTheThing(&foo).x = 42
             """)
         
-        XCTAssertEqual(debugger?.computer.ram[SnapCompilerMetrics.kStaticStorageStartAddress], 42)
+        guard let symbol = debugger?.symbols?.maybeResolve(identifier: "foo") else {
+            XCTFail("failed to resolve identifier \"foo\"")
+            return
+        }
+        
+        XCTAssertEqual(debugger?.computer.ram[symbol.offset], 42)
+    }
     }
 }

@@ -452,8 +452,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     
     func lvalue(get expr: Expression.Get) throws -> AbstractSyntaxTreeNode {
         let name = expr.member.identifier
-        let resultType = try typeCheck(lexpr: expr.expr)
-        
+        let resultType = try typeCheck(rexpr: expr.expr)
         var children: [AbstractSyntaxTreeNode] = []
         
         switch resultType {
@@ -499,12 +498,12 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                     ]
                     
                 default:
-                    fatalError("unimplemented")
+                    fatalError("unimplemented: typ=\(typ)")
                 }
             }
         
         default:
-            fatalError("unimplemented")
+            fatalError("unimplemented: resultType=\(resultType)")
         }
         
         return Seq(sourceAnchor: expr.sourceAnchor, children: children)

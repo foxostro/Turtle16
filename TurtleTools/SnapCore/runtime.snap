@@ -1,15 +1,19 @@
 let serialOut = (0x0001 as u16) bitcastAs *u8
 
+public func __oob() {
+    static let kPanicMessageOOB = "array access is out of bounds"
+    panic(kPanicMessageOOB)
+}
+
 public func puts(s: []const u8) {
     for c in s {
         serialOut.pointee = c
     }
 }
 
-let kPanicPrefix = "PANIC: "
-let kPanicSuffix = "\n"
-
 public func panic(message: []const u8) {
+    static let kPanicPrefix = "PANIC: "
+    static let kPanicSuffix = "\n"
     puts(kPanicPrefix)
     puts(message)
     puts(kPanicSuffix)

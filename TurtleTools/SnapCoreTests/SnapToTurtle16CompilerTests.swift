@@ -12,7 +12,6 @@ import Turtle16SimulatorCore
 import TurtleCore
 
 class SnapToTurtle16CompilerTests: XCTestCase {
-    let isVerboseLogging = false
     let kRuntime = "runtime"
     
     func testEmptyProgram() throws {
@@ -94,6 +93,7 @@ func foo() {
     }
     
     fileprivate struct Options {
+        public let isVerboseLogging: Bool
         public let isBoundsCheckEnabled: Bool
         public let shouldDefineCompilerIntrinsicFunctions: Bool
         public let isUsingStandardLibrary: Bool
@@ -101,12 +101,14 @@ func foo() {
         public let shouldRunSpecificTest: String?
         public let onSerialOutput: ((UInt16) -> Void)?
         
-        public init(isBoundsCheckEnabled: Bool = false,
+        public init(isVerboseLogging: Bool = false,
+                    isBoundsCheckEnabled: Bool = false,
                     shouldDefineCompilerIntrinsicFunctions: Bool = false,
                     isUsingStandardLibrary: Bool = false,
                     runtimeSupport: String? = nil,
                     shouldRunSpecificTest: String? = nil,
                     onSerialOutput: ((UInt16) -> Void)? = nil) {
+            self.isVerboseLogging = isVerboseLogging
             self.isBoundsCheckEnabled = isBoundsCheckEnabled
             self.shouldDefineCompilerIntrinsicFunctions = shouldDefineCompilerIntrinsicFunctions
             self.isUsingStandardLibrary = isUsingStandardLibrary
@@ -133,15 +135,14 @@ func foo() {
             return nil
         }
         
-        if isVerboseLogging {
+        if options.isVerboseLogging {
             print(AssemblerListingMaker().makeListing(try! compiler.assembly.get()))
             print((try! compiler.tack.get() as! Seq).makeChildDescriptions())
         }
         
         let computer = Turtle16Computer(SchematicLevelCPUModel())
-        let isVerboseLogging = self.isVerboseLogging
         computer.cpu.store = { (value: UInt16, addr: MemoryAddress) in
-            if isVerboseLogging {
+            if options.isVerboseLogging {
                 print("store ram[\(addr.value)] <- \(value)")
             }
             if addr == self.kMemoryMappedSerialOutputPort {
@@ -154,7 +155,7 @@ func foo() {
             }
         }
         computer.cpu.load = { (addr: MemoryAddress) in
-            if isVerboseLogging {
+            if options.isVerboseLogging {
                 print("load ram[\(addr.value)] -> \(computer.ram[addr.value])")
             }
             return computer.ram[addr.value]
@@ -175,7 +176,7 @@ func foo() {
             return nil
         }
         
-        if isVerboseLogging {
+        if options.isVerboseLogging {
             while !debugger.computer.isHalted {
                 print("---")
                 let pc = debugger.computer.pc
@@ -1216,5 +1217,24 @@ func foo() {
         
         let str = String(bytes: serialOutput, encoding: .utf8)
         XCTAssertEqual(str, "PANIC: oops!\n")
+    }
+    
+    func testArrayOutOfBoundsError() {
+        var serialOutput: [UInt8] = []
+        let onSerialOutput = { (value: UInt16) in
+            serialOutput.append(UInt8(value & 0x00ff))
+        }
+        let options = Options(isBoundsCheckEnabled: true,
+                              shouldDefineCompilerIntrinsicFunctions: true,
+                              runtimeSupport: kRuntime,
+                              onSerialOutput: onSerialOutput)
+        _ = run(options: options, program: """
+            let arr = "Hello"
+            let n = 10
+            let foo = arr[n]
+            """)
+        
+        let str = String(bytes: serialOutput, encoding: .utf8)
+        XCTAssertEqual(str, "PANIC: array access is out of bounds\n")
     }
 }

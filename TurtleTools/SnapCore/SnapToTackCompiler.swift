@@ -26,8 +26,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     public internal(set) var registerStack: [String] = []
     var nextRegisterIndex = 0
     let fp = "fp"
-    let kPanic = "panic"
     let kHalt = "hlt"
+    let kOOB = "__oob"
     let kUnionPayloadOffset: Int
     let kUnionTypeTagOffset: Int
     let kSliceBaseAddrOffset: Int
@@ -292,7 +292,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                         ParameterIdentifier(labelPassesLowerBoundsCheck)
                     ]),
                     TackInstructionNode(instruction: .call, parameters: [
-                        ParameterIdentifier(kPanic)
+                        ParameterIdentifier(kOOB)
                     ]),
                     LabelDeclaration(identifier: labelPassesLowerBoundsCheck)
                 ]
@@ -336,7 +336,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                         ParameterIdentifier(labelPassesUpperBoundsCheck)
                     ]),
                     TackInstructionNode(instruction: .call, parameters: [
-                        ParameterIdentifier(kPanic)
+                        ParameterIdentifier(kOOB)
                     ]),
                     LabelDeclaration(identifier: labelPassesUpperBoundsCheck),
                 ]
@@ -886,7 +886,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                         ParameterIdentifier(labelSkipPanic)
                     ]),
                     TackInstructionNode(instruction: .call, parameters: [
-                        ParameterIdentifier(kPanic)
+                        ParameterIdentifier(kOOB)
                     ]),
                     LabelDeclaration(identifier: labelSkipPanic)
                 ]

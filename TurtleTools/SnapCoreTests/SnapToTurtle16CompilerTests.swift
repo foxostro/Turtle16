@@ -1604,5 +1604,16 @@ func foo() {
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "a")
         XCTAssertEqual(compiler.errors.first?.message, "match statement is not exhaustive. Missing clause: bool")
     }
+    
+    func testFunctionReturnsConstValue() {
+        let debugger = run(program: """
+            func foo() -> const u8 {
+                return 42
+            }
+            let r = foo()
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU8("r"), 42)
+    }
     }
 }

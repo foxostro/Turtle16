@@ -12,6 +12,7 @@ public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
     public private(set) var testNames: [String] = []
     public private(set) var testDeclarations: [TestDeclaration] = []
     public let isUsingStandardLibrary: Bool
+    public let runtimeSupport: String?
     var currentTest: TestDeclaration? = nil
     var depth = 0
     let shouldRunSpecificTest: String?
@@ -19,10 +20,13 @@ public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
     
     public init(memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL(),
                 shouldRunSpecificTest: String? = nil,
-                isUsingStandardLibrary: Bool = false) {
+                isUsingStandardLibrary: Bool = false,
+                runtimeSupport: String? = nil,
+                isRuntimeModule: Bool = false) {
         self.memoryLayoutStrategy = memoryLayoutStrategy
         self.shouldRunSpecificTest = shouldRunSpecificTest
         self.isUsingStandardLibrary = isUsingStandardLibrary
+        self.runtimeSupport = runtimeSupport
     }
     
     public override func compile(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {
@@ -32,6 +36,9 @@ public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
         if isUsingStandardLibrary {
             let importStmt = Import(moduleName: kStandardLibraryModuleName)
             children.insert(importStmt, at: 0)
+        }
+        if let runtimeSupport = runtimeSupport {
+            children.insert(Import(moduleName: runtimeSupport), at: 0)
         }
         let block = Block(sourceAnchor: node.sourceAnchor,
                           symbols: globalSymbols,

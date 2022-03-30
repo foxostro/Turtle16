@@ -18,12 +18,15 @@ import TurtleCore
 public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
     public private(set) var injectModules: [(String, String)]
     public let globalEnvironment: GlobalEnvironment
+    public let runtimeSupport: String?
     
     public init(symbols: SymbolTable? = nil,
                 injectModules: [(String, String)] = [],
-                globalEnvironment: GlobalEnvironment) {
+                globalEnvironment: GlobalEnvironment,
+                runtimeSupport: String? = nil) {
         self.injectModules = injectModules
         self.globalEnvironment = globalEnvironment
+        self.runtimeSupport = runtimeSupport
         super.init(symbols)
     }
     
@@ -62,7 +65,9 @@ public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
     }
     
     public override func compile(import node0: Import) throws -> AbstractSyntaxTreeNode? {
-        let subcompiler = SnapSubcompilerImport(symbols: symbols!, globalEnvironment: globalEnvironment)
+        let subcompiler = SnapSubcompilerImport(symbols: symbols!,
+                                                globalEnvironment: globalEnvironment,
+                                                runtimeSupport: runtimeSupport)
         for (name, text) in injectModules {
             subcompiler.injectModule(name: name, sourceCode: "import stdlib\n" + text)
         }

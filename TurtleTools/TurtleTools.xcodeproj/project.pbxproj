@@ -273,6 +273,7 @@
 		6F7C14EA259A94C30034C7D0 /* EX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7C14E9259A94C30034C7D0 /* EX.swift */; };
 		6F7C14FC259A94E40034C7D0 /* EXTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7C14FB259A94E40034C7D0 /* EXTests.swift */; };
 		6F7D951826753D81003889FB /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7D951726753D81003889FB /* Document.swift */; };
+		6F7E16D427F3A3660067D059 /* runtime.snap in Resources */ = {isa = PBXBuildFile; fileRef = 6F7E16D327F3A3660067D059 /* runtime.snap */; };
 		6F7E41912547E036007CAA1A /* CrackleGlobalOptimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E41902547E036007CAA1A /* CrackleGlobalOptimizer.swift */; };
 		6F7E41A12547E174007CAA1A /* CrackleConstantPropagationOptimizationPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E41A02547E174007CAA1A /* CrackleConstantPropagationOptimizationPass.swift */; };
 		6F7E41B12547E1AE007CAA1A /* CrackleConstantPropagationOptimizationPassTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E41B02547E1AE007CAA1A /* CrackleConstantPropagationOptimizationPassTests.swift */; };
@@ -1009,6 +1010,7 @@
 		6F7C14E9259A94C30034C7D0 /* EX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EX.swift; sourceTree = "<group>"; };
 		6F7C14FB259A94E40034C7D0 /* EXTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EXTests.swift; sourceTree = "<group>"; };
 		6F7D951726753D81003889FB /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
+		6F7E16D327F3A3660067D059 /* runtime.snap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = runtime.snap; sourceTree = "<group>"; };
 		6F7E41902547E036007CAA1A /* CrackleGlobalOptimizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleGlobalOptimizer.swift; sourceTree = "<group>"; };
 		6F7E41A02547E174007CAA1A /* CrackleConstantPropagationOptimizationPass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleConstantPropagationOptimizationPass.swift; sourceTree = "<group>"; };
 		6F7E41B02547E1AE007CAA1A /* CrackleConstantPropagationOptimizationPassTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleConstantPropagationOptimizationPassTests.swift; sourceTree = "<group>"; };
@@ -1696,6 +1698,7 @@
 				6F9201E72471DAC7009E1410 /* SnapCore.h */,
 				6F9201E82471DAC7009E1410 /* Info.plist */,
 				6F7F356924D2323F00BA8E37 /* stdlib.snap */,
+				6F7E16D327F3A3660067D059 /* runtime.snap */,
 			);
 			path = SnapCore;
 			sourceTree = "<group>";
@@ -2445,6 +2448,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F7E16D427F3A3660067D059 /* runtime.snap in Resources */,
 				6F7F356A24D2323F00BA8E37 /* stdlib.snap in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

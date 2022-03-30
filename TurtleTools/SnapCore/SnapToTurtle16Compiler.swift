@@ -15,15 +15,18 @@ public class SnapToTurtle16Compiler: NSObject {
         public let isBoundsCheckEnabled: Bool
         public let shouldDefineCompilerIntrinsicFunctions: Bool
         public let isUsingStandardLibrary: Bool
+        public let runtimeSupport: String?
         public let shouldRunSpecificTest: String?
         
         public init(isBoundsCheckEnabled: Bool = false,
                     shouldDefineCompilerIntrinsicFunctions: Bool = false,
                     isUsingStandardLibrary: Bool = false,
+                    runtimeSupport: String? = nil,
                     shouldRunSpecificTest: String? = nil) {
             self.isBoundsCheckEnabled = isBoundsCheckEnabled
             self.shouldDefineCompilerIntrinsicFunctions = shouldDefineCompilerIntrinsicFunctions
             self.isUsingStandardLibrary = isUsingStandardLibrary
+            self.runtimeSupport = runtimeSupport
             self.shouldRunSpecificTest = shouldRunSpecificTest
         }
     }
@@ -100,6 +103,7 @@ public class SnapToTurtle16Compiler: NSObject {
         let contractionStep = SnapAbstractSyntaxTreeCompiler(shouldRunSpecificTest: options.shouldRunSpecificTest,
                                                              injectModules: Array(injectedModules),
                                                              isUsingStandardLibrary: options.isUsingStandardLibrary,
+                                                             runtimeSupport: options.runtimeSupport,
                                                              sandboxAccessManager: sandboxAccessManager,
                                                              globalEnvironment: globalEnvironment)
         contractionStep.compile(syntaxTree)

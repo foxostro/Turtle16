@@ -13,6 +13,7 @@ import TurtleCore
 
 class SnapToTurtle16CompilerTests: XCTestCase {
     let isVerboseLogging = false
+    let kRuntime = "runtime"
     
     func testEmptyProgram() throws {
         let compiler = SnapToTurtle16Compiler()
@@ -92,10 +93,38 @@ func foo() {
             """)
     }
     
-    fileprivate typealias Options = SnapToTurtle16Compiler.Options
+    fileprivate struct Options {
+        public let isBoundsCheckEnabled: Bool
+        public let shouldDefineCompilerIntrinsicFunctions: Bool
+        public let isUsingStandardLibrary: Bool
+        public let runtimeSupport: String?
+        public let shouldRunSpecificTest: String?
+        public let onSerialOutput: ((UInt16) -> Void)?
+        
+        public init(isBoundsCheckEnabled: Bool = false,
+                    shouldDefineCompilerIntrinsicFunctions: Bool = false,
+                    isUsingStandardLibrary: Bool = false,
+                    runtimeSupport: String? = nil,
+                    shouldRunSpecificTest: String? = nil,
+                    onSerialOutput: ((UInt16) -> Void)? = nil) {
+            self.isBoundsCheckEnabled = isBoundsCheckEnabled
+            self.shouldDefineCompilerIntrinsicFunctions = shouldDefineCompilerIntrinsicFunctions
+            self.isUsingStandardLibrary = isUsingStandardLibrary
+            self.runtimeSupport = runtimeSupport
+            self.shouldRunSpecificTest = shouldRunSpecificTest
+            self.onSerialOutput = onSerialOutput
+        }
+    }
+    
+    fileprivate let kMemoryMappedSerialOutputPort = MemoryAddress(0x0001)
     
     fileprivate func makeDebugger(options: Options, program: String) -> SnapDebugConsole? {
-        let compiler = SnapToTurtle16Compiler(options: options)
+        let opts2 = SnapToTurtle16Compiler.Options(isBoundsCheckEnabled: options.isBoundsCheckEnabled,
+                                                   shouldDefineCompilerIntrinsicFunctions: options.shouldDefineCompilerIntrinsicFunctions,
+                                                   isUsingStandardLibrary: options.isUsingStandardLibrary,
+                                                   runtimeSupport: options.runtimeSupport,
+                                                   shouldRunSpecificTest: options.shouldRunSpecificTest)
+        let compiler = SnapToTurtle16Compiler(options: opts2)
         compiler.compile(program: program)
         XCTAssertFalse(compiler.hasError)
         guard !compiler.hasError else {
@@ -115,7 +144,14 @@ func foo() {
             if isVerboseLogging {
                 print("store ram[\(addr.value)] <- \(value)")
             }
-            computer.ram[addr.value] = value
+            if addr == self.kMemoryMappedSerialOutputPort {
+                if let onSerialOutput = options.onSerialOutput {
+                    onSerialOutput(value)
+                }
+            }
+            else {
+                computer.ram[addr.value] = value
+            }
         }
         computer.cpu.load = { (addr: MemoryAddress) in
             if isVerboseLogging {
@@ -1141,5 +1177,44 @@ func foo() {
             """)
         
         XCTAssertEqual(debugger?.loadSymbolU16("b"), 42)
+    }
+    
+    // TODO: The compiled program needs some code to initialize the stack and frame pointers
+    
+    // TODO: The compiler should link the program with a runtime that contains a platform-specific implementation of puts(). Move puts() out of stdlib.
+    
+    // TODO: Maybe the serial output should be accessible through the debugger object?
+    
+    func testSerialOutput_HelloWorld() {
+        var serialOutput: [UInt8] = []
+        let onSerialOutput = { (value: UInt16) in
+            serialOutput.append(UInt8(value & 0x00ff))
+        }
+        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
+                              runtimeSupport: kRuntime,
+                              onSerialOutput: onSerialOutput)
+        _ = run(options: options, program: """
+            puts("Hello, World!")
+            """)
+        
+        let str = String(bytes: serialOutput, encoding: .utf8)
+        XCTAssertEqual(str, "Hello, World!")
+    }
+    
+    func testSerialOutput_Panic() {
+        var serialOutput: [UInt8] = []
+        let onSerialOutput = { (value: UInt16) in
+            serialOutput.append(UInt8(value & 0x00ff))
+        }
+        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
+                              runtimeSupport: kRuntime,
+                              onSerialOutput: onSerialOutput)
+        _ = run(options: options, program: """
+            panic("oops!")
+            puts("Hello, World!")
+            """)
+        
+        let str = String(bytes: serialOutput, encoding: .utf8)
+        XCTAssertEqual(str, "PANIC: oops!\n")
     }
 }

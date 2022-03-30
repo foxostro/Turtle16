@@ -14,7 +14,7 @@ public struct PipelineStageInfo {
     public let status: String
 }
 
-public struct MemoryAddress {
+public struct MemoryAddress: Equatable {
     public let value: Int
     
     public init(_ value: UInt16) {

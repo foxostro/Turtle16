@@ -22,6 +22,7 @@ public class SnapAbstractSyntaxTreeCompiler: NSObject {
     
     let shouldRunSpecificTest: String?
     let isUsingStandardLibrary: Bool
+    let runtimeSupport: String?
     let sandboxAccessManager: SandboxAccessManager?
     let injectModules: [(String, String)]
     let globalEnvironment: GlobalEnvironment
@@ -29,11 +30,13 @@ public class SnapAbstractSyntaxTreeCompiler: NSObject {
     public init(shouldRunSpecificTest: String? = nil,
                 injectModules: [(String, String)] = [],
                 isUsingStandardLibrary: Bool = false,
+                runtimeSupport: String? = nil,
                 sandboxAccessManager: SandboxAccessManager? = nil,
                 globalEnvironment: GlobalEnvironment) {
         self.shouldRunSpecificTest = shouldRunSpecificTest
         self.injectModules = injectModules
         self.isUsingStandardLibrary = isUsingStandardLibrary
+        self.runtimeSupport = runtimeSupport
         self.sandboxAccessManager = sandboxAccessManager
         self.globalEnvironment = globalEnvironment
     }
@@ -54,12 +57,12 @@ public class SnapAbstractSyntaxTreeCompiler: NSObject {
     
     func tryCompile(_ t0: AbstractSyntaxTreeNode) throws -> AbstractSyntaxTreeNode? {
         // Erase test declarations and replace with a synthesized test runner.
-        let testDeclarationTransformer = SnapASTTransformerTestDeclaration(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy, shouldRunSpecificTest: shouldRunSpecificTest, isUsingStandardLibrary: isUsingStandardLibrary)
+        let testDeclarationTransformer = SnapASTTransformerTestDeclaration(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy, shouldRunSpecificTest: shouldRunSpecificTest, isUsingStandardLibrary: isUsingStandardLibrary, runtimeSupport: runtimeSupport)
         let t1 = try testDeclarationTransformer.compile(t0)
         testNames = testDeclarationTransformer.testNames
         
         // Collect type declarations in a discrete pass
-        let t2 = try SnapAbstractSyntaxTreeCompilerDeclPass(symbols: nil, injectModules: injectModules, globalEnvironment: globalEnvironment).compile(t1)
+        let t2 = try SnapAbstractSyntaxTreeCompilerDeclPass(symbols: nil, injectModules: injectModules, globalEnvironment: globalEnvironment, runtimeSupport: runtimeSupport).compile(t1)
         
         // Rewrite higher-level nodes in terms of trees of lower-level nodes.
         let t3 = try SnapAbstractSyntaxTreeCompilerImplPass(symbols: nil, globalEnvironment: globalEnvironment).compile(t2)

@@ -72,6 +72,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         depth -= 1
         if depth == 0 {
             var children: [AbstractSyntaxTreeNode] = []
+            children += try collectCompiledModuleCode()
             if let compiledNode = compiledNode {
                 children.append(compiledNode)
             }
@@ -87,14 +88,27 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         }
     }
     
+    func collectCompiledModuleCode() throws -> [AbstractSyntaxTreeNode] {
+        var nodes: [AbstractSyntaxTreeNode] = []
+        
+        for (_, module) in globalEnvironment.modules {
+            depth += 1
+            let compiledModuleNode = try super.compile(module)
+            depth -= 1
+            
+            if let compiledModuleNode = compiledModuleNode {
+                nodes.append(compiledModuleNode)
+            }
+        }
+        
+        return nodes
+    }
+    
     func defineCompilerIntrinsicFunctions() {
         // Define the other compiler intrinsic functions with stub implementations that immediately halt the running program.
-        // TODO: Provide implementations of these functions that actually work.
-        for name in [kHalt, kPanic] {
-            subroutines.append(Subroutine(identifier: name, children: [
-                TackInstructionNode(instruction: .hlt)
-            ]))
-        }
+        subroutines.append(Subroutine(identifier: kHalt, children: [
+            TackInstructionNode(instruction: .hlt)
+        ]))
     }
     
     func flatten(_ node: AbstractSyntaxTreeNode?) -> AbstractSyntaxTreeNode? {

@@ -11,14 +11,17 @@ public class SnapSubcompilerImport: NSObject {
     public let symbols: SymbolTable
     public let globalEnvironment: GlobalEnvironment
     public let sandboxAccessManager: SandboxAccessManager?
+    public let runtimeSupport: String?
     var injectedModules: [String : String] = [:]
     
     public init(symbols: SymbolTable,
                 globalEnvironment: GlobalEnvironment,
-                sandboxAccessManager: SandboxAccessManager? = nil) {
+                sandboxAccessManager: SandboxAccessManager? = nil,
+                runtimeSupport: String? = nil) {
         self.symbols = symbols
         self.globalEnvironment = globalEnvironment
         self.sandboxAccessManager = sandboxAccessManager
+        self.runtimeSupport = runtimeSupport
     }
     
     public func injectModule(name: String, sourceCode: String) {
@@ -38,10 +41,12 @@ public class SnapSubcompilerImport: NSObject {
         if globalEnvironment.hasModule(node.moduleName) {
             return
         }
-        let isUsingStandardLibrary = (node.moduleName != kStandardLibraryModuleName)
+        
+        let isUsingStandardLibrary = (node.moduleName != kStandardLibraryModuleName) && (runtimeSupport == nil)
         let moduleData = try readModuleFromFile(sourceAnchor: node.sourceAnchor, moduleName: node.moduleName)
         let topLevel = try parse(url: moduleData.1, text: moduleData.0)
         let compiler = SnapAbstractSyntaxTreeCompiler(isUsingStandardLibrary: isUsingStandardLibrary,
+                                                      runtimeSupport: (node.moduleName == runtimeSupport) ? nil : runtimeSupport,
                                                       sandboxAccessManager: sandboxAccessManager,
                                                       globalEnvironment: globalEnvironment)
         compiler.compile(topLevel)

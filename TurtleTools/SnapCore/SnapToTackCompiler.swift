@@ -560,9 +560,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     func rvalue(literalArray expr: Expression.LiteralArray) throws -> AbstractSyntaxTreeNode {
+        let arrayType = try typeCheck(rexpr: expr)
         let arrayElementType = try typeCheck(rexpr: expr.arrayType).arrayElementType
         if arrayElementType.isPrimitive {
-            let tempArrayId = try makeCompilerTemporary(expr.sourceAnchor, expr.arrayType)
+            let tempArrayId = try makeCompilerTemporary(expr.sourceAnchor, Expression.PrimitiveType(arrayType))
             var children: [AbstractSyntaxTreeNode] = [
                 try lvalue(identifier: tempArrayId)
             ]

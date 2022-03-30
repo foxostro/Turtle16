@@ -1014,4 +1014,16 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolU16("foo"), 3)
     }
+    
+    func test_Bug_ProgramRunsForever() {
+        let debugger = run(program: """
+            func sum() -> u16 {
+                let a = [_]u16{1, 2}
+                return a[0]
+            }
+            let foo = sum()
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("foo"), 1)
+    }
 }

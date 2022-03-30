@@ -4059,4 +4059,22 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
+    
+    func testFixBugWithCompilerTemporaryOfArrayTypeWithNoExplicitCount() throws {
+        let compiler = makeCompiler()
+        let symbols = SymbolTable(tuples: [
+            ("a", Symbol(type: .array(count: nil, elementType: .u16), offset: 2, storage: .automaticStorage, visibility: .privateVisibility))
+        ])
+        symbols.highwaterMark = 2
+        let literalArray = Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u16)), elements: [
+            Expression.LiteralInt(1), Expression.LiteralInt(2)
+        ])
+        _ = try compiler.rvalue(expr: literalArray)
+        guard let type = try compiler.symbols?.resolve(identifier: "__temp0").type else {
+            XCTFail("failed to resolve __temp0")
+            return
+        }
+        let actual = compiler.globalEnvironment.memoryLayoutStrategy.sizeof(type: type)
+        XCTAssertEqual(actual, 2)
+    }
 }

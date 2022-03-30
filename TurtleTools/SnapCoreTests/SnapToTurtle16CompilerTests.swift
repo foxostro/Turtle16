@@ -1418,5 +1418,17 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolU16("r"), 4)
     }
+    
+    func test_EndToEndIntegration_GetDynamicArrayCountThroughAPointer() {
+        let debugger = run(program: """
+            var r: u16 = 0
+            let arr = [_]u8{ 1, 2, 3, 4 }
+            let dyn: []u8 = arr
+            let ptr = &dyn
+            r = ptr.count
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("r"), 4)
+    }
     }
 }

@@ -1407,5 +1407,16 @@ func foo() {
         
         XCTAssertEqual(debugger?.computer.ram[symbol.offset], 42)
     }
+    
+    func test_EndToEndIntegration_GetArrayCountThroughAPointer() {
+        let debugger = run(program: """
+            var r: u16 = 0
+            let arr = [_]u8{ 1, 2, 3, 4 }
+            let ptr = &arr
+            r = ptr.count
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("r"), 4)
+    }
     }
 }

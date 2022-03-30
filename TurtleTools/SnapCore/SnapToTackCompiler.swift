@@ -1767,20 +1767,15 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                     if symbol.type.isPrimitive {
                         // If the field is a primitive then load into a register
                         children += [
-                            try lvalue(expr: expr.expr)
+                            try rvalue(expr: expr.expr)
                         ]
                         let structAddr = popRegister()
-                        let fieldAddr = nextRegister()
                         let dst = nextRegister()
                         pushRegister(dst)
                         children += [
                             TackInstructionNode(instruction: .load, parameters: [
-                                ParameterIdentifier(fieldAddr),
-                                ParameterIdentifier(structAddr)
-                            ]),
-                            TackInstructionNode(instruction: .load, parameters: [
                                 ParameterIdentifier(dst),
-                                ParameterIdentifier(fieldAddr),
+                                ParameterIdentifier(structAddr),
                                 ParameterNumber(symbol.offset)
                             ])
                         ]

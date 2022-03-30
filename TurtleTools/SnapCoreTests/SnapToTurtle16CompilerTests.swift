@@ -1350,4 +1350,18 @@ func foo() {
         
         XCTAssertEqual(debugger?.computer.ram[SnapCompilerMetrics.kStaticStorageStartAddress], 6)
     }
+    
+    func test_EndToEndIntegration_FunctionReturnsPointerToStruct_Right() {
+        let debugger = run(program: """
+            struct Foo { x: u8, y: u8, z: u8 }
+            var r: u8 = 0
+            var foo = Foo { .x = 1, .y = 2, .z = 3 }
+            func doTheThing(foo: *Foo) -> *Foo {
+                return foo
+            }
+            r = doTheThing(&foo).x
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU8("r"), 1)
+    }
 }

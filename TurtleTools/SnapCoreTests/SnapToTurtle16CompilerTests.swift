@@ -1128,4 +1128,18 @@ func foo() {
 
         XCTAssertEqual(debugger?.loadSymbolArrayOfU16(3, "foo"), [10, 14, 18])
     }
+    
+    func test_EndToEndIntegration_BugWhenStackVariablesAreDeclaredAfterForLoop() {
+        let debugger = run(program: """
+            func foo() -> u16 {
+                for i in 0..3 {
+                }
+                let a = 42
+                return a
+            }
+            let b = foo()
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("b"), 42)
+    }
 }

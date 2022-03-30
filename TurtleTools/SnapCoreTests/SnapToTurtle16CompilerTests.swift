@@ -1237,4 +1237,18 @@ func foo() {
         let str = String(bytes: serialOutput, encoding: .utf8)
         XCTAssertEqual(str, "PANIC: array access is out of bounds\n")
     }
+    
+    func test_EndToEndIntegration_ReadAndWriteToStructMember() {
+        let debugger = run(program: """
+            var result: u8 = 0
+            struct Foo {
+                bar: u8
+            }
+            var foo: Foo = undefined
+            foo.bar = 42
+            result = foo.bar
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU8("result"), 42)
+    }
 }

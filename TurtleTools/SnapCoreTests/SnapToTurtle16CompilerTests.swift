@@ -1098,4 +1098,19 @@ func foo() {
 
         XCTAssertEqual(debugger?.loadSymbolU8("foo"), 23)
     }
+
+    func test_EndToEndIntegration_PassArraysAsFunctionArgumentsAndReturnArrayValue() {
+        let debugger = run(program: """
+            func sum(a: [3]u8, b: [3]u8, c: u8) -> [3]u8 {
+                var result = [_]u8{0, 0, 0}
+                for i in 0..3 {
+                    result[i] = (a[i] + b[i]) * c
+                }
+                return result
+            }
+            let foo = sum([_]u8{1, 2, 3}, [_]u8{4, 5, 6}, 2)
+            """)
+
+        XCTAssertEqual(debugger?.loadSymbolArrayOfU8(3, "foo"), [10, 14, 18])
+    }
 }

@@ -881,7 +881,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier(".L0")
             ]),
             TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("panic")
+                ParameterIdentifier("__oob")
             ]),
             LabelDeclaration(identifier: ".L0"),
             TackInstructionNode(instruction: .load, parameters: [
@@ -2839,7 +2839,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier(".L0")
             ]),
             TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("panic")
+                ParameterIdentifier("__oob")
             ]),
             LabelDeclaration(identifier: ".L0"),
             TackInstructionNode(instruction: .li16, parameters: [
@@ -2856,7 +2856,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier(".L1")
             ]),
             TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("panic")
+                ParameterIdentifier("__oob")
             ]),
             LabelDeclaration(identifier: ".L1"),
             TackInstructionNode(instruction: .add16, parameters: [
@@ -2924,7 +2924,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier(".L0")
             ]),
             TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("panic")
+                ParameterIdentifier("__oob")
             ]),
             LabelDeclaration(identifier: ".L0"),
             TackInstructionNode(instruction: .li16, parameters: [
@@ -2941,7 +2941,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier(".L1")
             ]),
             TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("panic")
+                ParameterIdentifier("__oob")
             ]),
             LabelDeclaration(identifier: ".L1"),
             TackInstructionNode(instruction: .muli16, parameters: [
@@ -2994,7 +2994,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier(".L0")
             ]),
             TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("panic")
+                ParameterIdentifier("__oob")
             ]),
             LabelDeclaration(identifier: ".L0"),
             TackInstructionNode(instruction: .load, parameters: [
@@ -3012,7 +3012,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier(".L1")
             ]),
             TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("panic")
+                ParameterIdentifier("__oob")
             ]),
             LabelDeclaration(identifier: ".L1"),
             TackInstructionNode(instruction: .add16, parameters: [

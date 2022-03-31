@@ -86,4 +86,30 @@ public class SnapDebugConsole : DebugConsole {
         }
         return arr
     }
+    
+    public func loadSymbolString(_ identifier: String) -> String? {
+        guard let symbol = symbols?.maybeResolve(identifier: identifier) else {
+            return nil
+        }
+        
+        let count: Int
+        switch symbol.type {
+        case .array(count: let n, elementType: .u8), .array(count: let n, elementType: .constU8):
+            count = n!
+            break
+            
+        default:
+            return nil
+        }
+        
+        var arr: [UInt8] = []
+        for i in 0..<count {
+            let word = computer.ram[symbol.offset + i*memoryLayoutStrategy.sizeof(type: .u8)]
+            let value = UInt8(word & 0x00ff)
+            arr.append(value)
+        }
+        
+        let str = String(bytes: arr, encoding: .utf8)
+        return str
+    }
 }

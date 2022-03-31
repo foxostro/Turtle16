@@ -1773,4 +1773,24 @@ func foo() {
         let str = String(bytes: serialOutput, encoding: .utf8)
         XCTAssertEqual(str, "passed\n")
     }
+    
+    func testRunTests_FailingAssertMentionsFailingTestByName() {
+        var serialOutput: [UInt8] = []
+        let onSerialOutput = { (value: UInt16) in
+            serialOutput.append(UInt8(value & 0x00ff))
+        }
+        let options = Options(isBoundsCheckEnabled: true,
+                              shouldDefineCompilerIntrinsicFunctions: true,
+                              runtimeSupport: kRuntime,
+                              shouldRunSpecificTest: "foo",
+                              onSerialOutput: onSerialOutput)
+        _ = run(options: options, program: """
+            test "foo" {
+                assert(1 == 2)
+            }
+            """)
+        
+        let str = String(bytes: serialOutput, encoding: .utf8)
+        XCTAssertEqual(str, "PANIC: assertion failed: `1 == 2' on line 2 in test \"foo\"\n")
+    }
 }

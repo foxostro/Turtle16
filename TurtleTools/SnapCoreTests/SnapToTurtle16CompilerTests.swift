@@ -101,6 +101,7 @@ func foo() {
         public let runtimeSupport: String?
         public let shouldRunSpecificTest: String?
         public let onSerialOutput: ((UInt16) -> Void)?
+        public let injectModules: [String:String]
         
         public init(isVerboseLogging: Bool = false,
                     isBoundsCheckEnabled: Bool = false,
@@ -108,7 +109,8 @@ func foo() {
                     isUsingStandardLibrary: Bool = false,
                     runtimeSupport: String? = nil,
                     shouldRunSpecificTest: String? = nil,
-                    onSerialOutput: ((UInt16) -> Void)? = nil) {
+                    onSerialOutput: ((UInt16) -> Void)? = nil,
+                    injectModules: [String:String] = [:]) {
             self.isVerboseLogging = isVerboseLogging
             self.isBoundsCheckEnabled = isBoundsCheckEnabled
             self.shouldDefineCompilerIntrinsicFunctions = shouldDefineCompilerIntrinsicFunctions
@@ -116,6 +118,7 @@ func foo() {
             self.runtimeSupport = runtimeSupport
             self.shouldRunSpecificTest = shouldRunSpecificTest
             self.onSerialOutput = onSerialOutput
+            self.injectModules = injectModules
         }
     }
     
@@ -126,7 +129,8 @@ func foo() {
                                                    shouldDefineCompilerIntrinsicFunctions: options.shouldDefineCompilerIntrinsicFunctions,
                                                    isUsingStandardLibrary: options.isUsingStandardLibrary,
                                                    runtimeSupport: options.runtimeSupport,
-                                                   shouldRunSpecificTest: options.shouldRunSpecificTest)
+                                                   shouldRunSpecificTest: options.shouldRunSpecificTest,
+                                                   injectedModules: options.injectModules)
         let compiler = SnapToTurtle16Compiler(options: opts2)
         compiler.compile(program: program)
         XCTAssertFalse(compiler.hasError)
@@ -1792,5 +1796,29 @@ func foo() {
         
         let str = String(bytes: serialOutput, encoding: .utf8)
         XCTAssertEqual(str, "PANIC: assertion failed: `1 == 2' on line 2 in test \"foo\"\n")
+    }
+    
+    func testImportModule() {
+        var serialOutput: [UInt8] = []
+        let onSerialOutput = { (value: UInt16) in
+            serialOutput.append(UInt8(value & 0x00ff))
+        }
+        let options = Options(isBoundsCheckEnabled: true,
+                              shouldDefineCompilerIntrinsicFunctions: true,
+                              runtimeSupport: kRuntime,
+                              shouldRunSpecificTest: "foo",
+                              onSerialOutput: onSerialOutput,
+                              injectModules: ["MyModule" : """
+                                  public func foo() {
+                                      puts("Hello, World!")
+                                  }
+                                  """])
+        _ = run(options: options, program: """
+            import MyModule
+            foo()
+            """)
+        
+        let str = String(bytes: serialOutput, encoding: .utf8)
+        XCTAssertEqual(str, "Hello, World!")
     }
 }

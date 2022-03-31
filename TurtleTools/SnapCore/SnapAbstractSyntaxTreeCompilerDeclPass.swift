@@ -69,7 +69,7 @@ public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
                                                 globalEnvironment: globalEnvironment,
                                                 runtimeSupport: runtimeSupport)
         for (name, text) in injectModules {
-            subcompiler.injectModule(name: name, sourceCode: "import stdlib\n" + text)
+            subcompiler.injectModule(name: name, sourceCode: text)
         }
         try subcompiler.compile(node0)
         return nil

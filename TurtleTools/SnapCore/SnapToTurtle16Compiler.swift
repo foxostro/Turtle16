@@ -17,17 +17,20 @@ public class SnapToTurtle16Compiler: NSObject {
         public let isUsingStandardLibrary: Bool
         public let runtimeSupport: String?
         public let shouldRunSpecificTest: String?
+        public let injectedModules: [String : String]
         
         public init(isBoundsCheckEnabled: Bool = false,
                     shouldDefineCompilerIntrinsicFunctions: Bool = false,
                     isUsingStandardLibrary: Bool = false,
                     runtimeSupport: String? = nil,
-                    shouldRunSpecificTest: String? = nil) {
+                    shouldRunSpecificTest: String? = nil,
+                    injectedModules: [String : String] = [:]) {
             self.isBoundsCheckEnabled = isBoundsCheckEnabled
             self.shouldDefineCompilerIntrinsicFunctions = shouldDefineCompilerIntrinsicFunctions
             self.isUsingStandardLibrary = isUsingStandardLibrary
             self.runtimeSupport = runtimeSupport
             self.shouldRunSpecificTest = shouldRunSpecificTest
+            self.injectedModules = injectedModules
         }
     }
     
@@ -44,12 +47,6 @@ public class SnapToTurtle16Compiler: NSObject {
     public private(set) var errors: [CompilerError] = []
     public var hasError:Bool {
         return errors.count != 0
-    }
-    
-    private var injectedModules: [String : String] = [:]
-    
-    public func injectModule(name: String, sourceCode: String) {
-        injectedModules[name] = sourceCode
     }
     
     public init(options: Options = Options()) {
@@ -101,7 +98,7 @@ public class SnapToTurtle16Compiler: NSObject {
     
     func contract(_ syntaxTree: AbstractSyntaxTreeNode?) -> Result<AbstractSyntaxTreeNode?, Error> {
         let contractionStep = SnapAbstractSyntaxTreeCompiler(shouldRunSpecificTest: options.shouldRunSpecificTest,
-                                                             injectModules: Array(injectedModules),
+                                                             injectModules: Array(options.injectedModules),
                                                              isUsingStandardLibrary: options.isUsingStandardLibrary,
                                                              runtimeSupport: options.runtimeSupport,
                                                              sandboxAccessManager: sandboxAccessManager,

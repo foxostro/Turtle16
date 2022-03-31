@@ -415,7 +415,6 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     func lvalue(arraySlice expr: Expression.Subscript) throws -> AbstractSyntaxTreeNode {
-        // TODO: This is going to fail when the size of an array element is not equal to one
         let subscriptableType = try typeCheck(rexpr: expr.subscriptable)
         
         guard let range = expr.argument as? Expression.StructInitializer, range.arguments.count == 2, range.arguments[0].name == kRangeBegin, range.arguments[1].name == kRangeLimit else {
@@ -462,6 +461,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         // bitcasts and assumptions about the memory layout.
         let beginExpr = range.arguments[0].expr
         let limitExpr = range.arguments[1].expr
+        let sliceType = try typeCheck(rexpr: expr)
+        let elementSize = globalEnvironment.memoryLayoutStrategy.sizeof(type: sliceType.arrayElementType)
         
         let arrayBeginExpr = Expression.Bitcast(expr: Expression.Unary(op: .ampersand, expression: expr.subscriptable), targetType: Expression.PrimitiveType(.u16))
         
@@ -471,11 +472,16 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 baseExpr = arrayBeginExpr
             }
             else {
-                baseExpr = Expression.Binary(op: .plus, left: arrayBeginExpr, right: Expression.LiteralInt(begin))
+                baseExpr = Expression.Binary(op: .plus, left: arrayBeginExpr, right: Expression.LiteralInt(begin * elementSize))
             }
         }
         else {
-            baseExpr = Expression.Binary(op: .plus, left: arrayBeginExpr, right: beginExpr)
+            if elementSize == 1 {
+                baseExpr = Expression.Binary(op: .plus, left: arrayBeginExpr, right: beginExpr)
+            }
+            else {
+                baseExpr = Expression.Binary(op: .plus, left: arrayBeginExpr, right: Expression.Binary(op: .star, left: beginExpr, right: Expression.LiteralInt(elementSize)))
+            }
         }
         
         let countExpr: Expression
@@ -490,7 +496,6 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             Expression.StructInitializer.Argument(name: kSliceBase, expr: baseExpr),
             Expression.StructInitializer.Argument(name: kSliceCount, expr: countExpr)
         ])
-        let sliceType = try typeCheck(rexpr: expr)
         let bitcastExpr = Expression.Bitcast(expr: sliceExpr, targetType: Expression.PrimitiveType(sliceType))
         return try rvalue(expr: bitcastExpr)
     }
@@ -526,6 +531,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         // bitcasts and assumptions about the memory layout.
         let beginExpr = range.arguments[0].expr
         let limitExpr = range.arguments[1].expr
+        let sliceType = try typeCheck(rexpr: expr)
+        let elementSize = globalEnvironment.memoryLayoutStrategy.sizeof(type: sliceType.arrayElementType)
         
         let arrayBeginExpr = Expression.Get(expr: Expression.Bitcast(expr: expr.subscriptable, targetType: Expression.PrimitiveType(kSliceType)), member: Expression.Identifier(kSliceBase))
         
@@ -535,11 +542,16 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 baseExpr = arrayBeginExpr
             }
             else {
-                baseExpr = Expression.Binary(op: .plus, left: arrayBeginExpr, right: Expression.LiteralInt(begin))
+                baseExpr = Expression.Binary(op: .plus, left: arrayBeginExpr, right: Expression.LiteralInt(begin * elementSize))
             }
         }
         else {
-            baseExpr = Expression.Binary(op: .plus, left: arrayBeginExpr, right: beginExpr)
+            if elementSize == 1 {
+                baseExpr = Expression.Binary(op: .plus, left: arrayBeginExpr, right: beginExpr)
+            }
+            else {
+                baseExpr = Expression.Binary(op: .plus, left: arrayBeginExpr, right: Expression.Binary(op: .star, left: beginExpr, right: Expression.LiteralInt(elementSize)))
+            }
         }
         
         let countExpr: Expression
@@ -554,7 +566,6 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             Expression.StructInitializer.Argument(name: kSliceBase, expr: baseExpr),
             Expression.StructInitializer.Argument(name: kSliceCount, expr: countExpr)
         ])
-        let sliceType = try typeCheck(rexpr: expr)
         let bitcastExpr = Expression.Bitcast(expr: sliceExpr, targetType: Expression.PrimitiveType(sliceType))
         return try rvalue(expr: bitcastExpr)
     }

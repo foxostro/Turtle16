@@ -1737,4 +1737,21 @@ func foo() {
         let str = String(bytes: serialOutput, encoding: .utf8)
         XCTAssertEqual(str, "PANIC: array access is out of bounds\n")
     }
+    
+    func testAssertionFailed() {
+        var serialOutput: [UInt8] = []
+        let onSerialOutput = { (value: UInt16) in
+            serialOutput.append(UInt8(value & 0x00ff))
+        }
+        let options = Options(isBoundsCheckEnabled: true,
+                              shouldDefineCompilerIntrinsicFunctions: true,
+                              runtimeSupport: kRuntime,
+                              onSerialOutput: onSerialOutput)
+        _ = run(options: options, program: """
+            assert(1 == 2)
+            """)
+        
+        let str = String(bytes: serialOutput, encoding: .utf8)
+        XCTAssertEqual(str, "PANIC: assertion failed: `1 == 2' on line 1\n")
+    }
 }

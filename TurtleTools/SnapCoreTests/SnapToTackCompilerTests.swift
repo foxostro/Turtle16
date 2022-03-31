@@ -4360,7 +4360,8 @@ class SnapToTackCompilerTests: XCTestCase {
             kRangeName : kRangeType,
             kSliceName : kSliceType
         ])
-        let compiler = makeCompiler(symbols: symbols)
+        let opts = SnapToTackCompiler.Options(isBoundsCheckEnabled: false)
+        let compiler = makeCompiler(options: opts, symbols: symbols)
         let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
             Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.Identifier("a")),
             Expression.StructInitializer.Argument(name: kRangeLimit, expr: Expression.Identifier("b"))
@@ -4517,7 +4518,8 @@ class SnapToTackCompilerTests: XCTestCase {
             kRangeName : kRangeType,
             kSliceName : kSliceType
         ])
-        let compiler = makeCompiler(symbols: symbols)
+        let opts = SnapToTackCompiler.Options(isBoundsCheckEnabled: false)
+        let compiler = makeCompiler(options: opts, symbols: symbols)
         let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
             Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.Identifier("a")),
             Expression.StructInitializer.Argument(name: kRangeLimit, expr: Expression.Identifier("b"))
@@ -4695,7 +4697,8 @@ class SnapToTackCompilerTests: XCTestCase {
             kRangeName : kRangeType,
             kSliceName : kSliceType
         ])
-        let compiler = makeCompiler(symbols: symbols)
+        let opts = SnapToTackCompiler.Options(isBoundsCheckEnabled: false)
+        let compiler = makeCompiler(options: opts, symbols: symbols)
         let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
             Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.Identifier("a")),
             Expression.StructInitializer.Argument(name: kRangeLimit, expr: Expression.Identifier("b"))
@@ -4862,7 +4865,8 @@ class SnapToTackCompilerTests: XCTestCase {
             kRangeName : kRangeType,
             kSliceName : kSliceType
         ])
-        let compiler = makeCompiler(symbols: symbols)
+        let opts = SnapToTackCompiler.Options(isBoundsCheckEnabled: false)
+        let compiler = makeCompiler(options: opts, symbols: symbols)
         let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
             Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.Identifier("a")),
             Expression.StructInitializer.Argument(name: kRangeLimit, expr: Expression.Identifier("b"))

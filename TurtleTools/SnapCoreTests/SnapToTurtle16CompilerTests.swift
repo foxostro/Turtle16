@@ -1625,4 +1625,116 @@ func foo() {
         XCTAssertEqual(debugger?.loadSymbolU8("foo"), 42)
         XCTAssertEqual(debugger?.loadSymbolU8("bar"), 42)
     }
+    
+    func testArraySlice_SliceStaticArrayWithCompileTimeRange() {
+        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
+                              runtimeSupport: kRuntime)
+        let debugger = run(options: options, program: """
+            let helloWorld = "Hello, World!"
+            let hello = helloWorld[0..5]
+            """)
+            
+        XCTAssertEqual(debugger?.loadSymbolString("helloWorld"), "Hello, World!")
+        XCTAssertEqual(debugger?.loadSymbolStringSlice("hello"), "Hello")
+    }
+    
+    func testArraySlice() {
+        var serialOutput: [UInt8] = []
+        let onSerialOutput = { (value: UInt16) in
+            serialOutput.append(UInt8(value & 0x00ff))
+        }
+        let options = Options(isVerboseLogging: true,
+                              isBoundsCheckEnabled: true,
+                              shouldDefineCompilerIntrinsicFunctions: true,
+                              runtimeSupport: kRuntime,
+                              onSerialOutput: onSerialOutput)
+        _ = run(options: options, program: """
+            let helloWorld = "Hello, World!"
+            let helloComma = helloWorld[0..6]
+            let hello = helloComma[0..(helloComma.count-1)]
+            puts(hello)
+            """)
+        
+        let str = String(bytes: serialOutput, encoding: .utf8)
+        XCTAssertEqual(str, "Hello")
+    }
+    
+    func testArraySlice_PanicDueToArrayBoundsException_1() {
+        var serialOutput: [UInt8] = []
+        let onSerialOutput = { (value: UInt16) in
+            serialOutput.append(UInt8(value & 0x00ff))
+        }
+        let options = Options(isBoundsCheckEnabled: true,
+                              shouldDefineCompilerIntrinsicFunctions: true,
+                              runtimeSupport: kRuntime,
+                              onSerialOutput: onSerialOutput)
+        _ = run(options: options, program: """
+            let helloWorld = "Hello, World!"
+            let begin = 1000
+            let limit = 1001
+            let helloComma = helloWorld[begin..limit]
+            """)
+        
+        let str = String(bytes: serialOutput, encoding: .utf8)
+        XCTAssertEqual(str, "PANIC: array access is out of bounds\n")
+    }
+    
+    func testArraySlice_PanicDueToArrayBoundsException_2() {
+        var serialOutput: [UInt8] = []
+        let onSerialOutput = { (value: UInt16) in
+            serialOutput.append(UInt8(value & 0x00ff))
+        }
+        let options = Options(isBoundsCheckEnabled: true,
+                              shouldDefineCompilerIntrinsicFunctions: true,
+                              runtimeSupport: kRuntime,
+                              onSerialOutput: onSerialOutput)
+        _ = run(options: options, program: """
+            let helloWorld = "Hello, World!"
+            let limit = 1000
+            let helloComma = helloWorld[0..limit]
+            """)
+        
+        let str = String(bytes: serialOutput, encoding: .utf8)
+        XCTAssertEqual(str, "PANIC: array access is out of bounds\n")
+    }
+    
+    func testDynamicArraySlice_PanicDueToArrayBoundsException_1() {
+        var serialOutput: [UInt8] = []
+        let onSerialOutput = { (value: UInt16) in
+            serialOutput.append(UInt8(value & 0x00ff))
+        }
+        let options = Options(isBoundsCheckEnabled: true,
+                              shouldDefineCompilerIntrinsicFunctions: true,
+                              runtimeSupport: kRuntime,
+                              onSerialOutput: onSerialOutput)
+        _ = run(options: options, program: """
+            let helloWorld = "Hello, World!"
+            let helloComma = helloWorld[0..6]
+            let begin = 1000
+            let hello = helloComma[begin..1001]
+            """)
+        
+        let str = String(bytes: serialOutput, encoding: .utf8)
+        XCTAssertEqual(str, "PANIC: array access is out of bounds\n")
+    }
+    
+    func testDynamicArraySlice_PanicDueToArrayBoundsException_2() {
+        var serialOutput: [UInt8] = []
+        let onSerialOutput = { (value: UInt16) in
+            serialOutput.append(UInt8(value & 0x00ff))
+        }
+        let options = Options(isBoundsCheckEnabled: true,
+                              shouldDefineCompilerIntrinsicFunctions: true,
+                              runtimeSupport: kRuntime,
+                              onSerialOutput: onSerialOutput)
+        _ = run(options: options, program: """
+            let helloWorld = "Hello, World!"
+            let helloComma = helloWorld[0..6]
+            let limit = 1001
+            let hello = helloComma[0..limit]
+            """)
+        
+        let str = String(bytes: serialOutput, encoding: .utf8)
+        XCTAssertEqual(str, "PANIC: array access is out of bounds\n")
+    }
 }

@@ -454,13 +454,34 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             throw CompilerError(sourceAnchor: expr.argument.sourceAnchor, message: "Range requires begin less than or equal to limit: `\(begin)..\(limit)'")
         }
         
-        // TODO: Insert dynamic bounds checking code when the bounds check could not be performed at compile time
+        var children: [AbstractSyntaxTreeNode] = []
+        let beginExpr = range.arguments[0].expr
+        let limitExpr = range.arguments[1].expr
+        
+        // Insert bounds check when bounds cannot be verified at compile time.
+        if options.isBoundsCheckEnabled {
+            if maybeBegin == nil {
+                let boundsCheck0 = If(condition: Expression.Binary(op: .ge, left: beginExpr, right: Expression.LiteralInt(upperBound)), then: Expression.Call(callee: Expression.Identifier(kOOB)))
+                let boundsCheck1 = try SnapSubcompilerIf().compile(if: boundsCheck0, symbols: symbols!, labelMaker: globalEnvironment.labelMaker)
+                reconnect(boundsCheck1)
+                if let boundsCheck2 = try super.compile(boundsCheck1) {
+                    children.append(boundsCheck2)
+                }
+            }
+            
+            if maybeLimit == nil {
+                let boundsCheck0 = If(condition: Expression.Binary(op: .gt, left: limitExpr, right: Expression.LiteralInt(upperBound)), then: Expression.Call(callee: Expression.Identifier(kOOB)))
+                let boundsCheck1 = try SnapSubcompilerIf().compile(if: boundsCheck0, symbols: symbols!, labelMaker: globalEnvironment.labelMaker)
+                reconnect(boundsCheck1)
+                if let boundsCheck2 = try super.compile(boundsCheck1) {
+                    children.append(boundsCheck2)
+                }
+            }
+        } // if options.isBoundsCheckEnabled
         
         // Compile an expression to initialize a Slice struct with populated
         // base and count fields. This involves some unsafe, platform-specific
         // bitcasts and assumptions about the memory layout.
-        let beginExpr = range.arguments[0].expr
-        let limitExpr = range.arguments[1].expr
         let sliceType = try typeCheck(rexpr: expr)
         let elementSize = globalEnvironment.memoryLayoutStrategy.sizeof(type: sliceType.arrayElementType)
         
@@ -497,7 +518,9 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             Expression.StructInitializer.Argument(name: kSliceCount, expr: countExpr)
         ])
         let bitcastExpr = Expression.Bitcast(expr: sliceExpr, targetType: Expression.PrimitiveType(sliceType))
-        return try rvalue(expr: bitcastExpr)
+        children.append(try rvalue(expr: bitcastExpr))
+        
+        return Seq(sourceAnchor: expr.sourceAnchor, children: children)
     }
     
     func lvalue(dynamicArraySlice expr: Expression.Subscript) throws -> AbstractSyntaxTreeNode {
@@ -524,17 +547,39 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             maybeLimit = nil
         }
         
-        // TODO: Insert dynamic bounds checking code
+        var children: [AbstractSyntaxTreeNode] = []
+        let beginExpr = range.arguments[0].expr
+        let limitExpr = range.arguments[1].expr
+        
+        // Insert dynamic bounds check
+        if options.isBoundsCheckEnabled {
+            let upperBoundExpr = Expression.Get(expr: Expression.Bitcast(expr: expr.subscriptable, targetType: Expression.Identifier(kSliceName)), member: Expression.Identifier(kSliceCount))
+            
+            if maybeBegin == nil {
+                let boundsCheck0 = If(condition: Expression.Binary(op: .ge, left: beginExpr, right: upperBoundExpr), then: Expression.Call(callee: Expression.Identifier(kOOB)))
+                let boundsCheck1 = try SnapSubcompilerIf().compile(if: boundsCheck0, symbols: symbols!, labelMaker: globalEnvironment.labelMaker)
+                reconnect(boundsCheck1)
+                if let boundsCheck2 = try super.compile(boundsCheck1) {
+                    children.append(boundsCheck2)
+                }
+            }
+            
+            if maybeLimit == nil {
+                let boundsCheck0 = If(condition: Expression.Binary(op: .gt, left: limitExpr, right: upperBoundExpr), then: Expression.Call(callee: Expression.Identifier(kOOB)))
+                let boundsCheck1 = try SnapSubcompilerIf().compile(if: boundsCheck0, symbols: symbols!, labelMaker: globalEnvironment.labelMaker)
+                reconnect(boundsCheck1)
+                if let boundsCheck2 = try super.compile(boundsCheck1) {
+                    children.append(boundsCheck2)
+                }
+            }
+        } // if options.isBoundsCheckEnabled
         
         // Compile an expression to initialize a Slice struct with populated
         // base and count fields. This involves some unsafe, platform-specific
         // bitcasts and assumptions about the memory layout.
-        let beginExpr = range.arguments[0].expr
-        let limitExpr = range.arguments[1].expr
+        let arrayBeginExpr = Expression.Get(expr: Expression.Bitcast(expr: expr.subscriptable, targetType: Expression.PrimitiveType(kSliceType)), member: Expression.Identifier(kSliceBase))
         let sliceType = try typeCheck(rexpr: expr)
         let elementSize = globalEnvironment.memoryLayoutStrategy.sizeof(type: sliceType.arrayElementType)
-        
-        let arrayBeginExpr = Expression.Get(expr: Expression.Bitcast(expr: expr.subscriptable, targetType: Expression.PrimitiveType(kSliceType)), member: Expression.Identifier(kSliceBase))
         
         let baseExpr: Expression
         if let begin = maybeBegin {
@@ -567,7 +612,9 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             Expression.StructInitializer.Argument(name: kSliceCount, expr: countExpr)
         ])
         let bitcastExpr = Expression.Bitcast(expr: sliceExpr, targetType: Expression.PrimitiveType(sliceType))
-        return try rvalue(expr: bitcastExpr)
+        children.append(try rvalue(expr: bitcastExpr))
+        
+        return Seq(sourceAnchor: expr.sourceAnchor, children: children)
     }
     
     func computeAddressOfSymbol(sourceAnchor: SourceAnchor?, symbol: Symbol, depth: Int) -> Seq {

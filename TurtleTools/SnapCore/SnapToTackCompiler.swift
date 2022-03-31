@@ -496,7 +496,67 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     func lvalue(dynamicArraySlice expr: Expression.Subscript) throws -> AbstractSyntaxTreeNode {
-        fatalError("unimplemented")
+        guard let range = expr.argument as? Expression.StructInitializer, range.arguments.count == 2, range.arguments[0].name == kRangeBegin, range.arguments[1].name == kRangeLimit else {
+            fatalError("Array slice requires the argument to be range. Semantic analysis should have caught this error at an earlier step.")
+        }
+        
+        // Can we determine the range's bounds at compile time?
+        let maybeBegin: Int?
+        switch try? typeCheck(rexpr: range.arguments[0].expr) {
+        case .compTimeInt(let n):
+            maybeBegin = n
+            
+        default:
+            maybeBegin = nil
+        }
+        
+        let maybeLimit: Int?
+        switch try? typeCheck(rexpr: range.arguments[1].expr) {
+        case .compTimeInt(let n):
+            maybeLimit = n
+            
+        default:
+            maybeLimit = nil
+        }
+        
+        // TODO: Insert dynamic bounds checking code
+        
+        // Compile an expression to initialize a Slice struct with populated
+        // base and count fields. This involves some unsafe, platform-specific
+        // bitcasts and assumptions about the memory layout.
+        let beginExpr = range.arguments[0].expr
+        let limitExpr = range.arguments[1].expr
+        
+        let arrayBeginExpr = Expression.Get(expr: Expression.Bitcast(expr: expr.subscriptable, targetType: Expression.PrimitiveType(kSliceType)), member: Expression.Identifier(kSliceBase))
+        
+        let baseExpr: Expression
+        if let begin = maybeBegin {
+            if begin == 0 {
+                baseExpr = arrayBeginExpr
+            }
+            else {
+                baseExpr = Expression.Binary(op: .plus, left: arrayBeginExpr, right: Expression.LiteralInt(begin))
+            }
+        }
+        else {
+            baseExpr = Expression.Binary(op: .plus, left: arrayBeginExpr, right: beginExpr)
+        }
+        
+        let countExpr: Expression
+        if let begin = maybeBegin, let limit = maybeLimit {
+            countExpr = Expression.LiteralInt(limit - begin)
+        }
+        else {
+            countExpr = Expression.Binary(op: .minus, left: limitExpr, right: beginExpr)
+        }
+        
+        let sliceExpr = Expression.StructInitializer(identifier: Expression.Identifier(kSliceName), arguments: [
+            Expression.StructInitializer.Argument(name: kSliceBase, expr: baseExpr),
+            Expression.StructInitializer.Argument(name: kSliceCount, expr: countExpr)
+        ])
+        let sliceType = try typeCheck(rexpr: expr)
+        let bitcastExpr = Expression.Bitcast(expr: sliceExpr, targetType: Expression.PrimitiveType(sliceType))
+        return try rvalue(expr: bitcastExpr)
     }
     
     func computeAddressOfSymbol(sourceAnchor: SourceAnchor?, symbol: Symbol, depth: Int) -> Seq {

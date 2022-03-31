@@ -189,6 +189,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             result = try lvalue(subscript: node)
         case let node as Expression.Get:
             result = try lvalue(get: node)
+        case let node as Expression.Bitcast:
+            result = try lvalue(expr: node.expr)
         default:
             fatalError("unimplemented")
         }

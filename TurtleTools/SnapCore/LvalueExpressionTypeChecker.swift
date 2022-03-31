@@ -28,6 +28,14 @@ public class LvalueExpressionTypeChecker: NSObject {
             return try check(subscript: expr)
         case let expr as Expression.Get:
             return try check(get: expr)
+        case let expr as Expression.Bitcast:
+            if let _ = try check(expression: expr.expr) {
+                let result = try rvalueContext().check(expression: expr.targetType)
+                return result
+            }
+            else {
+                return nil
+            }
         default:
             return nil
         }

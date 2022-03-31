@@ -112,4 +112,34 @@ public class SnapDebugConsole : DebugConsole {
         let str = String(bytes: arr, encoding: .utf8)
         return str
     }
+    
+    public func loadSymbolStringSlice(_ identifier: String) -> String? {
+        guard let symbol = symbols?.maybeResolve(identifier: identifier) else {
+            return nil
+        }
+        
+        switch symbol.type {
+        case .dynamicArray(elementType: .u8), .dynamicArray(elementType: .constU8), .constDynamicArray(elementType: .u8), .constDynamicArray(elementType: .constU8):
+            break
+            
+        default:
+            return nil
+        }
+        
+        let kSliceBaseAddressOffset = 0
+        let kSliceCountOffset = 1
+        
+        let payloadAddr = MemoryAddress(computer.ram[symbol.offset + kSliceBaseAddressOffset])
+        let count = Int(computer.ram[symbol.offset + kSliceCountOffset])
+        
+        var arr: [UInt8] = []
+        for i in 0..<count {
+            let word = computer.ram[payloadAddr.value + i]
+            let value = UInt8(word & 0x00ff)
+            arr.append(value)
+        }
+        
+        let str = String(bytes: arr, encoding: .utf8)
+        return str
+    }
 }

@@ -1625,5 +1625,4 @@ func foo() {
         XCTAssertEqual(debugger?.loadSymbolU8("foo"), 42)
         XCTAssertEqual(debugger?.loadSymbolU8("bar"), 42)
     }
-    }
 }

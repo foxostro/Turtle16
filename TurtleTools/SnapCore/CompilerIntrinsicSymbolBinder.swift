@@ -21,7 +21,19 @@ public class CompilerIntrinsicSymbolBinder: NSObject {
         result = bindCompilerInstrinsicPokePeripheral(symbols: result)
         result = bindCompilerInstrinsicHlt(symbols: result)
         result = bindCompilerIntrinsicRangeType(symbols: result)
+        result = bindCompilerIntrinsicSliceType(symbols: result)
         return result
+    }
+    
+    func bindCompilerIntrinsicSliceType(symbols: SymbolTable) -> SymbolTable {
+        let sizeOfU16 = memoryLayoutStrategy.sizeof(type: .u16)
+        let name = "Slice"
+        let typ: SymbolType = .structType(StructType(name: name, symbols: SymbolTable(tuples: [
+            ("base", Symbol(type: .u16, offset: 0, storage: .automaticStorage)),
+            ("count", Symbol(type: .u16, offset: sizeOfU16, storage: .automaticStorage))
+        ])))
+        symbols.bind(identifier: name, symbolType: typ, visibility: .privateVisibility)
+        return symbols
     }
     
     func bindCompilerIntrinsicRangeType(symbols: SymbolTable) -> SymbolTable {

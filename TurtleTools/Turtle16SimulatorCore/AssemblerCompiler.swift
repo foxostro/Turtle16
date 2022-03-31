@@ -766,13 +766,32 @@ public class AssemblerCompiler: NSObject {
             ])
         ]
         if size != 0 {
-            instructions += [
-                InstructionNode(instruction: kSUBI, parameters: [
-                    ParameterIdentifier("sp"),
-                    ParameterIdentifier("sp"),
-                    ParameterNumber(size)
-                ])
-            ]
+            if size >= 15 {
+                instructions += [
+                    InstructionNode(instruction: kLI, parameters:[
+                        ParameterIdentifier("r0"),
+                        ParameterNumber(Int(size & 0x00ff))
+                    ]),
+                    InstructionNode(instruction: kLUI, parameters:[
+                        ParameterIdentifier("r0"),
+                        ParameterNumber(Int((size & 0xff00) >> 8))
+                    ]),
+                    InstructionNode(instruction: kSUB, parameters: [
+                        ParameterIdentifier("sp"),
+                        ParameterIdentifier("sp"),
+                        ParameterIdentifier("r0")
+                    ])
+                ]
+            }
+            else {
+                instructions += [
+                    InstructionNode(instruction: kSUBI, parameters: [
+                        ParameterIdentifier("sp"),
+                        ParameterIdentifier("sp"),
+                        ParameterNumber(size)
+                    ])
+                ]
+            }
         }
         try compileNodes(instructions)
     }

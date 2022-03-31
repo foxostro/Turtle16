@@ -59,6 +59,8 @@ public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
                 let testRunnerMain = FunctionDeclaration(identifier: Expression.Identifier(kTestMainFunctionName), functionType: Expression.FunctionType(name: kTestMainFunctionName, returnType: Expression.PrimitiveType(.void), arguments: []), argumentNames: [], body: Block(children: [
                     testDeclaration.body,
                     Expression.Call(callee: Expression.Identifier("puts"), arguments: [Expression.LiteralString("passed\n")])
+//                    VarDeclaration(identifier: Expression.Identifier("kPassed"), explicitType: nil, expression: Expression.LiteralString("passed\n"), storage: .st, isMutable: false),
+//                    Expression.Call(callee: Expression.Identifier("puts"), arguments: [Expression.Identifier("kPassed")])
                 ]))
                 children += [
                     testRunnerMain,

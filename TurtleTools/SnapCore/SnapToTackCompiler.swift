@@ -144,22 +144,17 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     public override func compile(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
-        let sizeOfLocalVariables = node.symbols.highwaterMark
-        
         let mangledName = (try TypeContextTypeChecker(symbols: symbols!).check(expression: node.functionType).unwrapFunctionType()).mangledName!
-        
-        var children: [AbstractSyntaxTreeNode] = []
-        
-        children += [
+        let compiledBody = try compile(node.body)!
+        node.symbols.highwaterMark = max(node.symbols.highwaterMark, node.body.symbols.highwaterMark)
+        let sizeOfLocalVariables = node.symbols.highwaterMark
+        let subroutine = Subroutine(sourceAnchor: node.sourceAnchor, identifier: mangledName, children: [
             TackInstructionNode(instruction: .enter, parameters: [
                 ParameterNumber(sizeOfLocalVariables)
             ]),
-            try compile(node.body)!
-        ]
-        
-        let subroutine = Subroutine(sourceAnchor: node.sourceAnchor, identifier: mangledName, children: children)
+            compiledBody
+        ])
         subroutines.append(subroutine)
-        
         return nil
     }
     

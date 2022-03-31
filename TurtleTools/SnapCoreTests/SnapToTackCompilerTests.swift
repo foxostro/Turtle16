@@ -23,12 +23,18 @@ let kSliceType: SymbolType = .structType(StructType(name: kSliceName, symbols: S
     (kSliceBase,  Symbol(type: kSliceBaseAddressType, offset: kSliceBaseAddressOffset)),
     (kSliceCount, Symbol(type: kSliceCountType, offset: kSliceCountOffset))
 ])))
+let kRangeName = "Range"
+let kRangeBegin = "begin"
+let kRangeLimit = "limit"
+let kRangeType: SymbolType = .structType(StructType(name: kRangeName, symbols: SymbolTable(tuples: [
+    (kRangeBegin, Symbol(type: .u16, offset: 0, storage: .automaticStorage)),
+    (kRangeLimit, Symbol(type: .u16, offset: 1, storage: .automaticStorage))
+])))
 
 
 class SnapToTackCompilerTests: XCTestCase {
-    func makeCompiler(symbols: SymbolTable = SymbolTable()) -> SnapToTackCompiler {
+    func makeCompiler(options opts: SnapToTackCompiler.Options = SnapToTackCompiler.Options(isBoundsCheckEnabled: true), symbols: SymbolTable = SymbolTable()) -> SnapToTackCompiler {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        let opts = SnapToTackCompiler.Options(isBoundsCheckEnabled: true)
         return SnapToTackCompiler(symbols: symbols,
                                   globalEnvironment: globalEnvironment,
                                   options: opts)
@@ -4152,5 +4158,286 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr1")
+    }
+    
+    func testRvalue_ArraySlice_WithNonRangeArgument() throws {
+        let symbols = SymbolTable(tuples: [ ("foo", Symbol(type: .array(count: 2, elementType: .u16))) ],
+                                  typeDict: [ kSliceName : kSliceType ])
+        let compiler = makeCompiler(symbols: symbols)
+        let arg = Expression.StructInitializer(identifier: Expression.Identifier(kSliceName), arguments: [
+            Expression.StructInitializer.Argument(name: kSliceBase, expr: Expression.LiteralInt(0)),
+            Expression.StructInitializer.Argument(name: kSliceCount, expr: Expression.LiteralInt(0))
+        ])
+        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: arg)
+        XCTAssertThrowsError(try compiler.rvalue(expr: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot subscript a value of type `[2]u16' with an argument of type `Slice'")
+        }
+    }
+    
+    func testRvalue_ArraySlice_RangeBeginIsOutOfBoundsAtCompileTime() throws {
+        let symbols = SymbolTable(tuples: [ ("foo", Symbol(type: .array(count: 1, elementType: .u16))) ],
+                                  typeDict: [ kRangeName : kRangeType ])
+        let compiler = makeCompiler(symbols: symbols)
+        let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
+            Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.LiteralInt(200)),
+            Expression.StructInitializer.Argument(name: kRangeLimit, expr: Expression.LiteralInt(201))
+        ])
+        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
+        XCTAssertThrowsError(try compiler.rvalue(expr: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "Array index is always out of bounds: `200' is not in 0..1")
+        }
+    }
+    
+    func testRvalue_ArraySlice_RangeLimitIsOutOfBoundsAtCompileTime() throws {
+        let symbols = SymbolTable(tuples: [ ("foo", Symbol(type: .array(count: 1, elementType: .u16))) ],
+                                  typeDict: [ kRangeName : kRangeType ])
+        let compiler = makeCompiler(symbols: symbols)
+        let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
+            Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.LiteralInt(0)),
+            Expression.StructInitializer.Argument(name: kRangeLimit, expr: Expression.LiteralInt(201))
+        ])
+        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
+        XCTAssertThrowsError(try compiler.rvalue(expr: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "Array index is always out of bounds: `201' is not in 0..1")
+        }
+    }
+    
+    func testRvalue_ArraySlice_RangeLimitIsOutOfBoundsAtCompileTime_2() throws {
+        let symbols = SymbolTable(tuples: [ ("foo", Symbol(type: .array(count: 2, elementType: .u16))) ],
+                                  typeDict: [ kRangeName : kRangeType ])
+        let compiler = makeCompiler(symbols: symbols)
+        let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
+            Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.LiteralInt(1)),
+            Expression.StructInitializer.Argument(name: kRangeLimit, expr: Expression.LiteralInt(0))
+        ])
+        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
+        XCTAssertThrowsError(try compiler.rvalue(expr: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "Range requires begin less than or equal to limit: `1..0'")
+        }
+    }
+    
+    func testRvalue_ArraySlice_0() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 1, elementType: .u16),
+                           offset: 0x1000))
+        ], typeDict: [
+            kRangeName : kRangeType,
+            kSliceName : kSliceType
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
+            Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.LiteralInt(0)),
+            Expression.StructInitializer.Argument(name: kRangeLimit, expr: Expression.LiteralInt(1))
+        ])
+        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
+        let actual = try compiler.rvalue(expr: expr)
+        let expected = Seq(children: [
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(0x0110)
+            ]),
+            TackInstructionNode(instruction: .addi16, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr0"),
+                ParameterNumber(0)
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterNumber(0x1000)
+            ]),
+            TackInstructionNode(instruction: .store, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterIdentifier("vr1")
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterNumber(0x0110)
+            ]),
+            TackInstructionNode(instruction: .addi16, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterIdentifier("vr3"),
+                ParameterNumber(1)
+            ]),
+            TackInstructionNode(instruction: .li16, parameters: [
+                ParameterIdentifier("vr5"),
+                ParameterNumber(1)
+            ]),
+            TackInstructionNode(instruction: .store, parameters: [
+                ParameterIdentifier("vr5"),
+                ParameterIdentifier("vr4")
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr6"),
+                ParameterNumber(0x0110)
+            ]),
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr6")
+    }
+    
+    func testRvalue_ArraySlice_1() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 3, elementType: .u16),
+                           offset: 0x1000))
+        ], typeDict: [
+            kRangeName : kRangeType,
+            kSliceName : kSliceType
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
+            Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.LiteralInt(1)),
+            Expression.StructInitializer.Argument(name: kRangeLimit, expr: Expression.LiteralInt(3))
+        ])
+        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
+        let actual = try compiler.rvalue(expr: expr)
+        let expected = Seq(children: [
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(0x0110)
+            ]),
+            TackInstructionNode(instruction: .addi16, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr0"),
+                ParameterNumber(0)
+            ]),
+            TackInstructionNode(instruction: .li16, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterNumber(1)
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterNumber(0x1000)
+            ]),
+            TackInstructionNode(instruction: .add16, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr2")
+            ]),
+            TackInstructionNode(instruction: .store, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterIdentifier("vr1")
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr5"),
+                ParameterNumber(0x0110)
+            ]),
+            TackInstructionNode(instruction: .addi16, parameters: [
+                ParameterIdentifier("vr6"),
+                ParameterIdentifier("vr5"),
+                ParameterNumber(1)
+            ]),
+            TackInstructionNode(instruction: .li16, parameters: [
+                ParameterIdentifier("vr7"),
+                ParameterNumber(2)
+            ]),
+            TackInstructionNode(instruction: .store, parameters: [
+                ParameterIdentifier("vr7"),
+                ParameterIdentifier("vr6")
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr8"),
+                ParameterNumber(0x0110)
+            ]),
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr8")
+    }
+    
+    func testRvalue_ArraySlice_2() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 3, elementType: .u16), offset: 0x1000)),
+            ("a",   Symbol(type: .u16, offset: 0x2000)),
+            ("b",   Symbol(type: .u16, offset: 0x2001))
+        ], typeDict: [
+            kRangeName : kRangeType,
+            kSliceName : kSliceType
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
+            Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.Identifier("a")),
+            Expression.StructInitializer.Argument(name: kRangeLimit, expr: Expression.Identifier("b"))
+        ])
+        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
+        let actual = try compiler.rvalue(expr: expr)
+        let expected = Seq(children: [
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(0x0110)
+            ]),
+            TackInstructionNode(instruction: .addi16, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr0"),
+                ParameterNumber(0)
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterNumber(0x2000)
+            ]),
+            TackInstructionNode(instruction: .load, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr2")
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterNumber(0x1000)
+            ]),
+            TackInstructionNode(instruction: .add16, parameters: [
+                ParameterIdentifier("vr5"),
+                ParameterIdentifier("vr4"),
+                ParameterIdentifier("vr3")
+            ]),
+            TackInstructionNode(instruction: .store, parameters: [
+                ParameterIdentifier("vr5"),
+                ParameterIdentifier("vr1")
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr6"),
+                ParameterNumber(0x0110)
+            ]),
+            TackInstructionNode(instruction: .addi16, parameters: [
+                ParameterIdentifier("vr7"),
+                ParameterIdentifier("vr6"),
+                ParameterNumber(1)
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr8"),
+                ParameterNumber(0x2000)
+            ]),
+            TackInstructionNode(instruction: .load, parameters: [
+                ParameterIdentifier("vr9"),
+                ParameterIdentifier("vr8")
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr10"),
+                ParameterNumber(0x2001)
+            ]),
+            TackInstructionNode(instruction: .load, parameters: [
+                ParameterIdentifier("vr11"),
+                ParameterIdentifier("vr10")
+            ]),
+            TackInstructionNode(instruction: .sub16, parameters: [
+                ParameterIdentifier("vr12"),
+                ParameterIdentifier("vr11"),
+                ParameterIdentifier("vr9")
+            ]),
+            TackInstructionNode(instruction: .store, parameters: [
+                ParameterIdentifier("vr12"),
+                ParameterIdentifier("vr7")
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr13"),
+                ParameterNumber(0x0110)
+            ]),
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr13")
     }
 }

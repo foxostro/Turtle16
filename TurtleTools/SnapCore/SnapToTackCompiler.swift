@@ -28,11 +28,22 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     let fp = "fp"
     let kHalt = "hlt"
     let kOOB = "__oob"
+    var subroutines: [Subroutine] = []
+    
     let kUnionPayloadOffset: Int
     let kUnionTypeTagOffset: Int
-    let kSliceBaseAddrOffset: Int
+    
+    let kSliceName = "Slice"
+    let kSliceBase = "base"
+    let kSliceBaseAddressOffset: Int
+    let kSliceBaseAddressType = SymbolType.u16
+    let kSliceCount = "count"
     let kSliceCountOffset: Int
-    var subroutines: [Subroutine] = []
+    let kSliceCountType = SymbolType.u16
+    let kSliceType: SymbolType
+    
+    let kRangeBegin = "begin"
+    let kRangeLimit = "limit"
     
     func pushRegister(_ identifier: String) {
         registerStack.append(identifier)
@@ -59,8 +70,12 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         self.options = options
         kUnionTypeTagOffset = 0
         kUnionPayloadOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .u16)
-        kSliceBaseAddrOffset = 0
+        kSliceBaseAddressOffset = 0
         kSliceCountOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .pointer(.void))
+        kSliceType = .structType(StructType(name: kSliceName, symbols: SymbolTable(tuples: [
+            (kSliceBase,  Symbol(type: kSliceBaseAddressType, offset: kSliceBaseAddressOffset)),
+            (kSliceCount, Symbol(type: kSliceCountType, offset: kSliceCountOffset))
+        ])))
         super.init(symbols)
     }
     
@@ -207,10 +222,19 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     func lvalue(subscript expr: Expression.Subscript) throws -> AbstractSyntaxTreeNode {
+        let argumentType = try typeCheck(rexpr: expr.argument)
+        
+        switch argumentType {
+        case .structType, .constStructType:
+            return try lvalue(slice: expr)
+            
+        default:
+            break
+        }
+        
         let elementType = try typeCheck(rexpr: expr)
         let elementSize = globalEnvironment.memoryLayoutStrategy.sizeof(type: elementType)
         let subscriptableType = try typeCheck(rexpr: expr.subscriptable)
-        let argumentType = try typeCheck(rexpr: expr.argument)
         
         // Can we determine the index at compile time?
         let maybeStaticIndex: Int?
@@ -257,7 +281,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 TackInstructionNode(instruction: .load, parameters: [
                     ParameterIdentifier(baseAddr),
                     ParameterIdentifier(sliceAddr),
-                    ParameterNumber(kSliceBaseAddrOffset)
+                    ParameterNumber(kSliceBaseAddressOffset)
                 ])
             ]
             
@@ -374,6 +398,105 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         }
         
         return Seq(sourceAnchor: expr.sourceAnchor, children: children)
+    }
+    
+    func lvalue(slice expr: Expression.Subscript) throws -> AbstractSyntaxTreeNode {
+        let subscriptableType = try typeCheck(rexpr: expr.subscriptable)
+        switch subscriptableType {
+        case .array:
+            return try lvalue(arraySlice: expr)
+
+        case .dynamicArray, .constDynamicArray:
+            return try lvalue(dynamicArraySlice: expr)
+            
+        default:
+            fatalError("Cannot subscript an expression of type `\(subscriptableType)'. Semantic analysis should have caught this error at an earlier step.")
+        }
+    }
+    
+    func lvalue(arraySlice expr: Expression.Subscript) throws -> AbstractSyntaxTreeNode {
+        // TODO: This is going to fail when the size of an array element is not equal to one
+        let subscriptableType = try typeCheck(rexpr: expr.subscriptable)
+        
+        guard let range = expr.argument as? Expression.StructInitializer, range.arguments.count == 2, range.arguments[0].name == kRangeBegin, range.arguments[1].name == kRangeLimit else {
+            fatalError("Array slice requires the argument to be range. Semantic analysis should have caught this error at an earlier step.")
+        }
+        
+        // Can we determine the range's bounds at compile time?
+        let maybeBegin: Int?
+        switch try? typeCheck(rexpr: range.arguments[0].expr) {
+        case .compTimeInt(let n):
+            maybeBegin = n
+            
+        default:
+            maybeBegin = nil
+        }
+        
+        let maybeLimit: Int?
+        switch try? typeCheck(rexpr: range.arguments[1].expr) {
+        case .compTimeInt(let n):
+            maybeLimit = n
+            
+        default:
+            maybeLimit = nil
+        }
+        
+        let upperBound = subscriptableType.arrayCount!
+        
+        if let begin = maybeBegin, begin < 0 || begin >= upperBound {
+            throw CompilerError(sourceAnchor: expr.argument.sourceAnchor, message: "Array index is always out of bounds: `\(begin)' is not in 0..\(upperBound)")
+        }
+        
+        if let limit = maybeLimit, limit < 0 || limit > upperBound {
+            throw CompilerError(sourceAnchor: expr.argument.sourceAnchor, message: "Array index is always out of bounds: `\(limit)' is not in 0..\(upperBound)")
+        }
+        
+        if let begin = maybeBegin, let limit = maybeLimit, begin > limit {
+            throw CompilerError(sourceAnchor: expr.argument.sourceAnchor, message: "Range requires begin less than or equal to limit: `\(begin)..\(limit)'")
+        }
+        
+        // TODO: Insert dynamic bounds checking code when the bounds check could not be performed at compile time
+        
+        // Compile an expression to initialize a Slice struct with populated
+        // base and count fields. This involves some unsafe, platform-specific
+        // bitcasts and assumptions about the memory layout.
+        let beginExpr = range.arguments[0].expr
+        let limitExpr = range.arguments[1].expr
+        
+        let arrayBeginExpr = Expression.Bitcast(expr: Expression.Unary(op: .ampersand, expression: expr.subscriptable), targetType: Expression.PrimitiveType(.u16))
+        
+        let baseExpr: Expression
+        if let begin = maybeBegin {
+            if begin == 0 {
+                baseExpr = arrayBeginExpr
+            }
+            else {
+                baseExpr = Expression.Binary(op: .plus, left: arrayBeginExpr, right: Expression.LiteralInt(begin))
+            }
+        }
+        else {
+            baseExpr = Expression.Binary(op: .plus, left: arrayBeginExpr, right: beginExpr)
+        }
+        
+        let countExpr: Expression
+        if let begin = maybeBegin, let limit = maybeLimit {
+            countExpr = Expression.LiteralInt(limit - begin)
+        }
+        else {
+            countExpr = Expression.Binary(op: .minus, left: limitExpr, right: beginExpr)
+        }
+        
+        let sliceExpr = Expression.StructInitializer(identifier: Expression.Identifier(kSliceName), arguments: [
+            Expression.StructInitializer.Argument(name: kSliceBase, expr: baseExpr),
+            Expression.StructInitializer.Argument(name: kSliceCount, expr: countExpr)
+        ])
+        let sliceType = try typeCheck(rexpr: expr)
+        let bitcastExpr = Expression.Bitcast(expr: sliceExpr, targetType: Expression.PrimitiveType(sliceType))
+        return try rvalue(expr: bitcastExpr)
+    }
+    
+    func lvalue(dynamicArraySlice expr: Expression.Subscript) throws -> AbstractSyntaxTreeNode {
+        fatalError("unimplemented")
     }
     
     func computeAddressOfSymbol(sourceAnchor: SourceAnchor?, symbol: Symbol, depth: Int) -> Seq {
@@ -790,7 +913,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 TackInstructionNode(instruction: .store, parameters: [
                     ParameterIdentifier(popRegister()),
                     ParameterIdentifier(dst),
-                    ParameterNumber(kSliceBaseAddrOffset),
+                    ParameterNumber(kSliceBaseAddressOffset),
                 ])
             ]
             let countReg = nextRegister()

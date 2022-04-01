@@ -2122,4 +2122,52 @@ func foo() {
         let str = String(bytes: serialOutput, encoding: .utf8)
         XCTAssertEqual(str, "passed\n")
     }
+    
+    func testTraitsFailToCompileBecauseTraitNotImplementedAppropriately() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: """
+            trait Serial {
+                func puts(self: *Serial, s: []const u8)
+            }
+
+            struct SerialFake {
+                buffer: [64]u8,
+                cursor: u16
+            }
+
+            impl SerialFake {
+                func init() -> SerialFake {
+                    var serial: SerialFake = undefined
+                    serial.cursor = 0
+                    for i in 0..(serial.buffer.count) {
+                        serial.buffer[i] = 0
+                    }
+                    return serial
+                }
+            }
+
+            impl Serial for SerialFake {
+                func puts(self: *SerialFake) {
+                }
+            }
+
+            test "call through trait interface" {
+                var serialFake = SerialFake.init()
+                let serial: Serial = &serialFake
+                serial.puts("test")
+                assert(serialFake.cursor == 4)
+                assert(serialFake.buffer[0] == 't')
+                assert(serialFake.buffer[1] == 'e')
+                assert(serialFake.buffer[2] == 's')
+                assert(serialFake.buffer[3] == 't')
+            }
+
+            """)
+        
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "impl Serial for SerialFake {")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 20..<21)
+        XCTAssertEqual(compiler.errors.first?.message, "`SerialFake' method `puts' has 1 parameter but the declaration in the `Serial' trait has 2.")
+    }
 }

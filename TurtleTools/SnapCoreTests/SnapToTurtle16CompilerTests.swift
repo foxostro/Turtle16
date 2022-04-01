@@ -2170,4 +2170,29 @@ func foo() {
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 20..<21)
         XCTAssertEqual(compiler.errors.first?.message, "`SerialFake' method `puts' has 1 parameter but the declaration in the `Serial' trait has 2.")
     }
+    
+    func testBugSymbolResolutionInStructMethodsPutsMembersInScopeWithBrokenOffsets() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: """
+            struct Foo {
+                bar: u8
+            }
+
+            impl Foo {
+                func init() -> Foo {
+                    var foo: Foo = undefined
+                    bar = 42
+                    return foo
+                }
+            }
+
+            let foo = Foo.init()
+            """)
+        
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "bar")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 7..<8)
+        XCTAssertEqual(compiler.errors.first?.message, "use of unresolved identifier: `bar'")
+    }
 }

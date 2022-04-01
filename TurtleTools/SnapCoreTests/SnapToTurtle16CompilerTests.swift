@@ -2232,4 +2232,15 @@ func foo() {
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
         XCTAssertEqual(compiler.errors.first?.message, "use of undeclared type `Foo'")
     }
+    
+    func testBugWhereConstSelfPointerInTraitCausesCompilerCrash() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: """
+            trait Serial {
+                func print(self: *const Serial, s: []const u8)
+            }
+            """)
+        
+        XCTAssertFalse(compiler.hasError)
+    }
 }

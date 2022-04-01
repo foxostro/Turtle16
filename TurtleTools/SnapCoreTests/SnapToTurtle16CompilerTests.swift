@@ -2195,4 +2195,27 @@ func foo() {
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 7..<8)
         XCTAssertEqual(compiler.errors.first?.message, "use of unresolved identifier: `bar'")
     }
+    
+    func testBugWhereRangeInSubscriptCausesUnsupportedExpressionError() {
+        var serialOutput: [UInt8] = []
+        let onSerialOutput = { (value: UInt16) in
+            serialOutput.append(UInt8(value & 0x00ff))
+        }
+        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
+                              runtimeSupport: kRuntime,
+                              onSerialOutput: onSerialOutput)
+        _ = run(options: options, program: """
+            struct Foo {
+                buffer: []const u8
+            }
+            let foo = Foo {
+                .buffer = "Hello, World!"
+            }
+            foo.buffer = foo.buffer[0..5]
+            puts(foo.buffer)
+            """)
+        
+        let str = String(bytes: serialOutput, encoding: .utf8)
+        XCTAssertEqual(str, "Hello")
+    }
 }

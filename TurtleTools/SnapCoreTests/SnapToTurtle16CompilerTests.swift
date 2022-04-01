@@ -2243,4 +2243,17 @@ func foo() {
         
         XCTAssertFalse(compiler.hasError)
     }
+    
+    func testCrashWhenReturningAZeroSizeStruct() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: """
+            struct Empty {}
+            func init() -> Empty {
+                return Empty {}
+            }
+            let foo = init()
+            """)
+        
+        XCTAssertFalse(compiler.hasError)
+    }
 }

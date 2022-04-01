@@ -589,6 +589,36 @@ class TackToTurtle16CompilerTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
     
+    func testALLOCA_large() throws {
+        let sp = "r6"
+        let input = TackInstructionNode(instruction: .alloca, parameters:[
+            ParameterIdentifier("vr0"),
+            ParameterNumber(0xabcd)
+        ])
+        let expected = Seq(children: [
+            InstructionNode(instruction: kLI, parameters:[
+                ParameterIdentifier("r0"),
+                ParameterNumber(0xcd)
+            ]),
+            InstructionNode(instruction: kLUI, parameters:[
+                ParameterIdentifier("r0"),
+                ParameterNumber(0xab)
+            ]),
+            InstructionNode(instruction: kSUB, parameters:[
+                ParameterIdentifier(sp),
+                ParameterIdentifier(sp),
+                ParameterIdentifier("r0")
+            ]),
+            InstructionNode(instruction: kADDI, parameters:[
+                ParameterIdentifier("r1"),
+                ParameterIdentifier(sp),
+                ParameterNumber(0)
+            ])
+        ])
+        let actual = try compile(input)
+        XCTAssertEqual(actual, expected)
+    }
+    
     func testFREE() throws {
         let sp = "r6"
         let input = TackInstructionNode(instruction: .free, parameters:[

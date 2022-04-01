@@ -345,11 +345,11 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
     
     func alloca(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return Seq(children: [
-            InstructionNode(instruction: kSUBI, parameters:[
+            subi16(TackInstructionNode(instruction: .subi16, parameters: [
                 ParameterIdentifier("sp"),
                 ParameterIdentifier("sp"),
                 node.parameters[1]
-            ]),
+            ])) ?? Seq(),
             InstructionNode(instruction: kADDI, parameters:[
                 corresponding(param: node.parameters[0]),
                 ParameterIdentifier("sp"),

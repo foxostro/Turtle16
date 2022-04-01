@@ -1839,4 +1839,43 @@ func foo() {
         let str = String(bytes: serialOutput, encoding: .utf8)
         XCTAssertEqual(str, "Hello, World!")
     }
+    
+    func testRebindAFunctionPointerAtRuntime_1() {
+        let debugger = run(program: """
+            var foo: u16 = 1
+            func bar() {
+                foo = 2
+            }
+            func quz() {
+                foo = 3
+            }
+            var ptr = &bar
+            ptr = &quz
+            ptr()
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("foo"), 3)
+    }
+    
+    func testRebindAFunctionPointerAtRuntime_2() throws {
+        var serialOutput: [UInt8] = []
+        let onSerialOutput = { (value: UInt16) in
+            serialOutput.append(UInt8(value & 0x00ff))
+        }
+        let options = Options(isBoundsCheckEnabled: true,
+                              shouldDefineCompilerIntrinsicFunctions: true,
+                              runtimeSupport: kRuntime,
+                              onSerialOutput: onSerialOutput)
+        _ = run(options: options, program: """
+            public func fakePuts(s: []const u8) {
+                puts("fake")
+            }
+            var ptr = &puts
+            ptr = &fakePuts
+            ptr("Hello, World!")
+            """)
+        
+        let str = String(bytes: serialOutput, encoding: .utf8)
+        XCTAssertEqual(str, "fake")
+    }
 }

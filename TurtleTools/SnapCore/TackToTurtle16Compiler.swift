@@ -177,7 +177,10 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
     }
     
     func la(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
-        return InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kLA, parameters: node.parameters)
+        let dst = corresponding(param: node.parameters[0])
+        let tgt = node.parameters[1]
+        let r = InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kLA, parameters: [dst, tgt])
+        return r
     }
     
     func bz(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {

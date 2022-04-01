@@ -256,7 +256,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
             ParameterIdentifier("foo")
         ])
         let expected = InstructionNode(instruction: kLA, parameters:[
-            ParameterIdentifier("r1"),
+            ParameterIdentifier("r0"),
             ParameterIdentifier("foo")
         ])
         let actual = try compile(input)

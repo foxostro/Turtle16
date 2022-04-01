@@ -2218,4 +2218,18 @@ func foo() {
         let str = String(bytes: serialOutput, encoding: .utf8)
         XCTAssertEqual(str, "Hello")
     }
+    
+    func testBugWhereImplErrorIsMissingSourceAnchor() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: """
+            impl Foo {
+            }
+            """)
+        
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "Foo")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
+        XCTAssertEqual(compiler.errors.first?.message, "use of undeclared type `Foo'")
+    }
 }

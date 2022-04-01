@@ -1878,4 +1878,26 @@ func foo() {
         let str = String(bytes: serialOutput, encoding: .utf8)
         XCTAssertEqual(str, "fake")
     }
+    
+    func testFunctionPointerStructMemberCanBeCalledLikeAFunctionMemberCanBeCalled_1() {
+        var serialOutput: [UInt8] = []
+        let onSerialOutput = { (value: UInt16) in
+            serialOutput.append(UInt8(value & 0x00ff))
+        }
+        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
+                              runtimeSupport: kRuntime,
+                              onSerialOutput: onSerialOutput)
+        _ = run(options: options, program: """
+            struct Serial {
+                puts: func ([]const u8) -> void
+            }
+            let serial = Serial {
+                .puts = &puts
+            }
+            serial.puts("Hello, World!")
+            """)
+        
+        let str = String(bytes: serialOutput, encoding: .utf8)
+        XCTAssertEqual(str, "Hello, World!")
+    }
 }

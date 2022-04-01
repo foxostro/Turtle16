@@ -1968,4 +1968,24 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolU8("baz"), 42)
     }
+    
+    func testBugWithCompilerTemporaryPushedTwiceInDynamicArrayBoundsCheck() {
+        var serialOutput: [UInt8] = []
+        let onSerialOutput = { (value: UInt16) in
+            serialOutput.append(UInt8(value & 0x00ff))
+        }
+        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
+                              runtimeSupport: kRuntime,
+                              shouldRunSpecificTest: "foo",
+                              onSerialOutput: onSerialOutput)
+        _ = run(options: options, program: """
+            let slice: []const u8 = "test"
+            test "foo" {
+                assert(slice[0] == 't')
+            }
+            """)
+        
+        let str = String(bytes: serialOutput, encoding: .utf8)
+        XCTAssertEqual(str, "passed\n")
+    }
 }

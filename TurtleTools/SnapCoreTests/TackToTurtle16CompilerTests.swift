@@ -633,6 +633,30 @@ class TackToTurtle16CompilerTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
     
+    func testFREE_large() throws {
+        let sp = "r6"
+        let input = TackInstructionNode(instruction: .free, parameters:[
+            ParameterNumber(0xabcd)
+        ])
+        let expected = Seq(children: [
+            InstructionNode(instruction: kLI, parameters:[
+                ParameterIdentifier("r0"),
+                ParameterNumber(0xcd)
+            ]),
+            InstructionNode(instruction: kLUI, parameters:[
+                ParameterIdentifier("r0"),
+                ParameterNumber(0xab)
+            ]),
+            InstructionNode(instruction: kADD, parameters:[
+                ParameterIdentifier(sp),
+                ParameterIdentifier(sp),
+                ParameterIdentifier("r0")
+            ])
+        ])
+        let actual = try compile(input)
+        XCTAssertEqual(actual, expected)
+    }
+    
     func testADDI16_small_imm_pos() throws {
         let input = TackInstructionNode(instruction: .addi16, parameters:[
             ParameterIdentifier("vr1"),

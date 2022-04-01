@@ -359,11 +359,11 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
     }
     
     func free(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
-        return InstructionNode(instruction: kADDI, parameters:[
+        return addi16(TackInstructionNode(instruction: .addi16, parameters: [
             ParameterIdentifier("sp"),
             ParameterIdentifier("sp"),
             node.parameters[0]
-        ])
+        ]))
     }
     
     fileprivate func opWithImm16(_ node: TackInstructionNode, _ rrr: String, _ rri: String) -> AbstractSyntaxTreeNode? {

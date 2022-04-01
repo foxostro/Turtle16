@@ -2270,4 +2270,14 @@ func foo() {
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 1..<2)
         XCTAssertEqual(compiler.errors.first?.message, "cannot implicitly convert a union type `u8 | bool' to `u8'; use an explicit conversion instead")
     }
+    
+    func testBugWhereCompilerDoesNotConvertUnionValuesOfDifferentConstness() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: """
+            var a: u8 | bool = 42
+            let b: u8 | bool = a
+            """)
+        
+        XCTAssertFalse(compiler.hasError)
+    }
 }

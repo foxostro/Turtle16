@@ -1925,4 +1925,18 @@ func foo() {
         let str = String(bytes: serialOutput, encoding: .utf8)
         XCTAssertEqual(str, "Hello, World!")
     }
+    
+    func testStructInitializerCanHaveExplicitUndefinedValue() throws {
+        let debugger = run(program: """
+            struct Foo {
+                arr: [64]u8
+            }
+            var foo = Foo {
+                .arr = undefined
+            }
+            """)
+        
+        let arr = try debugger?.symbols?.resolve(identifier: "foo")
+        XCTAssertNotNil(arr)
+    }
 }

@@ -204,7 +204,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         default:
             fatalError("unimplemented")
         }
-        return flatten(result)!
+        return flatten(result) ?? Seq(sourceAnchor: result.sourceAnchor, children: [])
     }
     
     func lvalue(identifier node: Expression.Identifier) throws -> AbstractSyntaxTreeNode {
@@ -786,7 +786,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         default:
             throw CompilerError(message: "unimplemented: `\(expr)'")
         }
-        return flatten(result)!
+        return flatten(result) ?? Seq(sourceAnchor: result.sourceAnchor, children: [])
     }
     
     func rvalue(literalInt node: Expression.LiteralInt) -> AbstractSyntaxTreeNode {
@@ -1850,7 +1850,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             .map {
                 try rvalue(expr: $0)
             }
-            result = Seq(sourceAnchor: expr.sourceAnchor, children: children) 
+            result = Seq(sourceAnchor: expr.sourceAnchor, children: children)
+            // TODO: We don't push a result register on the stack here. This may be a bug.
         } else {
             let lvalueProc = try lvalue(expr: expr.lexpr)
             let dst = popRegister()

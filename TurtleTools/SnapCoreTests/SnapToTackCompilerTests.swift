@@ -4059,6 +4059,20 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr5")
     }
     
+    func testRvalue_Assignment_with_StructInitializer_NoArgs() throws {
+        let symbols = SymbolTable()
+        symbols.bind(identifier: "foo", symbol: Symbol(type: kSliceType, offset: 0x1000, storage: .staticStorage))
+        symbols.bind(identifier: kSliceName, symbolType: kSliceType)
+        let compiler = makeCompiler(symbols: symbols)
+        let lexpr = Expression.Identifier("foo")
+        let rexpr = Expression.StructInitializer(identifier: Expression.Identifier(kSliceName), arguments: [
+        ])
+        let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: lexpr, rexpr: rexpr))
+        let expected = Seq(children: [])
+        XCTAssertEqual(actual, expected)
+        XCTAssertTrue(compiler.registerStack.isEmpty)
+    }
+    
     func testRvalue_As_LiteralArray() throws {
         let compiler = makeCompiler()
         let literalArrayType = Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8))

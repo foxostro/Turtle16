@@ -299,4 +299,23 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
                                     visibility: .privateVisibility)
         XCTAssertEqual(foo, expectedSymbol)
     }
+    
+    func testDeclareVariableWithNoExpression() throws {
+        let symbols = SymbolTable()
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
+        let input = VarDeclaration(identifier: Expression.Identifier("foo"),
+                                   explicitType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u8)),
+                                   expression: nil,
+                                   storage: .staticStorage,
+                                   isMutable: true)
+        let actual = try compiler.compile(input)
+        XCTAssertNil(actual)
+        let foo = try symbols.resolve(identifier: "foo")
+        let expectedSymbol = Symbol(type: .array(count: 1, elementType: .u8),
+                                    offset: SnapCompilerMetrics.kStaticStorageStartAddress,
+                                    storage: .staticStorage,
+                                    visibility: .privateVisibility)
+        XCTAssertEqual(foo, expectedSymbol)
+    }
 }

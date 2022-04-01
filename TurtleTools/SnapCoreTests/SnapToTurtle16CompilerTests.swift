@@ -1988,4 +1988,22 @@ func foo() {
         let str = String(bytes: serialOutput, encoding: .utf8)
         XCTAssertEqual(str, "passed\n")
     }
+    
+    func testBugWhenConvertingStringLiteralToDynamicArrayInFunctionParameter() {
+        let debugger = run(program: """
+            public struct Foo {
+            }
+
+            impl Foo {
+                func bar(self: *Foo, s: []const u8) -> u8 {
+                    return s[0]
+                }
+            }
+
+            var foo: Foo = undefined
+            let baz = foo.bar("t")
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU8("baz"), 116)
+    }
 }

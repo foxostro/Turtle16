@@ -1154,7 +1154,17 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             
         case (.constPointer(let a), .traitType(let b)),
              (.pointer(let a), .traitType(let b)):
-            fatalError("unimplemented: pointer(\(a)) -> trait(\(b))")
+            guard case .structType(let structType) = a else {
+                abort()
+            }
+            let nameOfVtableInstance = "__\(b.name)_\(structType.name)_vtable_instance"
+            result = try rvalue(expr: Expression.StructInitializer(identifier: Expression.Identifier(b.nameOfTraitObjectType), arguments: [
+                // Take the pointer to the object and cast as an opaque *void
+                Expression.StructInitializer.Argument(name: "object", expr: Expression.Bitcast(expr: rexpr, targetType: Expression.PointerType(Expression.PrimitiveType(.void)))),
+                
+                // Attach a pointer to the appropriate vtable instance.
+                Expression.StructInitializer.Argument(name: "vtable", expr: Expression.Unary(op: .ampersand, expression: Expression.Identifier(nameOfVtableInstance)))
+            ]))
             
         case (_, .constPointer(let b)),
              (_, .pointer(let b)):

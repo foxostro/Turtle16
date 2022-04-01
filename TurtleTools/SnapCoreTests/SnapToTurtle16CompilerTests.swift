@@ -2066,4 +2066,60 @@ func foo() {
         let str = String(bytes: serialOutput, encoding: .utf8)
         XCTAssertEqual(str, "passed\n")
     }
+    
+    func testTraitsDemo() {
+        var serialOutput: [UInt8] = []
+        let onSerialOutput = { (value: UInt16) in
+            serialOutput.append(UInt8(value & 0x00ff))
+        }
+        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
+                              runtimeSupport: kRuntime,
+                              shouldRunSpecificTest: "call through trait interface",
+                              onSerialOutput: onSerialOutput)
+        _ = run(options: options, program: """
+            trait Serial {
+                func puts(self: *Serial, s: []const u8)
+            }
+
+            struct SerialFake {
+                buffer: [64]u8,
+                cursor: u16
+            }
+
+            impl SerialFake {
+                func init() -> SerialFake {
+                    var serial: SerialFake = undefined
+                    serial.cursor = 0
+                    for i in 0..(serial.buffer.count) {
+                        serial.buffer[i] = 0
+                    }
+                    return serial
+                }
+            }
+
+            impl Serial for SerialFake {
+                func puts(self: *SerialFake, s: []const u8) {
+                    for i in 0..(s.count) {
+                        self.buffer[self.cursor + i] = s[i]
+                    }
+                    self.cursor = self.cursor + s.count
+                }
+            }
+
+            test "call through trait interface" {
+                var serialFake = SerialFake.init()
+                let serial: Serial = &serialFake
+                serial.puts("test")
+                assert(serialFake.cursor == 4)
+                assert(serialFake.buffer[0] == 't')
+                assert(serialFake.buffer[1] == 'e')
+                assert(serialFake.buffer[2] == 's')
+                assert(serialFake.buffer[3] == 't')
+            }
+
+            """)
+        
+        let str = String(bytes: serialOutput, encoding: .utf8)
+        XCTAssertEqual(str, "passed\n")
+    }
 }

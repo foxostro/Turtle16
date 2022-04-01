@@ -1952,4 +1952,20 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolU8("baz"), 42)
     }
+    
+    func testSubscriptStructMemberThatIsADynamicArray() {
+        let debugger = run(program: """
+            let backing: [64]u8 = undefined
+            struct Foo {
+                arr: []u8
+            }
+            var foo = Foo {
+                .arr = backing
+            }
+            foo.arr[0] = 42
+            let baz = foo.arr[0]
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU8("baz"), 42)
+    }
 }

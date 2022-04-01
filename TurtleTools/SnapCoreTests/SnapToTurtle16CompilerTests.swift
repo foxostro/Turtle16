@@ -1939,4 +1939,17 @@ func foo() {
         let arr = try debugger?.symbols?.resolve(identifier: "foo")
         XCTAssertNotNil(arr)
     }
+    
+    func testSubscriptStructMemberThatIsAnArray() {
+        let debugger = run(program: """
+            struct Foo {
+                arr: [64]u8
+            }
+            var foo: Foo = undefined
+            foo.arr[0] = 42
+            let baz = foo.arr[0]
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU8("baz"), 42)
+    }
 }

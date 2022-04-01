@@ -2280,4 +2280,16 @@ func foo() {
         
         XCTAssertFalse(compiler.hasError)
     }
+    
+    func testWeCannotUseVariableBeforeItIsDeclared() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: """
+            func main() {
+                a = 1
+                var a: u16 = 0
+            }
+            """)
+        
+        XCTAssertTrue(compiler.hasError)
+    }
 }

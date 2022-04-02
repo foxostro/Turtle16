@@ -42,6 +42,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     let kSliceCountType = SymbolType.u16
     let kSliceType: SymbolType
     
+    let kRangeName = "Range"
     let kRangeBegin = "begin"
     let kRangeLimit = "limit"
     
@@ -410,15 +411,17 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     func lvalue(arraySlice expr: Expression.Subscript) throws -> AbstractSyntaxTreeNode {
-        let subscriptableType = try typeCheck(rexpr: expr.subscriptable)
+        assert(isAcceptableArraySliceArgument(expr.argument))
         
-        guard let range = expr.argument as? Expression.StructInitializer, range.arguments.count == 2, range.arguments[0].name == kRangeBegin, range.arguments[1].name == kRangeLimit else {
-            fatalError("Array slice requires the argument to be range. Semantic analysis should have caught this error at an earlier step.")
-        }
+        let subscriptableType = try typeCheck(rexpr: expr.subscriptable)
+        let beginExpr = Expression.Get(expr: expr.argument, member: Expression.Identifier(kRangeBegin))
+        let limitExpr = Expression.Get(expr: expr.argument, member: Expression.Identifier(kRangeLimit))
+        let upperBound = subscriptableType.arrayCount!
+        var children: [AbstractSyntaxTreeNode] = []
         
         // Can we determine the range's bounds at compile time?
         let maybeBegin: Int?
-        switch try? typeCheck(rexpr: range.arguments[0].expr) {
+        switch try? typeCheck(rexpr: beginExpr) {
         case .compTimeInt(let n):
             maybeBegin = n
             
@@ -427,15 +430,13 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         }
         
         let maybeLimit: Int?
-        switch try? typeCheck(rexpr: range.arguments[1].expr) {
+        switch try? typeCheck(rexpr: limitExpr) {
         case .compTimeInt(let n):
             maybeLimit = n
             
         default:
             maybeLimit = nil
         }
-        
-        let upperBound = subscriptableType.arrayCount!
         
         if let begin = maybeBegin, begin < 0 || begin >= upperBound {
             throw CompilerError(sourceAnchor: expr.argument.sourceAnchor, message: "Array index is always out of bounds: `\(begin)' is not in 0..\(upperBound)")
@@ -448,10 +449,6 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         if let begin = maybeBegin, let limit = maybeLimit, begin > limit {
             throw CompilerError(sourceAnchor: expr.argument.sourceAnchor, message: "Range requires begin less than or equal to limit: `\(begin)..\(limit)'")
         }
-        
-        var children: [AbstractSyntaxTreeNode] = []
-        let beginExpr = range.arguments[0].expr
-        let limitExpr = range.arguments[1].expr
         
         // Insert bounds check when bounds cannot be verified at compile time.
         if options.isBoundsCheckEnabled {
@@ -513,9 +510,29 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             Expression.StructInitializer.Argument(name: kSliceCount, expr: countExpr)
         ])
         let bitcastExpr = Expression.Bitcast(expr: sliceExpr, targetType: Expression.PrimitiveType(sliceType))
-        children.append(try rvalue(expr: bitcastExpr))
+        let compiledNode = try rvalue(expr: bitcastExpr)
+        children.append(compiledNode)
         
         return Seq(sourceAnchor: expr.sourceAnchor, children: children)
+    }
+    
+    fileprivate func isAcceptableArraySliceArgument(_ argument: Expression) -> Bool {
+        let result: Bool
+        let argumentType = try? typeCheck(rexpr: argument)
+        switch argumentType {
+        case .structType(let typ), .constStructType(let typ):
+            if typ.name == kRangeName,
+               typ.symbols.maybeResolve(identifier: kRangeBegin) != nil,
+               typ.symbols.maybeResolve(identifier: kRangeLimit) != nil {
+                result = true
+            } else {
+                result = false
+            }
+            
+        default:
+            result = false
+        }
+        return result
     }
     
     func lvalue(dynamicArraySlice expr: Expression.Subscript) throws -> AbstractSyntaxTreeNode {
@@ -689,6 +706,12 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     func lvalue(get expr: Expression.Get) throws -> AbstractSyntaxTreeNode {
+        if let structInitializer = expr.expr as? Expression.StructInitializer {
+            let argument = structInitializer.arguments.first(where: {$0.name == expr.member.identifier})
+            let memberExpr = argument!.expr
+            return try lvalue(expr: memberExpr)
+        }
+        
         let name = expr.member.identifier
         let resultType = try typeCheck(rexpr: expr.expr)
         var children: [AbstractSyntaxTreeNode] = []
@@ -923,6 +946,14 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     func compileAndConvertExpression(rexpr: Expression, ltype: SymbolType, isExplicitCast: Bool) throws -> AbstractSyntaxTreeNode {
+        if let getExpr = rexpr as? Expression.Get,
+           let structInitializer = getExpr.expr as? Expression.StructInitializer {
+            let argument = structInitializer.arguments.first(where: {$0.name == getExpr.member.identifier})
+            let memberExpr = argument!.expr
+            let result = try compileAndConvertExpression(rexpr: memberExpr, ltype: ltype, isExplicitCast: isExplicitCast)
+            return result
+        }
+        
         let rtype = try typeCheck(rexpr: rexpr)
         
         if canValueBeTriviallyReinterpreted(ltype, rtype) {
@@ -1905,6 +1936,14 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     func rvalue(get expr: Expression.Get) throws -> AbstractSyntaxTreeNode {
+        if let structInitializer = expr.expr as? Expression.StructInitializer {
+            let argument = structInitializer.arguments.first(where: {$0.name == expr.member.identifier})
+            guard let memberExpr = argument?.expr else {
+                fatalError("unimplemented")
+            }
+            return try rvalue(expr: memberExpr)
+        }
+        
         let name = expr.member.identifier
         let resultType = try typeCheck(rexpr: expr.expr)
         

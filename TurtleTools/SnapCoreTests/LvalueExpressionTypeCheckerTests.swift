@@ -218,4 +218,22 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
         let result: SymbolType? = try typeChecker.check(expression: expr)
         XCTAssertEqual(result, .u8)
     }
+    
+    func testGetLvalueOfStructMemberThroughGetOnLiteralStructInitializer() throws {
+        let si = Expression.StructInitializer(identifier: Expression.Identifier("Foo"), arguments: [
+            Expression.StructInitializer.Argument(name: "bar", expr: Expression.Identifier("foo"))
+        ])
+        let expr = Expression.Get(expr: si, member: Expression.Identifier("bar"))
+        let typ = StructType(name: "Foo", symbols: SymbolTable(tuples: [
+            ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
+        ]))
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .u16, offset: 0))
+        ], typeDict: [
+            "Foo" : .structType(typ)
+        ])
+        let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
+        let result = try typeChecker.check(expression: expr)
+        XCTAssertEqual(result, .u16)
+    }
 }

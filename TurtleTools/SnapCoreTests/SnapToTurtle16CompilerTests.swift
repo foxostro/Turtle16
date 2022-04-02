@@ -2292,4 +2292,28 @@ func foo() {
         
         XCTAssertTrue(compiler.hasError)
     }
+    
+    func testBugWhereArraySliceFailsWhenArgumentExpressionIsNotALiteralStructInitializer() {
+        // This test captures a bug where an array slice expression fails when
+        // the argument expression (expression inside the brackets) is not a
+        // literal struct-initializer for a Range. In this example, passing a
+        // variable of type `Range' fails.
+        var serialOutput: [UInt8] = []
+        let onSerialOutput = { (value: UInt16) in
+            serialOutput.append(UInt8(value & 0x00ff))
+        }
+        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
+                              runtimeSupport: kRuntime,
+                              onSerialOutput: onSerialOutput)
+        _ = run(options: options, program: """
+            let helloWorld = "Hello, World!"
+            let range = 0..6
+            let helloComma = helloWorld[range]
+            let hello = helloComma[0..(helloComma.count-1)]
+            puts(hello)
+            """)
+        
+        let str = String(bytes: serialOutput, encoding: .utf8)
+        XCTAssertEqual(str, "Hello")
+    }
 }

@@ -4464,6 +4464,17 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         }
     }
     
+    func testGetValueOfStructMemberThroughGetOnLiteralStructInitializer() throws {
+        let si = Expression.StructInitializer(identifier: Expression.Identifier("Foo"), arguments: [
+            Expression.StructInitializer.Argument(name: "bar", expr: Expression.LiteralInt(1000))
+        ])
+        let expr = Expression.Get(expr: si, member: Expression.Identifier("bar"))
+        let symbols = SymbolTable()
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        let result = try typeChecker.check(expression: expr)
+        XCTAssertEqual(result, .compTimeInt(1000))
+    }
+    
     func testResolveUnionTypeExpression() {
         let expr = Expression.UnionType([
             Expression.PrimitiveType(.u8),

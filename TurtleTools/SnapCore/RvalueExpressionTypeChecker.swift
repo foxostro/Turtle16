@@ -724,6 +724,12 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
     
     public func check(get expr: Expression.Get) throws -> SymbolType {
+        if let structInitializer = expr.expr as? Expression.StructInitializer {
+            let argument = structInitializer.arguments.first(where: {$0.name == expr.member.identifier})
+            let memberExpr = argument!.expr
+            return try check(expression: memberExpr)
+        }
+        
         let name = expr.member.identifier
         let resultType = try check(expression: expr.expr)
         switch resultType {

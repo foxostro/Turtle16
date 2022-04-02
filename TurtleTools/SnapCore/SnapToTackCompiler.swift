@@ -1883,10 +1883,16 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             ])
         } else if let structInitializer = expr.rexpr as? Expression.StructInitializer {
             let children = try structInitializer.arguments.map {
-                Expression.Assignment(lexpr: Expression.Get(sourceAnchor: expr.lexpr.sourceAnchor,
-                                                            expr: expr.lexpr,
-                                                            member: Expression.Identifier($0.name)),
-                                      rexpr: $0.expr)
+                let g = Expression.Get(sourceAnchor: expr.lexpr.sourceAnchor,
+                                       expr: expr.lexpr,
+                                       member: Expression.Identifier($0.name))
+                let assig: Expression.Assignment
+                if expr is Expression.InitialAssignment {
+                    assig = Expression.InitialAssignment(lexpr: g, rexpr: $0.expr)
+                } else {
+                    assig = Expression.Assignment(lexpr: g, rexpr: $0.expr)
+                }
+                return assig
             }
             .map {
                 try rvalue(expr: $0)

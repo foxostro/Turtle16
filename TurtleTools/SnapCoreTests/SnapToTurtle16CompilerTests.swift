@@ -2316,4 +2316,27 @@ func foo() {
         let str = String(bytes: serialOutput, encoding: .utf8)
         XCTAssertEqual(str, "Hello")
     }
+    
+    func testBugWhereAssignToMemberWithTraitTypeFails() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: """
+            trait Serial {
+                func print(self: *Serial, s: []const u8)
+            }
+
+            struct XmodemProtocol {
+                serial: Serial
+            }
+
+            impl XmodemProtocol {
+                func init(serial: Serial) -> XmodemProtocol {
+                    return XmodemProtocol {
+                        .serial = serial
+                    }
+                }
+            }
+            """)
+        
+        XCTAssertFalse(compiler.hasError)
+    }
 }

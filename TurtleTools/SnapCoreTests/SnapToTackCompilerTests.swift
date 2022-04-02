@@ -4073,6 +4073,63 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertTrue(compiler.registerStack.isEmpty)
     }
     
+    func testFixBugInvolvingInitialAssignmentWithStructInitializer() throws {
+        let symbols = SymbolTable()
+        let kSliceType: SymbolType = .constStructType(StructType(name: kSliceName, symbols: SymbolTable(tuples: [
+            (kSliceBase,  Symbol(type: kSliceBaseAddressType.correspondingConstType, offset: kSliceBaseAddressOffset)),
+            (kSliceCount, Symbol(type: kSliceCountType.correspondingConstType, offset: kSliceCountOffset))
+        ])))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: kSliceType, offset: 0x1000, storage: .staticStorage))
+        symbols.bind(identifier: kSliceName, symbolType: kSliceType)
+        let compiler = makeCompiler(symbols: symbols)
+        let lexpr = Expression.Identifier("foo")
+        let rexpr = Expression.StructInitializer(identifier: Expression.Identifier(kSliceName), arguments: [
+            Expression.StructInitializer.Argument(name: kSliceBase,
+                                                  expr: Expression.LiteralInt(0xabcd)),
+            Expression.StructInitializer.Argument(name: kSliceCount,
+                                                  expr: Expression.LiteralInt(0xffff))
+        ])
+        let actual = try compiler.rvalue(expr: Expression.InitialAssignment(lexpr: lexpr, rexpr: rexpr))
+        let expected = Seq(children: [
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(0x1000)
+            ]),
+            TackInstructionNode(instruction: .addi16, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr0"),
+                ParameterNumber(0)
+            ]),
+            TackInstructionNode(instruction: .li16, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterNumber(0xabcd)
+            ]),
+            TackInstructionNode(instruction: .store, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterIdentifier("vr1")
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterNumber(0x1000)
+            ]),
+            TackInstructionNode(instruction: .addi16, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterIdentifier("vr3"),
+                ParameterNumber(1)
+            ]),
+            TackInstructionNode(instruction: .li16, parameters: [
+                ParameterIdentifier("vr5"),
+                ParameterNumber(0xffff)
+            ]),
+            TackInstructionNode(instruction: .store, parameters: [
+                ParameterIdentifier("vr5"),
+                ParameterIdentifier("vr4")
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr5")
+    }
+    
     func testRvalue_As_LiteralArray() throws {
         let compiler = makeCompiler()
         let literalArrayType = Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8))

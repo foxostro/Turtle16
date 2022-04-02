@@ -58,17 +58,6 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6FB0D35324711A23003B5D5C"
-               BuildableName = "TurtleSimulatorCoreTests.xctest"
-               BlueprintName = "TurtleSimulatorCoreTests"
-               ReferencedContainer = "container:TurtleTools.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "6F734338259327D400B7E43F"
                BuildableName = "Turtle16SimulatorCoreTests.xctest"
                BlueprintName = "Turtle16SimulatorCoreTests"

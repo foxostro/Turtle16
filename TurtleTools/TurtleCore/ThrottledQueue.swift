@@ -1,6 +1,6 @@
 //
 //  ThrottledQueue.swift
-//  TurtleTTL
+//  TurtleCore
 //
 //  Created by Andrew Fox on 2/14/20.
 //  Copyright © 2020 Andrew Fox. All rights reserved.

@@ -99,7 +99,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         XCTAssertNotNil(output)
         XCTAssertTrue(compiler.globalEnvironment.hasModule(kStandardLibraryModuleName))
         XCTAssertTrue(globalSymbols.modulesAlreadyImported.contains(kStandardLibraryModuleName))
-        XCTAssertNotNil(try? globalSymbols.resolve(identifier: "panic"))
+        XCTAssertNotNil(try? globalSymbols.resolve(identifier: "none"))
     }
     
     func testImpl() throws {

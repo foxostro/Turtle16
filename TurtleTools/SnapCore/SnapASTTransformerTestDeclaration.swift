@@ -18,7 +18,7 @@ public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
     let shouldRunSpecificTest: String?
     let memoryLayoutStrategy: MemoryLayoutStrategy
     
-    public init(memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL(),
+    public init(memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16(),
                 shouldRunSpecificTest: String? = nil,
                 isUsingStandardLibrary: Bool = false,
                 runtimeSupport: String? = nil,

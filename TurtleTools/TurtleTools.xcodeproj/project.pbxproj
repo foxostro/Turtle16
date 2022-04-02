@@ -37,55 +37,13 @@
 		6F000C032626A4EA00C5DFDE /* ParameterString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F452BB82626227D003732B3 /* ParameterString.swift */; };
 		6F000C042626A4EA00C5DFDE /* ParameterSlashed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F452ADA2624DE2A003732B3 /* ParameterSlashed.swift */; };
 		6F000C462626A52A00C5DFDE /* TokenLiteralString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F000C452626A52A00C5DFDE /* TokenLiteralString.swift */; };
-		6F000CD72626C13100C5DFDE /* Flags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F679BD422ED6FB0008C8E2C /* Flags.swift */; };
-		6F000CD82626C13100C5DFDE /* ControlWord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDAF22ECBEC400375A00 /* ControlWord.swift */; };
-		6F000CD92626C13100C5DFDE /* ProgramCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDAB22ECBD8600375A00 /* ProgramCounter.swift */; };
-		6F000CDA2626C13100C5DFDE /* Instruction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F182C3022ED3AAA0027A981 /* Instruction.swift */; };
-		6F000CDB2626C13100C5DFDE /* Memory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86CC7F22F0001C008C6322 /* Memory.swift */; };
-		6F000CDC2626C13100C5DFDE /* InstructionDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDB922ECC67000375A00 /* InstructionDecoder.swift */; };
-		6F000CDD2626C13100C5DFDE /* AssemblerBackEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFED7922F1627500AADA07 /* AssemblerBackEnd.swift */; };
-		6F000CDE2626C13100C5DFDE /* MicrocodeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFED7522F14BDD00AADA07 /* MicrocodeGenerator.swift */; };
-		6F000CDF2626C13100C5DFDE /* RegisterName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F1231E2FFD003E7C7F /* RegisterName.swift */; };
-		6F000CE02626C13100C5DFDE /* Patcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00E523184880003E7C7F /* Patcher.swift */; };
-		6F000CE12626C13100C5DFDE /* ControlSignal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FB723BEAB9B00647482 /* ControlSignal.swift */; };
-		6F000CE22626C13100C5DFDE /* InstructionFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A024223FF7926003876BD /* InstructionFormatter.swift */; };
-		6F000D032626C15800C5DFDE /* InstructionDecoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDBB22ECC72200375A00 /* InstructionDecoderTests.swift */; };
-		6F000D042626C15800C5DFDE /* InstructionFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A024423FF7931003876BD /* InstructionFormatterTests.swift */; };
-		6F000D052626C15800C5DFDE /* MemoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE219DE241DB21A006BC92A /* MemoryTests.swift */; };
-		6F000D062626C15800C5DFDE /* PatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00E723184896003E7C7F /* PatcherTests.swift */; };
-		6F000D072626C15800C5DFDE /* CompilerErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2940B12483819E00C50ABA /* CompilerErrorTests.swift */; };
-		6F000D082626C15800C5DFDE /* FlagsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE219DC241DA0C3006BC92A /* FlagsTest.swift */; };
-		6F000D092626C15800C5DFDE /* MicrocodeGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFED7722F14BEF00AADA07 /* MicrocodeGeneratorTests.swift */; };
-		6F000D0A2626C15800C5DFDE /* AssemblerBackEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFED7B22F16D4100AADA07 /* AssemblerBackEndTests.swift */; };
-		6F000D0B2626C15800C5DFDE /* InstructionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F37BA442305B559009754D3 /* InstructionTests.swift */; };
-		6F000D0C2626C15800C5DFDE /* ControlWordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDB122ECC05500375A00 /* ControlWordTests.swift */; };
-		6F000D932626C41600C5DFDE /* TurtleTTLInstructionNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088074230F5D8F00AB2339 /* TurtleTTLInstructionNode.swift */; };
-		6F000D942626C41600C5DFDE /* ConstantDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D27E24709373003B5D5C /* ConstantDeclaration.swift */; };
-		6F000D952626C41600C5DFDE /* ParameterRegister.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7F357124D492DA00BA8E37 /* ParameterRegister.swift */; };
-		6F000DB32626C41A00C5DFDE /* TokenRegister.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00F3231F63BB003E7C7F /* TokenRegister.swift */; };
-		6F000DC22626C43100C5DFDE /* AssemblerCodeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088092230F85FF00AB2339 /* AssemblerCodeGenerator.swift */; };
-		6F000DC32626C43100C5DFDE /* AssemblerLexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F615170230CAF4A00282B12 /* AssemblerLexer.swift */; };
-		6F000DC42626C43100C5DFDE /* AssemblerParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F61517E230D041600282B12 /* AssemblerParser.swift */; };
-		6F000DC52626C43100C5DFDE /* AssemblerFrontEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A8AE9230A7713000046C2 /* AssemblerFrontEnd.swift */; };
-		6F000DE22626C45400C5DFDE /* AssemblerCodeGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F088094230F864D00AB2339 /* AssemblerCodeGeneratorTests.swift */; };
-		6F000DE32626C45400C5DFDE /* AssemblerParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08807E230F6AEC00AB2339 /* AssemblerParserTests.swift */; };
-		6F000DE42626C45400C5DFDE /* AssemblerLexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F615172230CAF5600282B12 /* AssemblerLexerTests.swift */; };
-		6F000DE52626C45400C5DFDE /* AssemblerFrontEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A8AEB230A7726000046C2 /* AssemblerFrontEndTests.swift */; };
-		6F000E022626C47400C5DFDE /* TurtleTTLInstructionNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F08808A230F6E4F00AB2339 /* TurtleTTLInstructionNodeTests.swift */; };
-		6F000E042626C47400C5DFDE /* ConstantDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB0D2802470937D003B5D5C /* ConstantDeclarationTests.swift */; };
-		6F000E212626C47800C5DFDE /* TokenRegisterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A0121231F7271003E7C7F /* TokenRegisterTests.swift */; };
 		6F0D519B2506D0B100AB1C7E /* TypeContextTypeChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0D519A2506D0B100AB1C7E /* TypeContextTypeChecker.swift */; };
 		6F0D519F2506D57F00AB1C7E /* TypeContextTypeCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0D519E2506D57F00AB1C7E /* TypeContextTypeCheckerTests.swift */; };
-		6F0FAEAE25491A1D002C1469 /* CrackleLocalOptimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0FAEAD25491A1D002C1469 /* CrackleLocalOptimizer.swift */; };
-		6F0FAEEA254920D6002C1469 /* CrackleBasicBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0FAEE9254920D6002C1469 /* CrackleBasicBlock.swift */; };
-		6F0FAF082549501C002C1469 /* CrackleDeadCodeEliminationOptimizationPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0FAF072549501C002C1469 /* CrackleDeadCodeEliminationOptimizationPass.swift */; };
-		6F0FAF1825495024002C1469 /* CrackleDeadCodeEliminationOptimizationPassTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0FAF1725495024002C1469 /* CrackleDeadCodeEliminationOptimizationPassTests.swift */; };
 		6F13825B26BF36F1002CF167 /* SnapSubcompilerForIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F13825A26BF36F1002CF167 /* SnapSubcompilerForIn.swift */; };
 		6F13825D26BF370C002CF167 /* SnapSubcompilerForInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F13825C26BF370C002CF167 /* SnapSubcompilerForInTests.swift */; };
 		6F13826126C0DA01002CF167 /* SnapSubcompilerMatchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F13826026C0DA01002CF167 /* SnapSubcompilerMatchTests.swift */; };
 		6F13826326C0E878002CF167 /* SnapSubcompilerReturn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F13826226C0E878002CF167 /* SnapSubcompilerReturn.swift */; };
 		6F13826526C0E893002CF167 /* SnapSubcompilerReturnTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F13826426C0E893002CF167 /* SnapSubcompilerReturnTests.swift */; };
-		6F13CB062489DD2300ADB1BE /* CrackleInstructionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F13CB052489DD2300ADB1BE /* CrackleInstructionTests.swift */; };
 		6F14DC4227EA3B9E0034A43C /* PrintLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F14DC4127EA3B9E0034A43C /* PrintLogger.swift */; };
 		6F14DC4427EA3FA20034A43C /* SnapDebugConsole.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F14DC4327EA3FA20034A43C /* SnapDebugConsole.swift */; };
 		6F15421E26B34E3300BA9572 /* SymbolTablesReconnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F15421D26B34E3300BA9572 /* SymbolTablesReconnector.swift */; };
@@ -105,12 +63,7 @@
 		6F1698B1262897ED00C96D07 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6F1698B0262897ED00C96D07 /* Assets.xcassets */; };
 		6F1698B4262897ED00C96D07 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F1698B2262897ED00C96D07 /* Main.storyboard */; };
 		6F1698C0262897ED00C96D07 /* Simulator16Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1698BF262897ED00C96D07 /* Simulator16Tests.swift */; };
-		6F16BA00251E945C00A26850 /* SnapDebugInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F16B9FF251E945C00A26850 /* SnapDebugInfo.swift */; };
-		6F16BA10251E946100A26850 /* SnapDebugInfoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F16BA0F251E946000A26850 /* SnapDebugInfoTests.swift */; };
 		6F1800A7251D9079005D9D36 /* Import.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1800A6251D9079005D9D36 /* Import.swift */; };
-		6F18DD8B248414DE0014C585 /* SnapToCrackleCompiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F18DD8A248414DE0014C585 /* SnapToCrackleCompiler.swift */; };
-		6F18DD8D2484154F0014C585 /* SnapToCrackleCompilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F18DD8C2484154F0014C585 /* SnapToCrackleCompilerTests.swift */; };
-		6F18DD94248463340014C585 /* CrackleExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F18DD92248463030014C585 /* CrackleExecutor.swift */; };
 		6F1D24C524823DD90095D7B4 /* If.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1D24C424823DD90095D7B4 /* If.swift */; };
 		6F1D24C724823EC60095D7B4 /* IfTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1D24C624823EC60095D7B4 /* IfTests.swift */; };
 		6F1E5C5C262A1E8D0038F966 /* InstructionMemoryTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1E5C5B262A1E8D0038F966 /* InstructionMemoryTableViewDataSource.swift */; };
@@ -120,22 +73,13 @@
 		6F2100EE2675B5DC004CFB5D /* Turtle16SimulatorCore.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6F734331259327D400B7E43F /* Turtle16SimulatorCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6F2100EF2675B5E1004CFB5D /* TurtleCore.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6F238AD9248C6A560040250D /* Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F238AD8248C6A560040250D /* Block.swift */; };
-		6F238ADB248C94650040250D /* SnapExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F238ADA248C94650040250D /* SnapExecutor.swift */; };
-		6F238ADD248C947D0040250D /* ComputerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F238ADC248C947C0040250D /* ComputerExtensions.swift */; };
 		6F24AC8B24A07CAF005193BB /* StatementTracer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F24AC8A24A07CAF005193BB /* StatementTracer.swift */; };
 		6F24AC8D24A07CBC005193BB /* StatementTracerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F24AC8C24A07CBC005193BB /* StatementTracerTests.swift */; };
-		6F24B5FB254DFFDB00295D49 /* PopDeadStoreEliminationOptimizationPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F24B5FA254DFFDB00295D49 /* PopDeadStoreEliminationOptimizationPass.swift */; };
-		6F24B60B254E005100295D49 /* PopDeadStoreEliminationOptimizationPassTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F24B60A254E005100295D49 /* PopDeadStoreEliminationOptimizationPassTests.swift */; };
 		6F24B629254E3C4E00295D49 /* SnapCompilerMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F24B628254E3C4E00295D49 /* SnapCompilerMetrics.swift */; };
 		6F25325824CB5A7200339332 /* LvalueExpressionTypeChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F25325724CB5A7200339332 /* LvalueExpressionTypeChecker.swift */; };
 		6F25325A24CB5D0C00339332 /* LvalueExpressionTypeCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F25325924CB5D0B00339332 /* LvalueExpressionTypeCheckerTests.swift */; };
-		6F25325C24CB799A00339332 /* LvalueExpressionCompiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F25325B24CB799A00339332 /* LvalueExpressionCompiler.swift */; };
-		6F25325E24CB7C6200339332 /* LvalueExpressionCompilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F25325D24CB7C6200339332 /* LvalueExpressionCompilerTests.swift */; };
 		6F2940A9248306EC00C50ABA /* While.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2940A8248306EC00C50ABA /* While.swift */; };
 		6F2940AB2483070C00C50ABA /* WhileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2940AA2483070C00C50ABA /* WhileTests.swift */; };
-		6F2940BB2483978E00C50ABA /* CrackleInstruction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2940B62483970100C50ABA /* CrackleInstruction.swift */; };
-		6F2940BC2483978E00C50ABA /* RvalueExpressionCompiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F41B69524784B230043A8D7 /* RvalueExpressionCompiler.swift */; };
-		6F2940BD2483979800C50ABA /* RvalueExpressionCompilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F41B69724784B680043A8D7 /* RvalueExpressionCompilerTests.swift */; };
 		6F2940BF2483995500C50ABA /* SymbolTableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F50DB0D247F5F9500643DAC /* SymbolTableTests.swift */; };
 		6F2940C5248399BE00C50ABA /* SymbolTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00E9231C6454003E7C7F /* SymbolTable.swift */; };
 		6F2940CE2483A0DB00C50ABA /* TokenMisc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2940CD2483A0DB00C50ABA /* TokenMisc.swift */; };
@@ -154,12 +98,9 @@
 		6F300DCB266A90CC00BFBAC4 /* TurtleCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; };
 		6F300DCC266A90CC00BFBAC4 /* TurtleCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6F300DD1266A913B00BFBAC4 /* AssemblerCommandLineDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F300DD0266A913B00BFBAC4 /* AssemblerCommandLineDriver.swift */; };
-		6F330D9C24E8A346005C4BE5 /* MemoryExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F330D9B24E8A346005C4BE5 /* MemoryExtensions.swift */; };
 		6F35B4362628ABF6004EA0AB /* DebugConsole.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F35B4352628ABF6004EA0AB /* DebugConsole.swift */; };
 		6F35B4552628AC80004EA0AB /* TextViewLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AEA22EEE6C400B38267 /* TextViewLogger.swift */; };
 		6F35B4B32628AFED004EA0AB /* example.bin in Resources */ = {isa = PBXBuildFile; fileRef = 6F35B4B22628AFED004EA0AB /* example.bin */; };
-		6F374F242548B82000793A78 /* CrackleBasicBlockPartitioner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F374F232548B82000793A78 /* CrackleBasicBlockPartitioner.swift */; };
-		6F374F342548B82F00793A78 /* CrackleBasicBlockPartitionerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F374F332548B82F00793A78 /* CrackleBasicBlockPartitionerTests.swift */; };
 		6F3EEB83262D22B400688D12 /* MemoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3EEB81262D22B400688D12 /* MemoryViewController.swift */; };
 		6F3EEB84262D22B400688D12 /* MemoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F3EEB82262D22B400688D12 /* MemoryViewController.xib */; };
 		6F3EEBA5262D333700688D12 /* RegistersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3EEBA3262D333700688D12 /* RegistersViewController.swift */; };
@@ -232,29 +173,16 @@
 		6F47D8F3261CC6F2008EFFF2 /* JEDECFuseFileParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F47D8F2261CC6F2008EFFF2 /* JEDECFuseFileParser.swift */; };
 		6F47D905261CC6FC008EFFF2 /* JEDECFuseFileParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F47D904261CC6FC008EFFF2 /* JEDECFuseFileParserTests.swift */; };
 		6F4B5CB22471DE2D000C57EB /* SnapCommandLineDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4B5CB12471DE2D000C57EB /* SnapCommandLineDriver.swift */; };
-		6F4B5CB42471DE33000C57EB /* SnapCompiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4B5CB32471DE33000C57EB /* SnapCompiler.swift */; };
-		6F4B5CBD2471DF2A000C57EB /* SnapCompilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4B5CBC2471DF2A000C57EB /* SnapCompilerTests.swift */; };
 		6F4BCFA22629135700BA4775 /* RegisterTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4BCFA12629135700BA4775 /* RegisterTableViewDataSource.swift */; };
 		6F4F3C43249EAEB30018BBBC /* FunctionDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F3C42249EAEB30018BBBC /* FunctionDeclaration.swift */; };
 		6F4F3C45249EAF700018BBBC /* FunctionDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F3C44249EAF700018BBBC /* FunctionDeclarationTests.swift */; };
 		6F4F3C47249EBC3A0018BBBC /* TokenType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F3C46249EBC3A0018BBBC /* TokenType.swift */; };
-		6F4F7B12254D1F3A0030E3CB /* PopBasicBlockPartitioner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F7B11254D1F3A0030E3CB /* PopBasicBlockPartitioner.swift */; };
-		6F4F7B22254D1F490030E3CB /* PopBasicBlockPartitionerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F7B21254D1F490030E3CB /* PopBasicBlockPartitionerTests.swift */; };
-		6F4F7B40254D21970030E3CB /* PopLocalOptimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F7B3F254D21970030E3CB /* PopLocalOptimizer.swift */; };
-		6F4F7B50254D21CE0030E3CB /* PopGlobalOptimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F7B4F254D21CE0030E3CB /* PopGlobalOptimizer.swift */; };
-		6F4F7B60254D226E0030E3CB /* PopConstantPropagationOptimizationPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F7B5F254D226E0030E3CB /* PopConstantPropagationOptimizationPass.swift */; };
-		6F4F7B70254D22E10030E3CB /* PopConstantPropagationOptimizationPassTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F7B6F254D22E10030E3CB /* PopConstantPropagationOptimizationPassTests.swift */; };
 		6F52BEC826239185003C9CC3 /* CPU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F52BEC726239185003C9CC3 /* CPU.swift */; };
 		6F52BF402623942D003C9CC3 /* Turtle16Computer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F52BF3F2623942D003C9CC3 /* Turtle16Computer.swift */; };
 		6F52BFA4262394E7003C9CC3 /* Turtle16ComputerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F52BFA3262394E7003C9CC3 /* Turtle16ComputerTests.swift */; };
 		6F5337352474BE7D00CFD33C /* VarDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5337342474BE7D00CFD33C /* VarDeclarationTests.swift */; };
 		6F5462F3253C0560005DDAB6 /* TraitDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5462F2253C0560005DDAB6 /* TraitDeclaration.swift */; };
 		6F546311253D3B5F005DDAB6 /* ImplFor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F546310253D3B5F005DDAB6 /* ImplFor.swift */; };
-		6F59F055246D2FD4005C7348 /* ConcreteToneGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F59F054246D2FD4005C7348 /* ConcreteToneGenerator.swift */; };
-		6F5C55E624F61D3C008827EE /* CompilerTemporariesAllocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5C55E524F61D3C008827EE /* CompilerTemporariesAllocator.swift */; };
-		6F5C55E824F61D4E008827EE /* CompilerTemporary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5C55E724F61D4E008827EE /* CompilerTemporary.swift */; };
-		6F5C55EA24F61D6A008827EE /* CompilerTemporariesAllocatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5C55E924F61D6A008827EE /* CompilerTemporariesAllocatorTests.swift */; };
-		6F5C55EC24F6359D008827EE /* CompilerTemporariesStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5C55EB24F6359D008827EE /* CompilerTemporariesStack.swift */; };
 		6F603CB02515BB7900B2C54E /* ForIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F603CAF2515BB7900B2C54E /* ForIn.swift */; };
 		6F6956FB24F965B3006D66FC /* UInt8Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6956FA24F965B3006D66FC /* UInt8Extension.swift */; };
 		6F6AED40251696C5002E3AC5 /* Impl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6AED3F251696C5002E3AC5 /* Impl.swift */; };
@@ -262,8 +190,6 @@
 		6F6EA40727653EFA00B2ABE4 /* Snap in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6F9201D92471DA22009E1410 /* Snap */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		6F6EA40827653F0000B2ABE4 /* Turtle16Assembler in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6F300DC0266A906F00BFBAC4 /* Turtle16Assembler */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		6F6EA40D27653FB700B2ABE4 /* SnapCore.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6F9201E52471DAC7009E1410 /* SnapCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		6F6EA41227653FDE00B2ABE4 /* TurtleSimulatorCore.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6FB0D34C24711A23003B5D5C /* TurtleSimulatorCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		6F72FBEA250EB05900130501 /* SnapCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F9201E52471DAC7009E1410 /* SnapCore.framework */; };
 		6F73433A259327D400B7E43F /* Turtle16SimulatorCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F734331259327D400B7E43F /* Turtle16SimulatorCore.framework */; };
 		6F734341259327D400B7E43F /* Turtle16SimulatorCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 6F734333259327D400B7E43F /* Turtle16SimulatorCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6F7343592593283D00B7E43F /* WB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7343582593283D00B7E43F /* WB.swift */; };
@@ -274,9 +200,6 @@
 		6F7C14FC259A94E40034C7D0 /* EXTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7C14FB259A94E40034C7D0 /* EXTests.swift */; };
 		6F7D951826753D81003889FB /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7D951726753D81003889FB /* Document.swift */; };
 		6F7E16D427F3A3660067D059 /* runtime.snap in Resources */ = {isa = PBXBuildFile; fileRef = 6F7E16D327F3A3660067D059 /* runtime.snap */; };
-		6F7E41912547E036007CAA1A /* CrackleGlobalOptimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E41902547E036007CAA1A /* CrackleGlobalOptimizer.swift */; };
-		6F7E41A12547E174007CAA1A /* CrackleConstantPropagationOptimizationPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E41A02547E174007CAA1A /* CrackleConstantPropagationOptimizationPass.swift */; };
-		6F7E41B12547E1AE007CAA1A /* CrackleConstantPropagationOptimizationPassTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E41B02547E1AE007CAA1A /* CrackleConstantPropagationOptimizationPassTests.swift */; };
 		6F7F356A24D2323F00BA8E37 /* stdlib.snap in Resources */ = {isa = PBXBuildFile; fileRef = 6F7F356924D2323F00BA8E37 /* stdlib.snap */; };
 		6F809DDE26615A860098A7FF /* InstructionMemoryHiTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F809DDD26615A860098A7FF /* InstructionMemoryHiTableViewDataSource.swift */; };
 		6F809DE026615A8D0098A7FF /* InstructionMemoryLoTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F809DDF26615A8D0098A7FF /* InstructionMemoryLoTableViewDataSource.swift */; };
@@ -295,7 +218,6 @@
 		6F889D44259D308B00EB647C /* IDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F889D43259D308B00EB647C /* IDTests.swift */; };
 		6F889D56259D494900EB647C /* SchematicLevelCPUModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F889D55259D494900EB647C /* SchematicLevelCPUModel.swift */; };
 		6F889D68259D495400EB647C /* SchematicLevelCPUModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F889D67259D495400EB647C /* SchematicLevelCPUModelTests.swift */; };
-		6F915D4A24D14F99002B3850 /* BaseExpressionCompiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F915D4924D14F99002B3850 /* BaseExpressionCompiler.swift */; };
 		6F9201DC2471DA22009E1410 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F9201DB2471DA22009E1410 /* main.swift */; };
 		6F9201EE2471DAC7009E1410 /* SnapCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F9201E52471DAC7009E1410 /* SnapCore.framework */; };
 		6F9201F52471DAC7009E1410 /* SnapCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 6F9201E72471DAC7009E1410 /* SnapCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -303,14 +225,10 @@
 		6F924E7C248B42E100F43741 /* RvalueExpressionTypeCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F924E7B248B42E100F43741 /* RvalueExpressionTypeCheckerTests.swift */; };
 		6F924E7E248B4CCA00F43741 /* ExprUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F924E7D248B4CCA00F43741 /* ExprUtils.swift */; };
 		6F982BE0265EB6BE0029ED5F /* AssemblerCompilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F982BDF265EB6BE0029ED5F /* AssemblerCompilerTests.swift */; };
-		6F9E286F2543CFB100946974 /* AssemblyListingMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F9E286E2543CFB100946974 /* AssemblyListingMaker.swift */; };
-		6F9E287F2543CFD000946974 /* AssemblyListingMakerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F9E287E2543CFD000946974 /* AssemblyListingMakerTests.swift */; };
 		6F9E8F7F26B9A90F00FE25E4 /* SnapSubcompilerTypealias.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F9E8F7E26B9A90F00FE25E4 /* SnapSubcompilerTypealias.swift */; };
 		6F9E8F8126B9A91900FE25E4 /* SnapSubcompilerTypealiasTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F9E8F8026B9A91900FE25E4 /* SnapSubcompilerTypealiasTests.swift */; };
 		6F9E8F8326B9BCC900FE25E4 /* SnapAbstractSyntaxTreeCompilerImplPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F9E8F8226B9BCC900FE25E4 /* SnapAbstractSyntaxTreeCompilerImplPass.swift */; };
 		6F9E8F8526B9BE2C00FE25E4 /* SnapAbstractSyntaxTreeCompilerImplPassTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F9E8F8426B9BE2C00FE25E4 /* SnapAbstractSyntaxTreeCompilerImplPassTests.swift */; };
-		6FA220BF254CDC3B0017DDDF /* CrackleToPopCompiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA220BE254CDC3B0017DDDF /* CrackleToPopCompiler.swift */; };
-		6FA220CF254CDC480017DDDF /* CrackleToPopCompilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA220CE254CDC480017DDDF /* CrackleToPopCompilerTests.swift */; };
 		6FA5D28B2593F6F300044B17 /* IF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA5D28A2593F6F300044B17 /* IF.swift */; };
 		6FA5D29D2593F7E900044B17 /* IFTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA5D29C2593F7E900044B17 /* IFTests.swift */; };
 		6FA5D2CF2593FAAA00044B17 /* IDT7381.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA5D2CE2593FAAA00044B17 /* IDT7381.swift */; };
@@ -338,59 +256,7 @@
 		6FB0D2CC247111BB003B5D5C /* ConsoleLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A024623FF8C60003876BD /* ConsoleLogger.swift */; };
 		6FB0D2CE247111BB003B5D5C /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AE822EEDD1900B38267 /* Logger.swift */; };
 		6FB0D2DF247113E3003B5D5C /* ThrottledQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEBE3E223F77F0200E42B66 /* ThrottledQueue.swift */; };
-		6FB0D35524711A23003B5D5C /* TurtleSimulatorCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D34C24711A23003B5D5C /* TurtleSimulatorCore.framework */; };
-		6FB0D35C24711A23003B5D5C /* TurtleSimulatorCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FB0D34E24711A23003B5D5C /* TurtleSimulatorCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		6FB0D36324711A3B003B5D5C /* InterpretingVMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976CF24065529006C393B /* InterpretingVMTests.swift */; };
-		6FB0D36424711A3B003B5D5C /* VirtualMachineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976D1240661D0006C393B /* VirtualMachineTests.swift */; };
-		6FB0D36524711A3B003B5D5C /* ComputerExecutorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A013D232069FF003E7C7F /* ComputerExecutorTests.swift */; };
-		6FB0D36624711A3B003B5D5C /* TraceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A024023FF7225003876BD /* TraceTests.swift */; };
-		6FB0D36724711A3B003B5D5C /* Chip74x181Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDC322ECF65B00375A00 /* Chip74x181Tests.swift */; };
-		6FB0D36824711A3B003B5D5C /* ProcessorStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE219D8241D81FD006BC92A /* ProcessorStateTests.swift */; };
-		6FB0D36924711A3B003B5D5C /* TraceRecorderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A023A23FF7024003876BD /* TraceRecorderTests.swift */; };
-		6FB0D36A24711A3B003B5D5C /* TraceExecutorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE0465D2404EC96001461C4 /* TraceExecutorTests.swift */; };
-		6FB0D36B24711A3B003B5D5C /* TracingInterpretingVMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976D924066A70006C393B /* TracingInterpretingVMTests.swift */; };
-		6FB0D36C24711A3B003B5D5C /* ALUTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDBF22ECCAC800375A00 /* ALUTests.swift */; };
-		6FB0D36D24711A3B003B5D5C /* ComputerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDC722ED179C00375A00 /* ComputerTests.swift */; };
-		6FB0D36E24711A3B003B5D5C /* RegisterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0B0D032308688900478220 /* RegisterTests.swift */; };
-		6FB0D36F24711A3B003B5D5C /* SerialInterfacePeripheralTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FBF23BEC1F800647482 /* SerialInterfacePeripheralTests.swift */; };
-		6FB0D37024711A3B003B5D5C /* InstructionROMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDB722ECC56400375A00 /* InstructionROMTests.swift */; };
-		6FB0D37124711A3B003B5D5C /* TraceProfilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A023623FF65D5003876BD /* TraceProfilerTests.swift */; };
-		6FB0D37224711A3B003B5D5C /* AudioDevicePeripheralTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD4D7102468BA55004F85B0 /* AudioDevicePeripheralTests.swift */; };
-		6FB0D37324711A3B003B5D5C /* InterpreterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4ACBDC2400BCEE00014F4B /* InterpreterTests.swift */; };
-		6FB0D37424711A3B003B5D5C /* SerialInputTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2EE666240C9D38001FE46E /* SerialInputTests.swift */; };
-		6FB0D37524711A4E003B5D5C /* TraceRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A023823FF7013003876BD /* TraceRecorder.swift */; };
-		6FB0D37624711A4E003B5D5C /* InstructionMemoryRev1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976E3240849B6006C393B /* InstructionMemoryRev1.swift */; };
-		6FB0D37724711A4E003B5D5C /* VirtualMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976C92406545D006C393B /* VirtualMachine.swift */; };
-		6FB0D37824711A4E003B5D5C /* ComputerStopwatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCD8DA823FA601100E90095 /* ComputerStopwatch.swift */; };
-		6FB0D37924711A4E003B5D5C /* AudioDevicePeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD4D70E2468BA12004F85B0 /* AudioDevicePeripheral.swift */; };
-		6FB0D37A24711A4E003B5D5C /* ComputerExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AEC22EEE9C200B38267 /* ComputerExecutor.swift */; };
-		6FB0D37B24711A4E003B5D5C /* Trace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A023C23FF7204003876BD /* Trace.swift */; };
-		6FB0D37C24711A4E003B5D5C /* CPUStateSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1BFF4023F3B64300FCE919 /* CPUStateSnapshot.swift */; };
-		6FB0D37D24711A4E003B5D5C /* InstructionROM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976E124084944006C393B /* InstructionROM.swift */; };
-		6FB0D37E24711A4E003B5D5C /* InstructionRAMPeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FBB23BEAC4D00647482 /* InstructionRAMPeripheral.swift */; };
-		6FB0D37F24711A4E003B5D5C /* Chip74x181.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDC122ECE51C00375A00 /* Chip74x181.swift */; };
-		6FB0D38024711A4E003B5D5C /* TraceUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE046592403A857001461C4 /* TraceUtils.swift */; };
-		6FB0D38124711A4E003B5D5C /* ComputerPeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FB523BEAADE00647482 /* ComputerPeripheral.swift */; };
-		6FB0D38224711A4E003B5D5C /* InterpretingVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976CD2406551C006C393B /* InterpretingVM.swift */; };
-		6FB0D38324711A4E003B5D5C /* UnlockedComputerExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCD8DA423FA26C800E90095 /* UnlockedComputerExecutor.swift */; };
-		6FB0D38424711A4E003B5D5C /* Interpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4ACBDA2400BCD900014F4B /* Interpreter.swift */; };
-		6FB0D38524711A4E003B5D5C /* SerialInterfacePeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FB923BEAC3B00647482 /* SerialInterfacePeripheral.swift */; };
-		6FB0D38624711A4E003B5D5C /* ComputerPeripherals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7E7FBD23BEB77A00647482 /* ComputerPeripherals.swift */; };
-		6FB0D38724711A4E003B5D5C /* Computer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F78DA3C23D947F4000ACA88 /* Computer.swift */; };
-		6FB0D38824711A4E003B5D5C /* TraceExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE0465B2404EC78001461C4 /* TraceExecutor.swift */; };
-		6FB0D38924711A4E003B5D5C /* TraceProfiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6A023423FF62C6003876BD /* TraceProfiler.swift */; };
-		6FB0D38A24711A4E003B5D5C /* Register.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F37BA462305D903009754D3 /* Register.swift */; };
-		6FB0D38B24711A4E003B5D5C /* SerialInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2EE664240C9D1D001FE46E /* SerialInput.swift */; };
-		6FB0D38C24711A4E003B5D5C /* VirtualMachineUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976DC24066A7B006C393B /* VirtualMachineUtils.swift */; };
-		6FB0D38D24711A4E003B5D5C /* TracingInterpretingVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE976DB24066A7B006C393B /* TracingInterpretingVM.swift */; };
-		6FB0D38E24711A4E003B5D5C /* InstructionMemory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDB522ECC53500375A00 /* InstructionMemory.swift */; };
-		6FB0D38F24711A4E003B5D5C /* ComputerVirtualMachineFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE219BF241C6652006BC92A /* ComputerVirtualMachineFactory.swift */; };
-		6FB0D39024711A4E003B5D5C /* ALU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F86EDBD22ECC86400375A00 /* ALU.swift */; };
 		6FB0D3A124711C46003B5D5C /* FileHandleTextOutputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A8AE7230A2732000046C2 /* FileHandleTextOutputStream.swift */; };
-		6FB0D3AA24711F80003B5D5C /* TurtleCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; };
-		6FB0D3AB24711F80003B5D5C /* TurtleCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		6FB0D3B224711F8B003B5D5C /* TurtleSimulatorCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D34C24711A23003B5D5C /* TurtleSimulatorCore.framework */; };
-		6FB0D3B324711F8B003B5D5C /* TurtleSimulatorCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D34C24711A23003B5D5C /* TurtleSimulatorCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6FB28F682512C50B001F5D12 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB28F672512C50B001F5D12 /* main.swift */; };
 		6FB28F6D2512C539001F5D12 /* SnapBenchmarkDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB28F6C2512C539001F5D12 /* SnapBenchmarkDriver.swift */; };
 		6FBCFA5626F5121A00193819 /* StructMemberFunctionCallMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBCFA5526F5121A00193819 /* StructMemberFunctionCallMatcher.swift */; };
@@ -398,9 +264,6 @@
 		6FBCFA5A26F7F4D400193819 /* Tack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBCFA5926F7F4D400193819 /* Tack.swift */; };
 		6FBCFA5C26F7F52400193819 /* TackToTurtle16Compiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBCFA5B26F7F52400193819 /* TackToTurtle16Compiler.swift */; };
 		6FBCFA5E26F7F5FC00193819 /* TackToTurtle16CompilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBCFA5D26F7F5FC00193819 /* TackToTurtle16CompilerTests.swift */; };
-		6FBD6EB0254C9E9A00CE5D06 /* PopCompiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBD6EAF254C9E9A00CE5D06 /* PopCompiler.swift */; };
-		6FBD6EC0254C9EA900CE5D06 /* PopCompilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBD6EBF254C9EA900CE5D06 /* PopCompilerTests.swift */; };
-		6FBD6ED0254C9EF700CE5D06 /* PopInstruction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBD6ECF254C9EF700CE5D06 /* PopInstruction.swift */; };
 		6FBDDD442670859B0098BEC8 /* PipelineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBDDD422670859B0098BEC8 /* PipelineViewController.swift */; };
 		6FBDDD452670859B0098BEC8 /* PipelineViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6FBDDD432670859B0098BEC8 /* PipelineViewController.xib */; };
 		6FBDDD4726712E320098BEC8 /* PipelineTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBDDD4626712E320098BEC8 /* PipelineTableViewDataSource.swift */; };
@@ -422,8 +285,6 @@
 		6FD5AE6426A2228300670CEB /* AssemblerListingMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD5AE6326A2228300670CEB /* AssemblerListingMaker.swift */; };
 		6FD5AE6626A2229500670CEB /* AssemblerListingMakerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD5AE6526A2229500670CEB /* AssemblerListingMakerTests.swift */; };
 		6FD5AE6E26A24AB500670CEB /* CommentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD5AE6D26A24AB500670CEB /* CommentNode.swift */; };
-		6FDB699D2543616000D532C2 /* CrackleInstructionListingMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDB699C2543616000D532C2 /* CrackleInstructionListingMaker.swift */; };
-		6FDB69AD2543618300D532C2 /* CrackleInstructionListingMakerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDB69AC2543618300D532C2 /* CrackleInstructionListingMakerTests.swift */; };
 		6FDC6AAC27331637003A8ABF /* SnapToTurtle16Compiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDC6AAB27331637003A8ABF /* SnapToTurtle16Compiler.swift */; };
 		6FDC6AAE27331640003A8ABF /* SnapToTurtle16CompilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDC6AAD27331640003A8ABF /* SnapToTurtle16CompilerTests.swift */; };
 		6FDF61E1266D86DC002E7A17 /* Disassembler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDF61E0266D86DC002E7A17 /* Disassembler.swift */; };
@@ -431,16 +292,11 @@
 		6FDF61E8266ECACC002E7A17 /* DisassemblyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDF61E6266ECACC002E7A17 /* DisassemblyViewController.swift */; };
 		6FDF61E9266ECACC002E7A17 /* DisassemblyViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6FDF61E7266ECACC002E7A17 /* DisassemblyViewController.xib */; };
 		6FDF61EB266ECB4B002E7A17 /* DisassemblyTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDF61EA266ECB4B002E7A17 /* DisassemblyTableViewDataSource.swift */; };
-		6FE219CE241CC223006BC92A /* Example.txt in Resources */ = {isa = PBXBuildFile; fileRef = 6FE219CD241CC223006BC92A /* Example.txt */; };
 		6FEC3DFE24D78CF800E9C299 /* LabelMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEC3DFD24D78CF800E9C299 /* LabelMaker.swift */; };
 		6FF179C126B9F97C0026F284 /* SnapSubcompilerTraitDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF179C026B9F97C0026F284 /* SnapSubcompilerTraitDeclaration.swift */; };
 		6FF179C326B9F9EE0026F284 /* SnapSubcompilerTraitDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF179C226B9F9EE0026F284 /* SnapSubcompilerTraitDeclarationTests.swift */; };
 		6FF179C926BA344D0026F284 /* SnapSubcompilerImportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF179C826BA344D0026F284 /* SnapSubcompilerImportTests.swift */; };
 		6FF179CB26BA34760026F284 /* SnapSubcompilerImport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF179CA26BA34760026F284 /* SnapSubcompilerImport.swift */; };
-		6FF1995722ECB36F00C255A2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF1995622ECB36F00C255A2 /* AppDelegate.swift */; };
-		6FF1995922ECB36F00C255A2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF1995822ECB36F00C255A2 /* ViewController.swift */; };
-		6FF1995B22ECB37000C255A2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6FF1995A22ECB37000C255A2 /* Assets.xcassets */; };
-		6FF1995E22ECB37000C255A2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6FF1995C22ECB37000C255A2 /* Main.storyboard */; };
 		6FF75BA62486C31000F55625 /* SnapCommandLineArgumentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF75BA52486C31000F55625 /* SnapCommandLineArgumentParser.swift */; };
 		6FF75BA82486C35400F55625 /* SnapCommandLineArgumentParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF75BA72486C35400F55625 /* SnapCommandLineArgumentParserTests.swift */; };
 		6FFABC3B262A423B00372BF9 /* DataMemoryTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABC3A262A423B00372BF9 /* DataMemoryTableViewDataSource.swift */; };
@@ -469,13 +325,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
 			remoteInfo = TurtleCore;
-		};
-		6F000D572626C39800C5DFDE /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6FB0D34B24711A23003B5D5C;
-			remoteInfo = TurtleSimulatorCore;
 		};
 		6F1698BC262897ED00C96D07 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -512,28 +361,7 @@
 			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
 			remoteInfo = TurtleCore;
 		};
-		6F38F8FA2471C7CB00B5296D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
-			remoteInfo = TurtleCore;
-		};
 		6F41B66F2476F5130043A8D7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
-			remoteInfo = TurtleCore;
-		};
-		6F41B6732476F51C0043A8D7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6FB0D34B24711A23003B5D5C;
-			remoteInfo = TurtleSimulatorCore;
-		};
-		6F41B6752476F5460043A8D7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
 			proxyType = 1;
@@ -561,13 +389,6 @@
 			remoteGlobalIDString = 6F9201E42471DAC7009E1410;
 			remoteInfo = SnapCore;
 		};
-		6F4B5CB92471DE62000C57EB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6FB0D34B24711A23003B5D5C;
-			remoteInfo = TurtleSimulatorCore;
-		};
 		6F6EA40927653F2100B2ABE4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
@@ -583,20 +404,6 @@
 			remoteInfo = Turtle16Assembler;
 		};
 		6F6EA40E27653FBD00B2ABE4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6F9201E42471DAC7009E1410;
-			remoteInfo = SnapCore;
-		};
-		6F6EA41027653FD400B2ABE4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6FB0D34B24711A23003B5D5C;
-			remoteInfo = TurtleSimulatorCore;
-		};
-		6F72FBE8250EB05300130501 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
 			proxyType = 1;
@@ -623,27 +430,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
 			remoteInfo = TurtleCore;
-		};
-		6FB0D35624711A23003B5D5C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6FB0D34B24711A23003B5D5C;
-			remoteInfo = TurtleSimulatorCore;
-		};
-		6FB0D39124711AAC003B5D5C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6FB0D34B24711A23003B5D5C;
-			remoteInfo = TurtleSimulatorCore;
-		};
-		6FB28F6E2512C9D5001F5D12 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6FB0D34B24711A23003B5D5C;
-			remoteInfo = TurtleSimulatorCore;
 		};
 		6FB28F722512C9E0001F5D12 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -682,7 +468,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				6F6EA41227653FDE00B2ABE4 /* TurtleSimulatorCore.framework in CopyFiles */,
 				6F6EA40D27653FB700B2ABE4 /* SnapCore.framework in CopyFiles */,
 				6F2100EF2675B5E1004CFB5D /* TurtleCore.framework in CopyFiles */,
 				6F2100EE2675B5DC004CFB5D /* Turtle16SimulatorCore.framework in CopyFiles */,
@@ -739,18 +524,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
-		6FE003A422F3D75E00221C4C /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				6FB0D3B324711F8B003B5D5C /* TurtleSimulatorCore.framework in Embed Frameworks */,
-				6FB0D3AB24711F80003B5D5C /* TurtleCore.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -759,28 +532,17 @@
 		6F000C452626A52A00C5DFDE /* TokenLiteralString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenLiteralString.swift; sourceTree = "<group>"; };
 		6F01449F24D4941900071EC0 /* ParameterIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterIdentifier.swift; sourceTree = "<group>"; };
 		6F0144A124D4943D00071EC0 /* ParameterNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterNumber.swift; sourceTree = "<group>"; };
-		6F088074230F5D8F00AB2339 /* TurtleTTLInstructionNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurtleTTLInstructionNode.swift; sourceTree = "<group>"; };
 		6F08807A230F5DBF00AB2339 /* LabelDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelDeclaration.swift; sourceTree = "<group>"; };
-		6F08807E230F6AEC00AB2339 /* AssemblerParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerParserTests.swift; sourceTree = "<group>"; };
-		6F08808A230F6E4F00AB2339 /* TurtleTTLInstructionNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurtleTTLInstructionNodeTests.swift; sourceTree = "<group>"; };
 		6F088090230F6E6A00AB2339 /* LabelDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelDeclarationTests.swift; sourceTree = "<group>"; };
-		6F088092230F85FF00AB2339 /* AssemblerCodeGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCodeGenerator.swift; sourceTree = "<group>"; };
-		6F088094230F864D00AB2339 /* AssemblerCodeGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCodeGeneratorTests.swift; sourceTree = "<group>"; };
 		6F0880A0230FBDFF00AB2339 /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		6F0880A2230FC09B00AB2339 /* TokenTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenTests.swift; sourceTree = "<group>"; };
-		6F0B0D032308688900478220 /* RegisterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterTests.swift; sourceTree = "<group>"; };
 		6F0D519A2506D0B100AB1C7E /* TypeContextTypeChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeContextTypeChecker.swift; sourceTree = "<group>"; };
 		6F0D519E2506D57F00AB1C7E /* TypeContextTypeCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeContextTypeCheckerTests.swift; sourceTree = "<group>"; };
-		6F0FAEAD25491A1D002C1469 /* CrackleLocalOptimizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleLocalOptimizer.swift; sourceTree = "<group>"; };
-		6F0FAEE9254920D6002C1469 /* CrackleBasicBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleBasicBlock.swift; sourceTree = "<group>"; };
-		6F0FAF072549501C002C1469 /* CrackleDeadCodeEliminationOptimizationPass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleDeadCodeEliminationOptimizationPass.swift; sourceTree = "<group>"; };
-		6F0FAF1725495024002C1469 /* CrackleDeadCodeEliminationOptimizationPassTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleDeadCodeEliminationOptimizationPassTests.swift; sourceTree = "<group>"; };
 		6F13825A26BF36F1002CF167 /* SnapSubcompilerForIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerForIn.swift; sourceTree = "<group>"; };
 		6F13825C26BF370C002CF167 /* SnapSubcompilerForInTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerForInTests.swift; sourceTree = "<group>"; };
 		6F13826026C0DA01002CF167 /* SnapSubcompilerMatchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerMatchTests.swift; sourceTree = "<group>"; };
 		6F13826226C0E878002CF167 /* SnapSubcompilerReturn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerReturn.swift; sourceTree = "<group>"; };
 		6F13826426C0E893002CF167 /* SnapSubcompilerReturnTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerReturnTests.swift; sourceTree = "<group>"; };
-		6F13CB052489DD2300ADB1BE /* CrackleInstructionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleInstructionTests.swift; sourceTree = "<group>"; };
 		6F14DC4127EA3B9E0034A43C /* PrintLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintLogger.swift; sourceTree = "<group>"; };
 		6F14DC4327EA3FA20034A43C /* SnapDebugConsole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapDebugConsole.swift; sourceTree = "<group>"; };
 		6F15421D26B34E3300BA9572 /* SymbolTablesReconnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolTablesReconnector.swift; sourceTree = "<group>"; };
@@ -805,55 +567,33 @@
 		6F1698BB262897ED00C96D07 /* Simulator16Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Simulator16Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F1698BF262897ED00C96D07 /* Simulator16Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Simulator16Tests.swift; sourceTree = "<group>"; };
 		6F1698C1262897ED00C96D07 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		6F16B9FF251E945C00A26850 /* SnapDebugInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapDebugInfo.swift; sourceTree = "<group>"; };
-		6F16BA0F251E946000A26850 /* SnapDebugInfoTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapDebugInfoTests.swift; sourceTree = "<group>"; };
 		6F1800A6251D9079005D9D36 /* Import.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Import.swift; sourceTree = "<group>"; };
-		6F182C3022ED3AAA0027A981 /* Instruction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Instruction.swift; sourceTree = "<group>"; };
-		6F18DD8A248414DE0014C585 /* SnapToCrackleCompiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapToCrackleCompiler.swift; sourceTree = "<group>"; };
-		6F18DD8C2484154F0014C585 /* SnapToCrackleCompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapToCrackleCompilerTests.swift; sourceTree = "<group>"; };
-		6F18DD92248463030014C585 /* CrackleExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleExecutor.swift; sourceTree = "<group>"; };
-		6F1BFF4023F3B64300FCE919 /* CPUStateSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPUStateSnapshot.swift; sourceTree = "<group>"; };
 		6F1D24B82482245E0095D7B4 /* TokenMisc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenMisc.swift; sourceTree = "<group>"; };
 		6F1D24C424823DD90095D7B4 /* If.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = If.swift; sourceTree = "<group>"; };
 		6F1D24C624823EC60095D7B4 /* IfTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IfTests.swift; sourceTree = "<group>"; };
 		6F1E5C5B262A1E8D0038F966 /* InstructionMemoryTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionMemoryTableViewDataSource.swift; sourceTree = "<group>"; };
 		6F1EC33F265EB66800465075 /* AssemblerCompiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCompiler.swift; sourceTree = "<group>"; };
 		6F238AD8248C6A560040250D /* Block.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Block.swift; sourceTree = "<group>"; };
-		6F238ADA248C94650040250D /* SnapExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapExecutor.swift; sourceTree = "<group>"; };
-		6F238ADC248C947C0040250D /* ComputerExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputerExtensions.swift; sourceTree = "<group>"; };
 		6F24AC8A24A07CAF005193BB /* StatementTracer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatementTracer.swift; sourceTree = "<group>"; };
 		6F24AC8C24A07CBC005193BB /* StatementTracerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatementTracerTests.swift; sourceTree = "<group>"; };
-		6F24B5FA254DFFDB00295D49 /* PopDeadStoreEliminationOptimizationPass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopDeadStoreEliminationOptimizationPass.swift; sourceTree = "<group>"; };
-		6F24B60A254E005100295D49 /* PopDeadStoreEliminationOptimizationPassTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopDeadStoreEliminationOptimizationPassTests.swift; sourceTree = "<group>"; };
 		6F24B628254E3C4E00295D49 /* SnapCompilerMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapCompilerMetrics.swift; sourceTree = "<group>"; };
 		6F25325724CB5A7200339332 /* LvalueExpressionTypeChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LvalueExpressionTypeChecker.swift; sourceTree = "<group>"; };
 		6F25325924CB5D0B00339332 /* LvalueExpressionTypeCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LvalueExpressionTypeCheckerTests.swift; sourceTree = "<group>"; };
-		6F25325B24CB799A00339332 /* LvalueExpressionCompiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LvalueExpressionCompiler.swift; sourceTree = "<group>"; };
-		6F25325D24CB7C6200339332 /* LvalueExpressionCompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LvalueExpressionCompilerTests.swift; sourceTree = "<group>"; };
 		6F2940A8248306EC00C50ABA /* While.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = While.swift; sourceTree = "<group>"; };
 		6F2940AA2483070C00C50ABA /* WhileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhileTests.swift; sourceTree = "<group>"; };
-		6F2940B12483819E00C50ABA /* CompilerErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerErrorTests.swift; sourceTree = "<group>"; };
-		6F2940B62483970100C50ABA /* CrackleInstruction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrackleInstruction.swift; sourceTree = "<group>"; };
 		6F2940CD2483A0DB00C50ABA /* TokenMisc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenMisc.swift; sourceTree = "<group>"; };
 		6F2B443526D9ACFE009ACF08 /* SnapASTTransformerFlattenSeq.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapASTTransformerFlattenSeq.swift; sourceTree = "<group>"; };
 		6F2B443726D9AF67009ACF08 /* SnapASTTransformerFlattenSeqTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapASTTransformerFlattenSeqTests.swift; sourceTree = "<group>"; };
 		6F2E5AFD251A591A00928DD1 /* Typealias.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typealias.swift; sourceTree = "<group>"; };
 		6F2E5B0D251AA46B00928DD1 /* Match.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Match.swift; sourceTree = "<group>"; };
 		6F2E5B1D251AFB5700928DD1 /* SnapSubcompilerMatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerMatch.swift; sourceTree = "<group>"; };
-		6F2EE664240C9D1D001FE46E /* SerialInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialInput.swift; sourceTree = "<group>"; };
-		6F2EE666240C9D38001FE46E /* SerialInputTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialInputTests.swift; sourceTree = "<group>"; };
 		6F300DB826689B6800BFBAC4 /* Assembler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assembler.swift; sourceTree = "<group>"; };
 		6F300DBA26689B9200BFBAC4 /* AssemblerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerTests.swift; sourceTree = "<group>"; };
 		6F300DC0266A906F00BFBAC4 /* Turtle16Assembler */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Turtle16Assembler; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F300DC2266A906F00BFBAC4 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		6F300DD0266A913B00BFBAC4 /* AssemblerCommandLineDriver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCommandLineDriver.swift; sourceTree = "<group>"; };
-		6F330D9B24E8A346005C4BE5 /* MemoryExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryExtensions.swift; sourceTree = "<group>"; };
 		6F35B4352628ABF6004EA0AB /* DebugConsole.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugConsole.swift; sourceTree = "<group>"; };
 		6F35B4B22628AFED004EA0AB /* example.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = example.bin; sourceTree = "<group>"; };
-		6F374F232548B82000793A78 /* CrackleBasicBlockPartitioner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleBasicBlockPartitioner.swift; sourceTree = "<group>"; };
-		6F374F332548B82F00793A78 /* CrackleBasicBlockPartitionerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleBasicBlockPartitionerTests.swift; sourceTree = "<group>"; };
-		6F37BA442305B559009754D3 /* InstructionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionTests.swift; sourceTree = "<group>"; };
-		6F37BA462305D903009754D3 /* Register.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Register.swift; sourceTree = "<group>"; };
 		6F3EEB81262D22B400688D12 /* MemoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryViewController.swift; sourceTree = "<group>"; };
 		6F3EEB82262D22B400688D12 /* MemoryViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MemoryViewController.xib; sourceTree = "<group>"; };
 		6F3EEBA3262D333700688D12 /* RegistersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistersViewController.swift; sourceTree = "<group>"; };
@@ -892,8 +632,6 @@
 		6F40732026B2AD72007D8382 /* SnapASTTransformerBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapASTTransformerBase.swift; sourceTree = "<group>"; };
 		6F41B66724762D2F0043A8D7 /* TokenOperator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenOperator.swift; sourceTree = "<group>"; };
 		6F41B66B2476D6130043A8D7 /* TokenOperatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenOperatorTests.swift; sourceTree = "<group>"; };
-		6F41B69524784B230043A8D7 /* RvalueExpressionCompiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RvalueExpressionCompiler.swift; sourceTree = "<group>"; };
-		6F41B69724784B680043A8D7 /* RvalueExpressionCompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RvalueExpressionCompilerTests.swift; sourceTree = "<group>"; };
 		6F42B8DC2651EE64004A7B12 /* AssemblerLexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerLexer.swift; sourceTree = "<group>"; };
 		6F42B8DE2651EFBD004A7B12 /* AssemblerParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerParser.swift; sourceTree = "<group>"; };
 		6F42B8E02651F01B004A7B12 /* AssemblerParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerParserTests.swift; sourceTree = "<group>"; };
@@ -930,22 +668,12 @@
 		6F47D8C0261CC135008EFFF2 /* FuseListMakerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuseListMakerTests.swift; sourceTree = "<group>"; };
 		6F47D8F2261CC6F2008EFFF2 /* JEDECFuseFileParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JEDECFuseFileParser.swift; sourceTree = "<group>"; };
 		6F47D904261CC6FC008EFFF2 /* JEDECFuseFileParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JEDECFuseFileParserTests.swift; sourceTree = "<group>"; };
-		6F4ACBDA2400BCD900014F4B /* Interpreter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interpreter.swift; sourceTree = "<group>"; };
-		6F4ACBDC2400BCEE00014F4B /* InterpreterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpreterTests.swift; sourceTree = "<group>"; };
 		6F4B5CB12471DE2D000C57EB /* SnapCommandLineDriver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapCommandLineDriver.swift; sourceTree = "<group>"; };
-		6F4B5CB32471DE33000C57EB /* SnapCompiler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapCompiler.swift; sourceTree = "<group>"; };
-		6F4B5CBC2471DF2A000C57EB /* SnapCompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapCompilerTests.swift; sourceTree = "<group>"; };
 		6F4BCFA12629135700BA4775 /* RegisterTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterTableViewDataSource.swift; sourceTree = "<group>"; };
 		6F4BE175230D2E31008C2329 /* CompilerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerError.swift; sourceTree = "<group>"; };
 		6F4F3C42249EAEB30018BBBC /* FunctionDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionDeclaration.swift; sourceTree = "<group>"; };
 		6F4F3C44249EAF700018BBBC /* FunctionDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionDeclarationTests.swift; sourceTree = "<group>"; };
 		6F4F3C46249EBC3A0018BBBC /* TokenType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenType.swift; sourceTree = "<group>"; };
-		6F4F7B11254D1F3A0030E3CB /* PopBasicBlockPartitioner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopBasicBlockPartitioner.swift; sourceTree = "<group>"; };
-		6F4F7B21254D1F490030E3CB /* PopBasicBlockPartitionerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopBasicBlockPartitionerTests.swift; sourceTree = "<group>"; };
-		6F4F7B3F254D21970030E3CB /* PopLocalOptimizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopLocalOptimizer.swift; sourceTree = "<group>"; };
-		6F4F7B4F254D21CE0030E3CB /* PopGlobalOptimizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopGlobalOptimizer.swift; sourceTree = "<group>"; };
-		6F4F7B5F254D226E0030E3CB /* PopConstantPropagationOptimizationPass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopConstantPropagationOptimizationPass.swift; sourceTree = "<group>"; };
-		6F4F7B6F254D22E10030E3CB /* PopConstantPropagationOptimizationPassTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopConstantPropagationOptimizationPassTests.swift; sourceTree = "<group>"; };
 		6F50DB0D247F5F9500643DAC /* SymbolTableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolTableTests.swift; sourceTree = "<group>"; };
 		6F52BEC726239185003C9CC3 /* CPU.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPU.swift; sourceTree = "<group>"; };
 		6F52BF3F2623942D003C9CC3 /* Turtle16Computer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Turtle16Computer.swift; sourceTree = "<group>"; };
@@ -953,44 +681,19 @@
 		6F5337342474BE7D00CFD33C /* VarDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VarDeclarationTests.swift; sourceTree = "<group>"; };
 		6F5462F2253C0560005DDAB6 /* TraitDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraitDeclaration.swift; sourceTree = "<group>"; };
 		6F546310253D3B5F005DDAB6 /* ImplFor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImplFor.swift; sourceTree = "<group>"; };
-		6F59F054246D2FD4005C7348 /* ConcreteToneGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcreteToneGenerator.swift; sourceTree = "<group>"; };
-		6F5A00E523184880003E7C7F /* Patcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Patcher.swift; sourceTree = "<group>"; };
-		6F5A00E723184896003E7C7F /* PatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatcherTests.swift; sourceTree = "<group>"; };
 		6F5A00E9231C6454003E7C7F /* SymbolTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolTable.swift; sourceTree = "<group>"; };
 		6F5A00ED231D029D003E7C7F /* Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
-		6F5A00F1231E2FFD003E7C7F /* RegisterName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterName.swift; sourceTree = "<group>"; };
-		6F5A00F3231F63BB003E7C7F /* TokenRegister.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRegister.swift; sourceTree = "<group>"; };
 		6F5A00F5231F63E0003E7C7F /* TokenNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenNumber.swift; sourceTree = "<group>"; };
 		6F5A00F7231F6406003E7C7F /* TokenEOF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenEOF.swift; sourceTree = "<group>"; };
 		6F5A00F9231F6415003E7C7F /* TokenNewline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenNewline.swift; sourceTree = "<group>"; };
 		6F5A0115231F721B003E7C7F /* TokenEOFTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenEOFTests.swift; sourceTree = "<group>"; };
 		6F5A011D231F725A003E7C7F /* TokenNumberTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenNumberTests.swift; sourceTree = "<group>"; };
-		6F5A0121231F7271003E7C7F /* TokenRegisterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRegisterTests.swift; sourceTree = "<group>"; };
 		6F5A013B231F7DCC003E7C7F /* ParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParserTests.swift; sourceTree = "<group>"; };
-		6F5A013D232069FF003E7C7F /* ComputerExecutorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputerExecutorTests.swift; sourceTree = "<group>"; };
 		6F5A8AE7230A2732000046C2 /* FileHandleTextOutputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHandleTextOutputStream.swift; sourceTree = "<group>"; };
-		6F5A8AE9230A7713000046C2 /* AssemblerFrontEnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerFrontEnd.swift; sourceTree = "<group>"; };
-		6F5A8AEB230A7726000046C2 /* AssemblerFrontEndTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerFrontEndTests.swift; sourceTree = "<group>"; };
-		6F5C55E524F61D3C008827EE /* CompilerTemporariesAllocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerTemporariesAllocator.swift; sourceTree = "<group>"; };
-		6F5C55E724F61D4E008827EE /* CompilerTemporary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerTemporary.swift; sourceTree = "<group>"; };
-		6F5C55E924F61D6A008827EE /* CompilerTemporariesAllocatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerTemporariesAllocatorTests.swift; sourceTree = "<group>"; };
-		6F5C55EB24F6359D008827EE /* CompilerTemporariesStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerTemporariesStack.swift; sourceTree = "<group>"; };
 		6F603CAF2515BB7900B2C54E /* ForIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForIn.swift; sourceTree = "<group>"; };
-		6F615170230CAF4A00282B12 /* AssemblerLexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerLexer.swift; sourceTree = "<group>"; };
-		6F615172230CAF5600282B12 /* AssemblerLexerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerLexerTests.swift; sourceTree = "<group>"; };
 		6F615176230CB54200282B12 /* Lexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lexer.swift; sourceTree = "<group>"; };
 		6F615178230CB56E00282B12 /* LexerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LexerTests.swift; sourceTree = "<group>"; };
-		6F61517E230D041600282B12 /* AssemblerParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerParser.swift; sourceTree = "<group>"; };
-		6F679BD422ED6FB0008C8E2C /* Flags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flags.swift; sourceTree = "<group>"; };
 		6F6956FA24F965B3006D66FC /* UInt8Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UInt8Extension.swift; sourceTree = "<group>"; };
-		6F6A023423FF62C6003876BD /* TraceProfiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceProfiler.swift; sourceTree = "<group>"; };
-		6F6A023623FF65D5003876BD /* TraceProfilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceProfilerTests.swift; sourceTree = "<group>"; };
-		6F6A023823FF7013003876BD /* TraceRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceRecorder.swift; sourceTree = "<group>"; };
-		6F6A023A23FF7024003876BD /* TraceRecorderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceRecorderTests.swift; sourceTree = "<group>"; };
-		6F6A023C23FF7204003876BD /* Trace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trace.swift; sourceTree = "<group>"; };
-		6F6A024023FF7225003876BD /* TraceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceTests.swift; sourceTree = "<group>"; };
-		6F6A024223FF7926003876BD /* InstructionFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionFormatter.swift; sourceTree = "<group>"; };
-		6F6A024423FF7931003876BD /* InstructionFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionFormatterTests.swift; sourceTree = "<group>"; };
 		6F6A024623FF8C60003876BD /* ConsoleLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleLogger.swift; sourceTree = "<group>"; };
 		6F6AED3F251696C5002E3AC5 /* Impl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Impl.swift; sourceTree = "<group>"; };
 		6F6DD22424809731004B1703 /* VarDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VarDeclaration.swift; sourceTree = "<group>"; };
@@ -1003,45 +706,20 @@
 		6F73436A2593289400B7E43F /* WBTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WBTests.swift; sourceTree = "<group>"; };
 		6F7343DC25932FD100B7E43F /* MEM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MEM.swift; sourceTree = "<group>"; };
 		6F7343EE25932FEE00B7E43F /* MEMTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MEMTests.swift; sourceTree = "<group>"; };
-		6F78DA3C23D947F4000ACA88 /* Computer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Computer.swift; sourceTree = "<group>"; };
 		6F790AE822EEDD1900B38267 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		6F790AEA22EEE6C400B38267 /* TextViewLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewLogger.swift; sourceTree = "<group>"; };
-		6F790AEC22EEE9C200B38267 /* ComputerExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputerExecutor.swift; sourceTree = "<group>"; };
 		6F7C14E9259A94C30034C7D0 /* EX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EX.swift; sourceTree = "<group>"; };
 		6F7C14FB259A94E40034C7D0 /* EXTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EXTests.swift; sourceTree = "<group>"; };
 		6F7D951726753D81003889FB /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
 		6F7E16D327F3A3660067D059 /* runtime.snap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = runtime.snap; sourceTree = "<group>"; };
-		6F7E41902547E036007CAA1A /* CrackleGlobalOptimizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleGlobalOptimizer.swift; sourceTree = "<group>"; };
-		6F7E41A02547E174007CAA1A /* CrackleConstantPropagationOptimizationPass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleConstantPropagationOptimizationPass.swift; sourceTree = "<group>"; };
-		6F7E41B02547E1AE007CAA1A /* CrackleConstantPropagationOptimizationPassTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleConstantPropagationOptimizationPassTests.swift; sourceTree = "<group>"; };
-		6F7E7FB523BEAADE00647482 /* ComputerPeripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputerPeripheral.swift; sourceTree = "<group>"; };
-		6F7E7FB723BEAB9B00647482 /* ControlSignal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlSignal.swift; sourceTree = "<group>"; };
-		6F7E7FB923BEAC3B00647482 /* SerialInterfacePeripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialInterfacePeripheral.swift; sourceTree = "<group>"; };
-		6F7E7FBB23BEAC4D00647482 /* InstructionRAMPeripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionRAMPeripheral.swift; sourceTree = "<group>"; };
-		6F7E7FBD23BEB77A00647482 /* ComputerPeripherals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputerPeripherals.swift; sourceTree = "<group>"; };
-		6F7E7FBF23BEC1F800647482 /* SerialInterfacePeripheralTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialInterfacePeripheralTests.swift; sourceTree = "<group>"; };
 		6F7F356924D2323F00BA8E37 /* stdlib.snap */ = {isa = PBXFileReference; lastKnownFileType = text; path = stdlib.snap; sourceTree = "<group>"; };
 		6F7F356D24D33C7700BA8E37 /* SourceAnchor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceAnchor.swift; sourceTree = "<group>"; };
 		6F7F356F24D33CC800BA8E37 /* SourceLineRangeMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceLineRangeMapper.swift; sourceTree = "<group>"; };
-		6F7F357124D492DA00BA8E37 /* ParameterRegister.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterRegister.swift; sourceTree = "<group>"; };
 		6F7F357324D492F000BA8E37 /* Parameter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parameter.swift; sourceTree = "<group>"; };
 		6F809DDD26615A860098A7FF /* InstructionMemoryHiTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionMemoryHiTableViewDataSource.swift; sourceTree = "<group>"; };
 		6F809DDF26615A8D0098A7FF /* InstructionMemoryLoTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionMemoryLoTableViewDataSource.swift; sourceTree = "<group>"; };
 		6F83480A26FD3B0100EB466E /* RegisterAllocatorNaive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterAllocatorNaive.swift; sourceTree = "<group>"; };
 		6F83480C26FD3B1200EB466E /* RegisterAllocatorNaiveTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterAllocatorNaiveTests.swift; sourceTree = "<group>"; };
-		6F86CC7F22F0001C008C6322 /* Memory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Memory.swift; sourceTree = "<group>"; };
-		6F86EDAB22ECBD8600375A00 /* ProgramCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramCounter.swift; sourceTree = "<group>"; };
-		6F86EDAF22ECBEC400375A00 /* ControlWord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlWord.swift; sourceTree = "<group>"; };
-		6F86EDB122ECC05500375A00 /* ControlWordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlWordTests.swift; sourceTree = "<group>"; };
-		6F86EDB522ECC53500375A00 /* InstructionMemory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionMemory.swift; sourceTree = "<group>"; };
-		6F86EDB722ECC56400375A00 /* InstructionROMTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionROMTests.swift; sourceTree = "<group>"; };
-		6F86EDB922ECC67000375A00 /* InstructionDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionDecoder.swift; sourceTree = "<group>"; };
-		6F86EDBB22ECC72200375A00 /* InstructionDecoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionDecoderTests.swift; sourceTree = "<group>"; };
-		6F86EDBD22ECC86400375A00 /* ALU.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALU.swift; sourceTree = "<group>"; };
-		6F86EDBF22ECCAC800375A00 /* ALUTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALUTests.swift; sourceTree = "<group>"; };
-		6F86EDC122ECE51C00375A00 /* Chip74x181.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chip74x181.swift; sourceTree = "<group>"; };
-		6F86EDC322ECF65B00375A00 /* Chip74x181Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chip74x181Tests.swift; sourceTree = "<group>"; };
-		6F86EDC722ED179C00375A00 /* ComputerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputerTests.swift; sourceTree = "<group>"; };
 		6F870FEA2505913900FE2B25 /* StructDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructDeclaration.swift; sourceTree = "<group>"; };
 		6F870FEC2505918400FE2B25 /* StructDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructDeclarationTests.swift; sourceTree = "<group>"; };
 		6F87A545261E23A40093750D /* HazardControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HazardControl.swift; sourceTree = "<group>"; };
@@ -1058,7 +736,6 @@
 		6F8A585B248B364B0037530B /* TokenBoolean.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenBoolean.swift; sourceTree = "<group>"; };
 		6F8A585D248B368A0037530B /* TokenBooleanTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenBooleanTests.swift; sourceTree = "<group>"; };
 		6F8F22E62471CB5100AFD574 /* AbstractSyntaxTreeNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractSyntaxTreeNode.swift; sourceTree = "<group>"; };
-		6F915D4924D14F99002B3850 /* BaseExpressionCompiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseExpressionCompiler.swift; sourceTree = "<group>"; };
 		6F9201D92471DA22009E1410 /* Snap */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Snap; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F9201DB2471DA22009E1410 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		6F9201E52471DAC7009E1410 /* SnapCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SnapCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1070,16 +747,12 @@
 		6F924E7B248B42E100F43741 /* RvalueExpressionTypeCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RvalueExpressionTypeCheckerTests.swift; sourceTree = "<group>"; };
 		6F924E7D248B4CCA00F43741 /* ExprUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExprUtils.swift; sourceTree = "<group>"; };
 		6F982BDF265EB6BE0029ED5F /* AssemblerCompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCompilerTests.swift; sourceTree = "<group>"; };
-		6F9E286E2543CFB100946974 /* AssemblyListingMaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblyListingMaker.swift; sourceTree = "<group>"; };
-		6F9E287E2543CFD000946974 /* AssemblyListingMakerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblyListingMakerTests.swift; sourceTree = "<group>"; };
 		6F9E8F7E26B9A90F00FE25E4 /* SnapSubcompilerTypealias.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerTypealias.swift; sourceTree = "<group>"; };
 		6F9E8F8026B9A91900FE25E4 /* SnapSubcompilerTypealiasTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerTypealiasTests.swift; sourceTree = "<group>"; };
 		6F9E8F8226B9BCC900FE25E4 /* SnapAbstractSyntaxTreeCompilerImplPass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapAbstractSyntaxTreeCompilerImplPass.swift; sourceTree = "<group>"; };
 		6F9E8F8426B9BE2C00FE25E4 /* SnapAbstractSyntaxTreeCompilerImplPassTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapAbstractSyntaxTreeCompilerImplPassTests.swift; sourceTree = "<group>"; };
 		6FA1A712249A816200D2DB57 /* TopLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopLevel.swift; sourceTree = "<group>"; };
 		6FA1A714249A817F00D2DB57 /* TopLevelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopLevelTests.swift; sourceTree = "<group>"; };
-		6FA220BE254CDC3B0017DDDF /* CrackleToPopCompiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleToPopCompiler.swift; sourceTree = "<group>"; };
-		6FA220CE254CDC480017DDDF /* CrackleToPopCompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleToPopCompilerTests.swift; sourceTree = "<group>"; };
 		6FA5D28A2593F6F300044B17 /* IF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IF.swift; sourceTree = "<group>"; };
 		6FA5D29C2593F7E900044B17 /* IFTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IFTests.swift; sourceTree = "<group>"; };
 		6FA5D2CE2593FAAA00044B17 /* IDT7381.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDT7381.swift; sourceTree = "<group>"; };
@@ -1095,8 +768,6 @@
 		6FAE8E43261BA70100A8A23D /* ProductTermFuseMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTermFuseMapTests.swift; sourceTree = "<group>"; };
 		6FAE8EA5261BC4FD00A8A23D /* ATF22V10.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATF22V10.swift; sourceTree = "<group>"; };
 		6FAE8EB7261BC50F00A8A23D /* ATF22V10Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATF22V10Tests.swift; sourceTree = "<group>"; };
-		6FB0D27E24709373003B5D5C /* ConstantDeclaration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstantDeclaration.swift; sourceTree = "<group>"; };
-		6FB0D2802470937D003B5D5C /* ConstantDeclarationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstantDeclarationTests.swift; sourceTree = "<group>"; };
 		6FB0D28B24710C26003B5D5C /* TurtleCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TurtleCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FB0D28D24710C26003B5D5C /* TurtleCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TurtleCore.h; sourceTree = "<group>"; };
 		6FB0D28E24710C26003B5D5C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1106,11 +777,6 @@
 		6FB0D2A324710CED003B5D5C /* ScannerExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerExtension.swift; sourceTree = "<group>"; };
 		6FB0D2A624710CF3003B5D5C /* AtomicBooleanFlagTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AtomicBooleanFlagTests.swift; sourceTree = "<group>"; };
 		6FB0D2A724710CF3003B5D5C /* ScannerExtensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerExtensionTests.swift; sourceTree = "<group>"; };
-		6FB0D34C24711A23003B5D5C /* TurtleSimulatorCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TurtleSimulatorCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		6FB0D34E24711A23003B5D5C /* TurtleSimulatorCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TurtleSimulatorCore.h; sourceTree = "<group>"; };
-		6FB0D34F24711A23003B5D5C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		6FB0D35424711A23003B5D5C /* TurtleSimulatorCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TurtleSimulatorCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		6FB0D35B24711A23003B5D5C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6FB28F652512C50B001F5D12 /* SnapBenchmark */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SnapBenchmark; sourceTree = BUILT_PRODUCTS_DIR; };
 		6FB28F672512C50B001F5D12 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		6FB28F6C2512C539001F5D12 /* SnapBenchmarkDriver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapBenchmarkDriver.swift; sourceTree = "<group>"; };
@@ -1119,9 +785,6 @@
 		6FBCFA5926F7F4D400193819 /* Tack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tack.swift; sourceTree = "<group>"; };
 		6FBCFA5B26F7F52400193819 /* TackToTurtle16Compiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TackToTurtle16Compiler.swift; sourceTree = "<group>"; };
 		6FBCFA5D26F7F5FC00193819 /* TackToTurtle16CompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TackToTurtle16CompilerTests.swift; sourceTree = "<group>"; };
-		6FBD6EAF254C9E9A00CE5D06 /* PopCompiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopCompiler.swift; sourceTree = "<group>"; };
-		6FBD6EBF254C9EA900CE5D06 /* PopCompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopCompilerTests.swift; sourceTree = "<group>"; };
-		6FBD6ECF254C9EF700CE5D06 /* PopInstruction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopInstruction.swift; sourceTree = "<group>"; };
 		6FBDDD422670859B0098BEC8 /* PipelineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PipelineViewController.swift; sourceTree = "<group>"; };
 		6FBDDD432670859B0098BEC8 /* PipelineViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PipelineViewController.xib; sourceTree = "<group>"; };
 		6FBDDD4626712E320098BEC8 /* PipelineTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PipelineTableViewDataSource.swift; sourceTree = "<group>"; };
@@ -1135,8 +798,6 @@
 		6FCB68472472448300798905 /* ReturnTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReturnTests.swift; sourceTree = "<group>"; };
 		6FCB684924724B6300798905 /* Expression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Expression.swift; sourceTree = "<group>"; };
 		6FCB684B24724B7F00798905 /* ExpressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionTests.swift; sourceTree = "<group>"; };
-		6FCD8DA423FA26C800E90095 /* UnlockedComputerExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnlockedComputerExecutor.swift; sourceTree = "<group>"; };
-		6FCD8DA823FA601100E90095 /* ComputerStopwatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputerStopwatch.swift; sourceTree = "<group>"; };
 		6FD2735726C9BAD400749CDA /* SnapSubcompilerIf.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerIf.swift; sourceTree = "<group>"; };
 		6FD2735926C9C1E800749CDA /* Goto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Goto.swift; sourceTree = "<group>"; };
 		6FD2735B26C9C29E00749CDA /* GotoIfFalse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GotoIfFalse.swift; sourceTree = "<group>"; };
@@ -1145,13 +806,9 @@
 		6FD2736126C9C94600749CDA /* SnapSubcompilerWhileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerWhileTests.swift; sourceTree = "<group>"; };
 		6FD2736926CA187600749CDA /* MemoryLayoutStrategyTurtle16.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryLayoutStrategyTurtle16.swift; sourceTree = "<group>"; };
 		6FD2736B26CA18CE00749CDA /* MemoryLayoutStrategyTurtle16Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryLayoutStrategyTurtle16Tests.swift; sourceTree = "<group>"; };
-		6FD4D70E2468BA12004F85B0 /* AudioDevicePeripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDevicePeripheral.swift; sourceTree = "<group>"; };
-		6FD4D7102468BA55004F85B0 /* AudioDevicePeripheralTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDevicePeripheralTests.swift; sourceTree = "<group>"; };
 		6FD5AE6326A2228300670CEB /* AssemblerListingMaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerListingMaker.swift; sourceTree = "<group>"; };
 		6FD5AE6526A2229500670CEB /* AssemblerListingMakerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerListingMakerTests.swift; sourceTree = "<group>"; };
 		6FD5AE6D26A24AB500670CEB /* CommentNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentNode.swift; sourceTree = "<group>"; };
-		6FDB699C2543616000D532C2 /* CrackleInstructionListingMaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleInstructionListingMaker.swift; sourceTree = "<group>"; };
-		6FDB69AC2543618300D532C2 /* CrackleInstructionListingMakerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrackleInstructionListingMakerTests.swift; sourceTree = "<group>"; };
 		6FDC6AAB27331637003A8ABF /* SnapToTurtle16Compiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapToTurtle16Compiler.swift; sourceTree = "<group>"; };
 		6FDC6AAD27331640003A8ABF /* SnapToTurtle16CompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapToTurtle16CompilerTests.swift; sourceTree = "<group>"; };
 		6FDF61E0266D86DC002E7A17 /* Disassembler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Disassembler.swift; sourceTree = "<group>"; };
@@ -1159,41 +816,13 @@
 		6FDF61E6266ECACC002E7A17 /* DisassemblyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisassemblyViewController.swift; sourceTree = "<group>"; };
 		6FDF61E7266ECACC002E7A17 /* DisassemblyViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DisassemblyViewController.xib; sourceTree = "<group>"; };
 		6FDF61EA266ECB4B002E7A17 /* DisassemblyTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisassemblyTableViewDataSource.swift; sourceTree = "<group>"; };
-		6FDFED7522F14BDD00AADA07 /* MicrocodeGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrocodeGenerator.swift; sourceTree = "<group>"; };
-		6FDFED7722F14BEF00AADA07 /* MicrocodeGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrocodeGeneratorTests.swift; sourceTree = "<group>"; };
-		6FDFED7922F1627500AADA07 /* AssemblerBackEnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerBackEnd.swift; sourceTree = "<group>"; };
-		6FDFED7B22F16D4100AADA07 /* AssemblerBackEndTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerBackEndTests.swift; sourceTree = "<group>"; };
-		6FE046592403A857001461C4 /* TraceUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceUtils.swift; sourceTree = "<group>"; };
-		6FE0465B2404EC78001461C4 /* TraceExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceExecutor.swift; sourceTree = "<group>"; };
-		6FE0465D2404EC96001461C4 /* TraceExecutorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceExecutorTests.swift; sourceTree = "<group>"; };
 		6FE0465F2405119D001461C4 /* NullLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NullLogger.swift; sourceTree = "<group>"; };
-		6FE219BF241C6652006BC92A /* ComputerVirtualMachineFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputerVirtualMachineFactory.swift; sourceTree = "<group>"; };
-		6FE219CD241CC223006BC92A /* Example.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Example.txt; sourceTree = "<group>"; };
-		6FE219D8241D81FD006BC92A /* ProcessorStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessorStateTests.swift; sourceTree = "<group>"; };
-		6FE219DC241DA0C3006BC92A /* FlagsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlagsTest.swift; sourceTree = "<group>"; };
-		6FE219DE241DB21A006BC92A /* MemoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryTests.swift; sourceTree = "<group>"; };
-		6FE976C92406545D006C393B /* VirtualMachine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualMachine.swift; sourceTree = "<group>"; };
-		6FE976CD2406551C006C393B /* InterpretingVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpretingVM.swift; sourceTree = "<group>"; };
-		6FE976CF24065529006C393B /* InterpretingVMTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpretingVMTests.swift; sourceTree = "<group>"; };
-		6FE976D1240661D0006C393B /* VirtualMachineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualMachineTests.swift; sourceTree = "<group>"; };
-		6FE976D924066A70006C393B /* TracingInterpretingVMTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TracingInterpretingVMTests.swift; sourceTree = "<group>"; };
-		6FE976DB24066A7B006C393B /* TracingInterpretingVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TracingInterpretingVM.swift; sourceTree = "<group>"; };
-		6FE976DC24066A7B006C393B /* VirtualMachineUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VirtualMachineUtils.swift; sourceTree = "<group>"; };
-		6FE976E124084944006C393B /* InstructionROM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionROM.swift; sourceTree = "<group>"; };
-		6FE976E3240849B6006C393B /* InstructionMemoryRev1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionMemoryRev1.swift; sourceTree = "<group>"; };
 		6FEBE3E223F77F0200E42B66 /* ThrottledQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottledQueue.swift; sourceTree = "<group>"; };
 		6FEC3DFD24D78CF800E9C299 /* LabelMaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelMaker.swift; sourceTree = "<group>"; };
 		6FF179C026B9F97C0026F284 /* SnapSubcompilerTraitDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerTraitDeclaration.swift; sourceTree = "<group>"; };
 		6FF179C226B9F9EE0026F284 /* SnapSubcompilerTraitDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerTraitDeclarationTests.swift; sourceTree = "<group>"; };
 		6FF179C826BA344D0026F284 /* SnapSubcompilerImportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerImportTests.swift; sourceTree = "<group>"; };
 		6FF179CA26BA34760026F284 /* SnapSubcompilerImport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerImport.swift; sourceTree = "<group>"; };
-		6FF1995322ECB36F00C255A2 /* Simulator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Simulator.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		6FF1995622ECB36F00C255A2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		6FF1995822ECB36F00C255A2 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		6FF1995A22ECB37000C255A2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		6FF1995D22ECB37000C255A2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		6FF1995F22ECB37000C255A2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		6FF1996022ECB37000C255A2 /* Simulator.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Simulator.entitlements; sourceTree = "<group>"; };
 		6FF75BA52486C31000F55625 /* SnapCommandLineArgumentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapCommandLineArgumentParser.swift; sourceTree = "<group>"; };
 		6FF75BA72486C35400F55625 /* SnapCommandLineArgumentParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapCommandLineArgumentParserTests.swift; sourceTree = "<group>"; };
 		6FFABC3A262A423B00372BF9 /* DataMemoryTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataMemoryTableViewDataSource.swift; sourceTree = "<group>"; };
@@ -1277,35 +906,10 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6FB0D34924711A23003B5D5C /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6FB0D35124711A23003B5D5C /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6FB0D35524711A23003B5D5C /* TurtleSimulatorCore.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		6FB28F622512C50B001F5D12 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6FF1995022ECB36F00C255A2 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6F72FBEA250EB05900130501 /* SnapCore.framework in Frameworks */,
-				6FB0D3B224711F8B003B5D5C /* TurtleSimulatorCore.framework in Frameworks */,
-				6FB0D3AA24711F80003B5D5C /* TurtleCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1414,33 +1018,6 @@
 			path = Pipeline;
 			sourceTree = "<group>";
 		};
-		6F53372A2474BCDE00CFD33C /* AST */ = {
-			isa = PBXGroup;
-			children = (
-				6FB0D27E24709373003B5D5C /* ConstantDeclaration.swift */,
-				6F088074230F5D8F00AB2339 /* TurtleTTLInstructionNode.swift */,
-				6F7F357124D492DA00BA8E37 /* ParameterRegister.swift */,
-			);
-			path = AST;
-			sourceTree = "<group>";
-		};
-		6F53372B2474BD0A00CFD33C /* AST */ = {
-			isa = PBXGroup;
-			children = (
-				6FB0D2802470937D003B5D5C /* ConstantDeclarationTests.swift */,
-				6F08808A230F6E4F00AB2339 /* TurtleTTLInstructionNodeTests.swift */,
-			);
-			path = AST;
-			sourceTree = "<group>";
-		};
-		6F53372D2474BD3200CFD33C /* Token */ = {
-			isa = PBXGroup;
-			children = (
-				6F5A0121231F7271003E7C7F /* TokenRegisterTests.swift */,
-			);
-			path = Token;
-			sourceTree = "<group>";
-		};
 		6F53372F2474BE0B00CFD33C /* AST */ = {
 			isa = PBXGroup;
 			children = (
@@ -1490,14 +1067,6 @@
 				6F2940AA2483070C00C50ABA /* WhileTests.swift */,
 			);
 			path = AST;
-			sourceTree = "<group>";
-		};
-		6F5337372474C19100CFD33C /* Token */ = {
-			isa = PBXGroup;
-			children = (
-				6F5A00F3231F63BB003E7C7F /* TokenRegister.swift */,
-			);
-			path = Token;
 			sourceTree = "<group>";
 		};
 		6F734332259327D400B7E43F /* Turtle16SimulatorCore */ = {
@@ -1619,43 +1188,20 @@
 			children = (
 				6F53372F2474BE0B00CFD33C /* AST */,
 				6F5337322474BE4B00CFD33C /* Token */,
-				6F9E286E2543CFB100946974 /* AssemblyListingMaker.swift */,
-				6F915D4924D14F99002B3850 /* BaseExpressionCompiler.swift */,
 				6F40731A26B29E9F007D8382 /* CompilerIntrinsicSymbolBinder.swift */,
-				6F5C55E524F61D3C008827EE /* CompilerTemporariesAllocator.swift */,
-				6F5C55EB24F6359D008827EE /* CompilerTemporariesStack.swift */,
-				6F5C55E724F61D4E008827EE /* CompilerTemporary.swift */,
-				6F0FAEE9254920D6002C1469 /* CrackleBasicBlock.swift */,
-				6F374F232548B82000793A78 /* CrackleBasicBlockPartitioner.swift */,
-				6F7E41A02547E174007CAA1A /* CrackleConstantPropagationOptimizationPass.swift */,
-				6F0FAF072549501C002C1469 /* CrackleDeadCodeEliminationOptimizationPass.swift */,
-				6F7E41902547E036007CAA1A /* CrackleGlobalOptimizer.swift */,
-				6F2940B62483970100C50ABA /* CrackleInstruction.swift */,
-				6FDB699C2543616000D532C2 /* CrackleInstructionListingMaker.swift */,
-				6F0FAEAD25491A1D002C1469 /* CrackleLocalOptimizer.swift */,
-				6FA220BE254CDC3B0017DDDF /* CrackleToPopCompiler.swift */,
 				6F469E0826BEF5020004613B /* GlobalEnvironment.swift */,
 				6FEC3DFD24D78CF800E9C299 /* LabelMaker.swift */,
 				6F3F00FD275F45E900875339 /* LinearScanRegisterAllocator.swift */,
 				6F3F0105275FD47300875339 /* LiveInterval.swift */,
-				6F25325B24CB799A00339332 /* LvalueExpressionCompiler.swift */,
 				6F25325724CB5A7200339332 /* LvalueExpressionTypeChecker.swift */,
 				6F40730026ADE09D007D8382 /* MemoryLayoutStrategy.swift */,
 				6F40730226ADE0B7007D8382 /* MemoryLayoutStrategyTurtleTTL.swift */,
 				6FD2736926CA187600749CDA /* MemoryLayoutStrategyTurtle16.swift */,
-				6F4F7B11254D1F3A0030E3CB /* PopBasicBlockPartitioner.swift */,
-				6FBD6EAF254C9E9A00CE5D06 /* PopCompiler.swift */,
-				6F4F7B5F254D226E0030E3CB /* PopConstantPropagationOptimizationPass.swift */,
-				6F24B5FA254DFFDB00295D49 /* PopDeadStoreEliminationOptimizationPass.swift */,
-				6F4F7B4F254D21CE0030E3CB /* PopGlobalOptimizer.swift */,
-				6FBD6ECF254C9EF700CE5D06 /* PopInstruction.swift */,
-				6F4F7B3F254D21970030E3CB /* PopLocalOptimizer.swift */,
 				6F3F00F927560FDB00875339 /* RegisterAllocatorDriver.swift */,
 				6F83480A26FD3B0100EB466E /* RegisterAllocatorNaive.swift */,
 				6F3F0101275FD40C00875339 /* RegisterLiveIntervalCalculator.swift */,
 				6F3F0107275FEC5700875339 /* RegisterSpiller.swift */,
 				6F3F010B2760675400875339 /* RegisterUtils.swift */,
-				6F41B69524784B230043A8D7 /* RvalueExpressionCompiler.swift */,
 				6F924E79248B42D400F43741 /* RvalueExpressionTypeChecker.swift */,
 				6F40731626B281B7007D8382 /* SnapAbstractSyntaxTreeCompiler.swift */,
 				6F15422926B8902A00BA9572 /* SnapAbstractSyntaxTreeCompilerDeclPass.swift */,
@@ -1664,11 +1210,9 @@
 				6F2B443526D9ACFE009ACF08 /* SnapASTTransformerFlattenSeq.swift */,
 				6F15422126B5EBA800BA9572 /* SnapASTTransformerTestDeclaration.swift */,
 				6FF75BA52486C31000F55625 /* SnapCommandLineArgumentParser.swift */,
-				6F4B5CB32471DE33000C57EB /* SnapCompiler.swift */,
 				6F14DC4327EA3FA20034A43C /* SnapDebugConsole.swift */,
 				6FDC6AAB27331637003A8ABF /* SnapToTurtle16Compiler.swift */,
 				6F24B628254E3C4E00295D49 /* SnapCompilerMetrics.swift */,
-				6F16B9FF251E945C00A26850 /* SnapDebugInfo.swift */,
 				6FCB6818247204F900798905 /* SnapLexer.swift */,
 				6FCB681D2472063900798905 /* SnapParser.swift */,
 				6F40731C26B2A187007D8382 /* SnapSubcompilerAssert.swift */,
@@ -1686,7 +1230,6 @@
 				6F9E8F7E26B9A90F00FE25E4 /* SnapSubcompilerTypealias.swift */,
 				6F15422D26B897BA00BA9572 /* SnapSubcompilerVarDeclaration.swift */,
 				6FD2735F26C9C92900749CDA /* SnapSubcompilerWhile.swift */,
-				6F18DD8A248414DE0014C585 /* SnapToCrackleCompiler.swift */,
 				6F40730626B1D5ED007D8382 /* SnapToTackCompiler.swift */,
 				6F24AC8A24A07CAF005193BB /* StatementTracer.swift */,
 				6FBCFA5526F5121A00193819 /* StructMemberFunctionCallMatcher.swift */,
@@ -1707,34 +1250,17 @@
 			isa = PBXGroup;
 			children = (
 				6F5337332474BE7100CFD33C /* AST */,
-				6F9E287E2543CFD000946974 /* AssemblyListingMakerTests.swift */,
-				6F5C55E924F61D6A008827EE /* CompilerTemporariesAllocatorTests.swift */,
-				6F238ADC248C947C0040250D /* ComputerExtensions.swift */,
-				6F374F332548B82F00793A78 /* CrackleBasicBlockPartitionerTests.swift */,
-				6F7E41B02547E1AE007CAA1A /* CrackleConstantPropagationOptimizationPassTests.swift */,
-				6F0FAF1725495024002C1469 /* CrackleDeadCodeEliminationOptimizationPassTests.swift */,
-				6F18DD92248463030014C585 /* CrackleExecutor.swift */,
-				6FDB69AC2543618300D532C2 /* CrackleInstructionListingMakerTests.swift */,
-				6F13CB052489DD2300ADB1BE /* CrackleInstructionTests.swift */,
-				6FA220CE254CDC480017DDDF /* CrackleToPopCompilerTests.swift */,
 				6F924E7D248B4CCA00F43741 /* ExprUtils.swift */,
 				6F469E0A26BEF5220004613B /* GlobalEnvironmentTests.swift */,
 				6F3F00FF275F45F200875339 /* LinearScanRegisterAllocatorTests.swift */,
-				6F25325D24CB7C6200339332 /* LvalueExpressionCompilerTests.swift */,
 				6F25325924CB5D0B00339332 /* LvalueExpressionTypeCheckerTests.swift */,
-				6F330D9B24E8A346005C4BE5 /* MemoryExtensions.swift */,
 				6F40730426ADE0EF007D8382 /* MemoryLayoutStrategyTurtleTTLTests.swift */,
 				6FD2736B26CA18CE00749CDA /* MemoryLayoutStrategyTurtle16Tests.swift */,
-				6F4F7B21254D1F490030E3CB /* PopBasicBlockPartitionerTests.swift */,
-				6FBD6EBF254C9EA900CE5D06 /* PopCompilerTests.swift */,
-				6F4F7B6F254D22E10030E3CB /* PopConstantPropagationOptimizationPassTests.swift */,
-				6F24B60A254E005100295D49 /* PopDeadStoreEliminationOptimizationPassTests.swift */,
 				6F3F00FB27560FF900875339 /* RegisterAllocatorDriverTests.swift */,
 				6F83480C26FD3B1200EB466E /* RegisterAllocatorNaiveTests.swift */,
 				6F3F0103275FD42A00875339 /* RegisterLiveIntervalCalculatorTests.swift */,
 				6F3F0109275FEC8000875339 /* RegisterSpillerTests.swift */,
 				6F3F010D2760676000875339 /* RegisterUtilsTests.swift */,
-				6F41B69724784B680043A8D7 /* RvalueExpressionCompilerTests.swift */,
 				6F924E7B248B42E100F43741 /* RvalueExpressionTypeCheckerTests.swift */,
 				6F40731826B281C1007D8382 /* SnapAbstractSyntaxTreeCompilerTests.swift */,
 				6F15422B26B8903700BA9572 /* SnapAbstractSyntaxTreeCompilerDeclPassTests.swift */,
@@ -1743,10 +1269,7 @@
 				6F2B443726D9AF67009ACF08 /* SnapASTTransformerFlattenSeqTests.swift */,
 				6F15422326B5EBC300BA9572 /* SnapASTTransformerTestDeclarationTests.swift */,
 				6FF75BA72486C35400F55625 /* SnapCommandLineArgumentParserTests.swift */,
-				6F4B5CBC2471DF2A000C57EB /* SnapCompilerTests.swift */,
 				6FDC6AAD27331640003A8ABF /* SnapToTurtle16CompilerTests.swift */,
-				6F16BA0F251E946000A26850 /* SnapDebugInfoTests.swift */,
-				6F238ADA248C94650040250D /* SnapExecutor.swift */,
 				6FCB681B2472051200798905 /* SnapLexerTests.swift */,
 				6FCB681F2472064800798905 /* SnapParserTests.swift */,
 				6F40731E26B2A194007D8382 /* SnapSubcompilerAssertTests.swift */,
@@ -1763,7 +1286,6 @@
 				6F9E8F8026B9A91900FE25E4 /* SnapSubcompilerTypealiasTests.swift */,
 				6F15422F26B897D200BA9572 /* SnapSubcompilerVarDeclarationTests.swift */,
 				6FD2736126C9C94600749CDA /* SnapSubcompilerWhileTests.swift */,
-				6F18DD8C2484154F0014C585 /* SnapToCrackleCompilerTests.swift */,
 				6F40730826B1D61F007D8382 /* SnapToTackCompilerTests.swift */,
 				6F24AC8C24A07CBC005193BB /* StatementTracerTests.swift */,
 				6FBCFA5726F5123700193819 /* StructMemberFunctionCallMatcherTests.swift */,
@@ -1829,103 +1351,6 @@
 			path = TurtleCoreTests;
 			sourceTree = "<group>";
 		};
-		6FB0D34D24711A23003B5D5C /* TurtleSimulatorCore */ = {
-			isa = PBXGroup;
-			children = (
-				6F53372A2474BCDE00CFD33C /* AST */,
-				6F5337372474C19100CFD33C /* Token */,
-				6F86EDBD22ECC86400375A00 /* ALU.swift */,
-				6FDFED7922F1627500AADA07 /* AssemblerBackEnd.swift */,
-				6F088092230F85FF00AB2339 /* AssemblerCodeGenerator.swift */,
-				6F5A8AE9230A7713000046C2 /* AssemblerFrontEnd.swift */,
-				6F615170230CAF4A00282B12 /* AssemblerLexer.swift */,
-				6F61517E230D041600282B12 /* AssemblerParser.swift */,
-				6FD4D70E2468BA12004F85B0 /* AudioDevicePeripheral.swift */,
-				6F86EDC122ECE51C00375A00 /* Chip74x181.swift */,
-				6F78DA3C23D947F4000ACA88 /* Computer.swift */,
-				6F790AEC22EEE9C200B38267 /* ComputerExecutor.swift */,
-				6F7E7FB523BEAADE00647482 /* ComputerPeripheral.swift */,
-				6F7E7FBD23BEB77A00647482 /* ComputerPeripherals.swift */,
-				6FCD8DA823FA601100E90095 /* ComputerStopwatch.swift */,
-				6FE219BF241C6652006BC92A /* ComputerVirtualMachineFactory.swift */,
-				6F7E7FB723BEAB9B00647482 /* ControlSignal.swift */,
-				6F86EDAF22ECBEC400375A00 /* ControlWord.swift */,
-				6F1BFF4023F3B64300FCE919 /* CPUStateSnapshot.swift */,
-				6F679BD422ED6FB0008C8E2C /* Flags.swift */,
-				6F182C3022ED3AAA0027A981 /* Instruction.swift */,
-				6F86EDB922ECC67000375A00 /* InstructionDecoder.swift */,
-				6F6A024223FF7926003876BD /* InstructionFormatter.swift */,
-				6F86EDB522ECC53500375A00 /* InstructionMemory.swift */,
-				6FE976E3240849B6006C393B /* InstructionMemoryRev1.swift */,
-				6F7E7FBB23BEAC4D00647482 /* InstructionRAMPeripheral.swift */,
-				6FE976E124084944006C393B /* InstructionROM.swift */,
-				6F4ACBDA2400BCD900014F4B /* Interpreter.swift */,
-				6FE976CD2406551C006C393B /* InterpretingVM.swift */,
-				6F86CC7F22F0001C008C6322 /* Memory.swift */,
-				6FDFED7522F14BDD00AADA07 /* MicrocodeGenerator.swift */,
-				6F5A00E523184880003E7C7F /* Patcher.swift */,
-				6F86EDAB22ECBD8600375A00 /* ProgramCounter.swift */,
-				6F37BA462305D903009754D3 /* Register.swift */,
-				6F5A00F1231E2FFD003E7C7F /* RegisterName.swift */,
-				6F2EE664240C9D1D001FE46E /* SerialInput.swift */,
-				6F7E7FB923BEAC3B00647482 /* SerialInterfacePeripheral.swift */,
-				6F6A023C23FF7204003876BD /* Trace.swift */,
-				6FE0465B2404EC78001461C4 /* TraceExecutor.swift */,
-				6F6A023423FF62C6003876BD /* TraceProfiler.swift */,
-				6F6A023823FF7013003876BD /* TraceRecorder.swift */,
-				6FE046592403A857001461C4 /* TraceUtils.swift */,
-				6FE976DB24066A7B006C393B /* TracingInterpretingVM.swift */,
-				6FCD8DA423FA26C800E90095 /* UnlockedComputerExecutor.swift */,
-				6FE976C92406545D006C393B /* VirtualMachine.swift */,
-				6FE976DC24066A7B006C393B /* VirtualMachineUtils.swift */,
-				6FB0D34E24711A23003B5D5C /* TurtleSimulatorCore.h */,
-				6FB0D34F24711A23003B5D5C /* Info.plist */,
-			);
-			path = TurtleSimulatorCore;
-			sourceTree = "<group>";
-		};
-		6FB0D35824711A23003B5D5C /* TurtleSimulatorCoreTests */ = {
-			isa = PBXGroup;
-			children = (
-				6F53372B2474BD0A00CFD33C /* AST */,
-				6F53372D2474BD3200CFD33C /* Token */,
-				6F86EDBF22ECCAC800375A00 /* ALUTests.swift */,
-				6FDFED7B22F16D4100AADA07 /* AssemblerBackEndTests.swift */,
-				6FD4D7102468BA55004F85B0 /* AudioDevicePeripheralTests.swift */,
-				6F86EDC322ECF65B00375A00 /* Chip74x181Tests.swift */,
-				6F2940B12483819E00C50ABA /* CompilerErrorTests.swift */,
-				6F5A013D232069FF003E7C7F /* ComputerExecutorTests.swift */,
-				6F86EDC722ED179C00375A00 /* ComputerTests.swift */,
-				6F86EDB122ECC05500375A00 /* ControlWordTests.swift */,
-				6FE219DC241DA0C3006BC92A /* FlagsTest.swift */,
-				6F86EDBB22ECC72200375A00 /* InstructionDecoderTests.swift */,
-				6F6A024423FF7931003876BD /* InstructionFormatterTests.swift */,
-				6F86EDB722ECC56400375A00 /* InstructionROMTests.swift */,
-				6F37BA442305B559009754D3 /* InstructionTests.swift */,
-				6F4ACBDC2400BCEE00014F4B /* InterpreterTests.swift */,
-				6FE976CF24065529006C393B /* InterpretingVMTests.swift */,
-				6FE219DE241DB21A006BC92A /* MemoryTests.swift */,
-				6FDFED7722F14BEF00AADA07 /* MicrocodeGeneratorTests.swift */,
-				6F5A00E723184896003E7C7F /* PatcherTests.swift */,
-				6FE219D8241D81FD006BC92A /* ProcessorStateTests.swift */,
-				6F0B0D032308688900478220 /* RegisterTests.swift */,
-				6F2EE666240C9D38001FE46E /* SerialInputTests.swift */,
-				6F7E7FBF23BEC1F800647482 /* SerialInterfacePeripheralTests.swift */,
-				6FE0465D2404EC96001461C4 /* TraceExecutorTests.swift */,
-				6F6A023623FF65D5003876BD /* TraceProfilerTests.swift */,
-				6F6A023A23FF7024003876BD /* TraceRecorderTests.swift */,
-				6F6A024023FF7225003876BD /* TraceTests.swift */,
-				6FE976D924066A70006C393B /* TracingInterpretingVMTests.swift */,
-				6FE976D1240661D0006C393B /* VirtualMachineTests.swift */,
-				6F088094230F864D00AB2339 /* AssemblerCodeGeneratorTests.swift */,
-				6F5A8AEB230A7726000046C2 /* AssemblerFrontEndTests.swift */,
-				6F615172230CAF5600282B12 /* AssemblerLexerTests.swift */,
-				6F08807E230F6AEC00AB2339 /* AssemblerParserTests.swift */,
-				6FB0D35B24711A23003B5D5C /* Info.plist */,
-			);
-			path = TurtleSimulatorCoreTests;
-			sourceTree = "<group>";
-		};
 		6FB28F662512C50B001F5D12 /* SnapBenchmark */ = {
 			isa = PBXGroup;
 			children = (
@@ -1940,13 +1365,10 @@
 			children = (
 				6F1698AB262897ED00C96D07 /* Simulator16 */,
 				6F1698BE262897ED00C96D07 /* Simulator16Tests */,
-				6FF1995522ECB36F00C255A2 /* Simulator */,
 				6F9201DA2471DA22009E1410 /* Snap */,
 				6F9201E62471DAC7009E1410 /* SnapCore */,
 				6F9201F12471DAC7009E1410 /* SnapCoreTests */,
 				6FB28F662512C50B001F5D12 /* SnapBenchmark */,
-				6FB0D34D24711A23003B5D5C /* TurtleSimulatorCore */,
-				6FB0D35824711A23003B5D5C /* TurtleSimulatorCoreTests */,
 				6FB0D28C24710C26003B5D5C /* TurtleCore */,
 				6FB0D29724710C26003B5D5C /* TurtleCoreTests */,
 				6F734332259327D400B7E43F /* Turtle16SimulatorCore */,
@@ -1960,11 +1382,8 @@
 		6FF1995422ECB36F00C255A2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6FF1995322ECB36F00C255A2 /* Simulator.app */,
 				6FB0D28B24710C26003B5D5C /* TurtleCore.framework */,
 				6FB0D29324710C26003B5D5C /* TurtleCoreTests.xctest */,
-				6FB0D34C24711A23003B5D5C /* TurtleSimulatorCore.framework */,
-				6FB0D35424711A23003B5D5C /* TurtleSimulatorCoreTests.xctest */,
 				6F9201D92471DA22009E1410 /* Snap */,
 				6F9201E52471DAC7009E1410 /* SnapCore.framework */,
 				6F9201ED2471DAC7009E1410 /* SnapCoreTests.xctest */,
@@ -1976,21 +1395,6 @@
 				6F300DC0266A906F00BFBAC4 /* Turtle16Assembler */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		6FF1995522ECB36F00C255A2 /* Simulator */ = {
-			isa = PBXGroup;
-			children = (
-				6FF1995622ECB36F00C255A2 /* AppDelegate.swift */,
-				6F59F054246D2FD4005C7348 /* ConcreteToneGenerator.swift */,
-				6FF1995822ECB36F00C255A2 /* ViewController.swift */,
-				6FF1996022ECB37000C255A2 /* Simulator.entitlements */,
-				6FF1995F22ECB37000C255A2 /* Info.plist */,
-				6FE219CD241CC223006BC92A /* Example.txt */,
-				6FF1995A22ECB37000C255A2 /* Assets.xcassets */,
-				6FF1995C22ECB37000C255A2 /* Main.storyboard */,
-			);
-			path = Simulator;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2020,14 +1424,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6FB0D34724711A23003B5D5C /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6FB0D35C24711A23003B5D5C /* TurtleSimulatorCore.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
@@ -2048,7 +1444,6 @@
 				6F6EA40A27653F2100B2ABE4 /* PBXTargetDependency */,
 				6F6EA40F27653FBD00B2ABE4 /* PBXTargetDependency */,
 				6F35B4752628AD7A004EA0AB /* PBXTargetDependency */,
-				6F6EA41127653FD400B2ABE4 /* PBXTargetDependency */,
 				6F35B4252628AA01004EA0AB /* PBXTargetDependency */,
 			);
 			name = Simulator16;
@@ -2144,7 +1539,6 @@
 			);
 			dependencies = (
 				6F41B6942476F6990043A8D7 /* PBXTargetDependency */,
-				6F4B5CBA2471DE62000C57EB /* PBXTargetDependency */,
 				6F4B5CB62471DE3F000C57EB /* PBXTargetDependency */,
 			);
 			name = Snap;
@@ -2165,7 +1559,6 @@
 			);
 			dependencies = (
 				6FD2736E26CA1BB800749CDA /* PBXTargetDependency */,
-				6F000D582626C39800C5DFDE /* PBXTargetDependency */,
 				6F41B67C2476F56A0043A8D7 /* PBXTargetDependency */,
 			);
 			name = SnapCore;
@@ -2186,7 +1579,6 @@
 			dependencies = (
 				6FD2737026CA1BC900749CDA /* PBXTargetDependency */,
 				6F41B6702476F5130043A8D7 /* PBXTargetDependency */,
-				6F41B6742476F51C0043A8D7 /* PBXTargetDependency */,
 				6F9201F02471DAC7009E1410 /* PBXTargetDependency */,
 			);
 			name = SnapCoreTests;
@@ -2230,44 +1622,6 @@
 			productReference = 6FB0D29324710C26003B5D5C /* TurtleCoreTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		6FB0D34B24711A23003B5D5C /* TurtleSimulatorCore */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 6FB0D35D24711A23003B5D5C /* Build configuration list for PBXNativeTarget "TurtleSimulatorCore" */;
-			buildPhases = (
-				6FB0D34724711A23003B5D5C /* Headers */,
-				6FB0D34824711A23003B5D5C /* Sources */,
-				6FB0D34924711A23003B5D5C /* Frameworks */,
-				6FB0D34A24711A23003B5D5C /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				6F38F8FB2471C7CB00B5296D /* PBXTargetDependency */,
-			);
-			name = TurtleSimulatorCore;
-			productName = TurtleSimulatorCore;
-			productReference = 6FB0D34C24711A23003B5D5C /* TurtleSimulatorCore.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		6FB0D35324711A23003B5D5C /* TurtleSimulatorCoreTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 6FB0D36024711A23003B5D5C /* Build configuration list for PBXNativeTarget "TurtleSimulatorCoreTests" */;
-			buildPhases = (
-				6FB0D35024711A23003B5D5C /* Sources */,
-				6FB0D35124711A23003B5D5C /* Frameworks */,
-				6FB0D35224711A23003B5D5C /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				6F41B6762476F5460043A8D7 /* PBXTargetDependency */,
-				6FB0D35724711A23003B5D5C /* PBXTargetDependency */,
-			);
-			name = TurtleSimulatorCoreTests;
-			productName = TurtleSimulatorCoreTests;
-			productReference = 6FB0D35424711A23003B5D5C /* TurtleSimulatorCoreTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		6FB28F642512C50B001F5D12 /* SnapBenchmark */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6FB28F6B2512C50B001F5D12 /* Build configuration list for PBXNativeTarget "SnapBenchmark" */;
@@ -2281,32 +1635,11 @@
 			dependencies = (
 				6FB28F752512C9E4001F5D12 /* PBXTargetDependency */,
 				6FB28F732512C9E0001F5D12 /* PBXTargetDependency */,
-				6FB28F6F2512C9D5001F5D12 /* PBXTargetDependency */,
 			);
 			name = SnapBenchmark;
 			productName = SnapBenchmark;
 			productReference = 6FB28F652512C50B001F5D12 /* SnapBenchmark */;
 			productType = "com.apple.product-type.tool";
-		};
-		6FF1995222ECB36F00C255A2 /* Simulator */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 6FF1996E22ECB37000C255A2 /* Build configuration list for PBXNativeTarget "Simulator" */;
-			buildPhases = (
-				6FF1994F22ECB36F00C255A2 /* Sources */,
-				6FF1995022ECB36F00C255A2 /* Frameworks */,
-				6FF1995122ECB36F00C255A2 /* Resources */,
-				6FE003A422F3D75E00221C4C /* Embed Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				6F72FBE9250EB05300130501 /* PBXTargetDependency */,
-				6FB0D39224711AAC003B5D5C /* PBXTargetDependency */,
-			);
-			name = Simulator;
-			productName = Simulator;
-			productReference = 6FF1995322ECB36F00C255A2 /* Simulator.app */;
-			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
@@ -2353,22 +1686,8 @@
 					6FB0D29224710C26003B5D5C = {
 						CreatedOnToolsVersion = 11.3.1;
 					};
-					6FB0D34B24711A23003B5D5C = {
-						CreatedOnToolsVersion = 11.3.1;
-					};
-					6FB0D35324711A23003B5D5C = {
-						CreatedOnToolsVersion = 11.3.1;
-					};
 					6FB28F642512C50B001F5D12 = {
 						CreatedOnToolsVersion = 11.7;
-					};
-					6FF1995222ECB36F00C255A2 = {
-						CreatedOnToolsVersion = 10.2.1;
-						SystemCapabilities = {
-							com.apple.Sandbox = {
-								enabled = 1;
-							};
-						};
 					};
 				};
 			};
@@ -2385,9 +1704,6 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				6FF1995222ECB36F00C255A2 /* Simulator */,
-				6FB0D34B24711A23003B5D5C /* TurtleSimulatorCore */,
-				6FB0D35324711A23003B5D5C /* TurtleSimulatorCoreTests */,
 				6F9201D82471DA22009E1410 /* Snap */,
 				6F9201E42471DAC7009E1410 /* SnapCore */,
 				6F9201EC2471DAC7009E1410 /* SnapCoreTests */,
@@ -2471,30 +1787,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6FB0D34A24711A23003B5D5C /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6FB0D35224711A23003B5D5C /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6FF1995122ECB36F00C255A2 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6FE219CE241CC223006BC92A /* Example.txt in Resources */,
-				6FF1995B22ECB37000C255A2 /* Assets.xcassets in Resources */,
-				6FF1995E22ECB37000C255A2 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2635,87 +1927,64 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6F0FAF082549501C002C1469 /* CrackleDeadCodeEliminationOptimizationPass.swift in Sources */,
-				6F5C55E624F61D3C008827EE /* CompilerTemporariesAllocator.swift in Sources */,
 				6F3F0106275FD47300875339 /* LiveInterval.swift in Sources */,
 				6FD2736A26CA187600749CDA /* MemoryLayoutStrategyTurtle16.swift in Sources */,
 				6F2E5AFE251A591A00928DD1 /* Typealias.swift in Sources */,
 				6F6AED40251696C5002E3AC5 /* Impl.swift in Sources */,
-				6F7E41912547E036007CAA1A /* CrackleGlobalOptimizer.swift in Sources */,
 				6F4F3C43249EAEB30018BBBC /* FunctionDeclaration.swift in Sources */,
 				6FEC3DFE24D78CF800E9C299 /* LabelMaker.swift in Sources */,
-				6F5C55E824F61D4E008827EE /* CompilerTemporary.swift in Sources */,
 				6F603CB02515BB7900B2C54E /* ForIn.swift in Sources */,
 				6FCB681A2472050900798905 /* SnapLexer.swift in Sources */,
-				6FA220BF254CDC3B0017DDDF /* CrackleToPopCompiler.swift in Sources */,
-				6F0FAEAE25491A1D002C1469 /* CrackleLocalOptimizer.swift in Sources */,
-				6FDB699D2543616000D532C2 /* CrackleInstructionListingMaker.swift in Sources */,
-				6F7E41A12547E174007CAA1A /* CrackleConstantPropagationOptimizationPass.swift in Sources */,
 				6F24AC8B24A07CAF005193BB /* StatementTracer.swift in Sources */,
 				6F15423626B92AB500BA9572 /* SnapSubcompilerStructDeclaration.swift in Sources */,
-				6F16BA00251E945C00A26850 /* SnapDebugInfo.swift in Sources */,
 				6F40730126ADE09D007D8382 /* MemoryLayoutStrategy.swift in Sources */,
 				6F924E7A248B42D400F43741 /* RvalueExpressionTypeChecker.swift in Sources */,
 				6F15422A26B8902A00BA9572 /* SnapAbstractSyntaxTreeCompilerDeclPass.swift in Sources */,
-				6F4B5CB42471DE33000C57EB /* SnapCompiler.swift in Sources */,
 				6FDC6AAC27331637003A8ABF /* SnapToTurtle16Compiler.swift in Sources */,
 				6F2940CE2483A0DB00C50ABA /* TokenMisc.swift in Sources */,
 				6F3F0102275FD40C00875339 /* RegisterLiveIntervalCalculator.swift in Sources */,
 				6F2940A9248306EC00C50ABA /* While.swift in Sources */,
 				6F3F00F8274F736C00875339 /* SnapSubcompilerSubroutine.swift in Sources */,
-				6F915D4A24D14F99002B3850 /* BaseExpressionCompiler.swift in Sources */,
 				6FBCFA5626F5121A00193819 /* StructMemberFunctionCallMatcher.swift in Sources */,
 				6FD2735826C9BAD400749CDA /* SnapSubcompilerIf.swift in Sources */,
 				6F2940CF2483A13B00C50ABA /* Expression.swift in Sources */,
-				6F4F7B60254D226E0030E3CB /* PopConstantPropagationOptimizationPass.swift in Sources */,
 				6FF75BA62486C31000F55625 /* SnapCommandLineArgumentParser.swift in Sources */,
 				6F469DFF26BBAC3B0004613B /* SnapSubcompilerImpl.swift in Sources */,
 				6F546311253D3B5F005DDAB6 /* ImplFor.swift in Sources */,
 				6F40732126B2AD72007D8382 /* SnapASTTransformerBase.swift in Sources */,
 				6F15423226B91BCC00BA9572 /* SnapSubcompilerFunctionDeclaration.swift in Sources */,
 				6F40731B26B29E9F007D8382 /* CompilerIntrinsicSymbolBinder.swift in Sources */,
-				6F5C55EC24F6359D008827EE /* CompilerTemporariesStack.swift in Sources */,
 				6F469DFB26BB808A0004613B /* Seq.swift in Sources */,
 				6FD2735C26C9C29E00749CDA /* GotoIfFalse.swift in Sources */,
 				6F83480B26FD3B0100EB466E /* RegisterAllocatorNaive.swift in Sources */,
 				6F2B443626D9ACFE009ACF08 /* SnapASTTransformerFlattenSeq.swift in Sources */,
 				6FBCFA5C26F7F52400193819 /* TackToTurtle16Compiler.swift in Sources */,
-				6F4F7B40254D21970030E3CB /* PopLocalOptimizer.swift in Sources */,
 				6F3F0108275FEC5700875339 /* RegisterSpiller.swift in Sources */,
 				6F15422226B5EBA800BA9572 /* SnapASTTransformerTestDeclaration.swift in Sources */,
 				6F15421E26B34E3300BA9572 /* SymbolTablesReconnector.swift in Sources */,
 				6F40730326ADE0B7007D8382 /* MemoryLayoutStrategyTurtleTTL.swift in Sources */,
 				6F9E8F8326B9BCC900FE25E4 /* SnapAbstractSyntaxTreeCompilerImplPass.swift in Sources */,
 				6F25325824CB5A7200339332 /* LvalueExpressionTypeChecker.swift in Sources */,
-				6F4F7B12254D1F3A0030E3CB /* PopBasicBlockPartitioner.swift in Sources */,
-				6F4F7B50254D21CE0030E3CB /* PopGlobalOptimizer.swift in Sources */,
 				6F4F3C47249EBC3A0018BBBC /* TokenType.swift in Sources */,
 				6F469E0926BEF5020004613B /* GlobalEnvironment.swift in Sources */,
 				6F5462F3253C0560005DDAB6 /* TraitDeclaration.swift in Sources */,
 				6F870FEB2505913900FE2B25 /* StructDeclaration.swift in Sources */,
 				6F1D24C524823DD90095D7B4 /* If.swift in Sources */,
-				6F2940BC2483978E00C50ABA /* RvalueExpressionCompiler.swift in Sources */,
 				6F24B629254E3C4E00295D49 /* SnapCompilerMetrics.swift in Sources */,
 				6F0D519B2506D0B100AB1C7E /* TypeContextTypeChecker.swift in Sources */,
 				6FD2736026C9C92900749CDA /* SnapSubcompilerWhile.swift in Sources */,
 				6F6DD22524809731004B1703 /* VarDeclaration.swift in Sources */,
 				6F2E5B1E251AFB5700928DD1 /* SnapSubcompilerMatch.swift in Sources */,
-				6F374F242548B82000793A78 /* CrackleBasicBlockPartitioner.swift in Sources */,
 				6F2E5B0E251AA46B00928DD1 /* Match.swift in Sources */,
-				6F2940BB2483978E00C50ABA /* CrackleInstruction.swift in Sources */,
 				6FF179C126B9F97C0026F284 /* SnapSubcompilerTraitDeclaration.swift in Sources */,
 				6F1800A7251D9079005D9D36 /* Import.swift in Sources */,
 				6FCA942525264C61000C2A2D /* Assert.swift in Sources */,
 				6F2940C5248399BE00C50ABA /* SymbolTable.swift in Sources */,
 				6F40731726B281B7007D8382 /* SnapAbstractSyntaxTreeCompiler.swift in Sources */,
 				6F13825B26BF36F1002CF167 /* SnapSubcompilerForIn.swift in Sources */,
-				6F18DD8B248414DE0014C585 /* SnapToCrackleCompiler.swift in Sources */,
 				6F238AD9248C6A560040250D /* Block.swift in Sources */,
-				6F0FAEEA254920D6002C1469 /* CrackleBasicBlock.swift in Sources */,
 				6F3F00F4274F651C00875339 /* Subroutine.swift in Sources */,
 				6FD2735A26C9C1E800749CDA /* Goto.swift in Sources */,
-				6FBD6EB0254C9E9A00CE5D06 /* PopCompiler.swift in Sources */,
-				6F9E286F2543CFB100946974 /* AssemblyListingMaker.swift in Sources */,
 				6FF179CB26BA34760026F284 /* SnapSubcompilerImport.swift in Sources */,
 				6F469E0326BD9E940004613B /* SnapSubcompilerImplFor.swift in Sources */,
 				6FCB681E2472063900798905 /* SnapParser.swift in Sources */,
@@ -2725,12 +1994,9 @@
 				6F9E8F7F26B9A90F00FE25E4 /* SnapSubcompilerTypealias.swift in Sources */,
 				6F40731D26B2A187007D8382 /* SnapSubcompilerAssert.swift in Sources */,
 				6F40730726B1D5ED007D8382 /* SnapToTackCompiler.swift in Sources */,
-				6FBD6ED0254C9EF700CE5D06 /* PopInstruction.swift in Sources */,
-				6F25325C24CB799A00339332 /* LvalueExpressionCompiler.swift in Sources */,
 				6F3F00FE275F45E900875339 /* LinearScanRegisterAllocator.swift in Sources */,
 				6F13826326C0E878002CF167 /* SnapSubcompilerReturn.swift in Sources */,
 				6F14DC4427EA3FA20034A43C /* SnapDebugConsole.swift in Sources */,
-				6F24B5FB254DFFDB00295D49 /* PopDeadStoreEliminationOptimizationPass.swift in Sources */,
 				6FAABCA125318CDB00A66FAF /* TestDeclaration.swift in Sources */,
 				6FCB6846247241ED00798905 /* Return.swift in Sources */,
 				6F3F00FA27560FDB00875339 /* RegisterAllocatorDriver.swift in Sources */,
@@ -2741,31 +2007,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6F5C55EA24F61D6A008827EE /* CompilerTemporariesAllocatorTests.swift in Sources */,
-				6F238ADB248C94650040250D /* SnapExecutor.swift in Sources */,
 				6F15422C26B8903700BA9572 /* SnapAbstractSyntaxTreeCompilerDeclPassTests.swift in Sources */,
 				6FD2736C26CA18CE00749CDA /* MemoryLayoutStrategyTurtle16Tests.swift in Sources */,
 				6F924E7E248B4CCA00F43741 /* ExprUtils.swift in Sources */,
 				6F15423826B92ADB00BA9572 /* SnapSubcompilerStructDeclarationTests.swift in Sources */,
-				6F2940BD2483979800C50ABA /* RvalueExpressionCompilerTests.swift in Sources */,
 				6F9E8F8526B9BE2C00FE25E4 /* SnapAbstractSyntaxTreeCompilerImplPassTests.swift in Sources */,
 				6F40730926B1D61F007D8382 /* SnapToTackCompilerTests.swift in Sources */,
 				6F13826126C0DA01002CF167 /* SnapSubcompilerMatchTests.swift in Sources */,
-				6FA220CF254CDC480017DDDF /* CrackleToPopCompilerTests.swift in Sources */,
 				6F5337352474BE7D00CFD33C /* VarDeclarationTests.swift in Sources */,
-				6F18DD94248463340014C585 /* CrackleExecutor.swift in Sources */,
 				6F2B443826D9AF67009ACF08 /* SnapASTTransformerFlattenSeqTests.swift in Sources */,
-				6FBD6EC0254C9EA900CE5D06 /* PopCompilerTests.swift in Sources */,
 				6F2940AB2483070C00C50ABA /* WhileTests.swift in Sources */,
 				6F40731F26B2A194007D8382 /* SnapSubcompilerAssertTests.swift in Sources */,
-				6F374F342548B82F00793A78 /* CrackleBasicBlockPartitionerTests.swift in Sources */,
 				6F25325A24CB5D0C00339332 /* LvalueExpressionTypeCheckerTests.swift in Sources */,
 				6F469E0B26BEF5220004613B /* GlobalEnvironmentTests.swift in Sources */,
 				6F13826526C0E893002CF167 /* SnapSubcompilerReturnTests.swift in Sources */,
 				6F1D24C724823EC60095D7B4 /* IfTests.swift in Sources */,
 				6FCB68202472064800798905 /* SnapParserTests.swift in Sources */,
-				6F4F7B70254D22E10030E3CB /* PopConstantPropagationOptimizationPassTests.swift in Sources */,
-				6F7E41B12547E1AE007CAA1A /* CrackleConstantPropagationOptimizationPassTests.swift in Sources */,
 				6FCB681C2472051200798905 /* SnapLexerTests.swift in Sources */,
 				6F4F3C45249EAF700018BBBC /* FunctionDeclarationTests.swift in Sources */,
 				6F15422026B34E4400BA9572 /* SymbolTablesReconnectorTests.swift in Sources */,
@@ -2776,25 +2033,17 @@
 				6FD2736226C9C94600749CDA /* SnapSubcompilerWhileTests.swift in Sources */,
 				6F9E8F8126B9A91900FE25E4 /* SnapSubcompilerTypealiasTests.swift in Sources */,
 				6F15423426B91BD800BA9572 /* SnapSubcompilerFunctionDeclarationTests.swift in Sources */,
-				6F24B60B254E005100295D49 /* PopDeadStoreEliminationOptimizationPassTests.swift in Sources */,
-				6F18DD8D2484154F0014C585 /* SnapToCrackleCompilerTests.swift in Sources */,
 				6F924E7C248B42E100F43741 /* RvalueExpressionTypeCheckerTests.swift in Sources */,
 				6FBCFA5E26F7F5FC00193819 /* TackToTurtle16CompilerTests.swift in Sources */,
 				6FDC6AAE27331640003A8ABF /* SnapToTurtle16CompilerTests.swift in Sources */,
 				6F0D519F2506D57F00AB1C7E /* TypeContextTypeCheckerTests.swift in Sources */,
 				6F83480D26FD3B1200EB466E /* RegisterAllocatorNaiveTests.swift in Sources */,
-				6F9E287F2543CFD000946974 /* AssemblyListingMakerTests.swift in Sources */,
-				6F4F7B22254D1F490030E3CB /* PopBasicBlockPartitionerTests.swift in Sources */,
-				6F16BA10251E946100A26850 /* SnapDebugInfoTests.swift in Sources */,
 				6FF179C926BA344D0026F284 /* SnapSubcompilerImportTests.swift in Sources */,
 				6F3F010A275FEC8000875339 /* RegisterSpillerTests.swift in Sources */,
-				6F4B5CBD2471DF2A000C57EB /* SnapCompilerTests.swift in Sources */,
 				6F40731926B281C1007D8382 /* SnapAbstractSyntaxTreeCompilerTests.swift in Sources */,
 				6F469E0126BBAC450004613B /* SnapSubcompilerImplTests.swift in Sources */,
 				6F469DFD26BBA5DB0004613B /* SnapASTTransformerBaseTests.swift in Sources */,
 				6F2940BF2483995500C50ABA /* SymbolTableTests.swift in Sources */,
-				6F13CB062489DD2300ADB1BE /* CrackleInstructionTests.swift in Sources */,
-				6F0FAF1825495024002C1469 /* CrackleDeadCodeEliminationOptimizationPassTests.swift in Sources */,
 				6FD2735E26C9C73A00749CDA /* SnapSubcompilerIfTests.swift in Sources */,
 				6F24AC8D24A07CBC005193BB /* StatementTracerTests.swift in Sources */,
 				6F469E0526BD9EA90004613B /* SnapSubcompilerImplForTests.swift in Sources */,
@@ -2804,11 +2053,7 @@
 				6FF75BA82486C35400F55625 /* SnapCommandLineArgumentParserTests.swift in Sources */,
 				6F3F010E2760676000875339 /* RegisterUtilsTests.swift in Sources */,
 				6FBCFA5826F5123700193819 /* StructMemberFunctionCallMatcherTests.swift in Sources */,
-				6FDB69AD2543618300D532C2 /* CrackleInstructionListingMakerTests.swift in Sources */,
 				6F13825D26BF370C002CF167 /* SnapSubcompilerForInTests.swift in Sources */,
-				6F330D9C24E8A346005C4BE5 /* MemoryExtensions.swift in Sources */,
-				6F25325E24CB7C6200339332 /* LvalueExpressionCompilerTests.swift in Sources */,
-				6F238ADD248C947D0040250D /* ComputerExtensions.swift in Sources */,
 				6FCB68482472448300798905 /* ReturnTests.swift in Sources */,
 				6F870FED2505918400FE2B25 /* StructDeclarationTests.swift in Sources */,
 				6F3F0104275FD42A00875339 /* RegisterLiveIntervalCalculatorTests.swift in Sources */,
@@ -2878,119 +2123,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6FB0D34824711A23003B5D5C /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6FB0D38424711A4E003B5D5C /* Interpreter.swift in Sources */,
-				6F000CE02626C13100C5DFDE /* Patcher.swift in Sources */,
-				6FB0D38124711A4E003B5D5C /* ComputerPeripheral.swift in Sources */,
-				6FB0D38F24711A4E003B5D5C /* ComputerVirtualMachineFactory.swift in Sources */,
-				6FB0D37D24711A4E003B5D5C /* InstructionROM.swift in Sources */,
-				6FB0D37F24711A4E003B5D5C /* Chip74x181.swift in Sources */,
-				6FB0D38824711A4E003B5D5C /* TraceExecutor.swift in Sources */,
-				6FB0D38E24711A4E003B5D5C /* InstructionMemory.swift in Sources */,
-				6F000CDE2626C13100C5DFDE /* MicrocodeGenerator.swift in Sources */,
-				6FB0D38D24711A4E003B5D5C /* TracingInterpretingVM.swift in Sources */,
-				6F000D942626C41600C5DFDE /* ConstantDeclaration.swift in Sources */,
-				6F000DC42626C43100C5DFDE /* AssemblerParser.swift in Sources */,
-				6FB0D37924711A4E003B5D5C /* AudioDevicePeripheral.swift in Sources */,
-				6F000CE22626C13100C5DFDE /* InstructionFormatter.swift in Sources */,
-				6FB0D38B24711A4E003B5D5C /* SerialInput.swift in Sources */,
-				6FB0D38024711A4E003B5D5C /* TraceUtils.swift in Sources */,
-				6FB0D37524711A4E003B5D5C /* TraceRecorder.swift in Sources */,
-				6FB0D38C24711A4E003B5D5C /* VirtualMachineUtils.swift in Sources */,
-				6FB0D38924711A4E003B5D5C /* TraceProfiler.swift in Sources */,
-				6F000CDA2626C13100C5DFDE /* Instruction.swift in Sources */,
-				6F000DC22626C43100C5DFDE /* AssemblerCodeGenerator.swift in Sources */,
-				6FB0D37C24711A4E003B5D5C /* CPUStateSnapshot.swift in Sources */,
-				6FB0D38724711A4E003B5D5C /* Computer.swift in Sources */,
-				6FB0D38224711A4E003B5D5C /* InterpretingVM.swift in Sources */,
-				6FB0D38A24711A4E003B5D5C /* Register.swift in Sources */,
-				6F000CDC2626C13100C5DFDE /* InstructionDecoder.swift in Sources */,
-				6F000CD72626C13100C5DFDE /* Flags.swift in Sources */,
-				6FB0D37724711A4E003B5D5C /* VirtualMachine.swift in Sources */,
-				6FB0D37824711A4E003B5D5C /* ComputerStopwatch.swift in Sources */,
-				6F000D932626C41600C5DFDE /* TurtleTTLInstructionNode.swift in Sources */,
-				6FB0D37B24711A4E003B5D5C /* Trace.swift in Sources */,
-				6FB0D38524711A4E003B5D5C /* SerialInterfacePeripheral.swift in Sources */,
-				6F000CD82626C13100C5DFDE /* ControlWord.swift in Sources */,
-				6FB0D39024711A4E003B5D5C /* ALU.swift in Sources */,
-				6FB0D38324711A4E003B5D5C /* UnlockedComputerExecutor.swift in Sources */,
-				6F000CDD2626C13100C5DFDE /* AssemblerBackEnd.swift in Sources */,
-				6F000DB32626C41A00C5DFDE /* TokenRegister.swift in Sources */,
-				6F000D952626C41600C5DFDE /* ParameterRegister.swift in Sources */,
-				6F000CDB2626C13100C5DFDE /* Memory.swift in Sources */,
-				6FB0D37E24711A4E003B5D5C /* InstructionRAMPeripheral.swift in Sources */,
-				6FB0D37624711A4E003B5D5C /* InstructionMemoryRev1.swift in Sources */,
-				6FB0D38624711A4E003B5D5C /* ComputerPeripherals.swift in Sources */,
-				6F000DC32626C43100C5DFDE /* AssemblerLexer.swift in Sources */,
-				6F000CDF2626C13100C5DFDE /* RegisterName.swift in Sources */,
-				6F000DC52626C43100C5DFDE /* AssemblerFrontEnd.swift in Sources */,
-				6FB0D37A24711A4E003B5D5C /* ComputerExecutor.swift in Sources */,
-				6F000CD92626C13100C5DFDE /* ProgramCounter.swift in Sources */,
-				6F000CE12626C13100C5DFDE /* ControlSignal.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6FB0D35024711A23003B5D5C /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6F000E042626C47400C5DFDE /* ConstantDeclarationTests.swift in Sources */,
-				6F000D052626C15800C5DFDE /* MemoryTests.swift in Sources */,
-				6F000D0C2626C15800C5DFDE /* ControlWordTests.swift in Sources */,
-				6F000D032626C15800C5DFDE /* InstructionDecoderTests.swift in Sources */,
-				6FB0D36D24711A3B003B5D5C /* ComputerTests.swift in Sources */,
-				6F000D0B2626C15800C5DFDE /* InstructionTests.swift in Sources */,
-				6FB0D36F24711A3B003B5D5C /* SerialInterfacePeripheralTests.swift in Sources */,
-				6FB0D36B24711A3B003B5D5C /* TracingInterpretingVMTests.swift in Sources */,
-				6FB0D36E24711A3B003B5D5C /* RegisterTests.swift in Sources */,
-				6F000DE52626C45400C5DFDE /* AssemblerFrontEndTests.swift in Sources */,
-				6FB0D36824711A3B003B5D5C /* ProcessorStateTests.swift in Sources */,
-				6F000DE32626C45400C5DFDE /* AssemblerParserTests.swift in Sources */,
-				6F000D082626C15800C5DFDE /* FlagsTest.swift in Sources */,
-				6FB0D37224711A3B003B5D5C /* AudioDevicePeripheralTests.swift in Sources */,
-				6FB0D36C24711A3B003B5D5C /* ALUTests.swift in Sources */,
-				6F000D092626C15800C5DFDE /* MicrocodeGeneratorTests.swift in Sources */,
-				6F000E212626C47800C5DFDE /* TokenRegisterTests.swift in Sources */,
-				6FB0D36424711A3B003B5D5C /* VirtualMachineTests.swift in Sources */,
-				6FB0D37124711A3B003B5D5C /* TraceProfilerTests.swift in Sources */,
-				6FB0D37324711A3B003B5D5C /* InterpreterTests.swift in Sources */,
-				6FB0D36924711A3B003B5D5C /* TraceRecorderTests.swift in Sources */,
-				6FB0D37424711A3B003B5D5C /* SerialInputTests.swift in Sources */,
-				6FB0D36624711A3B003B5D5C /* TraceTests.swift in Sources */,
-				6F000D0A2626C15800C5DFDE /* AssemblerBackEndTests.swift in Sources */,
-				6FB0D36A24711A3B003B5D5C /* TraceExecutorTests.swift in Sources */,
-				6F000D042626C15800C5DFDE /* InstructionFormatterTests.swift in Sources */,
-				6F000DE22626C45400C5DFDE /* AssemblerCodeGeneratorTests.swift in Sources */,
-				6FB0D37024711A3B003B5D5C /* InstructionROMTests.swift in Sources */,
-				6FB0D36324711A3B003B5D5C /* InterpretingVMTests.swift in Sources */,
-				6F000D072626C15800C5DFDE /* CompilerErrorTests.swift in Sources */,
-				6FB0D36724711A3B003B5D5C /* Chip74x181Tests.swift in Sources */,
-				6F000DE42626C45400C5DFDE /* AssemblerLexerTests.swift in Sources */,
-				6F000E022626C47400C5DFDE /* TurtleTTLInstructionNodeTests.swift in Sources */,
-				6FB0D36524711A3B003B5D5C /* ComputerExecutorTests.swift in Sources */,
-				6F000D062626C15800C5DFDE /* PatcherTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		6FB28F612512C50B001F5D12 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				6FB28F682512C50B001F5D12 /* main.swift in Sources */,
 				6FB28F6D2512C539001F5D12 /* SnapBenchmarkDriver.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6FF1994F22ECB36F00C255A2 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6FF1995922ECB36F00C255A2 /* ViewController.swift in Sources */,
-				6F59F055246D2FD4005C7348 /* ConcreteToneGenerator.swift in Sources */,
-				6FF1995722ECB36F00C255A2 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3001,11 +2139,6 @@
 			isa = PBXTargetDependency;
 			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
 			targetProxy = 6F0009822626606B00C5DFDE /* PBXContainerItemProxy */;
-		};
-		6F000D582626C39800C5DFDE /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6FB0D34B24711A23003B5D5C /* TurtleSimulatorCore */;
-			targetProxy = 6F000D572626C39800C5DFDE /* PBXContainerItemProxy */;
 		};
 		6F1698BD262897ED00C96D07 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -3032,25 +2165,10 @@
 			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
 			targetProxy = 6F35B4742628AD7A004EA0AB /* PBXContainerItemProxy */;
 		};
-		6F38F8FB2471C7CB00B5296D /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
-			targetProxy = 6F38F8FA2471C7CB00B5296D /* PBXContainerItemProxy */;
-		};
 		6F41B6702476F5130043A8D7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
 			targetProxy = 6F41B66F2476F5130043A8D7 /* PBXContainerItemProxy */;
-		};
-		6F41B6742476F51C0043A8D7 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6FB0D34B24711A23003B5D5C /* TurtleSimulatorCore */;
-			targetProxy = 6F41B6732476F51C0043A8D7 /* PBXContainerItemProxy */;
-		};
-		6F41B6762476F5460043A8D7 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
-			targetProxy = 6F41B6752476F5460043A8D7 /* PBXContainerItemProxy */;
 		};
 		6F41B67C2476F56A0043A8D7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -3067,11 +2185,6 @@
 			target = 6F9201E42471DAC7009E1410 /* SnapCore */;
 			targetProxy = 6F4B5CB52471DE3F000C57EB /* PBXContainerItemProxy */;
 		};
-		6F4B5CBA2471DE62000C57EB /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6FB0D34B24711A23003B5D5C /* TurtleSimulatorCore */;
-			targetProxy = 6F4B5CB92471DE62000C57EB /* PBXContainerItemProxy */;
-		};
 		6F6EA40A27653F2100B2ABE4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 6F9201D82471DA22009E1410 /* Snap */;
@@ -3087,16 +2200,6 @@
 			target = 6F9201E42471DAC7009E1410 /* SnapCore */;
 			targetProxy = 6F6EA40E27653FBD00B2ABE4 /* PBXContainerItemProxy */;
 		};
-		6F6EA41127653FD400B2ABE4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6FB0D34B24711A23003B5D5C /* TurtleSimulatorCore */;
-			targetProxy = 6F6EA41027653FD400B2ABE4 /* PBXContainerItemProxy */;
-		};
-		6F72FBE9250EB05300130501 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6F9201E42471DAC7009E1410 /* SnapCore */;
-			targetProxy = 6F72FBE8250EB05300130501 /* PBXContainerItemProxy */;
-		};
 		6F73433C259327D400B7E43F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 6F734330259327D400B7E43F /* Turtle16SimulatorCore */;
@@ -3111,21 +2214,6 @@
 			isa = PBXTargetDependency;
 			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
 			targetProxy = 6FB0D29524710C26003B5D5C /* PBXContainerItemProxy */;
-		};
-		6FB0D35724711A23003B5D5C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6FB0D34B24711A23003B5D5C /* TurtleSimulatorCore */;
-			targetProxy = 6FB0D35624711A23003B5D5C /* PBXContainerItemProxy */;
-		};
-		6FB0D39224711AAC003B5D5C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6FB0D34B24711A23003B5D5C /* TurtleSimulatorCore */;
-			targetProxy = 6FB0D39124711AAC003B5D5C /* PBXContainerItemProxy */;
-		};
-		6FB28F6F2512C9D5001F5D12 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6FB0D34B24711A23003B5D5C /* TurtleSimulatorCore */;
-			targetProxy = 6FB28F6E2512C9D5001F5D12 /* PBXContainerItemProxy */;
 		};
 		6FB28F732512C9E0001F5D12 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -3154,14 +2242,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				6F1698B3262897ED00C96D07 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		6FF1995C22ECB37000C255A2 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				6FF1995D22ECB37000C255A2 /* Base */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -3591,99 +2671,6 @@
 			};
 			name = Release;
 		};
-		6FB0D35E24711A23003B5D5C /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = TZ9N52W5SU;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = TurtleSimulatorCore/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleSimulatorCore;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		6FB0D35F24711A23003B5D5C /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = TZ9N52W5SU;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = TurtleSimulatorCore/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleSimulatorCore;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SKIP_INSTALL = YES;
-				SWIFT_COMPILATION_MODE = singlefile;
-				SWIFT_VERSION = 5.0;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
-		6FB0D36124711A23003B5D5C /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = TZ9N52W5SU;
-				HEADER_SEARCH_PATHS = "$(CONFIGURATION_TEMP_DIR)/$(PROJECT_NAME).build/DerivedSources";
-				INFOPLIST_FILE = TurtleSimulatorCoreTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleSimulatorCoreTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-			};
-			name = Debug;
-		};
-		6FB0D36224711A23003B5D5C /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = TZ9N52W5SU;
-				HEADER_SEARCH_PATHS = "$(CONFIGURATION_TEMP_DIR)/$(PROJECT_NAME).build/DerivedSources";
-				INFOPLIST_FILE = TurtleSimulatorCoreTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleSimulatorCoreTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-			};
-			name = Release;
-		};
 		6FB28F692512C50B001F5D12 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3829,52 +2816,6 @@
 			};
 			name = Release;
 		};
-		6FF1996F22ECB37000C255A2 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Simulator/Simulator.entitlements;
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = TZ9N52W5SU;
-				ENABLE_HARDENED_RUNTIME = YES;
-				INFOPLIST_FILE = Simulator/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.Simulator;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 5.0;
-			};
-			name = Debug;
-		};
-		6FF1997022ECB37000C255A2 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Simulator/Simulator.entitlements;
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = TZ9N52W5SU;
-				ENABLE_HARDENED_RUNTIME = YES;
-				INFOPLIST_FILE = Simulator/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.Simulator;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 5.0;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -3968,24 +2909,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6FB0D35D24711A23003B5D5C /* Build configuration list for PBXNativeTarget "TurtleSimulatorCore" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				6FB0D35E24711A23003B5D5C /* Debug */,
-				6FB0D35F24711A23003B5D5C /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		6FB0D36024711A23003B5D5C /* Build configuration list for PBXNativeTarget "TurtleSimulatorCoreTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				6FB0D36124711A23003B5D5C /* Debug */,
-				6FB0D36224711A23003B5D5C /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		6FB28F6B2512C50B001F5D12 /* Build configuration list for PBXNativeTarget "SnapBenchmark" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -4000,15 +2923,6 @@
 			buildConfigurations = (
 				6FF1996C22ECB37000C255A2 /* Debug */,
 				6FF1996D22ECB37000C255A2 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		6FF1996E22ECB37000C255A2 /* Build configuration list for PBXNativeTarget "Simulator" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				6FF1996F22ECB37000C255A2 /* Debug */,
-				6FF1997022ECB37000C255A2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

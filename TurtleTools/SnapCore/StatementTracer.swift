@@ -9,7 +9,7 @@
 import TurtleCore
 
 public class StatementTracer: NSObject {
-    let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
+    let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
     
     public enum TraceElement: Equatable {
         case Statement(String)

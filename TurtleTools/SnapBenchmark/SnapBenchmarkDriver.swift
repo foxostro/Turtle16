@@ -7,10 +7,21 @@
 //
 
 import SnapCore
-import TurtleSimulatorCore
+import Turtle16SimulatorCore
 import TurtleCore
 
 class SnapBenchmarkDriver: NSObject {
+    let kFibonacciProgram = """
+        func fib(n: u8) -> u8 {
+            if n <= 1 {
+                return n
+            } else {
+                return fib(n-1) + fib(n-2)
+            }
+        }
+        let result = fib(13)
+        """
+    
     public struct SnapBenchmarkDriverError: Error {
         public let message: String
         
@@ -71,49 +82,83 @@ class SnapBenchmarkDriver: NSObject {
     }
     
     func runProgramRuntimeBenchmark() throws {
-        let computer = Computer()
-        computer.logger = isVerboseLogging ? ConsoleLogger(output: stdout) : nil
-        let microcodeGenerator = MicrocodeGenerator()
-        microcodeGenerator.generate()
-        computer.provideMicrocode(microcode: microcodeGenerator.microcode)
-        computer.provideInstructions(try generateFibonacciProgram())
+        let logger = isVerboseLogging ? ConsoleLogger(output: stdout) : nil
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: kFibonacciProgram)
+        if compiler.hasError {
+            let error = CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors)
+            throw error
+        }
+        
+        if isVerboseLogging {
+            logger?.append(AssemblerListingMaker().makeListing(try! compiler.assembly.get()))
+            logger?.append((try! compiler.tack.get() as! Seq).makeChildDescriptions())
+        }
+        
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        computer.cpu.store = { (value: UInt16, addr: MemoryAddress) in
+            if let logger = logger {
+                logger.append("store ram[\(addr.value)] <- \(value)")
+            }
+            computer.ram[addr.value] = value
+        }
+        computer.cpu.load = { (addr: MemoryAddress) in
+            if let logger = logger {
+                logger.append("load ram[\(addr.value)] -> \(computer.ram[addr.value])")
+            }
+            return computer.ram[addr.value]
+        }
+        
+        computer.instructions = try generateFibonacciProgram()
         computer.reset()
+        
+        let debugger = SnapDebugConsole(computer: computer)
+        debugger.symbols = compiler.symbolTableRoot
+        if let logger = logger {
+            debugger.logger = logger
+        }
+        
         stdout.write("Running fibonacci program now...\n")
-        let elapsedTime = self.measure {
-            try! computer.runUntilHalted()
+        let elapsedTime = try measure {
+            computer.run()
         }
-        let resultAddress = SnapCompilerMetrics.kStaticStorageStartAddress
-        let expectedResult = 233
-        if computer.dataRAM.load(from: resultAddress) != expectedResult {
-            throw SnapBenchmarkDriverError(format: "Program runtime benchmark finished with an incorrect result.")
+        let expectedResult: UInt8 = 233
+        let actualResult = debugger.loadSymbolU8("result")
+        if actualResult != expectedResult {
+            let str: String
+            if let actualResult = actualResult {
+                str = "\(actualResult)"
+            } else {
+                str = "nil"
+            }
+            throw SnapBenchmarkDriverError(format: "Program runtime benchmark finished with an incorrect result: \(str)")
         }
-        stdout.write(String(format: "Program runtime benchmark completed in %@ cycles. This took %g seconds\n", formatDecimal(value: Int(computer.cpuState.uptime)), elapsedTime))
+        stdout.write(String(format: "Program runtime benchmark completed in %@ cycles. This took %g seconds\n", formatDecimal(value: computer.timeStamp), elapsedTime))
     }
     
-    func formatDecimal(value: Int) -> String {
+    func formatDecimal(value: UInt) -> String {
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
-        let formattedNumber = numberFormatter.string(from: NSNumber(value: value))
+        let formattedNumber = numberFormatter.string(from: value as NSNumber)
         return formattedNumber ?? "unknown"
     }
     
-    func measure(block: ()->Void) -> TimeInterval {
+    func measure(block: () throws -> Void) throws -> TimeInterval {
         let beginningOfPeriod = CFAbsoluteTimeGetCurrent()
-        block()
+        try block()
         let elapsedTime = CFAbsoluteTimeGetCurrent() - beginningOfPeriod
         return elapsedTime
     }
     
-    func generateFibonacciProgram() throws -> [Instruction] {
-        var instructions: [Instruction]! = nil
-        let programText = getFibonacciProgram()
+    func generateFibonacciProgram() throws -> [UInt16] {
+        var instructions: [UInt16]! = nil
         var elapsedTime: TimeInterval = 0
         let n = 1000
         stdout.write(String(format: "Compiling the benchmark program %d times now...\n", n))
         for _ in 0..<n {
-            let compiler = SnapCompiler()
-            elapsedTime += self.measure {
-                compiler.compile(program: programText, base: 0)
+            let compiler = SnapToTurtle16Compiler()
+            elapsedTime += try measure {
+                compiler.compile(program: kFibonacciProgram, base: 0)
             }
             if compiler.hasError {
                 throw CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors)
@@ -123,18 +168,5 @@ class SnapBenchmarkDriver: NSObject {
         elapsedTime = elapsedTime / Double(n)
         stdout.write(String(format: "Compile took an average of %g seconds\n", elapsedTime))
         return instructions
-    }
-
-    func getFibonacciProgram() -> String {
-        return """
-func fib(n: u8) -> u8 {
-    if n <= 1 {
-        return n
-    } else {
-        return fib(n-1) + fib(n-2)
-    }
-}
-let result = fib(13)
-"""
     }
 }

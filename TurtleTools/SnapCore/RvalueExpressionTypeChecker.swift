@@ -501,12 +501,16 @@ public class RvalueExpressionTypeChecker: NSObject {
             return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
         case (.constPointer(let a), .traitType(let b)),
              (.pointer(let a), .traitType(let b)):
-            if case .structType(let structType) = a {
+            switch a {
+            case .constStructType(let structType), .structType(let structType):
                 let nameOfVtableInstance = "__\(b.name)_\(structType.name)_vtable_instance"
                 let vtableInstance = symbols.maybeResolve(identifier: nameOfVtableInstance)
                 if vtableInstance != nil {
                     return .acceptable(ltype)
                 }
+            
+            default:
+                break
             }
             return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
         case (_, .constPointer(let b)),

@@ -1942,4 +1942,31 @@ func main() {
 """)
         XCTAssertTrue(compiler.hasError)
     }
+    
+    func testBugWhereCannotAssignStructPointerToTraitObject() throws {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+            trait Serial {
+                func puts(self: *Serial, s: []const u8)
+            }
+
+            struct SerialFake {}
+
+            impl Serial for SerialFake {
+                func puts(self: *SerialFake, s: []const u8) {}
+            }
+            
+            let obj: SerialFake = undefined
+            let serial: Serial = &obj
+            """)
+        
+        let serial = computer.lookupSymbol("serial")
+        switch serial?.type {
+        case .traitType(let typ):
+            XCTAssertEqual(typ.name, "Serial")
+            
+        default:
+            XCTFail()
+        }
+    }
 }

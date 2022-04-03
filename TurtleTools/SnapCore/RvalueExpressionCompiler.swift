@@ -873,9 +873,7 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             src.consume()
         case (.constPointer(let a), .traitType(let b)),
              (.pointer(let a), .traitType(let b)):
-            guard case .structType(let structType) = a else {
-                abort()
-            }
+            let structType = a.unwrapStructType()
             let nameOfVtableInstance = "__\(b.name)_\(structType.name)_vtable_instance"
             instructions += try compile(expression: Expression.StructInitializer(identifier: Expression.Identifier(b.nameOfTraitObjectType), arguments: [
                 // Take the pointer to the object and cast as an opaque *void

@@ -2690,6 +2690,35 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr3")
     }
     
+    func testRvalue_Is_test_union_type_tag_const() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .unionType(UnionType([.constU8, .constBool])), offset: 100, storage: .staticStorage))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: Expression.Is(expr: Expression.Identifier("foo"), testType: Expression.PrimitiveType(.bool)))
+        let expected = Seq(children: [
+            TackInstructionNode(instruction: .li16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(1)
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterNumber(100)
+            ]),
+            TackInstructionNode(instruction: .load, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterIdentifier("vr1")
+            ]),
+            TackInstructionNode(instruction: .eq16, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr2"),
+                ParameterIdentifier("vr0")
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr3")
+    }
+    
     func testRvalue_Assignment_ToPrimitiveScalar() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .u16, offset: 0x1000, storage: .staticStorage))

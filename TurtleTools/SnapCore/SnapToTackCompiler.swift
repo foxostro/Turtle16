@@ -1861,7 +1861,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     func determineUnionTypeTag(_ typ: UnionType, _ testType: SymbolType) -> Int? {
         for i in 0..<typ.members.count {
             let member = typ.members[i]
-            if testType == member {
+            if testType == member || testType.correspondingConstType == member {
                 return i
             }
         }

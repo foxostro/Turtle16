@@ -924,7 +924,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     
     func rvalue(as expr: Expression.As) throws -> AbstractSyntaxTreeNode {
         let targetType = try typeCheck(rexpr: expr.targetType)
-        if let literalArray0 = expr.expr as? Expression.LiteralArray {
+        if case .array = targetType, let literalArray0 = expr.expr as? Expression.LiteralArray {
             let elementType = targetType.arrayElementType
             let elements = literalArray0.elements.map {
                 Expression.As(sourceAnchor: expr.sourceAnchor,

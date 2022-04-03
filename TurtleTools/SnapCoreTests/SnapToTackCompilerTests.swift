@@ -590,6 +590,47 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
+    func testRvalue_As_literal_array_to_dynamic_array() throws {
+        let compiler = makeCompiler()
+        let arr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u16)), elements: [Expression.LiteralInt(1)])
+        let actual = try compiler.rvalue(expr: Expression.As(expr: arr, targetType: Expression.DynamicArrayType(Expression.PrimitiveType(.u16))))
+        let expected = Seq(children: [
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(272)
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterNumber(274)
+            ]),
+            TackInstructionNode(instruction: .li16, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterNumber(1)
+            ]),
+            TackInstructionNode(instruction: .store, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterIdentifier("vr1"),
+                ParameterNumber(0)
+            ]),
+            TackInstructionNode(instruction: .store, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr0"),
+                ParameterNumber(0)
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterNumber(1)
+            ]),
+            TackInstructionNode(instruction: .store, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr0"),
+                ParameterNumber(1)
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr0")
+    }
+    
     func testRvalue_As_compTimeInt_small() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .compTimeInt(42), offset: 0xabcd, storage: .staticStorage))

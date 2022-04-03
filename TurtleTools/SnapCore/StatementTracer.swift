@@ -18,6 +18,8 @@ public class StatementTracer: NSObject {
         case IfSkipped
         case LoopBody
         case LoopSkipped
+        case matchClause
+        case matchElseClause
         case Return
     }
     public typealias Trace = [TraceElement]
@@ -113,8 +115,22 @@ public class StatementTracer: NSObject {
     }
     
     private func trace(currentTrace: Trace, match node: Match) throws -> [Trace] {
-        let ast = try SnapSubcompilerMatch(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols).compile(node)
-        return try trace(currentTrace: currentTrace, genericNode: ast)
+        switch currentTrace.last {
+        case .Return:
+            return [currentTrace]
+            
+        default:
+            var result: [Trace] = []
+            for clause in node.clauses[0...] {
+                let traces = try trace(currentTrace: currentTrace + [.matchClause], genericNode: clause.block)
+                result += traces
+            }
+            if let elseClause = node.elseClause {
+                let traces = try trace(currentTrace: currentTrace + [.matchElseClause], genericNode: elseClause)
+                result += traces
+            }
+            return result
+        }
     }
     
     private func trace(currentTrace: Trace, stmt: AbstractSyntaxTreeNode) -> [Trace] {

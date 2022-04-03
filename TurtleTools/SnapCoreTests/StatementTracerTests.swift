@@ -88,7 +88,7 @@ class StatementTracerTests: XCTestCase {
         XCTAssertEqual(traces[1], [.LoopSkipped])
     }
     
-    func testTraceReturnStatementsThroughMatchClause() {
+    func testTraceReturnStatementsThroughMatchClause() throws {
         let one = Expression.LiteralInt(1)
         let two = Expression.LiteralInt(2)
         let three = Expression.LiteralInt(3)
@@ -108,15 +108,12 @@ class StatementTracerTests: XCTestCase {
                 Return(three)
             ]))
         ])
-        let symbols = SymbolTable(tuples: [
-            ("result", Symbol(type: .u8, offset: 0, storage: .automaticStorage)),
-            ("test", Symbol(type: .unionType(UnionType([.u8, .bool])), offset: 0, storage: .automaticStorage)),
-        ])
+        let symbols = SymbolTable()
         let tracer = StatementTracer(symbols: symbols)
-        let traces = try! tracer.trace(ast: ast)
+        let traces = try tracer.trace(ast: ast)
         XCTAssertEqual(traces.count, 3)
-        XCTAssertEqual(traces[0], [.Statement("VarDeclaration"), .IfThen, .Statement("VarDeclaration"), .Return])
-        XCTAssertEqual(traces[1], [.Statement("VarDeclaration"), .IfElse, .IfThen, .Statement("VarDeclaration"), .Return])
-        XCTAssertEqual(traces[2], [.Statement("VarDeclaration"), .IfElse, .IfElse, .Return])
+        XCTAssertEqual(traces[0], [.matchClause, .Return])
+        XCTAssertEqual(traces[1], [.matchClause, .Return])
+        XCTAssertEqual(traces[2], [.matchElseClause, .Return])
     }
 }

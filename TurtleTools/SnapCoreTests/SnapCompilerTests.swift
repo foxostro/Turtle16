@@ -1962,7 +1962,7 @@ func main() {
         
         let serial = computer.lookupSymbol("serial")
         switch serial?.type {
-        case .traitType(let typ):
+        case .constTraitType(let typ):
             XCTAssertEqual(typ.name, "Serial")
             
         default:
@@ -1985,6 +1985,34 @@ func main() {
             
             let obj: SerialFake = undefined
             let serial: Serial = obj
+            """)
+        
+        let serial = computer.lookupSymbol("serial")
+        switch serial?.type {
+        case .constTraitType(let typ):
+            XCTAssertEqual(typ.name, "Serial")
+            
+        default:
+            XCTFail()
+        }
+    }
+    
+    func testBugWhereCannotAssignStructToMutableTraitObject() throws {
+        let executor = SnapExecutor()
+        let computer = try! executor.execute(program: """
+            trait Serial {
+                func puts(self: *Serial, s: []const u8)
+            }
+
+            struct SerialFake {}
+
+            impl Serial for SerialFake {
+                func puts(self: *SerialFake, s: []const u8) {}
+            }
+            
+            let obj: SerialFake = undefined
+            var serial: Serial = undefined
+            serial = obj
             """)
         
         let serial = computer.lookupSymbol("serial")

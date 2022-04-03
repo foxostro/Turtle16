@@ -1184,7 +1184,9 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
             
         case (.constPointer(let a), .traitType(let b)),
-             (.pointer(let a), .traitType(let b)):
+             (.pointer(let a), .traitType(let b)),
+             (.constPointer(let a), .constTraitType(let b)),
+             (.pointer(let a), .constTraitType(let b)):
             let structType = a.unwrapStructType()
             let nameOfVtableInstance = "__\(b.name)_\(structType.name)_vtable_instance"
             result = try rvalue(expr: Expression.StructInitializer(identifier: Expression.Identifier(b.nameOfTraitObjectType), arguments: [
@@ -1196,7 +1198,9 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             ]))
             
         case (.constStructType(let structType), .traitType(let b)),
-             (.structType(let structType), .traitType(let b)):
+             (.structType(let structType), .traitType(let b)),
+             (.constStructType(let structType), .constTraitType(let b)),
+             (.structType(let structType), .constTraitType(let b)):
             let nameOfVtableInstance = "__\(b.name)_\(structType.name)_vtable_instance"
             let objectPointer = Expression.Unary(op: .ampersand, expression: rexpr)
             result = try rvalue(expr: Expression.StructInitializer(identifier: Expression.Identifier(b.nameOfTraitObjectType), arguments: [
@@ -1212,17 +1216,20 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             if rtype.correspondingConstType == b.correspondingConstType {
                 result = try lvalue(expr: rexpr)
             }
-            else if case .traitType(let a) = rtype {
-                let traitObjectType = try? symbols!.resolveType(identifier: a.nameOfTraitObjectType)
-                if traitObjectType == b {
-                    result = try lvalue(expr: rexpr)
-                }
-                else {
+            else {
+                switch rtype {
+                case .traitType(let a), .constTraitType(let a):
+                    let traitObjectType = try? symbols!.resolveType(identifier: a.nameOfTraitObjectType)
+                    if traitObjectType == b {
+                        result = try lvalue(expr: rexpr)
+                    }
+                    else {
+                        fatalError("Unsupported type conversion from \(rtype) to \(ltype). Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(rexpr)")
+                    }
+                    
+                default:
                     fatalError("Unsupported type conversion from \(rtype) to \(ltype). Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(rexpr)")
                 }
-            }
-            else {
-                fatalError("Unsupported type conversion from \(rtype) to \(ltype). Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(rexpr)")
             }
             
         default:
@@ -1273,7 +1280,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
              (.dynamicArray, .constDynamicArray),
              (.dynamicArray, .dynamicArray),
              (.unionType, .unionType),
-             (.traitType, .traitType),
+             (.traitType, .constTraitType),
+             (.constTraitType, .traitType),
              (.structType, .constStructType),
              (.constStructType, .structType):
             result = true

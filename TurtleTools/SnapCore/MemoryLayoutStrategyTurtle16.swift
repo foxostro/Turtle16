@@ -17,7 +17,7 @@ public class MemoryLayoutStrategyTurtle16: NSObject, MemoryLayoutStrategy {
             return 1
         case .constPointer, .pointer:
             return 1
-        case .constDynamicArray(elementType: _), .dynamicArray(elementType: _), .traitType(_):
+        case .constDynamicArray(elementType: _), .dynamicArray(elementType: _), .constTraitType(_), .traitType(_):
             return 2
         case .array(count: let count, elementType: let elementType):
             return (count ?? 0) * sizeof(type: elementType)

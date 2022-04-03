@@ -1647,8 +1647,7 @@ func foo() {
         let onSerialOutput = { (value: UInt16) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
-        let options = Options(isVerboseLogging: true,
-                              isBoundsCheckEnabled: true,
+        let options = Options(isBoundsCheckEnabled: true,
                               shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
@@ -2358,7 +2357,7 @@ func foo() {
         
         let serial = try debugger?.symbols?.resolve(identifier: "serial")
         switch serial?.type {
-        case .traitType(let typ):
+        case .constTraitType(let typ):
             XCTAssertEqual(typ.name, "Serial")
             
         default:
@@ -2380,6 +2379,33 @@ func foo() {
             
             let obj: SerialFake = undefined
             let serial: Serial = obj
+            """)
+        
+        let serial = try debugger?.symbols?.resolve(identifier: "serial")
+        switch serial?.type {
+        case .constTraitType(let typ):
+            XCTAssertEqual(typ.name, "Serial")
+            
+        default:
+            XCTFail()
+        }
+    }
+    
+    func testBugWhereCannotAssignStructToMutableTraitObject() throws {
+        let debugger = run(program: """
+            trait Serial {
+                func puts(self: *Serial, s: []const u8)
+            }
+
+            struct SerialFake {}
+
+            impl Serial for SerialFake {
+                func puts(self: *SerialFake, s: []const u8) {}
+            }
+            
+            let obj: SerialFake = undefined
+            var serial: Serial = undefined
+            serial = obj
             """)
         
         let serial = try debugger?.symbols?.resolve(identifier: "serial")

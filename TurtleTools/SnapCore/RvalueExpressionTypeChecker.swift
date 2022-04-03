@@ -40,8 +40,8 @@ public class RvalueExpressionTypeChecker: NSObject {
             return try check(binary: expr)
         case let identifier as Expression.Identifier:
             return try check(identifier: identifier)
-        case let assignment as Expression.Assignment:
-            return try check(assignment: assignment)
+        case let assig as Expression.Assignment:
+            return try check(assignment: assig)
         case let call as Expression.Call:
             return try check(call: call)
         case let expr as Expression.As:
@@ -323,6 +323,10 @@ public class RvalueExpressionTypeChecker: NSObject {
                                 message: "lvalue required in assignment")
         }
         
+        if case .traitType = ltype, case .constTraitType = ltype {
+            print("trait here")
+        }
+        
         guard !ltype.isConst || (assignment is Expression.InitialAssignment) else {
             switch assignment.lexpr {
             case let identifier as Expression.Identifier:
@@ -500,7 +504,9 @@ public class RvalueExpressionTypeChecker: NSObject {
             }
             return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
         case (.constPointer(let a), .traitType(let b)),
-             (.pointer(let a), .traitType(let b)):
+             (.pointer(let a), .traitType(let b)),
+             (.constPointer(let a), .constTraitType(let b)),
+             (.pointer(let a), .constTraitType(let b)):
             switch a {
             case .constStructType(let structType), .structType(let structType):
                 let nameOfVtableInstance = "__\(b.name)_\(structType.name)_vtable_instance"
@@ -514,7 +520,9 @@ public class RvalueExpressionTypeChecker: NSObject {
             }
             return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
         case (.constStructType(let a), .traitType(let b)),
-             (.structType(let a), .traitType(let b)):
+             (.structType(let a), .traitType(let b)),
+             (.constStructType(let a), .constTraitType(let b)),
+             (.structType(let a), .constTraitType(let b)):
             let nameOfVtableInstance = "__\(b.name)_\(a.name)_vtable_instance"
             let vtableInstance = symbols.maybeResolve(identifier: nameOfVtableInstance)
             if vtableInstance != nil {
@@ -522,15 +530,27 @@ public class RvalueExpressionTypeChecker: NSObject {
             } else {
                 return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
             }
+        case (.constTraitType(let a), .traitType(let b)),
+             (.traitType(let a), .constTraitType(let b)):
+            guard a == b else {
+                return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
+            }
+            return .acceptable(ltype)
         case (_, .constPointer(let b)),
              (_, .pointer(let b)):
             if rtype.correspondingConstType == b.correspondingConstType {
                 return .acceptable(ltype)
             }
-            else if case .traitType(let a) = rtype {
-                let traitObjectType = try? symbols.resolveType(identifier: a.nameOfTraitObjectType)
-                if traitObjectType == b {
-                    return .acceptable(ltype)
+            else {
+                switch rtype {
+                case .constTraitType(let a), .traitType(let a):
+                    let traitObjectType = try? symbols.resolveType(identifier: a.nameOfTraitObjectType)
+                    if traitObjectType == b {
+                        return .acceptable(ltype)
+                    }
+                
+                default:
+                    break
                 }
             }
             return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
@@ -779,7 +799,7 @@ public class RvalueExpressionTypeChecker: NSObject {
                     break
                 }
             }
-        case .traitType(let typ):
+        case .constTraitType(let typ), .traitType(let typ):
             return try check(get: Expression.Get(sourceAnchor: expr.sourceAnchor,
                                                  expr: Expression.Identifier(typ.nameOfTraitObjectType),
                                                  member: expr.member))

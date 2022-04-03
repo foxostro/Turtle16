@@ -871,7 +871,9 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             instructions += [.copyWords(dst.address, src.address+1, sizeOfLtype)]
             temporaryStack.push(dst)
             src.consume()
-        case (.constPointer(let a), .traitType(let b)),
+        case (.constPointer(let a), .constTraitType(let b)),
+             (.pointer(let a), .constTraitType(let b)),
+             (.constPointer(let a), .traitType(let b)),
              (.pointer(let a), .traitType(let b)):
             let structType = a.unwrapStructType()
             let nameOfVtableInstance = "__\(b.name)_\(structType.name)_vtable_instance"
@@ -883,7 +885,9 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 Expression.StructInitializer.Argument(name: "vtable", expr: Expression.Unary(op: .ampersand, expression: Expression.Identifier(nameOfVtableInstance)))
             ]))
         case (.constStructType(let structType), .traitType(let b)),
-             (.structType(let structType), .traitType(let b)):
+             (.structType(let structType), .traitType(let b)),
+             (.constStructType(let structType), .constTraitType(let b)),
+             (.structType(let structType), .constTraitType(let b)):
             let nameOfVtableInstance = "__\(b.name)_\(structType.name)_vtable_instance"
             let objectPointer = Expression.Unary(op: .ampersand, expression: rexpr)
             instructions += try compile(expression: Expression.StructInitializer(identifier: Expression.Identifier(b.nameOfTraitObjectType), arguments: [
@@ -893,7 +897,10 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
                 // Attach a pointer to the appropriate vtable instance.
                 Expression.StructInitializer.Argument(name: "vtable", expr: Expression.Unary(op: .ampersand, expression: Expression.Identifier(nameOfVtableInstance)))
             ]))
-        case (.traitType(let a), .traitType(let b)):
+        case (.traitType(let a), .traitType(let b)),
+             (.traitType(let a), .constTraitType(let b)),
+             (.constTraitType(let a), .traitType(let b)),
+             (.constTraitType(let a), .constTraitType(let b)):
             guard a == b else {
                 assert(false) // unreachable
                 abort()
@@ -933,8 +940,11 @@ public class RvalueExpressionCompiler: BaseExpressionCompiler {
             }
             if let selfExpr = selfExpr {
                 var selfType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: selfExpr)
-                if case .traitType(let typ) = selfType {
-                    selfType = try symbols.resolveType(identifier: typ.nameOfTraitObjectType)
+                switch selfType {
+                case .constTraitType(let typ), .traitType(let typ):
+                    selfType = try symbols.resolveType(identifier: typ.nameOfTraitObjectType)   
+                default:
+                    break
                 }
                 let argType0 = typ.arguments[0]
                 if argType0 == selfType || argType0.correspondingConstType == selfType {

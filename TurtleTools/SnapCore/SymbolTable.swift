@@ -20,7 +20,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     case constDynamicArray(elementType: SymbolType), dynamicArray(elementType: SymbolType)
     case constPointer(SymbolType), pointer(SymbolType)
     case constStructType(StructType), structType(StructType)
-    case traitType(TraitType)
+    case constTraitType(TraitType), traitType(TraitType)
     case unionType(UnionType)
     
     public var isPrimitive: Bool {
@@ -37,7 +37,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         switch self {
         case .void, .function:
             return true
-        case .compTimeBool, .constBool, .compTimeInt, .constU8, .constU16, .constDynamicArray, .constPointer, .constStructType, .traitType:
+        case .compTimeBool, .constBool, .compTimeInt, .constU8, .constU16, .constDynamicArray, .constPointer, .constStructType, .constTraitType:
             return true
         default:
             return false
@@ -62,6 +62,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             return .constPointer(typ)
         case .unionType(let typ):
             return .unionType(typ.correspondingConstType)
+        case .traitType(let typ):
+            return .constTraitType(typ)
         default:
             return self
         }
@@ -85,6 +87,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             return .pointer(typ)
         case .unionType(let typ):
             return .unionType(typ.correspondingMutableType)
+        case .constTraitType(let typ):
+            return .traitType(typ)
         default:
             return self
         }
@@ -132,7 +136,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     
     public func unwrapTraitType() -> TraitType {
         switch self {
-        case .traitType(let typ):
+        case .constTraitType(let typ), .traitType(let typ):
             return typ
         default:
             abort()
@@ -231,6 +235,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             return "const \(typ.name)"
         case .structType(let typ):
             return "\(typ.name)"
+        case .constTraitType(let typ):
+            return "const \(typ.name)"
         case .traitType(let typ):
             return "\(typ.name)"
         case .constPointer(let pointee):

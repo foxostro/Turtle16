@@ -5,6 +5,10 @@ public func __oob() {
     panic(kPanicMessageOOB)
 }
 
+public func putc(c: u8) {
+    serialOut.pointee = c
+}
+
 public func puts(s: []const u8) {
     for c in s {
         serialOut.pointee = c

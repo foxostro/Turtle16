@@ -7,7 +7,6 @@
 //
 
 import TurtleCore
-import TurtleSimulatorCore
 import Turtle16SimulatorCore
 
 public class SnapToTurtle16Compiler: NSObject {
@@ -36,6 +35,7 @@ public class SnapToTurtle16Compiler: NSObject {
     
     public let options: Options
     public private(set) var testNames: [String] = []
+    public private(set) var syntaxTree: AbstractSyntaxTreeNode! = nil
     public private(set) var tack: Result<AbstractSyntaxTreeNode?, Error>! = nil
     public private(set) var assembly: Result<TopLevel, Error>! = nil
     public private(set) var instructions: [UInt16] = []
@@ -93,6 +93,7 @@ public class SnapToTurtle16Compiler: NSObject {
         if let error = parser.errors.first {
             return .failure(error)
         }
+        self.syntaxTree = parser.syntaxTree
         return .success(parser.syntaxTree)
     }
     
@@ -148,7 +149,7 @@ public class SnapToTurtle16Compiler: NSObject {
             
             // The hardware requires us to place a NOP at the first instruction.
             if topLevel.children.first != InstructionNode(instruction: kNOP) {
-                topLevel = TopLevel(children: [InstructionNode(instruction: kNOP)] + topLevel.children) 
+                topLevel = TopLevel(children: [InstructionNode(instruction: kNOP)] + topLevel.children)
             }
             
             return topLevel

@@ -8,7 +8,7 @@
 
 import SnapCore
 import TurtleCore
-import TurtleSimulatorCore
+import Turtle16SimulatorCore
 
 // Provides an interface for driving the snap compiler from the command-line.
 public class SnapCommandLineDriver: NSObject {
@@ -36,6 +36,8 @@ public class SnapCommandLineDriver: NSObject {
     public var chooseSpecificTest: String? = nil
     public var shouldBeQuiet = false
     public var shouldEnableOptimizations = true
+    let kRuntime = "runtime"
+    let kMemoryMappedSerialOutputPort = MemoryAddress(0x0001)
     
     public required init(withArguments arguments: [String]) {
         self.arguments = arguments
@@ -88,27 +90,28 @@ public class SnapCommandLineDriver: NSObject {
         guard let text = maybeText else {
             throw SnapCommandLineDriverError("failed to read input file as UTF-8 text: \(fileName)")
         }
-        let frontEnd = SnapCompiler()
-        frontEnd.isUsingStandardLibrary = true
-        frontEnd.shouldRunSpecificTest = nil
-        frontEnd.shouldEnableOptimizations = shouldEnableOptimizations
-        frontEnd.compile(text, inputFileName)
+        let options = SnapToTurtle16Compiler.Options(isBoundsCheckEnabled: true,
+                                                     shouldDefineCompilerIntrinsicFunctions: true,
+                                                     isUsingStandardLibrary: false,
+                                                     runtimeSupport: kRuntime)
+        let frontEnd = SnapToTurtle16Compiler(options: options)
+        frontEnd.compile(program: text, url: inputFileName)
         if frontEnd.hasError {
             throw CompilerError.makeOmnibusError(fileName: fileName, errors: frontEnd.errors)
         }
         printNumberOfInstructionWordsUsed(frontEnd)
         
         if shouldDoASTDump {
-            stdout.write(frontEnd.ast.description)
+            stdout.write(frontEnd.syntaxTree.description)
             stdout.write("\n")
         }
         
         if shouldOutputAssembly {
-            try writeDisassemblyToFile(instructions: frontEnd.instructions, programDebugInfo: frontEnd.programDebugInfo)
+            try writeAssemblyToFile(assembly: frontEnd.assembly.get())
         }
         
         if shouldOutputIR {
-            try writeToFile(ir: frontEnd.crackle, programDebugInfo: frontEnd.programDebugInfo)
+            try writeToFile(ir: frontEnd.tack.get()!)
         }
         
         try writeToFile(instructions: frontEnd.instructions)
@@ -122,7 +125,7 @@ public class SnapCommandLineDriver: NSObject {
         }
     }
     
-    fileprivate func printNumberOfInstructionWordsUsed(_ frontEnd: SnapCompiler) {
+    fileprivate func printNumberOfInstructionWordsUsed(_ frontEnd: SnapToTurtle16Compiler) {
         let numberOfInstructions = frontEnd.instructions.count
         if numberOfInstructions > 32767 {
             reportInfoMessage("WARNING: generated code exceeds 32768 instruction memory words: \(numberOfInstructions) words used\n")
@@ -149,9 +152,12 @@ public class SnapCommandLineDriver: NSObject {
     }
     
     fileprivate func collectNamesOfTests(_ text: String, _ fileName: String) throws -> [String] {
-        let frontEnd0 = SnapCompiler()
-        frontEnd0.isUsingStandardLibrary = true
-        frontEnd0.compile(text, inputFileName)
+        let opts = SnapToTurtle16Compiler.Options(isBoundsCheckEnabled: true,
+                                                  shouldDefineCompilerIntrinsicFunctions: true,
+                                                  isUsingStandardLibrary: false,
+                                                  runtimeSupport: kRuntime)
+        let frontEnd0 = SnapToTurtle16Compiler(options: opts)
+        frontEnd0.compile(program: text, url: inputFileName)
         if frontEnd0.hasError {
             throw CompilerError.makeOmnibusError(fileName: fileName, errors: frontEnd0.errors)
         }
@@ -160,10 +166,13 @@ public class SnapCommandLineDriver: NSObject {
     
     fileprivate func runSpecificTest(_ testName: String, _ text: String, _ fileName: String) throws {
         reportInfoMessage("Running test \"\(testName)\"...\n")
-        let frontEnd = SnapCompiler()
-        frontEnd.isUsingStandardLibrary = true
-        frontEnd.shouldRunSpecificTest = testName
-        frontEnd.compile(text, inputFileName)
+        let opts = SnapToTurtle16Compiler.Options(isBoundsCheckEnabled: true,
+                                                  shouldDefineCompilerIntrinsicFunctions: true,
+                                                  isUsingStandardLibrary: false,
+                                                  runtimeSupport: kRuntime,
+                                                  shouldRunSpecificTest: testName)
+        let frontEnd = SnapToTurtle16Compiler(options: opts)
+        frontEnd.compile(program: text, url: inputFileName)
         if frontEnd.hasError {
             throw CompilerError.makeOmnibusError(fileName: fileName, errors: frontEnd.errors)
         }
@@ -173,44 +182,70 @@ public class SnapCommandLineDriver: NSObject {
         irOutputFileName = URL(fileURLWithPath: baseName + ".ir", relativeTo: directory)
         asmOutputFileName = URL(fileURLWithPath: baseName + ".asm", relativeTo: directory)
         if shouldOutputIR {
-            try writeToFile(ir: frontEnd.crackle, programDebugInfo: frontEnd.programDebugInfo)
+            try writeToFile(ir: frontEnd.tack.get()!)
         }
         if shouldOutputAssembly {
-            try writeDisassemblyToFile(instructions: frontEnd.instructions, programDebugInfo: frontEnd.programDebugInfo)
+            try writeAssemblyToFile(assembly: frontEnd.assembly.get())
         }
-        let computer = Computer()
-        let microcodeGenerator = MicrocodeGenerator()
-        microcodeGenerator.generate()
-        computer.provideMicrocode(microcode: microcodeGenerator.microcode)
-        computer.logger = nil
-        computer.programDebugInfo = frontEnd.programDebugInfo
-        computer.provideInstructions(frontEnd.instructions)
-        var previousSerialOutput = ""
-        computer.didUpdateSerialOutput = {
-            let delta = String($0.dropFirst(previousSerialOutput.count))
-            previousSerialOutput = $0
-            self.stdout.write(delta)
+        
+        var serialOutput: [UInt8] = []
+        let onSerialOutput = { (value: UInt16) in
+            let oldStr = String(bytes: serialOutput, encoding: .utf8)
+            serialOutput.append(UInt8(value & 0x00ff))
+            let newStr = String(bytes: serialOutput, encoding: .utf8)
+            let delta: String
+            if let n = oldStr?.count {
+                if let newDelta = newStr?.dropFirst(n) {
+                    delta = String(newDelta)
+                } else {
+                    delta = oldStr!
+                }
+            } else {
+                delta = ""
+            }
+            if delta.count > 0 {
+                self.stdout.write(String(delta))
+            }
         }
-        try computer.runUntilHalted()
+        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        computer.cpu.store = { (value: UInt16, addr: MemoryAddress) in
+            if addr == self.kMemoryMappedSerialOutputPort {
+                onSerialOutput(value)
+            }
+            else {
+                computer.ram[addr.value] = value
+            }
+        }
+        computer.cpu.load = { (addr: MemoryAddress) in
+            return computer.ram[addr.value]
+        }
+        computer.instructions = frontEnd.instructions
+        computer.reset()
+        
+        let debugger = SnapDebugConsole(computer: computer)
+        debugger.logger = PrintLogger()
+        debugger.symbols = frontEnd.symbolTableRoot
+        debugger.interpreter.runOne(instruction: .run)
+        
         reportInfoMessage("\n\n")
     }
     
-    func writeToFile(ir: [CrackleInstruction], programDebugInfo: SnapDebugInfo?) throws {
-        let string = CrackleInstructionListingMaker.makeListing(instructions: ir, programDebugInfo: programDebugInfo)
+    func writeToFile(ir: AbstractSyntaxTreeNode) throws {
+        let string = ir.description
         try string.write(to: irOutputFileName!, atomically: true, encoding: .utf8)
     }
     
-    func writeDisassemblyToFile(instructions: [Instruction], programDebugInfo: SnapDebugInfo?) throws {
-        let base = 0
-        let string = AssemblyListingMaker.makeListing(base, instructions, programDebugInfo)
-        try string.write(to: asmOutputFileName!, atomically: true, encoding: .utf8)
+    func writeAssemblyToFile(assembly: AbstractSyntaxTreeNode) throws {
+        let text = AssemblerListingMaker().makeListing(assembly)
+        try text.write(to: asmOutputFileName!, atomically: true, encoding: .utf8)
     }
     
-    func writeToFile(instructions: [Instruction]) throws {
+    func writeToFile(instructions: [UInt16]) throws {
         if let programOutputFileName = programOutputFileName {
-            let computer = Computer()
-            computer.provideInstructions(instructions)
-            try computer.saveProgram(to: programOutputFileName)
+            let computer = Turtle16Computer(SchematicLevelCPUModel())
+            computer.instructions = instructions
+            let debugger = SnapDebugConsole(computer: computer)
+            debugger.interpreter.runOne(instruction: .save("program", programOutputFileName))
         }
     }
     
@@ -342,3 +377,4 @@ OPTIONS:
         }
     }
 }
+

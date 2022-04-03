@@ -1195,6 +1195,18 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 Expression.StructInitializer.Argument(name: "vtable", expr: Expression.Unary(op: .ampersand, expression: Expression.Identifier(nameOfVtableInstance)))
             ]))
             
+        case (.constStructType(let structType), .traitType(let b)),
+             (.structType(let structType), .traitType(let b)):
+            let nameOfVtableInstance = "__\(b.name)_\(structType.name)_vtable_instance"
+            let objectPointer = Expression.Unary(op: .ampersand, expression: rexpr)
+            result = try rvalue(expr: Expression.StructInitializer(identifier: Expression.Identifier(b.nameOfTraitObjectType), arguments: [
+                // Take the pointer to the object and cast as an opaque *void
+                Expression.StructInitializer.Argument(name: "object", expr: Expression.Bitcast(expr: objectPointer, targetType: Expression.PointerType(Expression.PrimitiveType(.void)))),
+                
+                // Attach a pointer to the appropriate vtable instance.
+                Expression.StructInitializer.Argument(name: "vtable", expr: Expression.Unary(op: .ampersand, expression: Expression.Identifier(nameOfVtableInstance)))
+            ]))
+            
         case (_, .constPointer(let b)),
              (_, .pointer(let b)):
             if rtype.correspondingConstType == b.correspondingConstType {

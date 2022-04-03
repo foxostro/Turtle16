@@ -4741,4 +4741,19 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .pointer(traitObjectType))
     }
+    
+    func testInitialAssignment_automatic_conversion_from_struct_to_trait_object() throws {
+        let traitObjectType: SymbolType = .traitType(TraitType(name: "Foo", nameOfTraitObjectType: "", nameOfVtableType: "", symbols: SymbolTable()))
+        let symbols = SymbolTable(tuples: [
+            ("__Foo_Bar_vtable_instance", Symbol(type: .structType(StructType(name: "", symbols: SymbolTable())))),
+            ("bar", Symbol(type: .structType(StructType(name: "Bar", symbols: SymbolTable())))),
+            ("foo", Symbol(type: traitObjectType))
+        ])
+        
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        let expr = Expression.InitialAssignment(lexpr: Expression.Identifier("foo"),
+                                                rexpr: Expression.Identifier("bar"))
+        let result = try typeChecker.check(expression: expr)
+        XCTAssertEqual(result, traitObjectType)
+    }
 }

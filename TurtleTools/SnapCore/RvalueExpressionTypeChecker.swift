@@ -513,6 +513,15 @@ public class RvalueExpressionTypeChecker: NSObject {
                 break
             }
             return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
+        case (.constStructType(let a), .traitType(let b)),
+             (.structType(let a), .traitType(let b)):
+            let nameOfVtableInstance = "__\(b.name)_\(a.name)_vtable_instance"
+            let vtableInstance = symbols.maybeResolve(identifier: nameOfVtableInstance)
+            if vtableInstance != nil {
+                return .acceptable(ltype)
+            } else {
+                return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
+            }
         case (_, .constPointer(let b)),
              (_, .pointer(let b)):
             if rtype.correspondingConstType == b.correspondingConstType {

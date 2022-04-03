@@ -5210,6 +5210,94 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
     
+    func testRvalue_convert_struct_to_trait() throws {
+        let symbols = SymbolTable()
+        
+        let ast0 = Block(symbols: symbols, children: [
+            TraitDeclaration(identifier: Expression.Identifier("Serial"),
+                             members: [],
+                             visibility: .privateVisibility),
+            StructDeclaration(identifier: Expression.Identifier("SerialFake"),
+                              members: []),
+            ImplFor(traitIdentifier: Expression.Identifier("Serial"),
+                    structIdentifier: Expression.Identifier("SerialFake"),
+                    children: []),
+            VarDeclaration(identifier: Expression.Identifier("serialFake"),
+                           explicitType: Expression.Identifier("SerialFake"),
+                           expression: nil,
+                           storage: .staticStorage,
+                           isMutable: true),
+            VarDeclaration(identifier: Expression.Identifier("serial"),
+                           explicitType: Expression.Identifier("Serial"),
+                           expression: Expression.Identifier("serialFake"),
+                           storage: .staticStorage,
+                           isMutable: false)
+        ])
+        
+        let opts = SnapToTackCompiler.Options()
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
+        let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
+        contractStep.compile(ast0)
+        let ast1 = contractStep.ast
+        let compiler = SnapToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment, options: opts)
+        let actual = try compiler.compile(ast1)
+        
+        let expected = Seq(children: [
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(0x0110)
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterNumber(0x0110)
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterNumber(0x0112)
+            ]),
+            TackInstructionNode(instruction: .addi16, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr2"),
+                ParameterNumber(0)
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterNumber(0x0110)
+            ]),
+            TackInstructionNode(instruction: .store, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterIdentifier("vr3")
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr5"),
+                ParameterNumber(0x0112)
+            ]),
+            TackInstructionNode(instruction: .addi16, parameters: [
+                ParameterIdentifier("vr6"),
+                ParameterIdentifier("vr5"),
+                ParameterNumber(1)
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr7"),
+                ParameterNumber(0x0110)
+            ]),
+            TackInstructionNode(instruction: .store, parameters: [
+                ParameterIdentifier("vr7"),
+                ParameterIdentifier("vr6")
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr8"),
+                ParameterNumber(0x0112)
+            ]),
+            TackInstructionNode(instruction: .memcpy, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr8"),
+                ParameterNumber(2)
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+    }
+    
     func testLvalue_LvalueOfMemberOfStructInitializer() throws {
         let typ = StructType(name: "Foo", symbols: SymbolTable(tuples: [
             ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))

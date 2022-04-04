@@ -58,9 +58,20 @@ OPTIONS:
 	-O0        Disable optimizations
 ```
 
-There is also a compiler for a new high-level language called Snap. Currently, the compiler can compile programs to TurtleTTL machine code, an earlier homebrew CPU of mine. Support for the Turtle16 CPU is a work in progress. It can now compile to an appropriate three-address code IR language, and it can mostly compile that to Turtle16 machine code. I expect this will be working soon.
+There is also a compiler for a new high-level language called Snap.
 
 Example Snap program:
+```
+var a = 1
+var b = 1
+for i in 0..10 {
+	var fib = b + a
+	a = b
+	b = fib
+}
+```
+
+Another, slightly more complex example:
 ```
 import audio
 import serial
@@ -114,4 +125,4 @@ func main() {
 
 ```
 
-Please refer to the TurtleTools/Examples/ directory for more example code. The [ReceiveFile.snap](../TurtleTools/Examples/ReceiveFile.snap) program show cases structs, traits, and dynamic dispatch.
+Please refer to the TurtleTools/Examples/ directory for more example code. The [ReceiveFile.snap](../TurtleTools/Examples/ReceiveFile.snap) program show cases structs, traits, dynamic dispatch, unit tests, and other language features.

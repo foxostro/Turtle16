@@ -43,6 +43,9 @@ Please refer to the TurtleTools/Examples/ directory for more example code.
 
 # Snap
 
+There is also a compiler for a new high-level language called Snap which is covered in more detail [here](Snap.md). Programs written in this language are compiled to machine code which can execute in the simulator app and flashed to instruction EEPROM to be run on real hardware.
+
+
 ```
 USAGE:
 Snap [test] [options] file...

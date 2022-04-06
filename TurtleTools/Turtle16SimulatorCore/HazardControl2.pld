@@ -5,10 +5,10 @@ NC    OP3    OP4    FI    J     FSXTA    FSMTA    FSXTB    FSMTB    NC       NC 
 NC    NC     NC     NC    NC    NC       NC       NC       FHZD     FLUSH    STALL    VCC
 
 ; HIGH indicates that the ID pipeline stage should flush
-/FLUSH = GND
+FLUSH = GND
 
 ; HIGH indicates that the ID and IF pipeline stages should stall
-/STALL = GND
+STALL = GND
 
 
 ; HIGH indicates that this is a flags hazard.

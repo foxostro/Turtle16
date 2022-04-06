@@ -11,10 +11,10 @@ FMETA = VCC
 FEXTA = VCC
 
 ; LOW indicates that the value on the A port of the register file should be forwarded to the EX stage for operand A.
-/FWDA = GND
+FWDA = GND
 
 ; LOW indicates that the value on the B port of the register file should be forwarded to the EX stage for operand B.
-/FWDB = GND
+FWDB = GND
 
 ; LOW indicates that Y_EX should be forwarded to the EX stage for operand B.
 FEXTB = VCC

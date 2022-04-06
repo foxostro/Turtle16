@@ -84,4 +84,16 @@ class SnapCommandLineArgumentParserTests: XCTestCase {
         XCTAssertNoThrow(try parser.parse())
         XCTAssertEqual(parser.options, [.outputFileName("foo"), .inputFileName("bar"), .inputFileName("baz")])
     }
+    
+    func testTestVerb() {
+        let parser = SnapCommandLineArgumentParser(args: ["snap", "test", "-t", "foo", "bar"])
+        XCTAssertNoThrow(try parser.parse())
+        XCTAssertEqual(parser.options, [.test, .chooseSpecificTest("foo"), .inputFileName("bar")])
+    }
+    
+    func testRunVerb() {
+        let parser = SnapCommandLineArgumentParser(args: ["snap", "run", "foo"])
+        XCTAssertNoThrow(try parser.parse())
+        XCTAssertEqual(parser.options, [.run, .inputFileName("foo")])
+    }
 }

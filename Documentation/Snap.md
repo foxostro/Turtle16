@@ -19,7 +19,9 @@ USAGE:
 Snap [test] [options] file...
 
 OPTIONS:
+	run        Compile the program and run immediately in a VM.
 	test       Compile the program for testing and run immediately in a VM.
+	-t <test>  The test suite only runs the specified test
 	-h         Display available options
 	-o <file>  Specify the output filename
 	-S         Output assembly code
@@ -48,24 +50,13 @@ continue
 
 Please note that while you will be able to see register and memory values changing over time, Simulator support for the serial output device is incomplete and you will not see the words "Hello, World!" appear anywhere. This is a work in progress.
 
-Rewrite the program so the compiler may run it locally as a unit test:
+The compiler can build and run the program in a VM which directs serial output to standard out: Run it on the command line like so:
 ```
-test "Hello, World!" {
-	puts("Hello, World!\n")
-}
-```
-
-Run it on the command line like so:
-```
-% Snap test hello.snap
-Running test "Hello, World!"...
-instruction words used: 721
+% Snap run hello.snap
+instruction words used: 646
 Hello, World!
-passed
 cpu is halted
 ```
-
-Again, this is a work in progress and the process could be eased by adding a "run" command to the command line for a similar effect without needing to execute the test suite runner.
 
 # Syntax
 

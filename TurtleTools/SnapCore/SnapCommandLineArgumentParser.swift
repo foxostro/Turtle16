@@ -25,6 +25,7 @@ public class SnapCommandLineArgumentParser: NSObject {
         case listTests
         case quiet
         case unoptimized
+        case run
     }
     public private(set) var options: [Option] = []
     
@@ -42,10 +43,19 @@ public class SnapCommandLineArgumentParser: NSObject {
     }
     
     private func parseOptions() throws {
-        if args.first == "test" {
+        switch args.first {
+        case "test":
             try advance()
             options.append(.test)
+            
+        case "run":
+            try advance()
+            options.append(.run)
+            
+        default:
+            break // do nothing
         }
+        
         while !args.isEmpty {
             let option = try peek()
             if !option.hasPrefix("-") {

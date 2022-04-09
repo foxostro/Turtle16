@@ -6,7 +6,8 @@
 
   (title_block
     (title "Turtle16: Clock Module")
-    (date "2022-04-07")
+    (date "2022-04-09")
+    (rev "Rev A (d0190c1d)")
   )
 
   (lib_symbols
@@ -554,8 +555,8 @@
     (in_bom yes) (on_board yes)
     (uuid 1094c917-8332-412b-876f-5765851f2753)
     (property "Reference" "J1" (id 0) (at 75.565 99.695 0))
-    (property "Value" "" (id 1) (at 76.2 102.235 0))
-    (property "Footprint" "" (id 2) (at 83.82 100.965 0)
+    (property "Value" "Clock Inputs" (id 1) (at 76.2 102.235 0))
+    (property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical" (id 2) (at 83.82 100.965 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 83.82 100.965 0)
@@ -740,8 +741,8 @@
     (in_bom yes) (on_board yes)
     (uuid bc1f3981-2a3f-4c0c-94dd-fa152fc30b95)
     (property "Reference" "J2" (id 0) (at 190.5 96.52 0))
-    (property "Value" "" (id 1) (at 191.135 99.06 0))
-    (property "Footprint" "" (id 2) (at 182.88 97.79 0)
+    (property "Value" "Clock Outputs" (id 1) (at 191.135 99.06 0))
+    (property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical" (id 2) (at 182.88 97.79 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 182.88 97.79 0)

@@ -7,6 +7,7 @@
   (title_block
     (title "IF/ID")
     (date "2022-04-10")
+    (rev "A (daa7c419)")
     (comment 4 "Interstage pipeline registers between IF and ID")
   )
 
@@ -2919,10 +2920,10 @@
     (property "Reference" "TP3" (id 0) (at 142.24 156.21 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "" (id 1) (at 142.24 158.75 0)
+    (property "Value" "CLK" (id 1) (at 142.24 158.75 0)
       (effects (font (size 1.27 1.27)) (justify left) hide)
     )
-    (property "Footprint" "" (id 2) (at 146.05 160.02 0)
+    (property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm" (id 2) (at 146.05 160.02 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 146.05 160.02 0)

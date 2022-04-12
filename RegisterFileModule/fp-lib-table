@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name RegisterFileModule)(type KiCad)(uri ${KIPRJMOD}/RegisterFileModule.pretty)(options "")(descr ""))
+)

@@ -6,8 +6,8 @@
 
   (title_block
     (title "Register File")
-    (date "2022-04-10")
-    (rev "A")
+    (date "2022-04-11")
+    (rev "A (17a66eba)")
     (comment 4 "Triple Port Register File build from dual port SRAM")
   )
 

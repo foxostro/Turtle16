@@ -5,7 +5,8 @@
   (paper "USLetter")
 
   (title_block
-    (date "2022-04-10")
+    (date "2022-04-11")
+    (rev "A (17a66eba)")
     (comment 4 "The Write Back Stage and Register File are combined on one PCB.")
   )
 

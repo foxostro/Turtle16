@@ -5,9 +5,9 @@
   (paper "USLetter")
 
   (title_block
-    (title "Turtle16: MEM")
+    (title "Turtle16: MEM + RAM")
     (date "2022-04-12")
-    (rev "A")
+    (rev "A (584b6b4f)")
     (comment 4 "MEM Pipeline Stage and Computer Memory")
   )
 

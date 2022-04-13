@@ -6,8 +6,8 @@
 
   (title_block
     (title "Select Right Operand")
-    (date "2022-04-12")
-    (rev "A (7b9791c7)")
+    (date "2022-04-13")
+    (rev "A (7ac7a3cb)")
     (comment 2 "from an immediate value contained in the instruction word.")
     (comment 3 "The right operand can either take the value from the B port of the register file, or")
     (comment 4 "Select the right operand to the ALU")

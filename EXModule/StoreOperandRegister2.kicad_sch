@@ -6,8 +6,8 @@
 
   (title_block
     (title "EX/MEM: Store Operand Register")
-    (date "2022-04-12")
-    (rev "A (7b9791c7)")
+    (date "2022-04-13")
+    (rev "A (7ac7a3cb)")
   )
 
   (lib_symbols
@@ -372,7 +372,6 @@
       )
     )
   )
-
 
   (junction (at 144.78 72.39) (diameter 0) (color 0 0 0 0)
     (uuid 066893ee-f587-4ad1-a5e3-e3171a7f7252)

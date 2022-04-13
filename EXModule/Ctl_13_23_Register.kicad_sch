@@ -6,8 +6,8 @@
 
   (title_block
     (title "EX/MEM: Control Word Register")
-    (date "2022-04-12")
-    (rev "A (7b9791c7)")
+    (date "2022-04-13")
+    (rev "A (7ac7a3cb)")
   )
 
   (lib_symbols
@@ -372,7 +372,6 @@
       )
     )
   )
-
 
   (junction (at 133.35 106.68) (diameter 0) (color 0 0 0 0)
     (uuid 02ca9350-9e0f-471f-a345-bee2587bb572)

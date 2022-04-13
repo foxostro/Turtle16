@@ -6,8 +6,8 @@
 
   (title_block
     (title "Select Store Operand")
-    (date "2022-04-12")
-    (rev "A (7b9791c7)")
+    (date "2022-04-13")
+    (rev "A (7ac7a3cb)")
     (comment 3 "the program counter value, or an eight-bit immediate value.")
     (comment 4 "The Store Operand can be taken from either the value on port B of the register file,")
   )

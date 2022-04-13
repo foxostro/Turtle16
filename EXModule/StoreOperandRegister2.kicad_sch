@@ -7,7 +7,7 @@
   (title_block
     (title "EX/MEM: Store Operand Register")
     (date "2022-04-12")
-    (rev "A")
+    (rev "A (7b9791c7)")
   )
 
   (lib_symbols
@@ -373,6 +373,7 @@
     )
   )
 
+
   (junction (at 144.78 72.39) (diameter 0) (color 0 0 0 0)
     (uuid 066893ee-f587-4ad1-a5e3-e3171a7f7252)
   )
@@ -663,7 +664,7 @@
     (uuid 35dfe4cd-0fec-48d4-b31d-971eb0bbb432)
   )
 
-  (wire (pts (xy 160.02 121.92) (xy 161.29 121.92))
+  (wire (pts (xy 160.02 121.92) (xy 166.37 121.92))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 36d7002b-bf2e-428b-a91a-b4ed755cac59)
   )
@@ -1107,17 +1108,13 @@
     (uuid f587f477-194d-41ae-8a6d-91fbd85f9d3f)
   )
 
-  (global_label "Phi1b" (shape input) (at 161.29 121.92 0) (fields_autoplaced)
-    (effects (font (size 1.27 1.27)) (justify left))
-    (uuid 8b664cd6-f39e-4636-850d-30ba11a608d8)
-    (property "Intersheet References" "${INTERSHEET_REFS}" (id 0) (at 0 0 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-  )
-
   (hierarchical_label "StoreOp_MEM[0..15]" (shape output) (at 193.04 71.12 0)
     (effects (font (size 1.27 1.27)) (justify left))
     (uuid 17540f0f-267d-4f0f-8f00-5539a89bd637)
+  )
+  (hierarchical_label "Phi1a" (shape input) (at 166.37 121.92 0)
+    (effects (font (size 1.27 1.27)) (justify left))
+    (uuid c88f3561-7e40-428f-93ea-4c77a62856ce)
   )
   (hierarchical_label "StoreOp_EX[0..15]" (shape input) (at 96.52 72.39 180)
     (effects (font (size 1.27 1.27)) (justify right))

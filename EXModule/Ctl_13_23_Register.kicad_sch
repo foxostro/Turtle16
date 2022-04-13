@@ -7,7 +7,7 @@
   (title_block
     (title "EX/MEM: Control Word Register")
     (date "2022-04-12")
-    (rev "A")
+    (rev "A (7b9791c7)")
   )
 
   (lib_symbols
@@ -372,6 +372,7 @@
       )
     )
   )
+
 
   (junction (at 133.35 106.68) (diameter 0) (color 0 0 0 0)
     (uuid 02ca9350-9e0f-471f-a345-bee2587bb572)
@@ -966,17 +967,13 @@
     (uuid f82b8be3-e209-4493-8527-8e48e4d9c1ce)
   )
 
-  (global_label "Phi1c" (shape input) (at 165.1 119.38 0) (fields_autoplaced)
-    (effects (font (size 1.27 1.27)) (justify left))
-    (uuid 5f6e226e-a567-408b-beb0-c8a8e2ec508f)
-    (property "Intersheet References" "${INTERSHEET_REFS}" (id 0) (at 0 0 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-  )
-
   (hierarchical_label "Ctl_MEM[14..20]" (shape output) (at 196.85 66.04 0)
     (effects (font (size 1.27 1.27)) (justify left))
     (uuid 1c55eaff-dfb6-4adc-bdb2-1121eb73358d)
+  )
+  (hierarchical_label "Phi1a" (shape input) (at 165.1 119.38 0)
+    (effects (font (size 1.27 1.27)) (justify left))
+    (uuid 3f5ef808-86fd-477c-b6f5-fb0693e0cd9d)
   )
   (hierarchical_label "Ins_EX[0..10]" (shape input) (at 100.33 93.98 180)
     (effects (font (size 1.27 1.27)) (justify right))

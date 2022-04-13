@@ -7,7 +7,7 @@
   (title_block
     (title "EX/MEM: ALUResult Register")
     (date "2022-04-12")
-    (rev "A")
+    (rev "A (7b9791c7)")
   )
 
   (lib_symbols
@@ -810,7 +810,7 @@
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 97675b30-915a-43e3-828c-166fb0161c3a)
   )
-  (wire (pts (xy 157.48 123.19) (xy 158.75 123.19))
+  (wire (pts (xy 157.48 123.19) (xy 165.1 123.19))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 9c1b71cf-44fe-4b7f-bf7f-4966704258c9)
   )
@@ -1101,14 +1101,10 @@
     (uuid f84570f0-8f86-40f4-8c85-4d0ad12444b2)
   )
 
-  (global_label "Phi1b" (shape input) (at 158.75 123.19 0) (fields_autoplaced)
+  (hierarchical_label "Phi1a" (shape input) (at 165.1 123.19 0)
     (effects (font (size 1.27 1.27)) (justify left))
-    (uuid 2926e945-d9e3-4a4e-9b51-aad244dc04f4)
-    (property "Intersheet References" "${INTERSHEET_REFS}" (id 0) (at 0 0 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
+    (uuid 2235d38d-acbb-4f54-a3eb-40098899d3f6)
   )
-
   (hierarchical_label "Y_EX[0..15]" (shape input) (at 93.98 73.66 180)
     (effects (font (size 1.27 1.27)) (justify right))
     (uuid 98fe4024-dd1f-4460-ab6c-997be1e2af2c)

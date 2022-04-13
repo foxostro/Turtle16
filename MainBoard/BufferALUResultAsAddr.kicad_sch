@@ -2108,7 +2108,7 @@
     (in_bom yes) (on_board yes)
     (uuid 00000000-0000-0000-0000-00006219d879)
     (property "Reference" "U15" (id 0) (at 139.7 93.98 0))
-    (property "Value" "" (id 1) (at 139.7 96.52 0))
+    (property "Value" "74AHCT16245" (id 1) (at 139.7 96.52 0))
     (property "Footprint" "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm" (id 2) (at 142.24 80.01 0)
       (effects (font (size 1.27 1.27)) hide)
     )

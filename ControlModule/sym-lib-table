@@ -1,0 +1,4 @@
+(sym_lib_table
+  (lib (name "ControlModule-rescue")(type "Legacy")(uri "${KIPRJMOD}/ControlModule-rescue.lib")(options "")(descr ""))
+  (lib (name "74xx (kicad5)")(type "KiCad")(uri "/Users/andrewfox/src/Turtle16/KiCad_Libraries/74xx.kicad_sym")(options "")(descr ""))
+)

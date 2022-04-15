@@ -6,8 +6,8 @@
 
   (title_block
     (title "Turtle16: Program Counter and Instruction Fetch")
-    (date "2022-04-10")
-    (rev "A (8f98feb1)")
+    (date "2022-04-14")
+    (rev "A")
     (comment 4 "The program counter and the instruction fetch unit.")
   )
 
@@ -2493,8 +2493,8 @@
     (in_bom yes) (on_board yes)
     (uuid 6143492c-9bbe-47cd-83b4-5f373a2c4945)
     (property "Reference" "J2" (id 0) (at 59.055 76.2 0))
-    (property "Value" "" (id 1) (at 59.055 78.74 0))
-    (property "Footprint" "" (id 2) (at 58.42 88.9 0)
+    (property "Value" "Control Signals" (id 1) (at 59.055 78.74 0))
+    (property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x08_P2.54mm_Vertical" (id 2) (at 58.42 88.9 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 58.42 88.9 0)

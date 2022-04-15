@@ -1047,26 +1047,32 @@
     (path "/6563e6b5-3bf9-481c-b64c-9c70bd0f06d5/30443993-3487-45b2-87f9-f95df1f20c2c"
       (reference "J5") (unit 1) (value "Y_MEM") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x16_P2.54mm_Vertical")
     )
+    (path "/6563e6b5-3bf9-481c-b64c-9c70bd0f06d5/7f72f54a-349e-4d6b-b101-4f18d65df912"
+      (reference "J6") (unit 1) (value "Y_EX") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x16_P2.54mm_Vertical")
+    )
+    (path "/6563e6b5-3bf9-481c-b64c-9c70bd0f06d5/6b018439-f3b8-44b7-ab96-073825651cb1"
+      (reference "J7") (unit 1) (value "Y_MEM") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x16_P2.54mm_Vertical")
+    )
     (path "/6563e6b5-3bf9-481c-b64c-9c70bd0f06d5/d97e3940-2de5-464d-9baa-f02887b82bc3"
-      (reference "J6") (unit 1) (value "StoreOp_MEM") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x16_P2.54mm_Vertical")
+      (reference "J8") (unit 1) (value "StoreOp_MEM") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x16_P2.54mm_Vertical")
     )
     (path "/46b28bf6-66d2-4e55-8b7d-ae79bc93fe3e/d997a8c9-6a78-406a-a069-66d066d032c8"
-      (reference "J7") (unit 1) (value "Ctl_EX") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x21_P2.54mm_Vertical")
+      (reference "J9") (unit 1) (value "Ctl_EX") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x21_P2.54mm_Vertical")
     )
     (path "/46b28bf6-66d2-4e55-8b7d-ae79bc93fe3e/974a0ec1-df70-4b69-a554-d75370cd862a"
-      (reference "J8") (unit 1) (value "Clock") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical")
+      (reference "J10") (unit 1) (value "Clock") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical")
     )
     (path "/46b28bf6-66d2-4e55-8b7d-ae79bc93fe3e/d49a49e2-d02b-4598-8255-4ea9aff72905"
-      (reference "J9") (unit 1) (value "Ins_EX") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x11_P2.54mm_Vertical")
+      (reference "J11") (unit 1) (value "Ins_EX") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x11_P2.54mm_Vertical")
     )
     (path "/46b28bf6-66d2-4e55-8b7d-ae79bc93fe3e/c1c0ee85-2172-4d00-8e24-9563b2ef6a0d"
-      (reference "J10") (unit 1) (value "A") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x16_P2.54mm_Vertical")
+      (reference "J12") (unit 1) (value "A") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x16_P2.54mm_Vertical")
     )
     (path "/46b28bf6-66d2-4e55-8b7d-ae79bc93fe3e/6c6f1b90-9976-4c1a-8b72-d77d57ed20eb"
-      (reference "J11") (unit 1) (value "B") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x16_P2.54mm_Vertical")
+      (reference "J13") (unit 1) (value "B") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x16_P2.54mm_Vertical")
     )
     (path "/46b28bf6-66d2-4e55-8b7d-ae79bc93fe3e/835aa7da-68b4-44c2-9904-d9907768c770"
-      (reference "J12") (unit 1) (value "PC_EX") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x16_P2.54mm_Vertical")
+      (reference "J14") (unit 1) (value "PC_EX") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x16_P2.54mm_Vertical")
     )
     (path "/00000000-0000-0000-0000-000060a71bbf/00000000-0000-0000-0000-00005fe1acc2"
       (reference "U1") (unit 1) (value "74ABT377") (footprint "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm")

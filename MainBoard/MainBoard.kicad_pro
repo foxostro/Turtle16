@@ -432,6 +432,10 @@
       ""
     ],
     [
+      "511f3e06-8e12-4701-ab9d-b334fc302cdf",
+      "Clock"
+    ],
+    [
       "00000000-0000-0000-0000-00005fed3839",
       "ID"
     ],
@@ -460,16 +464,16 @@
       "sheet60693B98"
     ],
     [
-      "511f3e06-8e12-4701-ab9d-b334fc302cdf",
-      "Clock"
+      "e246f5e8-ec22-4141-b6b8-29cb3989af2b",
+      "Write Back and Register File"
     ],
     [
-      "84f439e8-1444-4fe8-b51a-3bb9769a863d",
-      "Operand Forwarding A"
+      "15d111da-e708-4cff-aee7-702b294baaf1",
+      "Select Write Back Source"
     ],
     [
-      "2e370670-2291-4657-8360-03c3bd44e418",
-      "Operand Forwarding B"
+      "5d24f4c0-dd7f-43d2-9387-4d33d495b9b3",
+      "sheet60693B95"
     ],
     [
       "00000000-0000-0000-0000-000060a71bbf",
@@ -500,12 +504,12 @@
       "sheet5FD8D6EC"
     ],
     [
-      "c8cb28f7-4e0d-49a3-8b9b-fcff4adac1d4",
-      "sheet60693B9A"
+      "84f439e8-1444-4fe8-b51a-3bb9769a863d",
+      "Operand Forwarding A"
     ],
     [
-      "d661b2bc-e1e7-41b6-9d3a-8c7c4264da70",
-      "sheet60693B9B"
+      "2e370670-2291-4657-8360-03c3bd44e418",
+      "Operand Forwarding B"
     ],
     [
       "00000000-0000-0000-0000-00005fe35007",
@@ -520,16 +524,12 @@
       "sheet5FCE207B"
     ],
     [
-      "e246f5e8-ec22-4141-b6b8-29cb3989af2b",
-      "Write Back and Register File"
+      "c8cb28f7-4e0d-49a3-8b9b-fcff4adac1d4",
+      "sheet60693B9A"
     ],
     [
-      "15d111da-e708-4cff-aee7-702b294baaf1",
-      "Select Write Back Source"
-    ],
-    [
-      "5d24f4c0-dd7f-43d2-9387-4d33d495b9b3",
-      "sheet60693B95"
+      "d661b2bc-e1e7-41b6-9d3a-8c7c4264da70",
+      "sheet60693B9B"
     ],
     [
       "00000000-0000-0000-0000-000060af64de",

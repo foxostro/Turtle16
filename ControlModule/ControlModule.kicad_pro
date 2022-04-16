@@ -382,7 +382,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "specctra_dsn": "",
+      "specctra_dsn": "../../../Desktop/ControlModule.dsn",
       "step": "",
       "vrml": ""
     },
@@ -430,6 +430,18 @@
     [
       "83c5181e-f5ee-453c-ae5c-d7256ba8837d",
       ""
+    ],
+    [
+      "960ada49-cad4-45a9-8c06-0a6f2ac09c81",
+      "ID Flush"
+    ],
+    [
+      "233de4af-16a9-43da-b727-54fbe9066c2a",
+      "ID Prototype Inputs"
+    ],
+    [
+      "eb3ccc06-aa7c-4010-92fd-0462a3c2918f",
+      "ID Prototype Outputs"
     ],
     [
       "00000000-0000-0000-0000-00005fed3839",

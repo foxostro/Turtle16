@@ -432,18 +432,6 @@
       ""
     ],
     [
-      "233de4af-16a9-43da-b727-54fbe9066c2a",
-      "ID Prototype Inputs"
-    ],
-    [
-      "7d092911-147a-454f-8304-f820c3650a1e",
-      "MEM Prototype Inputs"
-    ],
-    [
-      "46b28bf6-66d2-4e55-8b7d-ae79bc93fe3e",
-      "EX Prototype Inputs"
-    ],
-    [
       "00000000-0000-0000-0000-00005fed3839",
       "ID"
     ],
@@ -472,20 +460,16 @@
       "sheet60693B98"
     ],
     [
-      "62103c11-51d2-468d-851b-b3ecb76379fd",
-      "Bypass Prototype Inputs"
+      "511f3e06-8e12-4701-ab9d-b334fc302cdf",
+      "Clock"
     ],
     [
-      "00000000-0000-0000-0000-00005fe35007",
-      "IF"
+      "84f439e8-1444-4fe8-b51a-3bb9769a863d",
+      "Operand Forwarding A"
     ],
     [
-      "00000000-0000-0000-0000-00005fe3da1c",
-      "sheet5FE3DA15"
-    ],
-    [
-      "00000000-0000-0000-0000-00005fce2082",
-      "sheet5FCE207B"
+      "2e370670-2291-4657-8360-03c3bd44e418",
+      "Operand Forwarding B"
     ],
     [
       "00000000-0000-0000-0000-000060a71bbf",
@@ -516,8 +500,36 @@
       "sheet5FD8D6EC"
     ],
     [
-      "511f3e06-8e12-4701-ab9d-b334fc302cdf",
-      "Clock"
+      "c8cb28f7-4e0d-49a3-8b9b-fcff4adac1d4",
+      "sheet60693B9A"
+    ],
+    [
+      "d661b2bc-e1e7-41b6-9d3a-8c7c4264da70",
+      "sheet60693B9B"
+    ],
+    [
+      "00000000-0000-0000-0000-00005fe35007",
+      "IF"
+    ],
+    [
+      "00000000-0000-0000-0000-00005fe3da1c",
+      "sheet5FE3DA15"
+    ],
+    [
+      "00000000-0000-0000-0000-00005fce2082",
+      "sheet5FCE207B"
+    ],
+    [
+      "e246f5e8-ec22-4141-b6b8-29cb3989af2b",
+      "Write Back and Register File"
+    ],
+    [
+      "15d111da-e708-4cff-aee7-702b294baaf1",
+      "Select Write Back Source"
+    ],
+    [
+      "5d24f4c0-dd7f-43d2-9387-4d33d495b9b3",
+      "sheet60693B95"
     ],
     [
       "00000000-0000-0000-0000-000060af64de",
@@ -548,56 +560,12 @@
       "Sheet5FD9EFDA"
     ],
     [
-      "e246f5e8-ec22-4141-b6b8-29cb3989af2b",
-      "Write Back and Register File"
-    ],
-    [
-      "15d111da-e708-4cff-aee7-702b294baaf1",
-      "Select Write Back Source"
-    ],
-    [
-      "5d24f4c0-dd7f-43d2-9387-4d33d495b9b3",
-      "sheet60693B95"
-    ],
-    [
-      "eb3ccc06-aa7c-4010-92fd-0462a3c2918f",
-      "ID Prototype Outputs"
-    ],
-    [
-      "6563e6b5-3bf9-481c-b64c-9c70bd0f06d5",
-      "EX Prototype Outputs"
-    ],
-    [
-      "84f439e8-1444-4fe8-b51a-3bb9769a863d",
-      "Operand Forwarding A"
-    ],
-    [
-      "2e370670-2291-4657-8360-03c3bd44e418",
-      "Operand Forwarding B"
-    ],
-    [
-      "00000000-0000-0000-0000-00005faed671",
-      "System Bus Connector"
-    ],
-    [
       "27dfe254-60c9-4400-9d01-5b17cd0eff2c",
       "RAM"
     ],
     [
-      "c8cb28f7-4e0d-49a3-8b9b-fcff4adac1d4",
-      "sheet60693B9A"
-    ],
-    [
-      "d661b2bc-e1e7-41b6-9d3a-8c7c4264da70",
-      "sheet60693B9B"
-    ],
-    [
-      "ebada9bb-31fc-4e68-928a-cab64ff4340e",
-      "MEM Prototype Outputs"
-    ],
-    [
-      "107fe7c5-84ae-442d-9ac6-a07c7ee8c825",
-      "BypassPrototypeOutputs"
+      "00000000-0000-0000-0000-00005faed671",
+      "System Bus Connector"
     ]
   ],
   "text_variables": {}

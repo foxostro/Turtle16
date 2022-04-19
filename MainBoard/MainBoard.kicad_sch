@@ -1478,8 +1478,8 @@
     (in_bom yes) (on_board yes)
     (uuid 00000000-0000-0000-0000-00006076d993)
     (property "Reference" "J2" (id 0) (at 227.5332 141.4526 0))
-    (property "Value" "" (id 1) (at 227.5332 143.764 0))
-    (property "Footprint" "" (id 2) (at 224.79 146.05 0)
+    (property "Value" "Power" (id 1) (at 227.5332 143.764 0))
+    (property "Footprint" "Connector_Molex:172448-0002" (id 2) (at 224.79 146.05 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 224.79 146.05 0)
@@ -4089,7 +4089,7 @@
       (reference "H4") (unit 1) (value "MountingHole_Pad") (footprint "MountingHole:MountingHole_3.2mm_M3_Pad")
     )
     (path "/27dfe254-60c9-4400-9d01-5b17cd0eff2c/ad32d22b-365c-416d-a554-573db1073ac9"
-      (reference "IC1") (unit 1) (value "7028L20PFGI") (footprint "QFP50P1600X1600X160-100N")
+      (reference "IC1") (unit 1) (value "7028L20PFGI") (footprint "Package_QFP:TQFP-100_14x14mm_P0.5mm")
     )
     (path "/b179022b-e294-47d5-9357-618f8dfa1093"
       (reference "J1") (unit 1) (value "Ext Clock") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical")
@@ -4794,10 +4794,10 @@
       (reference "U20") (unit 1) (value "74AHCT273") (footprint "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693be5/00000000-0000-0000-0000-0000607edb1f"
-      (reference "U21") (unit 1) (value "74ABT16374") (footprint "Package_SO:TSSOP-48_8x12.5mm_P0.5mm")
+      (reference "U21") (unit 1) (value "74ABT16374") (footprint "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693be1/00000000-0000-0000-0000-0000606a67ce"
-      (reference "U22") (unit 1) (value "74ABT16374") (footprint "Package_SO:TSSOP-48_8x12.5mm_P0.5mm")
+      (reference "U22") (unit 1) (value "74ABT16374") (footprint "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693be1/00000000-0000-0000-0000-00006046bb17"
       (reference "U23") (unit 1) (value "74AHCT574") (footprint "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm")
@@ -4854,13 +4854,13 @@
       (reference "U40") (unit 1) (value "IDT7381") (footprint "Package_LCC:PLCC-68_SMD-Socket")
     )
     (path "/00000000-0000-0000-0000-000060a71bbf/00000000-0000-0000-0000-00005fd8d70a/00000000-0000-0000-0000-000060735330"
-      (reference "U41") (unit 1) (value "74ABT16374") (footprint "Package_SO:TSSOP-48_8x12.5mm_P0.5mm")
+      (reference "U41") (unit 1) (value "74ABT16374") (footprint "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm")
     )
     (path "/00000000-0000-0000-0000-000060a71bbf/00000000-0000-0000-0000-00005fd8d6fe/00000000-0000-0000-0000-00006073862e"
-      (reference "U42") (unit 1) (value "74ABT16374") (footprint "Package_SO:TSSOP-48_8x12.5mm_P0.5mm")
+      (reference "U42") (unit 1) (value "74ABT16374") (footprint "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm")
     )
     (path "/00000000-0000-0000-0000-000060a71bbf/00000000-0000-0000-0000-00005fd8d713/00000000-0000-0000-0000-00006073bcac"
-      (reference "U43") (unit 1) (value "74ABT16374") (footprint "Package_SO:TSSOP-48_8x12.5mm_P0.5mm")
+      (reference "U43") (unit 1) (value "74ABT16374") (footprint "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm")
     )
     (path "/84f439e8-1444-4fe8-b51a-3bb9769a863d/00000000-0000-0000-0000-000060f256f3"
       (reference "U44") (unit 1) (value "74AHCT16245") (footprint "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm")
@@ -4935,16 +4935,16 @@
       (reference "U53") (unit 5) (value "74ABT32") (footprint "Package_SO:TSSOP-14_4.4x5mm_P0.65mm")
     )
     (path "/00000000-0000-0000-0000-00005fe35007/00000000-0000-0000-0000-00005fce2082/00000000-0000-0000-0000-0000607314ce"
-      (reference "U54") (unit 1) (value "74ABT16374") (footprint "Package_SO:TSSOP-48_8x12.5mm_P0.5mm")
+      (reference "U54") (unit 1) (value "74ABT16374") (footprint "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm")
     )
     (path "/00000000-0000-0000-0000-00005fe35007/00000000-0000-0000-0000-00005fce2082/00000000-0000-0000-0000-00006075dd7a"
-      (reference "U55") (unit 1) (value "74ABT16374") (footprint "Package_SO:TSSOP-48_8x12.5mm_P0.5mm")
+      (reference "U55") (unit 1) (value "74ABT16374") (footprint "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm")
     )
     (path "/c8cb28f7-4e0d-49a3-8b9b-fcff4adac1d4/00000000-0000-0000-0000-00006082b7d9"
-      (reference "U56") (unit 1) (value "74ABT16374") (footprint "Package_SO:TSSOP-48_8x12.5mm_P0.5mm")
+      (reference "U56") (unit 1) (value "74ABT16374") (footprint "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm")
     )
     (path "/d661b2bc-e1e7-41b6-9d3a-8c7c4264da70/00000000-0000-0000-0000-00006085e90c"
-      (reference "U57") (unit 1) (value "74ABT16374") (footprint "Package_SO:TSSOP-48_8x12.5mm_P0.5mm")
+      (reference "U57") (unit 1) (value "74ABT16374") (footprint "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm")
     )
     (path "/00000000-0000-0000-0000-000060af64de/00000000-0000-0000-0000-000060caa449"
       (reference "U58") (unit 1) (value "74ABT32") (footprint "Package_SO:TSSOP-14_4.4x5mm_P0.65mm")
@@ -4995,10 +4995,10 @@
       (reference "U63") (unit 1) (value "74ABT574") (footprint "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm")
     )
     (path "/00000000-0000-0000-0000-000060af64de/00000000-0000-0000-0000-00005fd56bfa/00000000-0000-0000-0000-00006075d7e8"
-      (reference "U64") (unit 1) (value "74ABT16374") (footprint "Package_SO:TSSOP-48_8x12.5mm_P0.5mm")
+      (reference "U64") (unit 1) (value "74ABT16374") (footprint "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm")
     )
     (path "/00000000-0000-0000-0000-000060af64de/00000000-0000-0000-0000-00005fd9efdb/00000000-0000-0000-0000-0000607623c9"
-      (reference "U65") (unit 1) (value "74ABT16374") (footprint "Package_SO:TSSOP-48_8x12.5mm_P0.5mm")
+      (reference "U65") (unit 1) (value "74ABT16374") (footprint "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm")
     )
     (path "/27dfe254-60c9-4400-9d01-5b17cd0eff2c/f3972c9d-3b06-4bc6-8b81-3be80fa29565"
       (reference "U66") (unit 1) (value "ATF22V10C") (footprint "Package_DIP:DIP-24_W7.62mm_Socket")

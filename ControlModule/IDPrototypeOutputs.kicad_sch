@@ -1340,7 +1340,7 @@
     (in_bom yes) (on_board yes)
     (uuid 051c326e-bd59-4da7-ac98-94434eac0862)
     (property "Reference" "J5" (id 0) (at 84.455 76.835 0))
-    (property "Value" "" (id 1) (at 84.455 79.375 0))
+    (property "Value" "Bypass Control" (id 1) (at 84.455 79.375 0))
     (property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x07_P2.54mm_Vertical" (id 2) (at 84.455 90.805 0)
       (effects (font (size 1.27 1.27)) hide)
     )

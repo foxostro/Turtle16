@@ -1,0 +1,28 @@
+Turtle16 with u8:
+Compiling the benchmark program 1000 times now...
+Compile took an average of 0.00516347 seconds
+Running fibonacci program now...
+Program runtime benchmark completed in 61,368 cycles. This took 0.067331 seconds
+Program ended with exit code: 0
+
+Turtle16 with u16:
+Compiling the benchmark program 1000 times now...
+Compile took an average of 0.00499475 seconds
+Running fibonacci program now...
+Program runtime benchmark completed in 53,472 cycles. This took 0.0575761 seconds
+Program ended with exit code: 0
+
+
+TurtleTTL with u8:
+Compiling the benchmark program 1000 times now...
+Compile took an average of 0.0149253 seconds
+Running fibonacci program now...
+Program runtime benchmark completed in 471,323 cycles. This took 2.03358 seconds
+Program ended with exit code: 0
+
+TurtleTTL with u16:
+Compiling the benchmark program 1000 times now...
+Compile took an average of 0.0156867 seconds
+Running fibonacci program now...
+Program runtime benchmark completed in 522,515 cycles. This took 2.23672 seconds
+Program ended with exit code: 0

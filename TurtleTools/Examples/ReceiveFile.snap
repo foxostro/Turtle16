@@ -1,3 +1,6 @@
+struct None {}
+let none = None {}
+
 trait Serial {
     func print(self: *Serial, s: []const u8)
     func printByte(self: *Serial, c: u8)

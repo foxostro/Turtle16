@@ -1,0 +1,45 @@
+var outputBuffer: [8]u8 = [8]u8{0, 0, 0, 0, 0, 0, 0, 0}
+var outputCursor: u16 = 0
+
+func print(s: []const u8) {
+    for c in s {
+        puts("c: ")
+        putc(c)
+        puts("\n")
+        printByte(c)
+    }
+    puts("exit print")
+}
+
+func printByte(c: u8) {
+    outputBuffer[outputCursor] = c
+    outputCursor = outputCursor + 1
+}
+
+func printU8(value: u8) {
+    var lower = value & 0xf
+    if lower > 9 {
+        lower = lower - 10 + 'a'
+    } else {
+        lower = lower + '0'
+    }
+
+    var upper = (value >> 4) & 0xf
+    if upper > 9 {
+        upper = upper - 10 + 'a'
+    } else {
+        upper = upper + '0'
+    }
+
+    print("0x")
+    printByte(upper)
+    printByte(lower)
+}
+
+test "print u8" {
+	printU8(0xab)
+    assert(outputBuffer[0] == '0')
+    assert(outputBuffer[1] == 'x')
+    assert(outputBuffer[2] == 'a')
+    assert(outputBuffer[3] == 'b')
+}

@@ -1132,7 +1132,7 @@
     (uuid 00000000-0000-0000-0000-000060735330)
     (property "Reference" "U41" (id 0) (at 148.59 97.79 0))
     (property "Value" "74ABT16374" (id 1) (at 148.59 100.33 0))
-    (property "Footprint" "" (id 2) (at 149.86 102.87 0)
+    (property "Footprint" "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm" (id 2) (at 149.86 102.87 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "https://www.ti.com/lit/ds/symlink/sn74abt16374a.pdf?HQS=dis-mous-null-mousermode-dsf-pf-null-wwe&ts=1617318801237" (id 3) (at 160.02 114.3 0)

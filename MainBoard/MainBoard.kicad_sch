@@ -4331,7 +4331,7 @@
     (path "/511f3e06-8e12-4701-ab9d-b334fc302cdf/477159c8-6842-4fdb-8985-f042f4e62500"
       (reference "TP12") (unit 1) (value "Phi1b") (footprint "TestPoint:TestPoint_Pad_D1.0mm")
     )
-    (path "/511f3e06-8e12-4701-ab9d-b334fc302cdf/97b5bd17-bb35-4b1a-8650-263c4447a3e6"
+    (path "/511f3e06-8e12-4701-ab9d-b334fc302cdf/dfa6d6bf-7c05-47a7-8bd2-c0e61991c5a3"
       (reference "TP13") (unit 1) (value "Phi1c") (footprint "TestPoint:TestPoint_Pad_D1.0mm")
     )
     (path "/511f3e06-8e12-4701-ab9d-b334fc302cdf/958d1a77-c57a-4740-a2b1-92069d0be992"

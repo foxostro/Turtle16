@@ -5,7 +5,7 @@
   (paper "A4")
 
   (title_block
-    (date "2022-04-23")
+    (date "2022-04-24")
     (rev "A")
   )
 
@@ -1030,7 +1030,7 @@
     (uuid fe44aca8-1d1b-4131-a569-6a87c833ad91)
   )
 
-  (text "The EEPROMs produce stable control signals before the Phi2\nclock edge. The octal flip flops latch these signals for the \nsecond half of the clock period before the interstage registers\nlatch them and present the results to the EX pipeline stage.\n\nThe hazard control logic also produces the ~{FLUSH} signal\nbefore the Phi2 clock edge. If the ~{FLUSH} signal is asserted\nthen these registers are immediately cleared to zero. On the\nPhi1 clock edge, the interstage registers will latch a zero."
+  (text "The Opcode Decoders produce stable control signals before the\nPhi2 clock edge. The octal flip flops latch these signals for\nthe second half of the clock period before the interstage\nregisters latch them and present the results to the EX\npipeline stage.\n\nThe hazard control logic also produces the ~{FLUSH} signal\nbefore the Phi2 clock edge. If the ~{FLUSH} signal is asserted\nthen these registers are immediately cleared to zero. On the\nPhi1 clock edge, the interstage registers will latch a zero."
     (at 93.98 160.02 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 32bf5d11-fd33-4feb-9245-97a1828aa7a6)

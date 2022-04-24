@@ -6,7 +6,7 @@
 
   (title_block
     (title "ID")
-    (date "2022-04-23")
+    (date "2022-04-24")
     (rev "A")
     (comment 1 "Simultaneously, read the register file using indices extracted from the instruction word.")
     (comment 2 "effect conditional instructions.")
@@ -173,12 +173,12 @@
     (uuid fe888b81-efe2-43e0-88ce-129469aeaa40)
   )
 
-  (text "Description\n————————\nHalt Clock\nSelect Store Operand 0\nSelect Store Operand 1\nSelect Right Operand 1\nSelect Right Operand 2\nFlags Register In\nALU Carry input\nALU I0 input\nALU I1 input\nALU I2 input\nALU RS0 input\nALU RS1 input\nJump\nAbsolute Jump\nMemory Load\nMemory Store\nDrive the Store operand onto the bus I/O lines\nSelect write back source\nWrite back low byte\nWrite back high byte\nEnable write back to register file"
+  (text "Description\n————————\nHalt Clock\nSelect Store Operand 0\nSelect Store Operand 1\nSelect Right Operand 1\nSelect Right Operand 2\nFlags Register In\nALU Carry input\nALU I0 input\nALU I1 input\nALU I2 input\nALU RS0 input\nALU RS1 input\nJump\nAbsolute Jump\nMemory Load\nMemory Store\nDrive the Store operand onto the bus I/O lines\nSelect write back source\nWrite back low byte\nWrite back high byte\nEnable write back to register file\nLeft operand is unused\nRight operand is unused"
     (at 43.18 200.66 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 2ecadc66-69f8-45d0-bf37-af9bed077d19)
   )
-  (text "#   Mnemonic\n——————————\n0  /HLT\n1   SelStoreOpA\n2   SelStoreOpB\n3   SelRightOpA\n4   SelRightOpB\n5   /FI\n6   CarryIn\n7   I0\n8   I1\n9   I2\n10  RS0\n11  RS1\n12  /J\n13  /JABS\n14  /MemLoad\n15  /MemStore\n16  /AssertStoreOp\n17  WriteBackSrc\n18  /WRL\n19  /WRH\n20  /WBEN"
+  (text "#   Mnemonic\n——————————\n0  /HLT\n1   SelStoreOpA\n2   SelStoreOpB\n3   SelRightOpA\n4   SelRightOpB\n5   /FI\n6   CarryIn\n7   I0\n8   I1\n9   I2\n10  RS0\n11  RS1\n12  /J\n13  /JABS\n14  /MemLoad\n15  /MemStore\n16  /AssertStoreOp\n17  WriteBackSrc\n18  /WRL\n19  /WRH\n20  /WBEN\n21  LUNUSED\n22  RUNUSED"
     (at 20.32 200.66 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 8233de19-691a-4981-9177-f647c5ab854c)

@@ -260,7 +260,7 @@ isResetting: \(computer.isResetting)
                 return buffer.map { UInt8(bigEndian: $0) }
             }
             let decoder = OpcodeDecoderROM(computer.decoder)
-            for i in 0..<kDecoderTableSize {
+            for i in 0..<decoder.count {
                 if i >= words.count {
                     decoder.opcodeDecodeROM[i] = 0
                 } else {
@@ -268,7 +268,7 @@ isResetting: \(computer.isResetting)
                 }
             }
             computer.decoder = decoder
-            logger.append("Wrote \(kDecoderTableSize) words to opcode decode ROM 1.\n")
+            logger.append("Wrote \(decoder.count) words to opcode decode ROM 1.\n")
             
         case "OpcodeDecodeROM2":
             let words = data.withUnsafeBytes { (pointer: UnsafeRawBufferPointer) -> [UInt8] in
@@ -276,7 +276,7 @@ isResetting: \(computer.isResetting)
                 return buffer.map { UInt8(bigEndian: $0) }
             }
             let decoder = OpcodeDecoderROM(computer.decoder)
-            for i in 0..<kDecoderTableSize {
+            for i in 0..<decoder.count {
                 if i >= words.count {
                     decoder.opcodeDecodeROM[i] = 0
                 } else {
@@ -284,7 +284,7 @@ isResetting: \(computer.isResetting)
                 }
             }
             computer.decoder = decoder
-            logger.append("Wrote \(kDecoderTableSize) words to opcode decode ROM 2.\n")
+            logger.append("Wrote \(decoder.count) words to opcode decode ROM 2.\n")
             
         case "OpcodeDecodeROM3":
             let words = data.withUnsafeBytes { (pointer: UnsafeRawBufferPointer) -> [UInt8] in
@@ -292,7 +292,7 @@ isResetting: \(computer.isResetting)
                 return buffer.map { UInt8(bigEndian: $0) }
             }
             let decoder = OpcodeDecoderROM(computer.decoder)
-            for i in 0..<kDecoderTableSize {
+            for i in 0..<decoder.count {
                 if i >= words.count {
                     decoder.opcodeDecodeROM[i] = 0
                 } else {
@@ -300,7 +300,7 @@ isResetting: \(computer.isResetting)
                 }
             }
             computer.decoder = decoder
-            logger.append("Wrote \(kDecoderTableSize) words to opcode decode ROM 3.\n")
+            logger.append("Wrote \(decoder.count) words to opcode decode ROM 3.\n")
         
         default:
             abort()
@@ -308,7 +308,6 @@ isResetting: \(computer.isResetting)
     }
     
     let kEEPROMSize = 1<<17
-    let kDecoderTableSize = 512
     
     fileprivate func save(_ what: String, _ url: URL) {
         var data: Data
@@ -348,7 +347,7 @@ isResetting: \(computer.isResetting)
             
         case "OpcodeDecodeROM1":
             data = Data(count: kEEPROMSize)
-            for i in 0..<kDecoderTableSize {
+            for i in 0..<computer.decoder.count {
                 let word = computer.decoder.decode(i) & 0x0000ff
                 data[i] = UInt8(word)
             }
@@ -356,7 +355,7 @@ isResetting: \(computer.isResetting)
             
         case "OpcodeDecodeROM2":
             data = Data(count: kEEPROMSize)
-            for i in 0..<kDecoderTableSize {
+            for i in 0..<computer.decoder.count {
                 let word = (computer.decoder.decode(i) & 0x00ff00) >> 8
                 data[i] = UInt8(word)
             }
@@ -364,7 +363,7 @@ isResetting: \(computer.isResetting)
             
         case "OpcodeDecodeROM3":
             data = Data(count: kEEPROMSize)
-            for i in 0..<kDecoderTableSize {
+            for i in 0..<computer.decoder.count {
                 let word = (computer.decoder.decode(i) & 0xff0000) >> 16
                 data[i] = UInt8(word)
             }

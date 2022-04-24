@@ -137,9 +137,7 @@ public class SchematicLevelCPUModel: NSObject, CPU {
             return 0
         }
         
-        let decoder = OpcodeDecoderROM()
-        decoder.opcodeDecodeROM = DecoderGenerator().generate()
-        stageID.decoder = decoder
+        stageID.decoder = ProgrammableLogicDecoder()
     }
     
     public required init?(coder: NSCoder) {

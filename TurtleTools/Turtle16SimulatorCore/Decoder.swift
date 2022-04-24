@@ -7,19 +7,20 @@
 //
 
 public protocol Decoder: NSObject, NSSecureCoding {
+    var count: Int { get }
     func decode(_ address: Int) -> UInt
     func decode(ovf: UInt, z: UInt, carry: UInt, opcode: UInt) -> UInt
 }
 
 public class OpcodeDecoderROM : NSObject, Decoder {
+    public let count: Int = 256
     public static var supportsSecureCoding = true
     public var opcodeDecodeROM: [UInt]
-    public let kDecoderTableSize = 512
     
     public required init(_ original: Decoder? = nil) {
-        opcodeDecodeROM = Array<UInt>(repeating: 0, count: kDecoderTableSize)
+        opcodeDecodeROM = Array<UInt>(repeating: 0, count: count)
         if let original = original {
-            for i in 0..<kDecoderTableSize {
+            for i in 0..<count {
                 opcodeDecodeROM[i] = original.decode(i)
             }
         }
@@ -73,7 +74,7 @@ public class OpcodeDecoderROM : NSObject, Decoder {
     }
     
     public func decode(_ address: Int) -> UInt {
-        assert(address >= 0 && address < kDecoderTableSize)
+        assert(address >= 0 && address < count)
         let control = opcodeDecodeROM[Int(address)]
         return control
     }
@@ -81,7 +82,7 @@ public class OpcodeDecoderROM : NSObject, Decoder {
 
 public class LogicalDecoder : NSObject, Decoder {
     public static var supportsSecureCoding = true
-    public let kDecoderTableSize = 256
+    public let count: Int = 256
     
     public required override init() {
     }
@@ -125,7 +126,7 @@ public class LogicalDecoder : NSObject, Decoder {
     }
     
     public func decode(_ address_: Int) -> UInt {
-        assert(address_ >= 0 && address_ < kDecoderTableSize)
+        assert(address_ >= 0 && address_ < count)
         let address = UInt(address_)
         
         let H = 0 != (address & 1)
@@ -193,7 +194,7 @@ public class LogicalDecoder : NSObject, Decoder {
 
 public class ProgrammableLogicDecoder : NSObject, Decoder {
     public static var supportsSecureCoding = true
-    public let kDecoderTableSize = 256
+    public let count: Int = 256
     
     public required override init() {
     }
@@ -248,7 +249,7 @@ public class ProgrammableLogicDecoder : NSObject, Decoder {
     }
     
     public func decode(_ address_: Int) -> UInt {
-        assert(address_ >= 0 && address_ < kDecoderTableSize)
+        assert(address_ >= 0 && address_ < count)
         let address = UInt(address_)
         
         let gal1 = makeGAL("InstructionDecoder1")

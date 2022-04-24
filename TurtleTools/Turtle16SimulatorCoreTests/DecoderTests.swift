@@ -14,7 +14,7 @@ class DecoderTests: XCTestCase {
         let logic = LogicalDecoder()
         let lookupTable = OpcodeDecoderROM()
         lookupTable.opcodeDecodeROM = DecoderGenerator().generate()
-        for i in 0..<logic.kDecoderTableSize {
+        for i in 0..<logic.count {
             let expected = (lookupTable.decode(i) >> signal) & 1
             let actual = (logic.decode(i) >> signal) & 1
             if expected != actual {
@@ -65,15 +65,15 @@ class ProgrammableLogicDecoderTests: XCTestCase {
 
     func testSignals() throws {
         let pld = ProgrammableLogicDecoder()
-        var actual: [UInt] = Array<UInt>(repeating: 0, count: pld.kDecoderTableSize)
-        for i in 0..<pld.kDecoderTableSize {
+        var actual: [UInt] = Array<UInt>(repeating: 0, count: pld.count)
+        for i in 0..<pld.count {
             actual[i] = pld.decode(i)
         }
         
-        var expected: [UInt] = Array<UInt>(repeating: 0, count: pld.kDecoderTableSize)
+        var expected: [UInt] = Array<UInt>(repeating: 0, count: pld.count)
         let reference = OpcodeDecoderROM()
         reference.opcodeDecodeROM = DecoderGenerator().generate()
-        for i in 0..<pld.kDecoderTableSize {
+        for i in 0..<pld.count {
             expected[i] = reference.decode(i)
         }
         

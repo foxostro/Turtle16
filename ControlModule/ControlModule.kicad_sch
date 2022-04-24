@@ -6,7 +6,7 @@
 
   (title_block
     (title "Turtle16: Control")
-    (date "2022-04-13")
+    (date "2022-04-23")
     (rev "A")
     (comment 4 "This includes logic to resolve pipeline hazards.")
     (comment 5 "The control unit produces control signals to sequence the CPU.")

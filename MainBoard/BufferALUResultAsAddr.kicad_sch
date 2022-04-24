@@ -6,8 +6,8 @@
 
   (title_block
     (title "MEM: Buffer ALUResult")
-    (date "2022-04-12")
-    (rev "A (584b6b4f)")
+    (date "2022-04-23")
+    (rev "C")
     (comment 4 "Buffer the effective address before it leaves the main board.")
   )
 

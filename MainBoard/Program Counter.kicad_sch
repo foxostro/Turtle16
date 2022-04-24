@@ -6,8 +6,8 @@
 
   (title_block
     (title "Program Counter")
-    (date "2022-04-14")
-    (rev "A")
+    (date "2022-04-23")
+    (rev "C")
     (comment 3 "sixteen-bit offset, or else reset to zero.")
     (comment 4 "Sixteen-bit program counter will either increment on the clock, add a specified")
   )

@@ -7,7 +7,7 @@
   (paper "USLetter")
   (title_block
     (title "Turtle16: Control")
-    (date "2022-04-13")
+    (date "2022-04-23")
     (rev "A")
     (comment 3 "This includes logic to resolve pipeline hazards.")
     (comment 4 "The control unit produces control signals to sequence the CPU.")
@@ -88,7 +88,7 @@
       (mirror false)
       (drillshape 0)
       (scaleselection 1)
-      (outputdirectory "../Generated/ControlModule_Rev_A_1649aeeb/")
+      (outputdirectory "../Generated/ControlModule_Rev_A_2d6023a4/")
     )
   )
 

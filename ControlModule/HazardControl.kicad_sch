@@ -6,7 +6,7 @@
 
   (title_block
     (title "Hazard Control")
-    (date "2022-04-13")
+    (date "2022-04-23")
     (rev "A")
     (comment 2 "control operand forwarding.")
     (comment 3 "This may stall the pipeline on a hazard. For RAW hazards, it produces signals to")

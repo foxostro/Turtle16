@@ -6,8 +6,8 @@
 
   (title_block
     (title "EX")
-    (date "2022-04-13")
-    (rev "A (7ac7a3cb)")
+    (date "2022-04-23")
+    (rev "C")
     (comment 2 "ID stage of the CPU pipeline.")
     (comment 3 "The ALU condition codes may be latched in a flags register which feeds back into the")
     (comment 4 "The EX stage is built around the IDT 7381 sixteen-bit ALU IC.")

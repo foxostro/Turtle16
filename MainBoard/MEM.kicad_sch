@@ -6,8 +6,8 @@
 
   (title_block
     (title "MEM")
-    (date "2022-04-12")
-    (rev "A (584b6b4f)")
+    (date "2022-04-23")
+    (rev "C")
     (comment 1 "place bus lines into tristate and halt the Phi1 clock.")
     (comment 2 "Devices on the bus may take the open-collector ~RDY~ signal high to force the CPU to")
     (comment 3 "These devices connect to the main board via a connector described in another sheet.")

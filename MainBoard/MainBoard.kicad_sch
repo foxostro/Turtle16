@@ -6,8 +6,8 @@
 
   (title_block
     (title "Turtle16: Main Board")
-    (date "2021-06-22")
-    (rev "B (cb021f9a)")
+    (date "2022-04-23")
+    (rev "C")
     (comment 4 "Microcomputer built from 74xx series logic chips.")
   )
 

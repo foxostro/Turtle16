@@ -4,6 +4,11 @@
 
   (paper "A4")
 
+  (title_block
+    (date "2022-04-23")
+    (rev "A")
+  )
+
   (lib_symbols
     (symbol "74xx:74HC273" (in_bom yes) (on_board yes)
       (property "Reference" "U" (id 0) (at -7.62 16.51 0)

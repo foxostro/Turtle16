@@ -168,6 +168,11 @@
     (uuid f683b564-906b-42f6-a233-cd22c58657dd)
   )
 
+  (wire (pts (xy 69.85 130.81) (xy 91.44 130.81))
+    (stroke (width 0) (type default) (color 0 0 0 0))
+    (uuid fe888b81-efe2-43e0-88ce-129469aeaa40)
+  )
+
   (text "Description\n————————\nHalt Clock\nSelect Store Operand 0\nSelect Store Operand 1\nSelect Right Operand 1\nSelect Right Operand 2\nFlags Register In\nALU Carry input\nALU I0 input\nALU I1 input\nALU I2 input\nALU RS0 input\nALU RS1 input\nJump\nAbsolute Jump\nMemory Load\nMemory Store\nDrive the Store operand onto the bus I/O lines\nSelect write back source\nWrite back low byte\nWrite back high byte\nEnable write back to register file"
     (at 43.18 200.66 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
@@ -272,6 +277,10 @@
     (effects (font (size 1.27 1.27)) (justify left))
     (uuid e73d5cff-eaf0-4767-b7c2-fda165aced8e)
   )
+  (hierarchical_label "~{RST_sync}" (shape input) (at 69.85 130.81 180)
+    (effects (font (size 1.27 1.27)) (justify right))
+    (uuid e8a67363-4973-4744-b0d4-b537ac4aaca8)
+  )
   (hierarchical_label "FWD_B" (shape output) (at 147.32 125.73 0)
     (effects (font (size 1.27 1.27)) (justify left))
     (uuid f4679fa8-ba18-4ec6-9bda-7def86487715)
@@ -342,6 +351,10 @@
     (pin "Ctl_Mid[0..23]" input (at 91.44 118.11 180)
       (effects (font (size 1.27 1.27)) (justify left))
       (uuid d0e144a3-6f5f-4307-ac4c-47637e9032bf)
+    )
+    (pin "~{RST_sync}" input (at 91.44 130.81 180)
+      (effects (font (size 1.27 1.27)) (justify left))
+      (uuid 3afbca7c-6431-4b48-95eb-70440d83182e)
     )
   )
 

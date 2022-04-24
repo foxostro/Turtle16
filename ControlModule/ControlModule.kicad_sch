@@ -265,6 +265,10 @@
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 23f6038e-9d50-46a6-b585-84f9a783a749)
   )
+  (wire (pts (xy 114.935 109.22) (xy 124.46 109.22))
+    (stroke (width 0) (type default) (color 0 0 0 0))
+    (uuid 2502caee-d955-453d-8eae-fa5e480fab5f)
+  )
   (bus (pts (xy 114.935 96.52) (xy 124.46 96.52))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 2f5b9295-5ccd-4bbd-9f8a-632298b42029)
@@ -637,9 +641,13 @@
       (effects (font (size 1.27 1.27)) (justify left))
       (uuid cbc50fce-81a0-40a8-aeed-2e87ea398b83)
     )
-    (pin "Phi1a" input (at 124.46 106.68 180)
+    (pin "Phi1c" input (at 124.46 106.68 180)
       (effects (font (size 1.27 1.27)) (justify left))
       (uuid 6482eee7-b14d-481d-8ad1-56866099bb8d)
+    )
+    (pin "~{RST_sync}" input (at 124.46 109.22 180)
+      (effects (font (size 1.27 1.27)) (justify left))
+      (uuid 93afe5b9-ac56-4aea-8798-699080b634cf)
     )
   )
 
@@ -653,7 +661,7 @@
     (property "Sheet file" "IDPrototypeInputs.kicad_sch" (id 1) (at 83.185 112.3446 0)
       (effects (font (size 1.27 1.27)) (justify left top))
     )
-    (pin "Phi1a" output (at 114.935 106.68 0)
+    (pin "Phi1c" output (at 114.935 106.68 0)
       (effects (font (size 1.27 1.27)) (justify right))
       (uuid 572aa9af-0170-40a5-ab2f-e08853dcc18a)
     )
@@ -684,6 +692,10 @@
     (pin "SelC_MEM[0..2]" output (at 114.935 101.6 0)
       (effects (font (size 1.27 1.27)) (justify right))
       (uuid ca8fcefc-8b40-4e8f-a573-31630c5647cb)
+    )
+    (pin "~{RST_sync}" output (at 114.935 109.22 0)
+      (effects (font (size 1.27 1.27)) (justify right))
+      (uuid 8364e1fe-be63-4cda-8000-a57e716c4c1e)
     )
   )
 
@@ -803,278 +815,275 @@
     (path "/233de4af-16a9-43da-b727-54fbe9066c2a/ea63d589-3b34-45e2-a3dc-7f8ba5304cdd"
       (reference "#PWR016") (unit 1) (value "GND") (footprint "")
     )
-    (path "/233de4af-16a9-43da-b727-54fbe9066c2a/1c28657f-c5c0-43eb-8af3-23d76bf01d1d"
-      (reference "#PWR017") (unit 1) (value "GND") (footprint "")
-    )
     (path "/233de4af-16a9-43da-b727-54fbe9066c2a/65f2c2cc-4800-4855-a9d0-07162dee62f7"
-      (reference "#PWR018") (unit 1) (value "VCC") (footprint "")
+      (reference "#PWR017") (unit 1) (value "VCC") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00005ff02502"
-      (reference "#PWR019") (unit 1) (value "VCC") (footprint "")
+      (reference "#PWR018") (unit 1) (value "VCC") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00005ff024fc"
-      (reference "#PWR020") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR019") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-000060ca2faf"
-      (reference "#PWR021") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR020") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00005fe970e6"
-      (reference "#PWR022") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR021") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00005fdfd5e1"
-      (reference "#PWR023") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR022") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00005ff02646"
-      (reference "#PWR024") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR023") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00005ff0264c"
-      (reference "#PWR025") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR024") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00005ff02652"
-      (reference "#PWR026") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR025") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00005ff02658"
-      (reference "#PWR027") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR026") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00005ff0265e"
-      (reference "#PWR028") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR027") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00006015c5de"
-      (reference "#PWR029") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR028") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00005ff02552"
-      (reference "#PWR030") (unit 1) (value "VCC") (footprint "")
+      (reference "#PWR029") (unit 1) (value "VCC") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00005ff028c5"
-      (reference "#PWR031") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR030") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/7cf36d97-1675-45e6-897a-c6ca6d835604"
-      (reference "#PWR032") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR031") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00005ff02531"
-      (reference "#PWR033") (unit 1) (value "VCC") (footprint "")
+      (reference "#PWR032") (unit 1) (value "VCC") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00005ff02537"
-      (reference "#PWR034") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR033") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-000060ca2e43"
-      (reference "#PWR035") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR034") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-000060132d5c"
-      (reference "#PWR036") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR035") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00005fe01272"
-      (reference "#PWR037") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR036") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00005fe9b1a1"
-      (reference "#PWR038") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR037") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-000060132d62"
-      (reference "#PWR039") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR038") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-000060132d68"
-      (reference "#PWR040") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR039") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-000060132d6e"
-      (reference "#PWR041") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR040") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-000060132d74"
-      (reference "#PWR042") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR041") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00006015c856"
-      (reference "#PWR043") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR042") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-000060132d47"
-      (reference "#PWR044") (unit 1) (value "VCC") (footprint "")
+      (reference "#PWR043") (unit 1) (value "VCC") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-000060132d85"
-      (reference "#PWR045") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR044") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/904385bd-309a-4048-a10b-6b730a6429f1"
-      (reference "#PWR046") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR045") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-000060132d26"
-      (reference "#PWR047") (unit 1) (value "VCC") (footprint "")
+      (reference "#PWR046") (unit 1) (value "VCC") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-000060132d2c"
-      (reference "#PWR048") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR047") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-000060ca2cd2"
-      (reference "#PWR049") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR048") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00006013d3a0"
-      (reference "#PWR050") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR049") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00005fe04d8b"
-      (reference "#PWR051") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR050") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00005fe9f0f1"
-      (reference "#PWR052") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR051") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00006013d3a6"
-      (reference "#PWR053") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR052") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00006013d3ac"
-      (reference "#PWR054") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR053") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00006013d3b2"
-      (reference "#PWR055") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR054") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00006013d3b8"
-      (reference "#PWR056") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR055") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00006015cc55"
-      (reference "#PWR057") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR056") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00006013d38b"
-      (reference "#PWR058") (unit 1) (value "VCC") (footprint "")
+      (reference "#PWR057") (unit 1) (value "VCC") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00006013d3c9"
-      (reference "#PWR059") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR058") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/060c080c-768b-4202-ba3a-cde632a17c3b"
-      (reference "#PWR060") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR059") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00006013d36a"
-      (reference "#PWR061") (unit 1) (value "VCC") (footprint "")
+      (reference "#PWR060") (unit 1) (value "VCC") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf/00000000-0000-0000-0000-00006013d370"
-      (reference "#PWR062") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR061") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-00005fdaf811"
-      (reference "#PWR063") (unit 1) (value "VCC") (footprint "")
+      (reference "#PWR062") (unit 1) (value "VCC") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-00005fdaf81a"
-      (reference "#PWR064") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR063") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000607472f6"
-      (reference "#PWR065") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR064") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-00005fda9cd1"
-      (reference "#PWR066") (unit 1) (value "VCC") (footprint "")
+      (reference "#PWR065") (unit 1) (value "VCC") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-00005fda9cd7"
-      (reference "#PWR067") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR066") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-000060745ae0"
-      (reference "#PWR068") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR067") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000607b37f4"
-      (reference "#PWR069") (unit 1) (value "VCC") (footprint "")
+      (reference "#PWR068") (unit 1) (value "VCC") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000607b41c4"
-      (reference "#PWR070") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR069") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-000060745a36"
-      (reference "#PWR071") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR070") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000606fef6b/00000000-0000-0000-0000-000060715cc5"
-      (reference "#PWR072") (unit 1) (value "VCC") (footprint "")
+      (reference "#PWR071") (unit 1) (value "VCC") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000606fef6b/00000000-0000-0000-0000-000060715ccb"
-      (reference "#PWR073") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR072") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000606fef6b/00000000-0000-0000-0000-000060715d7e"
-      (reference "#PWR074") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR073") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000606fef6b/00000000-0000-0000-0000-000060715d6b"
-      (reference "#PWR075") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR074") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000606fef6b/00000000-0000-0000-0000-000060715dd4"
-      (reference "#PWR076") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR075") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000606fef6b/00000000-0000-0000-0000-000060715dc1"
-      (reference "#PWR077") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR076") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000606fef6b/00000000-0000-0000-0000-000060715d59"
-      (reference "#PWR078") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR077") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000606fef6b/00000000-0000-0000-0000-000060715daf"
-      (reference "#PWR079") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR078") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000606fef6b/00000000-0000-0000-0000-000060715d4d"
-      (reference "#PWR080") (unit 1) (value "VCC") (footprint "")
+      (reference "#PWR079") (unit 1) (value "VCC") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000606fef6b/00000000-0000-0000-0000-000060715d53"
-      (reference "#PWR081") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR080") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000606fef6b/00000000-0000-0000-0000-000060715da3"
-      (reference "#PWR082") (unit 1) (value "VCC") (footprint "")
+      (reference "#PWR081") (unit 1) (value "VCC") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000606fef6b/00000000-0000-0000-0000-000060715da9"
-      (reference "#PWR083") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR082") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000606fef6b/00000000-0000-0000-0000-000060715e89"
-      (reference "#PWR084") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR083") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000606fef6b/00000000-0000-0000-0000-000060715e76"
-      (reference "#PWR085") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR084") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000606fef6b/00000000-0000-0000-0000-000060715e64"
-      (reference "#PWR086") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR085") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000606fef6b/00000000-0000-0000-0000-000060715e58"
-      (reference "#PWR087") (unit 1) (value "VCC") (footprint "")
+      (reference "#PWR086") (unit 1) (value "VCC") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000606fef6b/00000000-0000-0000-0000-000060715e5e"
-      (reference "#PWR088") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR087") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000606fef6b/00000000-0000-0000-0000-000060715de7"
-      (reference "#PWR089") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR088") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000606fef6b/00000000-0000-0000-0000-000060715dfa"
-      (reference "#PWR090") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR089") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000606fef6b/00000000-0000-0000-0000-000060715e0c"
-      (reference "#PWR091") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR090") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000606fef6b/00000000-0000-0000-0000-000060715e18"
-      (reference "#PWR092") (unit 1) (value "VCC") (footprint "")
+      (reference "#PWR091") (unit 1) (value "VCC") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-00005fda967f/00000000-0000-0000-0000-0000606fef6b/00000000-0000-0000-0000-000060715e12"
-      (reference "#PWR093") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR092") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693be5/00000000-0000-0000-0000-00005fd982bf"
-      (reference "#PWR094") (unit 1) (value "VCC") (footprint "")
+      (reference "#PWR093") (unit 1) (value "VCC") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693be5/00000000-0000-0000-0000-00005fd982c5"
-      (reference "#PWR095") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR094") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693be5/00000000-0000-0000-0000-00005fd983df"
-      (reference "#PWR096") (unit 1) (value "VCC") (footprint "")
+      (reference "#PWR095") (unit 1) (value "VCC") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693be5/00000000-0000-0000-0000-00005fd98282"
-      (reference "#PWR097") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR096") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693be5/00000000-0000-0000-0000-0000607edaee"
-      (reference "#PWR098") (unit 1) (value "VCC") (footprint "")
+      (reference "#PWR097") (unit 1) (value "VCC") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693be5/00000000-0000-0000-0000-0000607edaf4"
-      (reference "#PWR099") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR098") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693be1/00000000-0000-0000-0000-00005fd1eed8"
-      (reference "#PWR0100") (unit 1) (value "VCC") (footprint "")
+      (reference "#PWR099") (unit 1) (value "VCC") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693be1/00000000-0000-0000-0000-00005fd1eede"
-      (reference "#PWR0101") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR0100") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693be1/00000000-0000-0000-0000-0000606a6796"
-      (reference "#PWR0102") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR0101") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693be1/00000000-0000-0000-0000-000060471220"
-      (reference "#PWR0103") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR0102") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693be1/00000000-0000-0000-0000-0000606a679d"
-      (reference "#PWR0104") (unit 1) (value "VCC") (footprint "")
+      (reference "#PWR0103") (unit 1) (value "VCC") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693be1/00000000-0000-0000-0000-0000606a67a3"
-      (reference "#PWR0105") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR0104") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693be1/00000000-0000-0000-0000-00005fd1efae"
-      (reference "#PWR0106") (unit 1) (value "VCC") (footprint "")
+      (reference "#PWR0105") (unit 1) (value "VCC") (footprint "")
     )
     (path "/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693be1/00000000-0000-0000-0000-00005fd1efa8"
-      (reference "#PWR0107") (unit 1) (value "GND") (footprint "")
+      (reference "#PWR0106") (unit 1) (value "GND") (footprint "")
     )
     (path "/00000000-0000-0000-0000-0000608fd914"
       (reference "C1") (unit 1) (value "100µF") (footprint "Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder")

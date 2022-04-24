@@ -828,7 +828,6 @@
     )
   )
 
-
   (junction (at 146.05 182.88) (diameter 0) (color 0 0 0 0)
     (uuid 0a67c58f-82bf-4731-87df-0acd477c4299)
   )
@@ -2112,7 +2111,7 @@
     (in_bom yes) (on_board yes)
     (uuid ad32d22b-365c-416d-a554-573db1073ac9)
     (property "Reference" "IC1" (id 0) (at 149.86 93.98 0))
-    (property "Value" "" (id 1) (at 149.86 96.52 0))
+    (property "Value" "7028L20PFGI" (id 1) (at 149.86 96.52 0))
     (property "Footprint" "Package_QFP:TQFP-100_14x14mm_P0.5mm" (id 2) (at 184.15 53.34 0)
       (effects (font (size 1.27 1.27)) (justify left) hide)
     )

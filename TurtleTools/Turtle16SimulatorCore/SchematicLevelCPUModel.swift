@@ -35,12 +35,12 @@ public class SchematicLevelCPUModel: NSObject, CPU {
     
     public var instructions: [UInt16] = Array<UInt16>(repeating: 0, count: 65535)
     
-    public var opcodeDecodeROM: [UInt] {
+    public var decoder: Decoder {
         set(value) {
-            stageID.opcodeDecodeROM = value
+            stageID.decoder = value
         }
         get {
-            stageID.opcodeDecodeROM
+            stageID.decoder
         }
     }
     
@@ -137,8 +137,9 @@ public class SchematicLevelCPUModel: NSObject, CPU {
             return 0
         }
         
-        let decoder = DecoderGenerator().generate()
-        stageID.opcodeDecodeROM = decoder
+        let decoder = OpcodeDecoderROM()
+        decoder.opcodeDecodeROM = DecoderGenerator().generate()
+        stageID.decoder = decoder
     }
     
     public required init?(coder: NSCoder) {

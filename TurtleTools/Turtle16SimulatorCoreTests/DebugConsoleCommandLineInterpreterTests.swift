@@ -586,7 +586,7 @@ Syntax: load <destination> "<path>"
         interpreter.run(instructions:[
             .load("OpcodeDecodeROM1", url)
         ])
-        XCTAssertEqual(computer.opcodeDecodeROM[2] & 0xff, 0x20)
+        XCTAssertEqual(computer.decoder.decode(2) & 0xff, 0x20)
     }
     
     func testLoadDataFromFileForOpcodeDecodeROM2() throws {
@@ -596,7 +596,7 @@ Syntax: load <destination> "<path>"
         interpreter.run(instructions:[
             .load("OpcodeDecodeROM2", url)
         ])
-        XCTAssertEqual((computer.opcodeDecodeROM[2]>>8) & 0xff, 0x20)
+        XCTAssertEqual((computer.decoder.decode(2)>>8) & 0xff, 0x20)
     }
     
     func testLoadDataFromFileForOpcodeDecodeROM3() throws {
@@ -606,7 +606,7 @@ Syntax: load <destination> "<path>"
         interpreter.run(instructions:[
             .load("OpcodeDecodeROM3", url)
         ])
-        XCTAssertEqual((computer.opcodeDecodeROM[2]>>16) & 0xff, 0x20)
+        XCTAssertEqual((computer.decoder.decode(2)>>16) & 0xff, 0x20)
     }
     
     func testSaveProgram() throws {

@@ -75,7 +75,9 @@ class IDTests: XCTestCase {
         let id = ID()
         let rst = 0
         let index = UInt(rst << 8) | UInt(0b11111)
-        id.opcodeDecodeROM[Int(index)] = ID.nopControlWord
+        let decoder = OpcodeDecoderROM()
+        decoder.opcodeDecodeROM[Int(index)] = ID.nopControlWord
+        id.decoder = decoder
         let output = id.step(input: ID.Input(ins: 0xffff, rst: 0))
         XCTAssertEqual(output.ctl_EX, 0b111111111111111111111) // no active control lines
     }
@@ -83,7 +85,9 @@ class IDTests: XCTestCase {
     func testDecodeControlWordForNOP() throws {
         let id = ID()
         let index = UInt(0)
-        id.opcodeDecodeROM[Int(index)] = ID.nopControlWord
+        let decoder = OpcodeDecoderROM()
+        decoder.opcodeDecodeROM[Int(index)] = ID.nopControlWord
+        id.decoder = decoder
         let output = id.step(input: ID.Input(ins: 0))
         XCTAssertEqual(output.ctl_EX, 0b111111111111111111111) // no active control lines
     }
@@ -106,7 +110,9 @@ class IDTests: XCTestCase {
         let id = ID()
         let hltOpcode: UInt = 1
         let entry: UInt = hltOpcode
-        id.opcodeDecodeROM[Int(entry)] = 1
+        let decoder = OpcodeDecoderROM()
+        decoder.opcodeDecodeROM[Int(entry)] = 1
+        id.decoder = decoder
         let ins: UInt16 = UInt16(hltOpcode << 11)
         let output = id.step(input: ID.Input(ins: ins))
         XCTAssertEqual(output.ctl_EX & 1, 1) // HLT control line is active
@@ -116,7 +122,9 @@ class IDTests: XCTestCase {
         let id = ID()
         let hltOpcode: UInt = 1
         let entry: UInt = hltOpcode
-        id.opcodeDecodeROM[Int(entry)] = 1
+        let decoder = OpcodeDecoderROM()
+        decoder.opcodeDecodeROM[Int(entry)] = 1
+        id.decoder = decoder
         let ins: UInt16 = UInt16(hltOpcode << 11)
         let output = id.step(input: ID.Input(ins: ins, j: 0))
         XCTAssertEqual(output.stall, 0)
@@ -127,7 +135,9 @@ class IDTests: XCTestCase {
         let id = ID()
         let opcode: UInt = 1
         let entry: UInt = opcode
-        id.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
+        let decoder = OpcodeDecoderROM()
+        decoder.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
+        id.decoder = decoder
         
         // The instruction in ID want to read r7 on port A
         let ins_ID: UInt16 = 0b0000100011100000
@@ -147,7 +157,9 @@ class IDTests: XCTestCase {
         let id = ID()
         let opcode: UInt = 1
         let entry: UInt = opcode
-        id.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
+        let decoder = OpcodeDecoderROM()
+        decoder.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
+        id.decoder = decoder
         
         // The instruction in ID want to read r7 on port A
         let ins_ID: UInt16 = 0b0000100011100000
@@ -166,7 +178,9 @@ class IDTests: XCTestCase {
         let id = ID()
         let opcode: UInt = 1
         let entry: UInt = opcode
-        id.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
+        let decoder = OpcodeDecoderROM()
+        decoder.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
+        id.decoder = decoder
         
         // The instruction in ID want to read r7 on port A
         let ins_ID: UInt16 = 0b0000100011100000
@@ -186,7 +200,9 @@ class IDTests: XCTestCase {
         let id = ID()
         let opcode: UInt = 1
         let entry: UInt = opcode
-        id.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
+        let decoder = OpcodeDecoderROM()
+        decoder.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
+        id.decoder = decoder
         
         // The instruction in ID want to read r7 on port A
         let ins_ID: UInt16 = 0b0000100011100000
@@ -205,7 +221,9 @@ class IDTests: XCTestCase {
         let id = ID()
         let opcode: UInt = 1
         let entry: UInt = opcode
-        id.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
+        let decoder = OpcodeDecoderROM()
+        decoder.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
+        id.decoder = decoder
         
         // The instruction in ID want to read r7 on port B
         let ins_ID: UInt16 = 0b0000100000011100
@@ -225,7 +243,9 @@ class IDTests: XCTestCase {
         let id = ID()
         let opcode: UInt = 1
         let entry: UInt = opcode
-        id.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
+        let decoder = OpcodeDecoderROM()
+        decoder.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
+        id.decoder = decoder
         
         // The instruction in ID want to read r7 on port B
         let ins_ID: UInt16 = 0b0000100000011100
@@ -244,7 +264,9 @@ class IDTests: XCTestCase {
         let id = ID()
         let opcode: UInt = 1
         let entry: UInt = opcode
-        id.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
+        let decoder = OpcodeDecoderROM()
+        decoder.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
+        id.decoder = decoder
         
         // The instruction in ID want to read r7 on port B
         let ins_ID: UInt16 = 0b0000100000011100
@@ -264,7 +286,9 @@ class IDTests: XCTestCase {
         let id = ID()
         let opcode: UInt = 1
         let entry: UInt = opcode
-        id.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
+        let decoder = OpcodeDecoderROM()
+        decoder.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
+        id.decoder = decoder
         
         // The instruction in ID want to read r7 on port B
         let ins_ID: UInt16 = 0b0000100000011100
@@ -283,7 +307,9 @@ class IDTests: XCTestCase {
         let id = ID()
         let opcode: UInt = 1
         let entry: UInt = opcode
-        id.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
+        let decoder = OpcodeDecoderROM()
+        decoder.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
+        id.decoder = decoder
         
         // The instruction in ID want to read r7 on port A and on port B
         let ins_ID: UInt16 = 0b0000100011111100
@@ -304,7 +330,9 @@ class IDTests: XCTestCase {
         let id = ID()
         let opcode: UInt = 1
         let entry: UInt = opcode
-        id.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
+        let decoder = OpcodeDecoderROM()
+        decoder.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
+        id.decoder = decoder
         
         // The instruction in ID want to read r7 on port A and on port B
         let ins_ID: UInt16 = 0b0000100011111100
@@ -323,7 +351,9 @@ class IDTests: XCTestCase {
         let id = ID()
         let opcode: UInt = 1
         let entry: UInt = opcode
-        id.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
+        let decoder = OpcodeDecoderROM()
+        decoder.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
+        id.decoder = decoder
         
         // The instruction in ID want to read r7 on port A and on port B
         let ins_ID: UInt16 = 0b0000100011111100
@@ -344,7 +374,9 @@ class IDTests: XCTestCase {
         let id = ID()
         let opcode: UInt = 1
         let entry: UInt = opcode
-        id.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
+        let decoder = OpcodeDecoderROM()
+        decoder.opcodeDecodeROM[Int(entry)] = ID.nopControlWord
+        id.decoder = decoder
         
         // The instruction in ID want to read r7 on port A and on port B
         let ins_ID: UInt16 = 0b0000100011111100

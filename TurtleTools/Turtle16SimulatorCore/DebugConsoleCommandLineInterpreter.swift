@@ -259,13 +259,15 @@ isResetting: \(computer.isResetting)
                 let buffer = pointer.bindMemory(to: UInt8.self)
                 return buffer.map { UInt8(bigEndian: $0) }
             }
+            let decoder = OpcodeDecoderROM(computer.decoder)
             for i in 0..<kDecoderTableSize {
                 if i >= words.count {
-                    computer.opcodeDecodeROM[i] = 0
+                    decoder.opcodeDecodeROM[i] = 0
                 } else {
-                    computer.opcodeDecodeROM[i] = (computer.opcodeDecodeROM[i] & ~0x0000ff) | UInt(words[i])
+                    decoder.opcodeDecodeROM[i] = (decoder.opcodeDecodeROM[i] & ~0x0000ff) | UInt(words[i])
                 }
             }
+            computer.decoder = decoder
             logger.append("Wrote \(kDecoderTableSize) words to opcode decode ROM 1.\n")
             
         case "OpcodeDecodeROM2":
@@ -273,13 +275,15 @@ isResetting: \(computer.isResetting)
                 let buffer = pointer.bindMemory(to: UInt8.self)
                 return buffer.map { UInt8(bigEndian: $0) }
             }
+            let decoder = OpcodeDecoderROM(computer.decoder)
             for i in 0..<kDecoderTableSize {
                 if i >= words.count {
-                    computer.opcodeDecodeROM[i] = 0
+                    decoder.opcodeDecodeROM[i] = 0
                 } else {
-                    computer.opcodeDecodeROM[i] = (computer.opcodeDecodeROM[i] & ~0x00ff00) | (UInt(words[i])<<8)
+                    decoder.opcodeDecodeROM[i] = (decoder.opcodeDecodeROM[i] & ~0x00ff00) | (UInt(words[i])<<8)
                 }
             }
+            computer.decoder = decoder
             logger.append("Wrote \(kDecoderTableSize) words to opcode decode ROM 2.\n")
             
         case "OpcodeDecodeROM3":
@@ -287,13 +291,15 @@ isResetting: \(computer.isResetting)
                 let buffer = pointer.bindMemory(to: UInt8.self)
                 return buffer.map { UInt8(bigEndian: $0) }
             }
+            let decoder = OpcodeDecoderROM(computer.decoder)
             for i in 0..<kDecoderTableSize {
                 if i >= words.count {
-                    computer.opcodeDecodeROM[i] = 0
+                    decoder.opcodeDecodeROM[i] = 0
                 } else {
-                    computer.opcodeDecodeROM[i] = (computer.opcodeDecodeROM[i] & ~0xff0000) | (UInt(words[i])<<16)
+                    decoder.opcodeDecodeROM[i] = (decoder.opcodeDecodeROM[i] & ~0xff0000) | (UInt(words[i])<<16)
                 }
             }
+            computer.decoder = decoder
             logger.append("Wrote \(kDecoderTableSize) words to opcode decode ROM 3.\n")
         
         default:
@@ -343,7 +349,7 @@ isResetting: \(computer.isResetting)
         case "OpcodeDecodeROM1":
             data = Data(count: kEEPROMSize)
             for i in 0..<kDecoderTableSize {
-                let word = computer.opcodeDecodeROM[i] & 0x0000ff
+                let word = computer.decoder.decode(i) & 0x0000ff
                 data[i] = UInt8(word)
             }
             logger.append("Wrote contents of opcode decode ROM 1 to file: \"\(url.path)\"\n")
@@ -351,7 +357,7 @@ isResetting: \(computer.isResetting)
         case "OpcodeDecodeROM2":
             data = Data(count: kEEPROMSize)
             for i in 0..<kDecoderTableSize {
-                let word = (computer.opcodeDecodeROM[i] & 0x00ff00) >> 8
+                let word = (computer.decoder.decode(i) & 0x00ff00) >> 8
                 data[i] = UInt8(word)
             }
             logger.append("Wrote contents of opcode decode ROM 2 to file: \"\(url.path)\"\n")
@@ -359,7 +365,7 @@ isResetting: \(computer.isResetting)
         case "OpcodeDecodeROM3":
             data = Data(count: kEEPROMSize)
             for i in 0..<kDecoderTableSize {
-                let word = (computer.opcodeDecodeROM[i] & 0xff0000) >> 16
+                let word = (computer.decoder.decode(i) & 0xff0000) >> 16
                 data[i] = UInt8(word)
             }
             logger.append("Wrote contents of opcode decode ROM 3 to file: \"\(url.path)\"\n")

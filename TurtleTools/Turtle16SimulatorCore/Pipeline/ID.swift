@@ -269,30 +269,30 @@ public class ID: NSObject, NSSecureCoding {
     }
     
     public var registerFile: [UInt16]
-    public var opcodeDecodeROM: [UInt]
+    public var decoder: Decoder
     public var associatedPC: UInt16?
     let hazardControlUnit: HazardControl = HazardControlMockup()
     
     public required override init() {
         registerFile = Array<UInt16>(repeating: 0, count: 8)
-        opcodeDecodeROM = Array<UInt>(repeating: 0, count: 512)
+        decoder = OpcodeDecoderROM()
         associatedPC = nil
     }
     
     public required init?(coder: NSCoder) {
         guard let registerFile = coder.decodeObject(forKey: "registerFile") as? [UInt16],
-              let opcodeDecodeROM = coder.decodeObject(forKey: "opcodeDecodeROM") as? [UInt],
+              let decoder = coder.decodeObject(forKey: "decoder") as? Decoder,
               let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16? else {
             return nil
         }
         self.registerFile = registerFile
-        self.opcodeDecodeROM = opcodeDecodeROM
+        self.decoder = decoder
         self.associatedPC = associatedPC
     }
     
     public func encode(with coder: NSCoder) {
         coder.encode(registerFile, forKey: "registerFile")
-        coder.encode(opcodeDecodeROM, forKey: "opcodeDecodeROM")
+        coder.encode(decoder, forKey: "decoder")
         coder.encode(associatedPC, forKey: "associatedPC")
     }
     
@@ -308,7 +308,7 @@ public class ID: NSObject, NSSecureCoding {
             return false
         }
         guard registerFile == rhs.registerFile,
-              opcodeDecodeROM == rhs.opcodeDecodeROM,
+              decoder == rhs.decoder,
               associatedPC == rhs.associatedPC else {
             return false
         }
@@ -318,7 +318,7 @@ public class ID: NSObject, NSSecureCoding {
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(registerFile)
-        hasher.combine(opcodeDecodeROM)
+        hasher.combine(decoder.hash)
         hasher.combine(associatedPC)
         return hasher.finalize()
     }
@@ -343,11 +343,8 @@ public class ID: NSObject, NSSecureCoding {
     }
     
     public func decodeOpcode(input: Input) -> UInt {
-        let address = UInt(input.ovf << 7)
-                    | UInt(input.z << 6)
-                    | UInt(input.carry << 5)
-                    | UInt((input.ins >> 11) & 31)
-        let ctl_ID = opcodeDecodeROM[Int(address)]
+        let opcode = UInt((input.ins >> 11) & 31)
+        let ctl_ID = decoder.decode(ovf: input.ovf, z: input.z, carry: input.carry, opcode: opcode)
         return ctl_ID
     }
     

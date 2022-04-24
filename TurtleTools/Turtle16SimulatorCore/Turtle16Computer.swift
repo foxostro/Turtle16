@@ -22,12 +22,12 @@ public class Turtle16Computer: NSObject, NSSecureCoding {
     public static var supportsSecureCoding = true
     public private(set) var cpu: CPU
     public var ram: [UInt16]
-    public var opcodeDecodeROM: [UInt] {
+    public var decoder: Decoder {
         set(value) {
-            cpu.opcodeDecodeROM = value
+            cpu.decoder = value
         }
         get {
-            cpu.opcodeDecodeROM
+            cpu.decoder
         }
     }
     

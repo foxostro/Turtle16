@@ -33,7 +33,7 @@ public protocol CPU: NSObject, NSSecureCoding {
     var carry: UInt { get }
     var z: UInt { get }
     var ovf: UInt { get }
-    var opcodeDecodeROM: [UInt] { get set }
+    var decoder: Decoder { get set }
     
     var load: (MemoryAddress) -> UInt16 { get set }
     var store: (UInt16, MemoryAddress) -> Void { get set }

@@ -1,0 +1,24 @@
+GAL22V10
+InstructionDecoder2
+
+A     B      C      D      E      F     G     H       NC    NC     NC     GND
+NC    WRH    WRL    WBS    ASO    MS    ML    JABS    J     RS0    RS1    VCC
+
+RS1 = D + /E + /F + G + H
+RS0 = A*G*H + /A*G*/H + B*H + /B*/F*/G*/H + /C*E*F + /D + /E*/F + /E*H + F*G
+J = A*G*H + /A*E*G*/H + B*E*H + /B*/F*/G*/H + /C*E*F + /D + E*F*G + /E*/F + /E*G*H
+JABS = /D + E + /F + G*H + /G*/H
+ML = D + E + F + /G + H
+MS = D + E + F + /G + /H
+ASO = D*/G + D*H + /D*F*G + E + /F*/G + /F*/H
+WBS = D*E*/F + D*/E*G*H + D*F*/G + /D*/E*/F + /E*F*/H + F*/G*H
+WRL = D*E*/F + D*/E*G*H + D*F*/G + /D*/E*F*G*/H + /D*/E*/F*/G + /E*/F*G*H + F*/G*H
+WRH = D*E*/F + D*/E*G*H + D*F*/G + /D*/E*F*G*/H + /D*/E*/F*/G + E*F*/G*H + /E*/F*G*H
+
+DESCRIPTION
+
+Decodes instruction opcode and ALU flags to control signals 2 of 3
+Inputs A to E are the five bits of the instruction opcode.
+Input F is the ALU carry flag.
+Input G is the ALU zero flag.
+Input H is the ALU overflow flag.

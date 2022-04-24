@@ -103,6 +103,9 @@
 		6F35B4B32628AFED004EA0AB /* example.bin in Resources */ = {isa = PBXBuildFile; fileRef = 6F35B4B22628AFED004EA0AB /* example.bin */; };
 		6F3987662814BBF600C601AE /* Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3987652814BBF600C601AE /* Decoder.swift */; };
 		6F3987682814CD9800C601AE /* DecoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3987672814CD9800C601AE /* DecoderTests.swift */; };
+		6F39876A281517D800C601AE /* InstructionDecoder1.pld in Resources */ = {isa = PBXBuildFile; fileRef = 6F398769281517D800C601AE /* InstructionDecoder1.pld */; };
+		6F39876C281517E400C601AE /* InstructionDecoder2.pld in Resources */ = {isa = PBXBuildFile; fileRef = 6F39876B281517E400C601AE /* InstructionDecoder2.pld */; };
+		6F39876E281517F700C601AE /* InstructionDecoder3.pld in Resources */ = {isa = PBXBuildFile; fileRef = 6F39876D281517F700C601AE /* InstructionDecoder3.pld */; };
 		6F3EEB83262D22B400688D12 /* MemoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3EEB81262D22B400688D12 /* MemoryViewController.swift */; };
 		6F3EEB84262D22B400688D12 /* MemoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F3EEB82262D22B400688D12 /* MemoryViewController.xib */; };
 		6F3EEBA5262D333700688D12 /* RegistersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3EEBA3262D333700688D12 /* RegistersViewController.swift */; };
@@ -598,6 +601,9 @@
 		6F35B4B22628AFED004EA0AB /* example.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = example.bin; sourceTree = "<group>"; };
 		6F3987652814BBF600C601AE /* Decoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Decoder.swift; sourceTree = "<group>"; };
 		6F3987672814CD9800C601AE /* DecoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecoderTests.swift; sourceTree = "<group>"; };
+		6F398769281517D800C601AE /* InstructionDecoder1.pld */ = {isa = PBXFileReference; lastKnownFileType = text; path = InstructionDecoder1.pld; sourceTree = "<group>"; };
+		6F39876B281517E400C601AE /* InstructionDecoder2.pld */ = {isa = PBXFileReference; lastKnownFileType = text; path = InstructionDecoder2.pld; sourceTree = "<group>"; };
+		6F39876D281517F700C601AE /* InstructionDecoder3.pld */ = {isa = PBXFileReference; lastKnownFileType = text; path = InstructionDecoder3.pld; sourceTree = "<group>"; };
 		6F3EEB81262D22B400688D12 /* MemoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryViewController.swift; sourceTree = "<group>"; };
 		6F3EEB82262D22B400688D12 /* MemoryViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MemoryViewController.xib; sourceTree = "<group>"; };
 		6F3EEBA3262D333700688D12 /* RegistersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistersViewController.swift; sourceTree = "<group>"; };
@@ -1109,6 +1115,9 @@
 				6F734333259327D400B7E43F /* Turtle16SimulatorCore.h */,
 				6F87A5F1261E4D080093750D /* HazardControl1.pld */,
 				6F87A6E5261E69740093750D /* HazardControl2.pld */,
+				6F398769281517D800C601AE /* InstructionDecoder1.pld */,
+				6F39876B281517E400C601AE /* InstructionDecoder2.pld */,
+				6F39876D281517F700C601AE /* InstructionDecoder3.pld */,
 				6F734334259327D400B7E43F /* Info.plist */,
 			);
 			path = Turtle16SimulatorCore;
@@ -1755,6 +1764,9 @@
 			files = (
 				6F87A5F2261E4D080093750D /* HazardControl1.pld in Resources */,
 				6F87A6E6261E69740093750D /* HazardControl2.pld in Resources */,
+				6F39876A281517D800C601AE /* InstructionDecoder1.pld in Resources */,
+				6F39876C281517E400C601AE /* InstructionDecoder2.pld in Resources */,
+				6F39876E281517F700C601AE /* InstructionDecoder3.pld in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

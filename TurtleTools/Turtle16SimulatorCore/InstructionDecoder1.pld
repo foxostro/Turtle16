@@ -1,0 +1,24 @@
+GAL22V10
+InstructionDecoder1
+
+A     B     C     D     E     F     G           H           NC          NC          NC     GND
+NC    I0    I1    I2    C0    FI    RIGHTOPB    RIGHTOPA    STOREOPB    STOREOPA    HLT    VCC
+
+HLT = D + E + F + G + /H
+STOREOPA = E + D + F*H + G*/H + /F*/G
+STOREOPB = /G + E + F*H + D*/F + /D*/H
+RIGHTOPA = /E*/F*/H + /D*E*F + /E*/G + D*/E + D*/F + F*/G
+RIGHTOPB = D*/E*G*H + /D*/E*/G + F*/G*/H + D*E*/F + D*E*/G + /D*/E*/F*H
+FI = /D*/E*/F + F*/G*/H + D*/E*F + D*E*/F + D*F*/G + /D*/E*/G + /E*/F*G*H
+C0 = A*D*/F*G*H + /A*D*E*/F*G*/H + B*D*E*/G*H + B*D*/F*G*H + /B*E*/F*/G*/H + C*D*E*F*G*/H + /C*D*E*F*/G + /C*D*F*G*H + D*/E*G*H + /D*E*F*H + /D*/E*F*/H + /D*/E*/G + /D*/F*/G*/H
+I2 = A*D*/F*G*H + /A*B*D*/F*G + /A*D*/F*G*/H + B*D*E*/G*H + /B*D*/F*/G*/H + /C*D*E*F*/G + D*/E*/F + D*/E*G*H +  /D*E*/F*G + /D*E*/F*H + /D*/E*/G + /E*/G*/H
+I1 = D*E + D*G*H + /D*/E + /D*/G*H + F*G + F*H + /F*/G*/H
+I0 = D*E*/F + D*E*/G + D*F*/H + /D*/E*/F + E*G*/H + /E*H + F*/G*/H
+
+DESCRIPTION
+
+Decodes instruction opcode and ALU flags to control signals 1 of 3
+Inputs A to E are the five bits of the instruction opcode.
+Input F is the ALU carry flag.
+Input G is the ALU zero flag.
+Input H is the ALU overflow flag.

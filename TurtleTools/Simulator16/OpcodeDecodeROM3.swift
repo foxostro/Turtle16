@@ -11,7 +11,7 @@ import Turtle16SimulatorCore
 
 class OpcodeDecodeROM3: HexDataTableViewDataSource {
     public override func load(address: Int) -> Int {
-        Int((computer.opcodeDecodeROM[address] >> 16) & 0x1f)
+        Int((computer.decoder.decode(address) >> 16) & 0x1f)
     }
     
     public override var numberOfRows: Int {

@@ -1,0 +1,17 @@
+GAL22V10
+InstructionDecoder3
+
+A     B     C     D     E     F     G     H     NC         NC         NC      GND
+NC    NC    NC    NC    NC    NC    NC    NC    RUNUSED    LUNUSED    WBEN    VCC
+
+WBEN = D*E*/F + D*/E*G*H + D*F*/G + /D*/E*F*G*/H + /D*/E*/F*/G + E*F*/G*H + /E*/F*G*H
+LUNUSED = D*E*/F + D*E*/G + D*/E*G*H + /D*/E*/G + /E*F*/G*/H
+RUNUSED = D*/E + D*/F + D*/G + /D*E*F + /E*/G
+
+DESCRIPTION
+
+Decodes instruction opcode and ALU flags to control signals 3 of 3
+Inputs A to E are the five bits of the instruction opcode.
+Input F is the ALU carry flag.
+Input G is the ALU zero flag.
+Input H is the ALU overflow flag.

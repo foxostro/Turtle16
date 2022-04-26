@@ -84,10 +84,18 @@ public class ProgrammableLogicDecoder : NSObject, Decoder {
     public static var supportsSecureCoding = true
     public let count: Int = 256
     
+    let gal1: ATF22V10
+    let gal2: ATF22V10
+    let gal3: ATF22V10
+    
     public required override init() {
+        gal1 = ProgrammableLogicDecoder.makeGAL("InstructionDecoder1")
+        gal2 = ProgrammableLogicDecoder.makeGAL("InstructionDecoder2")
+        gal3 = ProgrammableLogicDecoder.makeGAL("InstructionDecoder3")
     }
     
-    public required init?(coder: NSCoder) {
+    public required convenience init?(coder: NSCoder) {
+        self.init()
     }
     
     public func encode(with coder: NSCoder) {
@@ -112,7 +120,7 @@ public class ProgrammableLogicDecoder : NSObject, Decoder {
         return hasher.finalize()
     }
     
-    func makeGAL(_ name: String) -> ATF22V10 {
+    static func makeGAL(_ name: String) -> ATF22V10 {
         let path = Bundle(for: ProgrammableLogicDecoder.self).path(forResource: name, ofType: "jed")!
         let jedecText = try! String(contentsOfFile: path)
         let fuseListMaker = FuseListMaker()
@@ -139,10 +147,6 @@ public class ProgrammableLogicDecoder : NSObject, Decoder {
     public func decode(_ address_: Int) -> UInt {
         assert(address_ >= 0 && address_ < count)
         let address = UInt(address_)
-        
-        let gal1 = makeGAL("InstructionDecoder1")
-        let gal2 = makeGAL("InstructionDecoder2")
-        let gal3 = makeGAL("InstructionDecoder3")
         
         let inputs = [
             0,

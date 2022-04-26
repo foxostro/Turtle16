@@ -328,7 +328,7 @@ public class ID: NSObject, NSSecureCoding {
         let hazardControlSignals = hazardControlUnit.step(input: input,
                                                           left_operand_is_unused: (ctl_ID >> 21) & 1,
                                                           right_operand_is_unused: (ctl_ID >> 22) & 1)
-        let flush = (hazardControlSignals.flush & 1)==1
+        let flush = (hazardControlSignals.flush & 1)==0 // FLUSH is an active-low signal
         associatedPC = flush ? nil : input.associatedPC
         let ctl_EX: UInt = flush ? ID.nopControlWord : (ctl_ID & UInt((1<<21)-1)) // only the lower 21 bits are present on real hardware
         let a = forwardA(input, hazardControlSignals)

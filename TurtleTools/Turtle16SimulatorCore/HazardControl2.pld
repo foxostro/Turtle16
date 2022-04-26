@@ -4,8 +4,8 @@ HazardControl2
 NC    OP3    OP4    FI    J     FSXTA    FSMTA    FSXTB    FSMTB    NC       NC       GND
 NC    NC     NC     NC    NC    NC       NC       NC       FHZD     FLUSH    STALL    VCC
 
-; HIGH indicates that the ID pipeline stage should flush
-/FLUSH = J * /FHZD * FSXTA * FSMTA * FSXTB * FSMTB
+; LOW indicates that the ID pipeline stage should flush
+FLUSH = J * /FHZD * FSXTA * FSMTA * FSXTB * FSMTB
 
 ; HIGH indicates that the ID and IF pipeline stages should stall
 /STALL = /FHZD * FSXTA * FSMTA * FSXTB * FSMTB

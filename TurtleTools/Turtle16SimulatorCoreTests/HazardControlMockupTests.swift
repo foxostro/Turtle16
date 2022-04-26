@@ -21,7 +21,7 @@ class HazardControlMockupTests: XCTestCase {
         let output = unit.step(input: ID.Input(ins: ins, j: 0),
                                left_operand_is_unused: 0,
                                right_operand_is_unused: 0)
-        XCTAssertEqual(output.flush, 1)
+        XCTAssertEqual(output.flush, 0) // FLUSH is an active-low signal
     }
     
     func testOperandForwarding_Forward_Y_EX_Instead_Of_rA() throws {

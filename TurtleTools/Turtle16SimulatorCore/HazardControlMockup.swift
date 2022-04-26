@@ -73,7 +73,7 @@ public class HazardControlMockup: HazardControl {
         // between this code and the HDL used for U73, an ATF22V10.
         let isFlagsHazard: UInt = input.opcode3 & input.opcode4 & ~input.ctl_EX5
         
-        let flush: UInt = ~(input.j & ~isFlagsHazard & input.need_to_forward_storeOp_EX_to_a & input.need_to_forward_storeOp_MEM_to_a & input.need_to_forward_storeOp_EX_to_b & input.need_to_forward_storeOp_MEM_to_b)
+        let flush: UInt = ~(~(input.j & ~isFlagsHazard & input.need_to_forward_storeOp_EX_to_a & input.need_to_forward_storeOp_MEM_to_a & input.need_to_forward_storeOp_EX_to_b & input.need_to_forward_storeOp_MEM_to_b))
         let stall = ~(~isFlagsHazard & input.need_to_forward_storeOp_EX_to_a & input.need_to_forward_storeOp_MEM_to_a & input.need_to_forward_storeOp_EX_to_b & input.need_to_forward_storeOp_MEM_to_b)
         
         return StageTwoOutput(flush: flush & 1,

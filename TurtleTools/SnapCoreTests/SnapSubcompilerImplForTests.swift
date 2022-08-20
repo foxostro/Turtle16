@@ -195,7 +195,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
                           structIdentifier: Expression.Identifier("SerialFake"),
                           children: [
                               FunctionDeclaration(identifier: Expression.Identifier("puts"),
-                                                  functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.bool), arguments: [
+                                                  functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.bool(.mutableBool)), arguments: [
                                                       Expression.PointerType(Expression.Identifier("SerialFake")),
                                                       Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
                                                   ]),

@@ -665,12 +665,12 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_As_compTimeBool_true() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .compTimeBool(true), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .bool(.compTimeBool(true)), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.PrimitiveType(.bool)))
+                                                             targetType: Expression.PrimitiveType(.bool(.mutableBool))))
         let expected = TackInstructionNode(instruction: .li16, parameters: [
             ParameterIdentifier("vr0"),
             ParameterNumber(1)
@@ -681,12 +681,12 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_As_compTimeBool_false() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .compTimeBool(false), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .bool(.compTimeBool(false)), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.PrimitiveType(.bool)))
+                                                             targetType: Expression.PrimitiveType(.bool(.mutableBool))))
         let expected = TackInstructionNode(instruction: .li16, parameters: [
             ParameterIdentifier("vr0"),
             ParameterNumber(0)
@@ -825,7 +825,7 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.PrimitiveType(.bool), Expression.PrimitiveType(.u16)])))
+        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.PrimitiveType(.bool(.mutableBool)), Expression.PrimitiveType(.u16)])))
         let expected = Seq(children: [
             TackInstructionNode(instruction: .subi16, parameters: [
                 ParameterIdentifier("vr0"),
@@ -902,7 +902,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_As_union_to_primitive_with_dynamic_type_check() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .unionType(UnionType([.bool, .u16])), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .unionType(UnionType([.bool(.mutableBool), .u16])), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
@@ -1034,7 +1034,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Unary_bang_bool() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .bool, offset: 100, storage: .staticStorage))
+            ("foo", Symbol(type: .bool(.mutableBool), offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .bang, expression: Expression.Identifier("foo")))
@@ -2462,8 +2462,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_eq_bool() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .bool, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .bool, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .bool(.mutableBool), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .bool(.mutableBool), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2496,8 +2496,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_ne_bool() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .bool, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .bool, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .bool(.mutableBool), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .bool(.mutableBool), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2530,8 +2530,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_logical_and() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .bool, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .bool, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .bool(.mutableBool), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .bool(.mutableBool), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .doubleAmpersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2580,8 +2580,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_logical_or() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .bool, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .bool, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .bool(.mutableBool), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .bool(.mutableBool), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .doublePipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2630,8 +2630,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_comptime_bool_eq() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .compTimeBool(true))),
-            ("right", Symbol(type: .compTimeBool(true)))
+            ("left", Symbol(type: .bool(.compTimeBool(true)))),
+             ("right", Symbol(type: .bool(.compTimeBool(true))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2645,8 +2645,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_comptime_bool_ne() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .compTimeBool(true))),
-            ("right", Symbol(type: .compTimeBool(true)))
+            ("left", Symbol(type: .bool(.compTimeBool(true)))),
+            ("right", Symbol(type: .bool(.compTimeBool(true))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2660,8 +2660,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_comptime_bool_and() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .compTimeBool(true))),
-            ("right", Symbol(type: .compTimeBool(true)))
+            ("left", Symbol(type: .bool(.compTimeBool(true)))),
+            ("right", Symbol(type: .bool(.compTimeBool(true))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .doubleAmpersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2675,8 +2675,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_comptime_bool_or() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .compTimeBool(true))),
-            ("right", Symbol(type: .compTimeBool(true)))
+            ("left", Symbol(type: .bool(.compTimeBool(true)))),
+            ("right", Symbol(type: .bool(.compTimeBool(true))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .doublePipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2690,10 +2690,10 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Is_comptime_bool() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .compTimeBool(true)))
+            ("foo", Symbol(type: .bool(.compTimeBool(true))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Is(expr: Expression.Identifier("foo"), testType: Expression.PrimitiveType(.compTimeBool(true))))
+        let actual = try compiler.rvalue(expr: Expression.Is(expr: Expression.Identifier("foo"), testType: Expression.PrimitiveType(.bool(.compTimeBool(true)))))
         let expected = TackInstructionNode(instruction: .li16, parameters: [
             ParameterIdentifier("vr0"),
             ParameterNumber(1)
@@ -2704,10 +2704,10 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Is_test_union_type_tag() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .unionType(UnionType([.u8, .bool])), offset: 100, storage: .staticStorage))
+            ("foo", Symbol(type: .unionType(UnionType([.u8, .bool(.mutableBool)])), offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Is(expr: Expression.Identifier("foo"), testType: Expression.PrimitiveType(.bool)))
+        let actual = try compiler.rvalue(expr: Expression.Is(expr: Expression.Identifier("foo"), testType: Expression.PrimitiveType(.bool(.mutableBool))))
         let expected = Seq(children: [
             TackInstructionNode(instruction: .li16, parameters: [
                 ParameterIdentifier("vr0"),
@@ -2733,10 +2733,10 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Is_test_union_type_tag_const() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .unionType(UnionType([.constU8, .constBool])), offset: 100, storage: .staticStorage))
+            ("foo", Symbol(type: .unionType(UnionType([.constU8, .bool(.immutableBool)])), offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Is(expr: Expression.Identifier("foo"), testType: Expression.PrimitiveType(.bool)))
+        let actual = try compiler.rvalue(expr: Expression.Is(expr: Expression.Identifier("foo"), testType: Expression.PrimitiveType(.bool(.mutableBool))))
         let expected = Seq(children: [
             TackInstructionNode(instruction: .li16, parameters: [
                 ParameterIdentifier("vr0"),

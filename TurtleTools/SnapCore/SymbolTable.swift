@@ -11,8 +11,7 @@ import TurtleCore
 public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     case void
     case function(FunctionType)
-    case compTimeBool(Bool)
-    case constBool, bool
+    case bool(BooleanType)
     case compTimeInt(Int)
     case constU8, u8
     case constU16, u16
@@ -25,7 +24,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     
     public var isPrimitive: Bool {
         switch self {
-        case .void, .u8, .constU8, .bool, .constBool, .u16, .constU16, .pointer, .constPointer:
+        case .void, .u8, .constU8, .bool, .u16, .constU16, .pointer, .constPointer:
             return true
         
         default:
@@ -37,7 +36,9 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         switch self {
         case .void, .function:
             return true
-        case .compTimeBool, .constBool, .compTimeInt, .constU8, .constU16, .constDynamicArray, .constPointer, .constStructType, .constTraitType:
+        case .bool(let typ):
+            return typ.isConst
+        case .compTimeInt, .constU8, .constU16, .constDynamicArray, .constPointer, .constStructType, .constTraitType:
             return true
         default:
             return false
@@ -47,7 +48,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     public var correspondingConstType: SymbolType {
         switch self {
         case .bool:
-            return .constBool
+            return .bool(.immutableBool)
         case .u8:
             return .constU8
         case .u16:
@@ -71,8 +72,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     
     public var correspondingMutableType: SymbolType {
         switch self {
-        case .constBool:
-            return .bool
+        case .bool:
+            return .bool(.mutableBool)
         case .constU8:
             return .u8
         case .constU16:
@@ -154,7 +155,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     
     public var isBooleanType: Bool {
         switch self {
-        case .bool, .constBool, .compTimeBool:
+        case .bool:
             return true
         default:
             return false
@@ -203,12 +204,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         switch self {
         case .void:
             return "void"
-        case .compTimeBool(let a):
-            return "boolean constant \(a)"
-        case .constBool:
-            return "const bool"
-        case .bool:
-            return "bool"
+        case .bool(let a):
+            return "\(a)"
         case .compTimeInt(let a):
             return "integer constant \(a)"
         case .constU16:
@@ -251,6 +248,62 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
 
 public enum SymbolStorage: Equatable {
     case staticStorage, automaticStorage
+}
+
+public enum BooleanType: Equatable, Hashable, CustomStringConvertible {
+    case mutableBool, immutableBool, compTimeBool(Bool)
+    
+    public func canValueBeTriviallyReinterpretedAs(type: BooleanType) -> Bool {
+        return !(self.isCompTime || type.isCompTime)
+    }
+    
+    public func isRvalueConvertibleTo(type: BooleanType) -> Bool {
+        switch (self, type) {
+        case (.compTimeBool, .immutableBool),
+             (.compTimeBool, .mutableBool),
+             (.immutableBool, .immutableBool),
+             (.immutableBool, .mutableBool),
+             (.mutableBool, .immutableBool),
+             (.mutableBool, .mutableBool):
+            return true
+            
+        default:
+            return false
+        }
+    }
+    
+    public var isCompTime: Bool {
+        switch self {
+        case .compTimeBool:
+            return true
+            
+        case .immutableBool, .mutableBool:
+            return false
+        }
+    }
+    
+    public var isConst: Bool {
+        switch self {
+        case .mutableBool:
+            return false
+            
+        case .immutableBool, .compTimeBool:
+            return true
+        }
+    }
+    
+    public var description: String {
+        switch self {
+        case .mutableBool:
+            return "bool"
+            
+        case .immutableBool:
+            return "const bool"
+            
+        case .compTimeBool(let a):
+            return "boolean constant \(a)"
+        }
+    }
 }
 
 public class FunctionType: NSObject {

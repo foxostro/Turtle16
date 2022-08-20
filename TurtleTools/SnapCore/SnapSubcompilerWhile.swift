@@ -13,7 +13,7 @@ public class SnapSubcompilerWhile: NSObject {
         let s = node.sourceAnchor
         let condition = Expression.As(sourceAnchor: node.condition.sourceAnchor,
                                               expr: node.condition,
-                                              targetType: Expression.PrimitiveType(.bool))
+                                      targetType: Expression.PrimitiveType(.bool(.mutableBool)))
         try RvalueExpressionTypeChecker(symbols: symbols).check(expression: condition)
         let labelHead = labelMaker.next()
         let labelTail = labelMaker.next()

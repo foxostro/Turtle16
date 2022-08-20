@@ -987,8 +987,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 ParameterNumber(a)
             ])
             
-        case (.compTimeBool(let a), .bool),
-             (.compTimeBool(let a), .constBool):
+        case (.bool(.compTimeBool(let a)), .bool(.mutableBool)),
+             (.bool(.compTimeBool(let a)), .bool(.immutableBool)):
             // The expression produces a value that is known at compile time.
             // Add an instruction to load a register with that known value.
             let dst = nextRegister()
@@ -1255,11 +1255,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         let result: Bool
         
         switch (rtype, ltype) {
-        case (.constBool, .constBool),
-             (.constBool, .bool),
-             (.bool, .constBool),
-             (.bool, .bool),
-             (.constU8, .constU8),
+        case (.bool(let a), .bool(let b)):
+            result = a.canValueBeTriviallyReinterpretedAs(type: b)
+            
+        case (.constU8, .constU8),
              (.constU8, .u8),
              (.u8, .constU8),
              (.u8, .u8),
@@ -1595,14 +1594,14 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     func compileBooleanBinaryExpression(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> AbstractSyntaxTreeNode {
         assert(leftType.isBooleanType && rightType.isBooleanType)
 
-        if case .compTimeBool = leftType, case .compTimeBool = rightType {
+        if case .bool(.compTimeBool) = leftType, case .bool(.compTimeBool) = rightType {
             return try compileConstantBooleanBinaryExpression(binary, leftType, rightType)
         }
         
         switch binary.op {
         case .eq:
-            let right = try compileAndConvertExpression(rexpr: binary.right, ltype: .bool, isExplicitCast: false)
-            let left = try compileAndConvertExpression(rexpr: binary.left, ltype: .bool, isExplicitCast: false)
+            let right = try compileAndConvertExpression(rexpr: binary.right, ltype: .bool(.mutableBool), isExplicitCast: false)
+            let left = try compileAndConvertExpression(rexpr: binary.left, ltype: .bool(.mutableBool), isExplicitCast: false)
             let a = popRegister()
             let b = popRegister()
             let c = nextRegister()
@@ -1615,8 +1614,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             return Seq(sourceAnchor: binary.sourceAnchor, children: [right, left, op])
             
         case .ne:
-            let right = try compileAndConvertExpression(rexpr: binary.right, ltype: .bool, isExplicitCast: false)
-            let left = try compileAndConvertExpression(rexpr: binary.left, ltype: .bool, isExplicitCast: false)
+            let right = try compileAndConvertExpression(rexpr: binary.right, ltype: .bool(.mutableBool), isExplicitCast: false)
+            let left = try compileAndConvertExpression(rexpr: binary.left, ltype: .bool(.mutableBool), isExplicitCast: false)
             let a = popRegister()
             let b = popRegister()
             let c = nextRegister()
@@ -1640,7 +1639,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     func compileConstantBooleanBinaryExpression(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> AbstractSyntaxTreeNode {
-        guard case .compTimeBool(let a) = leftType, case .compTimeBool(let b) = rightType else {
+        guard case .bool(.compTimeBool(let a)) = leftType, case .bool(.compTimeBool(let b)) = rightType else {
             fatalError("Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(binary)")
         }
         
@@ -1676,14 +1675,14 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         var instructions: [AbstractSyntaxTreeNode] = []
         let labelFalse = globalEnvironment.labelMaker.next()
         let labelTail = globalEnvironment.labelMaker.next()
-        instructions.append(try compileAndConvertExpression(rexpr: binary.left, ltype: .bool, isExplicitCast: false))
+        instructions.append(try compileAndConvertExpression(rexpr: binary.left, ltype: .bool(.mutableBool), isExplicitCast: false))
         let a = popRegister()
         instructions += [
             TackInstructionNode(instruction: .bz, parameters: [
                 ParameterIdentifier(a),
                 ParameterIdentifier(labelFalse)
             ]),
-            try compileAndConvertExpression(rexpr: binary.right, ltype: .bool, isExplicitCast: false)
+            try compileAndConvertExpression(rexpr: binary.right, ltype: .bool(.mutableBool), isExplicitCast: false)
         ]
         let b = popRegister()
         let c = nextRegister()
@@ -1714,14 +1713,14 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         var instructions: [AbstractSyntaxTreeNode] = []
         let labelTrue = globalEnvironment.labelMaker.next()
         let labelTail = globalEnvironment.labelMaker.next()
-        instructions.append(try compileAndConvertExpression(rexpr: binary.left, ltype: .bool, isExplicitCast: false))
+        instructions.append(try compileAndConvertExpression(rexpr: binary.left, ltype: .bool(.mutableBool), isExplicitCast: false))
         let a = popRegister()
         instructions += [
             TackInstructionNode(instruction: .bnz, parameters: [
                 ParameterIdentifier(a),
                 ParameterIdentifier(labelTrue)
             ]),
-            try compileAndConvertExpression(rexpr: binary.right, ltype: .bool, isExplicitCast: false)
+            try compileAndConvertExpression(rexpr: binary.right, ltype: .bool(.mutableBool), isExplicitCast: false)
         ]
         let b = popRegister()
         let c = nextRegister()
@@ -1752,7 +1751,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         let exprType = try typeCheck(rexpr: expr)
         
         switch exprType {
-        case .compTimeBool(let val):
+        case .bool(.compTimeBool(let val)):
             let tempResult = nextRegister()
             let result = TackInstructionNode(instruction: .li16, parameters: [
                 ParameterIdentifier(tempResult),

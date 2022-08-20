@@ -33,7 +33,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: Expression.LiteralBool(true)))
-        XCTAssertEqual(result, .compTimeBool(true))
+        XCTAssertEqual(result, .bool(.compTimeBool(true)))
     }
     
     func testExpressionUsesInvalidUnaryPrefixOperator() {
@@ -162,7 +162,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                     expression: ExprUtils.makeBool(value: false))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_IntegerConstant_Eq_IntegerConstant() {
@@ -171,7 +171,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .compTimeBool(true))
+        XCTAssertEqual(result, .bool(.compTimeBool(true)))
     }
     
     func testBinary_IntegerConstant_Eq_U16() {
@@ -180,7 +180,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_IntegerConstant_Eq_U8() {
@@ -189,7 +189,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_IntegerConstant_Eq_Bool() {
@@ -220,7 +220,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U16_Eq_U16() {
@@ -229,7 +229,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U16_Eq_U8() {
@@ -238,7 +238,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U16_Eq_Bool() {
@@ -269,7 +269,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U8_Eq_U16() {
@@ -278,7 +278,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U8_Eq_U8() {
@@ -287,7 +287,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U8_Eq_Bool() {
@@ -318,7 +318,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeBool(value: false))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_BooleanConstant_Eq_BooleanConstant() {
@@ -327,7 +327,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralBool(false))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .compTimeBool(true))
+        XCTAssertEqual(result, .bool(.compTimeBool(true)))
     }
     
     func testBinary_BooleanConstant_Eq_IntegerConstant() {
@@ -369,7 +369,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeBool(value: false))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_Bool_Eq_BooleanConstant() {
@@ -378,7 +378,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralBool(false))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_Bool_Eq_IntegerConstant() {
@@ -420,7 +420,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .compTimeBool(false))
+        XCTAssertEqual(result, .bool(.compTimeBool(false)))
     }
     
     func testBinary_IntegerConstant_Ne_U16() {
@@ -429,7 +429,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_IntegerConstant_Ne_U8() {
@@ -438,7 +438,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_IntegerConstant_Ne_Bool() {
@@ -469,7 +469,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U16_Ne_U16() {
@@ -478,7 +478,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U16_Ne_U8() {
@@ -487,7 +487,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U16_Ne_Bool() {
@@ -518,7 +518,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U8_Ne_U16() {
@@ -527,7 +527,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U8_Ne_U8() {
@@ -536,7 +536,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U8_Ne_Bool() {
@@ -600,7 +600,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeBool(value: false))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_Bool_Ne_BooleanConstant() {
@@ -609,7 +609,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralBool(false))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_BooleanConstant_Ne_IntegerConstant() {
@@ -651,7 +651,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeBool(value: false))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_BooleanConstant_Ne_BooleanConstant() {
@@ -660,7 +660,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralBool(false))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .compTimeBool(false))
+        XCTAssertEqual(result, .bool(.compTimeBool(false)))
     }
     
     func testBinary_IntegerConstant_Lt_IntegerConstant() {
@@ -669,7 +669,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .compTimeBool(false))
+        XCTAssertEqual(result, .bool(.compTimeBool(false)))
     }
     
     func testBinary_IntegerConstant_Lt_U16() {
@@ -678,7 +678,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_IntegerConstant_Lt_U8() {
@@ -687,7 +687,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_IntegerConstant_Lt_Bool() {
@@ -707,7 +707,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U16_Lt_U16() {
@@ -716,7 +716,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U16_Lt_U8() {
@@ -725,7 +725,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U16_Lt_Bool() {
@@ -745,7 +745,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U8_Lt_U16() {
@@ -754,7 +754,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U8_Lt_U8() {
@@ -763,7 +763,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U8_Lt_Bool() {
@@ -827,7 +827,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .compTimeBool(false))
+        XCTAssertEqual(result, .bool(.compTimeBool(false)))
     }
     
     func testBinary_IntegerConstant_Gt_U16() {
@@ -836,7 +836,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_IntegerConstant_Gt_U8() {
@@ -845,7 +845,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_IntegerConstant_Gt_Bool() {
@@ -865,7 +865,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U16_Gt_U16() {
@@ -874,7 +874,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U16_Gt_U8() {
@@ -883,7 +883,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U16_Gt_Bool() {
@@ -903,7 +903,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U8_Gt_U16() {
@@ -912,7 +912,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U8_Gt_U8() {
@@ -921,7 +921,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U8_Gt_Bool() {
@@ -985,7 +985,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .compTimeBool(true))
+        XCTAssertEqual(result, .bool(.compTimeBool(true)))
     }
     
     func testBinary_IntegerConstant_Le_U16() {
@@ -994,7 +994,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_IntegerConstant_Le_U8() {
@@ -1003,7 +1003,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_IntegerConstant_Le_Bool() {
@@ -1023,7 +1023,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U16_Le_U16() {
@@ -1032,7 +1032,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U16_Le_U8() {
@@ -1041,7 +1041,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U16_Le_Bool() {
@@ -1061,7 +1061,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U8_Le_U16() {
@@ -1070,7 +1070,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U8_Le_U8() {
@@ -1079,7 +1079,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .compTimeBool(true))
+        XCTAssertEqual(result, .bool(.compTimeBool(true)))
     }
     
     func testBinary_U8_Le_Bool() {
@@ -1143,7 +1143,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .compTimeBool(true))
+        XCTAssertEqual(result, .bool(.compTimeBool(true)))
     }
     
     func testBinary_IntegerConstant_Ge_U16() {
@@ -1152,7 +1152,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_IntegerConstant_Ge_U8() {
@@ -1161,7 +1161,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_IntegerConstant_Ge_Bool() {
@@ -1181,7 +1181,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U16_Ge_U16() {
@@ -1190,7 +1190,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U16_Ge_U8() {
@@ -1199,7 +1199,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U16_Ge_Bool() {
@@ -1219,7 +1219,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: Expression.LiteralInt(1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U8_Ge_U16() {
@@ -1228,7 +1228,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U8_Ge_U8() {
@@ -1237,7 +1237,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                               right: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_U8_Ge_Bool() {
@@ -3294,7 +3294,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                     right: ExprUtils.makeBool(value: false))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBinary_IntegerConstant_LogicalOr_IntegerConstant() {
@@ -3484,7 +3484,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                     right: ExprUtils.makeBool(value: false))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
    }
     
     func testAssignment_IntegerConstant_to_U16_Overflows() {
@@ -3559,13 +3559,13 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testAssignment_Bool_to_Bool() {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .bool, offset: 0x0010))
+            ("foo", Symbol(type: .bool(.mutableBool), offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeBool(value: false))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testAssignment_ArrayOfU8_to_DynamicArrayOfU8() {
@@ -3604,13 +3604,13 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testIdentifier_Boolean() {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .bool, offset: 0x0010))
+            ("foo", Symbol(type: .bool(.mutableBool), offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         let expr = Expression.Identifier("foo")
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testFailBecauseFunctionCallUsesIncorrectParameterType() {
@@ -3739,11 +3739,11 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testBoolasBool() {
         let expr = Expression.As(expr: ExprUtils.makeBool(value: false),
-                                 targetType: Expression.PrimitiveType(.bool))
+                                 targetType: Expression.PrimitiveType(.bool(.mutableBool)))
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testU8asVoid() {
@@ -3777,7 +3777,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testU8asBool() {
         let expr = Expression.As(expr: ExprUtils.makeU8(value: 1),
-                                 targetType: Expression.PrimitiveType(.bool))
+                                 targetType: Expression.PrimitiveType(.bool(.mutableBool)))
         let typeChecker = RvalueExpressionTypeChecker()
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -3817,7 +3817,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testU16asBool() {
         let expr = Expression.As(expr: ExprUtils.makeU16(value: 0xffff),
-                                 targetType: Expression.PrimitiveType(.bool))
+                                 targetType: Expression.PrimitiveType(.bool(.mutableBool)))
         let typeChecker = RvalueExpressionTypeChecker()
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -3912,7 +3912,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testIntegerConstantasBool() {
         let expr = Expression.As(expr: Expression.LiteralInt(0),
-                                 targetType: Expression.PrimitiveType(.bool))
+                                 targetType: Expression.PrimitiveType(.bool(.mutableBool)))
         let typeChecker = RvalueExpressionTypeChecker()
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -3923,11 +3923,11 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testBooleanConstantasBool() {
         let expr = Expression.As(expr: Expression.LiteralBool(false),
-                                 targetType: Expression.PrimitiveType(.bool))
+                                 targetType: Expression.PrimitiveType(.bool(.mutableBool)))
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testSubscriptOfZeroWithU8() {
@@ -3939,7 +3939,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testSubscriptOfZeroWithBool() {
-        doTestSubscriptOfZero(.bool)
+        doTestSubscriptOfZero(.bool(.mutableBool))
     }
     
     private func doTestSubscriptOfZero(_ symbolType: SymbolType) {
@@ -3960,7 +3960,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testArraySubscriptFailsWithNonarithmeticIndex() {
         let ident = "foo"
         let symbols = SymbolTable(tuples: [
-            (ident, Symbol(type: .array(count: 3, elementType: .bool), offset: 0x0010))
+            (ident, Symbol(type: .array(count: 3, elementType: .bool(.mutableBool)), offset: 0x0010))
         ])
         let index = ExprUtils.makeBool(value: false)
         let expr = ExprUtils.makeSubscript(identifier: ident, expr: index)
@@ -3981,7 +3981,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testArraySubscriptAccessesAnArrayElement_Bool() {
-        checkArraySubscriptAccessesArrayElement(elementType: .bool)
+        checkArraySubscriptAccessesArrayElement(elementType: .bool(.mutableBool))
     }
     
     func testArraySubscriptAccessesAnArrayElement_ArrayOfArrays() {
@@ -4033,10 +4033,10 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
         let val = Expression.LiteralBool(false)
-        let arr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.bool)),
+        let arr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.bool(.mutableBool))),
                                           elements: [val])
         XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
-        XCTAssertEqual(result, .array(count: 1, elementType: .bool))
+        XCTAssertEqual(result, .array(count: 1, elementType: .bool(.mutableBool)))
     }
     
     func testSingletonArrayOfArray() {
@@ -4074,10 +4074,10 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
         let val = Expression.LiteralBool(false)
-        let arr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(2), elementType: Expression.PrimitiveType(.bool)),
+        let arr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(2), elementType: Expression.PrimitiveType(.bool(.mutableBool))),
                                           elements: [val, val])
         XCTAssertNoThrow(result = try typeChecker.check(expression: arr))
-        XCTAssertEqual(result, .array(count: 2, elementType: .bool))
+        XCTAssertEqual(result, .array(count: 2, elementType: .bool(.mutableBool)))
     }
     
     func testArrayOfArray() {
@@ -4092,7 +4092,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testArrayLiteralHasNonConvertibleType() {
-        let expr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(2), elementType: Expression.PrimitiveType(.bool)),
+        let expr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(2), elementType: Expression.PrimitiveType(.bool(.mutableBool))),
                                            elements: [Expression.LiteralInt(0),
                                                       Expression.LiteralBool(false)])
         let typeChecker = RvalueExpressionTypeChecker()
@@ -4138,7 +4138,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testCannotAssignFunctionToArray() {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .function(FunctionType(returnType: .bool, arguments: [.u8, .u16])), offset: 0x0010)),
+            ("foo", Symbol(type: .function(FunctionType(returnType: .bool(.mutableBool), arguments: [.u8, .u16])), offset: 0x0010)),
             ("bar", Symbol(type: .array(count: nil, elementType: .u16), offset: 0x0012))
         ])
         let expr = ExprUtils.makeAssignment(name: "bar", right: Expression.Identifier("foo"))
@@ -4479,11 +4479,11 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = Expression.UnionType([
             Expression.PrimitiveType(.u8),
             Expression.PrimitiveType(.u16),
-            Expression.PrimitiveType(.bool),
+            Expression.PrimitiveType(.bool(.mutableBool)),
             Expression.ArrayType(count: Expression.LiteralInt(5), elementType: Expression.PrimitiveType(.u8))
         ])
         let expected: SymbolType = .unionType(UnionType([
-            .u8, .u16, .bool, .array(count: 5, elementType: .u8)
+            .u8, .u16, .bool(.mutableBool), .array(count: 5, elementType: .u8)
         ]))
         let typeChecker = TypeContextTypeChecker()
         var actual: SymbolType? = nil
@@ -4502,13 +4502,13 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = Expression.ConstType(Expression.UnionType([
             Expression.PrimitiveType(.u8),
             Expression.PrimitiveType(.u16),
-            Expression.PrimitiveType(.bool),
+            Expression.PrimitiveType(.bool(.mutableBool)),
             Expression.ArrayType(count: Expression.LiteralInt(5), elementType: Expression.PrimitiveType(.u8))
         ]))
         let expected: SymbolType = .unionType(UnionType([
             .constU8,
             .constU16,
-            .constBool,
+            .bool(.immutableBool),
             .array(count: 5, elementType: .constU8)
         ]))
         let typeChecker = TypeContextTypeChecker()
@@ -4530,7 +4530,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .unionType(UnionType([.u8, .u16])), offset: offset, storage: .automaticStorage))
         ])
-        let expr = Expression.As(expr: union, targetType: Expression.PrimitiveType(.bool))
+        let expr = Expression.As(expr: union, targetType: Expression.PrimitiveType(.bool(.mutableBool)))
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -4555,7 +4555,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testTestPrimitiveTypeIsExpression_Succeeds() {
         let expr = Expression.Is(expr: ExprUtils.makeU8(value: 0),
                                  testType: Expression.PrimitiveType(.u8))
-        let expected: SymbolType = .compTimeBool(true)
+        let expected: SymbolType = .bool(.compTimeBool(true))
         let typeChecker = RvalueExpressionTypeChecker()
         var actual: SymbolType? = nil
         XCTAssertNoThrow(actual = try typeChecker.check(expression: expr))
@@ -4564,8 +4564,8 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testTestPrimitiveTypeIsExpression_False() {
         let expr = Expression.Is(expr: ExprUtils.makeU8(value: 0),
-                                 testType: Expression.PrimitiveType(.bool))
-        let expected: SymbolType = .compTimeBool(false)
+                                 testType: Expression.PrimitiveType(.bool(.mutableBool)))
+        let expected: SymbolType = .bool(.compTimeBool(false))
         let typeChecker = RvalueExpressionTypeChecker()
         var actual: SymbolType? = nil
         XCTAssertNoThrow(actual = try typeChecker.check(expression: expr))
@@ -4578,8 +4578,8 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .unionType(UnionType([.u8, .u16])), offset: offset, storage: .automaticStorage))
         ])
-        let expr = Expression.Is(expr: union, testType: Expression.PrimitiveType(.bool))
-        let expected: SymbolType = .compTimeBool(false)
+        let expr = Expression.Is(expr: union, testType: Expression.PrimitiveType(.bool(.mutableBool)))
+        let expected: SymbolType = .bool(.compTimeBool(false))
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         var actual: SymbolType? = nil
         XCTAssertNoThrow(actual = try typeChecker.check(expression: expr))
@@ -4590,10 +4590,10 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let union = Expression.Identifier("foo")
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .unionType(UnionType([.u8, .bool])), offset: offset, storage: .automaticStorage))
+            ("foo", Symbol(type: .unionType(UnionType([.u8, .bool(.mutableBool)])), offset: offset, storage: .automaticStorage))
         ])
         let expr = Expression.Is(expr: union, testType: Expression.PrimitiveType(.u8))
-        let expected: SymbolType = .bool
+        let expected: SymbolType = .bool(.mutableBool)
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         var actual: SymbolType? = nil
         XCTAssertNoThrow(actual = try typeChecker.check(expression: expr))
@@ -4683,11 +4683,11 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testBitcastBoolAsU8() {
         let expr = Expression.Bitcast(expr: ExprUtils.makeU8(value: 0),
-                                      targetType: Expression.PrimitiveType(.bool))
+                                      targetType: Expression.PrimitiveType(.bool(.mutableBool)))
         let typeChecker = RvalueExpressionTypeChecker()
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .bool)
+        XCTAssertEqual(result, .bool(.mutableBool))
     }
     
     func testBitcastPointerToADifferentPointer() {

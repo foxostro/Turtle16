@@ -9,9 +9,16 @@
 public class MemoryLayoutStrategyTurtleTTL: NSObject, MemoryLayoutStrategy {
     public func sizeof(type: SymbolType) -> Int {
         switch type {
-        case .compTimeInt, .compTimeBool, .void, .function:
+        case .compTimeInt, .void, .function:
             return 0
-        case .constU8, .u8, .bool, .constBool:
+        case .bool(let boolType):
+            switch boolType {
+            case .compTimeBool:
+                return 0
+            case .immutableBool, .mutableBool:
+                return 1
+            }
+        case .constU8, .u8:
             return 1
         case .constU16, .u16:
             return 2

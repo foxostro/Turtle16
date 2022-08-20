@@ -180,7 +180,7 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
                                                     rexpr: Expression.LiteralBool(true))
         XCTAssertEqual(actual, expected)
         let foo = try? symbols.resolve(identifier: "foo")
-        let expectedSymbol = Symbol(type: .constBool,
+        let expectedSymbol = Symbol(type: .bool(.immutableBool),
                                     offset: SnapCompilerMetrics.kStaticStorageStartAddress,
                                     storage: .staticStorage,
                                     visibility: .privateVisibility)

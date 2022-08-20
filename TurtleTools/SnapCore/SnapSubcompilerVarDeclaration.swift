@@ -57,8 +57,8 @@ public class SnapSubcompilerVarDeclaration: NSObject {
                     switch expressionResultType {
                     case .compTimeInt(let a):
                         symbolType = a > 255 ? .u16 : .u8
-                    case .compTimeBool:
-                        symbolType = .bool
+                    case .bool(.compTimeBool):
+                        symbolType = .bool(.mutableBool)
                     default:
                         symbolType = expressionResultType
                     }

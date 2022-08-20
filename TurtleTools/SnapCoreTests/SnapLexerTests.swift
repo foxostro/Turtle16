@@ -459,7 +459,7 @@ class SnapLexerTests: XCTestCase {
     func testTokenizeBool_1() {
         let tokenizer = SnapLexer("bool")
         tokenizer.scanTokens()
-        XCTAssertEqual(tokenizer.tokens, [TokenType(sourceAnchor: tokenizer.lineMapper.anchor(0, 4), type: .bool),
+        XCTAssertEqual(tokenizer.tokens, [TokenType(sourceAnchor: tokenizer.lineMapper.anchor(0, 4), type: .bool(.mutableBool)),
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))])
     }
     

@@ -25,9 +25,9 @@ class StructDeclarationTests: XCTestCase {
     
     func testDoesNotEqualNodeWithDifferentMembers() {
         XCTAssertNotEqual(StructDeclaration(identifier: Expression.Identifier("foo"),
-                                            members: [StructDeclaration.Member(name: "bar", type: Expression.PrimitiveType(.u8))]),
+                                            members: [StructDeclaration.Member(name: "bar", type: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))]),
                           StructDeclaration(identifier: Expression.Identifier("foo"),
-                                            members: [StructDeclaration.Member(name: "bar", type: Expression.PrimitiveType(.u16))]))
+                                            members: [StructDeclaration.Member(name: "bar", type: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))]))
     }
     
     func testSame() {

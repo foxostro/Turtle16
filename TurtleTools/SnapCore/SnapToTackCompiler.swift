@@ -36,10 +36,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     let kSliceName = "Slice"
     let kSliceBase = "base"
     let kSliceBaseAddressOffset: Int
-    let kSliceBaseAddressType = SymbolType.u16
+    let kSliceBaseAddressType = SymbolType.arithmeticType(.mutableInt(.u16))
     let kSliceCount = "count"
     let kSliceCountOffset: Int
-    let kSliceCountType = SymbolType.u16
+    let kSliceCountType = SymbolType.arithmeticType(.mutableInt(.u16))
     let kSliceType: SymbolType
     
     let kRangeName = "Range"
@@ -70,7 +70,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         self.globalEnvironment = globalEnvironment
         self.options = options
         kUnionTypeTagOffset = 0
-        kUnionPayloadOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .u16)
+        kUnionPayloadOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .arithmeticType(.mutableInt(.u16)))
         kSliceBaseAddressOffset = 0
         kSliceCountOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .pointer(.void))
         kSliceType = .structType(StructType(name: kSliceName, symbols: SymbolTable(tuples: [
@@ -234,7 +234,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         
         // Can we determine the index at compile time?
         let maybeStaticIndex: Int?
-        if case .compTimeInt(let index) = argumentType {
+        if case .arithmeticType(.compTimeInt(let index)) = argumentType {
             maybeStaticIndex = index
         } else {
             maybeStaticIndex = nil
@@ -422,7 +422,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         // Can we determine the range's bounds at compile time?
         let maybeBegin: Int?
         switch try? typeCheck(rexpr: beginExpr) {
-        case .compTimeInt(let n):
+        case .arithmeticType(.compTimeInt(let n)):
             maybeBegin = n
             
         default:
@@ -431,7 +431,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         
         let maybeLimit: Int?
         switch try? typeCheck(rexpr: limitExpr) {
-        case .compTimeInt(let n):
+        case .arithmeticType(.compTimeInt(let n)):
             maybeLimit = n
             
         default:
@@ -477,7 +477,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         let sliceType = try typeCheck(rexpr: expr)
         let elementSize = globalEnvironment.memoryLayoutStrategy.sizeof(type: sliceType.arrayElementType)
         
-        let arrayBeginExpr = Expression.Bitcast(expr: Expression.Unary(op: .ampersand, expression: expr.subscriptable), targetType: Expression.PrimitiveType(.u16))
+        let arrayBeginExpr = Expression.Bitcast(expr: Expression.Unary(op: .ampersand, expression: expr.subscriptable), targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))
         
         let baseExpr: Expression
         if let begin = maybeBegin {
@@ -543,7 +543,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         // Can we determine the range's bounds at compile time?
         let maybeBegin: Int?
         switch try? typeCheck(rexpr: range.arguments[0].expr) {
-        case .compTimeInt(let n):
+        case .arithmeticType(.compTimeInt(let n)):
             maybeBegin = n
             
         default:
@@ -552,7 +552,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         
         let maybeLimit: Int?
         switch try? typeCheck(rexpr: range.arguments[1].expr) {
-        case .compTimeInt(let n):
+        case .arithmeticType(.compTimeInt(let n)):
             maybeLimit = n
             
         default:
@@ -889,7 +889,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     
     func rvalue(literalString expr: Expression.LiteralString) throws -> AbstractSyntaxTreeNode {
         let arrayType = Expression.ArrayType(count: Expression.LiteralInt(expr.value.count),
-                                             elementType: Expression.PrimitiveType(.u8))
+                                             elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
         let tempArrayId = try makeCompilerTemporary(expr.sourceAnchor, arrayType)
         return Seq(sourceAnchor: expr.sourceAnchor, children: [
             try lvalue(identifier: tempArrayId),
@@ -965,28 +965,6 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         let result: AbstractSyntaxTreeNode
         
         switch (rtype, ltype) {
-        case (.compTimeInt(let a), .u8),
-             (.compTimeInt(let a), .constU8):
-            // The expression produces a value that is known at compile time.
-            // Add an instruction to load a register with that known value.
-            let dst = nextRegister()
-            pushRegister(dst)
-            result = TackInstructionNode(instruction: .li8, parameters: [
-                ParameterIdentifier(dst),
-                ParameterNumber(a)
-            ])
-            
-        case (.compTimeInt(let a), .u16),
-             (.compTimeInt(let a), .constU16):
-            // The expression produces a value that is known at compile time.
-            // Add an instruction to load a register with that known value.
-            let dst = nextRegister()
-            pushRegister(dst)
-            result = TackInstructionNode(instruction: .li16, parameters: [
-                ParameterIdentifier(dst),
-                ParameterNumber(a)
-            ])
-            
         case (.bool(.compTimeBool(let a)), .bool(.mutableBool)),
              (.bool(.compTimeBool(let a)), .bool(.immutableBool)):
             // The expression produces a value that is known at compile time.
@@ -998,27 +976,52 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 ParameterNumber(a ? 1 : 0)
             ])
             
-        case (.constU16, .constU8),
-             (.constU16, .u8),
-             (.u16, .constU8),
-             (.u16, .u8):
-            // Convert from u16 to u8 by masking off the upper byte.
-            assert(isExplicitCast)
-            var children: [AbstractSyntaxTreeNode] = []
-            children += [
-                try rvalue(expr: rexpr)
-            ]
-            let src = popRegister()
+        case (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.mutableInt(.u8))),
+             (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.u8))):
+            // The expression produces a value that is known at compile time.
+            // Add an instruction to load a register with that known value.
             let dst = nextRegister()
             pushRegister(dst)
-            children += [
-                TackInstructionNode(instruction: .andi16, parameters: [
-                    ParameterIdentifier(dst),
-                    ParameterIdentifier(src),
-                    ParameterNumber(0x00ff)
-                ])
-            ]
-            result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
+            result = TackInstructionNode(instruction: .li8, parameters: [
+                ParameterIdentifier(dst),
+                ParameterNumber(a)
+            ])
+            
+        case (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.mutableInt(.u16))),
+             (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.u16))):
+            // The expression produces a value that is known at compile time.
+            // Add an instruction to load a register with that known value.
+            let dst = nextRegister()
+            pushRegister(dst)
+            result = TackInstructionNode(instruction: .li16, parameters: [
+                ParameterIdentifier(dst),
+                ParameterNumber(a)
+            ])
+            
+        case (.arithmeticType(let src), .arithmeticType(let dst)):
+            switch (src.intClass, dst.intClass) {
+            case (.u16, .u8):
+                // Convert from u16 to u8 by masking off the upper byte.
+                assert(isExplicitCast)
+                var children: [AbstractSyntaxTreeNode] = []
+                children += [
+                    try rvalue(expr: rexpr)
+                ]
+                let src = popRegister()
+                let dst = nextRegister()
+                pushRegister(dst)
+                children += [
+                    TackInstructionNode(instruction: .andi16, parameters: [
+                        ParameterIdentifier(dst),
+                        ParameterIdentifier(src),
+                        ParameterNumber(0x00ff)
+                    ])
+                ]
+                result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
+                
+            default:
+                fatalError("Unsupported type conversion from \(rtype) to \(ltype). Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(rexpr)")
+            }
             
         case (.array(let n, _), .array(let m, let b)):
             guard n == m || m == nil, let n = n else {
@@ -1258,19 +1261,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         case (.bool(let a), .bool(let b)):
             result = a.canValueBeTriviallyReinterpretedAs(type: b)
             
-        case (.constU8, .constU8),
-             (.constU8, .u8),
-             (.u8, .constU8),
-             (.u8, .u8),
-             (.constU16, .constU16),
-             (.constU16, .u16),
-             (.u16, .constU16),
-             (.u16, .u16),
-             (.constU8, .constU16),
-             (.constU8, .u16),
-             (.u8, .constU16),
-             (.u8, .u16),
-             (.constPointer, .constPointer),
+        case (.arithmeticType(let a), .arithmeticType(let b)):
+            result = a.canValueBeTriviallyReinterpretedAs(type: b)
+            
+        case (.constPointer, .constPointer),
              (.constPointer, .pointer),
              (.pointer, .constPointer),
              (.pointer, .pointer),
@@ -1324,7 +1318,18 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             var instructions: [AbstractSyntaxTreeNode] = [childExpr]
             
             switch (childType, expr.op) {
-            case (.u8, .minus):
+            case (.bool, .bang):
+                let a = nextRegister()
+                let c = nextRegister()
+                pushRegister(c)
+                instructions += [
+                    TackInstructionNode(instruction: .not, parameters: [
+                        ParameterIdentifier(a),
+                        ParameterIdentifier(b)
+                    ])
+                ]
+                
+            case (.arithmeticType(.mutableInt(.u8)), .minus):
                 let a = nextRegister()
                 let c = nextRegister()
                 let d = nextRegister()
@@ -1341,7 +1346,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                     ])
                 ]
                 
-            case (.u16, .minus):
+            case (.arithmeticType(.mutableInt(.u16)), .minus):
                 let a = nextRegister()
                 let c = nextRegister()
                 pushRegister(c)
@@ -1357,18 +1362,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                     ])
                 ]
                 
-            case (.bool, .bang):
-                let a = nextRegister()
-                let c = nextRegister()
-                pushRegister(c)
-                instructions += [
-                    TackInstructionNode(instruction: .not, parameters: [
-                        ParameterIdentifier(a),
-                        ParameterIdentifier(b)
-                    ])
-                ]
-                
-            case (.u8, .tilde):
+            case (.arithmeticType(.mutableInt(.u8)), .tilde):
                 let c = nextRegister()
                 let d = nextRegister()
                 pushRegister(d)
@@ -1379,7 +1373,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                     ])
                 ]
                 
-            case (.u16, .tilde):
+            case (.arithmeticType(.mutableInt(.u16)), .tilde):
                 let c = nextRegister()
                 pushRegister(c)
                 instructions += [
@@ -1415,98 +1409,155 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     func compileArithmeticBinaryExpression(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> AbstractSyntaxTreeNode {
-        assert(leftType.isArithmeticType && rightType.isArithmeticType)
-
-        if case .compTimeInt = leftType, case .compTimeInt = rightType {
+        switch (leftType, rightType) {
+        case (.arithmeticType(.compTimeInt), .arithmeticType(.compTimeInt)):
             return try compileConstantArithmeticBinaryExpression(binary, leftType, rightType)
+        
+        case (.arithmeticType(let leftArithmeticType), .arithmeticType(let rightArithmeticType)):
+            if let arithmeticTypeForArithmetic = ArithmeticType.binaryResultType(left: leftArithmeticType, right: rightArithmeticType) {
+                let intClass: IntClass = arithmeticTypeForArithmetic.intClass!
+                let typeForArithmetic: SymbolType = .arithmeticType(arithmeticTypeForArithmetic)
+                
+                let right = try compileAndConvertExpression(rexpr: binary.right, ltype: typeForArithmetic, isExplicitCast: false)
+                let left = try compileAndConvertExpression(rexpr: binary.left, ltype: typeForArithmetic, isExplicitCast: false)
+                
+                let a = popRegister()
+                let b = popRegister()
+                let c = nextRegister()
+                pushRegister(c)
+                
+                let operandIns = try getOperand(binary, leftType, rightType, intClass)
+                let op = TackInstructionNode(instruction: operandIns, parameters: [
+                    ParameterIdentifier(c),
+                    ParameterIdentifier(a),
+                    ParameterIdentifier(b)
+                ])
+                
+                return Seq(sourceAnchor: binary.sourceAnchor, children: [right, left, op])
+            }
+            
+        default:
+            break
         }
         
-        let typeForArithmetic: SymbolType = (max(leftType.max(), rightType.max()) > 255) ? .u16 : .u8
-        let right = try compileAndConvertExpression(rexpr: binary.right, ltype: typeForArithmetic, isExplicitCast: false)
-        let left = try compileAndConvertExpression(rexpr: binary.left, ltype: typeForArithmetic, isExplicitCast: false)
-        
-        let a = popRegister()
-        let b = popRegister()
-        let c = nextRegister()
-        pushRegister(c)
-        
-        let operandIns = try getOperand(binary, leftType, rightType, typeForArithmetic)
-        let op = TackInstructionNode(instruction: operandIns, parameters: [
-            ParameterIdentifier(c),
-            ParameterIdentifier(a),
-            ParameterIdentifier(b)
-        ])
-        
-        return Seq(sourceAnchor: binary.sourceAnchor, children: [right, left, op])
+        fatalError("Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(binary)")
     }
     
-    func getOperand(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType, _ typeForArithmetic: SymbolType) throws -> TackInstruction {
+    func getOperand(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType, _ intClass: IntClass) throws -> TackInstruction {
         let op: TackInstruction
-        switch (binary.op, typeForArithmetic) {
-        case (.eq, .u8):
-            op = .eq8
-        case (.eq, .u16):
-            op = .eq16
-        case (.ne, .u8):
-            op = .ne8
-        case (.ne, .u16):
-            op = .ne16
-        case (.lt, .u8):
-            op = .lt8
-        case (.lt, .u16):
-            op = .lt16
-        case (.gt, .u8):
-            op = .gt8
-        case (.gt, .u16):
-            op = .gt16
-        case (.le, .u8):
-            op = .le8
-        case (.le, .u16):
-            op = .le16
-        case (.ge, .u8):
-            op = .ge8
-        case (.ge, .u16):
-            op = .ge16
-        case (.plus, .u8):
-            op = .add8
-        case (.plus, .u16):
-            op = .add16
-        case (.minus, .u8):
-            op = .sub8
-        case (.minus, .u16):
-            op = .sub16
-        case (.star, .u8):
-            op = .mul8
-        case (.star, .u16):
-            op = .mul16
-        case (.divide, .u8):
-            op = .div8
-        case (.divide, .u16):
-            op = .div16
-        case (.modulus, .u8):
-            op = .mod8
-        case (.modulus, .u16):
-            op = .mod16
-        case (.ampersand, .u8):
-            op = .and8
-        case (.ampersand, .u16):
-            op = .and16
-        case (.pipe, .u8):
-            op = .or8
-        case (.pipe, .u16):
-            op = .or16
-        case (.caret, .u8):
-            op = .xor8
-        case (.caret, .u16):
-            op = .xor16
-        case (.leftDoubleAngle, .u8):
-            op = .lsl8
-        case (.leftDoubleAngle, .u16):
-            op = .lsl16
-        case (.rightDoubleAngle, .u8):
-            op = .lsr8
-        case (.rightDoubleAngle, .u16):
-            op = .lsr16
+        switch binary.op {
+        case .eq:
+            switch intClass {
+            case .u8:
+                op = .eq8
+            case .u16:
+                op = .eq16
+            }
+        case .ne:
+            switch intClass {
+            case .u8:
+                op = .ne8
+            case .u16:
+                op = .ne16
+            }
+        case .lt:
+            switch intClass {
+            case .u8:
+                op = .lt8
+            case .u16:
+                op = .lt16
+            }
+        case .gt:
+            switch intClass {
+            case .u8:
+                op = .gt8
+            case .u16:
+                op = .gt16
+            }
+        case .le:
+            switch intClass {
+            case .u8:
+                op = .le8
+            case .u16:
+                op = .le16
+            }
+        case .ge:
+            switch intClass {
+            case .u8:
+                op = .ge8
+            case .u16:
+                op = .ge16
+            }
+        case .plus:
+            switch intClass {
+            case .u8:
+                op = .add8
+            case .u16:
+                op = .add16
+            }
+        case .minus:
+            switch intClass {
+            case .u8:
+                op = .sub8
+            case .u16:
+                op = .sub16
+            }
+        case .star:
+            switch intClass {
+            case .u8:
+                op = .mul8
+            case .u16:
+                op = .mul16
+            }
+        case .divide:
+            switch intClass {
+            case .u8:
+                op = .div8
+            case .u16:
+                op = .div16
+            }
+        case .modulus:
+            switch intClass {
+            case .u8:
+                op = .mod8
+            case .u16:
+                op = .mod16
+            }
+        case .ampersand:
+            switch intClass {
+            case .u8:
+                op = .and8
+            case .u16:
+                op = .and16
+            }
+        case .pipe:
+            switch intClass {
+            case .u8:
+                op = .or8
+            case .u16:
+                op = .or16
+            }
+        case .caret:
+            switch intClass {
+            case .u8:
+                op = .xor8
+            case .u16:
+                op = .xor16
+            }
+        case .leftDoubleAngle:
+            switch intClass {
+            case .u8:
+                op = .lsl8
+            case .u16:
+                op = .lsl16
+            }
+        case .rightDoubleAngle:
+            switch intClass {
+            case .u8:
+                op = .lsr8
+            case .u16:
+                op = .lsr16
+            }
         default:
             fatalError("Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(binary)")
         }
@@ -1514,7 +1565,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     func compileConstantArithmeticBinaryExpression(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> AbstractSyntaxTreeNode {
-        guard case .compTimeInt(let a) = leftType, case .compTimeInt(let b) = rightType else {
+        guard case .arithmeticType(.compTimeInt(let a)) = leftType, case .arithmeticType(.compTimeInt(let b)) = rightType else {
             fatalError("Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(binary)")
         }
         
@@ -1575,7 +1626,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         
         let ins: TackInstruction
         switch try typeCheck(rexpr: binary) {
-        case .u8, .constU8:
+        case .arithmeticType(.mutableInt(.u8)), .arithmeticType(.immutableInt(.u8)):
             ins = .li8
             
         default:

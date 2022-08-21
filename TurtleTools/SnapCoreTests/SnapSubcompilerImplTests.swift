@@ -13,7 +13,7 @@ import TurtleCore
 class SnapSubcompilerImplTests: XCTestCase {
     func testExample() throws {
         func makeImpl() throws -> (Impl, SymbolTable) {
-            let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.u8), arguments: [
+            let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [
                 Expression.PointerType(Expression.Identifier("Foo"))
             ])))
             let foo = TraitDeclaration(identifier: Expression.Identifier("Foo"),
@@ -38,7 +38,7 @@ class SnapSubcompilerImplTests: XCTestCase {
         
         func makeExpectedMethod() -> FunctionDeclaration {
             let expectedMethod = FunctionDeclaration(identifier: Expression.Identifier("bar"),
-                                                     functionType: Expression.FunctionType(name: "bar", returnType: Expression.PrimitiveType(.u8), arguments: [Expression.PointerType(Expression.Identifier("__Foo_object"))]),
+                                                     functionType: Expression.FunctionType(name: "bar", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [Expression.PointerType(Expression.Identifier("__Foo_object"))]),
                                                      argumentNames: ["self"],
                                                      body: Block(children: [
                                                       Return(Expression.Call(callee: Expression.Get(expr: Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("vtable")), member: Expression.Identifier("bar")), arguments: [Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("object"))]))
@@ -75,7 +75,7 @@ class SnapSubcompilerImplTests: XCTestCase {
     
     func testRedefinesExistingSymbol() throws {
         func makeImpl() throws -> (Impl, SymbolTable) {
-            let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.u8), arguments: [
+            let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [
                 Expression.PointerType(Expression.Identifier("Foo"))
             ])))
             let foo = TraitDeclaration(identifier: Expression.Identifier("Foo"),

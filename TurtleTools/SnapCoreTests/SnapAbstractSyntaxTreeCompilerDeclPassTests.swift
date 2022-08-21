@@ -59,7 +59,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
     func testTypealias() throws {
         let globalSymbols = SymbolTable()
         let input = Block(symbols: globalSymbols, children: [
-            Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.u8))
+            Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
         ])
         
         let expected = Block(symbols: globalSymbols, children: []) // Typealias is removed after being processed
@@ -67,7 +67,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         let result = try? compiler.compile(input)
         XCTAssertEqual(result, expected)
         
-        let expectedType: SymbolType = .u8
+        let expectedType: SymbolType = .arithmeticType(.mutableInt(.u8))
         let actualType = try? globalSymbols.resolveType(identifier: "Foo")
         XCTAssertEqual(actualType, expectedType)
     }
@@ -104,7 +104,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
     
     func testImpl() throws {
         func makeImpl() throws -> (Impl, SymbolTable) {
-            let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.u8), arguments: [
+            let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [
                 Expression.PointerType(Expression.Identifier("Foo"))
             ])))
             let foo = TraitDeclaration(identifier: Expression.Identifier("Foo"),
@@ -129,7 +129,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         
         func makeExpectedMethod() -> FunctionDeclaration {
             let expectedMethod = FunctionDeclaration(identifier: Expression.Identifier("bar"),
-                                                     functionType: Expression.FunctionType(name: "bar", returnType: Expression.PrimitiveType(.u8), arguments: [Expression.PointerType(Expression.Identifier("__Foo_object"))]),
+                                                     functionType: Expression.FunctionType(name: "bar", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [Expression.PointerType(Expression.Identifier("__Foo_object"))]),
                                                      argumentNames: ["self"],
                                                      body: Block(children: [
                                                       Return(Expression.Call(callee: Expression.Get(expr: Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("vtable")), member: Expression.Identifier("bar")), arguments: [Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("object"))]))
@@ -172,7 +172,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         
         let bar = TraitDeclaration.Member(name: "puts", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.void), arguments: [
             Expression.PointerType(Expression.Identifier("Serial")),
-            Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
+            Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
         ])))
         let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Serial"),
                                          members: [bar],
@@ -184,7 +184,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
                                 FunctionDeclaration(identifier: Expression.Identifier("puts"),
                                                     functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [
                                                         Expression.PointerType(Expression.Identifier("Serial")),
-                                                        Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
+                                                        Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
                                                     ]),
                                                     argumentNames: ["self", "s"],
                                                     body: Block())
@@ -221,7 +221,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         XCTAssertEqual(vtableStructType?.name, "__Serial_vtable")
         XCTAssertEqual(vtableStructType?.symbols.exists(identifier: "puts"), true)
         let putsSymbol = try? vtableStructType?.symbols.resolve(identifier: "puts")
-        XCTAssertEqual(putsSymbol?.type, .pointer(.function(FunctionType(returnType: .void, arguments: [.pointer(.void), .dynamicArray(elementType: .u8)]))))
+        XCTAssertEqual(putsSymbol?.type, .pointer(.function(FunctionType(returnType: .void, arguments: [.pointer(.void), .dynamicArray(elementType: .arithmeticType(.mutableInt(.u8)))]))))
         XCTAssertEqual(putsSymbol?.offset, 0)
     }
 }

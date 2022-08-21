@@ -16,14 +16,14 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
-                                   explicitType: Expression.PrimitiveType(.u8),
+                                   explicitType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
                                    expression: nil,
                                    storage: .staticStorage,
                                    isMutable: false)
         let actual = try? compiler.compile(input)
         XCTAssertNil(actual)
         let foo = try? symbols.resolve(identifier: "foo")
-        let expectedSymbol = Symbol(type: .constU8,
+        let expectedSymbol = Symbol(type: .arithmeticType(.immutableInt(.u8)),
                                     offset: SnapCompilerMetrics.kStaticStorageStartAddress,
                                     storage: .staticStorage,
                                     visibility: .privateVisibility)
@@ -36,14 +36,14 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
-                                   explicitType: Expression.PrimitiveType(.u8),
+                                   explicitType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
                                    expression: nil,
                                    storage: .automaticStorage,
                                    isMutable: false)
         let actual = try? compiler.compile(input)
         XCTAssertNil(actual)
         let foo = try? symbols.resolve(identifier: "foo")
-        let expectedSymbol = Symbol(type: .constU8,
+        let expectedSymbol = Symbol(type: .arithmeticType(.immutableInt(.u8)),
                                     offset: 1,
                                     storage: .automaticStorage,
                                     visibility: .privateVisibility)
@@ -56,7 +56,7 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
-                                   explicitType: Expression.PrimitiveType(.u8),
+                                   explicitType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
                                    expression: nil,
                                    storage: .staticStorage,
                                    isMutable: false)
@@ -72,7 +72,7 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
-                                   explicitType: Expression.PrimitiveType(.u8),
+                                   explicitType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
                                    expression: nil,
                                    storage: .staticStorage,
                                    isMutable: true)
@@ -87,7 +87,7 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
-                                   explicitType: Expression.PrimitiveType(.constU8),
+                                   explicitType: Expression.PrimitiveType(.arithmeticType(.immutableInt(.u8))),
                                    expression: Expression.LiteralInt(0),
                                    storage: .staticStorage,
                                    isMutable: false)
@@ -96,7 +96,7 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
                                                     rexpr: Expression.LiteralInt(0))
         XCTAssertEqual(actual, expected)
         let foo = try? symbols.resolve(identifier: "foo")
-        let expectedSymbol = Symbol(type: .constU8,
+        let expectedSymbol = Symbol(type: .arithmeticType(.immutableInt(.u8)),
                                     offset: SnapCompilerMetrics.kStaticStorageStartAddress,
                                     storage: .staticStorage,
                                     visibility: .privateVisibility)
@@ -117,7 +117,7 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
                                                     rexpr: Expression.LiteralInt(0))
         XCTAssertEqual(actual, expected)
         let foo = try? symbols.resolve(identifier: "foo")
-        let expectedSymbol = Symbol(type: .u8,
+        let expectedSymbol = Symbol(type: .arithmeticType(.mutableInt(.u8)),
                                     offset: SnapCompilerMetrics.kStaticStorageStartAddress,
                                     storage: .staticStorage,
                                     visibility: .privateVisibility)
@@ -138,7 +138,7 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
                                                     rexpr: Expression.LiteralInt(0))
         XCTAssertEqual(actual, expected)
         let foo = try? symbols.resolve(identifier: "foo")
-        let expectedSymbol = Symbol(type: .constU8,
+        let expectedSymbol = Symbol(type: .arithmeticType(.immutableInt(.u8)),
                                     offset: SnapCompilerMetrics.kStaticStorageStartAddress,
                                     storage: .staticStorage,
                                     visibility: .privateVisibility)
@@ -159,7 +159,7 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
                                                     rexpr: Expression.LiteralInt(1000))
         XCTAssertEqual(actual, expected)
         let foo = try? symbols.resolve(identifier: "foo")
-        let expectedSymbol = Symbol(type: .constU16,
+        let expectedSymbol = Symbol(type: .arithmeticType(.immutableInt(.u16)),
                                     offset: SnapCompilerMetrics.kStaticStorageStartAddress,
                                     storage: .staticStorage,
                                     visibility: .privateVisibility)
@@ -215,14 +215,14 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
-                                   explicitType: Expression.PrimitiveType(.constU8),
+                                   explicitType: Expression.PrimitiveType(.arithmeticType(.immutableInt(.u8))),
                                    expression: nil,
                                    storage: .staticStorage,
                                    isMutable: false)
         let actual = try? compiler.compile(input)
         XCTAssertNil(actual)
         let foo = try? symbols.resolve(identifier: "foo")
-        let expectedSymbol = Symbol(type: .constU8,
+        let expectedSymbol = Symbol(type: .arithmeticType(.immutableInt(.u8)),
                                     offset: SnapCompilerMetrics.kStaticStorageStartAddress,
                                     storage: .staticStorage,
                                     visibility: .privateVisibility)
@@ -234,14 +234,14 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
-                                   explicitType: Expression.PrimitiveType(.u8),
+                                   explicitType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
                                    expression: nil,
                                    storage: .staticStorage,
                                    isMutable: true)
         let actual = try? compiler.compile(input)
         XCTAssertNil(actual)
         let foo = try? symbols.resolve(identifier: "foo")
-        let expectedSymbol = Symbol(type: .u8,
+        let expectedSymbol = Symbol(type: .arithmeticType(.mutableInt(.u8)),
                                     offset: SnapCompilerMetrics.kStaticStorageStartAddress,
                                     storage: .staticStorage,
                                     visibility: .privateVisibility)
@@ -282,9 +282,9 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
         let symbols = SymbolTable()
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
-        let arrayExpr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u8)), elements: [Expression.LiteralInt(0)])
+        let arrayExpr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8)))), elements: [Expression.LiteralInt(0)])
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
-                                   explicitType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u8)),
+                                   explicitType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8)))),
                                    expression: arrayExpr,
                                    storage: .staticStorage,
                                    isMutable: false)
@@ -293,7 +293,7 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
                                                     rexpr: arrayExpr)
         XCTAssertEqual(actual, expected)
         let foo = try? symbols.resolve(identifier: "foo")
-        let expectedSymbol = Symbol(type: .array(count: 1, elementType: .constU8),
+        let expectedSymbol = Symbol(type: .array(count: 1, elementType: .arithmeticType(.immutableInt(.u8))),
                                     offset: SnapCompilerMetrics.kStaticStorageStartAddress,
                                     storage: .staticStorage,
                                     visibility: .privateVisibility)
@@ -305,14 +305,14 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
-                                   explicitType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u8)),
+                                   explicitType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8)))),
                                    expression: nil,
                                    storage: .staticStorage,
                                    isMutable: true)
         let actual = try compiler.compile(input)
         XCTAssertNil(actual)
         let foo = try symbols.resolve(identifier: "foo")
-        let expectedSymbol = Symbol(type: .array(count: 1, elementType: .u8),
+        let expectedSymbol = Symbol(type: .array(count: 1, elementType: .arithmeticType(.mutableInt(.u8))),
                                     offset: SnapCompilerMetrics.kStaticStorageStartAddress,
                                     storage: .staticStorage,
                                     visibility: .privateVisibility)

@@ -191,10 +191,10 @@ public class SnapLexer: Lexer {
                 TokenTest(sourceAnchor: $0)
             },
             Rule(pattern: "u8\\b") {
-                TokenType(sourceAnchor: $0, type: .u8)
+                TokenType(sourceAnchor: $0, type: .arithmeticType(.mutableInt(.u8)))
             },
             Rule(pattern: "u16\\b") {
-                TokenType(sourceAnchor: $0, type: .u16)
+                TokenType(sourceAnchor: $0, type: .arithmeticType(.mutableInt(.u16)))
             },
             Rule(pattern: "bool\\b") {
                 TokenType(sourceAnchor: $0, type: .bool(.mutableBool))

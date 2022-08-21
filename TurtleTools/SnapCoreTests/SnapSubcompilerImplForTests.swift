@@ -14,7 +14,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
     fileprivate func compileSerialTrait(_ memoryLayoutStrategy: MemoryLayoutStrategy,  _ globalSymbols: SymbolTable) {
         let bar = TraitDeclaration.Member(name: "puts", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.void), arguments: [
             Expression.PointerType(Expression.Identifier("Serial")),
-            Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
+            Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
         ])))
         let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Serial"),
                                          members: [bar],
@@ -53,7 +53,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
                               FunctionDeclaration(identifier: Expression.Identifier("puts"),
                                                   functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [
                                                       Expression.PointerType(Expression.Identifier("Serial")),
-                                                      Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
+                                                      Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
                                                   ]),
                                                   argumentNames: ["self", "s"],
                                                   body: Block())
@@ -81,7 +81,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
         XCTAssertEqual(vtableStructType?.name, "__Serial_vtable")
         XCTAssertEqual(vtableStructType?.symbols.exists(identifier: "puts"), true)
         let putsSymbol = try? vtableStructType?.symbols.resolve(identifier: "puts")
-        XCTAssertEqual(putsSymbol?.type, .pointer(.function(FunctionType(returnType: .void, arguments: [.pointer(.void), .dynamicArray(elementType: .u8)]))))
+        XCTAssertEqual(putsSymbol?.type, .pointer(.function(FunctionType(returnType: .void, arguments: [.pointer(.void), .dynamicArray(elementType: .arithmeticType(.mutableInt(.u8)))]))))
         XCTAssertEqual(putsSymbol?.offset, 0)
     }
     
@@ -143,7 +143,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
                               FunctionDeclaration(identifier: Expression.Identifier("puts"),
                                                   functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [
                                                       Expression.PointerType(Expression.Identifier("SerialFake")),
-                                                      Expression.PrimitiveType(.u8)
+                                                      Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8)))
                                                   ]),
                                                   argumentNames: ["self", "s"],
                                                   body: Block())
@@ -169,8 +169,8 @@ class SnapSubcompilerImplForTests: XCTestCase {
                           children: [
                               FunctionDeclaration(identifier: Expression.Identifier("puts"),
                                                   functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [
-                                                      Expression.PrimitiveType(.u8),
-                                                      Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
+                                                      Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
+                                                      Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
                                                   ]),
                                                   argumentNames: ["self", "s"],
                                                   body: Block())
@@ -197,7 +197,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
                               FunctionDeclaration(identifier: Expression.Identifier("puts"),
                                                   functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.bool(.mutableBool)), arguments: [
                                                       Expression.PointerType(Expression.Identifier("SerialFake")),
-                                                      Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
+                                                      Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
                                                   ]),
                                                   argumentNames: ["self", "s"],
                                                   body: Block(children: [

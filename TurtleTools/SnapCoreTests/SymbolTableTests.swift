@@ -12,7 +12,7 @@ import TurtleCore
 
 class SymbolTableTests: XCTestCase {
     func testEquatableSymbols() {
-        XCTAssertNotEqual(Symbol(type: .u8, offset: 0x10),
+        XCTAssertNotEqual(Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0x10),
                           Symbol(type: .bool(.mutableBool), offset: 0x10))
     }
     
@@ -32,32 +32,32 @@ class SymbolTableTests: XCTestCase {
     
     func testSuccessfullyResolveSymbolByIdentifier() {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0x10))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0x10))
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
-        XCTAssertEqual(symbol.type, .u8)
+        XCTAssertEqual(symbol.type, .arithmeticType(.mutableInt(.u8)))
         XCTAssertEqual(symbol.offset, 0x10)
     }
     
     func testExists() {
         let symbols = SymbolTable()
         XCTAssertFalse(symbols.exists(identifier: "foo"))
-        symbols.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0x10))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0x10))
         XCTAssertTrue(symbols.exists(identifier: "foo"))
     }
 
     func testBindWord_Static_Mutable() {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0x10))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0x10))
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
-        XCTAssertEqual(symbol.type, .u8)
+        XCTAssertEqual(symbol.type, .arithmeticType(.mutableInt(.u8)))
         XCTAssertEqual(symbol.offset, 0x10)
     }
 
     func testBindWord_Static_Constant() {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "foo", symbol: Symbol(type: .constU8, offset: 0x10))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .arithmeticType(.immutableInt(.u8)), offset: 0x10))
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
-        XCTAssertEqual(symbol.type, .constU8)
+        XCTAssertEqual(symbol.type, .arithmeticType(.immutableInt(.u8)))
         XCTAssertEqual(symbol.offset, 0x10)
     }
 
@@ -157,8 +157,8 @@ class SymbolTableTests: XCTestCase {
     
     func testInitializedWithDeclarationOrder() {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .u8, offset: 0)),
-            ("bar", Symbol(type: .u8, offset: 0))
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0)),
+            ("bar", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0))
         ])
         XCTAssertTrue(symbols.declarationOrder.contains("foo"))
         XCTAssertTrue(symbols.declarationOrder.contains("bar"))
@@ -167,14 +167,14 @@ class SymbolTableTests: XCTestCase {
     
     func testDeclarationOrderAffectsEquality() {
         let symbols1 = SymbolTable(tuples: [
-            ("foo", Symbol(type: .u8, offset: 0)),
-            ("bar", Symbol(type: .u8, offset: 0))
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0)),
+            ("bar", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0))
         ])
         symbols1.declarationOrder = ["foo", "bar"]
         
         let symbols2 = SymbolTable(tuples: [
-            ("foo", Symbol(type: .u8, offset: 0)),
-            ("bar", Symbol(type: .u8, offset: 0))
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0)),
+            ("bar", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0))
         ])
         symbols2.declarationOrder = ["bar", "foo"]
         

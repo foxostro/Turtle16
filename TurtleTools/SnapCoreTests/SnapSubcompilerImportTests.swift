@@ -49,7 +49,7 @@ class SnapSubcompilerImportTests: XCTestCase {
         let symbols = SymbolTable()
         let compiler = makeCompiler(symbols)
         let moduleSymbols = SymbolTable(tuples: [
-            ("bar", Symbol(type: .u8, offset: 0, visibility: .privateVisibility))
+            ("bar", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0, visibility: .privateVisibility))
         ])
         compiler.globalEnvironment.modules["Foo"] = Block(symbols: moduleSymbols, children: [])
         let input = Import(moduleName: "Foo")
@@ -62,7 +62,7 @@ class SnapSubcompilerImportTests: XCTestCase {
         let symbols = SymbolTable()
         let compiler = makeCompiler(symbols)
         let moduleSymbols = SymbolTable(tuples: [
-            ("bar", Symbol(type: .u8, offset: 0, visibility: .publicVisibility))
+            ("bar", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0, visibility: .publicVisibility))
         ])
         compiler.globalEnvironment.modules["Foo"] = Block(symbols: moduleSymbols, children: [])
         let input = Import(moduleName: "Foo")
@@ -75,7 +75,7 @@ class SnapSubcompilerImportTests: XCTestCase {
         let symbols = SymbolTable()
         let compiler = makeCompiler(symbols)
         let moduleSymbols = SymbolTable()
-        moduleSymbols.bind(identifier: "bar", symbolType: .u8, visibility: .publicVisibility)
+        moduleSymbols.bind(identifier: "bar", symbolType: .arithmeticType(.mutableInt(.u8)), visibility: .publicVisibility)
         compiler.globalEnvironment.modules["Foo"] = Block(symbols: moduleSymbols, children: [])
         let input = Import(moduleName: "Foo")
         try compiler.compile(input)
@@ -85,10 +85,10 @@ class SnapSubcompilerImportTests: XCTestCase {
     
     func testImportCannotRedefineExistingSymbol() throws {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "bar", symbol: Symbol(type: .u8, offset: 0, visibility: .publicVisibility))
+        symbols.bind(identifier: "bar", symbol: Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0, visibility: .publicVisibility))
         let compiler = makeCompiler(symbols)
         let moduleSymbols = SymbolTable(tuples: [
-            ("bar", Symbol(type: .u8, offset: 0, visibility: .publicVisibility))
+            ("bar", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0, visibility: .publicVisibility))
         ])
         compiler.globalEnvironment.modules["Foo"] = Block(symbols: moduleSymbols, children: [])
         let input = Import(moduleName: "Foo")
@@ -100,10 +100,10 @@ class SnapSubcompilerImportTests: XCTestCase {
     
     func testImportCannotRedefineExistingType() throws {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "bar", symbolType: .u8)
+        symbols.bind(identifier: "bar", symbolType: .arithmeticType(.mutableInt(.u8)))
         let compiler = makeCompiler(symbols)
         let moduleSymbols = SymbolTable()
-        moduleSymbols.bind(identifier: "bar", symbolType: .u8, visibility: .publicVisibility)
+        moduleSymbols.bind(identifier: "bar", symbolType: .arithmeticType(.mutableInt(.u8)), visibility: .publicVisibility)
         compiler.globalEnvironment.modules["Foo"] = Block(symbols: moduleSymbols, children: [])
         let input = Import(moduleName: "Foo")
         XCTAssertThrowsError(try compiler.compile(input)) {

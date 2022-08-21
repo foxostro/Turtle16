@@ -12,9 +12,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     case void
     case function(FunctionType)
     case bool(BooleanType)
-    case compTimeInt(Int)
-    case constU8, u8
-    case constU16, u16
+    case arithmeticType(ArithmeticType)
     case array(count: Int?, elementType: SymbolType)
     case constDynamicArray(elementType: SymbolType), dynamicArray(elementType: SymbolType)
     case constPointer(SymbolType), pointer(SymbolType)
@@ -24,7 +22,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     
     public var isPrimitive: Bool {
         switch self {
-        case .void, .u8, .constU8, .bool, .u16, .constU16, .pointer, .constPointer:
+        case .void, .bool, .arithmeticType, .pointer, .constPointer:
             return true
         
         default:
@@ -38,7 +36,9 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             return true
         case .bool(let typ):
             return typ.isConst
-        case .compTimeInt, .constU8, .constU16, .constDynamicArray, .constPointer, .constStructType, .constTraitType:
+        case .arithmeticType(let typ):
+            return typ.isConst
+        case .constDynamicArray, .constPointer, .constStructType, .constTraitType:
             return true
         default:
             return false
@@ -49,10 +49,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         switch self {
         case .bool:
             return .bool(.immutableBool)
-        case .u8:
-            return .constU8
-        case .u16:
-            return .constU16
+        case .arithmeticType(let arithmeticType):
+            return .arithmeticType(.immutableInt(arithmeticType.intClass!))
         case .array(count: let n, elementType: let typ):
             return .array(count: n, elementType: typ.correspondingConstType)
         case .dynamicArray(elementType: let typ):
@@ -74,10 +72,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         switch self {
         case .bool:
             return .bool(.mutableBool)
-        case .constU8:
-            return .u8
-        case .constU16:
-            return .u16
+        case .arithmeticType(let arithmeticType):
+            return .arithmeticType(.mutableInt(arithmeticType.intClass!))
         case .array(count: let n, elementType: let typ):
             return .array(count: n, elementType: typ.correspondingMutableType)
         case .constDynamicArray(elementType: let typ):
@@ -92,19 +88,6 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             return .traitType(typ)
         default:
             return self
-        }
-    }
-    
-    public func max() -> Int {
-        switch self {
-        case .compTimeInt(let a):
-            return a
-        case .constU8, .u8:
-            return 255
-        case .constU16, .u16:
-            return 65536
-        default:
-            abort()
         }
     }
     
@@ -164,7 +147,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     
     public var isArithmeticType: Bool {
         switch self {
-        case .compTimeInt, .constU8, .u8, .constU16, .u16:
+        case .arithmeticType:
             return true
         default:
             return false
@@ -206,16 +189,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             return "void"
         case .bool(let a):
             return "\(a)"
-        case .compTimeInt(let a):
-            return "integer constant \(a)"
-        case .constU16:
-            return "const u16"
-        case .u16:
-            return "u16"
-        case .constU8:
-            return "const u8"
-        case .u8:
-            return "u8"
+        case .arithmeticType(let arithmeticType):
+            return "\(arithmeticType)"
         case .array(count: let count, elementType: let elementType):
             if let count = count {
                 return "[\(count)]\(elementType)"
@@ -257,21 +232,6 @@ public enum BooleanType: Equatable, Hashable, CustomStringConvertible {
         return !(self.isCompTime || type.isCompTime)
     }
     
-    public func isRvalueConvertibleTo(type: BooleanType) -> Bool {
-        switch (self, type) {
-        case (.compTimeBool, .immutableBool),
-             (.compTimeBool, .mutableBool),
-             (.immutableBool, .immutableBool),
-             (.immutableBool, .mutableBool),
-             (.mutableBool, .immutableBool),
-             (.mutableBool, .mutableBool):
-            return true
-            
-        default:
-            return false
-        }
-    }
-    
     public var isCompTime: Bool {
         switch self {
         case .compTimeBool:
@@ -302,6 +262,178 @@ public enum BooleanType: Equatable, Hashable, CustomStringConvertible {
             
         case .compTimeBool(let a):
             return "boolean constant \(a)"
+        }
+    }
+}
+
+public enum IntClass: Equatable, Hashable, CustomStringConvertible, CaseIterable {
+    case u8, u16
+    
+    public static func binaryResultType(left: IntClass?, right: IntClass?) -> IntClass? {
+        guard let left = left, let right = right else {
+            return nil
+        }
+        
+        // No automatic conversions between signed and unsigned types.
+        if left.isSigned != right.isSigned {
+            return nil
+        }
+        
+        if left.min < right.min {
+            return left
+        }
+        
+        if left.max > right.max {
+            return left
+        }
+        
+        return right
+    }
+    
+    public var isSigned: Bool {
+        switch self {
+        case .u8:
+            return true
+            
+        case .u16:
+            return true
+        }
+    }
+    
+    public var description: String {
+        switch self {
+        case .u8:
+            return "u8"
+            
+        case .u16:
+            return "u16"
+        }
+    }
+    
+    public var min: Int {
+        switch self {
+        case .u8:
+            return 0
+            
+        case .u16:
+            return 0 // TODO: add a signed integer type
+        }
+    }
+    
+    public var max: Int {
+        switch self {
+        case .u8:
+            return 255
+            
+        case .u16:
+            return 65535
+        }
+    }
+    
+    public static func smallestClassContaining(value: Int) -> IntClass? {
+        for intClass in IntClass.allCases {
+            if value >= intClass.min && value <= intClass.max {
+                return intClass
+            }
+        }
+        
+        return nil
+    }
+}
+
+public enum ArithmeticType: Equatable, Hashable, CustomStringConvertible {
+    case mutableInt(IntClass), immutableInt(IntClass), compTimeInt(Int)
+    
+    public static func binaryResultType(left: ArithmeticType, right: ArithmeticType) -> ArithmeticType? {
+        if let intClass = IntClass.binaryResultType(left: left.intClass, right: right.intClass) {
+            return .mutableInt(intClass)
+        }
+        else {
+            return nil
+        }
+    }
+    
+    public var intClass: IntClass? {
+        switch self {
+        case .mutableInt(let a), .immutableInt(let a):
+            return a
+            
+        case .compTimeInt(let value):
+            return IntClass.smallestClassContaining(value: value)
+        }
+    }
+    
+    public var min: Int {
+        switch self {
+        case .compTimeInt(let constantValue):
+            return constantValue
+            
+        case .mutableInt(let a), .immutableInt(let a):
+            return a.min
+        }
+    }
+    
+    public var max: Int {
+        switch self {
+        case .compTimeInt(let constantValue):
+            return constantValue
+            
+        case .mutableInt(let a), .immutableInt(let a):
+            return a.max
+        }
+    }
+    
+    public func canValueBeTriviallyReinterpretedAs(type dst: ArithmeticType) -> Bool {
+        if self.isCompTime || dst.isCompTime {
+            return false
+        }
+        
+        let srcIntClass = intClass!
+        let dstIntClass = dst.intClass!
+        
+        if srcIntClass == dstIntClass {
+            return true
+        }
+        
+        switch (srcIntClass, dstIntClass) {
+        case (.u8, .u16):
+            return true
+            
+        default:
+            return false
+        }
+    }
+    
+    public var isCompTime: Bool {
+        switch self {
+        case .compTimeInt:
+            return true
+            
+        case .mutableInt, .immutableInt:
+            return false
+        }
+    }
+    
+    public var isConst: Bool {
+        switch self {
+        case .mutableInt:
+            return false
+            
+        case .immutableInt, .compTimeInt:
+            return true
+        }
+    }
+    
+    public var description: String {
+        switch self {
+        case .mutableInt(let width):
+            return "\(width)"
+            
+        case .immutableInt(let width):
+            return "const \(width)"
+            
+        case .compTimeInt(let value):
+            return "integer constant \(value)"
         }
     }
 }

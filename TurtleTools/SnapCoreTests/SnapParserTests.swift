@@ -122,7 +122,7 @@ class SnapParserTests: XCTestCase {
         
         let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 15),
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
-                                      explicitType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(9, 11), typ: .u8),
+                                      explicitType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(9, 11), typ: .arithmeticType(.mutableInt(.u8))),
                                       expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(14, 15), value: 1),
                                       storage: .automaticStorage,
                                       isMutable: false)
@@ -138,7 +138,7 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(ast.children.count, 1)
         
         let expected = Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(0, 11),
-                                               arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(0, 6), count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(3, 6), typ: .u16)),
+                                               arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(0, 6), count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(3, 6), typ: .arithmeticType(.mutableInt(.u16)))),
                                                elements: [Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(7, 10), identifier: "foo")])
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
@@ -151,11 +151,11 @@ class SnapParserTests: XCTestCase {
         
         XCTAssertEqual(ast.children.count, 1)
         let innerArray = Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(10, 26),
-                                                 arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(3, 9), count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(6, 9), typ: .u16)),
+                                                 arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(3, 9), count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(6, 9), typ: .arithmeticType(.mutableInt(.u16)))),
                                                  elements: [Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(17, 20), identifier: "foo"),
                                                             Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(22, 25), identifier: "foo")])
         let expected = Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(0, 27),
-                                               arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(0, 9), count: nil, elementType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(3, 9), count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(6, 9), typ: .u16))),
+                                               arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(0, 9), count: nil, elementType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(3, 9), count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(6, 9), typ: .arithmeticType(.mutableInt(.u16))))),
                                                elements: [innerArray])
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
@@ -169,7 +169,7 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(ast.children.count, 1)
         
         let expected = Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(0, 11),
-                                               arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(0, 6), count: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(1, 2), value: 1), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(3, 6), typ: .u16)),
+                                               arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(0, 6), count: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(1, 2), value: 1), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(3, 6), typ: .arithmeticType(.mutableInt(.u16)))),
                                                elements: [Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(7, 10), identifier: "foo")])
         let actual = ast.children[0]
         XCTAssertEqual(expected, actual)
@@ -183,14 +183,14 @@ class SnapParserTests: XCTestCase {
         XCTAssertEqual(ast.children.count, 1)
         
         let innerArray = Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(17, 24),
-                                                 arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(17, 22), count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(20, 22), typ: .u8)),
+                                                 arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(17, 22), count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(20, 22), typ: .arithmeticType(.mutableInt(.u8)))),
                                                  elements: [])
         
         // Note that the parser doesn't know that the expression will actually
         // yield a result of the the type [0]u8.
         let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 24),
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
-                                      explicitType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(9, 14), count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(12, 14), typ: .u8)),
+                                      explicitType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(9, 14), count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(12, 14), typ: .arithmeticType(.mutableInt(.u8)))),
                                       expression: innerArray,
                                       storage: .automaticStorage,
                                       isMutable: false)
@@ -207,9 +207,9 @@ class SnapParserTests: XCTestCase {
         
         let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 24),
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
-                                      explicitType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(17, 22), count: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(10, 11), value: 0), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(12, 14), typ: .u8)),
+                                      explicitType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(17, 22), count: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(10, 11), value: 0), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(12, 14), typ: .arithmeticType(.mutableInt(.u8)))),
                                       expression: Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(17, 24),
-                                                                          arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(17, 22), count: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(18, 19), value: 0), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(20, 22), typ: .u8)),
+                                                                          arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(17, 22), count: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(18, 19), value: 0), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(20, 22), typ: .arithmeticType(.mutableInt(.u8)))),
                                                                           elements: []),
                                       storage: .automaticStorage,
                                       isMutable: false)
@@ -228,7 +228,7 @@ class SnapParserTests: XCTestCase {
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
                                       explicitType: nil,
                                       expression: Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(10, 18),
-                                                                          arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(10, 15), count: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(11, 12), value: 0), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(13, 15), typ: .u8)),
+                                                                          arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(10, 15), count: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(11, 12), value: 0), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(13, 15), typ: .arithmeticType(.mutableInt(.u8)))),
                                                                           elements: [
                                         Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(16, 17), value: 1)
                                       ]),
@@ -244,7 +244,7 @@ class SnapParserTests: XCTestCase {
         let ast = parser.syntaxTree!
         XCTAssertEqual(ast.children.count, 1)
         let arr = Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(10, 24),
-                                          arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(10, 15), count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(13, 15), typ: .u8)),
+                                          arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(10, 15), count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(13, 15), typ: .arithmeticType(.mutableInt(.u8)))),
                                           elements: [
             Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(16, 17), value: 1),
             Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(19, 20), value: 2),
@@ -288,7 +288,7 @@ let foo: []u8 = bar
         XCTAssertEqual(ast.children.count, 1)
         let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 19),
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
-                                      explicitType: Expression.DynamicArrayType(sourceAnchor: parser.lineMapper.anchor(9, 13), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(11, 13), typ: .u8)),
+                                      explicitType: Expression.DynamicArrayType(sourceAnchor: parser.lineMapper.anchor(9, 13), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(11, 13), typ: .arithmeticType(.mutableInt(.u8)))),
                                       expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(16, 19), identifier: "bar"),
                                       storage: .automaticStorage,
                                       isMutable: false)
@@ -305,7 +305,7 @@ let foo: [1]u8 = undefined
         XCTAssertEqual(ast.children.count, 1)
         let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 26),
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
-                                      explicitType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(9, 14), count: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(10, 11), value: 1), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(12, 14), typ: .u8)),
+                                      explicitType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(9, 14), count: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(10, 11), value: 1), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(12, 14), typ: .arithmeticType(.mutableInt(.u8)))),
                                       expression: nil,
                                       storage: .automaticStorage,
                                       isMutable: false)
@@ -371,7 +371,7 @@ let foo: [1]u8 = undefined
         
         let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 15),
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
-                                      explicitType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(9, 11), typ: .u8),
+                                      explicitType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(9, 11), typ: .arithmeticType(.mutableInt(.u8))),
                                       expression: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(14, 15), value: 1),
                                       storage: .automaticStorage,
                                       isMutable: true)
@@ -1267,7 +1267,7 @@ while 1 {}
         XCTAssertEqual(parser.syntaxTree, TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 19), children: [
             FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 19),
                                 identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo"),
-                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 16), typ: .u8), arguments: []),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 16), typ: .arithmeticType(.mutableInt(.u8))), arguments: []),
                                 argumentNames: [],
                                 body: Block(sourceAnchor: parser.lineMapper.anchor(17, 19), children: []))
         ]))
@@ -1309,7 +1309,7 @@ while 1 {}
         let expected = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 20), children: [
             FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 20),
                                 identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo"),
-                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: [Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 16), typ: .u8)]),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: [Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 16), typ: .arithmeticType(.mutableInt(.u8)))]),
                                 argumentNames: ["bar"],
                                 body: Block(sourceAnchor: parser.lineMapper.anchor(18, 20), children: []))
         ])
@@ -1322,7 +1322,7 @@ while 1 {}
         let expected = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 31), children: [
             FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 31),
                                 identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo"),
-                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: [Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 16), typ: .u8), Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(23, 27), typ: .bool(.mutableBool))]),
+                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: [Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 16), typ: .arithmeticType(.mutableInt(.u8))), Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(23, 27), typ: .bool(.mutableBool))]),
                                 argumentNames: ["bar", "baz"],
                                 body: Block(sourceAnchor: parser.lineMapper.anchor(29, 31), children: []))
         ])
@@ -1555,7 +1555,7 @@ struct foo {
                                          identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(7, 10), identifier: "foo"),
                                          members: [
                                             StructDeclaration.Member(name: "bar",
-                                                                     type: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(22, 24), typ: .u8))
+                                                                     type: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(22, 24), typ: .arithmeticType(.mutableInt(.u8))))
                                          ])
         XCTAssertEqual(ast.children.first, expected)
     }
@@ -1583,9 +1583,9 @@ struct foo {
                                          identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(7, 10), identifier: "foo"),
                                          members: [
                                             StructDeclaration.Member(name: "bar",
-                                                                     type: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(22, 24), typ: .u8)),
+                                                                     type: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(22, 24), typ: .arithmeticType(.mutableInt(.u8)))),
                                             StructDeclaration.Member(name: "baz",
-                                                                     type: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(35, 38), typ: .u16)),
+                                                                     type: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(35, 38), typ: .arithmeticType(.mutableInt(.u16)))),
                                             StructDeclaration.Member(name: "qux",
                                                                      type: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(49, 53), typ: .bool(.mutableBool))),
                                          ])
@@ -1611,9 +1611,9 @@ struct foo { bar: u8, baz: u16, qux: bool }
                                          identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(7, 10), identifier: "foo"),
                                          members: [
                                             StructDeclaration.Member(name: "bar",
-                                                                     type: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(18, 20), typ: .u8)),
+                                                                     type: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(18, 20), typ: .arithmeticType(.mutableInt(.u8)))),
                                             StructDeclaration.Member(name: "baz",
-                                                                     type: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(27, 30), typ: .u16)),
+                                                                     type: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(27, 30), typ: .arithmeticType(.mutableInt(.u16)))),
                                             StructDeclaration.Member(name: "qux",
                                                                      type: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(37, 41), typ: .bool(.mutableBool))),
                                          ])
@@ -2064,7 +2064,7 @@ Foo.doSomething1()
         let parser = parse("var foo: u8 | bool = undefined")
         XCTAssertFalse(parser.hasError)
         let unionType = Expression.UnionType(sourceAnchor: parser.lineMapper.anchor(9, 18), members: [
-            Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(9, 11), typ: .u8),
+            Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(9, 11), typ: .arithmeticType(.mutableInt(.u8))),
             Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 18), typ: .bool(.mutableBool))
         ])
         XCTAssertEqual(parser.syntaxTree?.children, [
@@ -2081,7 +2081,7 @@ Foo.doSomething1()
         let parser = parse("var foo: u8 | bool | Foo = undefined")
         XCTAssertFalse(parser.hasError)
         let unionType = Expression.UnionType(sourceAnchor: parser.lineMapper.anchor(9, 24), members: [
-            Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(9, 11), typ: .u8),
+            Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(9, 11), typ: .arithmeticType(.mutableInt(.u8))),
             Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 18), typ: .bool(.mutableBool)),
             Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(21, 24), identifier: "Foo")
         ])
@@ -2099,7 +2099,7 @@ Foo.doSomething1()
         let parser = parse("var foo: *u8 | None = undefined")
         XCTAssertFalse(parser.hasError)
         let unionType = Expression.UnionType(sourceAnchor: parser.lineMapper.anchor(9, 19), members: [
-            Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(9, 12), typ: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(10, 12), typ: .u8)),
+            Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(9, 12), typ: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(10, 12), typ: .arithmeticType(.mutableInt(.u8)))),
             Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(15, 19), identifier: "None")
         ])
         XCTAssertEqual(parser.syntaxTree?.children, [
@@ -2118,7 +2118,7 @@ Foo.doSomething1()
         XCTAssertEqual(parser.syntaxTree?.children, [
             Expression.Is(sourceAnchor: parser.lineMapper.anchor(0, 9),
                           expr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3), identifier: "foo"),
-                          testType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(7, 9), typ: .u8))
+                          testType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(7, 9), typ: .arithmeticType(.mutableInt(.u8))))
         ])
     }
     
@@ -2173,7 +2173,7 @@ match expr {
                   clauses: [
                     Match.Clause(sourceAnchor: parser.lineMapper.anchor(17, 32),
                                  valueIdentifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(18, 21), identifier: "foo"),
-                                 valueType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(23, 25), typ: .u8),
+                                 valueType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(23, 25), typ: .arithmeticType(.mutableInt(.u8))),
                                  block: Block(sourceAnchor: parser.lineMapper.anchor(30, 32), children: []))
                   ],
                   elseClause: nil)
@@ -2194,7 +2194,7 @@ match expr {
                   clauses: [
                     Match.Clause(sourceAnchor: parser.lineMapper.anchor(17, 32),
                                  valueIdentifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(18, 21), identifier: "foo"),
-                                 valueType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(23, 25), typ: .u8),
+                                 valueType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(23, 25), typ: .arithmeticType(.mutableInt(.u8))),
                                  block: Block(sourceAnchor: parser.lineMapper.anchor(30, 32), children: []))
                   ],
                   elseClause: Block(sourceAnchor: parser.lineMapper.anchor(46, 48), children: []))
@@ -2216,7 +2216,7 @@ match expr {
                   clauses: [
                     Match.Clause(sourceAnchor: parser.lineMapper.anchor(17, 32),
                                  valueIdentifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(18, 21), identifier: "foo"),
-                                 valueType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(23, 25), typ: .u8),
+                                 valueType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(23, 25), typ: .arithmeticType(.mutableInt(.u8))),
                                  block: Block(sourceAnchor: parser.lineMapper.anchor(30, 32), children: [])),
                     Match.Clause(sourceAnchor: parser.lineMapper.anchor(38, 56),
                                  valueIdentifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(39, 42), identifier: "foo"),
@@ -2484,7 +2484,7 @@ let foo: func (u8) -> u8 = undefined
         }
         XCTAssertEqual(ast.children.count, 1)
         let foo = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo")
-        let fn = Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(9, 24), name: nil, returnType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(22, 24), typ: .u8), arguments: [Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(15, 17), typ: .u8)])
+        let fn = Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(9, 24), name: nil, returnType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(22, 24), typ: .arithmeticType(.mutableInt(.u8))), arguments: [Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(15, 17), typ: .arithmeticType(.mutableInt(.u8)))])
         let expectedType = Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(9, 24), typ: fn)
         let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 36),
                                       identifier: foo,
@@ -2559,11 +2559,11 @@ trait Foo {
             return
         }
         XCTAssertEqual(ast.children.count, 1)
-        let foo = TraitDeclaration.Member(name: "foo", type:  Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(16, 44), typ: Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(16, 44), name: nil, returnType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(42, 44), typ: .u8), arguments: [
-            Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(28, 30), typ: .u8),
-            Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(35, 37), typ: .u8)
+        let foo = TraitDeclaration.Member(name: "foo", type:  Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(16, 44), typ: Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(16, 44), name: nil, returnType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(42, 44), typ: .arithmeticType(.mutableInt(.u8))), arguments: [
+            Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(28, 30), typ: .arithmeticType(.mutableInt(.u8))),
+            Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(35, 37), typ: .arithmeticType(.mutableInt(.u8)))
         ])))
-        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(49, 75), typ: Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(49, 75), name: nil, returnType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(73, 75), typ: .u8), arguments: [
+        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(49, 75), typ: Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(49, 75), name: nil, returnType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(73, 75), typ: .arithmeticType(.mutableInt(.u8))), arguments: [
             Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(64, 68), typ: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(65, 68), identifier: "Foo"))
         ])))
         let expr = TraitDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 77),
@@ -2592,7 +2592,7 @@ impl Serial for SerialFake {
                                             identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(38, 42), identifier: "puts"),
                                             functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [
                                                 Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(49, 60), typ: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(50, 60), identifier: "SerialFake")),
-                                                Expression.DynamicArrayType(sourceAnchor: parser.lineMapper.anchor(65, 75), elementType: Expression.ConstType(sourceAnchor: parser.lineMapper.anchor(67, 75), typ: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(73, 75), typ: .u8)))
+                                                Expression.DynamicArrayType(sourceAnchor: parser.lineMapper.anchor(65, 75), elementType: Expression.ConstType(sourceAnchor: parser.lineMapper.anchor(67, 75), typ: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(73, 75), typ: .arithmeticType(.mutableInt(.u8)))))
                                             ]),
                                             argumentNames: ["self", "s"],
                                             body: Block(sourceAnchor: parser.lineMapper.anchor(77, 84))),
@@ -2607,7 +2607,7 @@ impl Serial for SerialFake {
             Typealias(sourceAnchor: parser.lineMapper.anchor(0, 33),
                       lexpr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(10, 13), identifier: "Foo"),
                       rexpr: Expression.UnionType(sourceAnchor: parser.lineMapper.anchor(16, 33), members: [
-                        Expression.DynamicArrayType(sourceAnchor: parser.lineMapper.anchor(16, 26), elementType: Expression.ConstType(sourceAnchor: parser.lineMapper.anchor(18, 26), typ: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(24, 26), typ: .u8))),
+                        Expression.DynamicArrayType(sourceAnchor: parser.lineMapper.anchor(16, 26), elementType: Expression.ConstType(sourceAnchor: parser.lineMapper.anchor(18, 26), typ: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(24, 26), typ: .arithmeticType(.mutableInt(.u8))))),
                         Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(29, 33), identifier: "None")
                       ]))
         ])

@@ -29,7 +29,7 @@ class SymbolTablesReconnectorTests: XCTestCase {
         
         let input = Block(symbols: table1, children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                            functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                            functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: []),
                                             argumentNames: [],
                                             body: Block(children: []),
                                             symbols: table2)
@@ -44,7 +44,7 @@ class SymbolTablesReconnectorTests: XCTestCase {
     
     func testFunctionDeclaration_Body() throws {
         let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                        functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                        functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: []),
                                         argumentNames: [],
                                         body: Block(children: []))
         SymbolTablesReconnector().reconnect(input)

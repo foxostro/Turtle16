@@ -15,7 +15,7 @@ class VarDeclarationTests: XCTestCase {
         let foo = Expression.Identifier("foo")
         let one = Expression.LiteralInt(1)
         XCTAssertNotEqual(VarDeclaration(identifier: foo,
-                                         explicitType: Expression.PrimitiveType(.u8),
+                                         explicitType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
                                          expression: one,
                                          storage: .staticStorage,
                                          isMutable: true),
@@ -27,12 +27,12 @@ class VarDeclarationTests: XCTestCase {
         let bar = Expression.Identifier("bar")
         let one = Expression.LiteralInt(1)
         XCTAssertNotEqual(VarDeclaration(identifier: foo,
-                                         explicitType: Expression.PrimitiveType(.u8),
+                                         explicitType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
                                          expression: one,
                                          storage: .staticStorage,
                                          isMutable: true),
                           VarDeclaration(identifier: bar,
-                                         explicitType: Expression.PrimitiveType(.u8),
+                                         explicitType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
                                          expression: one,
                                          storage: .staticStorage,
                                          isMutable: true))
@@ -43,12 +43,12 @@ class VarDeclarationTests: XCTestCase {
         let bar = Expression.Identifier("bar")
         let one = Expression.LiteralInt(1)
         XCTAssertNotEqual(VarDeclaration(identifier: foo,
-                                         explicitType: Expression.PrimitiveType(.u8),
+                                         explicitType:  Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
                                          expression: one,
                                          storage: .staticStorage,
                                          isMutable: true),
                           VarDeclaration(identifier: bar,
-                                         explicitType: Expression.PrimitiveType(.u8),
+                                         explicitType:  Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
                                          expression: one,
                                          storage: .automaticStorage,
                                          isMutable: true))
@@ -59,12 +59,12 @@ class VarDeclarationTests: XCTestCase {
         let bar = Expression.Identifier("bar")
         let one = Expression.LiteralInt(1)
         XCTAssertNotEqual(VarDeclaration(identifier: foo,
-                                         explicitType: Expression.PrimitiveType(.u8),
+                                         explicitType:  Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
                                          expression: one,
                                          storage: .staticStorage,
                                          isMutable: true),
                           VarDeclaration(identifier: bar,
-                                         explicitType: Expression.PrimitiveType(.u8),
+                                         explicitType:  Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
                                          expression: one,
                                          storage: .staticStorage,
                                          isMutable: false))
@@ -75,12 +75,12 @@ class VarDeclarationTests: XCTestCase {
         let one = Expression.LiteralInt(1)
         let two = Expression.LiteralInt(2)
         XCTAssertNotEqual(VarDeclaration(identifier: foo,
-                                         explicitType: Expression.PrimitiveType(.u8),
+                                         explicitType:  Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
                                          expression: one,
                                          storage: .staticStorage,
                                          isMutable: true),
                           VarDeclaration(identifier: foo,
-                                         explicitType: Expression.PrimitiveType(.u8),
+                                         explicitType:  Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
                                          expression: two,
                                          storage: .staticStorage,
                                          isMutable: true))
@@ -89,11 +89,11 @@ class VarDeclarationTests: XCTestCase {
     func testDoesNotEqualNodeWithDifferentExplicitType() {
         let foo = Expression.Identifier("foo")
         XCTAssertNotEqual(VarDeclaration(identifier: foo,
-                                         explicitType: Expression.PrimitiveType(.u8),
+                                         explicitType:  Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
                                          expression: Expression.LiteralInt(1),
                                                    storage: .staticStorage, isMutable: true),
                           VarDeclaration(identifier: foo,
-                                         explicitType: Expression.PrimitiveType(.u16),
+                                         explicitType:  Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))),
                                          expression: Expression.LiteralInt(1),
                                          storage: .staticStorage, isMutable: true))
     }
@@ -101,11 +101,11 @@ class VarDeclarationTests: XCTestCase {
     func testNodesActuallyAreTheSame() {
         let foo = Expression.Identifier("foo")
         XCTAssertEqual(VarDeclaration(identifier: foo,
-                                      explicitType: Expression.PrimitiveType(.u8),
+                                      explicitType:  Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
                                       expression: Expression.LiteralInt(1),
                                       storage: .staticStorage, isMutable: true),
                        VarDeclaration(identifier: foo,
-                                      explicitType: Expression.PrimitiveType(.u8),
+                                      explicitType:  Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
                                       expression: Expression.LiteralInt(1),
                                       storage: .staticStorage, isMutable: true))
     }
@@ -113,11 +113,11 @@ class VarDeclarationTests: XCTestCase {
     func testHash() {
         let foo = Expression.Identifier("foo")
         XCTAssertNotEqual(VarDeclaration(identifier: foo,
-                                         explicitType: Expression.PrimitiveType(.u8),
+                                         explicitType:  Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
                                          expression: Expression.LiteralInt(1),
                                          storage: .staticStorage, isMutable: true).hashValue,
                           VarDeclaration(identifier: foo,
-                                         explicitType: Expression.PrimitiveType(.u8),
+                                         explicitType:  Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
                                          expression: Expression.LiteralInt(2),
                                          storage: .staticStorage, isMutable: true).hashValue)
     }

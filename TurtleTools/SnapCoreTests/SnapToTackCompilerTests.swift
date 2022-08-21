@@ -15,10 +15,10 @@ import Turtle16SimulatorCore
 let kSliceName = "Slice"
 let kSliceBase = "base"
 let kSliceBaseAddressOffset = 0
-let kSliceBaseAddressType = SymbolType.u16
+let kSliceBaseAddressType = SymbolType.arithmeticType(.mutableInt(.u16))
 let kSliceCount = "count"
 let kSliceCountOffset = 1
-let kSliceCountType = SymbolType.u16
+let kSliceCountType = SymbolType.arithmeticType(.mutableInt(.u16))
 let kSliceType: SymbolType = .structType(StructType(name: kSliceName, symbols: SymbolTable(tuples: [
     (kSliceBase,  Symbol(type: kSliceBaseAddressType, offset: kSliceBaseAddressOffset)),
     (kSliceCount, Symbol(type: kSliceCountType, offset: kSliceCountOffset))
@@ -27,8 +27,8 @@ let kRangeName = "Range"
 let kRangeBegin = "begin"
 let kRangeLimit = "limit"
 let kRangeType: SymbolType = .structType(StructType(name: kRangeName, symbols: SymbolTable(tuples: [
-    (kRangeBegin, Symbol(type: .u16, offset: 0, storage: .automaticStorage)),
-    (kRangeLimit, Symbol(type: .u16, offset: 1, storage: .automaticStorage))
+    (kRangeBegin, Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0, storage: .automaticStorage)),
+    (kRangeLimit, Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 1, storage: .automaticStorage))
 ])))
 
 
@@ -202,7 +202,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_LiteralArray_primitive_type() throws {
         let compiler = makeCompiler()
-        let arrType = Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u16))
+        let arrType = Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))
         let actual = try compiler.rvalue(expr: Expression.LiteralArray(arrayType: arrType, elements: [Expression.LiteralInt(42)]))
         let expected = Seq(children: [
             TackInstructionNode(instruction: .liu16, parameters: [
@@ -225,7 +225,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_LiteralArray_non_primitive_type() throws {
         let compiler = makeCompiler()
-        let inner = Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u16))
+        let inner = Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))
         let outer = Expression.ArrayType(count: Expression.LiteralInt(1), elementType: inner)
         let actual = try compiler.rvalue(expr: Expression.LiteralArray(arrayType: outer, elements: [
             Expression.LiteralArray(arrayType: inner, elements: [Expression.LiteralInt(42)])
@@ -345,7 +345,7 @@ class SnapToTackCompilerTests: XCTestCase {
     func testRvalue_Identifier_Static_u16() throws {
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let compiler = makeCompiler(symbols: SymbolTable(tuples: [
-            ("foo", Symbol(type: .u16, offset: offset, storage: .staticStorage))
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: offset, storage: .staticStorage))
         ]))
         let actual = try compiler.rvalue(expr: Expression.Identifier("foo"))
         let expected = Seq(children: [
@@ -365,7 +365,7 @@ class SnapToTackCompilerTests: XCTestCase {
     func testRvalue_Identifier_Stack_u16() throws {
         let offset = 4
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .u16, offset: offset, storage: .automaticStorage))
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: offset, storage: .automaticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
@@ -401,12 +401,12 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_As_u8_to_u8() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .u8, offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.PrimitiveType(.u8)))
+                                                             targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8)))))
         let expected = Seq(children: [
             TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr0"),
@@ -423,12 +423,12 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_As_u8_to_u16() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .u8, offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.PrimitiveType(.u16)))
+                                                             targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))))
         let expected = Seq(children: [
             TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr0"),
@@ -445,12 +445,12 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_As_u16_to_u8() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .u16, offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.PrimitiveType(.u8)))
+                                                             targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8)))))
         let expected = Seq(children: [
             TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr0"),
@@ -472,11 +472,11 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_As_array_to_array_of_same_type() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .array(count: 1, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 1, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u16))))
+                                                             targetType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))))
         let expected = TackInstructionNode(instruction: .liu16, parameters: [
             ParameterIdentifier("vr0"),
             ParameterNumber(0xabcd)
@@ -487,11 +487,11 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_As_array_to_array_with_different_type_that_can_be_trivially_reinterpreted() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .array(count: 0, elementType: .u8), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 0, elementType: .arithmeticType(.mutableInt(.u8))), offset: 0xabcd, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.ArrayType(count: Expression.LiteralInt(0), elementType: Expression.PrimitiveType(.u16))))
+                                                             targetType: Expression.ArrayType(count: Expression.LiteralInt(0), elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))))
         let expected = TackInstructionNode(instruction: .liu16, parameters: [
             ParameterIdentifier("vr0"),
             ParameterNumber(0xabcd)
@@ -502,11 +502,11 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_As_array_to_array_where_each_element_must_be_converted() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .array(count: 1, elementType: .u16), offset: 0x1000, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 1, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0x1000, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8))))
+                                                             targetType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))))
         let expected = Seq(children: [
             TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr0"),
@@ -558,10 +558,10 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_As_array_to_dynamic_array() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .array(count: 1, elementType: .u16), offset: 0x1000, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 1, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0x1000, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.DynamicArrayType(Expression.PrimitiveType(.u16))))
+        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))))
         let expected = Seq(children: [
             TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr0"),
@@ -592,8 +592,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_As_literal_array_to_dynamic_array() throws {
         let compiler = makeCompiler()
-        let arr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u16)), elements: [Expression.LiteralInt(1)])
-        let actual = try compiler.rvalue(expr: Expression.As(expr: arr, targetType: Expression.DynamicArrayType(Expression.PrimitiveType(.u16))))
+        let arr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))), elements: [Expression.LiteralInt(1)])
+        let actual = try compiler.rvalue(expr: Expression.As(expr: arr, targetType: Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))))
         let expected = Seq(children: [
             TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr0"),
@@ -633,12 +633,12 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_As_compTimeInt_small() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .compTimeInt(42), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .arithmeticType(.compTimeInt(42)), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                        targetType: Expression.PrimitiveType(.u8)))
+                                                        targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8)))))
         let expected = TackInstructionNode(instruction: .li8, parameters: [
             ParameterIdentifier("vr0"),
             ParameterNumber(42)
@@ -649,12 +649,12 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_As_compTimeInt_big() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .compTimeInt(1000), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .arithmeticType(.compTimeInt(1000)), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.PrimitiveType(.u16)))
+                                                             targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))))
         let expected = TackInstructionNode(instruction: .li16, parameters: [
             ParameterIdentifier("vr0"),
             ParameterNumber(1000)
@@ -697,12 +697,12 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_As_pointer_to_pointer() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .pointer(.u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .pointer(.arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.PointerType(Expression.PrimitiveType(.constU16))))
+                                                             targetType: Expression.PointerType(Expression.PrimitiveType(.arithmeticType(.immutableInt(.u16))))))
         let expected = Seq(children: [
             TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr0"),
@@ -719,12 +719,12 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_As_union_to_union() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .unionType(UnionType([.u16])), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .unionType(UnionType([.arithmeticType(.mutableInt(.u16))])), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.UnionType([Expression.PrimitiveType(.u16)])))
+                                                             targetType: Expression.UnionType([Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))])))
         let expected = TackInstructionNode(instruction: .liu16, parameters: [
             ParameterIdentifier("vr0"),
             ParameterNumber(0xabcd)
@@ -735,12 +735,12 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_As_union_to_primitive() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .unionType(UnionType([.u16])), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .unionType(UnionType([.arithmeticType(.mutableInt(.u16))])), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.PrimitiveType(.u16)))
+                                                             targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))))
         let expected = Seq(children: [
             TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr0"),
@@ -758,12 +758,12 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_As_union_to_non_primitive() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .unionType(UnionType([.array(count: 1, elementType: .u16)])), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .unionType(UnionType([.array(count: 1, elementType: .arithmeticType(.mutableInt(.u16)))])), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u16))))
+                                                             targetType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))))
         let expected = Seq(children: [
             TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr0"),
@@ -781,11 +781,11 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_As_convert_primitive_value_to_union() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .u16, offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.PrimitiveType(.u16)])))
+        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))])))
         let expected = Seq(children: [
             TackInstructionNode(instruction: .subi16, parameters: [
                 ParameterIdentifier("vr0"),
@@ -821,11 +821,11 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_As_determine_union_type_tag() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .u16, offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.PrimitiveType(.bool(.mutableBool)), Expression.PrimitiveType(.u16)])))
+        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.PrimitiveType(.bool(.mutableBool)), Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))])))
         let expected = Seq(children: [
             TackInstructionNode(instruction: .subi16, parameters: [
                 ParameterIdentifier("vr0"),
@@ -861,11 +861,11 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_As_convert_non_primitive_value_to_union() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .array(count: 2, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 2, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.ArrayType(count: Expression.LiteralInt(2), elementType: Expression.PrimitiveType(.u16))])))
+        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.ArrayType(count: Expression.LiteralInt(2), elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))])))
         let expected = Seq(children: [
             TackInstructionNode(instruction: .subi16, parameters: [
                 ParameterIdentifier("vr0"),
@@ -902,12 +902,12 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_As_union_to_primitive_with_dynamic_type_check() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .unionType(UnionType([.bool(.mutableBool), .u16])), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .unionType(UnionType([.bool(.mutableBool), .arithmeticType(.mutableInt(.u16))])), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.PrimitiveType(.u16)))
+                                                             targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))))
         let expected = Seq(children: [
             TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr0"),
@@ -943,12 +943,12 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Bitcast_u16_to_pointer() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .u16, offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Bitcast(expr: Expression.Identifier("foo"),
-                                                                  targetType: Expression.PointerType(Expression.PrimitiveType(.constU16))))
+                                                                  targetType: Expression.PointerType(Expression.PrimitiveType(.arithmeticType(.immutableInt(.u16))))))
         let expected = Seq(children: [
             TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr0"),
@@ -976,7 +976,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Unary_minus_u8() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .u8, offset: 100, storage: .staticStorage))
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .minus, expression: Expression.Identifier("foo")))
@@ -1005,7 +1005,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Unary_minus_u16() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .u16, offset: 100, storage: .staticStorage))
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .minus, expression: Expression.Identifier("foo")))
@@ -1058,7 +1058,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Unary_tilde_u8() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .u8, offset: 100, storage: .staticStorage))
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .tilde, expression: Expression.Identifier("foo")))
@@ -1082,7 +1082,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Unary_tilde_u16() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .u16, offset: 100, storage: .staticStorage))
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .tilde, expression: Expression.Identifier("foo")))
@@ -1120,7 +1120,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Unary_addressOf_Identifier() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .u16, offset: 100, storage: .staticStorage))
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .ampersand, expression: Expression.Identifier("foo")))
@@ -1134,8 +1134,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_add16() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .plus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -1168,8 +1168,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_sub16() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .minus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -1202,8 +1202,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_mul16() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .star, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -1236,8 +1236,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_div16() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -1270,8 +1270,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_mod16() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .modulus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -1304,8 +1304,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_lsl16() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .leftDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -1338,8 +1338,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_lsr16() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .rightDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -1372,8 +1372,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_and16() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ampersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -1406,8 +1406,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_or16() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .pipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -1440,8 +1440,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_xor16() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .caret, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -1474,8 +1474,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_eq16() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -1508,8 +1508,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_ne16() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -1542,8 +1542,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_lt16() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .lt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -1576,8 +1576,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_ge16() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ge, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -1610,8 +1610,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_le16() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .le, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -1644,8 +1644,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_gt16() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .gt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -1678,8 +1678,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_add8() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .plus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -1712,8 +1712,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_sub8() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .minus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -1746,8 +1746,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_mul8() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .star, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -1780,8 +1780,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_div8() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -1814,8 +1814,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_mod8() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .modulus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -1848,8 +1848,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_lsl8() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .leftDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -1882,8 +1882,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_lsr8() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .rightDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -1916,8 +1916,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_and8() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ampersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -1950,8 +1950,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_or8() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .pipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -1984,8 +1984,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_xor8() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .caret, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2018,8 +2018,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_eq8() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2052,8 +2052,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_ne8() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2086,8 +2086,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_lt8() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .lt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2120,8 +2120,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_ge8() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ge, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2154,8 +2154,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_le8() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .le, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2188,8 +2188,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_gt8() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .gt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2222,8 +2222,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_comptime_eq() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .compTimeInt(1))),
-            ("right", Symbol(type: .compTimeInt(1)))
+            ("left", Symbol(type: .arithmeticType(.compTimeInt(1)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(1))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2237,8 +2237,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_comptime_ne() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .compTimeInt(1))),
-            ("right", Symbol(type: .compTimeInt(1)))
+            ("left", Symbol(type: .arithmeticType(.compTimeInt(1)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(1))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2252,8 +2252,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_comptime_lt() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .compTimeInt(1))),
-            ("right", Symbol(type: .compTimeInt(2)))
+            ("left", Symbol(type: .arithmeticType(.compTimeInt(1)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(2))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .lt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2267,8 +2267,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_comptime_gt() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .compTimeInt(2))),
-            ("right", Symbol(type: .compTimeInt(1)))
+            ("left", Symbol(type: .arithmeticType(.compTimeInt(2)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(1))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .gt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2282,8 +2282,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_comptime_le() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .compTimeInt(1))),
-            ("right", Symbol(type: .compTimeInt(1)))
+            ("left", Symbol(type: .arithmeticType(.compTimeInt(1)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(1))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .le, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2297,8 +2297,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_comptime_ge() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .compTimeInt(1))),
-            ("right", Symbol(type: .compTimeInt(1)))
+            ("left", Symbol(type: .arithmeticType(.compTimeInt(1)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(1))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ge, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2312,8 +2312,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_comptime_add() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .compTimeInt(1))),
-            ("right", Symbol(type: .compTimeInt(1)))
+            ("left", Symbol(type: .arithmeticType(.compTimeInt(1)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(1))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .plus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2327,8 +2327,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_comptime_sub() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .compTimeInt(1))),
-            ("right", Symbol(type: .compTimeInt(1)))
+            ("left", Symbol(type: .arithmeticType(.compTimeInt(1)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(1))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .minus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2342,8 +2342,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_comptime_mul() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .compTimeInt(1))),
-            ("right", Symbol(type: .compTimeInt(1)))
+            ("left", Symbol(type: .arithmeticType(.compTimeInt(1)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(1))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .star, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2357,8 +2357,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_comptime_div() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .compTimeInt(1))),
-            ("right", Symbol(type: .compTimeInt(1)))
+            ("left", Symbol(type: .arithmeticType(.compTimeInt(1)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(1))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2372,8 +2372,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_comptime_mod() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .compTimeInt(3))),
-            ("right", Symbol(type: .compTimeInt(2)))
+            ("left", Symbol(type: .arithmeticType(.compTimeInt(3)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(2))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .modulus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2387,8 +2387,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_comptime_and() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .compTimeInt(0xab))),
-            ("right", Symbol(type: .compTimeInt(0x0f)))
+            ("left", Symbol(type: .arithmeticType(.compTimeInt(0xab)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(0x0f))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ampersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2402,8 +2402,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_comptime_or() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .compTimeInt(0xab))),
-            ("right", Symbol(type: .compTimeInt(0x0f)))
+            ("left", Symbol(type: .arithmeticType(.compTimeInt(0xab)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(0x0f))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .pipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2417,8 +2417,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_comptime_xor() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .compTimeInt(0xab))),
-            ("right", Symbol(type: .compTimeInt(0xab)))
+            ("left", Symbol(type: .arithmeticType(.compTimeInt(0xab)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(0xab))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .caret, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2432,8 +2432,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_comptime_lsl() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .compTimeInt(2))),
-            ("right", Symbol(type: .compTimeInt(2)))
+            ("left", Symbol(type: .arithmeticType(.compTimeInt(2)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(2))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .leftDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2447,8 +2447,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_comptime_lsr() throws {
         let symbols = SymbolTable(tuples: [
-            ("left", Symbol(type: .compTimeInt(8))),
-            ("right", Symbol(type: .compTimeInt(2)))
+            ("left", Symbol(type: .arithmeticType(.compTimeInt(8)))),
+            ("right", Symbol(type: .arithmeticType(.compTimeInt(2))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .rightDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
@@ -2704,7 +2704,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Is_test_union_type_tag() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .unionType(UnionType([.u8, .bool(.mutableBool)])), offset: 100, storage: .staticStorage))
+            ("foo", Symbol(type: .unionType(UnionType([.arithmeticType(.mutableInt(.u8)), .bool(.mutableBool)])), offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Is(expr: Expression.Identifier("foo"), testType: Expression.PrimitiveType(.bool(.mutableBool))))
@@ -2733,7 +2733,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Is_test_union_type_tag_const() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .unionType(UnionType([.constU8, .bool(.immutableBool)])), offset: 100, storage: .staticStorage))
+            ("foo", Symbol(type: .unionType(UnionType([.arithmeticType(.immutableInt(.u8)), .bool(.immutableBool)])), offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Is(expr: Expression.Identifier("foo"), testType: Expression.PrimitiveType(.bool(.mutableBool))))
@@ -2762,7 +2762,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Assignment_ToPrimitiveScalar() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .u16, offset: 0x1000, storage: .staticStorage))
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0x1000, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
@@ -2787,8 +2787,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Assignment_ArrayToArray_Size_0() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .array(count: 0, elementType: .u16), offset: 0x1000, storage: .staticStorage)),
-            ("bar", Symbol(type: .array(count: 0, elementType: .u16), offset: 0x2000, storage: .staticStorage)),
+            ("foo", Symbol(type: .array(count: 0, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0x1000, storage: .staticStorage)),
+            ("bar", Symbol(type: .array(count: 0, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0x2000, storage: .staticStorage)),
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
@@ -2803,8 +2803,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Assignment_ArrayToArray_Size_1() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .array(count: 1, elementType: .u16), offset: 0x1000, storage: .staticStorage)),
-            ("bar", Symbol(type: .array(count: 1, elementType: .u16), offset: 0x2000, storage: .staticStorage)),
+            ("foo", Symbol(type: .array(count: 1, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0x1000, storage: .staticStorage)),
+            ("bar", Symbol(type: .array(count: 1, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0x2000, storage: .staticStorage)),
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
@@ -2830,8 +2830,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Assignment_ArrayToArray_Size_2() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .array(count: 2, elementType: .u16), offset: 0x1000, storage: .staticStorage)),
-            ("bar", Symbol(type: .array(count: 2, elementType: .u16), offset: 0x2000, storage: .staticStorage)),
+            ("foo", Symbol(type: .array(count: 2, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0x1000, storage: .staticStorage)),
+            ("bar", Symbol(type: .array(count: 2, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0x2000, storage: .staticStorage)),
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
@@ -2857,7 +2857,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_SubscriptRvalue_CompileTimeIndexAndPrimitiveElement() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 10, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
@@ -2887,7 +2887,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_SubscriptRvalue_RuntimeTimeIndexAndPrimitiveElement() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 10, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
@@ -2972,7 +2972,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_SubscriptRvalue_NestedArray() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .array(count: 10, elementType: .array(count: 2, elementType: .u16)), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 10, elementType: .array(count: 2, elementType: .arithmeticType(.mutableInt(.u16)))), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
@@ -3037,7 +3037,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_SubscriptRvalue_DynamicArray() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .dynamicArray(elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .dynamicArray(elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
@@ -3107,7 +3107,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_compiler_error_when_index_is_known_negative_at_compile_time() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .dynamicArray(elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .dynamicArray(elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         XCTAssertThrowsError(try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: Expression.LiteralInt(-1)))) {
@@ -3119,7 +3119,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_compiler_error_when_index_is_known_oob_at_compile_time() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 10, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         XCTAssertThrowsError(try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: Expression.LiteralInt(100)))) {
@@ -3131,7 +3131,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testLvalue_compiler_error_when_index_is_known_negative_at_compile_time() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .dynamicArray(elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .dynamicArray(elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         XCTAssertThrowsError(try compiler.lvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: Expression.LiteralInt(-1)))) {
@@ -3143,7 +3143,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testLvalue_compiler_error_when_index_is_known_oob_at_compile_time() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 10, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         XCTAssertThrowsError(try compiler.lvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: Expression.LiteralInt(100)))) {
@@ -3155,7 +3155,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Assignment_ToArrayElementViaSubscript() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0x1000, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 10, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0x1000, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Assignment(
@@ -3192,8 +3192,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Assignment_automatic_conversion_from_object_to_pointer() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .pointer(.u16), offset: 0x1000, storage: .staticStorage)),
-            ("bar", Symbol(type: .u16, offset: 0x2000, storage: .staticStorage))
+            ("foo", Symbol(type: .pointer(.arithmeticType(.mutableInt(.u16))), offset: 0x1000, storage: .staticStorage)),
+            ("bar", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0x2000, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
@@ -3218,7 +3218,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Assignment_automatic_conversion_from_object_to_pointer_requires_lvalue() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .pointer(.u16), offset: 0x1000, storage: .staticStorage))
+            ("foo", Symbol(type: .pointer(.arithmeticType(.mutableInt(.u16))), offset: 0x1000, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let expr = Expression.Assignment(lexpr: Expression.Identifier("foo"),
@@ -3273,7 +3273,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Get_array_count() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .array(count: 42, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 42, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
@@ -3289,7 +3289,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Get_dynamic_array_count() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .dynamicArray(elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .dynamicArray(elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
@@ -3335,8 +3335,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Get_struct_member_not_primitive() throws {
         let type: SymbolType = .structType(StructType(name: "bar", symbols: SymbolTable(tuples: [
-            ("wat", Symbol(type: .u16, offset: 0)),
-            ("baz", Symbol(type: .array(count: 1, elementType: .u16), offset: 1))
+            ("wat", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0)),
+            ("baz", Symbol(type: .array(count: 1, elementType: .arithmeticType(.mutableInt(.u16))), offset: 1))
         ])))
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: type, offset: 0xabcd, storage: .staticStorage))
@@ -3362,7 +3362,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Get_pointee_primitive() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .pointer(.u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .pointer(.arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
@@ -3388,7 +3388,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testLvalue_Get_pointee_primitive() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .pointer(.u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .pointer(.arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
@@ -3410,11 +3410,11 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testLvalue_Bitcast() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .pointer(.u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .pointer(.arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.lvalue(expr: Expression.Bitcast(expr: Expression.Get(expr: Expression.Identifier("foo"), member: Expression.Identifier("pointee")), targetType: Expression.PrimitiveType(.u8)))
+        let actual = try compiler.lvalue(expr: Expression.Bitcast(expr: Expression.Get(expr: Expression.Identifier("foo"), member: Expression.Identifier("pointee")), targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8)))))
         let expected = Seq(children: [
             TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr0"),
@@ -3431,7 +3431,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Get_pointee_not_primitive() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .pointer(.array(count: 1, elementType: .u16)), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .pointer(.array(count: 1, elementType: .arithmeticType(.mutableInt(.u16)))), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
@@ -3453,7 +3453,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Get_array_count_via_pointer() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .pointer(.array(count: 42, elementType: .u16)), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .pointer(.array(count: 42, elementType: .arithmeticType(.mutableInt(.u16)))), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
@@ -3469,7 +3469,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Get_dynamic_array_count_via_pointer() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .pointer(.dynamicArray(elementType: .u16)), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .pointer(.dynamicArray(elementType: .arithmeticType(.mutableInt(.u16)))), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
@@ -3523,8 +3523,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Get_non_primitive_struct_member_via_pointer() throws {
         let type: SymbolType = .pointer(.structType(StructType(name: "bar", symbols: SymbolTable(tuples: [
-            ("wat", Symbol(type: .u16, offset: 0)),
-            ("baz", Symbol(type: .array(count: 1, elementType: .u16), offset: 1))
+            ("wat", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0)),
+            ("baz", Symbol(type: .array(count: 1, elementType: .arithmeticType(.mutableInt(.u16))), offset: 1))
         ]))))
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: type, offset: 0xabcd, storage: .staticStorage))
@@ -3566,7 +3566,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Call_return_some_primitive_value_and_no_args() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .u16, arguments: []))))
+            ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .arithmeticType(.mutableInt(.u16)), arguments: []))))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
@@ -3608,7 +3608,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Call_return_some_non_primitive_value_and_no_args() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .dynamicArray(elementType: .u16), arguments: []))))
+            ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .dynamicArray(elementType: .arithmeticType(.mutableInt(.u16))), arguments: []))))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
@@ -3647,7 +3647,7 @@ class SnapToTackCompilerTests: XCTestCase {
     func testRvalue_Call_one_primitive_arg() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .void, arguments: [
-                .u16
+                .arithmeticType(.mutableInt(.u16))
             ]))))
         ])
         symbols.stackFrameIndex = 1
@@ -3681,7 +3681,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Call_return_value_and_one_arg() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .u16, arguments: [.u16]))))
+            ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .arithmeticType(.mutableInt(.u16)), arguments: [.arithmeticType(.mutableInt(.u16))]))))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
@@ -3735,8 +3735,8 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Call_return_value_and_one_non_primitive_arg() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .u16, arguments: [.unionType(UnionType([.u16]))])))),
-            ("bar", Symbol(type: .unionType(UnionType([.u16])), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .arithmeticType(.mutableInt(.u16)), arguments: [.unionType(UnionType([.arithmeticType(.mutableInt(.u16))]))])))),
+            ("bar", Symbol(type: .unionType(UnionType([.arithmeticType(.mutableInt(.u16))])), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
@@ -3834,7 +3834,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Call_panic_with_string_arg() throws {
         let symbols = SymbolTable(tuples: [
-            ("panic", Symbol(type: .function(FunctionType(name: "panic", mangledName: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .constU8)]))))
+            ("panic", Symbol(type: .function(FunctionType(name: "panic", mangledName: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .arithmeticType(.immutableInt(.u8)))]))))
         ])
         symbols.stackFrameIndex = 1
         let compiler = makeCompiler(symbols: symbols)
@@ -4202,11 +4202,11 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_As_LiteralArray() throws {
         let compiler = makeCompiler()
-        let literalArrayType = Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8))
+        let literalArrayType = Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
         let literalArray = Expression.LiteralArray(arrayType: literalArrayType, elements: [
             Expression.LiteralInt(42)
         ])
-        let targetType = Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u16))
+        let targetType = Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))
         let asExpr = Expression.As(expr: literalArray, targetType: targetType)
         let actual = try compiler.rvalue(expr: asExpr)
         let expected = Seq(children: [
@@ -4231,10 +4231,10 @@ class SnapToTackCompilerTests: XCTestCase {
     func testFixBugWithCompilerTemporaryOfArrayTypeWithNoExplicitCount() throws {
         let compiler = makeCompiler()
         let symbols = SymbolTable(tuples: [
-            ("a", Symbol(type: .array(count: nil, elementType: .u16), offset: 2, storage: .automaticStorage, visibility: .privateVisibility))
+            ("a", Symbol(type: .array(count: nil, elementType: .arithmeticType(.mutableInt(.u16))), offset: 2, storage: .automaticStorage, visibility: .privateVisibility))
         ])
         symbols.highwaterMark = 2
-        let literalArray = Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u16)), elements: [
+        let literalArray = Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))), elements: [
             Expression.LiteralInt(1), Expression.LiteralInt(2)
         ])
         _ = try compiler.rvalue(expr: literalArray)
@@ -4248,7 +4248,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testAssignConstStructToNonConstStructElementOfUnion() throws {
         let None = SymbolType.structType(StructType(name: "None", symbols: SymbolTable()))
-        let OptU8 = SymbolType.unionType(UnionType([.u8, None]))
+        let OptU8 = SymbolType.unionType(UnionType([.arithmeticType(.mutableInt(.u8)), None]))
         let symbols = SymbolTable(tuples: [
             ("none", Symbol(type: None.correspondingConstType, offset: SnapCompilerMetrics.kStaticStorageStartAddress, storage: .staticStorage)),
             ("r", Symbol(type: OptU8, offset: SnapCompilerMetrics.kStaticStorageStartAddress+1, storage: .staticStorage))
@@ -4302,7 +4302,7 @@ class SnapToTackCompilerTests: XCTestCase {
     }
     
     func testRvalue_ArraySlice_WithNonRangeArgument() throws {
-        let symbols = SymbolTable(tuples: [ ("foo", Symbol(type: .array(count: 2, elementType: .u16))) ],
+        let symbols = SymbolTable(tuples: [ ("foo", Symbol(type: .array(count: 2, elementType: .arithmeticType(.mutableInt(.u16))))) ],
                                   typeDict: [ kSliceName : kSliceType ])
         let compiler = makeCompiler(symbols: symbols)
         let arg = Expression.StructInitializer(identifier: Expression.Identifier(kSliceName), arguments: [
@@ -4318,7 +4318,7 @@ class SnapToTackCompilerTests: XCTestCase {
     }
     
     func testRvalue_ArraySlice_RangeBeginIsOutOfBoundsAtCompileTime() throws {
-        let symbols = SymbolTable(tuples: [ ("foo", Symbol(type: .array(count: 1, elementType: .u16))) ],
+        let symbols = SymbolTable(tuples: [ ("foo", Symbol(type: .array(count: 1, elementType: .arithmeticType(.mutableInt(.u16))))) ],
                                   typeDict: [ kRangeName : kRangeType ])
         let compiler = makeCompiler(symbols: symbols)
         let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
@@ -4334,7 +4334,7 @@ class SnapToTackCompilerTests: XCTestCase {
     }
     
     func testRvalue_ArraySlice_RangeLimitIsOutOfBoundsAtCompileTime() throws {
-        let symbols = SymbolTable(tuples: [ ("foo", Symbol(type: .array(count: 1, elementType: .u16))) ],
+        let symbols = SymbolTable(tuples: [ ("foo", Symbol(type: .array(count: 1, elementType: .arithmeticType(.mutableInt(.u16))))) ],
                                   typeDict: [ kRangeName : kRangeType ])
         let compiler = makeCompiler(symbols: symbols)
         let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
@@ -4350,7 +4350,7 @@ class SnapToTackCompilerTests: XCTestCase {
     }
     
     func testRvalue_ArraySlice_RangeLimitIsOutOfBoundsAtCompileTime_2() throws {
-        let symbols = SymbolTable(tuples: [ ("foo", Symbol(type: .array(count: 2, elementType: .u16))) ],
+        let symbols = SymbolTable(tuples: [ ("foo", Symbol(type: .array(count: 2, elementType: .arithmeticType(.mutableInt(.u16))))) ],
                                   typeDict: [ kRangeName : kRangeType ])
         let compiler = makeCompiler(symbols: symbols)
         let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
@@ -4367,7 +4367,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_ArraySlice_0() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .array(count: 1, elementType: .u16),
+            ("foo", Symbol(type: .array(count: 1, elementType: .arithmeticType(.mutableInt(.u16))),
                            offset: 0x1000))
         ], typeDict: [
             kRangeName : kRangeType,
@@ -4426,7 +4426,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_ArraySlice_1() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .array(count: 3, elementType: .u16),
+            ("foo", Symbol(type: .array(count: 3, elementType: .arithmeticType(.mutableInt(.u16))),
                            offset: 0x1000))
         ], typeDict: [
             kRangeName : kRangeType,
@@ -4494,9 +4494,9 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_ArraySlice_2() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .array(count: 3, elementType: .u16), offset: 0x1000)),
-            ("a",   Symbol(type: .u16, offset: 0x2000)),
-            ("b",   Symbol(type: .u16, offset: 0x2001))
+            ("foo", Symbol(type: .array(count: 3, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0x1000)),
+            ("a",   Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0x2000)),
+            ("b",   Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0x2001))
         ], typeDict: [
             kRangeName : kRangeType,
             kSliceName : kSliceType
@@ -4585,7 +4585,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_ArraySlice_ElementSizeGreaterThanOne_1() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .array(count: 3, elementType: .array(count: 3, elementType: .u16)), offset: 0x1000))
+            ("foo", Symbol(type: .array(count: 3, elementType: .array(count: 3, elementType: .arithmeticType(.mutableInt(.u16)))), offset: 0x1000))
         ], typeDict: [
             kRangeName : kRangeType,
             kSliceName : kSliceType
@@ -4652,7 +4652,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_ArraySlice_Identifier() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .array(count: 2, elementType: .u16), offset: 0x1000)),
+            ("foo", Symbol(type: .array(count: 2, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0x1000)),
             ("range", Symbol(type: kRangeType, offset: 0x2000))
         ], typeDict: [
             kRangeName : kRangeType,
@@ -4742,9 +4742,9 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_ArraySlice_ElementSizeGreaterThanOne_2() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .array(count: 3, elementType: .array(count: 3, elementType: .u16)), offset: 0x1000)),
-            ("a",   Symbol(type: .u16, offset: 0x2000)),
-            ("b",   Symbol(type: .u16, offset: 0x2001))
+            ("foo", Symbol(type: .array(count: 3, elementType: .array(count: 3, elementType: .arithmeticType(.mutableInt(.u16)))), offset: 0x1000)),
+            ("a",   Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0x2000)),
+            ("b",   Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0x2001))
         ], typeDict: [
             kRangeName : kRangeType,
             kSliceName : kSliceType
@@ -4841,7 +4841,7 @@ class SnapToTackCompilerTests: XCTestCase {
     }
     
     func testRvalue_SubscriptDynamicArray_WithNonRangeArgument() throws {
-        let symbols = SymbolTable(tuples: [ ("foo", Symbol(type: .dynamicArray(elementType: .u16))) ],
+        let symbols = SymbolTable(tuples: [ ("foo", Symbol(type: .dynamicArray(elementType: .arithmeticType(.mutableInt(.u16))))) ],
                                   typeDict: [ kSliceName : kSliceType ])
         let compiler = makeCompiler(symbols: symbols)
         let arg = Expression.StructInitializer(identifier: Expression.Identifier(kSliceName), arguments: [
@@ -4858,7 +4858,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_DynamicArraySlice_1() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .constDynamicArray(elementType: .u16), offset: 0x1000))
+            ("foo", Symbol(type: .constDynamicArray(elementType: .arithmeticType(.mutableInt(.u16))), offset: 0x1000))
         ], typeDict: [
             kRangeName : kRangeType,
             kSliceName : kSliceType
@@ -4921,9 +4921,9 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_DynamicArraySlice_2() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .constDynamicArray(elementType: .u16), offset: 0x1000)),
-            ("a",   Symbol(type: .u16, offset: 0x2000)),
-            ("b",   Symbol(type: .u16, offset: 0x2001))
+            ("foo", Symbol(type: .constDynamicArray(elementType: .arithmeticType(.mutableInt(.u16))), offset: 0x1000)),
+            ("a",   Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0x2000)),
+            ("b",   Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0x2001))
         ], typeDict: [
             kRangeName : kRangeType,
             kSliceName : kSliceType
@@ -5017,7 +5017,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_DynamicArraySlice_ElementSizeGreaterThanOne_1() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .constDynamicArray(elementType: .array(count: 3, elementType: .u16)), offset: 0x1000))
+            ("foo", Symbol(type: .constDynamicArray(elementType: .array(count: 3, elementType: .arithmeticType(.mutableInt(.u16)))), offset: 0x1000))
         ], typeDict: [
             kRangeName : kRangeType,
             kSliceName : kSliceType
@@ -5089,9 +5089,9 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_DynamicArraySlice_ElementSizeGreaterThanOne_2() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .constDynamicArray(elementType: .array(count: 3, elementType: .u16)), offset: 0x1000)),
-            ("a",   Symbol(type: .u16, offset: 0x2000)),
-            ("b",   Symbol(type: .u16, offset: 0x2001))
+            ("foo", Symbol(type: .constDynamicArray(elementType: .array(count: 3, elementType: .arithmeticType(.mutableInt(.u16)))), offset: 0x1000)),
+            ("a",   Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0x2000)),
+            ("b",   Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0x2001))
         ], typeDict: [
             kRangeName : kRangeType,
             kSliceName : kSliceType
@@ -5370,10 +5370,10 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testLvalue_LvalueOfMemberOfStructInitializer() throws {
         let typ = StructType(name: "Foo", symbols: SymbolTable(tuples: [
-            ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
+            ("bar", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0, storage: .automaticStorage))
         ]))
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .u16, offset: 0xabcd))
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0xabcd))
         ], typeDict: [
             "Foo" : .structType(typ)
         ])
@@ -5393,10 +5393,10 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_RvalueOfMemberOfStructInitializer() throws {
         let typ = StructType(name: "Foo", symbols: SymbolTable(tuples: [
-            ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
+            ("bar", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0, storage: .automaticStorage))
         ]))
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .u16, offset: 0xabcd))
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0xabcd))
         ], typeDict: [
             "Foo" : .structType(typ)
         ])

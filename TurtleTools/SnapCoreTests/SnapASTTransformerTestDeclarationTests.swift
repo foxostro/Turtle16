@@ -18,7 +18,7 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
                            expression: Expression.LiteralInt(1),
                            storage: .staticStorage,
                            isMutable: true),
-            FunctionDeclaration(identifier: Expression.Identifier("puts"), functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [Expression.DynamicArrayType(Expression.PrimitiveType(.u8))]), argumentNames: ["s"], body: Block(children: [])),
+            FunctionDeclaration(identifier: Expression.Identifier("puts"), functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))]), argumentNames: ["s"], body: Block(children: [])),
             TestDeclaration(name: "bar", body: Block(children: [
                 TestDeclaration(name: "baz", body: Block(children: [
                     Expression.Assignment(lexpr: Expression.Identifier("foo"),
@@ -40,7 +40,7 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
     
     func testTestDeclarationsMustHaveUniqueName() {
         let original = Block(children: [
-            FunctionDeclaration(identifier: Expression.Identifier("puts"), functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [Expression.DynamicArrayType(Expression.PrimitiveType(.u8))]), argumentNames: ["s"], body: Block(children: [])),
+            FunctionDeclaration(identifier: Expression.Identifier("puts"), functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))]), argumentNames: ["s"], body: Block(children: [])),
             TestDeclaration(name: "bar", body: Block(children: [])),
             TestDeclaration(name: "bar", body: Block(children: []))
         ])

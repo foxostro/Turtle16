@@ -21,22 +21,22 @@ public class CompilerIntrinsicSymbolBinder: NSObject {
     }
     
     func bindCompilerIntrinsicSliceType(symbols: SymbolTable) -> SymbolTable {
-        let sizeOfU16 = memoryLayoutStrategy.sizeof(type: .u16)
+        let sizeOfU16 = memoryLayoutStrategy.sizeof(type: .arithmeticType(.mutableInt(.u16)))
         let name = "Slice"
         let typ: SymbolType = .structType(StructType(name: name, symbols: SymbolTable(tuples: [
-            ("base", Symbol(type: .u16, offset: 0, storage: .automaticStorage)),
-            ("count", Symbol(type: .u16, offset: sizeOfU16, storage: .automaticStorage))
+            ("base", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0, storage: .automaticStorage)),
+            ("count", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: sizeOfU16, storage: .automaticStorage))
         ])))
         symbols.bind(identifier: name, symbolType: typ, visibility: .privateVisibility)
         return symbols
     }
     
     func bindCompilerIntrinsicRangeType(symbols: SymbolTable) -> SymbolTable {
-        let sizeOfU16 = memoryLayoutStrategy.sizeof(type: .u16)
+        let sizeOfU16 = memoryLayoutStrategy.sizeof(type: .arithmeticType(.mutableInt(.u16)))
         let name = "Range"
         let typ: SymbolType = .structType(StructType(name: name, symbols: SymbolTable(tuples: [
-            ("begin", Symbol(type: .u16, offset: 0*sizeOfU16, storage: .automaticStorage)),
-            ("limit", Symbol(type: .u16, offset: 1*sizeOfU16, storage: .automaticStorage))
+            ("begin", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0*sizeOfU16, storage: .automaticStorage)),
+            ("limit", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 1*sizeOfU16, storage: .automaticStorage))
         ])))
         symbols.bind(identifier: name, symbolType: typ, visibility: .privateVisibility)
         return symbols

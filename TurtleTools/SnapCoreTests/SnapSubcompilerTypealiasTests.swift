@@ -12,18 +12,18 @@ import TurtleCore
 
 class SnapSubcompilerTypealiasTests: XCTestCase {
     func testDeclareTypealias() throws {
-        let input = Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.u8))
+        let input = Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
         let symbols = SymbolTable()
         try SnapSubcompilerTypealias(symbols).compile(input)
-        let expectedType: SymbolType = .u8
+        let expectedType: SymbolType = .arithmeticType(.mutableInt(.u8))
         let actualType = try? symbols.resolveType(identifier: "Foo")
         XCTAssertEqual(actualType, expectedType)
     }
     
     func testTypealiascannotRedefineExistingType() throws {
-        let input = Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.u8))
+        let input = Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
         let symbols = SymbolTable()
-        symbols.bind(identifier: "Foo", symbolType: .u8)
+        symbols.bind(identifier: "Foo", symbolType: .arithmeticType(.mutableInt(.u8)))
         XCTAssertThrowsError(try SnapSubcompilerTypealias(symbols).compile(input)) {
             let error = $0 as? CompilerError
             XCTAssertEqual(error?.message, "typealias redefines existing type: `Foo'")

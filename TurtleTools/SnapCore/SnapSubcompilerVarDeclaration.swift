@@ -55,8 +55,9 @@ public class SnapSubcompilerVarDeclaration: NSObject {
                     // Some expression types cannot be made concrete.
                     // Convert these appropriate convertible types.
                     switch expressionResultType {
-                    case .compTimeInt(let a):
-                        symbolType = a > 255 ? .u16 : .u8
+                    case .arithmeticType(.compTimeInt(let constantValue)):
+                        let intClass = IntClass.smallestClassContaining(value: constantValue)
+                        symbolType = .arithmeticType(.mutableInt(intClass!))
                     case .bool(.compTimeBool):
                         symbolType = .bool(.mutableBool)
                     default:

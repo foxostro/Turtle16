@@ -29,7 +29,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
     }
     
     func testCompileTraitAddsToTypeTable_HasMethod() {
-        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.u8), arguments: [
+        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [
             Expression.PointerType(Expression.Identifier("Foo"))
         ])))
         let ast = TraitDeclaration(identifier: Expression.Identifier("Foo"),
@@ -44,7 +44,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
         let fullyQualifiedTraitType = TraitType(name: "Foo", nameOfTraitObjectType: "__Foo_object", nameOfVtableType: "__Foo_vtable", symbols: members)
         let expected: SymbolType = .traitType(fullyQualifiedTraitType)
         members.enclosingFunctionNameMode = .set("Foo")
-        let memberType: SymbolType = .pointer(.function(FunctionType(returnType: .u8, arguments: [.pointer(expected)])))
+        let memberType: SymbolType = .pointer(.function(FunctionType(returnType: .arithmeticType(.mutableInt(.u8)), arguments: [.pointer(expected)])))
         let symbol = Symbol(type: memberType, offset: members.storagePointer, storage: .automaticStorage)
         members.bind(identifier: "bar", symbol: symbol)
         let sizeOfMemoryType = memoryLayoutStrategy.sizeof(type: memberType)
@@ -73,7 +73,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
     }
 
     func testCompileTraitAddsVtableType_HasMethod() {
-        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.u8), arguments: [
+        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [
             Expression.PointerType(Expression.Identifier("Foo"))
         ])))
         let ast = TraitDeclaration(identifier: Expression.Identifier("Foo"),
@@ -89,7 +89,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
         
         let expected = StructDeclaration(identifier: Expression.Identifier("__Foo_vtable"),
                                          members: [
-                                            StructDeclaration.Member(name: "bar", type: Expression.PointerType(Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: [Expression.PointerType(Expression.PrimitiveType(.void))])))
+                                            StructDeclaration.Member(name: "bar", type: Expression.PointerType(Expression.FunctionType(returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [Expression.PointerType(Expression.PrimitiveType(.void))])))
                                          ],
                                          visibility: .privateVisibility,
                                          isConst: true)
@@ -97,7 +97,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
     }
 
     func testCompileTraitAddsVtableType_HasConstMethod() {
-        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.u8), arguments: [
+        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [
             Expression.PointerType(Expression.ConstType(Expression.Identifier("Foo")))
         ])))
         let ast = TraitDeclaration(identifier: Expression.Identifier("Foo"),
@@ -113,7 +113,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
         
         let expected = StructDeclaration(identifier: Expression.Identifier("__Foo_vtable"),
                                          members: [
-                                            StructDeclaration.Member(name: "bar", type: Expression.PointerType(Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: [Expression.PointerType(Expression.PrimitiveType(.void))])))
+                                            StructDeclaration.Member(name: "bar", type: Expression.PointerType(Expression.FunctionType(returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [Expression.PointerType(Expression.PrimitiveType(.void))])))
                                          ],
                                          visibility: .privateVisibility,
                                          isConst: true)
@@ -155,7 +155,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
     }
 
     func testCompileTraitAddsTraitObjectType() {
-        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.u8), arguments: [
+        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [
             Expression.PointerType(Expression.Identifier("Foo"))
         ])))
         let ast = TraitDeclaration(identifier: Expression.Identifier("Foo"),
@@ -171,14 +171,14 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
         
         let expected = Seq(children: [
             StructDeclaration(identifier: Expression.Identifier("__Foo_vtable"), members: [
-               StructDeclaration.Member(name: "bar", type: Expression.PointerType(Expression.FunctionType(returnType: Expression.PrimitiveType(.u8), arguments: [Expression.PointerType(Expression.PrimitiveType(.void))])))
+               StructDeclaration.Member(name: "bar", type: Expression.PointerType(Expression.FunctionType(returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [Expression.PointerType(Expression.PrimitiveType(.void))])))
             ], visibility: .privateVisibility, isConst: true),
             StructDeclaration(identifier: Expression.Identifier("__Foo_object"), members: [
                 StructDeclaration.Member(name: "object", type: Expression.PointerType(Expression.PrimitiveType(.void))),
                 StructDeclaration.Member(name: "vtable", type: Expression.PointerType(Expression.ConstType(Expression.Identifier("__Foo_vtable"))))
             ], visibility: .privateVisibility),
             Impl(identifier: Expression.Identifier("__Foo_object"), children: [
-                FunctionDeclaration(identifier: Expression.Identifier("bar"), functionType: Expression.FunctionType(name: "bar", returnType: Expression.PrimitiveType(.u8), arguments: [Expression.PointerType(Expression.Identifier("__Foo_object"))]), argumentNames: ["self"], body: Block(children: [
+                FunctionDeclaration(identifier: Expression.Identifier("bar"), functionType: Expression.FunctionType(name: "bar", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [Expression.PointerType(Expression.Identifier("__Foo_object"))]), argumentNames: ["self"], body: Block(children: [
                     Return(Expression.Call(callee: Expression.Get(expr: Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("vtable")), member: Expression.Identifier("bar")), arguments: [
                         Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("object"))
                     ]))

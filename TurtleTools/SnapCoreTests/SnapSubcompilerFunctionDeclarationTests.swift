@@ -17,7 +17,7 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
         symbols.bind(identifier: "foo", symbol: Symbol(type: .void))
         let compiler = SnapSubcompilerFunctionDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols)
         let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                        functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                        functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: []),
                                         argumentNames: [],
                                         body: Block(children: []))
         XCTAssertThrowsError(try compiler.compile(input)) {
@@ -31,7 +31,7 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
         let symbols = SymbolTable()
         let compiler = SnapSubcompilerFunctionDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols)
         let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                        functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                        functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: []),
                                         argumentNames: [],
                                         body: Block(children: []))
         XCTAssertThrowsError(try compiler.compile(input)) {
@@ -60,7 +60,7 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
         let symbols = SymbolTable()
         let compiler = SnapSubcompilerFunctionDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols)
         let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                        functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                        functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: []),
                                         argumentNames: [],
                                         body: Block(children: [
                                             Return(Expression.LiteralBool(true)),

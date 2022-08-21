@@ -12,13 +12,13 @@ import TurtleCore
 
 class SnapSubcompilerForInTests: XCTestCase {
     public let kRangeType: SymbolType = .structType(StructType(name: "Range", symbols: SymbolTable(tuples: [
-        ("begin", Symbol(type: .u16, offset: 0)),
-        ("limit", Symbol(type: .u16, offset: 2))
+        ("begin", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0)),
+        ("limit", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 2))
     ])))
     
     func testCompileForInLoop_Range() {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .u16, offset: 0))
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0))
         ])
         symbols.bind(identifier: "Range", symbolType: kRangeType)
         let input = ForIn(identifier: Expression.Identifier("i"),
@@ -57,10 +57,10 @@ class SnapSubcompilerForInTests: XCTestCase {
     
     func testCompileForInLoop_String() {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .u8, offset: 0))
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0))
         ])
         let input = ForIn(identifier: Expression.Identifier("i"),
-                          sequenceExpr: Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8)), elements: [
+                          sequenceExpr: Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8)))), elements: [
                             Expression.LiteralInt(Int("h".utf8.first!)),
                             Expression.LiteralInt(Int("e".utf8.first!)),
                             Expression.LiteralInt(Int("l".utf8.first!)),
@@ -75,7 +75,7 @@ class SnapSubcompilerForInTests: XCTestCase {
         XCTAssertNoThrow(result = try SnapSubcompilerForIn(symbols).compile(input))
         
         let sequence: VarDeclaration? = result?.children.compactMap({$0 as? VarDeclaration}).first(where: { $0.identifier.identifier == "__sequence" })
-        let expectedSequenceExpr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8)), elements: [
+        let expectedSequenceExpr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8)))), elements: [
             Expression.LiteralInt(Int("h".utf8.first!)),
             Expression.LiteralInt(Int("e".utf8.first!)),
             Expression.LiteralInt(Int("l".utf8.first!)),
@@ -93,7 +93,7 @@ class SnapSubcompilerForInTests: XCTestCase {
         
         let iter: VarDeclaration? = result?.children.compactMap({$0 as? VarDeclaration}).first(where: { $0.identifier.identifier == "i" })
         XCTAssertNil(iter?.expression)
-        XCTAssertEqual(iter?.explicitType, Expression.PrimitiveType(.u8))
+        XCTAssertEqual(iter?.explicitType, Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
         
         let whileStmt = result?.children.last as? While
         let expectedWhileCondExpr = Expression.Binary(op: .ne, left: Expression.Identifier("__index"), right: Expression.Identifier("__limit"))
@@ -102,10 +102,10 @@ class SnapSubcompilerForInTests: XCTestCase {
     
     func testCompileForInLoop_ArrayOfU16() {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .u16, offset: 0))
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0))
         ])
         let input = ForIn(identifier: Expression.Identifier("i"),
-                          sequenceExpr: Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u16)), elements: [
+                          sequenceExpr: Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))), elements: [
                             Expression.LiteralInt(0x1000),
                             Expression.LiteralInt(0x2000),
                             Expression.LiteralInt(0x3000),
@@ -120,7 +120,7 @@ class SnapSubcompilerForInTests: XCTestCase {
         XCTAssertNoThrow(result = try SnapSubcompilerForIn(symbols).compile(input))
         
         let sequence: VarDeclaration? = result?.children.compactMap({$0 as? VarDeclaration}).first(where: { $0.identifier.identifier == "__sequence" })
-        let expectedSequenceExpr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u16)), elements: [
+        let expectedSequenceExpr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))), elements: [
             Expression.LiteralInt(0x1000),
             Expression.LiteralInt(0x2000),
             Expression.LiteralInt(0x3000),
@@ -135,7 +135,7 @@ class SnapSubcompilerForInTests: XCTestCase {
         
         let iter: VarDeclaration? = result?.children.compactMap({$0 as? VarDeclaration}).first(where: { $0.identifier.identifier == "i" })
         XCTAssertNil(iter?.expression)
-        let expectedIterType = Expression.PrimitiveType(.u16)
+        let expectedIterType = Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))
         XCTAssertEqual(iter?.explicitType, expectedIterType)
         
         let whileStmt = result?.children.last as? While
@@ -145,9 +145,9 @@ class SnapSubcompilerForInTests: XCTestCase {
     
     func testCompileForInLoop_DynamicArray() {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .u16, offset: 0)),
-            ("arr", Symbol(type: .array(count: 5, elementType: .u16), offset: 2)),
-            ("slice", Symbol(type: .dynamicArray(elementType: .u16), offset: 12))
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0)),
+            ("arr", Symbol(type: .array(count: 5, elementType: .arithmeticType(.mutableInt(.u16))), offset: 2)),
+            ("slice", Symbol(type: .dynamicArray(elementType: .arithmeticType(.mutableInt(.u16))), offset: 12))
         ])
         let input = ForIn(identifier: Expression.Identifier("i"),
                           sequenceExpr: Expression.Identifier("slice"),
@@ -168,7 +168,7 @@ class SnapSubcompilerForInTests: XCTestCase {
         
         let iter: VarDeclaration? = result?.children.compactMap({$0 as? VarDeclaration}).first(where: { $0.identifier.identifier == "i" })
         XCTAssertNil(iter?.expression)
-        let expectedIterType = Expression.PrimitiveType(.u16)
+        let expectedIterType = Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))
         XCTAssertEqual(iter?.explicitType, expectedIterType)
         
         let whileStmt = result?.children.last as? While

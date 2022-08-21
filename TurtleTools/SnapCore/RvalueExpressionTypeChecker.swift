@@ -29,7 +29,7 @@ public class RvalueExpressionTypeChecker: NSObject {
     @discardableResult public func check(expression: Expression) throws -> SymbolType {
         switch expression {
         case let expr as Expression.LiteralInt:
-            return .compTimeInt(expr.value)
+            return check(literalInt: expr)
         case let expr as Expression.LiteralBool:
             return .bool(.compTimeBool(expr.value))
         case let expr as Expression.Group:
@@ -80,22 +80,23 @@ public class RvalueExpressionTypeChecker: NSObject {
             throw unsupportedError(expression: expression)
         }
     }
+    
+    public func check(literalInt expr: Expression.LiteralInt) -> SymbolType {
+        return .arithmeticType(.compTimeInt(expr.value))
+    }
         
     public func check(unary: Expression.Unary) throws -> SymbolType {
         let expressionType = try check(expression: unary.child)
         switch unary.op {
         case .minus:
             switch expressionType {
-            case .compTimeInt(let value):
-                return .compTimeInt(-value)
-            case .constU16:
-                return .constU16
-            case .u16:
-                return .u16
-            case .constU8:
-                return .constU8
-            case .u8:
-                return .u8
+            case .arithmeticType(let arithmeticType):
+                switch arithmeticType {
+                case .compTimeInt(let value):
+                    return .arithmeticType(.compTimeInt(-value))
+                default:
+                    return expressionType
+                }
             default:
                 throw CompilerError(sourceAnchor: unary.sourceAnchor, message: "Unary operator `\(unary.op.description)' cannot be applied to an operand of type `\(expressionType)'")
             }
@@ -110,16 +111,13 @@ public class RvalueExpressionTypeChecker: NSObject {
             }
         case .tilde:
             switch expressionType {
-            case .compTimeInt(let value):
-                return .compTimeInt(~value)
-            case .constU16:
-                return .constU16
-            case .u16:
-                return .u16
-            case .constU8:
-                return .constU8
-            case .u8:
-                return .u8
+            case .arithmeticType(let arithmeticType):
+                switch arithmeticType {
+                case .compTimeInt(let value):
+                    return .arithmeticType(.compTimeInt(~value))
+                default:
+                    return expressionType
+                }
             default:
                 throw CompilerError(sourceAnchor: unary.sourceAnchor, message: "Unary operator `\(unary.op.description)' cannot be applied to an operand of type `\(expressionType)'")
             }
@@ -129,10 +127,8 @@ public class RvalueExpressionTypeChecker: NSObject {
                 switch boolTyp {
                 case .compTimeBool(let value):
                     return .bool(.compTimeBool(!value))
-                case .immutableBool:
-                    return .bool(.immutableBool)
-                case .mutableBool:
-                    return .bool(.mutableBool)
+                default:
+                    return expressionType
                 }
             default:
                 throw CompilerError(sourceAnchor: unary.sourceAnchor, message: "Unary operator `\(unary.op.description)' cannot be applied to an operand of type `\(expressionType)'")
@@ -237,39 +233,44 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
     
     private func checkArithmeticBinaryExpression(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> SymbolType {
-        guard leftType.isArithmeticType && rightType.isArithmeticType else {
+        switch (leftType, rightType) {
+        case (.arithmeticType(.compTimeInt), .arithmeticType(.compTimeInt)):
+            return try checkConstantArithmeticBinaryExpression(binary, leftType, rightType)
+        
+        case (.arithmeticType(let leftArithmeticType), .arithmeticType(let rightArithmeticType)):
+            guard let arithmeticTypeForArithmetic = ArithmeticType.binaryResultType(left: leftArithmeticType, right: rightArithmeticType) else {
+                throw invalidBinaryExpr(binary, leftType, rightType)
+            }
+            
+            let typeForArithmetic: SymbolType = .arithmeticType(arithmeticTypeForArithmetic)
+            
+            _ = try checkTypesAreConvertibleInAssignment(ltype: typeForArithmetic,
+                                                         rtype: rightType,
+                                                         sourceAnchor: binary.right.sourceAnchor,
+                                                         messageWhenNotConvertible: "cannot convert value of type `\(rightType)' to type `\(typeForArithmetic)'")
+            
+            _ = try checkTypesAreConvertibleInAssignment(ltype: typeForArithmetic,
+                                                         rtype: leftType,
+                                                         sourceAnchor: binary.left.sourceAnchor,
+                                                         messageWhenNotConvertible: "cannot convert value of type `\(leftType)' to type `\(typeForArithmetic)'")
+            
+            switch binary.op {
+            case .eq, .ne, .lt, .gt, .le, .ge:
+                return .bool(.mutableBool)
+            case .plus, .minus, .star, .divide, .modulus, .ampersand, .pipe, .caret, .leftDoubleAngle, .rightDoubleAngle:
+                return typeForArithmetic
+            default:
+                throw invalidBinaryExpr(binary, leftType, rightType)
+            }
+            
+        default:
             assert(false)
             abort()
-        }
-
-        if case .compTimeInt = leftType, case .compTimeInt = rightType {
-            return try checkConstantArithmeticBinaryExpression(binary, leftType, rightType)
-        }
-        
-        let typeForArithmetic: SymbolType = (max(leftType.max(), rightType.max()) > 255) ? .u16 : .u8
-        
-        _ = try checkTypesAreConvertibleInAssignment(ltype: typeForArithmetic,
-                                                     rtype: leftType,
-                                                     sourceAnchor: binary.left.sourceAnchor,
-                                                     messageWhenNotConvertible: "cannot convert value of type `\(leftType)' to type `\(typeForArithmetic)'")
-        
-        _ = try checkTypesAreConvertibleInAssignment(ltype: typeForArithmetic,
-                                                     rtype: rightType,
-                                                     sourceAnchor: binary.right.sourceAnchor,
-                                                     messageWhenNotConvertible: "cannot convert value of type `\(rightType)' to type `\(typeForArithmetic)'")
-        
-        switch binary.op {
-        case .eq, .ne, .lt, .gt, .le, .ge:
-            return .bool(.mutableBool)
-        case .plus, .minus, .star, .divide, .modulus, .ampersand, .pipe, .caret, .leftDoubleAngle, .rightDoubleAngle:
-            return typeForArithmetic
-        default:
-            throw invalidBinaryExpr(binary, leftType, rightType)
         }
     }
     
     private func checkConstantArithmeticBinaryExpression(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> SymbolType {
-        guard case .compTimeInt(let a) = leftType, case .compTimeInt(let b) = rightType else {
+        guard case .arithmeticType(.compTimeInt(let a)) = leftType, case .arithmeticType(.compTimeInt(let b)) = rightType else {
             assert(false)
             abort()
         }
@@ -288,25 +289,25 @@ public class RvalueExpressionTypeChecker: NSObject {
         case .ge:
             return .bool(.compTimeBool(a >= b))
         case .plus:
-            return .compTimeInt(a + b)
+            return .arithmeticType(.compTimeInt(a + b))
         case .minus:
-            return .compTimeInt(a - b)
+            return .arithmeticType(.compTimeInt(a - b))
         case .star:
-            return .compTimeInt(a * b)
+            return .arithmeticType(.compTimeInt(a * b))
         case .divide:
-            return .compTimeInt(a / b)
+            return .arithmeticType(.compTimeInt(a / b))
         case .modulus:
-            return .compTimeInt(a % b)
+            return .arithmeticType(.compTimeInt(a % b))
         case .ampersand:
-            return .compTimeInt(a & b)
+            return .arithmeticType(.compTimeInt(a & b))
         case .pipe:
-            return .compTimeInt(a | b)
+            return .arithmeticType(.compTimeInt(a | b))
         case .caret:
-            return .compTimeInt(a ^ b)
+            return .arithmeticType(.compTimeInt(a ^ b))
         case .leftDoubleAngle:
-            return .compTimeInt(a << b)
+            return .arithmeticType(.compTimeInt(a << b))
         case .rightDoubleAngle:
-            return .compTimeInt(a >> b)
+            return .arithmeticType(.compTimeInt(a >> b))
         default:
             throw invalidBinaryExpr(binary, leftType, rightType)
         }
@@ -374,44 +375,37 @@ public class RvalueExpressionTypeChecker: NSObject {
         }
         
         switch (rtype, ltype) {
-        case (.compTimeInt(let a), .u8), (.compTimeInt(let a), .constU8):
-            guard a >= 0 && a < 256 else {
-                return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: "integer constant `\(a)' overflows when stored into `\(ltype)'"))
+        case (.arithmeticType(let a), .arithmeticType(let b)):
+            switch (a, b) {
+            case (.compTimeInt(let constantValue), .mutableInt(let intClassDst)),
+                 (.compTimeInt(let constantValue), .immutableInt(let intClassDst)):
+                if constantValue >= intClassDst.min && constantValue <= intClassDst.max {
+                    return .acceptable(ltype) // The conversion is acceptable.
+                }
+                else {
+                    return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: "integer constant `\(constantValue)' overflows when stored into `\(ltype)'"))
+                }
+            default:
+                if let intClassA = a.intClass, let intClassB = b.intClass {
+                    if (intClassB.min <= intClassA.min && intClassB.max >= intClassA.max) || isExplicitCast {
+                        return .acceptable(ltype) // The conversion is acceptable.
+                    }
+                }
+                return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
             }
-            return .acceptable(ltype) // The conversion is acceptable.
-        case (.compTimeInt(let a), .u16), (.compTimeInt(let a), .constU16):
-            guard a >= 0 && a < 65536 else {
-                return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: "integer constant `\(a)' overflows when stored into `\(ltype)'"))
-            }
-            return .acceptable(ltype) // The conversion is acceptable.
-        case (.constU8, .constU8),
-             (.constU8, .u8),
-             (.u8, .constU8),
-             (.u8, .u8),
-             (.constU16, .constU16),
-             (.constU16, .u16),
-             (.u16, .constU16),
-             (.u16, .u16),
-             (.constU8, .constU16),
-             (.constU8, .u16),
-             (.u8, .constU16),
-             (.u8, .u16):
-            return .acceptable(ltype) // The conversion is acceptable.
         case (.bool(let a), .bool(let b)):
-            if a.isRvalueConvertibleTo(type: b) {
+            switch (a, b) {
+            case (.compTimeBool, .immutableBool),
+                 (.compTimeBool, .mutableBool),
+                 (.immutableBool, .immutableBool),
+                 (.immutableBool, .mutableBool),
+                 (.mutableBool, .immutableBool),
+                 (.mutableBool, .mutableBool):
                 return .acceptable(ltype) // The conversion is acceptable.
-            }
-            else {
+                
+            default:
                 return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
             }
-        case (.constU16, .constU8),
-             (.constU16, .u8),
-             (.u16, .constU8),
-             (.u16, .u8):
-            if !isExplicitCast {
-                return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
-            }
-            return .acceptable(ltype)
         case (.array(let n, let a), .array(let m, let b)):
             guard n == m || m == nil else {
                 return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
@@ -726,10 +720,10 @@ public class RvalueExpressionTypeChecker: NSObject {
         guard typ.name == "Range" else {
             return false
         }
-        guard typ.symbols.maybeResolve(identifier: "begin")?.type == .u16 else {
+        guard typ.symbols.maybeResolve(identifier: "begin")?.type == .arithmeticType(.mutableInt(.u16)) else {
             return false
         }
-        guard typ.symbols.maybeResolve(identifier: "limit")?.type == .u16 else {
+        guard typ.symbols.maybeResolve(identifier: "limit")?.type == .arithmeticType(.mutableInt(.u16)) else {
             return false
         }
         return true
@@ -772,7 +766,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         switch resultType {
         case .array, .constDynamicArray, .dynamicArray:
             if name == "count" {
-                return .u16
+                return .arithmeticType(.mutableInt(.u16))
             }
         case .constStructType(let typ):
             if let symbol = typ.symbols.maybeResolve(identifier: name) {
@@ -789,7 +783,7 @@ public class RvalueExpressionTypeChecker: NSObject {
                 switch typ {
                 case .array, .constDynamicArray, .dynamicArray:
                     if name == "count" {
-                        return .u16
+                        return .arithmeticType(.mutableInt(.u16))
                     }
                 case .constStructType(let b):
                     if let symbol = b.symbols.maybeResolve(identifier: name) {
@@ -822,7 +816,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         if let exprCount = expr.count {
             let typeOfCountExpr = try check(expression: exprCount)
             switch typeOfCountExpr {
-            case .compTimeInt(let a):
+            case .arithmeticType(.compTimeInt(let a)):
                 count = a
             default:
                 throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "array count must be a compile time constant, got `\(typeOfCountExpr)' instead")
@@ -900,7 +894,7 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
     
     public func check(literalString expr: Expression.LiteralString) throws -> SymbolType {
-        return .array(count: expr.value.count, elementType: .u8)
+        return .array(count: expr.value.count, elementType: .arithmeticType(.mutableInt(.u8)))
     }
     
     public func check(typeOf expr: Expression.TypeOf) throws -> SymbolType {

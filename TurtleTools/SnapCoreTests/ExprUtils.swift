@@ -11,12 +11,12 @@ import SnapCore
 public class ExprUtils: NSObject {
     public static func makeU8(value: Int) -> Expression {
         return Expression.As(expr: Expression.LiteralInt(value),
-                             targetType: Expression.PrimitiveType(.u8))
+                             targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
     }
     
     public static func makeU16(value: Int) -> Expression {
         return Expression.As(expr: Expression.LiteralInt(value),
-                             targetType: Expression.PrimitiveType(.u16))
+                             targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))
     }
     
     public static func makeBool(value: Bool) -> Expression {

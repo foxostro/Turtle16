@@ -9,7 +9,7 @@
 public class MemoryLayoutStrategyTurtleTTL: NSObject, MemoryLayoutStrategy {
     public func sizeof(type: SymbolType) -> Int {
         switch type {
-        case .compTimeInt, .void, .function:
+        case .void, .function:
             return 0
         case .bool(let boolType):
             switch boolType {
@@ -18,10 +18,18 @@ public class MemoryLayoutStrategyTurtleTTL: NSObject, MemoryLayoutStrategy {
             case .immutableBool, .mutableBool:
                 return 1
             }
-        case .constU8, .u8:
-            return 1
-        case .constU16, .u16:
-            return 2
+        case .arithmeticType(let arithmeticType):
+            switch arithmeticType {
+            case .compTimeInt:
+                return 0
+            case .mutableInt(let width), .immutableInt(let width):
+                switch width {
+                case .u8:
+                    return 1
+                case .u16:
+                    return 2
+                }
+            }
         case .constPointer, .pointer:
             return 2
         case .constDynamicArray(elementType: _), .dynamicArray(elementType: _), .constTraitType(_), .traitType(_):
@@ -44,7 +52,7 @@ public class MemoryLayoutStrategyTurtleTTL: NSObject, MemoryLayoutStrategy {
     }
     
     func sizeof(union typ: UnionType) -> Int {
-        let kTagSize = sizeof(type: .u8)
+        let kTagSize = sizeof(type: .arithmeticType(.mutableInt(.u8)))
         let kBufferSize = typ.members.reduce(0) { (result, memberType) -> Int in
             return max(result, sizeof(type: memberType))
         }

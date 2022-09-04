@@ -388,14 +388,30 @@ public class DecoderGenerator: NSObject {
         
         for n in bits {
             for c in bits {
-                for v in bits {
-                    for z in bits {
+                for z in bits {
+                    for v in bits {
                         makeControlWord(&controlWords, index: makeIndex(n: n, c: c, z: 1, v: v, opcode: DecoderGenerator.opcodeBeq), signals: signalsForRelativeJump)
                         makeControlWord(&controlWords, index: makeIndex(n: n, c: c, z: 0, v: v, opcode: DecoderGenerator.opcodeBne), signals: signalsForRelativeJump)
-                        makeControlWord(&controlWords, index: makeIndex(n: n, c: c, z: z, v: 1, opcode: DecoderGenerator.opcodeBlt), signals: signalsForRelativeJump)
-                        makeControlWord(&controlWords, index: makeIndex(n: n, c: 1, z: z, v: v, opcode: DecoderGenerator.opcodeBltu), signals: signalsForRelativeJump)
-                        makeControlWord(&controlWords, index: makeIndex(n: n, c: c, z: 0, v: 0, opcode: DecoderGenerator.opcodeBgt), signals: signalsForRelativeJump)
-                        makeControlWord(&controlWords, index: makeIndex(n: n, c: 1, z: 0, v: v, opcode: DecoderGenerator.opcodeBgtu), signals: signalsForRelativeJump)
+                        
+                        // BLT jumps on N!=V
+                        if (n == 0 && v == 1) || (n == 1 && v == 0) {
+                            makeControlWord(&controlWords, index: makeIndex(n: n, c: c, z: z, v: v, opcode: DecoderGenerator.opcodeBlt), signals: signalsForRelativeJump)
+                        }
+                        
+                        // BGT jumps on (Z==0) && (N==V)
+                        if z == 0 && ((n == 0 && v == 0) || (n == 1 && v == 1)) {
+                            makeControlWord(&controlWords, index: makeIndex(n: n, c: c, z: z, v: v, opcode: DecoderGenerator.opcodeBgt), signals: signalsForRelativeJump)
+                        }
+                        
+                        // BLTU jumps on C==0
+                        if c == 0 {
+                            makeControlWord(&controlWords, index: makeIndex(n: n, c: c, z: z, v: v, opcode: DecoderGenerator.opcodeBltu), signals: signalsForRelativeJump)
+                        }
+                        
+                        // BGTU jumps on C==1 && Z==0
+                        if c == 1 && z == 0 {
+                            makeControlWord(&controlWords, index: makeIndex(n: n, c: c, z: z, v: v, opcode: DecoderGenerator.opcodeBgtu), signals: signalsForRelativeJump)
+                        }
                         
                         makeControlWord(&controlWords, index: makeIndex(n: n, c: 0, z: z, v: v, opcode: DecoderGenerator.opcodeAdc), signals: [
                             DecoderGenerator.SelRightOp(.b),
@@ -504,10 +520,10 @@ public class DecoderGenerator: NSObject {
         assert(v <= 1)
         assert(opcode >= 0)
         assert(opcode <= 31)
-        let index = UInt(n << 8)
-                  | UInt(v << 7)
-                  | UInt(z << 6)
-                  | UInt(c << 5)
+        let index = (n << 8)
+                  | (v << 7)
+                  | (z << 6)
+                  | (c << 5)
                   | UInt(opcode)
         return Int(index)
     }

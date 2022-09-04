@@ -34,6 +34,14 @@ class DecoderGeneratorTests: XCTestCase {
     let LeftOperandIsUnused = 21
     let RightOperandIsUnused = 22
     
+    fileprivate func makeCPU() -> SchematicLevelCPUModel {
+        let cpu = SchematicLevelCPUModel()
+        let rom = OpcodeDecoderROM()
+        rom.opcodeDecodeROM = DecoderGenerator().generate()
+        cpu.stageID.decoder = rom
+        return cpu
+    }
+    
     func testGeneratesExactly512Entries() throws {
         let generator = DecoderGenerator()
         let decoder = generator.generate()
@@ -713,40 +721,77 @@ class DecoderGeneratorTests: XCTestCase {
         } // n
     }
     
-    func testOpcodeBlt() throws {
-        let generator = DecoderGenerator()
-        let decoder = generator.generate()
-        
-        let bits = [UInt(0), UInt(1)]
-        for n in bits {
-            for c in bits {
-                for z in bits {
-                    let indexForFailCondition = generator.makeIndex(n: n, c: c, z: z, v: 0, opcode: DecoderGenerator.opcodeBlt)
-                    XCTAssertEqual(decoder[indexForFailCondition], ID.nopControlWord_ID)
-                    
-                    let indexForPassCondition = generator.makeIndex(n: n, c: c, z: z, v: 1, opcode: DecoderGenerator.opcodeBlt)
-                    let ctlHighZ = decoder[indexForPassCondition]
-                    XCTAssertTrue(isRelativeJump(ctlHighZ))
-                } // z
-            } // c
-        } // n
-    }
-    
-    func testOpcodeBgt() throws {
-        let generator = DecoderGenerator()
-        let decoder = generator.generate()
+    func testBlt() {
+        let cpu = makeCPU()
+        cpu.instructions = [
+            0b0000000000000000, // NOP
+            0b1101001111111111  // BLT 1023
+        ]
         
         let bits = [UInt(0), UInt(1)]
         for n in bits {
             for c in bits {
                 for z in bits {
                     for v in bits {
-                        let index = generator.makeIndex(n: n, c: c, z: z, v: v, opcode: DecoderGenerator.opcodeBgt)
-                        let ctlHighZ = decoder[index]
-                        if z == 0 && v == 0 {
-                            XCTAssertTrue(isRelativeJump(ctlHighZ))
+                        cpu.reset()
+                        cpu.n = n
+                        cpu.c = c
+                        cpu.v = v
+                        cpu.z = z
+                        
+                        XCTAssertEqual(0, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(1, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(2, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(3, cpu.pc)
+                        cpu.step()
+                        
+                        // BLT jumps on N!=V
+                        if (n == 0 && v == 1) || (n == 1 && v == 0) {
+                            XCTAssertEqual(1026, cpu.pc)
                         } else {
-                            XCTAssertEqual(decoder[index], ID.nopControlWord_ID)
+                            XCTAssertEqual(4, cpu.pc)
+                        }
+                    } // v
+                } // z
+            } // c
+        } // n
+    }
+
+    func testBgt() {
+        let cpu = makeCPU()
+        cpu.instructions = [
+            0b0000000000000000, // NOP
+            0b1101101111111111  // BGT 1023
+        ]
+            
+        let bits = [UInt(0), UInt(1)]
+        for n in bits {
+            for c in bits {
+                for z in bits {
+                    for v in bits {
+                        cpu.reset()
+                        cpu.n = n
+                        cpu.c = c
+                        cpu.v = v
+                        cpu.z = z
+                        
+                        XCTAssertEqual(0, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(1, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(2, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(3, cpu.pc)
+                        cpu.step()
+                        
+                        // BGT jumps on (Z==0) && (N==V)
+                        if z == 0 && ((n == 0 && v == 0) || (n == 1 && v == 1)) {
+                            XCTAssertEqual(1026, cpu.pc)
+                        } else {
+                            XCTAssertEqual(4, cpu.pc)
                         }
                     } // v
                 } // z
@@ -754,40 +799,77 @@ class DecoderGeneratorTests: XCTestCase {
         } // n
     }
     
-    func testOpcodeBltu() throws {
-        let generator = DecoderGenerator()
-        let decoder = generator.generate()
-        
-        let bits = [UInt(0), UInt(1)]
-        for n in bits {
-            for v in bits {
-                for z in bits {
-                    let indexForFailCondition = generator.makeIndex(n: n, c: 0, z: z, v: v, opcode: DecoderGenerator.opcodeBltu)
-                    XCTAssertEqual(decoder[indexForFailCondition], ID.nopControlWord_ID)
-                    
-                    let indexForPassCondition = generator.makeIndex(n: n, c: 1, z: z, v: v, opcode: DecoderGenerator.opcodeBltu)
-                    let ctlHighZ = decoder[indexForPassCondition]
-                    XCTAssertTrue(isRelativeJump(ctlHighZ))
-                } // z
-            } // v
-        } // n
-    }
-    
-    func testOpcodeBgtu() throws {
-        let generator = DecoderGenerator()
-        let decoder = generator.generate()
+    func testBltu() {
+        let cpu = makeCPU()
+        cpu.instructions = [
+            0b0000000000000000, // NOP
+            0b1110001111111111  // BLTU 1023
+        ]
         
         let bits = [UInt(0), UInt(1)]
         for n in bits {
             for c in bits {
                 for z in bits {
                     for v in bits {
-                        let index = generator.makeIndex(n: n, c: c, z: z, v: v, opcode: DecoderGenerator.opcodeBgtu)
-                        let ctlHighZ = decoder[index]
-                        if z == 0 && c == 1 {
-                            XCTAssertTrue(isRelativeJump(ctlHighZ))
+                        cpu.reset()
+                        cpu.n = n
+                        cpu.c = c
+                        cpu.v = v
+                        cpu.z = z
+                        
+                        XCTAssertEqual(0, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(1, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(2, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(3, cpu.pc)
+                        cpu.step()
+                        
+                        // BLTU jumps on C==0
+                        if c == 0 {
+                            XCTAssertEqual(1026, cpu.pc)
                         } else {
-                            XCTAssertEqual(decoder[index], ID.nopControlWord_ID)
+                            XCTAssertEqual(4, cpu.pc)
+                        }
+                    } // v
+                } // z
+            } // c
+        } // n
+    }
+
+    func testBgtu() {
+        let cpu = makeCPU()
+        cpu.instructions = [
+            0b0000000000000000, // NOP
+            0b1110101111111111  // BGTU 1023
+        ]
+        
+        let bits = [UInt(0), UInt(1)]
+        for n in bits {
+            for c in bits {
+                for z in bits {
+                    for v in bits {
+                        cpu.reset()
+                        cpu.n = n
+                        cpu.c = c
+                        cpu.v = v
+                        cpu.z = z
+                        
+                        XCTAssertEqual(0, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(1, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(2, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(3, cpu.pc)
+                        cpu.step()
+                        
+                        // BGTU jumps on C==1 && Z==0
+                        if c == 1 && z == 0 {
+                            XCTAssertEqual(1026, cpu.pc)
+                        } else {
+                            XCTAssertEqual(4, cpu.pc)
                         }
                     } // v
                 } // z

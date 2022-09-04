@@ -66,16 +66,20 @@ public class Turtle16Computer: NSObject, NSSecureCoding {
         }
     }
     
-    public var carry: UInt {
-        cpu.carry
+    public var n: UInt {
+        cpu.n
+    }
+    
+    public var c: UInt {
+        cpu.c
     }
     
     public var z: UInt {
         cpu.z
     }
     
-    public var ovf: UInt {
-        cpu.ovf
+    public var v: UInt {
+        cpu.v
     }
     
     public var numberOfRegisters: Int {

@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="18122" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="20037" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="18122"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="20037"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="DebugConsoleViewController" customModule="Simulator16" customModuleProvider="target">
             <connections>
-                <outlet property="c0" destination="2qb-kx-Uxn" id="ZBR-1l-In5"/>
+                <outlet property="c" destination="2qb-kx-Uxn" id="x1a-ux-YEO"/>
                 <outlet property="debuggerInput" destination="je0-qQ-AoU" id="6Dk-9b-04i"/>
                 <outlet property="debuggerOutput" destination="vJ6-It-z8a" id="Psn-pc-ji9"/>
                 <outlet property="halted" destination="OVu-Jm-hCh" id="Rdl-RN-lbL"/>
-                <outlet property="ovf" destination="XIo-ig-m5C" id="9r8-6l-57N"/>
+                <outlet property="n" destination="H4p-am-ADu" id="MP4-1g-9cP"/>
                 <outlet property="resetting" destination="j8T-BQ-UDp" id="uWt-Zz-gGD"/>
                 <outlet property="stall" destination="ynt-qW-WVw" id="UNR-HK-HiK"/>
                 <outlet property="timeStamp" destination="3bZ-u0-aAL" id="Ggf-Va-Pyu"/>
+                <outlet property="v" destination="XIo-ig-m5C" id="0pH-85-mDK"/>
                 <outlet property="view" destination="Hz6-mo-xeY" id="0bl-1N-x8E"/>
-                <outlet property="z" destination="YXp-uE-5Gg" id="ceO-SW-KsM"/>
+                <outlet property="z" destination="YXp-uE-5Gg" id="Y59-Kp-cFv"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
@@ -106,25 +108,34 @@
                         </textField>
                     </middleViews>
                     <endViews>
-                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XIo-ig-m5C">
-                            <rect key="frame" x="435" y="0.0" width="23" height="10"/>
-                            <textFieldCell key="cell" lineBreakMode="clipping" title="OVF" id="raC-0o-kDd">
-                                <font key="font" metaFont="miniSystem"/>
-                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                            </textFieldCell>
-                        </textField>
-                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YXp-uE-5Gg">
-                            <rect key="frame" x="462" y="0.0" width="11" height="10"/>
-                            <textFieldCell key="cell" lineBreakMode="clipping" title="Z" id="Jpw-Nx-KgW">
+                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="H4p-am-ADu" userLabel="Neg">
+                            <rect key="frame" x="420" y="0.0" width="11" height="10"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <textFieldCell key="cell" lineBreakMode="clipping" title="N" id="ymt-ug-mmO">
                                 <font key="font" metaFont="miniSystem"/>
                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2qb-kx-Uxn">
-                            <rect key="frame" x="477" y="0.0" width="17" height="10"/>
-                            <textFieldCell key="cell" lineBreakMode="clipping" title="C0" id="l2Y-sY-aoR">
+                            <rect key="frame" x="435" y="0.0" width="17" height="10"/>
+                            <textFieldCell key="cell" lineBreakMode="clipping" title="C" id="l2Y-sY-aoR">
+                                <font key="font" metaFont="miniSystem"/>
+                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
+                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YXp-uE-5Gg">
+                            <rect key="frame" x="456" y="0.0" width="11" height="10"/>
+                            <textFieldCell key="cell" lineBreakMode="clipping" title="Z" id="Jpw-Nx-KgW">
+                                <font key="font" metaFont="miniSystem"/>
+                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
+                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XIo-ig-m5C">
+                            <rect key="frame" x="471" y="0.0" width="23" height="10"/>
+                            <textFieldCell key="cell" lineBreakMode="clipping" title="V" id="raC-0o-kDd">
                                 <font key="font" metaFont="miniSystem"/>
                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -142,8 +153,10 @@
                         <integer value="1000"/>
                         <integer value="1000"/>
                         <integer value="1000"/>
+                        <integer value="1000"/>
                     </visibilityPriorities>
                     <customSpacing>
+                        <real value="3.4028234663852886e+38"/>
                         <real value="3.4028234663852886e+38"/>
                         <real value="3.4028234663852886e+38"/>
                         <real value="3.4028234663852886e+38"/>

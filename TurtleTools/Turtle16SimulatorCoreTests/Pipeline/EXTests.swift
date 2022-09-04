@@ -167,9 +167,10 @@ class EXTests: XCTestCase {
         let input = EX.Input(a: 1, b: 1, ctl: 0b110110<<6)
         let output = ex.step(input: input)
         XCTAssertEqual(output.y, 2)
-        XCTAssertEqual(output.carry, 0)
+        XCTAssertEqual(output.n, 0)
+        XCTAssertEqual(output.c, 0)
         XCTAssertEqual(output.z, 0)
-        XCTAssertEqual(output.ovf, 0)
+        XCTAssertEqual(output.v, 0)
     }
     
     func testAddWithCarryOutput() {
@@ -177,9 +178,10 @@ class EXTests: XCTestCase {
         let input = EX.Input(a: 0xffff, b: 1, ctl: 0b110110<<6)
         let output = ex.step(input: input)
         XCTAssertEqual(output.y, 0x0000)
-        XCTAssertEqual(output.carry, 1)
+        XCTAssertEqual(output.n, 0)
+        XCTAssertEqual(output.c, 1)
         XCTAssertEqual(output.z, 1)
-        XCTAssertEqual(output.ovf, 0)
+        XCTAssertEqual(output.v, 0)
     }
     
     func testAddWithSignedOverflow() {
@@ -187,9 +189,10 @@ class EXTests: XCTestCase {
         let input = EX.Input(a: 0x7fff, b: 1, ctl: 0b110110<<6)
         let output = ex.step(input: input)
         XCTAssertEqual(output.y, 0x8000)
-        XCTAssertEqual(output.carry, 0)
+        XCTAssertEqual(output.n, 1)
+        XCTAssertEqual(output.c, 0)
         XCTAssertEqual(output.z, 0)
-        XCTAssertEqual(output.ovf, 1)
+        XCTAssertEqual(output.v, 1)
     }
     
     func testEquality_Equal() throws {

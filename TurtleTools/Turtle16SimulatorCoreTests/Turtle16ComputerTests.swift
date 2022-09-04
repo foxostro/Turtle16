@@ -15,9 +15,10 @@ class Turtle16ComputerTests: XCTestCase {
         let computer = Turtle16Computer(cpu)
         computer.reset()
         XCTAssertEqual(computer.timeStamp, 0)
-        XCTAssertEqual(computer.carry, 0)
+        XCTAssertEqual(computer.n, 0)
+        XCTAssertEqual(computer.c, 0)
         XCTAssertEqual(computer.z, 0)
-        XCTAssertEqual(computer.ovf, 0)
+        XCTAssertEqual(computer.v, 0)
     }
     
     func testDisassemblyOfInstructionMemory() throws {

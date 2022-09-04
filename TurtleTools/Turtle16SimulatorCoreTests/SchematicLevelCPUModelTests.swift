@@ -287,8 +287,9 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // ID
         cpu.step() // EX
         XCTAssertEqual(0xabcd, cpu.getRegister(0)) // CMP does not store the result
-        XCTAssertEqual(1, cpu.carry)
-        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(0, cpu.n)
+        XCTAssertEqual(1, cpu.c)
+        XCTAssertEqual(0, cpu.v)
         XCTAssertEqual(1, cpu.z)
     }
     
@@ -309,8 +310,9 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // MEM
         cpu.step() // WB
         XCTAssertEqual(0xabcd, cpu.getRegister(0)) // CMP does not store the result
-        XCTAssertEqual(1, cpu.carry)
-        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(0, cpu.n)
+        XCTAssertEqual(1, cpu.c)
+        XCTAssertEqual(0, cpu.v)
         XCTAssertEqual(0, cpu.z)
     }
     
@@ -331,8 +333,9 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // MEM
         cpu.step() // WB
         XCTAssertEqual(0xabcd, cpu.getRegister(0)) // CMP does not store the result
-        XCTAssertEqual(0, cpu.carry)
-        XCTAssertEqual(1, cpu.ovf)
+        XCTAssertEqual(1, cpu.n)
+        XCTAssertEqual(0, cpu.c)
+        XCTAssertEqual(1, cpu.v)
         XCTAssertEqual(0, cpu.z)
     }
     
@@ -353,8 +356,9 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // MEM
         cpu.step() // WB
         XCTAssertEqual(0xabcd, cpu.getRegister(0)) // CMP does not store the result
-        XCTAssertEqual(1, cpu.carry)
-        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(0, cpu.n)
+        XCTAssertEqual(1, cpu.c)
+        XCTAssertEqual(0, cpu.v)
         XCTAssertEqual(0, cpu.z)
     }
     
@@ -375,8 +379,9 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // MEM
         cpu.step() // WB
         XCTAssertEqual(3, cpu.getRegister(0))
-        XCTAssertEqual(0, cpu.carry)
-        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(0, cpu.n)
+        XCTAssertEqual(0, cpu.c)
+        XCTAssertEqual(0, cpu.v)
         XCTAssertEqual(0, cpu.z)
     }
     
@@ -397,8 +402,9 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // MEM
         cpu.step() // WB
         XCTAssertEqual(0x8001, cpu.getRegister(0))
-        XCTAssertEqual(0, cpu.carry)
-        XCTAssertEqual(1, cpu.ovf)
+        XCTAssertEqual(1, cpu.n)
+        XCTAssertEqual(0, cpu.c)
+        XCTAssertEqual(1, cpu.v)
         XCTAssertEqual(0, cpu.z)
     }
     
@@ -419,8 +425,9 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // MEM
         cpu.step() // WB
         XCTAssertEqual(1, cpu.getRegister(0))
-        XCTAssertEqual(1, cpu.carry)
-        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(0, cpu.n)
+        XCTAssertEqual(1, cpu.c)
+        XCTAssertEqual(0, cpu.v)
         XCTAssertEqual(0, cpu.z)
     }
     
@@ -441,8 +448,9 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // MEM
         cpu.step() // WB
         XCTAssertEqual(8, cpu.getRegister(0))
-        XCTAssertEqual(1, cpu.carry)
-        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(0, cpu.n)
+        XCTAssertEqual(1, cpu.c)
+        XCTAssertEqual(0, cpu.v)
         XCTAssertEqual(0, cpu.z)
     }
     
@@ -463,8 +471,9 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // MEM
         cpu.step() // WB
         XCTAssertEqual(0xffff, cpu.getRegister(0))
-        XCTAssertEqual(0, cpu.carry)
-        XCTAssertEqual(1, cpu.ovf)
+        XCTAssertEqual(1, cpu.n)
+        XCTAssertEqual(0, cpu.c)
+        XCTAssertEqual(1, cpu.v)
         XCTAssertEqual(0, cpu.z)
     }
     
@@ -485,8 +494,9 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // MEM
         cpu.step() // WB
         XCTAssertEqual(0xa0c0, cpu.getRegister(0))
-        XCTAssertEqual(0, cpu.carry)
-        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(1, cpu.n)
+        XCTAssertEqual(0, cpu.c)
+        XCTAssertEqual(0, cpu.v)
         XCTAssertEqual(0, cpu.z)
     }
     
@@ -507,8 +517,9 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // MEM
         cpu.step() // WB
         XCTAssertEqual(0xfbfd, cpu.getRegister(0))
-        XCTAssertEqual(0, cpu.carry)
-        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(1, cpu.n)
+        XCTAssertEqual(0, cpu.c)
+        XCTAssertEqual(0, cpu.v)
         XCTAssertEqual(0, cpu.z)
     }
     
@@ -560,8 +571,9 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // MEM
         cpu.step() // WB
         XCTAssertEqual(0b0101010101010101, cpu.getRegister(0))
-        XCTAssertEqual(0, cpu.carry)
-        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(0, cpu.n)
+        XCTAssertEqual(0, cpu.c)
+        XCTAssertEqual(0, cpu.v)
         XCTAssertEqual(0, cpu.z)
     }
     
@@ -581,8 +593,9 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // MEM
         cpu.step() // WB
         XCTAssertEqual(0xabcd, cpu.getRegister(0)) // CMPI does not store the result
-        XCTAssertEqual(1, cpu.carry)
-        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(0, cpu.n)
+        XCTAssertEqual(1, cpu.c)
+        XCTAssertEqual(0, cpu.v)
         XCTAssertEqual(0, cpu.z)
     }
     
@@ -602,8 +615,9 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // MEM
         cpu.step() // WB
         XCTAssertEqual(1, cpu.getRegister(0))
-        XCTAssertEqual(1, cpu.carry)
-        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(0, cpu.n)
+        XCTAssertEqual(1, cpu.c)
+        XCTAssertEqual(0, cpu.v)
         XCTAssertEqual(0, cpu.z)
     }
     
@@ -623,8 +637,9 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // MEM
         cpu.step() // WB
         XCTAssertEqual(0xffff, cpu.getRegister(0))
-        XCTAssertEqual(0, cpu.carry)
-        XCTAssertEqual(1, cpu.ovf)
+        XCTAssertEqual(1, cpu.n)
+        XCTAssertEqual(0, cpu.c)
+        XCTAssertEqual(1, cpu.v)
         XCTAssertEqual(0, cpu.z)
     }
     
@@ -644,8 +659,9 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // MEM
         cpu.step() // WB
         XCTAssertEqual(0x000f, cpu.getRegister(0))
-        XCTAssertEqual(0, cpu.carry)
-        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(0, cpu.n)
+        XCTAssertEqual(0, cpu.c)
+        XCTAssertEqual(0, cpu.v)
         XCTAssertEqual(0, cpu.z)
     }
     
@@ -665,8 +681,9 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // MEM
         cpu.step() // WB
         XCTAssertEqual(0xffff, cpu.getRegister(0))
-        XCTAssertEqual(0, cpu.carry)
-        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(1, cpu.n)
+        XCTAssertEqual(0, cpu.c)
+        XCTAssertEqual(0, cpu.v)
         XCTAssertEqual(0, cpu.z)
     }
     
@@ -686,8 +703,9 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // MEM
         cpu.step() // WB
         XCTAssertEqual(0xfff6, cpu.getRegister(0))
-        XCTAssertEqual(0, cpu.carry)
-        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(1, cpu.n)
+        XCTAssertEqual(0, cpu.c)
+        XCTAssertEqual(0, cpu.v)
         XCTAssertEqual(0, cpu.z)
     }
     
@@ -698,7 +716,7 @@ class SchematicLevelCPUModelTests: XCTestCase {
             0b0000000000000000, // NOP
             0b1111000000101000  // ADC r0, r1, r2
         ]
-        cpu.carry = 1
+        cpu.c = 1
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 1)
         cpu.setRegister(2, 1)
@@ -710,8 +728,9 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // MEM
         cpu.step() // WB
         XCTAssertEqual(3, cpu.getRegister(0))
-        XCTAssertEqual(0, cpu.carry)
-        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(0, cpu.n)
+        XCTAssertEqual(0, cpu.c)
+        XCTAssertEqual(0, cpu.v)
         XCTAssertEqual(0, cpu.z)
     }
     
@@ -722,7 +741,7 @@ class SchematicLevelCPUModelTests: XCTestCase {
             0b0000000000000000, // NOP
             0b1111000000101000  // ADC r0, r1, r2
         ]
-        cpu.carry = 0
+        cpu.c = 0
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 0)
         cpu.setRegister(2, 0)
@@ -734,8 +753,9 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // MEM
         cpu.step() // WB
         XCTAssertEqual(0, cpu.getRegister(0))
-        XCTAssertEqual(0, cpu.carry)
-        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(0, cpu.n)
+        XCTAssertEqual(0, cpu.c)
+        XCTAssertEqual(0, cpu.v)
         XCTAssertEqual(1, cpu.z)
     }
     
@@ -746,7 +766,7 @@ class SchematicLevelCPUModelTests: XCTestCase {
             0b0000000000000000, // NOP
             0b1111100000101000  // SBC r0, r1, r2
         ]
-        cpu.carry = 1
+        cpu.c = 1
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 2)
         cpu.setRegister(2, 1)
@@ -758,8 +778,9 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // MEM
         cpu.step() // WB
         XCTAssertEqual(0, cpu.getRegister(0))
-        XCTAssertEqual(1, cpu.carry)
-        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(0, cpu.n)
+        XCTAssertEqual(1, cpu.c)
+        XCTAssertEqual(0, cpu.v)
         XCTAssertEqual(1, cpu.z)
     }
     
@@ -770,7 +791,7 @@ class SchematicLevelCPUModelTests: XCTestCase {
             0b0000000000000000, // NOP
             0b1111100000101000  // SBC r0, r1, r2
         ]
-        cpu.carry = 0
+        cpu.c = 0
         cpu.setRegister(0, 0)
         cpu.setRegister(1, 2)
         cpu.setRegister(2, 1)
@@ -782,8 +803,9 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // MEM
         cpu.step() // WB
         XCTAssertEqual(1, cpu.getRegister(0))
-        XCTAssertEqual(1, cpu.carry)
-        XCTAssertEqual(0, cpu.ovf)
+        XCTAssertEqual(0, cpu.n)
+        XCTAssertEqual(1, cpu.c)
+        XCTAssertEqual(0, cpu.v)
         XCTAssertEqual(0, cpu.z)
     }
     
@@ -1106,31 +1128,34 @@ class SchematicLevelCPUModelTests: XCTestCase {
         ]
         
         let bits = [UInt(0), UInt(1)]
-        for carry in bits {
-            for z in bits {
-                for ovf in bits {
-                    cpu.reset()
-                    cpu.carry = carry
-                    cpu.ovf = ovf
-                    cpu.z = z
-                    
-                    XCTAssertEqual(0, cpu.pc)
-                    cpu.step()
-                    XCTAssertEqual(1, cpu.pc)
-                    cpu.step()
-                    XCTAssertEqual(2, cpu.pc)
-                    cpu.step()
-                    XCTAssertEqual(3, cpu.pc)
-                    cpu.step()
-                    
-                    if z == 1 {
-                        XCTAssertEqual(1026, cpu.pc)
-                    } else {
-                        XCTAssertEqual(4, cpu.pc)
-                    }
-                }
-            }
-        }
+        for n in bits {
+            for c in bits {
+                for z in bits {
+                    for v in bits {
+                        cpu.reset()
+                        cpu.n = n
+                        cpu.c = c
+                        cpu.z = z
+                        cpu.v = v
+                        
+                        XCTAssertEqual(0, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(1, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(2, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(3, cpu.pc)
+                        cpu.step()
+                        
+                        if z == 1 {
+                            XCTAssertEqual(1026, cpu.pc)
+                        } else {
+                            XCTAssertEqual(4, cpu.pc)
+                        }
+                    } // v
+                } // z
+            } // c
+        } // n
     }
     
     func testBne_takeTheJump() {
@@ -1141,31 +1166,34 @@ class SchematicLevelCPUModelTests: XCTestCase {
         ]
         
         let bits = [UInt(0), UInt(1)]
-        for carry in bits {
-            for z in bits {
-                for ovf in bits {
-                    cpu.reset()
-                    cpu.carry = carry
-                    cpu.ovf = ovf
-                    cpu.z = z
-                    
-                    XCTAssertEqual(0, cpu.pc)
-                    cpu.step()
-                    XCTAssertEqual(1, cpu.pc)
-                    cpu.step()
-                    XCTAssertEqual(2, cpu.pc)
-                    cpu.step()
-                    XCTAssertEqual(3, cpu.pc)
-                    cpu.step()
-                    
-                    if z == 0 {
-                        XCTAssertEqual(1026, cpu.pc)
-                    } else {
-                        XCTAssertEqual(4, cpu.pc)
-                    }
-                }
-            }
-        }
+        for n in bits {
+            for c in bits {
+                for z in bits {
+                    for v in bits {
+                        cpu.reset()
+                        cpu.n = n
+                        cpu.c = c
+                        cpu.v = v
+                        cpu.z = z
+                        
+                        XCTAssertEqual(0, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(1, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(2, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(3, cpu.pc)
+                        cpu.step()
+                        
+                        if z == 0 {
+                            XCTAssertEqual(1026, cpu.pc)
+                        } else {
+                            XCTAssertEqual(4, cpu.pc)
+                        }
+                    } // v
+                } // z
+            } // c
+        } // n
     }
     
     func testBlt() {
@@ -1176,31 +1204,35 @@ class SchematicLevelCPUModelTests: XCTestCase {
         ]
         
         let bits = [UInt(0), UInt(1)]
-        for carry in bits {
-            for z in bits {
-                for ovf in bits {
-                    cpu.reset()
-                    cpu.carry = carry
-                    cpu.ovf = ovf
-                    cpu.z = z
-                    
-                    XCTAssertEqual(0, cpu.pc)
-                    cpu.step()
-                    XCTAssertEqual(1, cpu.pc)
-                    cpu.step()
-                    XCTAssertEqual(2, cpu.pc)
-                    cpu.step()
-                    XCTAssertEqual(3, cpu.pc)
-                    cpu.step()
-                    
-                    if ovf == 1 {
-                        XCTAssertEqual(1026, cpu.pc)
-                    } else {
-                        XCTAssertEqual(4, cpu.pc)
-                    }
-                }
-            }
-        }
+        for n in bits {
+            for c in bits {
+                for z in bits {
+                    for v in bits {
+                        cpu.reset()
+                        cpu.n = n
+                        cpu.c = c
+                        cpu.v = v
+                        cpu.z = z
+                        
+                        XCTAssertEqual(0, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(1, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(2, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(3, cpu.pc)
+                        cpu.step()
+                        
+                        // FIXME: BLT should jump on N!=V
+                        if v == 1 {
+                            XCTAssertEqual(1026, cpu.pc)
+                        } else {
+                            XCTAssertEqual(4, cpu.pc)
+                        }
+                    } // v
+                } // z
+            } // c
+        } // n
     }
     
     func testBgt() {
@@ -1211,31 +1243,35 @@ class SchematicLevelCPUModelTests: XCTestCase {
         ]
             
         let bits = [UInt(0), UInt(1)]
-        for carry in bits {
-            for z in bits {
-                for ovf in bits {
-                    cpu.reset()
-                    cpu.carry = carry
-                    cpu.ovf = ovf
-                    cpu.z = z
-                    
-                    XCTAssertEqual(0, cpu.pc)
-                    cpu.step()
-                    XCTAssertEqual(1, cpu.pc)
-                    cpu.step()
-                    XCTAssertEqual(2, cpu.pc)
-                    cpu.step()
-                    XCTAssertEqual(3, cpu.pc)
-                    cpu.step()
-                    
-                    if z == 0 && ovf == 0 {
-                        XCTAssertEqual(1026, cpu.pc)
-                    } else {
-                        XCTAssertEqual(4, cpu.pc)
-                    }
-                }
-            }
-        }
+        for n in bits {
+            for c in bits {
+                for z in bits {
+                    for v in bits {
+                        cpu.reset()
+                        cpu.n = n
+                        cpu.c = c
+                        cpu.v = v
+                        cpu.z = z
+                        
+                        XCTAssertEqual(0, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(1, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(2, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(3, cpu.pc)
+                        cpu.step()
+                        
+                        // FIXME: BGT should jump on (Z==0) && (N==V)
+                        if z == 0 && v == 0 {
+                            XCTAssertEqual(1026, cpu.pc)
+                        } else {
+                            XCTAssertEqual(4, cpu.pc)
+                        }
+                    } // v
+                } // z
+            } // c
+        } // n
     }
     
     func testBltu() {
@@ -1246,31 +1282,35 @@ class SchematicLevelCPUModelTests: XCTestCase {
         ]
         
         let bits = [UInt(0), UInt(1)]
-        for carry in bits {
-            for z in bits {
-                for ovf in bits {
-                    cpu.reset()
-                    cpu.carry = carry
-                    cpu.ovf = ovf
-                    cpu.z = z
-                    
-                    XCTAssertEqual(0, cpu.pc)
-                    cpu.step()
-                    XCTAssertEqual(1, cpu.pc)
-                    cpu.step()
-                    XCTAssertEqual(2, cpu.pc)
-                    cpu.step()
-                    XCTAssertEqual(3, cpu.pc)
-                    cpu.step()
-                    
-                    if carry == 1 {
-                        XCTAssertEqual(1026, cpu.pc)
-                    } else {
-                        XCTAssertEqual(4, cpu.pc)
-                    }
-                }
-            }
-        }
+        for n in bits {
+            for c in bits {
+                for z in bits {
+                    for v in bits {
+                        cpu.reset()
+                        cpu.n = n
+                        cpu.c = c
+                        cpu.v = v
+                        cpu.z = z
+                        
+                        XCTAssertEqual(0, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(1, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(2, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(3, cpu.pc)
+                        cpu.step()
+                        
+                        // FIXME: BLTU should jump on C==0
+                        if c == 1 {
+                            XCTAssertEqual(1026, cpu.pc)
+                        } else {
+                            XCTAssertEqual(4, cpu.pc)
+                        }
+                    } // v
+                } // z
+            } // c
+        } // n
     }
     
     func testBgtu() {
@@ -1281,31 +1321,35 @@ class SchematicLevelCPUModelTests: XCTestCase {
         ]
         
         let bits = [UInt(0), UInt(1)]
-        for carry in bits {
-            for z in bits {
-                for ovf in bits {
-                    cpu.reset()
-                    cpu.carry = carry
-                    cpu.ovf = ovf
-                    cpu.z = z
-                    
-                    XCTAssertEqual(0, cpu.pc)
-                    cpu.step()
-                    XCTAssertEqual(1, cpu.pc)
-                    cpu.step()
-                    XCTAssertEqual(2, cpu.pc)
-                    cpu.step()
-                    XCTAssertEqual(3, cpu.pc)
-                    cpu.step()
-                    
-                    if z == 0 && carry == 1 {
-                        XCTAssertEqual(1026, cpu.pc)
-                    } else {
-                        XCTAssertEqual(4, cpu.pc)
-                    }
-                }
-            }
-        }
+        for n in bits {
+            for c in bits {
+                for z in bits {
+                    for v in bits {
+                        cpu.reset()
+                        cpu.n = n
+                        cpu.c = c
+                        cpu.v = v
+                        cpu.z = z
+                        
+                        XCTAssertEqual(0, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(1, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(2, cpu.pc)
+                        cpu.step()
+                        XCTAssertEqual(3, cpu.pc)
+                        cpu.step()
+                        
+                        // BGTU jumps on C==1 && Z==0
+                        if z == 0 && c == 1 {
+                            XCTAssertEqual(1026, cpu.pc)
+                        } else {
+                            XCTAssertEqual(4, cpu.pc)
+                        }
+                    } // v
+                } // z
+            } // c
+        } // n
     }
     
     func testDemonstrateHazard_RAW() {
@@ -1394,8 +1438,9 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.reset()
         cpu.setRegister(1, 1)
         cpu.setRegister(2, 1)
-        cpu.carry = 0
-        cpu.ovf = 0
+        cpu.n = 0
+        cpu.c = 0
+        cpu.v = 0
         cpu.z = 0
         //            PC    IF    ID    EX    MEM    WB
         cpu.step() // BEQ   CMP   -     -     -      -

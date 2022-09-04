@@ -11,9 +11,10 @@ import Foundation
 public class EX_Output: NSObject, NSSecureCoding {
     public static var supportsSecureCoding = true
     
-    public let carry: UInt
+    public let n: UInt
+    public let c: UInt
     public let z: UInt
-    public let ovf: UInt
+    public let v: UInt
     public let j: UInt
     public let jabs: UInt
     public let y: UInt16
@@ -24,19 +25,21 @@ public class EX_Output: NSObject, NSSecureCoding {
     public let associatedPC: UInt16?
     
     public override var description: String {
-        let c = (self.carry==0) ? "c" : "C"
+        let n = (self.n==0) ? "n" : "N"
+        let c = (self.c==0) ? "c" : "C"
         let z = (self.z==0) ? "z" : "Z"
-        let o = (self.ovf==0) ? "o" : "O"
+        let v = (self.v==0) ? "v" : "V"
         let j = (self.j==0) ? "J" : "j"
         let a = (self.jabs==0) ? "A" : "a"
         let h = (self.hlt==0) ? "H" : "h"
-        return "\(c)\(z)\(o)\(j)\(a)\(h), y: \(String(format: "%04x", y)), storeOp: \(String(format: "%04x", storeOp)), ctl: \(String(format: "%x", ctl)), selC: \(selC)"
+        return "\(n)\(c)\(z)\(v)\(j)\(a)\(h), y: \(String(format: "%04x", y)), storeOp: \(String(format: "%04x", storeOp)), ctl: \(String(format: "%x", ctl)), selC: \(selC)"
     }
     
-    public required init(carry: UInt, z: UInt, ovf: UInt, j: UInt, jabs: UInt, y: UInt16, hlt: UInt, storeOp: UInt16, ctl: UInt, selC: UInt, associatedPC: UInt16? = nil) {
-        self.carry = carry
+    public required init(n: UInt, c: UInt, z: UInt, v: UInt, j: UInt, jabs: UInt, y: UInt16, hlt: UInt, storeOp: UInt16, ctl: UInt, selC: UInt, associatedPC: UInt16? = nil) {
+        self.n = n
+        self.c = c
         self.z = z
-        self.ovf = ovf
+        self.v = v
         self.j = j
         self.jabs = jabs
         self.y = y
@@ -48,9 +51,10 @@ public class EX_Output: NSObject, NSSecureCoding {
     }
     
     public required init?(coder: NSCoder) {
-        guard let carry = coder.decodeObject(forKey: "carry") as? UInt,
+        guard let n = coder.decodeObject(forKey: "n") as? UInt,
+              let c = coder.decodeObject(forKey: "c") as? UInt,
               let z = coder.decodeObject(forKey: "z") as? UInt,
-              let ovf = coder.decodeObject(forKey: "ovf") as? UInt,
+              let v = coder.decodeObject(forKey: "v") as? UInt,
               let j = coder.decodeObject(forKey: "j") as? UInt,
               let jabs = coder.decodeObject(forKey: "jabs") as? UInt,
               let y = coder.decodeObject(forKey: "y") as? UInt16,
@@ -61,9 +65,10 @@ public class EX_Output: NSObject, NSSecureCoding {
               let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16? else {
             return nil
         }
-        self.carry = carry
+        self.n = n
+        self.c = c
         self.z = z
-        self.ovf = ovf
+        self.v = v
         self.j = j
         self.jabs = jabs
         self.y = y
@@ -75,9 +80,10 @@ public class EX_Output: NSObject, NSSecureCoding {
     }
     
     public func encode(with coder: NSCoder) {
-        coder.encode(carry, forKey: "carry")
+        coder.encode(n, forKey: "n")
+        coder.encode(c, forKey: "c")
         coder.encode(z, forKey: "z")
-        coder.encode(ovf, forKey: "ovf")
+        coder.encode(v, forKey: "v")
         coder.encode(j, forKey: "j")
         coder.encode(jabs, forKey: "jabs")
         coder.encode(y, forKey: "y")
@@ -99,9 +105,10 @@ public class EX_Output: NSObject, NSSecureCoding {
         guard let rhs = rhs as? EX_Output else {
             return false
         }
-        guard carry == rhs.carry,
+        guard n == rhs.n,
+              c == rhs.c,
               z == rhs.z,
-              ovf == rhs.ovf,
+              v == rhs.v,
               j == rhs.j,
               jabs == rhs.jabs,
               y == rhs.y,
@@ -117,9 +124,10 @@ public class EX_Output: NSObject, NSSecureCoding {
     
     public override var hash: Int {
         var hasher = Hasher()
-        hasher.combine(carry)
+        hasher.combine(n)
+        hasher.combine(c)
         hasher.combine(z)
-        hasher.combine(ovf)
+        hasher.combine(v)
         hasher.combine(j)
         hasher.combine(jabs)
         hasher.combine(y)
@@ -232,12 +240,15 @@ public class EX: NSObject, NSSecureCoding {
                                                       oe: 0))
         let storeOp = selectStoreOperand(input: input)
         associatedPC = input.associatedPC
-        return EX_Output(carry: aluOutput.c16,
+        let y = aluOutput.f!
+        let n = (UInt(y) >> 15) & 1
+        return EX_Output(n: n,
+                         c: aluOutput.c16,
                          z: aluOutput.z,
-                         ovf: aluOutput.ovf,
+                         v: aluOutput.ovf,
                          j: j,
                          jabs: jabs,
-                         y: aluOutput.f!,
+                         y: y,
                          hlt: hlt,
                          storeOp: storeOp,
                          ctl: input.ctl,

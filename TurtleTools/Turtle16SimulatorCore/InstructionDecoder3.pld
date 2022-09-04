@@ -1,7 +1,7 @@
 GAL22V10
 InstructionDecoder3
 
-A     B     C     D     E     F     G     H     NC         NC         NC      GND
+A     B     C     D     E     F     G     H     I          NC         NC      GND
 NC    NC    NC    NC    NC    NC    NC    NC    RUNUSED    LUNUSED    WBEN    VCC
 
 WBEN = D*E*/F + D*/E*G*H + D*F*/G + /D*/E*F*G*/H + /D*/E*/F*/G + E*F*/G*H + /E*/F*G*H
@@ -15,3 +15,4 @@ Inputs A to E are the five bits of the instruction opcode.
 Input F is the ALU carry flag.
 Input G is the ALU zero flag.
 Input H is the ALU overflow flag.
+Input I is the negative flag.

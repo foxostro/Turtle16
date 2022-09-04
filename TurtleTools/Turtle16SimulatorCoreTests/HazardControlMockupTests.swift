@@ -271,9 +271,10 @@ class HazardControlMockupTests: XCTestCase {
                              selC_MEM: selC_MEM,
                              ctl_MEM: ctl_MEM,
                              j: 1,
-                             ovf: 0,
+                             n: 0,
+                             c: 0,
                              z: 0,
-                             carry: 0)
+                             v: 0)
         
         let unit = makeHazardControl()
         let output = unit.step(input: input,
@@ -309,9 +310,10 @@ class HazardControlMockupTests: XCTestCase {
                              selC_MEM: selC_MEM,
                              ctl_MEM: ctl_MEM,
                              j: 1,
-                             ovf: 0,
+                             n: 0,
+                             c: 0,
                              z: 0,
-                             carry: 0)
+                             v: 0)
         
         let unit = makeHazardControl()
         let output = unit.step(input: input,

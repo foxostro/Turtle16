@@ -17,9 +17,10 @@ class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate
     @IBOutlet var resetting: NSTextField!
     @IBOutlet var stall: NSTextField!
     @IBOutlet var timeStamp: NSTextField!
-    @IBOutlet var ovf: NSTextField!
+    @IBOutlet var n: NSTextField!
+    @IBOutlet var c: NSTextField!
     @IBOutlet var z: NSTextField!
-    @IBOutlet var c0: NSTextField!
+    @IBOutlet var v: NSTextField!
     
     let debugger: DebugConsole
     var history: [String] = []
@@ -65,9 +66,10 @@ class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate
         resetting.isHidden = !computer.isResetting
         stall.isHidden = !computer.isStalling
         timeStamp.stringValue = "t=\(computer.timeStamp)"
-        ovf.isHidden = (computer.ovf == 0)
+        n.isHidden = (computer.n == 0)
+        c.isHidden = (computer.c == 0)
         z.isHidden = (computer.z == 0)
-        c0.isHidden = (computer.carry == 0)
+        v.isHidden = (computer.v == 0)
     }
     
     @IBAction func submitCommandLine(_ sender: Any) {

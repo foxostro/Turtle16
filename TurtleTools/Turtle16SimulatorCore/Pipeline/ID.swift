@@ -146,9 +146,10 @@ public class ID: NSObject, NSSecureCoding {
         public let selC_MEM: UInt
         public let ctl_MEM: UInt
         public let j: UInt
-        public let ovf: UInt
+        public let n: UInt
         public let z: UInt
-        public let carry: UInt
+        public let c: UInt
+        public let v: UInt
         public let associatedPC: UInt16?
         
         public init(ins: UInt16) {
@@ -160,9 +161,10 @@ public class ID: NSObject, NSSecureCoding {
             self.selC_MEM = 0
             self.ctl_MEM = ID.nopControlWord
             self.j = 1
-            self.ovf = 0
+            self.n = 0
+            self.c = 0
             self.z = 0
-            self.carry = 0
+            self.v = 0
             self.associatedPC = nil
         }
         
@@ -175,9 +177,10 @@ public class ID: NSObject, NSSecureCoding {
             self.selC_MEM = 0
             self.ctl_MEM = ID.nopControlWord
             self.j = 1
-            self.ovf = 0
+            self.n = 0
+            self.c = 0
             self.z = 0
-            self.carry = 0
+            self.v = 0
             self.associatedPC = nil
         }
         
@@ -190,9 +193,10 @@ public class ID: NSObject, NSSecureCoding {
             self.selC_MEM = 0
             self.ctl_MEM = ID.nopControlWord
             self.j = j
-            self.ovf = 0
+            self.n = 0
+            self.c = 0
             self.z = 0
-            self.carry = 0
+            self.v = 0
             self.associatedPC = nil
         }
         
@@ -205,9 +209,10 @@ public class ID: NSObject, NSSecureCoding {
             self.selC_MEM = 0
             self.ctl_MEM = ID.nopControlWord
             self.j = 1
-            self.ovf = 0
+            self.n = 0
+            self.c = 0
             self.z = 0
-            self.carry = 0
+            self.v = 0
             self.associatedPC = nil
         }
         
@@ -220,9 +225,10 @@ public class ID: NSObject, NSSecureCoding {
             self.selC_MEM = 0
             self.ctl_MEM = ID.nopControlWord
             self.j = 1
-            self.ovf = 0
+            self.n = 0
+            self.c = 0
             self.z = 0
-            self.carry = 0
+            self.v = 0
             self.associatedPC = nil
         }
         
@@ -235,9 +241,10 @@ public class ID: NSObject, NSSecureCoding {
             self.selC_MEM = selC_MEM
             self.ctl_MEM = ctl_MEM
             self.j = 1
-            self.ovf = 0
+            self.n = 0
+            self.c = 0
             self.z = 0
-            self.carry = 0
+            self.v = 0
             self.associatedPC = nil
         }
         
@@ -249,9 +256,10 @@ public class ID: NSObject, NSSecureCoding {
                     selC_MEM: UInt,
                     ctl_MEM: UInt,
                     j: UInt,
-                    ovf: UInt,
+                    n: UInt,
+                    c: UInt,
                     z: UInt,
-                    carry: UInt,
+                    v: UInt,
                     associatedPC: UInt16? = nil) {
             self.ins = ins
             self.y_EX = y_EX
@@ -261,9 +269,10 @@ public class ID: NSObject, NSSecureCoding {
             self.selC_MEM = selC_MEM
             self.ctl_MEM = ctl_MEM
             self.j = j
-            self.ovf = ovf
+            self.n = n
+            self.c = c
             self.z = z
-            self.carry = carry
+            self.v = v
             self.associatedPC = associatedPC
         }
     }
@@ -344,7 +353,7 @@ public class ID: NSObject, NSSecureCoding {
     
     public func decodeOpcode(input: Input) -> UInt {
         let opcode = UInt((input.ins >> 11) & 31)
-        let ctl_ID = decoder.decode(ovf: input.ovf, z: input.z, carry: input.carry, opcode: opcode)
+        let ctl_ID = decoder.decode(n: input.n, c: input.c, z: input.z, v: input.v, opcode: opcode)
         return ctl_ID
     }
     

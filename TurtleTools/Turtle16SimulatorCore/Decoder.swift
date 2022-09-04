@@ -9,11 +9,11 @@
 public protocol Decoder: NSObject, NSSecureCoding {
     var count: Int { get }
     func decode(_ address: Int) -> UInt
-    func decode(ovf: UInt, z: UInt, carry: UInt, opcode: UInt) -> UInt
+    func decode(n: UInt, c: UInt, z: UInt, v: UInt, opcode: UInt) -> UInt
 }
 
 public class OpcodeDecoderROM : NSObject, Decoder {
-    public let count: Int = 256
+    public let count: Int = 512
     public static var supportsSecureCoding = true
     public var opcodeDecodeROM: [UInt]
     
@@ -60,14 +60,16 @@ public class OpcodeDecoderROM : NSObject, Decoder {
         return hasher.finalize()
     }
     
-    public func decode(ovf: UInt, z: UInt, carry: UInt, opcode: UInt) -> UInt {
-        assert(ovf <= 1)
+    public func decode(n: UInt, c: UInt, z: UInt, v: UInt, opcode: UInt) -> UInt {
+        assert(n <= 1)
+        assert(c <= 1)
         assert(z <= 1)
-        assert(carry <= 1)
+        assert(v <= 1)
         assert(opcode <= 31)
-        let address = (ovf << 7)
+        let address = (n << 8)
+                    | (v << 7)
                     | (z << 6)
-                    | (carry << 5)
+                    | (c << 5)
                     | opcode
         let control = decode(Int(address))
         return control
@@ -82,7 +84,7 @@ public class OpcodeDecoderROM : NSObject, Decoder {
 
 public class ProgrammableLogicDecoder : NSObject, Decoder {
     public static var supportsSecureCoding = true
-    public let count: Int = 256
+    public let count: Int = 512
     
     let gal1: ATF22V10
     let gal2: ATF22V10
@@ -131,14 +133,16 @@ public class ProgrammableLogicDecoder : NSObject, Decoder {
         return gal
     }
     
-    public func decode(ovf: UInt, z: UInt, carry: UInt, opcode: UInt) -> UInt {
-        assert(ovf <= 1)
+    public func decode(n: UInt, c: UInt, z: UInt, v: UInt, opcode: UInt) -> UInt {
+        assert(n <= 1)
+        assert(c <= 1)
         assert(z <= 1)
-        assert(carry <= 1)
+        assert(v <= 1)
         assert(opcode <= 31)
-        let address = (ovf << 7)
+        let address = (n << 8)
+                    | (v << 7)
                     | (z << 6)
-                    | (carry << 5)
+                    | (c << 5)
                     | opcode
         let control = decode(Int(address))
         return control

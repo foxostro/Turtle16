@@ -386,64 +386,66 @@ public class DecoderGenerator: NSObject {
         
         let bits = [UInt(0), UInt(1)]
         
-        for carry in bits {
-            for ovf in bits {
-                for z in bits {
-                    makeControlWord(&controlWords, index: makeIndex(carry: carry, z: 1, ovf: ovf, opcode: DecoderGenerator.opcodeBeq), signals: signalsForRelativeJump)
-                    makeControlWord(&controlWords, index: makeIndex(carry: carry, z: 0, ovf: ovf, opcode: DecoderGenerator.opcodeBne), signals: signalsForRelativeJump)
-                    makeControlWord(&controlWords, index: makeIndex(carry: carry, z: z, ovf: 1, opcode: DecoderGenerator.opcodeBlt), signals: signalsForRelativeJump)
-                    makeControlWord(&controlWords, index: makeIndex(carry: 1, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeBltu), signals: signalsForRelativeJump)
-                    makeControlWord(&controlWords, index: makeIndex(carry: carry, z: 0, ovf: 0, opcode: DecoderGenerator.opcodeBgt), signals: signalsForRelativeJump)
-                    makeControlWord(&controlWords, index: makeIndex(carry: 1, z: 0, ovf: ovf, opcode: DecoderGenerator.opcodeBgtu), signals: signalsForRelativeJump)
-                    
-                    makeControlWord(&controlWords, index: makeIndex(carry: 0, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeAdc), signals: [
-                        DecoderGenerator.SelRightOp(.b),
-                        DecoderGenerator.ALUControl(fn: .add, rs: .ab, c0: 0),
-                        DecoderGenerator.FI,
-                        DecoderGenerator.WriteBackSrc(.aluResult),
-                        DecoderGenerator.WRL,
-                        DecoderGenerator.WRH,
-                        DecoderGenerator.WBEN,
-                        DecoderGenerator.LeftOperandIsUnused,
-                        DecoderGenerator.RightOperandIsUnused
-                    ])
-                    makeControlWord(&controlWords, index: makeIndex(carry: 1, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeAdc), signals: [
-                        DecoderGenerator.SelRightOp(.b),
-                        DecoderGenerator.ALUControl(fn: .add, rs: .ab, c0: 1),
-                        DecoderGenerator.FI,
-                        DecoderGenerator.WriteBackSrc(.aluResult),
-                        DecoderGenerator.WRL,
-                        DecoderGenerator.WRH,
-                        DecoderGenerator.WBEN,
-                        DecoderGenerator.LeftOperandIsUnused,
-                        DecoderGenerator.RightOperandIsUnused
-                    ])
-                    
-                    makeControlWord(&controlWords, index: makeIndex(carry: 0, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeSbc), signals: [
-                        DecoderGenerator.SelRightOp(.b),
-                        DecoderGenerator.ALUControl(fn: .sub, rs: .ab, c0: 1),
-                        DecoderGenerator.FI,
-                        DecoderGenerator.WriteBackSrc(.aluResult),
-                        DecoderGenerator.WRL,
-                        DecoderGenerator.WRH,
-                        DecoderGenerator.WBEN,
-                        DecoderGenerator.LeftOperandIsUnused,
-                        DecoderGenerator.RightOperandIsUnused
-                    ])
-                    makeControlWord(&controlWords, index: makeIndex(carry: 1, z: z, ovf: ovf, opcode: DecoderGenerator.opcodeSbc), signals: [
-                        DecoderGenerator.SelRightOp(.b),
-                        DecoderGenerator.ALUControl(fn: .sub, rs: .ab, c0: 0),
-                        DecoderGenerator.FI,
-                        DecoderGenerator.WriteBackSrc(.aluResult),
-                        DecoderGenerator.WRL,
-                        DecoderGenerator.WRH,
-                        DecoderGenerator.WBEN,
-                        DecoderGenerator.LeftOperandIsUnused,
-                        DecoderGenerator.RightOperandIsUnused
-                    ])
-                }
-            }
-        }
+        for n in bits {
+            for c in bits {
+                for v in bits {
+                    for z in bits {
+                        makeControlWord(&controlWords, index: makeIndex(n: n, c: c, z: 1, v: v, opcode: DecoderGenerator.opcodeBeq), signals: signalsForRelativeJump)
+                        makeControlWord(&controlWords, index: makeIndex(n: n, c: c, z: 0, v: v, opcode: DecoderGenerator.opcodeBne), signals: signalsForRelativeJump)
+                        makeControlWord(&controlWords, index: makeIndex(n: n, c: c, z: z, v: 1, opcode: DecoderGenerator.opcodeBlt), signals: signalsForRelativeJump)
+                        makeControlWord(&controlWords, index: makeIndex(n: n, c: 1, z: z, v: v, opcode: DecoderGenerator.opcodeBltu), signals: signalsForRelativeJump)
+                        makeControlWord(&controlWords, index: makeIndex(n: n, c: c, z: 0, v: 0, opcode: DecoderGenerator.opcodeBgt), signals: signalsForRelativeJump)
+                        makeControlWord(&controlWords, index: makeIndex(n: n, c: 1, z: 0, v: v, opcode: DecoderGenerator.opcodeBgtu), signals: signalsForRelativeJump)
+                        
+                        makeControlWord(&controlWords, index: makeIndex(n: n, c: 0, z: z, v: v, opcode: DecoderGenerator.opcodeAdc), signals: [
+                            DecoderGenerator.SelRightOp(.b),
+                            DecoderGenerator.ALUControl(fn: .add, rs: .ab, c0: 0),
+                            DecoderGenerator.FI,
+                            DecoderGenerator.WriteBackSrc(.aluResult),
+                            DecoderGenerator.WRL,
+                            DecoderGenerator.WRH,
+                            DecoderGenerator.WBEN,
+                            DecoderGenerator.LeftOperandIsUnused,
+                            DecoderGenerator.RightOperandIsUnused
+                        ])
+                        makeControlWord(&controlWords, index: makeIndex(n: n, c: 1, z: z, v: v, opcode: DecoderGenerator.opcodeAdc), signals: [
+                            DecoderGenerator.SelRightOp(.b),
+                            DecoderGenerator.ALUControl(fn: .add, rs: .ab, c0: 1),
+                            DecoderGenerator.FI,
+                            DecoderGenerator.WriteBackSrc(.aluResult),
+                            DecoderGenerator.WRL,
+                            DecoderGenerator.WRH,
+                            DecoderGenerator.WBEN,
+                            DecoderGenerator.LeftOperandIsUnused,
+                            DecoderGenerator.RightOperandIsUnused
+                        ])
+                        
+                        makeControlWord(&controlWords, index: makeIndex(n: n, c: 0, z: z, v: v, opcode: DecoderGenerator.opcodeSbc), signals: [
+                            DecoderGenerator.SelRightOp(.b),
+                            DecoderGenerator.ALUControl(fn: .sub, rs: .ab, c0: 1),
+                            DecoderGenerator.FI,
+                            DecoderGenerator.WriteBackSrc(.aluResult),
+                            DecoderGenerator.WRL,
+                            DecoderGenerator.WRH,
+                            DecoderGenerator.WBEN,
+                            DecoderGenerator.LeftOperandIsUnused,
+                            DecoderGenerator.RightOperandIsUnused
+                        ])
+                        makeControlWord(&controlWords, index: makeIndex(n: n, c: 1, z: z, v: v, opcode: DecoderGenerator.opcodeSbc), signals: [
+                            DecoderGenerator.SelRightOp(.b),
+                            DecoderGenerator.ALUControl(fn: .sub, rs: .ab, c0: 0),
+                            DecoderGenerator.FI,
+                            DecoderGenerator.WriteBackSrc(.aluResult),
+                            DecoderGenerator.WRL,
+                            DecoderGenerator.WRH,
+                            DecoderGenerator.WBEN,
+                            DecoderGenerator.LeftOperandIsUnused,
+                            DecoderGenerator.RightOperandIsUnused
+                        ])
+                    } // v
+                } // z
+            } // c
+        } // n
         
         return controlWords
     }
@@ -491,35 +493,42 @@ public class DecoderGenerator: NSObject {
         }
     }
     
-    public func makeIndex(carry: UInt,
+    public func makeIndex(n: UInt,
+                          c: UInt,
                           z: UInt,
-                          ovf: UInt,
+                          v: UInt,
                           opcode: Int) -> Int {
-        assert(carry <= 1)
+        assert(n <= 1)
+        assert(c <= 1)
         assert(z <= 1)
-        assert(ovf <= 1)
+        assert(v <= 1)
         assert(opcode >= 0)
         assert(opcode <= 31)
-        let index = UInt(ovf << 7)
+        let index = UInt(n << 8)
+                  | UInt(v << 7)
                   | UInt(z << 6)
-                  | UInt(carry << 5)
+                  | UInt(c << 5)
                   | UInt(opcode)
         return Int(index)
     }
     
     public func indicesForAllConditions(_ opcode: Int) -> [Int] {
         var indices: [Int] = []
-        for ovf in [0, 1] {
-            for z in [0, 1] {
-                for carry in [0, 1] {
-                    let index = makeIndex(carry: UInt(carry),
-                                          z: UInt(z),
-                                          ovf: UInt(ovf),
-                                          opcode: opcode)
-                    indices.append(Int(index))
-                }
-            }
-        }
+        let bits = [UInt(0), UInt(1)]
+        for n in bits {
+            for c in bits {
+                for z in bits {
+                    for v in bits {
+                        let index = makeIndex(n: n,
+                                              c: c,
+                                              z: z,
+                                              v: v,
+                                              opcode: opcode)
+                        indices.append(Int(index))
+                    } // v
+                } // z
+            } // c
+        } // n
         return indices
     }
 }

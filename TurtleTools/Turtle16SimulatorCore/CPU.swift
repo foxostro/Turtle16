@@ -30,10 +30,12 @@ public protocol CPU: NSObject, NSSecureCoding {
     var isStalling: Bool { get }
     var pc: UInt16 { get set }
     var instructions: [UInt16] { get set }
-    var carry: UInt { get }
-    var z: UInt { get }
-    var ovf: UInt { get }
     var decoder: Decoder { get set }
+    
+    var n: UInt { get }
+    var c: UInt { get }
+    var z: UInt { get }
+    var v: UInt { get }
     
     var load: (MemoryAddress) -> UInt16 { get set }
     var store: (UInt16, MemoryAddress) -> Void { get set }

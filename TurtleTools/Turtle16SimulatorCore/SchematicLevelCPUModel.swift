@@ -44,9 +44,10 @@ public class SchematicLevelCPUModel: NSObject, CPU {
         }
     }
     
-    public var carry: UInt = 0
+    public var n: UInt = 0
+    public var c: UInt = 0
     public var z: UInt = 0
-    public var ovf: UInt = 0
+    public var v: UInt = 0
     
     public let numberOfRegisters = 8
     
@@ -125,7 +126,7 @@ public class SchematicLevelCPUModel: NSObject, CPU {
         
         outputIF = IF_Output(ins: 0, pc: 0)
         outputID = ID_Output(stall: 0, ctl_EX: 0b111111111111111111111, a: 0, b: 0, ins: 0)
-        outputEX = EX_Output(carry: 0, z: 0, ovf: 0, j: 1, jabs: 1, y: 0, hlt: 1, storeOp: 0, ctl: 0b111111111111111111111, selC: 0)
+        outputEX = EX_Output(n: 0, c: 0, z: 0, v: 0, j: 1, jabs: 1, y: 0, hlt: 1, storeOp: 0, ctl: 0b111111111111111111111, selC: 0)
         outputMEM = MEM_Output(y: 0, storeOp: 0, selC: 0, ctl: 0b111111111111111111111)
         outputWB = WB_Output(c: 0, wrl: 1, wrh: 1, wben: 1)
         
@@ -146,9 +147,10 @@ public class SchematicLevelCPUModel: NSObject, CPU {
               let pc = coder.decodeObject(forKey: "pc") as? UInt16,
               let prevPC = coder.decodeObject(forKey: "prevPC") as? UInt16,
               let instructions = coder.decodeObject(forKey: "instructions") as? [UInt16],
-              let carry = coder.decodeObject(forKey: "carry") as? UInt,
+              let n = coder.decodeObject(forKey: "n") as? UInt,
+              let c = coder.decodeObject(forKey: "c") as? UInt,
+              let v = coder.decodeObject(forKey: "v") as? UInt,
               let z = coder.decodeObject(forKey: "z") as? UInt,
-              let ovf = coder.decodeObject(forKey: "ovf") as? UInt,
               let stageIF = coder.decodeObject(of: IF.self, forKey: "stageIF"),
               let stageID = coder.decodeObject(of: ID.self, forKey: "stageID"),
               let stageEX = coder.decodeObject(of: EX.self, forKey: "stageEX"),
@@ -166,9 +168,10 @@ public class SchematicLevelCPUModel: NSObject, CPU {
         self.pc = pc
         self.prevPC = prevPC
         self.instructions = instructions
-        self.carry = carry
+        self.n = n
         self.z = z
-        self.ovf = ovf
+        self.c = c
+        self.v = v
         self.stageIF = stageIF
         self.stageID = stageID
         self.stageEX = stageEX
@@ -196,9 +199,10 @@ public class SchematicLevelCPUModel: NSObject, CPU {
         coder.encode(pc, forKey: "pc")
         coder.encode(prevPC, forKey: "prevPC")
         coder.encode(instructions, forKey: "instructions")
-        coder.encode(carry, forKey: "carry")
+        coder.encode(n, forKey: "n")
         coder.encode(z, forKey: "z")
-        coder.encode(ovf, forKey: "ovf")
+        coder.encode(c, forKey: "c")
+        coder.encode(v, forKey: "v")
         coder.encode(stageIF, forKey: "stageIF")
         coder.encode(stageID, forKey: "stageID")
         coder.encode(stageEX, forKey: "stageEX")
@@ -227,9 +231,10 @@ public class SchematicLevelCPUModel: NSObject, CPU {
               pc == rhs.pc,
               prevPC == rhs.prevPC,
               instructions == rhs.instructions,
-              carry == rhs.carry,
+              n == rhs.n,
+              c == rhs.c,
+              v == rhs.v,
               z == rhs.z,
-              ovf == rhs.ovf,
               numberOfRegisters == rhs.numberOfRegisters,
               numberOfPipelineStages == rhs.numberOfPipelineStages,
               stageIF == rhs.stageIF,
@@ -254,9 +259,10 @@ public class SchematicLevelCPUModel: NSObject, CPU {
         hasher.combine(pc)
         hasher.combine(prevPC)
         hasher.combine(instructions)
-        hasher.combine(carry)
+        hasher.combine(n)
         hasher.combine(z)
-        hasher.combine(ovf)
+        hasher.combine(c)
+        hasher.combine(v)
         hasher.combine(numberOfRegisters)
         hasher.combine(numberOfPipelineStages)
         hasher.combine(stageIF)
@@ -330,17 +336,19 @@ public class SchematicLevelCPUModel: NSObject, CPU {
                                selC_MEM: inputMEM.selC,
                                ctl_MEM: inputMEM.ctl,
                                j: (inputEX.ctl>>12)&1,
-                               ovf: ovf,
+                               n: n,
+                               c: c,
                                z: z,
-                               carry: carry,
+                               v: v,
                                associatedPC: outputIF.associatedPC)
         outputID = stageID.step(input: inputID)
         
         // Only update flags if the appropriate bit in the control word is set.
         if ((inputEX.ctl >> DecoderGenerator.FI) & 1) == 0 {
-            carry = outputEX.carry
-            ovf = outputEX.ovf
+            n = outputEX.n
+            c = outputEX.c
             z = outputEX.z
+            v = outputEX.v
         }
         
         // IF

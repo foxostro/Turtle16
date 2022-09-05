@@ -1540,6 +1540,142 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
+    func testRvalue_Binary_lt16() throws {
+        let symbols = SymbolTable(tuples: [
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 200, storage: .staticStorage))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .lt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let expected = Seq(children: [
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(200)
+            ]),
+            TackInstructionNode(instruction: .load, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr0")
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterNumber(100)
+            ]),
+            TackInstructionNode(instruction: .load, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr2")
+            ]),
+            TackInstructionNode(instruction: .lt16, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr1")
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr4")
+    }
+    
+    func testRvalue_Binary_ge16() throws {
+        let symbols = SymbolTable(tuples: [
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 200, storage: .staticStorage))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .ge, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let expected = Seq(children: [
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(200)
+            ]),
+            TackInstructionNode(instruction: .load, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr0")
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterNumber(100)
+            ]),
+            TackInstructionNode(instruction: .load, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr2")
+            ]),
+            TackInstructionNode(instruction: .ge16, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr1")
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr4")
+    }
+    
+    func testRvalue_Binary_le16() throws {
+        let symbols = SymbolTable(tuples: [
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 200, storage: .staticStorage))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .le, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let expected = Seq(children: [
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(200)
+            ]),
+            TackInstructionNode(instruction: .load, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr0")
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterNumber(100)
+            ]),
+            TackInstructionNode(instruction: .load, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr2")
+            ]),
+            TackInstructionNode(instruction: .le16, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr1")
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr4")
+    }
+    
+    func testRvalue_Binary_gt16() throws {
+        let symbols = SymbolTable(tuples: [
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 200, storage: .staticStorage))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .gt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let expected = Seq(children: [
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(200)
+            ]),
+            TackInstructionNode(instruction: .load, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr0")
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterNumber(100)
+            ]),
+            TackInstructionNode(instruction: .load, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr2")
+            ]),
+            TackInstructionNode(instruction: .gt16, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr1")
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr4")
+    }
+    
     func testRvalue_Binary_ltu16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),

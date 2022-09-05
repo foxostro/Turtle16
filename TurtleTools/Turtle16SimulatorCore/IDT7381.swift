@@ -187,17 +187,42 @@ public class IDT7381: NSObject, NSSecureCoding {
     }
     
     public func computeOVF(input: Input) -> UInt {
-        // If the two operands have the same sign and the result has a different
+        let r0 = rmux(input: input)
+        let s0 = smux(input: input)
+        
+        let r1: UInt16
+        let s1: UInt16
+        
+        switch (input.i2, input.i1, input.i0) {
+        case (0, 0, 1):
+            r1 = ~r0
+            s1 = s0
+            
+        case (0, 1, 0):
+            r1 = r0
+            s1 = ~s0
+            
+        case (0, 1, 1):
+            r1 = r0
+            s1 = s0
+            
+        default:
+            r1 = 0
+            s1 = 0
+        }
+        
+        let result = r1 &+ s1 &+ UInt16(input.c0)
+        
+        // If the two operands have the same sign and the sum has a different
         // sign then overflow has occurred. Otherwise, there is no overflow.
-        let r = rmux(input: input)
-        let s = smux(input: input)
         let ovf: UInt
-        if (r & 0x8000) == (s & 0x8000) {
-            let result = computeResult(input: input)
-            ovf = ((r & 0x8000) != (result & 0x8000)) ? 1 : 0
-        } else {
+        if (r1 & 0x8000) == (s1 & 0x8000) {
+            ovf = ((r1 & 0x8000) != (result & 0x8000)) ? 1 : 0
+        }
+        else {
             ovf = 0
         }
+        
         return ovf
     }
     

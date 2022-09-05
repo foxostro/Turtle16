@@ -495,6 +495,27 @@ class IDT7381Tests: XCTestCase {
         XCTAssertEqual(output.ovf, 1)
     }
     
+    func testSubtractionResultingInTwosComplementArithmeticOverflow() {
+        let alu = IDT7381()
+        let input = IDT7381.Input(a: 0x8000, // -32768
+                                  b: 1,
+                                  c0: 1,
+                                  i0: 0,
+                                  i1: 1,
+                                  i2: 0,
+                                  rs0: 1,
+                                  rs1: 1,
+                                  ena: 1,
+                                  enb: 1,
+                                  enf: 1,
+                                  ftab: 1,
+                                  ftf: 1,
+                                  oe: 0)
+        let output = alu.step(input: input)
+        XCTAssertEqual(output.f, 0x7FFF)
+        XCTAssertEqual(output.ovf, 1)
+    }
+    
     func testEquality_Equal() throws {
         let alu1 = IDT7381()
         alu1.a = 1

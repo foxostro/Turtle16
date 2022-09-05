@@ -99,7 +99,12 @@ let myUInt8: u8 = 255
 // the Turtle16 CPU.
 let myUInt16: u16 = 65535
 
-// Signed integers are not yet implemented.
+// A signed eight-bit integer type is provided.
+let myInt8: i8 = -128
+
+// A signed sixteen-bit integer type is provided.
+let myInt16: i16 = -32768
+
 // Integers of larger widths are not yet implemented.
 ```
 
@@ -107,10 +112,10 @@ let myUInt16: u16 = 65535
 ```
 // Literal integers are deduced as the smallest type that fits the literal
 // value. (This may change in the future.)
-let a = 1
+let a = 128
 assert(a is u8)
 
-let b = 1000
+let b = 40000
 assert(b is u16)
 
 // Hexadecimal numbers
@@ -145,9 +150,9 @@ a = p >= q // greater than or equal to
 a = p <= q // less than or equal to
 ```
 
-Currently, only unsigned types are implemented. Overlfow and underflow are well-defined to wrap around the range of values for the type. For example, 0-1 is 65535 for a u16 value.
+Overflow and underflow are well-defined for both signed and unsigned integers to wrap around the range of values for the type. For example, 0-1 is 65535 for a u16 value, and 32767+1 is -32768 for a i16 value.
 
-Signed types will be guaranteed to be implemented as twos-complement with well-defined overlfow and underflow.
+Signed types are guaranteed to be implemented as twos-complement with well-defined overflow and underflow behavior.
 
 The Snap programming language does not include in-place arithmetic operators such as +=, -=, &c found in other languages such as C. Nor does it support increment and decrement with ++ and -- operators.
 
@@ -190,7 +195,7 @@ ptr3 = ptr3 + 1 // not valid
 ```
 
 ## Ranges
-A range may be declared with special .. syntax. The left number is the beginning and the right is the limit. The limit must be the greater of the two, and both must be positive u16 values. The range is defined to include all values x where begin <= x < limit. In the following example, the value 1000 is not included in the range. Ranges are commonly used in array slicing and loops.
+A range may be declared with special .. syntax. The left number is the beginning and the right is the limit. The limit must be the greater of the two, and both must be a positive u16 value. The range is defined to include all values x where begin <= x < limit. In the following example, the value 1000 is not included in the range. Ranges are commonly used in array slicing and loops.
 ```
 // Declare a range
 let range: Range = 0..1000
@@ -259,10 +264,16 @@ Some type conversions are automatic.
 ```
 // Automatic conversions in integer arithmetic will convert one side of a binary
 // expression to the wider of the two types
-let a = 1 + 1000 // a is u16
+let a = 1 + 50000 // a is u16
+
+// Automatic conversions between integer types are only permitted when the
+// values representable by the source type is a complete subset of the values
+// representable by the destination type.
+let b: u8 = 1
+let c: i16 = b // permitted because all values of u8 are reprentable in i16
 
 // The address of a value is automatically taken to convert to a pointer.
-let b: *u16 = a
+let d: *u16 = a
 
 // Arrays are automatically converted to array slices
 let arr = [_]u8{1, 2, 3}
@@ -415,7 +426,7 @@ func qux(aa: u8, bb: u16) -> u16 {
 }
 
 // Record a function pointer and use the pointer to invoke the function later.
-var ptr = *func(aa: u8, bb: u16) -> u16 = undefined
+var ptr: *func(aa: u8, bb: u16) -> u16 = undefined
 ptr = &baz
 ptr = qux
 let r2 = ptr(1, 1)

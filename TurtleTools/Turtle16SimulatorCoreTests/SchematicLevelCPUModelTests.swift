@@ -335,7 +335,7 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(0xabcd, cpu.getRegister(0)) // CMP does not store the result
         XCTAssertEqual(1, cpu.n)
         XCTAssertEqual(0, cpu.c)
-        XCTAssertEqual(1, cpu.v)
+        XCTAssertEqual(0, cpu.v)
         XCTAssertEqual(0, cpu.z)
     }
     
@@ -454,7 +454,7 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(0, cpu.z)
     }
     
-    func testSub_underflow() {
+    func testSub_underflow_unsigned() {
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b0000000000000000, // NOP
@@ -473,6 +473,29 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(0xffff, cpu.getRegister(0))
         XCTAssertEqual(1, cpu.n)
         XCTAssertEqual(0, cpu.c)
+        XCTAssertEqual(0, cpu.v)
+        XCTAssertEqual(0, cpu.z)
+    }
+    
+    func testSub_underflow_signed() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [
+            0b0000000000000000, // NOP
+            0b0100000000101000  // SUB r0, r1, r2
+        ]
+        cpu.setRegister(0, 0)
+        cpu.setRegister(1, 0x8000)
+        cpu.setRegister(2, 1)
+        cpu.reset()
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
+        XCTAssertEqual(0x7fff, cpu.getRegister(0))
+        XCTAssertEqual(0, cpu.n)
+        XCTAssertEqual(1, cpu.c)
         XCTAssertEqual(1, cpu.v)
         XCTAssertEqual(0, cpu.z)
     }
@@ -639,7 +662,7 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(0xffff, cpu.getRegister(0))
         XCTAssertEqual(1, cpu.n)
         XCTAssertEqual(0, cpu.c)
-        XCTAssertEqual(1, cpu.v)
+        XCTAssertEqual(0, cpu.v)
         XCTAssertEqual(0, cpu.z)
     }
     

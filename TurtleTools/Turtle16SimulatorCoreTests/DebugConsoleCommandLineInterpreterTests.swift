@@ -454,7 +454,7 @@ isResetting: false
 
 IF\t000c\tins: 0000, pc: 000d
 ID\t000b\tstall: 0, ctl_EX: 1fffff, a: 0022, b: 0022, ins: 0000
-EX\t000a\tNczVjaH, y: ffff, storeOp: 0000, ctl: 1ffffe, selC: 0
+EX\t000a\tNczvjaH, y: ffff, storeOp: 0000, ctl: 1ffffe, selC: 0
 MEM\t0009\ty: ffff, storeOp: 0000, selC: 7, ctl: 1fffff
 WB\t0000\tc: 0000, wrl: 1, wrh: 1, wben: 1
 
@@ -501,7 +501,7 @@ isResetting: false
 
 IF\t000c\tins: 0000, pc: 000d
 ID\t000b\tstall: 0, ctl_EX: 1fffff, a: 0022, b: 0022, ins: 0000
-EX\t000a\tNczVjaH, y: ffff, storeOp: 0000, ctl: 1ffffe, selC: 0
+EX\t000a\tNczvjaH, y: ffff, storeOp: 0000, ctl: 1ffffe, selC: 0
 MEM\t0009\ty: ffff, storeOp: 0000, selC: 7, ctl: 1fffff
 WB\t0000\tc: 0000, wrl: 1, wrh: 1, wben: 1
 

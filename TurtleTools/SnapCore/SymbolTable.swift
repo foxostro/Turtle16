@@ -267,15 +267,10 @@ public enum BooleanType: Equatable, Hashable, CustomStringConvertible {
 }
 
 public enum IntClass: Equatable, Hashable, CustomStringConvertible, CaseIterable {
-    case u8, u16
+    case u8, u16, i8, i16
     
     public static func binaryResultType(left: IntClass?, right: IntClass?) -> IntClass? {
         guard let left = left, let right = right else {
-            return nil
-        }
-        
-        // No automatic conversions between signed and unsigned types.
-        if left.isSigned != right.isSigned {
             return nil
         }
         
@@ -292,16 +287,22 @@ public enum IntClass: Equatable, Hashable, CustomStringConvertible, CaseIterable
     
     public var isSigned: Bool {
         switch self {
-        case .u8:
+        case .i8, .i16:
             return true
             
-        case .u16:
-            return true
+        case .u8, .u16:
+            return false
         }
     }
     
     public var description: String {
         switch self {
+        case .i8:
+            return "i8"
+            
+        case .i16:
+            return "i16"
+            
         case .u8:
             return "u8"
             
@@ -312,16 +313,28 @@ public enum IntClass: Equatable, Hashable, CustomStringConvertible, CaseIterable
     
     public var min: Int {
         switch self {
+        case .i8:
+            return -128
+            
+        case .i16:
+            return -32768
+            
         case .u8:
             return 0
             
         case .u16:
-            return 0 // TODO: add a signed integer type
+            return 0
         }
     }
     
     public var max: Int {
         switch self {
+        case .i8:
+            return 127
+            
+        case .i16:
+            return 32767
+            
         case .u8:
             return 255
             

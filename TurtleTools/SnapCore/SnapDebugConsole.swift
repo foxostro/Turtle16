@@ -34,6 +34,30 @@ public class SnapDebugConsole : DebugConsole {
         return word
     }
     
+    public func loadSymbolI8(_ identifier: String) -> Int8? {
+        guard let symbol = symbols?.maybeResolve(identifier: identifier) else {
+            return nil
+        }
+        guard symbol.type.correspondingConstType == .arithmeticType(.immutableInt(.i8)) else {
+            return nil
+        }
+        let word = UInt8(computer.ram[symbol.offset] & 0x00ff)
+        let value = Int8(bitPattern: word)
+        return value
+    }
+    
+    public func loadSymbolI16(_ identifier: String) -> Int16? {
+        guard let symbol = symbols?.maybeResolve(identifier: identifier) else {
+            return nil
+        }
+        guard symbol.type.correspondingConstType == .arithmeticType(.immutableInt(.i16)) else {
+            return nil
+        }
+        let word = UInt16(computer.ram[symbol.offset] & 0xffff)
+        let value = Int16(bitPattern: word)
+        return value
+    }
+    
     public func loadSymbolBool(_ identifier: String) -> Bool? {
         guard let symbol = symbols?.maybeResolve(identifier: identifier) else {
             return nil

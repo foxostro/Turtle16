@@ -24,9 +24,9 @@ public class MemoryLayoutStrategyTurtleTTL: NSObject, MemoryLayoutStrategy {
                 return 0
             case .mutableInt(let width), .immutableInt(let width):
                 switch width {
-                case .u8:
+                case .i8, .u8:
                     return 1
-                case .u16:
+                case .i16, .u16:
                     return 2
                 }
             }

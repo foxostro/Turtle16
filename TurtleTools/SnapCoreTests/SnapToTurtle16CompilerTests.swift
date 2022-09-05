@@ -207,6 +207,24 @@ func foo() {
         XCTAssertEqual(a, 42)
     }
     
+    func test_EndToEndIntegration_i8() {
+        let debugger = run(program: """
+            var a: i8 = -1
+            a = a - 1
+            """)
+        let a = debugger?.loadSymbolI8("a")
+        XCTAssertEqual(a, -2)
+    }
+    
+    func test_EndToEndIntegration_i16() {
+        let debugger = run(program: """
+            var a: i16 = -1000
+            a = a - 1000
+            """)
+        let a = debugger?.loadSymbolI16("a")
+        XCTAssertEqual(a, -2000)
+    }
+    
     func test_EndToEndIntegration_ForIn_Range_1() {
         let debugger = run(program: """
             var a: u16 = 100
@@ -2416,5 +2434,65 @@ func foo() {
         default:
             XCTFail()
         }
+    }
+    
+    func test_EndToEndIntegration_SignedIntegerComparison_LessThan() {
+        let debugger = run(program: """
+            var a: i16 = 1
+            var b: i16 = -1
+            var c: bool = b < a
+            """)
+        let a = debugger?.loadSymbolBool("c")
+        XCTAssertEqual(a, true)
+    }
+    
+    func test_EndToEndIntegration_SignedIntegerComparison_LessThanOrEqualTo() {
+        let debugger = run(program: """
+            var a: i16 = 1
+            var b: i16 = -1
+            var c: bool = b <= a
+            """)
+        let a = debugger?.loadSymbolBool("c")
+        XCTAssertEqual(a, true)
+    }
+    
+    func test_EndToEndIntegration_SignedIntegerComparison_GreaterThan() {
+        let debugger = run(program: """
+            var a: i16 = 1
+            var b: i16 = -1
+            var c: bool = b > a
+            """)
+        let a = debugger?.loadSymbolBool("c")
+        XCTAssertEqual(a, false)
+    }
+    
+    func test_EndToEndIntegration_SignedIntegerComparison_GreaterThanOrEqualTo() {
+        let debugger = run(program: """
+            var a: i16 = 1
+            var b: i16 = -1
+            var c: bool = b >= a
+            """)
+        let a = debugger?.loadSymbolBool("c")
+        XCTAssertEqual(a, false)
+    }
+    
+    func test_EndToEndIntegration_SignedIntegerComparison_Equal() {
+        let debugger = run(program: """
+            var a: i16 = 1
+            var b: i16 = -1
+            var c: bool = b == a
+            """)
+        let a = debugger?.loadSymbolBool("c")
+        XCTAssertEqual(a, false)
+    }
+    
+    func test_EndToEndIntegration_SignedIntegerComparison_NotEqual() {
+        let debugger = run(program: """
+            var a: i16 = 1
+            var b: i16 = -1
+            var c: bool = b != a
+            """)
+        let a = debugger?.loadSymbolBool("c")
+        XCTAssertEqual(a, true)
     }
 }

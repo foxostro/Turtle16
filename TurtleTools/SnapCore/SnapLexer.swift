@@ -196,6 +196,12 @@ public class SnapLexer: Lexer {
             Rule(pattern: "u16\\b") {
                 TokenType(sourceAnchor: $0, type: .arithmeticType(.mutableInt(.u16)))
             },
+            Rule(pattern: "i8\\b") {
+                TokenType(sourceAnchor: $0, type: .arithmeticType(.mutableInt(.i8)))
+            },
+            Rule(pattern: "i16\\b") {
+                TokenType(sourceAnchor: $0, type: .arithmeticType(.mutableInt(.i16)))
+            },
             Rule(pattern: "bool\\b") {
                 TokenType(sourceAnchor: $0, type: .bool(.mutableBool))
             },

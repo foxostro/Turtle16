@@ -104,6 +104,10 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         case .ge16: return ge16(node)
         case .le16: return le16(node)
         case .gt16: return gt16(node)
+        case .ltu16: return ltu16(node)
+        case .geu16: return geu16(node)
+        case .leu16: return leu16(node)
+        case .gtu16: return gtu16(node)
         case .li8: return li8(node)
         case .and8: return and8(node)
         case .or8: return or8(node)
@@ -122,6 +126,10 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         case .ge8: return ge8(node)
         case .le8: return le8(node)
         case .gt8: return gt8(node)
+        case .ltu8: return ltu8(node)
+        case .geu8: return geu8(node)
+        case .leu8: return leu8(node)
+        case .gtu8: return gtu8(node)
         }
     }
     
@@ -921,6 +929,62 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
+    func ltu16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
+        let c = corresponding(param: node.parameters[0])
+        let a = corresponding(param: node.parameters[1])
+        let b = corresponding(param: node.parameters[2])
+        let ll0 = ParameterIdentifier(labelMaker.next())
+        return Seq(sourceAnchor: node.sourceAnchor, children: [
+            InstructionNode(instruction: kCMP, parameters: [a, b]),
+            InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(1)]),
+            InstructionNode(instruction: kBLTU, parameter: ll0),
+            InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(0)]),
+            LabelDeclaration(ll0)
+        ])
+    }
+    
+    func geu16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
+        let c = corresponding(param: node.parameters[0])
+        let a = corresponding(param: node.parameters[1])
+        let b = corresponding(param: node.parameters[2])
+        let ll0 = ParameterIdentifier(labelMaker.next())
+        return Seq(sourceAnchor: node.sourceAnchor, children: [
+            InstructionNode(instruction: kCMP, parameters: [a, b]),
+            InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(0)]),
+            InstructionNode(instruction: kBLTU, parameter: ll0),
+            InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(1)]),
+            LabelDeclaration(ll0)
+        ])
+    }
+    
+    func leu16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
+        let c = corresponding(param: node.parameters[0])
+        let a = corresponding(param: node.parameters[1])
+        let b = corresponding(param: node.parameters[2])
+        let ll0 = ParameterIdentifier(labelMaker.next())
+        return Seq(sourceAnchor: node.sourceAnchor, children: [
+            InstructionNode(instruction: kCMP, parameters: [a, b]),
+            InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(0)]),
+            InstructionNode(instruction: kBGTU, parameter: ll0),
+            InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(1)]),
+            LabelDeclaration(ll0)
+        ])
+    }
+    
+    func gtu16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
+        let c = corresponding(param: node.parameters[0])
+        let a = corresponding(param: node.parameters[1])
+        let b = corresponding(param: node.parameters[2])
+        let ll0 = ParameterIdentifier(labelMaker.next())
+        return Seq(sourceAnchor: node.sourceAnchor, children: [
+            InstructionNode(instruction: kCMP, parameters: [a, b]),
+            InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(1)]),
+            InstructionNode(instruction: kBGTU, parameter: ll0),
+            InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(0)]),
+            LabelDeclaration(ll0)
+        ])
+    }
+    
     func li8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         let imm = node.parameters[1] as! ParameterNumber
         if imm.value > 127 {
@@ -1090,5 +1154,21 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
     
     func gt8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
         return gt16(node)!
+    }
+    
+    func ltu8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
+        return ltu16(node)!
+    }
+    
+    func geu8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
+        return geu16(node)!
+    }
+    
+    func leu8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
+        return leu16(node)!
+    }
+    
+    func gtu8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
+        return gtu16(node)!
     }
 }

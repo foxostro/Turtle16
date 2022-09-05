@@ -456,6 +456,20 @@ class SnapLexerTests: XCTestCase {
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3))])
     }
     
+    func testTokenizeInt8() {
+        let tokenizer = SnapLexer("i8")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenType(sourceAnchor: tokenizer.lineMapper.anchor(0, 2), type: .arithmeticType(.mutableInt(.i8))),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2))])
+    }
+    
+    func testTokenizeInt16() {
+        let tokenizer = SnapLexer("i16")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenType(sourceAnchor: tokenizer.lineMapper.anchor(0, 3), type: .arithmeticType(.mutableInt(.i16))),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3))])
+    }
+    
     func testTokenizeBool_1() {
         let tokenizer = SnapLexer("bool")
         tokenizer.scanTokens()

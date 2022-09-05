@@ -51,6 +51,10 @@ public enum TackInstruction {
     case ge16
     case le16
     case gt16
+    case ltu16
+    case geu16
+    case leu16
+    case gtu16
     case li8
     case and8
     case or8
@@ -69,6 +73,10 @@ public enum TackInstruction {
     case ge8
     case le8
     case gt8
+    case ltu8
+    case geu8
+    case leu8
+    case gtu8
     
     public var description: String {
         switch self {
@@ -112,6 +120,10 @@ public enum TackInstruction {
         case .ge16: return "GE16"
         case .le16: return "LE16"
         case .gt16: return "GT16"
+        case .ltu16: return "LTU16"
+        case .geu16: return "GEU16"
+        case .leu16: return "LEU16"
+        case .gtu16: return "GTU16"
         case .li8: return "LI8"
         case .and8: return "AND8"
         case .or8: return "OR8"
@@ -130,6 +142,10 @@ public enum TackInstruction {
         case .ge8: return "GE8"
         case .le8: return "LE8"
         case .gt8: return "GT8"
+        case .ltu8: return "LTU8"
+        case .geu8: return "GEU8"
+        case .leu8: return "LEU8"
+        case .gtu8: return "GTU8"
         }
     }
 }

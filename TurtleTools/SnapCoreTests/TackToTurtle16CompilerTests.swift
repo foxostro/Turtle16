@@ -1499,8 +1499,8 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 0)
-        debugger.computer.setRegister(1, 42)
-        debugger.computer.setRegister(2, 43)
+        debugger.computer.setRegister(1, UInt16(0) &- 1)
+        debugger.computer.setRegister(2, 1)
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(0), 1)
     }
@@ -1515,8 +1515,8 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 0)
-        debugger.computer.setRegister(1, 42)
-        debugger.computer.setRegister(2, 42)
+        debugger.computer.setRegister(1, UInt16(0) &- 1)
+        debugger.computer.setRegister(2, UInt16(0) &- 1)
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(0), 0)
     }
@@ -1531,8 +1531,8 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 0)
-        debugger.computer.setRegister(1, 43)
-        debugger.computer.setRegister(2, 42)
+        debugger.computer.setRegister(1, 1)
+        debugger.computer.setRegister(2, UInt16(0) &- 1)
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(0), 0)
     }
@@ -1547,8 +1547,8 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 0)
-        debugger.computer.setRegister(1, 42)
-        debugger.computer.setRegister(2, 43)
+        debugger.computer.setRegister(1, UInt16(0) &- 1)
+        debugger.computer.setRegister(2, 1)
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(0), 0)
     }
@@ -1563,8 +1563,8 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 0)
-        debugger.computer.setRegister(1, 42)
-        debugger.computer.setRegister(2, 42)
+        debugger.computer.setRegister(1, UInt16(0) &- 1)
+        debugger.computer.setRegister(2, UInt16(0) &- 1)
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(0), 1)
     }
@@ -1579,8 +1579,8 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 0)
-        debugger.computer.setRegister(1, 43)
-        debugger.computer.setRegister(2, 42)
+        debugger.computer.setRegister(1, 1)
+        debugger.computer.setRegister(2, UInt16(0) &- 1)
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(0), 1)
     }
@@ -1595,8 +1595,8 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 0)
-        debugger.computer.setRegister(1, 42)
-        debugger.computer.setRegister(2, 43)
+        debugger.computer.setRegister(1, UInt16(0) &- 1)
+        debugger.computer.setRegister(2, 1)
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(0), 1)
     }
@@ -1611,8 +1611,8 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 0)
-        debugger.computer.setRegister(1, 42)
-        debugger.computer.setRegister(2, 42)
+        debugger.computer.setRegister(1, UInt16(0) &- 1)
+        debugger.computer.setRegister(2, UInt16(0) &- 1)
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(0), 1)
     }
@@ -1627,8 +1627,8 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 0)
-        debugger.computer.setRegister(1, 43)
-        debugger.computer.setRegister(2, 42)
+        debugger.computer.setRegister(1, 1)
+        debugger.computer.setRegister(2, UInt16(0) &- 1)
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(0), 0)
     }
@@ -1643,14 +1643,62 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 0)
-        debugger.computer.setRegister(1, 42)
-        debugger.computer.setRegister(2, 43)
+        debugger.computer.setRegister(1, 1)
+        debugger.computer.setRegister(2, UInt16(0) &- 1)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+        XCTAssertEqual(debugger.computer.getRegister(0), 1)
     }
     
     func testGT16_equal() throws {
         let input = TackInstructionNode(instruction: .gt16, parameters:[
+            ParameterIdentifier("vr0"),
+            ParameterIdentifier("vr1"),
+            ParameterIdentifier("vr2")
+        ])
+        let assembly = try compile(input)
+        let debugger = makeDebugger(assembly: assembly)
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(1, UInt16(0) &- 1)
+        debugger.computer.setRegister(2, UInt16(0) &- 1)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+    }
+    
+    func testGT16_greater_than() throws {
+        let input = TackInstructionNode(instruction: .gt16, parameters:[
+            ParameterIdentifier("vr0"),
+            ParameterIdentifier("vr1"),
+            ParameterIdentifier("vr2")
+        ])
+        let assembly = try compile(input)
+        let debugger = makeDebugger(assembly: assembly)
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(1, 1)
+        debugger.computer.setRegister(2, UInt16(0) &- 1)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+    }
+    
+    func testLTU16_less_than() throws {
+        let input = TackInstructionNode(instruction: .ltu16, parameters:[
+            ParameterIdentifier("vr0"),
+            ParameterIdentifier("vr1"),
+            ParameterIdentifier("vr2")
+        ])
+        let assembly = try compile(input)
+        let debugger = makeDebugger(assembly: assembly)
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(1, 42)
+        debugger.computer.setRegister(2, 43)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+    }
+    
+    func testLTU16_equal() throws {
+        let input = TackInstructionNode(instruction: .ltu16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")
@@ -1665,8 +1713,152 @@ class TackToTurtle16CompilerTests: XCTestCase {
         XCTAssertEqual(debugger.computer.getRegister(0), 0)
     }
     
-    func testGT16_greater_than() throws {
-        let input = TackInstructionNode(instruction: .gt16, parameters:[
+    func testLTU16_greater_than() throws {
+        let input = TackInstructionNode(instruction: .ltu16, parameters:[
+            ParameterIdentifier("vr0"),
+            ParameterIdentifier("vr1"),
+            ParameterIdentifier("vr2")
+        ])
+        let assembly = try compile(input)
+        let debugger = makeDebugger(assembly: assembly)
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(1, 43)
+        debugger.computer.setRegister(2, 42)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+    }
+    
+    func testGEU16_less_than() throws {
+        let input = TackInstructionNode(instruction: .geu16, parameters:[
+            ParameterIdentifier("vr0"),
+            ParameterIdentifier("vr1"),
+            ParameterIdentifier("vr2")
+        ])
+        let assembly = try compile(input)
+        let debugger = makeDebugger(assembly: assembly)
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(1, 42)
+        debugger.computer.setRegister(2, 43)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+    }
+    
+    func testGEU16_equal() throws {
+        let input = TackInstructionNode(instruction: .geu16, parameters:[
+            ParameterIdentifier("vr0"),
+            ParameterIdentifier("vr1"),
+            ParameterIdentifier("vr2")
+        ])
+        let assembly = try compile(input)
+        let debugger = makeDebugger(assembly: assembly)
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(1, 42)
+        debugger.computer.setRegister(2, 42)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+    }
+    
+    func testGEU16_greater_than() throws {
+        let input = TackInstructionNode(instruction: .geu16, parameters:[
+            ParameterIdentifier("vr0"),
+            ParameterIdentifier("vr1"),
+            ParameterIdentifier("vr2")
+        ])
+        let assembly = try compile(input)
+        let debugger = makeDebugger(assembly: assembly)
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(1, 43)
+        debugger.computer.setRegister(2, 42)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+    }
+    
+    func testLEU16_less_than() throws {
+        let input = TackInstructionNode(instruction: .leu16, parameters:[
+            ParameterIdentifier("vr0"),
+            ParameterIdentifier("vr1"),
+            ParameterIdentifier("vr2")
+        ])
+        let assembly = try compile(input)
+        let debugger = makeDebugger(assembly: assembly)
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(1, 42)
+        debugger.computer.setRegister(2, 43)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+    }
+    
+    func testLEU16_equal() throws {
+        let input = TackInstructionNode(instruction: .leu16, parameters:[
+            ParameterIdentifier("vr0"),
+            ParameterIdentifier("vr1"),
+            ParameterIdentifier("vr2")
+        ])
+        let assembly = try compile(input)
+        let debugger = makeDebugger(assembly: assembly)
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(1, 42)
+        debugger.computer.setRegister(2, 42)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+    }
+    
+    func testLEU16_greater_than() throws {
+        let input = TackInstructionNode(instruction: .leu16, parameters:[
+            ParameterIdentifier("vr0"),
+            ParameterIdentifier("vr1"),
+            ParameterIdentifier("vr2")
+        ])
+        let assembly = try compile(input)
+        let debugger = makeDebugger(assembly: assembly)
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(1, 43)
+        debugger.computer.setRegister(2, 42)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+    }
+    
+    func testGTU16_less_than() throws {
+        let input = TackInstructionNode(instruction: .gtu16, parameters:[
+            ParameterIdentifier("vr0"),
+            ParameterIdentifier("vr1"),
+            ParameterIdentifier("vr2")
+        ])
+        let assembly = try compile(input)
+        let debugger = makeDebugger(assembly: assembly)
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(1, 42)
+        debugger.computer.setRegister(2, 43)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+    }
+    
+    func testGTU16_equal() throws {
+        let input = TackInstructionNode(instruction: .gtu16, parameters:[
+            ParameterIdentifier("vr0"),
+            ParameterIdentifier("vr1"),
+            ParameterIdentifier("vr2")
+        ])
+        let assembly = try compile(input)
+        let debugger = makeDebugger(assembly: assembly)
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(1, 42)
+        debugger.computer.setRegister(2, 42)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+    }
+    
+    func testGTU16_greater_than() throws {
+        let input = TackInstructionNode(instruction: .gtu16, parameters:[
             ParameterIdentifier("vr0"),
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr2")

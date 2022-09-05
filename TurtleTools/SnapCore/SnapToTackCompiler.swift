@@ -976,7 +976,9 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 ParameterNumber(a ? 1 : 0)
             ])
             
-        case (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.mutableInt(.u8))),
+        case (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.mutableInt(.i8))),
+             (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.i8))),
+             (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.mutableInt(.u8))),
              (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.u8))):
             // The expression produces a value that is known at compile time.
             // Add an instruction to load a register with that known value.
@@ -987,7 +989,9 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 ParameterNumber(a)
             ])
             
-        case (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.mutableInt(.u16))),
+        case (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.mutableInt(.i16))),
+             (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.i16))),
+             (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.mutableInt(.u16))),
              (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.u16))):
             // The expression produces a value that is known at compile time.
             // Add an instruction to load a register with that known value.
@@ -1018,6 +1022,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                     ])
                 ]
                 result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
+                
+            case (.i16, .i8):
+                // Convert from u16 to u8 by sign-extending through the upper byte
+                fatalError("unimplemented")
                 
             default:
                 fatalError("Unsupported type conversion from \(rtype) to \(ltype). Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(rexpr)")
@@ -1448,114 +1456,130 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         switch binary.op {
         case .eq:
             switch intClass {
-            case .u8:
+            case .i8, .u8:
                 op = .eq8
-            case .u16:
+            case .i16, .u16:
                 op = .eq16
             }
         case .ne:
             switch intClass {
-            case .u8:
+            case .i8, .u8:
                 op = .ne8
-            case .u16:
+            case .i16, .u16:
                 op = .ne16
             }
         case .lt:
             switch intClass {
-            case .u8:
+            case .i8:
                 op = .lt8
-            case .u16:
+            case .u8:
+                op = .ltu8
+            case .i16:
                 op = .lt16
+            case .u16:
+                op = .ltu16
             }
         case .gt:
             switch intClass {
-            case .u8:
+            case .i8:
                 op = .gt8
-            case .u16:
+            case .u8:
+                op = .gtu8
+            case .i16:
                 op = .gt16
+            case .u16:
+                op = .gtu16
             }
         case .le:
             switch intClass {
-            case .u8:
+            case .i8:
                 op = .le8
-            case .u16:
+            case .u8:
+                op = .leu8
+            case .i16:
                 op = .le16
+            case .u16:
+                op = .leu16
             }
         case .ge:
             switch intClass {
-            case .u8:
+            case .i8:
                 op = .ge8
-            case .u16:
+            case .u8:
+                op = .geu8
+            case .i16:
                 op = .ge16
+            case .u16:
+                op = .geu16
             }
         case .plus:
             switch intClass {
-            case .u8:
+            case .i8, .u8:
                 op = .add8
-            case .u16:
+            case .i16, .u16:
                 op = .add16
             }
         case .minus:
             switch intClass {
-            case .u8:
+            case .i8, .u8:
                 op = .sub8
-            case .u16:
+            case .i16, .u16:
                 op = .sub16
             }
         case .star:
             switch intClass {
-            case .u8:
+            case .i8, .u8:
                 op = .mul8
-            case .u16:
+            case .i16, .u16:
                 op = .mul16
             }
         case .divide:
             switch intClass {
-            case .u8:
+            case .i8, .u8:
                 op = .div8
-            case .u16:
+            case .i16, .u16:
                 op = .div16
             }
         case .modulus:
             switch intClass {
-            case .u8:
+            case .i8, .u8:
                 op = .mod8
-            case .u16:
+            case .i16, .u16:
                 op = .mod16
             }
         case .ampersand:
             switch intClass {
-            case .u8:
+            case .i8, .u8:
                 op = .and8
-            case .u16:
+            case .i16, .u16:
                 op = .and16
             }
         case .pipe:
             switch intClass {
-            case .u8:
+            case .i8, .u8:
                 op = .or8
-            case .u16:
+            case .i16, .u16:
                 op = .or16
             }
         case .caret:
             switch intClass {
-            case .u8:
+            case .i8, .u8:
                 op = .xor8
-            case .u16:
+            case .i16, .u16:
                 op = .xor16
             }
         case .leftDoubleAngle:
             switch intClass {
-            case .u8:
+            case .i8, .u8:
                 op = .lsl8
-            case .u16:
+            case .i16, .u16:
                 op = .lsl16
             }
         case .rightDoubleAngle:
             switch intClass {
-            case .u8:
+            case .i8, .u8:
                 op = .lsr8
-            case .u16:
+            case .i16, .u16:
                 op = .lsr16
             }
         default:

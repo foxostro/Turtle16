@@ -1540,7 +1540,7 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testRvalue_Binary_lt16() throws {
+    func testRvalue_Binary_ltu16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
@@ -1564,7 +1564,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr3"),
                 ParameterIdentifier("vr2")
             ]),
-            TackInstructionNode(instruction: .lt16, parameters: [
+            TackInstructionNode(instruction: .ltu16, parameters: [
                 ParameterIdentifier("vr4"),
                 ParameterIdentifier("vr3"),
                 ParameterIdentifier("vr1")
@@ -1574,7 +1574,7 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testRvalue_Binary_ge16() throws {
+    func testRvalue_Binary_geu16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
@@ -1598,7 +1598,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr3"),
                 ParameterIdentifier("vr2")
             ]),
-            TackInstructionNode(instruction: .ge16, parameters: [
+            TackInstructionNode(instruction: .geu16, parameters: [
                 ParameterIdentifier("vr4"),
                 ParameterIdentifier("vr3"),
                 ParameterIdentifier("vr1")
@@ -1608,7 +1608,7 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testRvalue_Binary_le16() throws {
+    func testRvalue_Binary_leu16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
@@ -1632,7 +1632,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr3"),
                 ParameterIdentifier("vr2")
             ]),
-            TackInstructionNode(instruction: .le16, parameters: [
+            TackInstructionNode(instruction: .leu16, parameters: [
                 ParameterIdentifier("vr4"),
                 ParameterIdentifier("vr3"),
                 ParameterIdentifier("vr1")
@@ -1642,7 +1642,7 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testRvalue_Binary_gt16() throws {
+    func testRvalue_Binary_gtu16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
@@ -1666,7 +1666,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr3"),
                 ParameterIdentifier("vr2")
             ]),
-            TackInstructionNode(instruction: .gt16, parameters: [
+            TackInstructionNode(instruction: .gtu16, parameters: [
                 ParameterIdentifier("vr4"),
                 ParameterIdentifier("vr3"),
                 ParameterIdentifier("vr1")
@@ -2084,7 +2084,7 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testRvalue_Binary_lt8() throws {
+    func testRvalue_Binary_ltu8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 200, storage: .staticStorage))
@@ -2108,7 +2108,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr3"),
                 ParameterIdentifier("vr2")
             ]),
-            TackInstructionNode(instruction: .lt8, parameters: [
+            TackInstructionNode(instruction: .ltu8, parameters: [
                 ParameterIdentifier("vr4"),
                 ParameterIdentifier("vr3"),
                 ParameterIdentifier("vr1")
@@ -2118,7 +2118,7 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testRvalue_Binary_ge8() throws {
+    func testRvalue_Binary_geu8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 200, storage: .staticStorage))
@@ -2142,7 +2142,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr3"),
                 ParameterIdentifier("vr2")
             ]),
-            TackInstructionNode(instruction: .ge8, parameters: [
+            TackInstructionNode(instruction: .geu8, parameters: [
                 ParameterIdentifier("vr4"),
                 ParameterIdentifier("vr3"),
                 ParameterIdentifier("vr1")
@@ -2152,7 +2152,7 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testRvalue_Binary_le8() throws {
+    func testRvalue_Binary_leu8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 200, storage: .staticStorage))
@@ -2176,7 +2176,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr3"),
                 ParameterIdentifier("vr2")
             ]),
-            TackInstructionNode(instruction: .le8, parameters: [
+            TackInstructionNode(instruction: .leu8, parameters: [
                 ParameterIdentifier("vr4"),
                 ParameterIdentifier("vr3"),
                 ParameterIdentifier("vr1")
@@ -2186,7 +2186,7 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr4")
     }
     
-    func testRvalue_Binary_gt8() throws {
+    func testRvalue_Binary_gtu8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 200, storage: .staticStorage))
@@ -2210,7 +2210,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr3"),
                 ParameterIdentifier("vr2")
             ]),
-            TackInstructionNode(instruction: .gt8, parameters: [
+            TackInstructionNode(instruction: .gtu8, parameters: [
                 ParameterIdentifier("vr4"),
                 ParameterIdentifier("vr3"),
                 ParameterIdentifier("vr1")

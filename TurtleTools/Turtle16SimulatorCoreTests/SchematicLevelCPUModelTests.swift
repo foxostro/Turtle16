@@ -1246,8 +1246,8 @@ class SchematicLevelCPUModelTests: XCTestCase {
                         XCTAssertEqual(3, cpu.pc)
                         cpu.step()
                         
-                        // FIXME: BLT should jump on N!=V
-                        if v == 1 {
+                        // BLT should jump on N!=V
+                        if (n == 0 && v == 1) || (n == 1 && v == 0) {
                             XCTAssertEqual(1026, cpu.pc)
                         } else {
                             XCTAssertEqual(4, cpu.pc)
@@ -1285,8 +1285,8 @@ class SchematicLevelCPUModelTests: XCTestCase {
                         XCTAssertEqual(3, cpu.pc)
                         cpu.step()
                         
-                        // FIXME: BGT should jump on (Z==0) && (N==V)
-                        if z == 0 && v == 0 {
+                        // BGT jumps on (Z==0) && (N==V)
+                        if z == 0 && ((n == 0 && v == 0) || (n == 1 && v == 1)) {
                             XCTAssertEqual(1026, cpu.pc)
                         } else {
                             XCTAssertEqual(4, cpu.pc)
@@ -1324,8 +1324,8 @@ class SchematicLevelCPUModelTests: XCTestCase {
                         XCTAssertEqual(3, cpu.pc)
                         cpu.step()
                         
-                        // FIXME: BLTU should jump on C==0
-                        if c == 1 {
+                        // BLTU jumps on C==0
+                        if c == 0 {
                             XCTAssertEqual(1026, cpu.pc)
                         } else {
                             XCTAssertEqual(4, cpu.pc)
@@ -1364,7 +1364,7 @@ class SchematicLevelCPUModelTests: XCTestCase {
                         cpu.step()
                         
                         // BGTU jumps on C==1 && Z==0
-                        if z == 0 && c == 1 {
+                        if c == 1 && z == 0 {
                             XCTAssertEqual(1026, cpu.pc)
                         } else {
                             XCTAssertEqual(4, cpu.pc)
@@ -1714,5 +1714,67 @@ class SchematicLevelCPUModelTests: XCTestCase {
         var cpu2: SchematicLevelCPUModel! = nil
         XCTAssertNoThrow(cpu2 = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? SchematicLevelCPUModel)
         XCTAssertEqual(cpu1, cpu2)
+    }
+    
+    func testCmp_signed_greaterThan_spot_checks() {
+        let cpu = SchematicLevelCPUModel()
+        cpu.instructions = [
+            0b0000000000000000, // NOP
+            0b0011000000101000  // CMP r1, r2
+        ]
+        
+        let r1s = makeListOfRandomNumbers(100, -32768 ..< 32768)
+        let r2s = makeListOfRandomNumbers(100, -32768 ..< 32768)
+        
+        for r1 in r1s {
+            for r2 in r2s {
+                guard doesCompareAsSignedGreaterThan(cpu, r1, r2) else {
+                    print("r1=\(r1) ; r2=\(r2)  ==>  n=\(cpu.n) ; c=\(cpu.c) ; z=\(cpu.z) ; v=\(cpu.v)")
+                    XCTFail()
+                    return
+                }
+            }
+        }
+    }
+    
+    fileprivate func makeListOfRandomNumbers(_ count: Int, _ range: Range<Int>) -> [Int] {
+        var result: [Int] = []
+        for _ in 0..<count {
+            let number = Int.random(in: range)
+            if !result.contains(number) {
+                result.append(number)
+            }
+        }
+        return result
+    }
+    
+    fileprivate func doesCompareAsSignedGreaterThan(_ cpu: SchematicLevelCPUModel, _ r1: Int, _ r2: Int) -> Bool {
+        cpu.setRegister(0, 0xabcd)
+        cpu.setRegister(1, UInt16(bitPattern: Int16(r1)))
+        cpu.setRegister(2, UInt16(bitPattern: Int16(r2)))
+        cpu.reset()
+        cpu.step() // -
+        cpu.step() // IF
+        cpu.step() // ID
+        cpu.step() // EX
+        cpu.step() // MEM
+        cpu.step() // WB
+        
+        // BGT jumps on (Z==0) && (N==V)
+        let condition: Bool = (cpu.z == 0 && ((cpu.n == 0 && cpu.v == 0) || (cpu.n == 1 && cpu.v == 1)))
+        if r1 > r2 {
+            guard condition else {
+                print("r1=\(r1) ; r2=\(r2)  ==>  n=\(cpu.n) ; c=\(cpu.c) ; z=\(cpu.z) ; v=\(cpu.v)")
+                return false
+            }
+        }
+        else {
+            guard !condition else {
+                print("r1=\(r1) ; r2=\(r2)  ==>  n=\(cpu.n) ; c=\(cpu.c) ; z=\(cpu.z) ; v=\(cpu.v)")
+                return false
+            }
+        }
+        
+        return true
     }
 }

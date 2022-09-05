@@ -153,16 +153,16 @@ public class ProgrammableLogicDecoder : NSObject, Decoder {
         let address = UInt(address_)
         
         let inputs = [
-            0,
-            ((address >> 7) & 1),
-            ((address >> 6) & 1),
-            ((address >> 5) & 1),
-            ((address >> 4) & 1),
-            ((address >> 3) & 1),
-            ((address >> 2) & 1),
-            ((address >> 1) & 1),
-            (address & 1),
-            0,
+            0, // ignored
+            ((address >> 8) & 1), // pin 1
+            ((address >> 7) & 1), // pin 2
+            ((address >> 6) & 1), // pin 3
+            ((address >> 5) & 1), // pin 4
+            ((address >> 4) & 1), // pin 5
+            ((address >> 3) & 1), // pin 6
+            ((address >> 2) & 1), // pin 7
+            ((address >> 1) & 1), // pin 8
+            ((address >> 0) & 1), // pin 9
             0,
             0,
             0,
@@ -188,16 +188,16 @@ public class ProgrammableLogicDecoder : NSObject, Decoder {
         let selStoreOpB = out1[2]!
         let selRightOpA = out1[3]!
         let selRightOpB = out1[4]!
-        let fi = out1[5]!
+        let i2 = out1[5]!
         let c0 = out1[6]!
-        let i2 = out1[7]!
+        let fi = out1[7]!
         let i1 = out1[8]!
         let i0 = out1[9]!
         let rs1 = out2[0]!
-        let rs0 = out2[1]!
+        let memLoad = out2[1]!
         let j = out2[2]!
         let jabs = out2[3]!
-        let memLoad = out2[4]!
+        let rs0 = out2[4]!
         let memStore = out2[5]!
         let assertStoreOp = out2[6]!
         let writeBackSrcFlag = out2[7]!

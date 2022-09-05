@@ -1716,19 +1716,40 @@ class SchematicLevelCPUModelTests: XCTestCase {
         XCTAssertEqual(cpu1, cpu2)
     }
     
-    func testCmp_signed_greaterThan_spot_checks() {
+    func testCmp_SpotChecksForSignedLessThanComparison() {
+        // BLT jumps on N!=V
+        assertComparisonWorksAsExpectedForSpotChecks({$0 < $1}) {(n: UInt, c: UInt, z: UInt, v: UInt) in
+            (n == 0 && v == 1) || (n == 1 && v == 0)
+        }
+    }
+    
+    func testCmp_SpotChecksForSignedGreaterThanComparison() {
+        // BGT jumps on (Z==0) && (N==V)
+        assertComparisonWorksAsExpectedForSpotChecks({$0 > $1}) {(n: UInt, c: UInt, z: UInt, v: UInt) in
+            z == 0 && ((n == 0 && v == 0) || (n == 1 && v == 1))
+        }
+    }
+    
+    fileprivate func assertComparisonWorksAsExpectedForSpotChecks(_ cond: (_ r1: Int16, _ r2: Int16) -> Bool,
+                                                                  _ impl: (_ n: UInt, _ c: UInt, _ z: UInt, _ v: UInt) -> Bool) {
+        // This test is non-deterministic by design. It spot checks a small,
+        // randomly chosen subset of the configuration space. The hope is that
+        // this will always complete quickly and will evnetually trigger a
+        // failure if there is an issue with some permutation of the parameters.
         let cpu = SchematicLevelCPUModel()
         cpu.instructions = [
             0b0000000000000000, // NOP
             0b0011000000101000  // CMP r1, r2
         ]
         
-        let r1s = makeListOfRandomNumbers(100, -32768 ..< 32768)
-        let r2s = makeListOfRandomNumbers(100, -32768 ..< 32768)
+        let N = 100
+        let parameterSpace = Array<Int16>(Int16.min ... Int16.max)
+        let r1s = parameterSpace.shuffled()[0..<N]
+        let r2s = parameterSpace.shuffled()[0..<N]
         
         for r1 in r1s {
             for r2 in r2s {
-                guard doesCompareAsSignedGreaterThan(cpu, r1, r2) else {
+                guard doesCompareAsExpected(cpu, r1, r2, cond, impl) else {
                     print("r1=\(r1) ; r2=\(r2)  ==>  n=\(cpu.n) ; c=\(cpu.c) ; z=\(cpu.z) ; v=\(cpu.v)")
                     XCTFail()
                     return
@@ -1737,21 +1758,14 @@ class SchematicLevelCPUModelTests: XCTestCase {
         }
     }
     
-    fileprivate func makeListOfRandomNumbers(_ count: Int, _ range: Range<Int>) -> [Int] {
-        var result: [Int] = []
-        for _ in 0..<count {
-            let number = Int.random(in: range)
-            if !result.contains(number) {
-                result.append(number)
-            }
-        }
-        return result
-    }
-    
-    fileprivate func doesCompareAsSignedGreaterThan(_ cpu: SchematicLevelCPUModel, _ r1: Int, _ r2: Int) -> Bool {
+    fileprivate func doesCompareAsExpected(_ cpu: SchematicLevelCPUModel,
+                                           _ r1: Int16,
+                                           _ r2: Int16,
+                                           _ cond: (_ r1: Int16, _ r2: Int16) -> Bool,
+                                           _ impl: (_ n: UInt, _ c: UInt, _ z: UInt, _ v: UInt) -> Bool) -> Bool {
         cpu.setRegister(0, 0xabcd)
-        cpu.setRegister(1, UInt16(bitPattern: Int16(r1)))
-        cpu.setRegister(2, UInt16(bitPattern: Int16(r2)))
+        cpu.setRegister(1, UInt16(bitPattern: r1))
+        cpu.setRegister(2, UInt16(bitPattern: r2))
         cpu.reset()
         cpu.step() // -
         cpu.step() // IF
@@ -1760,17 +1774,14 @@ class SchematicLevelCPUModelTests: XCTestCase {
         cpu.step() // MEM
         cpu.step() // WB
         
-        // BGT jumps on (Z==0) && (N==V)
-        let condition: Bool = (cpu.z == 0 && ((cpu.n == 0 && cpu.v == 0) || (cpu.n == 1 && cpu.v == 1)))
-        if r1 > r2 {
-            guard condition else {
-                print("r1=\(r1) ; r2=\(r2)  ==>  n=\(cpu.n) ; c=\(cpu.c) ; z=\(cpu.z) ; v=\(cpu.v)")
+        let evaluatedCondition: Bool = impl(cpu.n, cpu.c, cpu.z, cpu.v)
+        if cond(r1, r2) {
+            guard evaluatedCondition else {
                 return false
             }
         }
         else {
-            guard !condition else {
-                print("r1=\(r1) ; r2=\(r2)  ==>  n=\(cpu.n) ; c=\(cpu.c) ; z=\(cpu.z) ; v=\(cpu.v)")
+            guard !evaluatedCondition else {
                 return false
             }
         }

@@ -35,12 +35,20 @@ The ID stage uses a ROM to decode a five-bit opcode into an array of control sig
 24. beq
 25. bne
 26. blt
-27. bge
+27. bgt
 28. bltu
-29. bgeu
+29. bgtu
 30. adc
 31. sbc
 
+
+## Condition Codes
+
+The CPU uses an internal register to record four condition codes, used in conditional instructions BEQ, BNE, BLT, BGT, BLTU, BGTU, ADC, and SBC. The condition codes are...
+* C -- Carry. The ALU computation cannot fit in the result and carries out a bit.
+* Z -- Zero. The result is zero.
+* V -- Overflow. The ALU computation results in twos complement signed overflow.
+* N -- Negative. The most significant bit of the result is set.
 
 
 ## Instruction Encoding
@@ -141,7 +149,7 @@ The Right Operand may be one of the following...
 
 The Left Operand is always Ra.
 
-The instruction decode stage provides control signals to choose the ALU function and set the carry input. The result feeds back to the program counter as well as feeding into the ALU result interstage register. Condition codes produced by the ALU go into a flags register and may be latched if the appropriate control signal is asserted.
+The instruction decode stage provides control signals to choose the ALU function and set the carry input. The result feeds back to the program counter as well as feeding into the ALU result interstage register. Condition codes produced by the ALU go into an internal flags register and may be latched if the appropriate control signal is asserted.
 
 
 
@@ -188,7 +196,7 @@ As this instruction uses a five-bit immediate value, it is expected that most pr
 
 `0bkkkk'kiii'iiii'iiii`
 
-Perform a conditional pc-relative jump when the Z flag is set:
+Perform a conditional pc-relative jump when Z==1:
 
 ```
 NPC := PC + Imm
@@ -200,7 +208,7 @@ NPC := PC + Imm
 
 `0bkkkk'kiii'iiii'iiii`
 
-Perform a conditional pc-relative jump when the Z flag is not set:
+Perform a conditional pc-relative jump when Z==0:
 
 ```
 NPC := PC + Imm
@@ -212,7 +220,7 @@ NPC := PC + Imm
 
 `0bkkkk'kiii'iiii'iiii`
 
-Perform a conditional pc-relative jump when the OVF flag is set, performing a signed less-than comparison:
+Perform a conditional pc-relative jump when N!=V, performing a signed less-than comparison:
 
 ```
 NPC := PC + Imm
@@ -220,11 +228,11 @@ NPC := PC + Imm
 
 
 
-### BGE (III-format)
+### BGT (III-format)
 
 `0bkkkk'kiii'iiii'iiii`
 
-Perform a conditional pc-relative jump when the OVF flag is not set, performing a signed great-than-or-equal-to comparison:
+Perform a conditional pc-relative jump when (Z==0) && (N==V), performing a signed greater-than comparison:
 
 ```
 NPC := PC + Imm
@@ -236,7 +244,7 @@ NPC := PC + Imm
 
 `0bkkkk'kiii'iiii'iiii`
 
-Perform a conditional pc-relative jump when the Carry flag is set, performing an unsigned less-than comparison:
+Perform a conditional pc-relative jump when C==0, performing an unsigned less-than comparison:
 
 ```
 NPC := PC + Imm
@@ -244,11 +252,11 @@ NPC := PC + Imm
 
 
 
-### BGEU (III-format)
+### BGTU (III-format)
 
 `0bkkkk'kiii'iiii'iiii`
 
-Perform a conditional pc-relative jump when the Carry flag is not set, performing an unsigned great-than-or-equal-to comparison:
+Perform a conditional pc-relative jump when C==1 && Z==0, performing an unsigned greater-than comparison:
 
 ```
 NPC := PC + Imm

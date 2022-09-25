@@ -6,8 +6,8 @@
 
   (title_block
     (title "ID/EX Control Register")
-    (date "2022-04-24")
-    (rev "A")
+    (date "2022-09-24")
+    (rev "B")
   )
 
   (lib_symbols

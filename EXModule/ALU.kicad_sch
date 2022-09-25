@@ -6,8 +6,8 @@
 
   (title_block
     (title "ALU")
-    (date "2022-04-13")
-    (rev "A (7ac7a3cb)")
+    (date "2022-09-24")
+    (rev "B")
     (comment 2 "are latched in registers in other parts of the circuit.")
     (comment 3 "This is configured for pure combinatorial operation where operands and outputs")
     (comment 4 "The ALU is built around the IDT 7381 sixteen-bit monolithic ALU IC.")

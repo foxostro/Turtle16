@@ -6,7 +6,7 @@
 
   (title_block
     (title "IF/ID")
-    (date "2022-04-24")
+    (date "2022-09-25")
     (rev "C")
     (comment 4 "Interstage pipeline registers between IF and ID")
   )

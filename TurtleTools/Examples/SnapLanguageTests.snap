@@ -1,3 +1,5 @@
+import stdlib
+
 test "Variables" {
 	// Immutable variables are declared with the let keyword.
 	// It is not necessary to use a semicolon to end a statement
@@ -451,9 +453,6 @@ test "Compiler Instinsics" {
 }
 
 test "Runtime Support: None" {
-	struct None {} // TODO: None should be provided by the runtime. Why isn't it?
-	let none = None{}
-
 	var maybeInteger: u8 | None = none
 
 	match maybeInteger {

@@ -92,7 +92,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "&apos;/Users/andrewfox/Desktop/ReceiveFile.snap&apos;"
+            argument = "${PROJECT_DIR}/Examples/SnapLanguageTests.snap"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

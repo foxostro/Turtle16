@@ -141,13 +141,15 @@ a = p % q  // modulus
 a = p & q  // bitwise and
 a = p | q  // bitwise or
 a = p ^ q  // bitwise xor
-a = ~p     // bitwise negation
-a = p == q // equal
-a = p != q // not equal
-a = p > q  // greater than
-a = p < q  // less than
-a = p >= q // greater than or equal to
-a = p <= q // less than or equal to
+//a = ~p     // bitwise negation -- TODO: bitwise negation is not working
+
+var b: bool = undefined
+b = p == q // equal
+b = p != q // not equal
+b = p > q  // greater than
+b = p < q  // less than
+b = p >= q // greater than or equal to
+b = p <= q // less than or equal to
 ```
 
 Overflow and underflow are well-defined for both signed and unsigned integers to wrap around the range of values for the type. For example, 0-1 is 65535 for a u16 value, and 32767+1 is -32768 for a i16 value.
@@ -224,7 +226,7 @@ let n = a.count
 // A string literal is syntax sugar for an [_]u8 array literal where the
 // elements of the array are the UTF-8 encoded bytes of the string.
 let s = "a UTF-8 string is an array of bytes"
-let c: u8 = s[0]
+let d: u8 = s[0]
 ```
 
 Additionally, a string may contain any of several escape sequences:
@@ -324,11 +326,12 @@ p4.y = 4
 let q: u8 | bool = false
 
 // Test the type of a union value at runtime.
-let c = q is u8 // false
+assert(!(q is u8))
 
 // Use the "is" keyword to test the type of any other value too.
-let a = p is bool // true
-let b = p is *bool // false
+let p = true
+assert(p is bool)
+assert(!(p is *bool))
 ```
 
 ## Typealias
@@ -362,6 +365,8 @@ while i < 10 {
 ```
 // For loops can iterate over the elements of a range
 // The curly braces are always required.
+let begin = 1
+let limit = 3
 for i in begin..limit {
 
 }
@@ -393,6 +398,7 @@ match a {
 		r = 2
     }
 }
+assert(r == 1)
 ```
 
 ## Functions
@@ -414,22 +420,25 @@ func baz(aa: u8, bb: u16) -> u16 {
 
 // The labels are not used at the function call site.
 let r1 = baz(1, 1000)
+assert(r1 == 1001)
 
 // Functions may be nested. These inner functions have access to the enclosing
 // lexical scopes.
 func qux(aa: u8, bb: u16) -> u16 {
 	let c = 1
-	func quux(aa: u8) {
+	func quux(aa: u8) -> u8 {
 		return aa + c
 	}
 	return quux(aa) + bb
 }
+let r2 = qux(1, 1000)
+assert(r2 == 1002)
 
 // Record a function pointer and use the pointer to invoke the function later.
 var ptr: *func(aa: u8, bb: u16) -> u16 = undefined
 ptr = &baz
 ptr = qux
-let r2 = ptr(1, 1)
+let r3 = ptr(1, 1)
 
 // Proper closures and lambda expressions are not yet implemented.
 ```
@@ -437,7 +446,7 @@ let r2 = ptr(1, 1)
 ## Struct Methods
 ```
 struct Point {
-	x: u16
+	x: u16,
 	y: u16
 }
 

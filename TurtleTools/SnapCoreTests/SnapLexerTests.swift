@@ -140,6 +140,13 @@ class SnapLexerTests: XCTestCase {
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3))])
     }
     
+    func testTokenizeLiteralCharacterEscapeSequence() {
+        let tokenizer = SnapLexer("'\\n'")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenNumber(sourceAnchor: tokenizer.lineMapper.anchor(0, 4), literal: 10),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(4, 4))])
+    }
+    
     func testTokenizeIdentifierWhichStartsWithA() {
         let tokenizer = SnapLexer("Animal")
         tokenizer.scanTokens()

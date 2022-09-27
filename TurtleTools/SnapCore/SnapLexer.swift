@@ -258,6 +258,11 @@ public class SnapLexer: Lexer {
                 let number = Int(String($0.text).split(separator: "'").first!.unicodeScalars.first!.value)
                 return TokenNumber(sourceAnchor: $0, literal: number)
             },
+            Rule(pattern: "'\\\\.'") {[weak self] in
+                let string = self!.interpretQuotedString(lexeme: String($0.text))
+                let number = Int(string.split(separator: "'").first!.unicodeScalars.first!.value)
+                return TokenNumber(sourceAnchor: $0, literal: number)
+            },
             Rule(pattern: "[ \t]+") {_ in
                 nil
             }

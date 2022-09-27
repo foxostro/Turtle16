@@ -2495,4 +2495,16 @@ func foo() {
         let a = debugger?.loadSymbolBool("c")
         XCTAssertEqual(a, true)
     }
+    
+//    func test_EndToEndIntegration_Underflow_u8() {
+//        let options = Options(isVerboseLogging: true,
+//                              shouldDefineCompilerIntrinsicFunctions: true,
+//                              runtimeSupport: kRuntime)
+//        let debugger = run(options: options, program: """
+//            let a: u8 = 0
+//            let b = (a - 1) == 255
+//            """)
+//        let b = debugger?.loadSymbolBool("b")
+//        XCTAssertEqual(b, true)
+//    }
 }

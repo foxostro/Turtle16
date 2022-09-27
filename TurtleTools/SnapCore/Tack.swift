@@ -56,6 +56,7 @@ public enum TackInstruction {
     case leu16
     case gtu16
     case li8
+    case liu8
     case and8
     case or8
     case xor8
@@ -125,6 +126,7 @@ public enum TackInstruction {
         case .leu16: return "LEU16"
         case .gtu16: return "GTU16"
         case .li8: return "LI8"
+        case .liu8: return "LIU8"
         case .and8: return "AND8"
         case .or8: return "OR8"
         case .xor8: return "XOR8"

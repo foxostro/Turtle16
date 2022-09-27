@@ -109,6 +109,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         case .leu16: return leu16(node)
         case .gtu16: return gtu16(node)
         case .li8: return li8(node)
+        case .liu8: return liu8(node)
         case .and8: return and8(node)
         case .or8: return or8(node)
         case .xor8: return xor8(node)
@@ -986,7 +987,17 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
     }
     
     func li8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
+        // The hardware always sign-extends this immediate value.
         let imm = node.parameters[1] as! ParameterNumber
+        assert(imm.value >= -128 && imm.value < 128)
+        return InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kLI, parameters: corresponding(parameters: node.parameters))
+    }
+    
+    func liu8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
+        // The hardware always sign-extends this immediate value. We may need
+        // an extra instruction to circumvent this behavior.
+        let imm = node.parameters[1] as! ParameterNumber
+        assert(imm.value >= 0 && imm.value < 256)
         if imm.value > 127 {
             return Seq(children: [
                 InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kLI, parameters: corresponding(parameters: node.parameters)),

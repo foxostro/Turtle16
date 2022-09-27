@@ -815,11 +815,37 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     func rvalue(literalInt node: Expression.LiteralInt) -> AbstractSyntaxTreeNode {
         let dest = nextRegister()
         pushRegister(dest)
-        let op: TackInstruction = (node.value < 256) ? .li8 : .li16
-        let result = TackInstructionNode(instruction: op, parameters: [
-            ParameterIdentifier(dest),
-            ParameterNumber(node.value)
-        ])
+        
+        let result: AbstractSyntaxTreeNode
+        switch ArithmeticType.compTimeInt(node.value).intClass {
+        case .i8:
+            result = TackInstructionNode(instruction: .li8, parameters: [
+                ParameterIdentifier(dest),
+                ParameterNumber(node.value)
+            ])
+            
+        case .u8:
+            result = TackInstructionNode(instruction: .liu8, parameters: [
+                ParameterIdentifier(dest),
+                ParameterNumber(node.value)
+            ])
+            
+        case .i16:
+            result = TackInstructionNode(instruction: .li16, parameters: [
+                ParameterIdentifier(dest),
+                ParameterNumber(node.value)
+            ])
+            
+        case .u16:
+            result = TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier(dest),
+                ParameterNumber(node.value)
+            ])
+            
+        case .none:
+            fatalError("Expected to be able to determine the type of an integer literal at this point: \(node)")
+        }
+        
         return result
     }
     
@@ -976,10 +1002,19 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 ParameterNumber(a ? 1 : 0)
             ])
             
-        case (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.mutableInt(.i8))),
-             (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.i8))),
-             (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.mutableInt(.u8))),
+        case (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.mutableInt(.u8))),
              (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.u8))):
+            // The expression produces a value that is known at compile time.
+            // Add an instruction to load a register with that known value.
+            let dst = nextRegister()
+            pushRegister(dst)
+            result = TackInstructionNode(instruction: .liu8, parameters: [
+                ParameterIdentifier(dst),
+                ParameterNumber(a)
+            ])
+            
+        case (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.mutableInt(.i8))),
+             (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.i8))):
             // The expression produces a value that is known at compile time.
             // Add an instruction to load a register with that known value.
             let dst = nextRegister()
@@ -1343,7 +1378,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 let d = nextRegister()
                 pushRegister(d)
                 instructions += [
-                    TackInstructionNode(instruction: .li8, parameters: [
+                    TackInstructionNode(instruction: .liu8, parameters: [
                         ParameterIdentifier(a),
                         ParameterNumber(0)
                     ]),
@@ -1359,7 +1394,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 let c = nextRegister()
                 pushRegister(c)
                 instructions += [
-                    TackInstructionNode(instruction: .li16, parameters: [
+                    TackInstructionNode(instruction: .liu16, parameters: [
                         ParameterIdentifier(a),
                         ParameterNumber(0)
                     ]),
@@ -1649,12 +1684,25 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         }
         
         let ins: TackInstruction
-        switch try typeCheck(rexpr: binary) {
-        case .arithmeticType(.mutableInt(.u8)), .arithmeticType(.immutableInt(.u8)):
-            ins = .li8
-            
-        default:
+        let exprType = try typeCheck(rexpr: binary)
+        switch exprType {
+        case .arithmeticType(let arithmeticType):
+            switch arithmeticType.intClass {
+            case .u8:
+                ins = .liu8
+            case .u16:
+                ins = .liu16
+            case .i8:
+                ins = .li8
+            case .i16:
+                ins = .li16
+            case .none:
+                fatalError("Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(binary)")
+            }
+        case .bool:
             ins = .li16
+        default:
+            fatalError("Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(binary)")
         }
         
         let dst = nextRegister()

@@ -1908,12 +1908,31 @@ class TackToTurtle16CompilerTests: XCTestCase {
         try doTestLI8(127)
     }
     
-    func testLI8_max_unsigned() throws {
-        try doTestLI8(255)
+    func testLI8_min_signed() throws {
+        try doTestLI8(-128)
     }
     
-    func testLI8_min() throws {
-        try doTestLI8(-128)
+    fileprivate func doTestLIU8(_ value: Int) throws {
+        let input = TackInstructionNode(instruction: .liu8, parameters:[
+            ParameterIdentifier("vr0"),
+            ParameterNumber(value)
+        ])
+        let assembly = try compile(input)
+        let debugger = makeDebugger(assembly: assembly)
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, 0xdead)
+        debugger.computer.run()
+        let expected: UInt16
+        if value >= 0 {
+            expected = UInt16(value)
+        } else {
+            expected = ~UInt16(-value) + 1
+        }
+        XCTAssertEqual(debugger.computer.getRegister(0), expected)
+    }
+    
+    func testLIU8_max_unsigned() throws {
+        try doTestLIU8(255)
     }
     
     func testAND8() throws {

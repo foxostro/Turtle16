@@ -1039,7 +1039,11 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             
         case (.arithmeticType(let src), .arithmeticType(let dst)):
             switch (src.intClass, dst.intClass) {
-            case (.u16, .u8):
+            case (.u16, .u8),
+                 (.u16, .i8),
+                 (.i16, .u8),
+                 (.u8, .i8),
+                 (.i8, .u8):
                 // Convert from u16 to u8 by masking off the upper byte.
                 assert(isExplicitCast)
                 var children: [AbstractSyntaxTreeNode] = []
@@ -1059,7 +1063,9 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
                 
             case (.i16, .i8):
-                // Convert from u16 to u8 by sign-extending through the upper byte
+                // The upper byte of the result will contain a sign-extension of
+                // the lower byte instead of the original upper byte, which has
+                // been discarded.
                 assert(isExplicitCast)
                 var children: [AbstractSyntaxTreeNode] = []
                 children += [
@@ -1075,6 +1081,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                     ])
                 ]
                 result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
+                
+            case (.i16, .u16),
+                 (.u16, .i16):
+                result = try rvalue(expr: rexpr)
                 
             default:
                 fatalError("Unsupported type conversion from \(rtype) to \(ltype). Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(rexpr)")

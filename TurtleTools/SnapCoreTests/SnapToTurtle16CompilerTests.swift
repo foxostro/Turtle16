@@ -2513,4 +2513,103 @@ func foo() {
         let b = debugger?.loadSymbolI8("b")
         XCTAssertEqual(b, -1)
     }
+    
+    func test_EndToEndIntegration_cast_i16_to_u8() {
+        let debugger = run(program: """
+            let a: i16 = 42
+            let b: u8 = a as u8
+            """)
+        let b = debugger?.loadSymbolU8("b")
+        XCTAssertEqual(b, 42)
+    }
+    
+    func test_EndToEndIntegration_cast_i16_to_u16() {
+        let debugger = run(program: """
+            let a: i16 = 42
+            let b: u16 = a as u16
+            """)
+        let b = debugger?.loadSymbolU16("b")
+        XCTAssertEqual(b, 42)
+    }
+    
+    func test_EndToEndIntegration_cast_i8_to_i16() {
+        let debugger = run(program: """
+            let a: i8 = -1
+            let b: i16 = a
+            """)
+        let b = debugger?.loadSymbolI16("b")
+        XCTAssertEqual(b, -1)
+    }
+    
+    func test_EndToEndIntegration_cast_i8_to_u8() {
+        let debugger = run(program: """
+            let a: i8 = 42
+            let b: u8 = a as u8
+            """)
+        let b = debugger?.loadSymbolU8("b")
+        XCTAssertEqual(b, 42)
+    }
+    
+    func test_EndToEndIntegration_cast_i8_to_u16() {
+        let debugger = run(program: """
+            let a: i8 = 42
+            let b: u16 = a as u16
+            """)
+        let b = debugger?.loadSymbolU16("b")
+        XCTAssertEqual(b, 42)
+    }
+    
+    func test_EndToEndIntegration_cast_u8_to_i8() {
+        let debugger = run(program: """
+            let a: u8 = 42
+            let b: i8 = a as i8
+            """)
+        let b = debugger?.loadSymbolI8("b")
+        XCTAssertEqual(b, 42)
+    }
+    
+    func test_EndToEndIntegration_cast_u8_to_i16() {
+        let debugger = run(program: """
+            let a: u8 = 42
+            let b: i16 = a
+            """)
+        let b = debugger?.loadSymbolI16("b")
+        XCTAssertEqual(b, 42)
+    }
+    
+    func test_EndToEndIntegration_cast_u8_to_u16() {
+        let debugger = run(program: """
+            let a: u8 = 42
+            let b: u16 = a as u16
+            """)
+        let b = debugger?.loadSymbolU16("b")
+        XCTAssertEqual(b, 42)
+    }
+    
+    func test_EndToEndIntegration_cast_u16_to_i8() {
+        let debugger = run(program: """
+            let a: u16 = 42
+            let b: i8 = a as i8
+            """)
+        let b = debugger?.loadSymbolI8("b")
+        XCTAssertEqual(b, 42)
+    }
+    
+    func test_EndToEndIntegration_cast_u16_to_u8() {
+        let debugger = run(program: """
+            let a: u16 = 42
+            let b: u8 = a as u8
+            """)
+        let b = debugger?.loadSymbolU8("b")
+        XCTAssertEqual(b, 42)
+    }
+    
+    func test_EndToEndIntegration_cast_u16_to_i16() {
+        let debugger = run(program: """
+            let a: u16 = 42
+            let b: i16 = a as i16
+            """)
+        let b = debugger?.loadSymbolI16("b")
+        XCTAssertEqual(b, 42)
+    }
 }

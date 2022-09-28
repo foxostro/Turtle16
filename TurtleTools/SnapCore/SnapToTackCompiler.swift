@@ -1060,7 +1060,21 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                 
             case (.i16, .i8):
                 // Convert from u16 to u8 by sign-extending through the upper byte
-                fatalError("unimplemented")
+                assert(isExplicitCast)
+                var children: [AbstractSyntaxTreeNode] = []
+                children += [
+                    try rvalue(expr: rexpr)
+                ]
+                let src = popRegister()
+                let dst = nextRegister()
+                pushRegister(dst)
+                children += [
+                    TackInstructionNode(instruction: .sxt8, parameters: [
+                        ParameterIdentifier(dst),
+                        ParameterIdentifier(src)
+                    ])
+                ]
+                result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
                 
             default:
                 fatalError("Unsupported type conversion from \(rtype) to \(ltype). Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(rexpr)")

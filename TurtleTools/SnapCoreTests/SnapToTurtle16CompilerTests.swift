@@ -2497,14 +2497,20 @@ func foo() {
     }
     
     func test_EndToEndIntegration_Underflow_u8() {
-        let options = Options(isVerboseLogging: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
-                              runtimeSupport: kRuntime)
-        let debugger = run(options: options, program: """
+        let debugger = run(program: """
             let a: u8 = 0
             let b = (a - 1) == 255
             """)
         let b = debugger?.loadSymbolBool("b")
         XCTAssertEqual(b, true)
+    }
+    
+    func test_EndToEndIntegration_cast_i16_to_i8() {
+        let debugger = run(program: """
+            let a: i16 = -1
+            let b: i8 = a as i8
+            """)
+        let b = debugger?.loadSymbolI8("b")
+        XCTAssertEqual(b, -1)
     }
 }

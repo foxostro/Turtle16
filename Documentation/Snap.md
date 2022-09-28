@@ -108,10 +108,9 @@ let myInt16: i16 = -32768
 // Integers of larger widths are not yet implemented.
 ```
 
-## Literal Integers
+## Literals
+### Unsigned Integer Literal
 ```
-// Literal integers are deduced as the smallest type that fits the literal
-// value. (This may change in the future.)
 let a = 128
 assert(a is u8)
 
@@ -123,15 +122,42 @@ let c = 0xabcd
 
 // Binary numbers
 let d = 0b101010
+```
 
+### Unicode Scalar Literal
+```
 // Unicode scalar
-let e = 'a'
+let a = 'a'
+assert(a is u8)
+assert(a == 97)
+
+let b = '\n'
+assert(b is u8)
+assert(b == 10)
 ```
 
-## Integer Operators
+### Signed Integer Literal
 ```
-let p: u16 = undefined // some value goes here
-let q: u16 = undefined // some value goes here
+let a = -1000
+assert(a is i16)
+assert(a == -1000)
+
+let b = -1
+assert(b is i8)
+assert(b == -1)
+```
+
+## Operators
+Overflow and underflow are well-defined for both signed and unsigned integers to wrap around the range of values for the type. For example, 0-1 is 65535 for a u16 value, and 32767+1 is -32768 for a i16 value.
+
+Signed types are guaranteed to be implemented as twos-complement with well-defined overflow and underflow behavior.
+
+The Snap programming language does not include in-place arithmetic operators such as +=, -=, &c found in other languages such as C. Nor does it support increment and decrement with ++ and -- operators.
+
+### Binary Operators: u16
+```
+let p: u16 = 0xabab
+let q: u16 = 0xcdcd
 var a: u16 = undefined
 a = p + q  // addition
 a = p - q  // subtraction
@@ -141,7 +167,6 @@ a = p % q  // modulus
 a = p & q  // bitwise and
 a = p | q  // bitwise or
 a = p ^ q  // bitwise xor
-//a = ~p     // bitwise negation -- TODO: bitwise negation is not working
 
 var b: bool = undefined
 b = p == q // equal
@@ -152,22 +177,153 @@ b = p >= q // greater than or equal to
 b = p <= q // less than or equal to
 ```
 
-Overflow and underflow are well-defined for both signed and unsigned integers to wrap around the range of values for the type. For example, 0-1 is 65535 for a u16 value, and 32767+1 is -32768 for a i16 value.
-
-Signed types are guaranteed to be implemented as twos-complement with well-defined overflow and underflow behavior.
-
-The Snap programming language does not include in-place arithmetic operators such as +=, -=, &c found in other languages such as C. Nor does it support increment and decrement with ++ and -- operators.
-
-## Boolean Operators
+### Binary Operators: u8
 ```
-let p: bool = undefined // some value goes here
-let q: bool = undefined // some value goes here
+let p: u8 = 0xab
+let q: u8 = 0xcd
+var a: u8 = undefined
+a = p + q  // addition
+a = p - q  // subtraction
+a = p * q  // multiplication
+a = p / q  // division
+a = p % q  // modulus
+a = p & q  // bitwise and
+a = p | q  // bitwise or
+a = p ^ q  // bitwise xor
+
+var b: bool = undefined
+b = p == q // equal
+b = p != q // not equal
+b = p > q  // greater than
+b = p < q  // less than
+b = p >= q // greater than or equal to
+b = p <= q // less than or equal to
+```
+
+### Binary Operators: i16
+```
+let p: i16 = -1000
+let q: i16 = -1000
+var a: i16 = undefined
+a = p + q  // addition
+a = p - q  // subtraction
+a = p * q  // multiplication
+a = p / q  // division
+a = p % q  // modulus
+a = p & q  // bitwise and
+a = p | q  // bitwise or
+a = p ^ q  // bitwise xor
+
+var b: bool = undefined
+b = p == q // equal
+b = p != q // not equal
+b = p > q  // greater than
+b = p < q  // less than
+b = p >= q // greater than or equal to
+b = p <= q // less than or equal to
+```
+
+### Binary Operators: i8
+```
+let p: i8 = -1
+let q: i8 = -1
+var a: i8 = undefined
+a = p + q  // addition
+a = p - q  // subtraction
+a = p * q  // multiplication
+a = p / q  // division
+a = p % q  // modulus
+a = p & q  // bitwise and
+a = p | q  // bitwise or
+a = p ^ q  // bitwise xor
+
+var b: bool = undefined
+b = p == q // equal
+b = p != q // not equal
+b = p > q  // greater than
+b = p < q  // less than
+b = p >= q // greater than or equal to
+b = p <= q // less than or equal to
+```
+
+### Binary Operators: bool
+```
+let p: bool = true
+let q: bool = false
 var a: bool = undefined
-a = !p     // not
 a = p && q // and (with short-circuiting evaluation)
 a = p || q // or  (with short-circuiting evaluation)
 a = p == q // equal
 a = p != q // not equal
+```
+
+### Unary Operators: u16
+```
+let p: u16 = 0xf0f0
+var a: u16 = undefined
+a = -p // negation
+a = ~p // bitwise negation
+```
+
+### Unary Operators: u8
+```
+let p: u8 = 0xf0
+var a: u8 = undefined
+a = -p // negation
+a = ~p // bitwise negation
+```
+
+### Unary Operators: i16
+```
+let p: i16 = -1000
+var a: i16 = undefined
+a = -p // negation
+a = ~p // bitwise negation
+```
+
+### Unary Operators: i8
+```
+let p: i8 = -1
+var a: i8 = undefined
+a = -p // negation
+a = ~p // bitwise negation
+```
+
+### Unary Operators: bool
+```
+let p: bool = true
+var a: bool = undefined
+a = !p // not
+```
+
+### Unsigned Arithmetic Overflow and Underflow
+```
+let a: u8 = 255
+assert((a+1) == 0)
+
+let b: u8 = 0
+assert((b-1) == 255)
+
+let c: u16 = 65535
+assert((c+1) == 0)
+
+let d: u16 = 0
+assert((d-1) == 65535)
+```
+
+### Signed Arithmetic Overflow and Underflow
+```
+let a: i8 = 127
+assert((a+1) == -128)
+
+let b: i8 = -128
+assert((b-1) == 127)
+
+let c: i16 = 32767
+assert((c+1) == -32768)
+
+let d: i16 = -32768
+assert((d-1) == 32767)
 ```
 
 ## Pointers
@@ -435,10 +591,9 @@ let r2 = qux(1, 1000)
 assert(r2 == 1002)
 
 // Record a function pointer and use the pointer to invoke the function later.
-var ptr: *func(aa: u8, bb: u16) -> u16 = undefined
-ptr = &baz
-ptr = qux
-let r3 = ptr(1, 1)
+var fnptr: func(u8, u16) -> u16 = undefined
+fnptr = &baz
+let r3 = fnptr(1, 1)
 
 // Proper closures and lambda expressions are not yet implemented.
 ```
@@ -487,7 +642,7 @@ TODO: This is confusing. The compiler should be changed to use a special Self ke
 // Define a trait and the collection of functions that make up its interface.
 trait Serial {
 	func write(self: *Serial, bytes: []u8)
-	func read(self: *Serial) -> []8
+	func read(self: *Serial) -> []u8
 }
 ```
 
@@ -502,7 +657,7 @@ impl Serial for SerialFake {
 		puts(bytes)
 	}
 
-	func read(self: *SerialFake) -> []8 {
+	func read(self: *SerialFake) -> []u8 {
 		return self.cannedData
 	}
 }
@@ -571,6 +726,8 @@ hlt()
 ## Runtime support
 The `None` type is an empty placeholder that may be used in a union to form a sort of optional type. The value `none` has this type.
 ```
+import stdlib
+
 var maybeSerial: Serial | None = none
 
 match maybeSerial {

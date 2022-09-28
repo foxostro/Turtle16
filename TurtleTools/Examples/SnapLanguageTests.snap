@@ -75,9 +75,9 @@ test "Signed Integer Literal" {
 	assert(b == -1)
 }
 
-test "Integer Operators" {
-	let p: u16 = 0xabab // some value goes here
-	let q: u16 = 0xcdcd // some value goes here
+test "Binary Operators: u16" {
+	let p: u16 = 0xabab
+	let q: u16 = 0xcdcd
 	var a: u16 = undefined
 	a = p + q  // addition
 	a = p - q  // subtraction
@@ -87,7 +87,6 @@ test "Integer Operators" {
 	a = p & q  // bitwise and
 	a = p | q  // bitwise or
 	a = p ^ q  // bitwise xor
-//	a = ~p     // bitwise negation // TODO: bitwise negation is not working
 
 	var b: bool = undefined
 	b = p == q // equal
@@ -98,15 +97,114 @@ test "Integer Operators" {
 	b = p <= q // less than or equal to
 }
 
-test "Boolean Operators" {
-	let p: bool = true // some value goes here
-	let q: bool = false // some value goes here
+test "Binary Operators: u8" {
+	let p: u8 = 0xab
+	let q: u8 = 0xcd
+	var a: u8 = undefined
+	a = p + q  // addition
+	a = p - q  // subtraction
+	a = p * q  // multiplication
+	a = p / q  // division
+	a = p % q  // modulus
+	a = p & q  // bitwise and
+	a = p | q  // bitwise or
+	a = p ^ q  // bitwise xor
+
+	var b: bool = undefined
+	b = p == q // equal
+	b = p != q // not equal
+	b = p > q  // greater than
+	b = p < q  // less than
+	b = p >= q // greater than or equal to
+	b = p <= q // less than or equal to
+}
+
+test "Binary Operators: i16" {
+	let p: i16 = -1000
+	let q: i16 = -1000
+	var a: i16 = undefined
+	a = p + q  // addition
+	a = p - q  // subtraction
+	a = p * q  // multiplication
+	a = p / q  // division
+	a = p % q  // modulus
+	a = p & q  // bitwise and
+	a = p | q  // bitwise or
+	a = p ^ q  // bitwise xor
+
+	var b: bool = undefined
+	b = p == q // equal
+	b = p != q // not equal
+	b = p > q  // greater than
+	b = p < q  // less than
+	b = p >= q // greater than or equal to
+	b = p <= q // less than or equal to
+}
+
+test "Binary Operators: i8" {
+	let p: i8 = -1
+	let q: i8 = -1
+	var a: i8 = undefined
+	a = p + q  // addition
+	a = p - q  // subtraction
+	a = p * q  // multiplication
+	a = p / q  // division
+	a = p % q  // modulus
+	a = p & q  // bitwise and
+	a = p | q  // bitwise or
+	a = p ^ q  // bitwise xor
+
+	var b: bool = undefined
+	b = p == q // equal
+	b = p != q // not equal
+	b = p > q  // greater than
+	b = p < q  // less than
+	b = p >= q // greater than or equal to
+	b = p <= q // less than or equal to
+}
+
+test "Binary Operators: bool" {
+	let p: bool = true
+	let q: bool = false
 	var a: bool = undefined
-	a = !p     // not
 	a = p && q // and (with short-circuiting evaluation)
 	a = p || q // or  (with short-circuiting evaluation)
 	a = p == q // equal
 	a = p != q // not equal
+}
+
+test "Unary Operators: u16" {
+	let p: u16 = 0xf0f0
+	var a: u16 = undefined
+	a = -p // negation
+	a = ~p // bitwise negation
+}
+
+test "Unary Operators: u8" {
+	let p: u8 = 0xf0
+	var a: u8 = undefined
+	a = -p // negation
+	a = ~p // bitwise negation
+}
+
+test "Unary Operators: i16" {
+	let p: i16 = -1000
+	var a: i16 = undefined
+	a = -p // negation
+	a = ~p // bitwise negation
+}
+
+test "Unary Operators: i8" {
+	let p: i8 = -1
+	var a: i8 = undefined
+	a = -p // negation
+	a = ~p // bitwise negation
+}
+
+test "Unary Operators: bool" {
+	let p: bool = true
+	var a: bool = undefined
+	a = !p // not
 }
 
 test "Unsigned Arithmetic Overflow and Underflow" {

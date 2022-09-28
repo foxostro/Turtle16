@@ -475,16 +475,12 @@ test "Functions" {
 	}
 	let r2 = qux(1, 1000)
 	assert(r2 == 1002)
-}
 
-// TODO: SnapLanguageTests.snap:364: expected `)' in argument list of function pointer type expression
-//test "Function Pointers" {
-//	// Record a function pointer and use the pointer to invoke the function later.
-//	var ptr: *func(aa: u8, bb: u16) -> u16 = undefined
-//	ptr = &baz
-//	ptr = qux
-//	let r3 = ptr(1, 1)
-//}
+	// Record a function pointer and use the pointer to invoke the function later.
+	var fnptr: func(u8, u16) -> u16 = undefined
+	fnptr = &baz
+	let r3 = fnptr(1, 1)
+}
 
 test "Struct Methods" {
 	struct Point {

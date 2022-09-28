@@ -409,7 +409,8 @@ public enum ArithmeticType: Equatable, Hashable, CustomStringConvertible {
         }
         
         switch (srcIntClass, dstIntClass) {
-        case (.u8, .u16):
+        case (.u8, .u16),
+             (.u8, .i16):
             return true
             
         default:

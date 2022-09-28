@@ -322,8 +322,7 @@ test "Automatic Type Conversions" {
 	// values representable by the source type is a complete subset of the values
 	// representable by the destination type.
 	let b: u8 = 1
-//  TODO: This automatic conversion from u8 to i16 is not working for some reason
-//	let c: i16 = b // permitted because all values of u8 are reprentable in i16
+	let c: i16 = b // permitted because all values of u8 are reprentable in i16
 
 	// The address of a value is automatically taken to convert to a pointer.
 	let d: *u16 = a

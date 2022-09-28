@@ -481,6 +481,28 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr2")
     }
     
+    func testRvalue_As_u8_to_i16() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0xabcd, storage: .staticStorage))
+        ])
+        symbols.stackFrameIndex = 1
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
+                                                             targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.i16)))))
+        let expected = Seq(children: [
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(0xabcd)
+            ]),
+            TackInstructionNode(instruction: .load, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr0"),
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr1")
+    }
+    
     func testRvalue_As_array_to_array_of_same_type() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 1, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))

@@ -2278,6 +2278,22 @@ class TackToTurtle16CompilerTests: XCTestCase {
         XCTAssertEqual(debugger.computer.getRegister(0), 1)
     }
     
+    func testGT8() throws {
+        let input = TackInstructionNode(instruction: .gt8, parameters:[
+            ParameterIdentifier("vr0"),
+            ParameterIdentifier("vr1"),
+            ParameterIdentifier("vr2")
+        ])
+        let assembly = try compile(input)
+        let debugger = makeDebugger(assembly: assembly)
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(1, 0xffff)
+        debugger.computer.setRegister(2, 0x0000)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+    }
+    
     func testGE8() throws {
         let input = TackInstructionNode(instruction: .ge8, parameters:[
             ParameterIdentifier("vr0"),

@@ -1196,7 +1196,19 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
     }
     
     func le8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
-        return le16(node)!
+        let c = corresponding(param: node.parameters[0])
+        let a = corresponding(param: node.parameters[1])
+        let b = corresponding(param: node.parameters[2])
+        let ll0 = ParameterIdentifier(labelMaker.next())
+        return Seq(sourceAnchor: node.sourceAnchor, children: [
+            signExtend8(a),
+            signExtend8(b),
+            InstructionNode(instruction: kCMP, parameters: [a, b]),
+            InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(0)]),
+            InstructionNode(instruction: kBGT, parameter: ll0),
+            InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(1)]),
+            LabelDeclaration(ll0)
+        ])
     }
     
     func gt8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {

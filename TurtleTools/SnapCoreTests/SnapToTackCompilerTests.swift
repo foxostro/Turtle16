@@ -1043,6 +1043,64 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr3")
     }
     
+    func testRvalue_Unary_minus_i8() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.i8)), offset: 100, storage: .staticStorage))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: Expression.Unary(op: .minus, expression: Expression.Identifier("foo")))
+        let expected = Seq(children: [
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(100)
+            ]),
+            TackInstructionNode(instruction: .load, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr0")
+            ]),
+            TackInstructionNode(instruction: .liu8, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterNumber(0)
+            ]),
+            TackInstructionNode(instruction: .sub8, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr2"),
+                ParameterIdentifier("vr1")
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr4")
+    }
+    
+    func testRvalue_Unary_minus_i16() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 100, storage: .staticStorage))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: Expression.Unary(op: .minus, expression: Expression.Identifier("foo")))
+        let expected = Seq(children: [
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(100)
+            ]),
+            TackInstructionNode(instruction: .load, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr0")
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterNumber(0)
+            ]),
+            TackInstructionNode(instruction: .sub16, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr2"),
+                ParameterIdentifier("vr1")
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr3")
+    }
+    
     func testRvalue_Unary_bang_bool() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .bool(.mutableBool), offset: 100, storage: .staticStorage))
@@ -1094,6 +1152,54 @@ class SnapToTackCompilerTests: XCTestCase {
     func testRvalue_Unary_tilde_u16() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: Expression.Unary(op: .tilde, expression: Expression.Identifier("foo")))
+        let expected = Seq(children: [
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(100)
+            ]),
+            TackInstructionNode(instruction: .load, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr0")
+            ]),
+            TackInstructionNode(instruction: .neg16, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterIdentifier("vr1"),
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr2")
+    }
+    
+    func testRvalue_Unary_tilde_i8() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.i8)), offset: 100, storage: .staticStorage))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: Expression.Unary(op: .tilde, expression: Expression.Identifier("foo")))
+        let expected = Seq(children: [
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(100)
+            ]),
+            TackInstructionNode(instruction: .load, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterIdentifier("vr0")
+            ]),
+            TackInstructionNode(instruction: .neg8, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterIdentifier("vr1"),
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr3")
+    }
+    
+    func testRvalue_Unary_tilde_i16() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .tilde, expression: Expression.Identifier("foo")))

@@ -1337,7 +1337,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     func rvalue(unary expr: Expression.Unary) throws -> AbstractSyntaxTreeNode {
-        let childType = try typeCheck(rexpr: expr.child)
+        let childType = try typeCheck(rexpr: expr.child).correspondingMutableType
         
         let result: AbstractSyntaxTreeNode
         
@@ -1372,7 +1372,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                     ])
                 ]
                 
-            case (.arithmeticType(.mutableInt(.u8)), .minus):
+            case (.arithmeticType(.mutableInt(.u8)), .minus),
+                 (.arithmeticType(.mutableInt(.i8)), .minus):
                 let a = nextRegister()
                 let c = nextRegister()
                 let d = nextRegister()
@@ -1389,7 +1390,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                     ])
                 ]
                 
-            case (.arithmeticType(.mutableInt(.u16)), .minus):
+            case (.arithmeticType(.mutableInt(.u16)), .minus),
+                 (.arithmeticType(.mutableInt(.i16)), .minus):
                 let a = nextRegister()
                 let c = nextRegister()
                 pushRegister(c)
@@ -1405,7 +1407,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                     ])
                 ]
                 
-            case (.arithmeticType(.mutableInt(.u8)), .tilde):
+            case (.arithmeticType(.mutableInt(.u8)), .tilde),
+                 (.arithmeticType(.mutableInt(.i8)), .tilde):
                 let c = nextRegister()
                 let d = nextRegister()
                 pushRegister(d)
@@ -1416,7 +1419,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
                     ])
                 ]
                 
-            case (.arithmeticType(.mutableInt(.u16)), .tilde):
+            case (.arithmeticType(.mutableInt(.u16)), .tilde),
+                 (.arithmeticType(.mutableInt(.i16)), .tilde):
                 let c = nextRegister()
                 pushRegister(c)
                 instructions += [

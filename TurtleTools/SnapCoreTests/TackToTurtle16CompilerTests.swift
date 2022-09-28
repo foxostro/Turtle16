@@ -2192,8 +2192,8 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 0)
-        debugger.computer.setRegister(1, 0xab42)
-        debugger.computer.setRegister(2, 0xab42)
+        debugger.computer.setRegister(1, 0xff42)
+        debugger.computer.setRegister(2, 0x0042)
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(0), 1)
     }

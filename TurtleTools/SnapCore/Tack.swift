@@ -78,6 +78,7 @@ public enum TackInstruction {
     case geu8
     case leu8
     case gtu8
+    case sxt8
     
     public var description: String {
         switch self {
@@ -148,6 +149,7 @@ public enum TackInstruction {
         case .geu8: return "GEU8"
         case .leu8: return "LEU8"
         case .gtu8: return "GTU8"
+        case .sxt8: return "SXT8"
         }
     }
 }

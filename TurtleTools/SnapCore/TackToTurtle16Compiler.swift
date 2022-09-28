@@ -131,6 +131,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         case .geu8: return geu8(node)
         case .leu8: return leu8(node)
         case .gtu8: return gtu8(node)
+        case .sxt8: return sxt8(node)
         }
     }
     
@@ -1300,6 +1301,44 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
             InstructionNode(instruction: kBGTU, parameter: ll0),
             InstructionNode(instruction: kLI, parameters: [c, ParameterNumber(0)]),
             LabelDeclaration(ll0)
+        ])
+    }
+    
+    func sxt8(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
+        // Take lower eight-bits of the value in the source register, sign-
+        // extend this to sixteen bits, and write the result to the destination
+        // register.
+        let dst = corresponding(param: node.parameters[0])
+        let src = corresponding(param: node.parameters[1])
+        let temp = ParameterIdentifier(nextRegister())
+        return Seq(children: [
+            InstructionNode(instruction: kADDI, parameters: [
+                dst,
+                src,
+                ParameterNumber(0)
+            ]),
+            InstructionNode(instruction: kLI, parameters: [
+                temp,
+                ParameterNumber(0x80)
+            ]),
+            InstructionNode(instruction: kLUI, parameters: [
+                temp,
+                ParameterNumber(0x00)
+            ]),
+            InstructionNode(instruction: kLUI, parameters: [
+                dst,
+                ParameterNumber(0)
+            ]),
+            InstructionNode(instruction: kXOR, parameters: [
+                dst,
+                dst,
+                temp
+            ]),
+            InstructionNode(instruction: kSUB, parameters: [
+                dst,
+                dst,
+                temp
+            ])
         ])
     }
 }

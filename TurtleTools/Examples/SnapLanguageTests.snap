@@ -515,30 +515,30 @@ test "Struct Methods" {
 	let p4 = Point.sub(p1, p2)
 }
 
-//test "Traits" {
-//	// Define a trait and the collection of functions that make up its interface.
-//	trait Serial {
-//		func write(self: *Serial, bytes: []u8)
-//		func read(self: *Serial) -> []8
-//	}
-//
-//	struct SerialFake {
-//		cannedData: []u8
-//	}
-//
-//	impl Serial for SerialFake {
-//		func write(self: *SerialFake, bytes: []u8) {
-//			puts(bytes)
-//		}
-//
-//		func read(self: *SerialFake) -> []8 {
-//			return self.cannedData
-//		}
-//	}
-//
-//	let concreteObject = SerialFake {}
-//	let traitObject: Serial = concreteObject
-//}
+test "Traits" {
+	// Define a trait and the collection of functions that make up its interface.
+	trait Serial {
+		func write(self: *Serial, bytes: []u8)
+		func read(self: *Serial) -> []u8
+	}
+
+	struct SerialFake {
+		cannedData: []u8
+	}
+
+	impl Serial for SerialFake {
+		func write(self: *SerialFake, bytes: []u8) {
+			puts(bytes)
+		}
+
+		func read(self: *SerialFake) -> []u8 {
+			return self.cannedData
+		}
+	}
+
+	let concreteObject = SerialFake {}
+	let traitObject: Serial = concreteObject
+}
 
 test "Compiler Instinsics" {
 	// Halt execution immediately

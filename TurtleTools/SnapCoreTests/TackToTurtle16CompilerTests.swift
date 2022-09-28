@@ -2325,4 +2325,20 @@ class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(0), 1)
     }
+    
+    func testLEU8() throws {
+        let input = TackInstructionNode(instruction: .leu8, parameters:[
+            ParameterIdentifier("vr0"),
+            ParameterIdentifier("vr1"),
+            ParameterIdentifier("vr2")
+        ])
+        let assembly = try compile(input)
+        let debugger = makeDebugger(assembly: assembly)
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(1, 0xff00)
+        debugger.computer.setRegister(2, 0x00ff)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+    }
 }

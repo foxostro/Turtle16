@@ -2613,7 +2613,7 @@ func foo() {
         XCTAssertEqual(b, 42)
     }
     
-    func testFailToPrintStringInUnitTest() {
+    func testBUG_FailToPrintStringInUnitTest1() {
         var serialOutput: [UInt8] = []
         let onSerialOutput = { (value: UInt16) in
             serialOutput.append(UInt8(value & 0x00ff))
@@ -2625,7 +2625,7 @@ func foo() {
                               onSerialOutput: onSerialOutput)
         _ = run(options: options, program: """
             test "foo" {
-                let pad1: u16 = 0 // remove this line and the correct string prints
+                let pad1: u16 = 0
                 let a = "A"
                 puts(a)
             }
@@ -2633,5 +2633,56 @@ func foo() {
         
         let str = String(bytes: serialOutput, encoding: .utf8)
         XCTAssertEqual(str, "Apassed\n")
+    }
+    
+    func testBUG_PanicDuringIterationOfString() {
+        var serialOutput: [UInt8] = []
+        let onSerialOutput = { (value: UInt16) in
+            serialOutput.append(UInt8(value & 0x00ff))
+        }
+        let options = Options(isBoundsCheckEnabled: true,
+                              shouldDefineCompilerIntrinsicFunctions: true,
+                              runtimeSupport: kRuntime,
+                              onSerialOutput: onSerialOutput)
+        _ = run(options: options, program: """
+            func foo() {
+                let s = "a"
+                for i in s {
+                    let str: [1]u8 = [1]u8{65} // This `65' is overwriting something in memory, leading to the panic. The previous value is 0.
+                }
+            }
+            foo()
+            """)
+        
+        let str = String(bytes: serialOutput, encoding: .utf8)
+        let didNotPanic = (str != nil) && !(str!.hasPrefix("PANIC:"))
+        if !didNotPanic {
+            print("output: \(str ?? "")")
+        }
+        XCTAssertTrue(didNotPanic)
+    }
+    
+    func testBUG_InfiniteLoopDuringIterationOfString() {
+        var serialOutput: [UInt8] = []
+        let onSerialOutput = { (value: UInt16) in
+            serialOutput.append(UInt8(value & 0x00ff))
+        }
+        let options = Options(isBoundsCheckEnabled: true,
+                              shouldDefineCompilerIntrinsicFunctions: true,
+                              runtimeSupport: kRuntime,
+                              shouldRunSpecificTest: "foo",
+                              onSerialOutput: onSerialOutput)
+        _ = run(options: options, program: """
+            test "foo" {
+                for i in 0..1 {
+                    let str = "A"
+                    for ch in str {
+                    }
+                }
+            }
+            """)
+        
+        let str = String(bytes: serialOutput, encoding: .utf8)
+        XCTAssertEqual(str, "passed\n")
     }
 }

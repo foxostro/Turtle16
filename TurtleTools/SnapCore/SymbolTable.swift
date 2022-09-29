@@ -886,6 +886,7 @@ public class SymbolTable: NSObject {
     }
     
     public func bind(identifier: String, symbol: Symbol) {
+//      print("bind: \(identifier) -> \(symbol.type) at offset=\(symbol.offset) and stackFrameIndex=\(stackFrameIndex)")
         symbolTable[identifier] = symbol
         if let index = declarationOrder.firstIndex(of: identifier) {
             declarationOrder.remove(at: index)

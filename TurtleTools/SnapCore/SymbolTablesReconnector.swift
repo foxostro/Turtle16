@@ -72,7 +72,6 @@ public class SymbolTablesReconnector: NSObject {
     func reconnect(block node: Block) {
         let parent = symbols
         node.symbols.parent = parent
-        node.symbols.storagePointer = parent?.storagePointer ?? 0
         node.symbols.stackFrameIndex = parent?.stackFrameIndex ?? 0
         
         symbols = node.symbols
@@ -85,7 +84,6 @@ public class SymbolTablesReconnector: NSObject {
     func reconnect(func node: FunctionDeclaration) {
         let parent = symbols
         node.symbols.parent = parent
-        node.symbols.storagePointer = 0
         node.symbols.stackFrameIndex = (parent?.stackFrameIndex ?? 0) + 1
         
         symbols = node.symbols

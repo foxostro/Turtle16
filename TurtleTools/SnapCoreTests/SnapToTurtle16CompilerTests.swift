@@ -2612,4 +2612,26 @@ func foo() {
         let b = debugger?.loadSymbolI16("b")
         XCTAssertEqual(b, 42)
     }
+    
+    func testFailToPrintStringInUnitTest() {
+        var serialOutput: [UInt8] = []
+        let onSerialOutput = { (value: UInt16) in
+            serialOutput.append(UInt8(value & 0x00ff))
+        }
+        let options = Options(isBoundsCheckEnabled: true,
+                              shouldDefineCompilerIntrinsicFunctions: true,
+                              runtimeSupport: kRuntime,
+                              shouldRunSpecificTest: "foo",
+                              onSerialOutput: onSerialOutput)
+        _ = run(options: options, program: """
+            test "foo" {
+                let pad1: u16 = 0 // remove this line and the correct string prints
+                let a = "A"
+                puts(a)
+            }
+            """)
+        
+        let str = String(bytes: serialOutput, encoding: .utf8)
+        XCTAssertEqual(str, "Apassed\n")
+    }
 }

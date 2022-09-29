@@ -3,12 +3,8 @@ var outputCursor: u16 = 0
 
 func print(s: []const u8) {
     for c in s {
-        puts("c: ")
-        putc(c)
-        puts("\n")
         printByte(c)
     }
-    puts("exit print")
 }
 
 func printByte(c: u8) {

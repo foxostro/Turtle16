@@ -1159,9 +1159,15 @@ class TackToTurtle16CompilerTests: XCTestCase {
             ParameterIdentifier("vr0"),
             ParameterNumber(255)
         ])
-        let expected = InstructionNode(instruction: kLI, parameters:[
-            ParameterIdentifier("r0"),
-            ParameterNumber(255)
+        let expected = Seq(children: [
+            InstructionNode(instruction: kLI, parameters:[
+                ParameterIdentifier("r0"),
+                ParameterNumber(0xff)
+            ]),
+            InstructionNode(instruction: kLUI, parameters:[
+                ParameterIdentifier("r0"),
+                ParameterNumber(0x00)
+            ])
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)

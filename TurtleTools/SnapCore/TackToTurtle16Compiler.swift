@@ -579,7 +579,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
     }
     
     func liu16(_ node: TackInstructionNode) -> AbstractSyntaxTreeNode? {
-        if let imm = (node.parameters[1] as? ParameterNumber)?.value, imm > 255 {
+        if let imm = (node.parameters[1] as? ParameterNumber)?.value, imm > 127 {
             let imm16 = UInt16(imm)
             let dst = corresponding(param: node.parameters[0])
             let lower = Int(imm16 & 0x00ff)

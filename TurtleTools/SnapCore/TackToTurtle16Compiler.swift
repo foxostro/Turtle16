@@ -696,7 +696,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
                 tempLeft,
                 right
             ]),
-            InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kBLT, parameters: [
+            InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kBLTU, parameters: [
                 ParameterIdentifier(tail)
             ]),
             InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kSUB, parameters: [
@@ -740,7 +740,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
                 tempLeft,
                 right
             ]),
-            InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kBLT, parameters: [
+            InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kBLTU, parameters: [
                 ParameterIdentifier(tail)
             ]),
             InstructionNode(sourceAnchor: node.sourceAnchor, instruction: kSUB, parameters: [

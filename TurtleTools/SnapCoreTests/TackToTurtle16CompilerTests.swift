@@ -1284,6 +1284,20 @@ class TackToTurtle16CompilerTests: XCTestCase {
         XCTAssertEqual(debugger.computer.getRegister(3), 3)
     }
     
+    func testDIV16_0xabcd_div_16() throws {
+        let input = TackInstructionNode(instruction: .div16, parameters:[
+            ParameterIdentifier("vr2"),
+            ParameterIdentifier("vr1"),
+            ParameterIdentifier("vr0")
+        ])
+        let debugger = makeDebugger(assembly: try compile(input))
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, 16)
+        debugger.computer.setRegister(1, 0xabcd)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(3), 0xabc)
+    }
+    
     func testMOD16_0_mod_0() throws {
         let input = TackInstructionNode(instruction: .mod16, parameters:[
             ParameterIdentifier("vr2"),
@@ -1312,6 +1326,20 @@ class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.setRegister(2, 100)
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(2), 1)
+    }
+    
+    func testMOD16_0xabcd_mod_16() throws {
+        let input = TackInstructionNode(instruction: .mod16, parameters:[
+            ParameterIdentifier("vr2"),
+            ParameterIdentifier("vr1"),
+            ParameterIdentifier("vr0")
+        ])
+        let debugger = makeDebugger(assembly: try compile(input))
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, 16)
+        debugger.computer.setRegister(1, 0xabcd)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(2), 13)
     }
     
     func testLSL16_0_shift_0() throws {

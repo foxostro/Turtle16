@@ -2685,4 +2685,27 @@ func foo() {
         let str = String(bytes: serialOutput, encoding: .utf8)
         XCTAssertEqual(str, "passed\n")
     }
+    
+    func testBUG_printU16_produces_garbage() {
+        let debugger = run(program: """
+            var value: u16 = 0xabcd
+            var buffer = [_]u8{'0', '0', '0', '0'}
+            var i: u8 = 3
+            while value != 0 {
+                let rem = (value % 16) as u8
+                if rem > 9 {
+                    buffer[i] = rem - 10 + 'a'
+                } else {
+                    buffer[i] = rem + '0'
+                }
+                value = value / 16
+                i = i - 1
+            }
+            """)
+        let buffer = debugger?.loadSymbolString("buffer")
+        XCTAssertEqual(buffer, "abcd")
+        
+        let value = debugger?.loadSymbolU16("value")
+        XCTAssertEqual(value, 0)
+    }
 }

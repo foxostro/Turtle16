@@ -43,18 +43,18 @@ impl SerialFake {
     }
 
     func isOutputEqualTo(self: *SerialFake, expected: []const u8) -> bool {
-    	if expected.count > self.outputBuffer.count {
-    		return false
-    	}
-    	if self.outputCursor != expected.count {
-    		return false
-    	}
-    	for i in 0..(expected.count) {
-    		if self.outputBuffer[i] != expected[i] {
-    			return false
-    		}
-    	}
-    	return true
+        if expected.count > self.outputBuffer.count {
+            return false
+        }
+        if self.outputCursor != expected.count {
+            return false
+        }
+        for i in 0..(expected.count) {
+            if self.outputBuffer[i] != expected[i] {
+                return false
+            }
+        }
+        return true
     }
 
     func provideInput(self: *SerialFake, s: []const u8) {
@@ -146,7 +146,7 @@ impl XmodemPacket {
                 if 0 != (crc & 0x8000) {
                     crc = (crc << 1) ^ poly
                 } else {
-                  crc = crc << 1
+                    crc = crc << 1
                 }
             }
         }
@@ -304,61 +304,64 @@ func printU16(serial: Serial, value_: u16) {
 }
 
 test "print u8" {
-	var serialFake = SerialFake.init()
-	printU8(&serialFake, 0xab)
-	assert(serialFake.isOutputEqualTo("0xab"))
+    var serialFake = SerialFake.init()
+    printU8(&serialFake, 0xab)
+    assert(serialFake.isOutputEqualTo("0xab"))
 }
 
 test "print u16" {
-	var serialFake = SerialFake.init()
-	printU16(&serialFake, 0xabcd)
-	assert(serialFake.isOutputEqualTo("0xabcd"))
+    var serialFake = SerialFake.init()
+    printU16(&serialFake, 0xabcd)
+    assert(serialFake.isOutputEqualTo("0xabcd"))
 }
 
 test "read byte when none is available" {
-	var serialFake = SerialFake.init()
-	let c = serialFake.readByte()
-	match c {
-		(value: u8) -> {
-			assert(false)
-		},
-		(n: None) -> {
-			assert(true)
-		}
-	}
+    var serialFake = SerialFake.init()
+    let c = serialFake.readByte()
+    match c {
+        (value: u8) -> {
+            assert(false)
+        },
+        (n: None) -> {
+            assert(true)
+        }
+    }
 }
 
 test "read byte when empty string is available" {
-	var serialFake = SerialFake.init()
-	serialFake.provideInput("")
-	let c = serialFake.readByte()
-	match c {
-		(value: u8) -> {
-			assert(false)
-		},
-		(n: None) -> {
-			assert(true)
-		}
-	}
+    var serialFake = SerialFake.init()
+    let input = ""
+    serialFake.provideInput(input)
+    let c = serialFake.readByte()
+    match c {
+        (value: u8) -> {
+            assert(false)
+        },
+        (n: None) -> {
+            assert(true)
+        }
+    }
 }
 
 test "read one byte from serial" {
-	var serialFake = SerialFake.init()
-	serialFake.provideInput("a")
-	let a = serialFake.readByte()
-	assert(a is u8)
-	assert((a as u8) == 'a')
+    var serialFake = SerialFake.init()
+    let input = "a"
+    serialFake.provideInput(input)
+    let a = serialFake.readByte()
+    assert(a is u8)
+    assert((a as u8) == 'a')
 }
 
 test "read two bytes from serial" {
-	var serialFake = SerialFake.init()
-	serialFake.provideInput("ab")
-	let a = serialFake.readByte()
-	assert(a is u8)
-	assert((a as u8) == 'a')
-	let b = serialFake.readByte()
-	assert(b is u8)
-	assert((b as u8) == 'b')
+    var serialFake = SerialFake.init()
+    let input = "ab"
+    serialFake.provideInput(input)
+    let a = serialFake.readByte()
+    assert(a is u8)
+    assert((a as u8) == 'a')
+    let b = serialFake.readByte()
+    assert(b is u8)
+    assert((b as u8) == 'b')
 }
 
 test "compute packet checksum" {

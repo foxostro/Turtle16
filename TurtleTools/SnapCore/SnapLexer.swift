@@ -223,6 +223,9 @@ public class SnapLexer: Lexer {
             Rule(pattern: "asm\\b") {
                 TokenAsm(sourceAnchor: $0)
             },
+            Rule(pattern: "\"\"\"((?!\"\"\").)*\"\"\"", options: [.dotMatchesLineSeparators]) {[weak self] in
+                TokenLiteralString(sourceAnchor: $0, literal: self!.interpretQuotedStringMultiline(lexeme: String($0.text)))
+            },
             Rule(pattern: "\".*\"") {[weak self] in 
                 TokenLiteralString(sourceAnchor: $0, literal: self!.interpretQuotedString(lexeme: String($0.text)))
             },
@@ -273,7 +276,52 @@ public class SnapLexer: Lexer {
     }
     
     func interpretQuotedString(lexeme: String) -> String {
-        var result = String(lexeme.dropFirst().dropLast())
+        let str0 = String(lexeme.dropFirst().dropLast())
+        let str1 = mapEntities(str0)
+        return str1
+    }
+    
+    func interpretQuotedStringMultiline(lexeme: String) -> String {
+        let lines = lexeme.split(separator: "\n")
+        
+        guard lines.count > 1 else {
+            let str0 = String(lexeme.dropFirst(3).dropLast(3))
+            let str1 = mapEntities(str0)
+            return str1
+        }
+        
+        guard lines[0] == "\"\"\"" else {
+            fatalError("invalid multiline string and lexer interface has no way to raise a proper error here: a multiline string must begin with a newline")
+        }
+        
+        let lastLine = lines.last!
+        let regex = try! NSRegularExpression(pattern: "^(?<leadingWhitespace>[ \t]*).*$")
+        
+        let leadingWhitespace: String
+        if let match = regex.firstMatch(in: String(lastLine), range: NSRange(lastLine.startIndex..., in: lastLine)) {
+            let nsRange = match.range(withName: "leadingWhitespace")
+            let range = Range(nsRange, in: lastLine)!
+            leadingWhitespace = String(lastLine[range])
+        }
+        else {
+            leadingWhitespace = ""
+        }
+        
+        let str0 = lines[1..<lines.count-1].map { line in
+            if line.hasPrefix(leadingWhitespace) {
+                return line.dropFirst(leadingWhitespace.count)
+            }
+            else {
+                return line
+            }
+        }.joined()
+        
+        let str1 = mapEntities(str0)
+        return str1
+    }
+    
+    fileprivate func mapEntities(_ str: String) -> String {
+        var result = str
         let map = ["\0" : "\\0",
                    "\t" : "\\t",
                    "\n" : "\\n",

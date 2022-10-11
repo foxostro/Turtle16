@@ -381,8 +381,13 @@ let n = a.count
 
 // A string literal is syntax sugar for an [_]u8 array literal where the
 // elements of the array are the UTF-8 encoded bytes of the string.
-let s = "a UTF-8 string is an array of bytes"
+let s0 = "a UTF-8 string is an array of bytes"
 let d: u8 = s[0]
+
+// A multiline string literal is also possible
+let s1 = """
+    a UTF-8 string is an array of bytes
+    """
 ```
 
 Additionally, a string may contain any of several escape sequences:

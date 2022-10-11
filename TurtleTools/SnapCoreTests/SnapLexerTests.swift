@@ -554,6 +554,40 @@ class SnapLexerTests: XCTestCase {
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(16, 16))])
     }
     
+    func testTokenizeMultilineStringLiteral_OneLine() {
+        let tokenizer = SnapLexer("""
+\"\"\"test\"\"\"
+""")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenLiteralString(sourceAnchor: tokenizer.lineMapper.anchor(0, 10),
+                                                             literal: "test"),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(10, 10))])
+    }
+    
+    func testTokenizeMultilineStringLiteral_NoLeadingWhitespace() {
+        let tokenizer = SnapLexer("""
+\"\"\"
+test
+\"\"\"
+""")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenLiteralString(sourceAnchor: tokenizer.lineMapper.anchor(0, 12),
+                                                             literal: "test"),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(12, 12))])
+    }
+    
+    func testTokenizeMultilineStringLiteral_WithLeadingWhitespace() {
+        let tokenizer = SnapLexer("""
+\"\"\"
+    test
+    \"\"\"
+""")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenLiteralString(sourceAnchor: tokenizer.lineMapper.anchor(0, 20),
+                                                             literal: "test"),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(20, 20))])
+    }
+    
     func testTokenizeUnderscore() {
         let tokenizer = SnapLexer("_")
         tokenizer.scanTokens()

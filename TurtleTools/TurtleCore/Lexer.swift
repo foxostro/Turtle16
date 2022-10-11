@@ -18,8 +18,8 @@ open class Lexer: NSObject {
     public class Rule : NSObject {
         public let regex: NSRegularExpression?
         public let emit: (SourceAnchor) -> Token?
-        public init(pattern: String, emit: @escaping (SourceAnchor) -> Token?) {
-            self.regex = try? NSRegularExpression(pattern: "^\(pattern)", options: [])
+        public init(pattern: String, options: NSRegularExpression.Options = [], emit: @escaping (SourceAnchor) -> Token?) {
+            self.regex = try? NSRegularExpression(pattern: "^\(pattern)", options: options)
             self.emit = emit
         }
     }

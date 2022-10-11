@@ -284,8 +284,13 @@ test "Arrays" {
 
 	// A string literal is syntax sugar for an [_]u8 array literal where the
 	// elements of the array are the UTF-8 encoded bytes of the string.
-	let s = "a UTF-8 string is an array of bytes"
-	let d: u8 = s[0]
+	let s0 = "a UTF-8 string is an array of bytes"
+	let d: u8 = s0[0]
+
+	// A multiline string literal is also possible
+	let s1 = """
+        a UTF-8 string is an array of bytes
+        """
 
 	// Strings may contain several types of escape sequences commonly seen in other languages.
 	let escapeCharacters = "\t\n\r\"\'\\\0"
@@ -572,5 +577,7 @@ test "Runtime Support: panic" {
 
 test "Inline Assembly" {
 	// Insert assembly code
-	asm("NOP")
+	asm("""
+	    NOP
+		""")
 }

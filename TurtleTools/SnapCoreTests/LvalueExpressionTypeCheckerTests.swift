@@ -236,4 +236,12 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
         let result = try typeChecker.check(expression: expr)
         XCTAssertEqual(result, .arithmeticType(.mutableInt(.u16)))
     }
+    
+    func testSizeOfHasNoLvalue() {
+        let typeChecker = LvalueExpressionTypeChecker()
+        let expr = Expression.SizeOf(ExprUtils.makeU8(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertNil(result)
+    }
 }

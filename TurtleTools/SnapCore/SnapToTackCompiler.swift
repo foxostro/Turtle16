@@ -828,6 +828,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             result = try rvalue(structInitializer: node)
         case let node as Expression.Call:
             result = try rvalue(call: node)
+        case let node as Expression.SizeOf:
+            result = try rvalue(sizeof: node)
         default:
             throw CompilerError(message: "unimplemented: `\(expr)'")
         }
@@ -2495,5 +2497,17 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             return nil
         }
         return try rewriteStructMemberFunctionCall(match)
+    }
+    
+    func rvalue(sizeof expr: Expression.SizeOf) throws -> AbstractSyntaxTreeNode {
+        let targetType = try typeCheck(rexpr: expr.expr)
+        let size = globalEnvironment.memoryLayoutStrategy.sizeof(type: targetType)
+        let dest = nextRegister()
+        pushRegister(dest)
+        let result = TackInstructionNode(instruction: .liu16, parameters: [
+            ParameterIdentifier(dest),
+            ParameterNumber(size)
+        ])
+        return result
     }
 }

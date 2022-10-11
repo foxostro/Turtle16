@@ -763,7 +763,7 @@ public class SnapParser: Parser {
     }
     
     private func consumeRange() throws -> Expression {
-        let beginExpr = try consumeCall()
+        let beginExpr = try consumeSizeof()
         if nil != accept(TokenDoubleDot.self) {
             let limitExpr = try consumeCall()
             let sourceAnchor = beginExpr.sourceAnchor?.union(limitExpr.sourceAnchor)
@@ -776,6 +776,24 @@ public class SnapParser: Parser {
                                                 ])
         }
         return beginExpr
+    }
+    
+    private func consumeSizeof() throws -> Expression {
+        if let token = accept([TokenSizeof.self]) {
+            try expect(type: TokenParenLeft.self, error: CompilerError(sourceAnchor: token.sourceAnchor, message: "expected `(' in sizeof expression"))
+            let expr: Expression
+            do {
+                expr = try consumeExpression()
+            } catch _ as CompilerError {
+                expr = try consumeType() // try again as a type expression
+            }
+            let rparen = try expect(type: TokenParenRight.self, error: CompilerError(sourceAnchor: token.sourceAnchor, message: "expected `)' in sizeof expression"))
+            let sourceAnchor = token.sourceAnchor?.union(rparen.sourceAnchor)
+            return Expression.SizeOf(sourceAnchor: sourceAnchor, expr: expr)
+        }
+        else {
+            return try consumeCall()
+        }
     }
     
     private func consumeCall() throws -> Expression {

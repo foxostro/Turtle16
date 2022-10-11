@@ -762,4 +762,11 @@ test
         XCTAssertEqual(tokenizer.tokens, [TokenAsm(sourceAnchor: tokenizer.lineMapper.anchor(0, 3)),
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3))])
     }
+    
+    func testTokenizeSizeof() {
+        let tokenizer = SnapLexer("sizeof")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenSizeof(sourceAnchor: tokenizer.lineMapper.anchor(0, 6)),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(6, 6))])
+    }
 }

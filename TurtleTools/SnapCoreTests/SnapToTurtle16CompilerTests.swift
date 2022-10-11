@@ -2691,4 +2691,20 @@ func foo() {
         let value = debugger?.loadSymbolU16("value")
         XCTAssertEqual(value, 0)
     }
+    
+    func test_EndToEndIntegration_SizeOf_Variable() {
+        let debugger = run(program: """
+            let a = sizeof("foo")
+            """)
+        let a = debugger?.loadSymbolU16("a")
+        XCTAssertEqual(a, 3)
+    }
+    
+    func test_EndToEndIntegration_SizeOf_Type() {
+        let debugger = run(program: """
+            let a = sizeof(u8)
+            """)
+        let a = debugger?.loadSymbolU16("a")
+        XCTAssertEqual(a, 1)
+    }
 }

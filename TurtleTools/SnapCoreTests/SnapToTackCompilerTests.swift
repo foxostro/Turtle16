@@ -5749,4 +5749,15 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         XCTAssertEqual(actual, expected)
     }
+    
+    func testRvalue_SizeOf() throws {
+        let compiler = makeCompiler()
+        let actual = try compiler.rvalue(expr: Expression.SizeOf(ExprUtils.makeU8(value: 1)))
+        let expected = TackInstructionNode(instruction: .liu16, parameters: [
+            ParameterIdentifier("vr0"),
+            ParameterNumber(1)
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr0")
+    }
 }

@@ -1339,4 +1339,60 @@ public class Expression: AbstractSyntaxTreeNode {
             return hasher.finalize()
         }
     }
+    
+    public class SizeOf: Expression {
+        public let expr: Expression
+        
+        public convenience init(_ expr: Expression) {
+            self.init(sourceAnchor: nil, expr: expr)
+        }
+        
+        public init(sourceAnchor: SourceAnchor? = nil, expr: Expression) {
+            self.expr = expr.withSourceAnchor(sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor)
+        }
+        
+        public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> SizeOf {
+            if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+                return self
+            }
+            return SizeOf(sourceAnchor: sourceAnchor, expr: expr)
+        }
+        
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            return String(format: "%@%@(%@)",
+                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+                          String(describing: type(of: self)),
+                          expr.makeIndentedDescription(depth: depth + 1))
+        }
+        
+        public static func ==(lhs: SizeOf, rhs: SizeOf) -> Bool {
+            return lhs.isEqual(rhs)
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else {
+                return false
+            }
+            guard type(of: rhs!) == type(of: self) else {
+                return false
+            }
+            guard super.isEqual(rhs) else {
+                return false
+            }
+            guard let rhs = rhs as? SizeOf else {
+                return false
+            }
+            guard expr == rhs.expr else {
+                return false
+            }
+            return true
+        }
+        
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(expr)
+            return hasher.finalize()
+        }
+    }
 }

@@ -764,3 +764,15 @@ It's possible to directly insert assembly code into the compiled program too. (i
 ```
 asm("NOP")
 ```
+
+Use sizeof() to determine the size of an object. This accepts and expression. The type of the expression is evaluated and sizeof() evaluates to the size of that type.
+```
+let sizeOfU8 = sizeof(u8)
+assert(sizeOfU8 == 1)
+
+let sizeOfVar = sizeof(sizeOfU8)
+assert(sizeOfVar == 1)
+
+let sizeOfString = sizeof("test")
+assert(sizeOfString == 4)
+```

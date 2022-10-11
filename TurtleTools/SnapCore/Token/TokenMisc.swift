@@ -41,3 +41,4 @@ public class TokenTest : Token {}
 public class TokenImport : Token {}
 public class TokenTrait : Token {}
 public class TokenAsm : Token {}
+public class TokenSizeof : Token {}

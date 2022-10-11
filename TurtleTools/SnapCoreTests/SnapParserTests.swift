@@ -2776,4 +2776,13 @@ impl Serial for SerialFake {
             Asm(sourceAnchor: parser.lineMapper.anchor(0, 7), assemblyCode: "")
         ]))
     }
+    
+    func testSizeOf() {
+        let parser = parse("sizeof(foo)")
+        XCTAssertFalse(parser.hasError)
+        let foo = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(7, 10), identifier: "foo")
+        let sz = Expression.SizeOf(sourceAnchor: parser.lineMapper.anchor(0, 11), expr: foo)
+        let top = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 11), children: [sz])
+        XCTAssertEqual(parser.syntaxTree, top)
+    }
 }

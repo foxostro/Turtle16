@@ -76,6 +76,8 @@ public class RvalueExpressionTypeChecker: NSObject {
             return try check(typeOf: expr)
         case let expr as Expression.Bitcast:
             return try check(bitcast: expr)
+        case let expr as Expression.SizeOf:
+            return try check(sizeOf: expr)
         default:
             throw unsupportedError(expression: expression)
         }
@@ -903,6 +905,10 @@ public class RvalueExpressionTypeChecker: NSObject {
     
     public func check(bitcast expr: Expression.Bitcast) throws -> SymbolType {
         return try rvalueContext().check(expression: expr.targetType)
+    }
+    
+    public func check(sizeOf expr: Expression.SizeOf) throws -> SymbolType {
+        return .arithmeticType(.immutableInt(.u16)) // TODO: should the runtime provide a `usize' typealias for this?
     }
     
     func unsupportedError(expression: Expression) -> Error {

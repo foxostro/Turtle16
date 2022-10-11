@@ -5176,4 +5176,12 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let result = try typeChecker.check(expression: expr)
         XCTAssertEqual(result, traitObjectType)
     }
+    
+    func testSizeOfIsU16() {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.SizeOf(ExprUtils.makeU8(value: 1))
+        var result: SymbolType? = nil
+        XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
+        XCTAssertEqual(result, .arithmeticType(.immutableInt(.u16)))
+    }
 }

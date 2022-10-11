@@ -223,6 +223,9 @@ public class SnapLexer: Lexer {
             Rule(pattern: "asm\\b") {
                 TokenAsm(sourceAnchor: $0)
             },
+            Rule(pattern: "sizeof\\b") {
+                TokenSizeof(sourceAnchor: $0)
+            },
             Rule(pattern: "\"\"\"((?!\"\"\").)*\"\"\"", options: [.dotMatchesLineSeparators]) {[weak self] in
                 TokenLiteralString(sourceAnchor: $0, literal: self!.interpretQuotedStringMultiline(lexeme: String($0.text)))
             },

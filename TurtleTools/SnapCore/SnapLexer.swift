@@ -314,7 +314,7 @@ public class SnapLexer: Lexer {
             else {
                 return line
             }
-        }.joined()
+        }.joined(separator: "\n")
         
         let str1 = mapEntities(str0)
         return str1

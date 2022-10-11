@@ -579,13 +579,14 @@ test
     func testTokenizeMultilineStringLiteral_WithLeadingWhitespace() {
         let tokenizer = SnapLexer("""
 \"\"\"
-    test
+    foo
+    bar
     \"\"\"
 """)
         tokenizer.scanTokens()
-        XCTAssertEqual(tokenizer.tokens, [TokenLiteralString(sourceAnchor: tokenizer.lineMapper.anchor(0, 20),
-                                                             literal: "test"),
-                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(20, 20))])
+        XCTAssertEqual(tokenizer.tokens, [TokenLiteralString(sourceAnchor: tokenizer.lineMapper.anchor(0, 27),
+                                                             literal: "foo\nbar"),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(27, 27))])
     }
     
     func testTokenizeUnderscore() {

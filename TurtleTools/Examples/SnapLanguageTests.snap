@@ -287,10 +287,11 @@ test "Arrays" {
 	let s0 = "a UTF-8 string is an array of bytes"
 	let d: u8 = s0[0]
 
-	// A multiline string literal is also possible
+	// Use triple-quotes to delimit a multiline string literal.
 	let s1 = """
-        a UTF-8 string is an array of bytes
-        """
+	Use triple-quotes to delimit
+	a multiline string literal.
+	"""
 
 	// Strings may contain several types of escape sequences commonly seen in other languages.
 	let escapeCharacters = "\t\n\r\"\'\\\0"
@@ -578,6 +579,8 @@ test "Runtime Support: panic" {
 test "Inline Assembly" {
 	// Insert assembly code
 	asm("""
-	    NOP
+		NOP
+		NOP
+		NOP
 		""")
 }

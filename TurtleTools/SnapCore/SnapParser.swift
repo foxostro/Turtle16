@@ -751,7 +751,7 @@ public class SnapParser: Parser {
     }
     
     private func consumeIs() throws -> Expression {
-        let expr = try consumeCall()
+        let expr = try consumeRange()
         if nil != accept(TokenIs.self) {
             let testType = try consumeType()
             return Expression.Is(sourceAnchor: expr.sourceAnchor?.union(testType.sourceAnchor), expr: expr, testType: testType)
@@ -759,8 +759,24 @@ public class SnapParser: Parser {
         return expr
     }
     
+    private func consumeRange() throws -> Expression {
+        let beginExpr = try consumeCall()
+        if nil != accept(TokenDoubleDot.self) {
+            let limitExpr = try consumeCall()
+            let sourceAnchor = beginExpr.sourceAnchor?.union(limitExpr.sourceAnchor)
+            typealias Arg = Expression.StructInitializer.Argument
+            return Expression.StructInitializer(sourceAnchor: sourceAnchor,
+                                                identifier: Expression.Identifier("Range"),
+                                                arguments: [
+                                                    Arg(name: "begin", expr: beginExpr),
+                                                    Arg(name: "limit", expr: limitExpr)
+                                                ])
+        }
+        return beginExpr
+    }
+    
     private func consumeCall() throws -> Expression {
-        var expr = try consumeRange()
+        var expr = try consumePrimary()
         while true {
             if nil != accept(TokenParenLeft.self) as? TokenParenLeft {
                 var arguments: [Expression] = []
@@ -792,22 +808,6 @@ public class SnapParser: Parser {
             }
         }
         return expr
-    }
-    
-    private func consumeRange() throws -> Expression {
-        let beginExpr = try consumePrimary()
-        if nil != accept(TokenDoubleDot.self) {
-            let limitExpr = try consumePrimary()
-            let sourceAnchor = beginExpr.sourceAnchor?.union(limitExpr.sourceAnchor)
-            typealias Arg = Expression.StructInitializer.Argument
-            return Expression.StructInitializer(sourceAnchor: sourceAnchor,
-                                                identifier: Expression.Identifier("Range"),
-                                                arguments: [
-                                                    Arg(name: "begin", expr: beginExpr),
-                                                    Arg(name: "limit", expr: limitExpr)
-                                                ])
-        }
-        return beginExpr
     }
     
     private func consumePrimary() throws -> Expression {

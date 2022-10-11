@@ -2700,4 +2700,46 @@ impl Serial for SerialFake {
                                           left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
                                           right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(3, 4), value: 2))])
     }
+    
+    func testRangeExpressionCombinedWithGetExpressionInLimit() {
+        // This test tracks a bug in the parser where the start and limit parts
+        // of the expression do not parse as expected when they contain a Get
+        // expression.
+        let parser = parse("0..self.arr.count")
+        let zero = Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 0)
+        let s = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(3, 7), identifier: "self")
+        let arr = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(8, 11), identifier: "arr")
+        let s_arr = Expression.Get(sourceAnchor: parser.lineMapper.anchor(3, 11), expr: s, member: arr)
+        let count = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(12, 17), identifier: "count")
+        let s_arr_count = Expression.Get(sourceAnchor: parser.lineMapper.anchor(3, 17), expr: s_arr, member: count)
+        let range = Expression.StructInitializer(sourceAnchor: parser.lineMapper.anchor(0, 17),
+                                                 identifier: Expression.Identifier("Range"),
+                                                 arguments: [
+                                                    Expression.StructInitializer.Argument(name: "begin", expr: zero),
+                                                    Expression.StructInitializer.Argument(name: "limit", expr: s_arr_count)
+                                                 ])
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [range])
+    }
+    
+    func testRangeExpressionCombinedWithGetExpressionInBegin() {
+        // This test tracks a bug in the parser where the start and limit parts
+        // of the expression do not parse as expected when they contain a Get
+        // expression.
+        let parser = parse("self.arr.count..0")
+        let zero = Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(16, 17), value: 0)
+        let s = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 4), identifier: "self")
+        let arr = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "arr")
+        let s_arr = Expression.Get(sourceAnchor: parser.lineMapper.anchor(0, 8), expr: s, member: arr)
+        let count = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(9, 14), identifier: "count")
+        let s_arr_count = Expression.Get(sourceAnchor: parser.lineMapper.anchor(0, 14), expr: s_arr, member: count)
+        let range = Expression.StructInitializer(sourceAnchor: parser.lineMapper.anchor(0, 17),
+                                                 identifier: Expression.Identifier("Range"),
+                                                 arguments: [
+                                                    Expression.StructInitializer.Argument(name: "begin", expr: s_arr_count),
+                                                    Expression.StructInitializer.Argument(name: "limit", expr: zero)
+                                                 ])
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree?.children, [range])
+    }
 }

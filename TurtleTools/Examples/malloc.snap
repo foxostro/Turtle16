@@ -1,0 +1,24 @@
+import stdlib
+
+struct Point2 {
+	x: u16,
+	y: u16
+}
+
+impl Point2 {
+	func clone(self: *Point2) -> *Point2 {
+		// Until generics are implemented, callers of malloc must use an unsafe
+		// bitcast to convert the returned address to an actual pointer.
+		let point = malloc(sizeof(Point2)) bitcastAs *Point2
+		point.x = self.x
+		point.y = self.y
+		return point
+	}
+}
+
+test "Clone on the heap" {
+	let p1 = Point2 { .x = 100, .y = 200 }
+	let p2 = p1.clone()
+	assert(p1.x == p2.x)
+	assert(p1.y == p2.y)
+}

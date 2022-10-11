@@ -1,2 +1,16 @@
 public struct None {}
 public let none = None {}
+
+public typealias usize = u16
+
+let kHeapStart: usize = 0x1000
+var addrOfNextAllocation: usize = kHeapStart
+
+// Simple bump allocator for demonstration purposes.
+// Until generics are implemented, the caller will have to perform an
+// unsafe bitcast to convert the return value to an actual pointer.
+public func malloc(size: usize) -> usize {
+    let result = addrOfNextAllocation
+    addrOfNextAllocation = addrOfNextAllocation + size
+    return result
+}

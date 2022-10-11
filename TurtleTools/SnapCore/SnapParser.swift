@@ -81,6 +81,9 @@ public class SnapParser: Parser {
         else if let token = accept(TokenImport.self) as? TokenImport {
             result = try consumeImport(token)
         }
+        else if let token = accept(TokenAsm.self) as? TokenAsm {
+            result = try consumeAsm(token)
+        }
         else {
             result = [try consumeExpression()]
         }
@@ -1132,5 +1135,13 @@ public class SnapParser: Parser {
         let name = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in import statement"))
         let sourceAnchor = tokenImport.sourceAnchor?.union(name.sourceAnchor)
         return [Import(sourceAnchor: sourceAnchor, moduleName: name.lexeme)]
+    }
+    
+    private func consumeAsm(_ tokenAsm: TokenAsm) throws -> [AbstractSyntaxTreeNode] {
+        _ = try expect(type: TokenParenLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `(' in asm statement"))
+        let code = try expect(type: TokenLiteralString.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected string literal containing assembly code in asm statement")) as! TokenLiteralString
+        let rightParen = try expect(type: TokenParenRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `)' in asm statement"))
+        let sourceAnchor = tokenAsm.sourceAnchor?.union(rightParen.sourceAnchor)
+        return [Asm(sourceAnchor: sourceAnchor, assemblyCode: code.literal)]
     }
 }

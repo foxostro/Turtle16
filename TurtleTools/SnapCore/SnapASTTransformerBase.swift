@@ -58,6 +58,8 @@ public class SnapASTTransformerBase: NSObject {
             result = try compile(typealias: node)
         case let node as Import:
             result = try compile(import: node)
+        case let node as Asm:
+            result = try compile(asm: node)
         case let node as Goto:
             result = try compile(goto: node)
         case let node as GotoIfFalse:
@@ -196,6 +198,10 @@ public class SnapASTTransformerBase: NSObject {
     }
     
     public func compile(import node: Import) throws -> AbstractSyntaxTreeNode? {
+        return node
+    }
+    
+    public func compile(asm node: Asm) throws -> AbstractSyntaxTreeNode? {
         return node
     }
     

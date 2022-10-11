@@ -754,3 +754,8 @@ Print the specified diagnostic message and terminate the program.
 ```
 func panic(message: []const u8)
 ```
+
+It's possible to directly insert assembly code into the compiled program too. (inline assembly) This is an escape hatch which allows interacting with hardware features which are not readily exposed in the Snap programming language.
+```
+asm("NOP")
+```

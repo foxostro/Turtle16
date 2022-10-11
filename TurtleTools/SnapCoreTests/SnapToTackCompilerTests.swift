@@ -5720,4 +5720,33 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr1")
     }
+    
+    func testAsm_Empty() throws {
+        let compiler = makeCompiler()
+        let actual = try compiler.compile(asm: Asm(assemblyCode: ""))
+        let expected = Seq(children: [])
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testAsm_HltWithNoParameters() throws {
+        let compiler = makeCompiler()
+        let actual = try compiler.compile(asm: Asm(assemblyCode: "HLT"))
+        let expected = Seq(children: [
+            InstructionNode(instruction: "HLT")
+        ])
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testAsm_AddWithParameters() throws {
+        let compiler = makeCompiler()
+        let actual = try compiler.compile(asm: Asm(assemblyCode: "ADD r0, r1, r2"))
+        let expected = Seq(children: [
+            InstructionNode(instruction: "ADD", parameters: [
+                ParameterIdentifier("r0"),
+                ParameterIdentifier("r1"),
+                ParameterIdentifier("r2")
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+    }
 }

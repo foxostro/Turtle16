@@ -569,3 +569,8 @@ test "Runtime Support: puts" {
 test "Runtime Support: panic" {
 	panic("Just making sure we can panic...")
 }
+
+test "Inline Assembly" {
+	// Insert assembly code
+	asm("NOP")
+}

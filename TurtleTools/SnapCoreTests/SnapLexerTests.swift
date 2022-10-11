@@ -720,4 +720,11 @@ class SnapLexerTests: XCTestCase {
         XCTAssertEqual(tokenizer.tokens, [TokenOperator(sourceAnchor: tokenizer.lineMapper.anchor(0, 1), op: .tilde),
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1))])
     }
+    
+    func testTokenizeAsm() {
+        let tokenizer = SnapLexer("asm")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenAsm(sourceAnchor: tokenizer.lineMapper.anchor(0, 3)),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(3, 3))])
+    }
 }

@@ -2742,4 +2742,38 @@ impl Serial for SerialFake {
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [range])
     }
+    
+    func testAsm_MalformedMissingLeftParen() {
+        let parser = parse("asm")
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(3, 3))
+        XCTAssertEqual(parser.errors.first?.message, "expected `(' in asm statement")
+    }
+    
+    func testAsm_MalformedMissingString() {
+        let parser = parse("asm(1")
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(4, 5))
+        XCTAssertEqual(parser.errors.first?.message, "expected string literal containing assembly code in asm statement")
+    }
+    
+    func testAsm_MalformedMissingRightParen() {
+        let parser = parse("asm(\"\"")
+        XCTAssertTrue(parser.hasError)
+        XCTAssertNil(parser.syntaxTree)
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(5, 5))
+        XCTAssertEqual(parser.errors.first?.message, "expected `)' in asm statement")
+    }
+    
+    func testAsm_WellFormed() {
+        let parser = parse("""
+            asm("")
+            """)
+        XCTAssertFalse(parser.hasError)
+        XCTAssertEqual(parser.syntaxTree, TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 7), children: [
+            Asm(sourceAnchor: parser.lineMapper.anchor(0, 7), assemblyCode: "")
+        ]))
+    }
 }

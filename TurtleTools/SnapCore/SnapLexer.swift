@@ -220,6 +220,9 @@ public class SnapLexer: Lexer {
             Rule(pattern: "import\\b") {
                 TokenImport(sourceAnchor: $0)
             },
+            Rule(pattern: "asm\\b") {
+                TokenAsm(sourceAnchor: $0)
+            },
             Rule(pattern: "\".*\"") {[weak self] in 
                 TokenLiteralString(sourceAnchor: $0, literal: self!.interpretQuotedString(lexeme: String($0.text)))
             },

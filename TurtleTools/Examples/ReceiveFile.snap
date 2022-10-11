@@ -130,7 +130,7 @@ impl XmodemPacket {
         packet.packetNumber = 1
         packet.inversePacketNumber = 254
         packet.crc = 0x00
-        for i in 0..(packet.payload.count) {
+        for i in 0..packet.payload.count {
             packet.payload[i] = 0
         }
         return packet

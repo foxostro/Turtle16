@@ -26,7 +26,6 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     public internal(set) var registerStack: [String] = []
     var nextRegisterIndex = 0
     let fp = "fp"
-    let kHalt = "hlt"
     let kOOB = "__oob"
     var subroutines: [Subroutine] = []
     
@@ -121,10 +120,12 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     func defineCompilerIntrinsicFunctions() {
-        // Define the other compiler intrinsic functions with stub implementations that immediately halt the running program.
-        subroutines.append(Subroutine(identifier: kHalt, children: [
-            TackInstructionNode(instruction: .hlt)
-        ]))
+        // Define the other compiler intrinsic functions here by appending a
+        // Subroutine node to `subroutine' for each (compiled) function as shown
+        // in this example:
+        //        subroutines.append(Subroutine(identifier: kHalt, children: [
+        //            TackInstructionNode(instruction: .hlt)
+        //        ]))
     }
     
     func flatten(_ node: AbstractSyntaxTreeNode?) -> AbstractSyntaxTreeNode? {

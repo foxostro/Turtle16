@@ -848,23 +848,6 @@ func foo() {
     
     // TODO: Instead of a flag to enable compiler intrinsics, pass the definitions of the compiler intrinsics themselves into the compiler from the top.
     
-    // TODO: The hlt() compiler intrinsic should probably compile directly to a `HLT' instruction and not to `CALL hlt'. The compiler should inline the definition at the call site. Perhaps we include a compile pass which examines all CALL instructions to determine if they can be directly replaced with a function body from the subroutines table.
-    
-    // TODO: Remove the GlobalEnvironment object. Move the label maker and module table to SymbolTable. Move the memory layout strategy, and such, to an object which contains platform-specific configuration.
-    
-    // TODO: Move the subroutines table into SymbolTable.
-    
-    func test_EndToEndIntegration_Hlt() {
-        let opts = Options(shouldDefineCompilerIntrinsicFunctions: true)
-        let debugger = run(options: opts, program: """
-            var a: u16 = 0
-            hlt()
-            a = 1
-            """)
-        
-        XCTAssertEqual(debugger?.loadSymbolU16("a"), 0)
-    }
-    
     func test_EndToEndIntegration_DeclareArrayType_InferredType() {
         let debugger = run(program: """
             let arr = [_]u8{1, 2, 3}

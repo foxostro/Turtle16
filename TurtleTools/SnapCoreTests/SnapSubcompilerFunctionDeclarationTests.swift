@@ -15,12 +15,12 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
         let symbols = SymbolTable()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .void))
-        let compiler = SnapSubcompilerFunctionDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols)
+        let compiler = SnapSubcompilerFunctionDeclaration()
         let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                         functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: []),
                                         argumentNames: [],
                                         body: Block(children: []))
-        XCTAssertThrowsError(try compiler.compile(input)) {
+        XCTAssertThrowsError(try compiler.compile(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols, node: input)) {
             let error = $0 as? CompilerError
             XCTAssertEqual(error?.message, "function redefines existing symbol: `foo\'")
         }
@@ -29,12 +29,12 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
     func testFunctionBodyMissingReturn() throws {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
         let symbols = SymbolTable()
-        let compiler = SnapSubcompilerFunctionDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols)
+        let compiler = SnapSubcompilerFunctionDeclaration()
         let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                         functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: []),
                                         argumentNames: [],
                                         body: Block(children: []))
-        XCTAssertThrowsError(try compiler.compile(input)) {
+        XCTAssertThrowsError(try compiler.compile(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols, node: input)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "missing return in a function expected to return `u8'")
@@ -44,21 +44,30 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
     func testDeclareFunction() throws {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
         let symbols = SymbolTable()
-        let compiler = SnapSubcompilerFunctionDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols)
+        let compiler = SnapSubcompilerFunctionDeclaration()
+        let originalBody = Block(children: [])
         let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                         functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
                                         argumentNames: [],
-                                        body: Block(children: []))
-        XCTAssertNoThrow(try compiler.compile(input))
+                                        body: originalBody)
+        let functionType = FunctionType(name: "foo",
+                                        mangledName: "foo",
+                                        returnType: .void,
+                                        arguments: [])
+        let expected = Symbol(type: .function(functionType),
+                              offset: 0,
+                              storage: .automaticStorage)
+        XCTAssertNoThrow(try compiler.compile(memoryLayoutStrategy: memoryLayoutStrategy,
+                                              symbols: symbols,
+                                              node: input))
         let actual = try? symbols.resolve(identifier: "foo")
-        let expected = Symbol(type: .function(FunctionType(name: "foo", returnType: .void, arguments: [])), offset: 0, storage: .automaticStorage)
         XCTAssertEqual(actual, expected)
     }
     
     func testCompilationFailsBecauseCodeAfterReturnWillNeverBeExecuted() {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
         let symbols = SymbolTable()
-        let compiler = SnapSubcompilerFunctionDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols)
+        let compiler = SnapSubcompilerFunctionDeclaration()
         let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                         functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: []),
                                         argumentNames: [],
@@ -66,7 +75,7 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
                                             Return(Expression.LiteralBool(true)),
                                             Expression.LiteralBool(false)
                                         ]))
-        XCTAssertThrowsError(try compiler.compile(input)) {
+        XCTAssertThrowsError(try compiler.compile(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols, node: input)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "code after return will never be executed")

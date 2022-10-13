@@ -35,7 +35,10 @@ public class SnapSubcompilerImpl: NSObject {
                                     message: "function redefines existing symbol: `\(identifier)'")
             }
             
-            let modifiedChild = try SnapSubcompilerFunctionDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols).compile(child)
+            let subcompiler = SnapSubcompilerFunctionDeclaration()
+            let modifiedChild = try subcompiler.compile(memoryLayoutStrategy: memoryLayoutStrategy,
+                                                        symbols: symbols,
+                                                        node: child)
             modifiedChildren.append(modifiedChild)
             
             // Put the symbol back into the struct type's symbol table too.

@@ -80,34 +80,24 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         super.init(symbols)
     }
     
-    var depth = 0
-    
-    public override func compile(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
-        depth += 1
-        let compiledNode = try super.compile(node0)
-        depth -= 1
-        if depth == 0 {
-            var children: [AbstractSyntaxTreeNode] = []
-            children += try collectCompiledModuleCode()
-            if let compiledNode = compiledNode {
-                children.append(compiledNode)
-            }
-            children += subroutines
-            let seq = Seq(sourceAnchor: node0?.sourceAnchor, children: children)
-            let result = flatten(seq)
-            return result
-        } else {
-            return flatten(compiledNode)
+    public func compileWithEpilog(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
+        var children: [AbstractSyntaxTreeNode] = []
+        let compiledNode = try compile(node0)
+        children += try collectCompiledModuleCode()
+        if let compiledNode {
+            children.append(compiledNode)
         }
+        children += subroutines
+        let seq = Seq(sourceAnchor: node0?.sourceAnchor, children: children)
+        let result = flatten(seq)
+        return result
     }
     
     func collectCompiledModuleCode() throws -> [AbstractSyntaxTreeNode] {
         var nodes: [AbstractSyntaxTreeNode] = []
         
         for (_, module) in globalEnvironment.modules {
-            depth += 1
             let compiledModuleNode = try super.compile(module)
-            depth -= 1
             
             if let compiledModuleNode = compiledModuleNode {
                 nodes.append(compiledModuleNode)
@@ -119,6 +109,12 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     
     func flatten(_ node: AbstractSyntaxTreeNode?) -> AbstractSyntaxTreeNode? {
         return try! SnapASTTransformerFlattenSeq().compile(node)
+    }
+    
+    public override func compile(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
+        let node1 = try super.compile(node0)
+        let node2 = flatten(node1)
+        return node2
     }
     
     public override func compile(block node: Block) throws -> AbstractSyntaxTreeNode? {

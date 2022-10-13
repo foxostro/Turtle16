@@ -121,7 +121,7 @@ public class SnapToTurtle16Compiler: NSObject {
                                           globalEnvironment: globalEnvironment,
                                           options: opts)
         self.tack = Result(catching: {
-            try compiler.compile(ast)
+            try compiler.compileWithEpilog(ast)
         })
         return self.tack
     }

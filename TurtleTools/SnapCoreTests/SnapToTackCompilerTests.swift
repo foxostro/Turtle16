@@ -42,13 +42,13 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testLabelDeclaration() throws {
         let compiler = makeCompiler()
-        let result = try compiler.compile(LabelDeclaration(identifier: "foo"))
+        let result = try compiler.compileWithEpilog(LabelDeclaration(identifier: "foo"))
         XCTAssertEqual(result, LabelDeclaration(identifier: "foo"))
     }
     
     func testBlockWithOneInstruction() throws {
         let compiler = makeCompiler()
-        let result = try compiler.compile(Block(children: [
+        let result = try compiler.compileWithEpilog(Block(children: [
             LabelDeclaration(identifier: "foo")
         ]))
         XCTAssertEqual(result, LabelDeclaration(identifier: "foo"))
@@ -56,7 +56,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testBlockWithTwoInstructions() throws {
         let compiler = makeCompiler()
-        let result = try compiler.compile(Block(children: [
+        let result = try compiler.compileWithEpilog(Block(children: [
             LabelDeclaration(identifier: "foo"),
             LabelDeclaration(identifier: "bar")
         ]))
@@ -68,7 +68,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testBlockWithNestedSeq() throws {
         let compiler = makeCompiler()
-        let result = try compiler.compile(Block(children: [
+        let result = try compiler.compileWithEpilog(Block(children: [
             LabelDeclaration(identifier: "foo"),
             Seq(children: [
                 LabelDeclaration(identifier: "bar"),
@@ -84,13 +84,13 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testGoto() throws {
         let compiler = makeCompiler()
-        let result = try compiler.compile(Goto(target: "foo"))
+        let result = try compiler.compileWithEpilog(Goto(target: "foo"))
         XCTAssertEqual(result, TackInstructionNode(instruction: .jmp, parameters: [ParameterIdentifier("foo")]))
     }
     
     func testGotoIfFalse() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.compile(GotoIfFalse(condition: Expression.LiteralBool(false), target: "bar"))
+        let actual = try compiler.compileWithEpilog(GotoIfFalse(condition: Expression.LiteralBool(false), target: "bar"))
         let expected = Seq(children: [
             TackInstructionNode(instruction: .li16, parameters: [
                 ParameterIdentifier("vr0"),
@@ -107,7 +107,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRet() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.compile(Return())
+        let actual = try compiler.compileWithEpilog(Return())
         let expected = Seq(children: [
             TackInstructionNode(instruction: .leave),
             TackInstructionNode(instruction: .ret)
@@ -122,8 +122,10 @@ class SnapToTackCompilerTests: XCTestCase {
                                      body: Block(children: [
                                         Return()
                                      ]))
-        let compiler = makeCompiler()
-        let actual = try compiler.compile(fn)
+        let symbols = SymbolTable()
+        let _ = try SnapSubcompilerFunctionDeclaration().compile(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(), symbols: symbols, node: fn)
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.compileWithEpilog(fn)
         let expected = Subroutine(identifier: "foo", children: [
             TackInstructionNode(instruction: .enter, parameters: [
                 ParameterNumber(0)
@@ -136,7 +138,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testExpr_LiteralBoolFalse() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.compile(Expression.LiteralBool(false))
+        let actual = try compiler.compileWithEpilog(Expression.LiteralBool(false))
         let expected = TackInstructionNode(instruction: .li16, parameters: [
             ParameterIdentifier("vr0"),
             ParameterNumber(0)

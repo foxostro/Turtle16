@@ -5517,7 +5517,7 @@ class SnapToTackCompilerTests: XCTestCase {
                            isMutable: false)
         ])
         
-        let opts = SnapToTackCompiler.Options()
+        let opts = SnapToTackCompiler.Options.defaultOptions
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
         let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
         contractStep.compile(ast0)
@@ -5605,7 +5605,7 @@ class SnapToTackCompilerTests: XCTestCase {
                            isMutable: false)
         ])
         
-        let opts = SnapToTackCompiler.Options()
+        let opts = SnapToTackCompiler.Options.defaultOptions
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
         let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
         contractStep.compile(ast0)

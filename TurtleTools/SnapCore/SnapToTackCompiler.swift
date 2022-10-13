@@ -12,12 +12,13 @@ import Turtle16SimulatorCore
 public class SnapToTackCompiler: SnapASTTransformerBase {
     public struct Options {
         public let isBoundsCheckEnabled: Bool
-        public let shouldDefineCompilerIntrinsicFunctions: Bool
         
-        public init(isBoundsCheckEnabled: Bool = false,
-                    shouldDefineCompilerIntrinsicFunctions: Bool = false) {
+        public init(isBoundsCheckEnabled: Bool) {
             self.isBoundsCheckEnabled = isBoundsCheckEnabled
-            self.shouldDefineCompilerIntrinsicFunctions = shouldDefineCompilerIntrinsicFunctions
+        }
+        
+        public static var defaultOptions: Options {
+            Options(isBoundsCheckEnabled: true)
         }
     }
     
@@ -65,7 +66,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         return result
     }
     
-    public init(symbols: SymbolTable, globalEnvironment: GlobalEnvironment, options: SnapToTackCompiler.Options = SnapToTackCompiler.Options()) {
+    public init(symbols: SymbolTable, globalEnvironment: GlobalEnvironment, options: SnapToTackCompiler.Options = SnapToTackCompiler.Options.defaultOptions) {
         self.globalEnvironment = globalEnvironment
         self.options = options
         kUnionTypeTagOffset = 0
@@ -91,9 +92,6 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             if let compiledNode = compiledNode {
                 children.append(compiledNode)
             }
-            if options.shouldDefineCompilerIntrinsicFunctions {
-                defineCompilerIntrinsicFunctions()
-            }
             children += subroutines
             let seq = Seq(sourceAnchor: node0?.sourceAnchor, children: children)
             let result = flatten(seq)
@@ -117,15 +115,6 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         }
         
         return nodes
-    }
-    
-    func defineCompilerIntrinsicFunctions() {
-        // Define the other compiler intrinsic functions here by appending a
-        // Subroutine node to `subroutine' for each (compiled) function as shown
-        // in this example:
-        //        subroutines.append(Subroutine(identifier: kHalt, children: [
-        //            TackInstructionNode(instruction: .hlt)
-        //        ]))
     }
     
     func flatten(_ node: AbstractSyntaxTreeNode?) -> AbstractSyntaxTreeNode? {

@@ -116,8 +116,7 @@ public class SnapToTurtle16Compiler: NSObject {
     }
     
     func compileSnapToTack(_ ast: AbstractSyntaxTreeNode?) -> Result<AbstractSyntaxTreeNode?, Error> {
-        let opts = SnapToTackCompiler.Options(isBoundsCheckEnabled: self.options.isBoundsCheckEnabled,
-                                              shouldDefineCompilerIntrinsicFunctions: self.options.shouldDefineCompilerIntrinsicFunctions)
+        let opts = SnapToTackCompiler.Options(isBoundsCheckEnabled: self.options.isBoundsCheckEnabled)
         let compiler = SnapToTackCompiler(symbols: globalSymbols,
                                           globalEnvironment: globalEnvironment,
                                           options: opts)

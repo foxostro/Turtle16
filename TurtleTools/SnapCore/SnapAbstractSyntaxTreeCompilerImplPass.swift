@@ -72,29 +72,6 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: SnapASTTransformerBase {
         return node1
     }
     
-    public override func compile(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
-        let memoryLayoutStrategy = globalEnvironment.memoryLayoutStrategy
-        let result = try super.compile(func: node)
-        reconnect(result)
-        
-        if let symbols = symbols {
-            let functionType = node.symbols.enclosingFunctionType!
-            var size = 0
-            
-            for i in (0..<functionType.arguments.count).reversed() {
-                let sizeOfArgumentType = memoryLayoutStrategy.sizeof(type: functionType.arguments[i])
-                size += sizeOfArgumentType
-            }
-            
-            let sizeOfFunctionReturnType = memoryLayoutStrategy.sizeof(type: functionType.returnType)
-            size += sizeOfFunctionReturnType
-            
-            symbols.highwaterMark = max(symbols.highwaterMark, symbols.storagePointer + size)
-        }
-        
-        return result
-    }
-    
     public override func compile(if node0: If) throws -> AbstractSyntaxTreeNode? {
         let node1 = try SnapSubcompilerIf().compile(if: node0, symbols: symbols!, labelMaker: globalEnvironment.labelMaker)
         reconnect(node1)

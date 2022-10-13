@@ -459,6 +459,7 @@ public class FunctionType: NSObject {
     public let mangledName: String?
     public let returnType: SymbolType
     public let arguments: [SymbolType]
+    public var ast: FunctionDeclaration?
     
     public convenience init(returnType: SymbolType, arguments: [SymbolType]) {
         self.init(name: nil,
@@ -474,22 +475,20 @@ public class FunctionType: NSObject {
                   arguments: arguments)
     }
     
-    public init(name: String?, mangledName: String?, returnType: SymbolType, arguments: [SymbolType]) {
+    public init(name: String?, mangledName: String?, returnType: SymbolType, arguments: [SymbolType], ast: FunctionDeclaration? = nil) {
         self.name = name
         self.mangledName = mangledName
         self.returnType = returnType
         self.arguments = arguments
+        self.ast = ast
     }
     
     public override var description: String {
-        if let name = name {
-            return "\(name) :: func (\(makeArgumentsDescription())) -> \(returnType)"
-        } else {
-            return "func (\(makeArgumentsDescription())) -> \(returnType)"
-        }
+        let name = self.name ?? ""
+        return "func \(name)(\(argumentsDescription)) -> \(returnType)"
     }
     
-    public func makeArgumentsDescription() -> String {
+    public var argumentsDescription: String {
         let result = arguments.map({$0.description}).joined(separator: ", ")
         return result
     }
@@ -520,6 +519,9 @@ public class FunctionType: NSObject {
         guard arguments == rhs.arguments else {
             return false
         }
+//        guard ast == rhs.ast else {
+//            return false
+//        }
         return true
     }
     
@@ -529,11 +531,24 @@ public class FunctionType: NSObject {
         hasher.combine(mangledName)
         hasher.combine(returnType)
         hasher.combine(arguments)
+//        hasher.combine(ast)
         return hasher.finalize()
     }
     
     public func eraseName() -> FunctionType {
-        return FunctionType(returnType: returnType, arguments: arguments)
+        return FunctionType(name: nil,
+                            mangledName: nil,
+                            returnType: returnType,
+                            arguments: arguments,
+                            ast: ast)
+    }
+    
+    public func withBody(_ body: Block) -> FunctionType {
+        FunctionType(name: name,
+                     mangledName: mangledName,
+                     returnType: returnType,
+                     arguments: arguments,
+                     ast: ast?.withBody(body))
     }
 }
 
@@ -886,7 +901,8 @@ public class SymbolTable: NSObject {
     }
     
     public func bind(identifier: String, symbol: Symbol) {
-//      print("bind: \(identifier) -> \(symbol.type) at offset=\(symbol.offset) and stackFrameIndex=\(stackFrameIndex)")
+//        let offset = symbol.maybeOffset == nil ? "nil" : "\(symbol.offset)"
+//        print("bind: \(identifier) -> \(symbol.type) at offset=\(offset) and stackFrameIndex=\(stackFrameIndex)")
         symbolTable[identifier] = symbol
         if let index = declarationOrder.firstIndex(of: identifier) {
             declarationOrder.remove(at: index)

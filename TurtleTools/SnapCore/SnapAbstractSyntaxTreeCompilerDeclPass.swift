@@ -36,8 +36,9 @@ public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
                                             symbols: symbols!,
                                             node: node0)
         reconnect(node1)
-        let node2 = try super.compile(func: node1)
-        return node2
+        
+        // We defer compilation of the function body until later.
+        return node1
     }
     
     public override func compile(struct node0: StructDeclaration) throws -> AbstractSyntaxTreeNode? {

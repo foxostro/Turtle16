@@ -116,16 +116,16 @@ class SnapToTackCompilerTests: XCTestCase {
     }
     
     func testCompileFunctionDeclaration_Simplest() throws {
-        let fn = FunctionDeclaration(identifier: Expression.Identifier("foo"),
+        let fn1 = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                      functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
                                      argumentNames: [],
                                      body: Block(children: [
                                         Return()
                                      ]))
         let symbols = SymbolTable()
-        let _ = try SnapSubcompilerFunctionDeclaration().compile(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(), symbols: symbols, node: fn)
+        let fn2 = try SnapSubcompilerFunctionDeclaration().compile(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(), symbols: symbols, node: fn1)
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compileWithEpilog(fn)
+        let actual = try compiler.compileWithEpilog(fn2)
         let expected = Subroutine(identifier: "foo", children: [
             TackInstructionNode(instruction: .enter, parameters: [
                 ParameterNumber(0)

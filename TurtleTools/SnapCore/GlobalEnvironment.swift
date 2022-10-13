@@ -12,6 +12,7 @@ public class GlobalEnvironment: NSObject {
     public let labelMaker = LabelMaker()
     public let tempNameMaker = LabelMaker(prefix: "__temp")
     public var modules: [String : Block] = [:]
+    public var functionsToCompile: [FunctionType] = []
     
     public init(memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()) {
         self.memoryLayoutStrategy = memoryLayoutStrategy

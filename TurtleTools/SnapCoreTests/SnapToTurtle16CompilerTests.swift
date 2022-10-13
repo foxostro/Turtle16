@@ -80,6 +80,10 @@ func foo() {
 }
 """)
         XCTAssertFalse(compiler.hasError)
+        if compiler.hasError {
+            let error = CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors)
+            print(error.description)
+        }
         XCTAssertEqual(AssemblerListingMaker().makeListing(try compiler.assembly.get()), """
             NOP
             HLT

@@ -23,18 +23,27 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
     
     func testFunctionDeclaration() throws {
         let globalSymbols = SymbolTable()
+        let originalFunctionDeclaration = FunctionDeclaration(identifier: Expression.Identifier("foo"),
+                                                              functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
+                                                              argumentNames: [],
+                                                              body: Block(children: []))
         let input = Block(symbols: globalSymbols, children: [
-            FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                            functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
-                                            argumentNames: [],
-                                            body: Block(children: []))
+            originalFunctionDeclaration
         ])
         
-        let compiler = makeCompiler()
-        XCTAssertNoThrow(_ = try compiler.compile(input))
+        let expectedRewrittenFunctionDeclaration = originalFunctionDeclaration.withBody(Block(children: [Return()]))
+        let expectedFunctionType = FunctionType(name: "foo",
+                                                mangledName: "foo",
+                                                returnType: .void,
+                                                arguments: [],
+                                                ast: expectedRewrittenFunctionDeclaration)
+        let expected = Symbol(type: .function(expectedFunctionType),
+                              offset: 0,
+                              storage: .automaticStorage)
         
-        let actual = try? globalSymbols.resolve(identifier: "foo")
-        let expected = Symbol(type: .function(FunctionType(name: "foo", returnType: .void, arguments: [])), offset: 0, storage: .automaticStorage)
+        let compiler = makeCompiler()
+        _ = try compiler.compile(input)
+        let actual = try globalSymbols.resolve(identifier: "foo")
         XCTAssertEqual(actual, expected)
     }
     

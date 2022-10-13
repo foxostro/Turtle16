@@ -45,6 +45,16 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
                                    symbols: symbols)
     }
     
+    public func withBody(_ body: Block) -> FunctionDeclaration {
+        FunctionDeclaration(sourceAnchor: sourceAnchor,
+                                   identifier: identifier,
+                                   functionType: functionType,
+                                   argumentNames: argumentNames,
+                                   body: body,
+                                   visibility: visibility,
+                                   symbols: symbols)
+    }
+    
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else {
             return false

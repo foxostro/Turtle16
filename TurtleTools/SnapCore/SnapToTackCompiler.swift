@@ -28,7 +28,6 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     var nextRegisterIndex = 0
     let fp = "fp"
     let kOOB = "__oob"
-    var subroutines: [Subroutine] = []
     
     let kUnionPayloadOffset: Int
     let kUnionTypeTagOffset: Int
@@ -87,24 +86,64 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         if let compiledNode {
             children.append(compiledNode)
         }
-        children += subroutines
+        children += try compileFunctions()
         let seq = Seq(sourceAnchor: node0?.sourceAnchor, children: children)
         let result = flatten(seq)
         return result
     }
     
-    func collectCompiledModuleCode() throws -> [AbstractSyntaxTreeNode] {
+    fileprivate func collectCompiledModuleCode() throws -> [AbstractSyntaxTreeNode] {
         var nodes: [AbstractSyntaxTreeNode] = []
         
         for (_, module) in globalEnvironment.modules {
-            let compiledModuleNode = try super.compile(module)
-            
-            if let compiledModuleNode = compiledModuleNode {
+            if let compiledModuleNode = try super.compile(module) {
                 nodes.append(compiledModuleNode)
             }
         }
         
         return nodes
+    }
+    
+    fileprivate func compileFunctions() throws -> [Subroutine] {
+        // Compile functions collected earlier for deferred compilation.
+        // TODO: The goal here (WIP) is to have the type checker record required concrete instances of generic functions in a `functionsToCompile' list as they are discovered. We compile those functions now. The work done to compile a single function may generate additional functions to compile. This can happen because a function can itself contain a declaration of a new generic function, and can demand new concrete instantiations of a generic function. The type checker will append these new concrete instantiations to the list while it's being processed. This is basically the point where we perform monomorphization of generic functions.
+        
+        // Note that since functions can contain functions, we have to assume
+        // items are being appending to the end of the functionsToCompile list
+        // as we process it.
+        var result: [Subroutine] = []
+        while !globalEnvironment.functionsToCompile.isEmpty {
+            let m = globalEnvironment.functionsToCompile.removeFirst()
+            let subroutine = try compileFunction(concreteInstance: m)
+            result.append(subroutine)
+        }
+        
+        return result
+    }
+    
+    fileprivate func compileFunction(concreteInstance m: FunctionType) throws -> Subroutine {
+        guard let mangledName = m.mangledName else {
+            fatalError("missing mangledName for function: \(m)")
+        }
+        
+        guard let ast = m.ast else {
+            fatalError("missing AST for function: \(m)")
+        }
+        
+        let body0 = ast.body
+        let body1 = try SnapAbstractSyntaxTreeCompilerDeclPass(symbols: ast.symbols, globalEnvironment: globalEnvironment).compile(body0) as! Block
+        let body2 = try SnapAbstractSyntaxTreeCompilerImplPass(symbols: ast.symbols, globalEnvironment: globalEnvironment).compile(body1) as! Block
+        let body3 = try compile(body2) ?? Seq()
+        ast.symbols.highwaterMark = max(ast.symbols.highwaterMark, ast.body.symbols.highwaterMark)
+        let sizeOfLocalVariables = ast.symbols.highwaterMark
+        
+        let subroutine = Subroutine(sourceAnchor: ast.sourceAnchor, identifier: mangledName, children: [
+            TackInstructionNode(instruction: .enter, parameters: [
+                ParameterNumber(sizeOfLocalVariables)
+            ]),
+            body3
+        ])
+        return subroutine
     }
     
     func flatten(_ node: AbstractSyntaxTreeNode?) -> AbstractSyntaxTreeNode? {
@@ -117,9 +156,9 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         return node2
     }
     
-    public override func compile(block node: Block) throws -> AbstractSyntaxTreeNode? {
-        let block = try super.compile(block: node) as! Block
-        return Seq(sourceAnchor: node.sourceAnchor, children: block.children)
+    public override func compile(block node0: Block) throws -> AbstractSyntaxTreeNode? {
+        let node1 = try super.compile(block: node0) as! Block
+        return Seq(sourceAnchor: node0.sourceAnchor, children: node1.children)
     }
     
     public override func compile(return node: Return) throws -> AbstractSyntaxTreeNode? {
@@ -131,17 +170,10 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     public override func compile(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
-        let mangledName = (try TypeContextTypeChecker(symbols: symbols!).check(expression: node.functionType).unwrapFunctionType()).mangledName!
-        let compiledBody = try compile(node.body)!
-        node.symbols.highwaterMark = max(node.symbols.highwaterMark, node.body.symbols.highwaterMark)
-        let sizeOfLocalVariables = node.symbols.highwaterMark
-        let subroutine = Subroutine(sourceAnchor: node.sourceAnchor, identifier: mangledName, children: [
-            TackInstructionNode(instruction: .enter, parameters: [
-                ParameterNumber(sizeOfLocalVariables)
-            ]),
-            compiledBody
-        ])
-        subroutines.append(subroutine)
+        // Record the function (by type) so we can revisit and compile it later.
+        // TODO: We could compile non-generic functions right now. However, we need to defer work to compile generic functions until the type checker discovers the need for a new concrete instantiation of the function. As there is no communication conduit through which the type checker can directly invoke the compiler, it appends a work item to a list in the environment which the compiler can pick up later.
+        let functionType = try symbols!.resolve(identifier: node.identifier.identifier).type.unwrapFunctionType()
+        globalEnvironment.functionsToCompile.append(functionType)
         return nil
     }
     

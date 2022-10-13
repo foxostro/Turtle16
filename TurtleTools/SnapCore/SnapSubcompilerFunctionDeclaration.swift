@@ -23,6 +23,7 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
         
         node.symbols.enclosingFunctionTypeMode = .set(functionType)
         node.symbols.enclosingFunctionNameMode = .set(name)
+        node.body.symbols.parent = node.symbols
         
         bindFunctionArguments(memoryLayoutStrategy: memoryLayoutStrategy,
                               symbols: node.symbols,
@@ -53,6 +54,7 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
                                                                body: body,
                                                                visibility: node.visibility,
                                                                symbols: node.symbols)
+        functionType.ast = rewrittenFunctionDeclaration
         return rewrittenFunctionDeclaration
     }
     

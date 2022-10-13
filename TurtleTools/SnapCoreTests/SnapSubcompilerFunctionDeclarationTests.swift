@@ -46,6 +46,7 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
         let symbols = SymbolTable()
         let compiler = SnapSubcompilerFunctionDeclaration()
         let originalBody = Block(children: [])
+        let expectedRewrittenBody = Block(children: [Return()])
         let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                         functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
                                         argumentNames: [],
@@ -53,7 +54,8 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
         let functionType = FunctionType(name: "foo",
                                         mangledName: "foo",
                                         returnType: .void,
-                                        arguments: [])
+                                        arguments: [],
+                                        ast: input.withBody(expectedRewrittenBody))
         let expected = Symbol(type: .function(functionType),
                               offset: 0,
                               storage: .automaticStorage)

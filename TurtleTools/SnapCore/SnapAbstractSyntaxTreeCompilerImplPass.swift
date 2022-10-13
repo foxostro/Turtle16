@@ -85,4 +85,9 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: SnapASTTransformerBase {
         let node2 = try super.compile(node1)
         return node2
     }
+    
+    public override func compile(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
+        // We defer compilation of the function body until later.
+        return node
+    }
 }

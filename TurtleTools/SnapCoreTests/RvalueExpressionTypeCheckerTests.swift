@@ -5184,4 +5184,70 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .arithmeticType(.immutableInt(.u16)))
     }
+    
+    func testFunctionType() throws {
+        let expected = SymbolType.function(FunctionType(name: "foo", mangledName: "foo", returnType: .void, arguments: [.arithmeticType(.immutableInt(.u16))], ast: nil))
+        let typeChecker = RvalueExpressionTypeChecker()
+        let expr = Expression.FunctionType(name: "foo",
+                                           returnType: Expression.PrimitiveType(.void),
+                                           arguments: [Expression.PrimitiveType(.arithmeticType(.immutableInt(.u16)))])
+        let actual = try typeChecker.check(expression: expr)
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testGenericFunctionType() throws {
+        let typeChecker = RvalueExpressionTypeChecker()
+        let template = Expression.FunctionType(name: "foo",
+                                               returnType: Expression.Identifier("T"),
+                                               arguments: [Expression.Identifier("T")])
+        let expr = Expression.GenericFunctionType(typeVariables: [Expression.Identifier("T")],
+                                                  template: template)
+        let expected = SymbolType.genericFunction(expr)
+        let actual = try typeChecker.check(expression: expr)
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testGenericFunctionApplication_FailsWithIncorrectNumberOfArguments() throws {
+        let constU16 = SymbolType.arithmeticType(.mutableInt(.u16))
+        let template = Expression.FunctionType(name: "foo",
+                                               returnType: Expression.Identifier("T"),
+                                               arguments: [Expression.Identifier("T")])
+        let genericFunctionType = Expression.GenericFunctionType(typeVariables: [Expression.Identifier("T")],
+                                                                 template: template)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .genericFunction(genericFunctionType)))
+        ])
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
+                                                     arguments: [Expression.PrimitiveType(constU16),
+                                                                 Expression.PrimitiveType(constU16)])
+        
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "incorrect number of type arguments in application of generic function type `foo<u16, u16>'")
+        }
+    }
+    
+    func testGenericFunctionApplication() throws {
+        let constU16 = SymbolType.arithmeticType(.immutableInt(.u16))
+        let template = Expression.FunctionType(name: "foo",
+                                               returnType: Expression.Identifier("T"),
+                                               arguments: [Expression.Identifier("T")])
+        let genericFunctionType = Expression.GenericFunctionType(typeVariables: [Expression.Identifier("T")],
+                                                                 template: template)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .genericFunction(genericFunctionType)))
+        ])
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
+                                                     arguments: [Expression.PrimitiveType(constU16)])
+        let expected = SymbolType.function(FunctionType(name: "foo",
+                                                        mangledName: "foo",
+                                                        returnType: constU16,
+                                                        arguments: [constU16],
+                                                        ast: nil))
+        let actual = try typeChecker.check(expression: expr)
+        XCTAssertEqual(actual, expected)
+    }
 }

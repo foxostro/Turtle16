@@ -9,7 +9,7 @@
 public class MemoryLayoutStrategyTurtleTTL: NSObject, MemoryLayoutStrategy {
     public func sizeof(type: SymbolType) -> Int {
         switch type {
-        case .void, .function:
+        case .void, .function, .genericFunction:
             return 0
         case .bool(let boolType):
             switch boolType {

@@ -933,6 +933,197 @@ public class Expression: AbstractSyntaxTreeNode {
 //        }
     }
 
+    // GenericFunctionType is a type function. It evaluates to a concrete
+    // function type only when given type arguments to fulfill specified type
+    // variables.
+    public class GenericFunctionType: Expression {
+        public let typeVariables: [Expression.Identifier]
+        public let template: Expression.FunctionType
+        
+        public init(sourceAnchor: SourceAnchor? = nil,
+                    typeVariables: [Expression.Identifier],
+                    template: Expression.FunctionType) {
+            self.typeVariables = typeVariables
+            self.template = template
+            super.init(sourceAnchor: sourceAnchor)
+        }
+        
+        public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> GenericFunctionType {
+            if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+                return self
+            }
+            return GenericFunctionType(sourceAnchor: sourceAnchor,
+                                       typeVariables: typeVariables,
+                                       template: template)
+        }
+        
+        public var shortDescription: String {
+            let name = template.name ?? ""
+            let typeVariablesDescription = typeVariables.map({$0.description}).joined(separator: ", ")
+            let argumentsDescription = template.arguments.map({$0.description}).joined(separator: ", ")
+            return "func \(name)<\(typeVariablesDescription)>(\(argumentsDescription)) -> \(template.returnType)"
+        }
+        
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            return String(format: """
+                                  %@%@
+                                  %@name: %@
+                                  %@typeVariables: %@
+                                  %@template: %@
+                                  """,
+                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+                          String(describing: type(of: self)),
+                          makeIndent(depth: depth+1),
+                          template.name ?? "none",
+                          makeIndent(depth: depth+1),
+                          makeTypeVariablesDescription(depth: depth+1),
+                          makeIndent(depth: depth+1),
+                          template.makeIndentedDescription(depth: depth+1))
+        }
+        
+        private func makeTypeVariablesDescription(depth: Int) -> String {
+            var result: String = ""
+            if typeVariables.isEmpty {
+                result = "none"
+            } else {
+                for i in 0..<typeVariables.count {
+                    let variable = typeVariables[i]
+                    result += "\n"
+                    result += makeIndent(depth: depth + 1)
+                    result += "\(i) -- "
+                    result += variable.makeIndentedDescription(depth: depth + 1)
+                }
+            }
+            return result
+        }
+        
+        public static func ==(lhs: GenericFunctionType, rhs: GenericFunctionType) -> Bool {
+            return lhs.isEqual(rhs)
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else {
+                return false
+            }
+            guard type(of: rhs!) == type(of: self) else {
+                return false
+            }
+            guard super.isEqual(rhs) else {
+                return false
+            }
+            guard let rhs = rhs as? GenericFunctionType else {
+                return false
+            }
+            guard typeVariables == rhs.typeVariables else {
+                return false
+            }
+            guard template == rhs.template else {
+                return false
+            }
+            return true
+        }
+        
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(typeVariables)
+            hasher.combine(template)
+            return hasher.finalize()
+        }
+    }
+    
+    // GenericTypeApplication is a type expression. This applies the given
+    // type arguments to the generic function type to yield a concrete function
+    // type.
+    public class GenericTypeApplication: Expression {
+        public let identifier: Identifier
+        public let arguments: [Expression]
+        
+        public init(sourceAnchor: SourceAnchor? = nil,
+                    identifier: Identifier,
+                    arguments: [Expression]) {
+            self.identifier = identifier
+            self.arguments = arguments
+            super.init(sourceAnchor: sourceAnchor)
+        }
+        
+        public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> GenericTypeApplication {
+            if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+                return self
+            }
+            return GenericTypeApplication(sourceAnchor: sourceAnchor,
+                                          identifier: identifier,
+                                          arguments: arguments)
+        }
+        
+        public var shortDescription: String {
+            let typeVariablesDescription = arguments.map({$0.description}).joined(separator: ", ")
+            return "\(identifier)<\(typeVariablesDescription)>"
+        }
+        
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            return String(format: """
+                                  %@%@
+                                  %@identifier: %@
+                                  %@arguments: %@
+                                  """,
+                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+                          String(describing: type(of: self)),
+                          makeIndent(depth: depth+1),
+                          identifier.makeIndentedDescription(depth: depth+1),
+                          makeIndent(depth: depth+1),
+                          makeTypeArgumentsDescription(depth: depth+1))
+        }
+        
+        private func makeTypeArgumentsDescription(depth: Int) -> String {
+            var result: String = ""
+            if arguments.isEmpty {
+                result = "none"
+            } else {
+                for i in 0..<arguments.count {
+                    let arguments = arguments[i]
+                    result += "\n"
+                    result += makeIndent(depth: depth + 1)
+                    result += "\(i) -- "
+                    result += arguments.makeIndentedDescription(depth: depth + 1)
+                }
+            }
+            return result
+        }
+        
+        public static func ==(lhs: GenericTypeApplication, rhs: GenericTypeApplication) -> Bool {
+            return lhs.isEqual(rhs)
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else {
+                return false
+            }
+            guard type(of: rhs!) == type(of: self) else {
+                return false
+            }
+            guard super.isEqual(rhs) else {
+                return false
+            }
+            guard let rhs = rhs as? GenericTypeApplication else {
+                return false
+            }
+            guard identifier == rhs.identifier else {
+                return false
+            }
+            guard arguments == rhs.arguments else {
+                return false
+            }
+            return true
+        }
+        
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(identifier)
+            hasher.combine(arguments)
+            return hasher.finalize()
+        }
+    }
+
     public class PointerType: Expression {
         public let typ: Expression
         

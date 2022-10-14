@@ -62,6 +62,10 @@ public class RvalueExpressionTypeChecker: NSObject {
             return try check(dynamicArrayType: expr)
         case let expr as Expression.FunctionType:
             return try check(functionType: expr)
+        case let expr as Expression.GenericFunctionType:
+            return try check(genericFunctionType: expr)
+        case let expr as Expression.GenericTypeApplication:
+            return try check(genericTypeApplication: expr)
         case let expr as Expression.PointerType:
             return try check(pointerType: expr)
         case let expr as Expression.ConstType:
@@ -837,23 +841,66 @@ public class RvalueExpressionTypeChecker: NSObject {
     
     public func check(functionType expr: Expression.FunctionType) throws -> SymbolType {
         let returnType = try check(expression: expr.returnType)
-        var arguments: [SymbolType] = []
-        for arg in expr.arguments {
-            let typ = try check(expression: arg)
-            arguments.append(typ)
-        }
-        
-        let mangledName: String?
-        if let name = expr.name {
-            mangledName = Array(NSOrderedSet(array: symbols.allEnclosingFunctionNames() + [name])).map{$0 as! String}.joined(separator: "_")
-        } else {
-            mangledName = nil
-        }
+        let arguments = try evaluateFunctionArguments(expr.arguments)
+        let mangledName = mangleFunctionName(expr.name)
         
         return .function(FunctionType(name: expr.name,
                                       mangledName: mangledName,
                                       returnType: returnType,
                                       arguments: arguments))
+    }
+    
+    fileprivate func mangleFunctionName(_ name: String?) -> String? {
+        guard let name else {
+            return nil
+        }
+        
+        let mangledName = Array(NSOrderedSet(array: symbols.allEnclosingFunctionNames() + [name])).map{$0 as! String}.joined(separator: "_")
+        return mangledName
+    }
+    
+    fileprivate func evaluateFunctionArguments(_ argsToEvaluate: [Expression]) throws -> [SymbolType] {
+        try argsToEvaluate.map {
+            try check(expression: $0)
+        }
+    }
+    
+    public func check(genericFunctionType expr: Expression.GenericFunctionType) throws -> SymbolType {
+        return .genericFunction(expr)
+    }
+    
+    public func check(genericTypeApplication expr: Expression.GenericTypeApplication) throws -> SymbolType {
+        switch try check(identifier: expr.identifier) {
+        case .genericFunction(let typ):
+            return try apply(genericTypeApplication: expr, genericFunctionType: typ)
+            
+        default:
+            throw unsupportedError(expression: expr)
+        }
+    }
+    
+    fileprivate func apply(genericTypeApplication expr: Expression.GenericTypeApplication,
+                           genericFunctionType: Expression.GenericFunctionType) throws -> SymbolType {
+        guard expr.arguments.count == genericFunctionType.typeVariables.count else {
+            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "incorrect number of type arguments in application of generic function type `\(expr.shortDescription)'")
+        }
+        
+        // TODO: check type constraints on the type variables here too
+        
+        // Bind types in a new symbol table to apply the type arguments.
+        let symbolsWithTypeArguments = SymbolTable(parent: symbols)
+        for i in 0..<expr.arguments.count {
+            let typVariable = genericFunctionType.typeVariables[i]
+            let typeArgument = try check(expression: expr.arguments[i])
+            symbolsWithTypeArguments.bind(identifier: typVariable.identifier, symbolType: typeArgument)
+        }
+        let inner = RvalueExpressionTypeChecker(symbols: symbolsWithTypeArguments)
+        
+        // Evaluate the function type template using the above symbols to get
+        // the concrete function type result.
+        let result = try inner.check(functionType: genericFunctionType.template)
+        
+        return result
     }
     
     public func check(pointerType expr: Expression.PointerType) throws -> SymbolType {

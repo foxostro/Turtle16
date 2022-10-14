@@ -11,6 +11,7 @@ import TurtleCore
 public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     case void
     case function(FunctionType)
+    case genericFunction(Expression.GenericFunctionType)
     case bool(BooleanType)
     case arithmeticType(ArithmeticType)
     case array(count: Int?, elementType: SymbolType)
@@ -203,6 +204,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             return "[]\(elementType)"
         case .function(let functionType):
             return functionType.description
+        case .genericFunction(let genericFunctionType):
+            return genericFunctionType.shortDescription
         case .constStructType(let typ):
             return "const \(typ.name)"
         case .structType(let typ):

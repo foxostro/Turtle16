@@ -12,20 +12,27 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
     public let identifier: Expression.Identifier
     public let functionType: Expression
     public let argumentNames: [String]
+    public let typeArguments: [Expression]
     public let body: Block
     public let visibility: SymbolVisibility
     public let symbols: SymbolTable
+    
+    public var isGeneric: Bool {
+        !typeArguments.isEmpty
+    }
     
     public init(sourceAnchor: SourceAnchor? = nil,
                 identifier: Expression.Identifier,
                 functionType: Expression,
                 argumentNames: [String],
+                typeArguments: [Expression] = [],
                 body: Block,
                 visibility: SymbolVisibility = .privateVisibility,
                 symbols: SymbolTable = SymbolTable()) {
         self.identifier = identifier.withSourceAnchor(sourceAnchor)
         self.functionType = functionType.withSourceAnchor(sourceAnchor)
         self.argumentNames = argumentNames
+        self.typeArguments = typeArguments
         self.body = body.withSourceAnchor(sourceAnchor)
         self.visibility = visibility
         self.symbols = symbols
@@ -40,6 +47,7 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
                                    identifier: identifier,
                                    functionType: functionType,
                                    argumentNames: argumentNames,
+                                   typeArguments: typeArguments,
                                    body: body,
                                    visibility: visibility,
                                    symbols: symbols)
@@ -50,6 +58,7 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
                                    identifier: identifier,
                                    functionType: functionType,
                                    argumentNames: argumentNames,
+                                   typeArguments: typeArguments,
                                    body: body,
                                    visibility: visibility,
                                    symbols: symbols)
@@ -74,6 +83,9 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
         guard functionType == rhs.functionType else {
             return false
         }
+        guard typeArguments == rhs.typeArguments else {
+            return false
+        }
         guard argumentNames == rhs.argumentNames else {
             return false
         }
@@ -94,6 +106,7 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
         hasher.combine(identifier)
         hasher.combine(functionType)
         hasher.combine(argumentNames)
+        hasher.combine(typeArguments)
         hasher.combine(body)
         hasher.combine(visibility)
 //        hasher.combine(symbols)
@@ -109,7 +122,15 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
             parentStr = "nil"
         }
         
-        return String(format: "%@%@\n%@identifier: %@\n%@visibility: %@\n%@functionType: %@\n%@argumentNames: %@\n%@body: %@",
+        return String(format: """
+            %@%@
+            %@identifier: %@
+            %@visibility: %@
+            %@functionType: %@
+            %@argumentNames: %@
+            %@typeArguments: %@
+            %@body: %@
+            """,
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)) + "(symbols=\(symbols); parent=\(parentStr))",
                       makeIndent(depth: depth + 1),
@@ -121,10 +142,12 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
                       makeIndent(depth: depth + 1),
                       makeArgumentsDescription(depth: depth + 1),
                       makeIndent(depth: depth + 1),
+                      makeTypeArgumentsDescription(depth: depth + 1),
+                      makeIndent(depth: depth + 1),
                       body.makeIndentedDescription(depth: depth + 1))
     }
     
-    private func makeArgumentsDescription(depth: Int) -> String {
+    fileprivate func makeArgumentsDescription(depth: Int) -> String {
         var result: String = ""
         if argumentNames.isEmpty {
             result = "none"
@@ -134,6 +157,21 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
                 result += "\n"
                 result += makeIndent(depth: depth + 1)
                 result += "\(i) -- \(argument)"
+            }
+        }
+        return result
+    }
+    
+    fileprivate func makeTypeArgumentsDescription(depth: Int) -> String {
+        var result: String = ""
+        if typeArguments.isEmpty {
+            result = "none"
+        } else {
+            for i in 0..<typeArguments.count {
+                let typeArgument = typeArguments[i]
+                result += "\n"
+                result += makeIndent(depth: depth + 1)
+                result += "\(i) -- \(typeArgument)"
             }
         }
         return result

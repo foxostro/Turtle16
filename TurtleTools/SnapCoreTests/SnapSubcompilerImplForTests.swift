@@ -23,11 +23,12 @@ class SnapSubcompilerImplForTests: XCTestCase {
     }
     
     fileprivate func compileTrait(_ memoryLayoutStrategy: MemoryLayoutStrategy,  _ globalSymbols: SymbolTable, _ traitDecl: TraitDeclaration) -> Block {
+        let functionsToCompile = FunctionsToCompile()
         let t0 = try! SnapSubcompilerTraitDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols)
             .compile(traitDecl)
-        try! SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols)
+        try! SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols, functionsToCompile: functionsToCompile)
             .compile(t0.children[0] as! StructDeclaration)
-        try! SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols)
+        try! SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols, functionsToCompile: functionsToCompile)
             .compile(t0.children[1] as! StructDeclaration)
         let t1 = try! SnapSubcompilerImpl(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols)
             .compile(t0.children[2] as! Impl)
@@ -35,14 +36,16 @@ class SnapSubcompilerImplForTests: XCTestCase {
     }
     
     fileprivate func compileSerialFake(_ memoryLayoutStrategy: MemoryLayoutStrategy,  _ globalSymbols: SymbolTable) {
+        let functionsToCompile = FunctionsToCompile()
         let fake = StructDeclaration(identifier: Expression.Identifier("SerialFake"), members: [])
-        try! SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols)
+        try! SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols, functionsToCompile: functionsToCompile)
             .compile(fake)
     }
     
     func testCompileImplForTrait() {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
         let globalSymbols = SymbolTable()
+        let functionsToCompile = FunctionsToCompile()
         
         compileSerialTrait(memoryLayoutStrategy, globalSymbols)
         compileSerialFake(memoryLayoutStrategy, globalSymbols)
@@ -59,7 +62,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
                                                   body: Block())
                           ])
         
-        let compiler = SnapSubcompilerImplFor(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols)
+        let compiler = SnapSubcompilerImplFor(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols, functionsToCompile: functionsToCompile)
         
         var seq: Seq? = nil
         XCTAssertNoThrow(seq = try compiler.compile(ast))
@@ -88,6 +91,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
     func testFailToCompileImplForTraitBecauseMethodsAreMissing() {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
         let globalSymbols = SymbolTable()
+        let functionsToCompile = FunctionsToCompile()
         
         compileSerialTrait(memoryLayoutStrategy, globalSymbols)
         compileSerialFake(memoryLayoutStrategy, globalSymbols)
@@ -96,7 +100,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
                           structIdentifier: Expression.Identifier("SerialFake"),
                           children: [])
         
-        let compiler = SnapSubcompilerImplFor(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols)
+        let compiler = SnapSubcompilerImplFor(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols, functionsToCompile: functionsToCompile)
         XCTAssertThrowsError(try compiler.compile(ast)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -107,6 +111,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
     func testFailToCompileImplForTraitBecauseMethodHasIncorrectNumberOfParameters() {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
         let globalSymbols = SymbolTable()
+        let functionsToCompile = FunctionsToCompile()
         
         compileSerialTrait(memoryLayoutStrategy, globalSymbols)
         compileSerialFake(memoryLayoutStrategy, globalSymbols)
@@ -122,7 +127,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
                                                   body: Block())
                           ])
         
-        let compiler = SnapSubcompilerImplFor(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols)
+        let compiler = SnapSubcompilerImplFor(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols, functionsToCompile: functionsToCompile)
         XCTAssertThrowsError(try compiler.compile(ast)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -133,6 +138,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
     func testFailToCompileImplForTraitBecauseMethodHasIncorrectParameterTypes() {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
         let globalSymbols = SymbolTable()
+        let functionsToCompile = FunctionsToCompile()
         
         compileSerialTrait(memoryLayoutStrategy, globalSymbols)
         compileSerialFake(memoryLayoutStrategy, globalSymbols)
@@ -149,7 +155,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
                                                   body: Block())
                           ])
         
-        let compiler = SnapSubcompilerImplFor(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols)
+        let compiler = SnapSubcompilerImplFor(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols, functionsToCompile: functionsToCompile)
         XCTAssertThrowsError(try compiler.compile(ast)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -160,6 +166,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
     func testFailToCompileImplForTraitBecauseMethodHasIncorrectSelfParameterTypes() {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
         let globalSymbols = SymbolTable()
+        let functionsToCompile = FunctionsToCompile()
         
         compileSerialTrait(memoryLayoutStrategy, globalSymbols)
         compileSerialFake(memoryLayoutStrategy, globalSymbols)
@@ -176,7 +183,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
                                                   body: Block())
                           ])
         
-        let compiler = SnapSubcompilerImplFor(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols)
+        let compiler = SnapSubcompilerImplFor(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols, functionsToCompile: functionsToCompile)
         XCTAssertThrowsError(try compiler.compile(ast)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -187,6 +194,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
     func testFailToCompileImplForTraitBecauseMethodHasIncorrectReturnType() {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
         let globalSymbols = SymbolTable()
+        let functionsToCompile = FunctionsToCompile()
         
         compileSerialTrait(memoryLayoutStrategy, globalSymbols)
         compileSerialFake(memoryLayoutStrategy, globalSymbols)
@@ -205,7 +213,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
                                                 ]))
                           ])
         
-        let compiler = SnapSubcompilerImplFor(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols)
+        let compiler = SnapSubcompilerImplFor(memoryLayoutStrategy: memoryLayoutStrategy, symbols: globalSymbols, functionsToCompile: functionsToCompile)
         XCTAssertThrowsError(try compiler.compile(ast)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)

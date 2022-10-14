@@ -5136,6 +5136,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testAssignment_automatic_conversion_from_trait_to_pointer() throws {
         let symbols = SymbolTable()
+        let functionsToCompile = FunctionsToCompile()
         let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Foo"),
                                          members: [],
                                          visibility: .privateVisibility)
@@ -5144,8 +5145,8 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let vtableDecl = seq.children[0] as! StructDeclaration
         let objectDecl = seq.children[1] as! StructDeclaration
         let impl = seq.children[2] as! Impl
-        _ = try SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols).compile(vtableDecl)
-        _ = try SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols).compile(objectDecl)
+        _ = try SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols, functionsToCompile: functionsToCompile).compile(vtableDecl)
+        _ = try SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols, functionsToCompile: functionsToCompile).compile(objectDecl)
         _ = try SnapSubcompilerImpl(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols).compile(impl)
         
         let traitObjectType = try symbols.resolveType(identifier: traitDecl.nameOfTraitObjectType)
@@ -5241,7 +5242,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .genericFunction(genericFunctionType)))
         ])
-        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, functionsToCompile: FunctionsToCompile())
         let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
                                                      arguments: [Expression.PrimitiveType(constU16)])
         let expected = SymbolType.function(FunctionType(name: "foo",
@@ -5304,7 +5305,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         ])
         
         let expr = Expression.Unary(op: .ampersand, expression: Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"), arguments: [Expression.PrimitiveType(constU16)]))
-        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, functionsToCompile: FunctionsToCompile())
         let result = try typeChecker.check(expression: expr)
         let expected: SymbolType = .pointer(.function(FunctionType(returnType: constU16, arguments: [constU16])))
         XCTAssertEqual(result, expected)

@@ -13,17 +13,19 @@ import TurtleCore
 // to a type error in the expression.
 public class RvalueExpressionTypeChecker: NSObject {
     public let symbols: SymbolTable
+    public let functionsToCompile: FunctionsToCompile!
     
-    public init(symbols: SymbolTable = SymbolTable()) {
+    public init(symbols: SymbolTable = SymbolTable(), functionsToCompile: FunctionsToCompile? = nil) {
         self.symbols = symbols
+        self.functionsToCompile = functionsToCompile
     }
         
     func rvalueContext() -> RvalueExpressionTypeChecker {
-        return RvalueExpressionTypeChecker(symbols: symbols)
+        return RvalueExpressionTypeChecker(symbols: symbols, functionsToCompile: functionsToCompile)
     }
         
     func lvalueContext() -> LvalueExpressionTypeChecker {
-        return LvalueExpressionTypeChecker(symbols: symbols)
+        return LvalueExpressionTypeChecker(symbols: symbols, functionsToCompile: functionsToCompile)
     }
     
     @discardableResult public func check(expression: Expression) throws -> SymbolType {
@@ -925,6 +927,8 @@ public class RvalueExpressionTypeChecker: NSObject {
                                         returnType: returnType,
                                         arguments: arguments)
         let result = SymbolType.function(functionType)
+        
+        functionsToCompile.enqueue(functionType)
         
         return result
     }

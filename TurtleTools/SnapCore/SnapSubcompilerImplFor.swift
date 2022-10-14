@@ -11,10 +11,14 @@ import TurtleCore
 public class SnapSubcompilerImplFor: NSObject {
     public let memoryLayoutStrategy: MemoryLayoutStrategy
     public let symbols: SymbolTable
+    public let functionsToCompile: FunctionsToCompile
     
-    public init(memoryLayoutStrategy: MemoryLayoutStrategy, symbols: SymbolTable) {
-        self.symbols = symbols
+    public init(memoryLayoutStrategy: MemoryLayoutStrategy,
+                symbols: SymbolTable,
+                functionsToCompile: FunctionsToCompile) {
         self.memoryLayoutStrategy = memoryLayoutStrategy
+        self.symbols = symbols
+        self.functionsToCompile = functionsToCompile
     }
     
     public func compile(_ node: ImplFor) throws -> Seq {
@@ -45,7 +49,7 @@ public class SnapSubcompilerImplFor: NSObject {
                 let actualArgumentType = actualMethodType.arguments[0]
                 let expectedArgumentType = expectedMethodType.arguments[0]
                 if actualArgumentType != expectedArgumentType {
-                    let typeChecker = TypeContextTypeChecker(symbols: symbols)
+                    let typeChecker = TypeContextTypeChecker(symbols: symbols, functionsToCompile: functionsToCompile)
                     let genericMutableSelfPointerType = try typeChecker.check(expression: Expression.PointerType(Expression.Identifier(traitType.name)))
                     let concreteMutableSelfPointerType = try typeChecker.check(expression: Expression.PointerType(Expression.Identifier(structType.name)))
                     if expectedArgumentType == genericMutableSelfPointerType {

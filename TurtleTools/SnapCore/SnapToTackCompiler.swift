@@ -106,7 +106,6 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     
     fileprivate func compileFunctions() throws -> [Subroutine] {
         // Compile functions collected earlier for deferred compilation.
-        // TODO: The goal here (WIP) is to have the type checker record required concrete instances of generic functions in a `functionsToCompile' list as they are discovered. We compile those functions now. The work done to compile a single function may generate additional functions to compile. This can happen because a function can itself contain a declaration of a new generic function, and can demand new concrete instantiations of a generic function. The type checker will append these new concrete instantiations to the list while it's being processed. This is basically the point where we perform monomorphization of generic functions.
         
         // Note that since functions can contain functions, we have to assume
         // items are being appending to the end of the functionsToCompile list
@@ -171,9 +170,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     
     public override func compile(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
         // Record the function (by type) so we can revisit and compile it later.
-        // TODO: We could compile non-generic functions right now. However, we need to defer work to compile generic functions until the type checker discovers the need for a new concrete instantiation of the function. As there is no communication conduit through which the type checker can directly invoke the compiler, it appends a work item to a list in the environment which the compiler can pick up later.
         let functionType = try symbols!.resolve(identifier: node.identifier.identifier).type.unwrapFunctionType()
-        globalEnvironment.functionsToCompile.append(functionType)
+        globalEnvironment.functionsToCompile.enqueue(functionType)
         return nil
     }
     
@@ -220,11 +218,13 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     @discardableResult func typeCheck(rexpr: Expression) throws -> SymbolType {
-        return try RvalueExpressionTypeChecker(symbols: symbols!).check(expression: rexpr)
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols!, functionsToCompile: globalEnvironment.functionsToCompile)
+        return try typeChecker.check(expression: rexpr)
     }
     
     @discardableResult func typeCheck(lexpr: Expression) throws -> SymbolType? {
-        return try LvalueExpressionTypeChecker(symbols: symbols!).check(expression: lexpr)
+        let typeChecker = LvalueExpressionTypeChecker(symbols: symbols!, functionsToCompile: globalEnvironment.functionsToCompile)
+        return try typeChecker.check(expression: lexpr)
     }
     
     public func lvalue(expr: Expression) throws -> AbstractSyntaxTreeNode {
@@ -829,7 +829,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     public func lvalue(genericTypeApplication expr: Expression.GenericTypeApplication) throws -> AbstractSyntaxTreeNode {
-        guard let lvalueType = try typeCheck(lexpr: expr) else {
+        guard try typeCheck(lexpr: expr) != nil else {
             throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "internal compiler error: expected lvalue: `\(expr)'")
         }
         

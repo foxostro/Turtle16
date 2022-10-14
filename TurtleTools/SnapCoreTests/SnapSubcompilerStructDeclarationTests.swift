@@ -12,7 +12,7 @@ import TurtleCore
 
 class SnapSubcompilerStructDeclarationTests: XCTestCase {
     fileprivate func makeCompiler(_ symbols: SymbolTable) -> SnapSubcompilerStructDeclaration {
-        return SnapSubcompilerStructDeclaration(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(), symbols: symbols)
+        return SnapSubcompilerStructDeclaration(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(), symbols: symbols, functionsToCompile: FunctionsToCompile())
     }
     
     func testEmptyStruct() throws {

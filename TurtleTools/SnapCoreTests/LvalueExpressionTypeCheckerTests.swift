@@ -272,7 +272,7 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .genericFunction(genericFunctionType)))
         ])
-        let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
+        let typeChecker = LvalueExpressionTypeChecker(symbols: symbols, functionsToCompile: FunctionsToCompile())
         let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
                                                      arguments: [Expression.PrimitiveType(constU16)])
         let expected = SymbolType.function(FunctionType(name: "foo",

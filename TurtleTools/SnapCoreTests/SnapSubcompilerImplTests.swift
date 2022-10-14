@@ -12,6 +12,8 @@ import TurtleCore
 
 class SnapSubcompilerImplTests: XCTestCase {
     func testExample() throws {
+        let functionsToCompile = FunctionsToCompile()
+        
         func makeImpl() throws -> (Impl, SymbolTable) {
             let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [
                 Expression.PointerType(Expression.Identifier("Foo"))
@@ -25,10 +27,10 @@ class SnapSubcompilerImplTests: XCTestCase {
             let traitCompiler = SnapSubcompilerTraitDeclaration(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(), symbols: symbols)
             let seq = try traitCompiler.compile(foo)
             
-            let structCompiler0 = SnapSubcompilerStructDeclaration(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(), symbols: symbols)
+            let structCompiler0 = SnapSubcompilerStructDeclaration(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(), symbols: symbols, functionsToCompile: functionsToCompile)
             _ = try structCompiler0.compile(seq.children[0] as! StructDeclaration)
             
-            let structCompiler1 = SnapSubcompilerStructDeclaration(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(), symbols: symbols)
+            let structCompiler1 = SnapSubcompilerStructDeclaration(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(), symbols: symbols, functionsToCompile: functionsToCompile)
             _ = try structCompiler1.compile(seq.children[1] as! StructDeclaration)
             
             let impl = seq.children[2] as! Impl
@@ -74,6 +76,8 @@ class SnapSubcompilerImplTests: XCTestCase {
     }
     
     func testRedefinesExistingSymbol() throws {
+        let functionsToCompile = FunctionsToCompile()
+        
         func makeImpl() throws -> (Impl, SymbolTable) {
             let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [
                 Expression.PointerType(Expression.Identifier("Foo"))
@@ -87,10 +91,10 @@ class SnapSubcompilerImplTests: XCTestCase {
             let traitCompiler = SnapSubcompilerTraitDeclaration(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(), symbols: symbols)
             let seq = try traitCompiler.compile(foo)
             
-            let structCompiler0 = SnapSubcompilerStructDeclaration(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(), symbols: symbols)
+            let structCompiler0 = SnapSubcompilerStructDeclaration(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(), symbols: symbols, functionsToCompile: functionsToCompile)
             _ = try structCompiler0.compile(seq.children[0] as! StructDeclaration)
             
-            let structCompiler1 = SnapSubcompilerStructDeclaration(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(), symbols: symbols)
+            let structCompiler1 = SnapSubcompilerStructDeclaration(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(), symbols: symbols, functionsToCompile: functionsToCompile)
             _ = try structCompiler1.compile(seq.children[1] as! StructDeclaration)
             
             let impl = seq.children[2] as! Impl

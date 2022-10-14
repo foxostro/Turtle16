@@ -3535,6 +3535,7 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Assignment_automatic_conversion_from_trait_to_pointer() throws {
         let symbols = SymbolTable()
+        let functionsToCompile = FunctionsToCompile()
         let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Foo"),
                                          members: [],
                                          visibility: .privateVisibility)
@@ -3543,8 +3544,8 @@ class SnapToTackCompilerTests: XCTestCase {
         let vtableDecl = seq.children[0] as! StructDeclaration
         let objectDecl = seq.children[1] as! StructDeclaration
         let impl = seq.children[2] as! Impl
-        _ = try SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols).compile(vtableDecl)
-        _ = try SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols).compile(objectDecl)
+        _ = try SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols, functionsToCompile: functionsToCompile).compile(vtableDecl)
+        _ = try SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols, functionsToCompile: functionsToCompile).compile(objectDecl)
         _ = try SnapSubcompilerImpl(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols).compile(impl)
         
         let traitObjectType = try symbols.resolveType(identifier: traitDecl.nameOfTraitObjectType)

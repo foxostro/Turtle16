@@ -11,13 +11,15 @@ import TurtleCore
 // Evaluates the expression type in an lvalue context.
 public class LvalueExpressionTypeChecker: NSObject {
     public let symbols: SymbolTable
+    public let functionsToCompile: FunctionsToCompile!
     
-    public init(symbols: SymbolTable = SymbolTable()) {
+    public init(symbols: SymbolTable = SymbolTable(), functionsToCompile: FunctionsToCompile? = nil) {
         self.symbols = symbols
+        self.functionsToCompile = functionsToCompile
     }
         
     func rvalueContext() -> RvalueExpressionTypeChecker {
-        return RvalueExpressionTypeChecker(symbols: symbols)
+        return RvalueExpressionTypeChecker(symbols: symbols, functionsToCompile: functionsToCompile)
     }
     
     @discardableResult public func check(expression: Expression) throws -> SymbolType? {

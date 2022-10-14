@@ -9,12 +9,16 @@
 import TurtleCore
 
 public class SnapSubcompilerStructDeclaration: NSObject {
-    public let symbols: SymbolTable
     public let memoryLayoutStrategy: MemoryLayoutStrategy
+    public let symbols: SymbolTable
+    public let functionsToCompile: FunctionsToCompile
     
-    public init(memoryLayoutStrategy: MemoryLayoutStrategy, symbols: SymbolTable) {
-        self.symbols = symbols
+    public init(memoryLayoutStrategy: MemoryLayoutStrategy,
+                symbols: SymbolTable,
+                functionsToCompile: FunctionsToCompile) {
         self.memoryLayoutStrategy = memoryLayoutStrategy
+        self.symbols = symbols
+        self.functionsToCompile = functionsToCompile
     }
     
     public func compile(_ node: StructDeclaration) throws {
@@ -28,7 +32,7 @@ public class SnapSubcompilerStructDeclaration: NSObject {
         
         members.enclosingFunctionNameMode = .set(name)
         for memberDeclaration in node.members {
-            let memberType = try TypeContextTypeChecker(symbols: members).check(expression: memberDeclaration.memberType)
+            let memberType = try TypeContextTypeChecker(symbols: members, functionsToCompile: functionsToCompile).check(expression: memberDeclaration.memberType)
             if memberType == .structType(fullyQualifiedStructType) || memberType == .constStructType(fullyQualifiedStructType) {
                 throw CompilerError(sourceAnchor: memberDeclaration.memberType.sourceAnchor, message: "a struct cannot contain itself recursively")
             }

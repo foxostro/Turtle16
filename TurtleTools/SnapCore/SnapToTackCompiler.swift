@@ -241,6 +241,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             result = try lvalue(get: node)
         case let node as Expression.Bitcast:
             result = try lvalue(expr: node.expr)
+        case let node as Expression.GenericTypeApplication:
+            result = try lvalue(genericTypeApplication: node)
         default:
             fatalError("unimplemented")
         }
@@ -248,12 +250,29 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     func lvalue(identifier node: Expression.Identifier) throws -> AbstractSyntaxTreeNode {
-        let resolution = try symbols!.resolveWithStackFrameDepth(sourceAnchor: node.sourceAnchor, identifier: node.identifier)
-        let symbol = resolution.0
-        let depth = symbols!.stackFrameIndex - resolution.1
-        assert(depth >= 0)
-        let result = computeAddressOfSymbol(sourceAnchor: node.sourceAnchor, symbol: symbol, depth: depth)
-        return try compile(result)!
+        let lvalueType = try typeCheck(lexpr: node)
+        switch lvalueType {
+        case .function(let typ):
+            guard let mangledName = typ.mangledName else {
+                throw CompilerError(sourceAnchor: node.sourceAnchor, message: "internal compiler error: function has no mangled name: `\(lvalueType!.description)'")
+            }
+            
+            let dst = nextRegister()
+            pushRegister(dst)
+            let result = TackInstructionNode(instruction: .la, parameters:[
+                ParameterIdentifier(dst),
+                ParameterIdentifier(mangledName)
+            ])
+            return result
+            
+        default:
+            let resolution = try symbols!.resolveWithStackFrameDepth(sourceAnchor: node.sourceAnchor, identifier: node.identifier)
+            let symbol = resolution.0
+            let depth = symbols!.stackFrameIndex - resolution.1
+            assert(depth >= 0)
+            let result = computeAddressOfSymbol(sourceAnchor: node.sourceAnchor, symbol: symbol, depth: depth)
+            return try compile(result)!
+        }
     }
     
     func lvalue(subscript expr: Expression.Subscript) throws -> AbstractSyntaxTreeNode {
@@ -809,6 +828,15 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         return Seq(sourceAnchor: expr.sourceAnchor, children: children)
     }
     
+    public func lvalue(genericTypeApplication expr: Expression.GenericTypeApplication) throws -> AbstractSyntaxTreeNode {
+        guard let lvalueType = try typeCheck(lexpr: expr) else {
+            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "internal compiler error: expected lvalue: `\(expr)'")
+        }
+        
+        let result = try rvalue(genericTypeApplication: expr)
+        return result
+    }
+    
     public func rvalue(expr: Expression) throws -> AbstractSyntaxTreeNode {
         try typeCheck(rexpr: expr)
         let result: AbstractSyntaxTreeNode
@@ -847,6 +875,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             result = try rvalue(call: node)
         case let node as Expression.SizeOf:
             result = try rvalue(sizeof: node)
+        case let node as Expression.GenericTypeApplication:
+            result = try rvalue(genericTypeApplication: node)
         default:
             throw CompilerError(message: "unimplemented: `\(expr)'")
         }
@@ -2524,6 +2554,28 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         let result = TackInstructionNode(instruction: .liu16, parameters: [
             ParameterIdentifier(dest),
             ParameterNumber(size)
+        ])
+        return result
+    }
+    
+    func rvalue(genericTypeApplication expr: Expression.GenericTypeApplication) throws -> AbstractSyntaxTreeNode {
+        let rvalueType = try typeCheck(rexpr: expr)
+        
+        guard rvalueType.isFunctionType else {
+            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "internal compiler error: expected rvalue to be a function type: `\(expr)'")
+        }
+        
+        let functionType = rvalueType.unwrapFunctionType()
+        
+        guard let mangledName = functionType.mangledName else {
+            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "internal compiler error: concrete instance of generic function has no mangled name: `\(functionType)'")
+        }
+        
+        let dst = nextRegister()
+        pushRegister(dst)
+        let result = TackInstructionNode(instruction: .la, parameters:[
+            ParameterIdentifier(dst),
+            ParameterIdentifier(mangledName)
         ])
         return result
     }

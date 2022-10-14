@@ -5694,6 +5694,46 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, "vr0")
     }
     
+    func testLvalue_CannotInstantiateGenericFunctionTypeWithoutApplication() {
+        let template = Expression.FunctionType(name: "foo",
+                                               returnType: Expression.Identifier("T"),
+                                               arguments: [Expression.Identifier("T")])
+        let genericFunctionType = Expression.GenericFunctionType(typeVariables: [Expression.Identifier("T")],
+                                                                 template: template)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .genericFunction(genericFunctionType)))
+        ])
+        let expr = Expression.Identifier("foo")
+        let compiler = makeCompiler(symbols: symbols)
+        XCTAssertThrowsError(try compiler.lvalue(expr: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot instantiate generic function `func foo<T>(T) -> T'")
+        }
+    }
+    
+    func testLvalue_GenericFunctionApplication() throws {
+        let constU16 = SymbolType.arithmeticType(.immutableInt(.u16))
+        let template = Expression.FunctionType(name: "foo",
+                                               returnType: Expression.Identifier("T"),
+                                               arguments: [Expression.Identifier("T")])
+        let genericFunctionType = Expression.GenericFunctionType(typeVariables: [Expression.Identifier("T")],
+                                                                 template: template)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .genericFunction(genericFunctionType)))
+        ])
+        let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
+                                                     arguments: [Expression.PrimitiveType(constU16)])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.lvalue(expr: expr)
+        let expected = TackInstructionNode(instruction: .la, parameters:[
+            ParameterIdentifier("vr0"),
+            ParameterIdentifier("foo_const_u16")
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr0")
+    }
+    
     func testRvalue_RvalueOfMemberOfStructInitializer() throws {
         let typ = StructType(name: "Foo", symbols: SymbolTable(tuples: [
             ("bar", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0, storage: .automaticStorage))
@@ -5758,6 +5798,139 @@ class SnapToTackCompilerTests: XCTestCase {
         let expected = TackInstructionNode(instruction: .liu16, parameters: [
             ParameterIdentifier("vr0"),
             ParameterNumber(1)
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr0")
+    }
+    
+    func testRvalue_FunctionByIdentifier() throws {
+        let symbols = SymbolTable(tuples: [
+            ("panic", Symbol(type: .function(FunctionType(name: "panic", mangledName: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .arithmeticType(.immutableInt(.u8)))]))))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let expr = Expression.Identifier("panic")
+        let actual = try compiler.rvalue(expr: expr)
+        let expected = TackInstructionNode(instruction: .la, parameters: [
+            ParameterIdentifier("vr0"),
+            ParameterIdentifier("panic")
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr0")
+    }
+    
+    func testRvalue_CannotInstantiateGenericFunctionTypeWithoutApplication() throws {
+        let compiler = makeCompiler()
+        let template = Expression.FunctionType(name: "foo",
+                                               returnType: Expression.Identifier("T"),
+                                               arguments: [Expression.Identifier("T")])
+        let expr = Expression.GenericFunctionType(typeVariables: [Expression.Identifier("T")],
+                                                  template: template)
+        XCTAssertThrowsError(try compiler.rvalue(expr: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot instantiate generic function `func foo<T>(T) -> T'")
+        }
+    }
+    
+    func testRvalue_GenericFunctionApplication_FailsWithIncorrectNumberOfArguments() throws {
+        let constU16 = SymbolType.arithmeticType(.mutableInt(.u16))
+        let template = Expression.FunctionType(name: "foo",
+                                               returnType: Expression.Identifier("T"),
+                                               arguments: [Expression.Identifier("T")])
+        let genericFunctionType = Expression.GenericFunctionType(typeVariables: [Expression.Identifier("T")],
+                                                                 template: template)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .genericFunction(genericFunctionType)))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
+                                                     arguments: [Expression.PrimitiveType(constU16),
+                                                                 Expression.PrimitiveType(constU16)])
+        XCTAssertThrowsError(try compiler.rvalue(expr: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "incorrect number of type arguments in application of generic function type `foo<u16, u16>'")
+        }
+    }
+    
+    func testRvalue_GenericFunctionApplication() throws {
+        let constU16 = SymbolType.arithmeticType(.immutableInt(.u16))
+        let template = Expression.FunctionType(name: "foo",
+                                               returnType: Expression.Identifier("T"),
+                                               arguments: [Expression.Identifier("T")])
+        let genericFunctionType = Expression.GenericFunctionType(typeVariables: [Expression.Identifier("T")],
+                                                                 template: template)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .genericFunction(genericFunctionType)))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
+                                                     arguments: [Expression.PrimitiveType(constU16)])
+        let actual = try compiler.rvalue(expr: expr)
+        let expected = TackInstructionNode(instruction: .la, parameters: [
+            ParameterIdentifier("vr0"),
+            ParameterIdentifier("foo_const_u16")
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, "vr0")
+    }
+    
+    func testRvalue_CannotTakeTheAddressOfGenericFunctionWithoutTypeArguments() {
+        let template = Expression.FunctionType(name: "foo",
+                                               returnType: Expression.Identifier("T"),
+                                               arguments: [Expression.Identifier("T")])
+        let genericFunctionType = Expression.GenericFunctionType(typeVariables: [Expression.Identifier("T")],
+                                                                 template: template)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .genericFunction(genericFunctionType)))
+        ])
+        
+        let expr = Expression.Unary(op: .ampersand, expression: Expression.Identifier("foo"))
+        let compiler = makeCompiler(symbols: symbols)
+        XCTAssertThrowsError(try compiler.rvalue(expr: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot instantiate generic function `func foo<T>(T) -> T'")
+        }
+    }
+    
+    func testRvalue_CannotTakeTheAddressOfGenericFunctionWithInappropriateTypeArguments() {
+        let constU16 = SymbolType.arithmeticType(.immutableInt(.u16))
+        let template = Expression.FunctionType(name: "foo",
+                                               returnType: Expression.Identifier("T"),
+                                               arguments: [Expression.Identifier("T")])
+        let genericFunctionType = Expression.GenericFunctionType(typeVariables: [Expression.Identifier("T")],
+                                                                 template: template)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .genericFunction(genericFunctionType)))
+        ])
+        
+        let expr = Expression.Unary(op: .ampersand, expression: Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"), arguments: [Expression.PrimitiveType(constU16), Expression.PrimitiveType(constU16)]))
+        let compiler = makeCompiler(symbols: symbols)
+        XCTAssertThrowsError(try compiler.rvalue(expr: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "incorrect number of type arguments in application of generic function type `foo<const u16, const u16>'")
+        }
+    }
+    
+    func testRvalue_TakeTheAddressOfGenericFunctionWithGoodTypeArguments() throws {
+        let constU16 = SymbolType.arithmeticType(.immutableInt(.u16))
+        let template = Expression.FunctionType(name: "foo",
+                                               returnType: Expression.Identifier("T"),
+                                               arguments: [Expression.Identifier("T")])
+        let genericFunctionType = Expression.GenericFunctionType(typeVariables: [Expression.Identifier("T")],
+                                                                 template: template)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .genericFunction(genericFunctionType)))
+        ])
+        
+        let expr = Expression.Unary(op: .ampersand, expression: Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"), arguments: [Expression.PrimitiveType(constU16)]))
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: expr)
+        let expected = TackInstructionNode(instruction: .la, parameters: [
+            ParameterIdentifier("vr0"),
+            ParameterIdentifier("foo_const_u16")
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")

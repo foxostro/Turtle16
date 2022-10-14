@@ -276,7 +276,7 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
                                                      arguments: [Expression.PrimitiveType(constU16)])
         let expected = SymbolType.function(FunctionType(name: "foo",
-                                                        mangledName: "foo",
+                                                        mangledName: "foo_const_u16",
                                                         returnType: constU16,
                                                         arguments: [constU16],
                                                         ast: nil))

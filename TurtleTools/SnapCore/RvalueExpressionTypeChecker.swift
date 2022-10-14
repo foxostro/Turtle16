@@ -858,12 +858,19 @@ public class RvalueExpressionTypeChecker: NSObject {
                                       arguments: arguments))
     }
     
-    fileprivate func mangleFunctionName(_ name: String?) -> String? {
+    fileprivate func mangleFunctionName(_ name: String?, evaluatedTypeArguments: [SymbolType] = []) -> String? {
         guard let name else {
             return nil
         }
         
-        let mangledName = Array(NSOrderedSet(array: symbols.allEnclosingFunctionNames() + [name])).map{$0 as! String}.joined(separator: "_")
+        // Each concrete instance must have a unique mangled name. We append a
+        // suffix derived from the type argument list to ensure it.
+        let typeNameList = evaluatedTypeArguments.map { arg in
+            arg.description.replacingOccurrences(of: " ", with: "_")
+        }
+        
+        let mangledName = Array(NSOrderedSet(array: symbols.allEnclosingFunctionNames() + [name] + typeNameList)).map{$0 as! String}.joined(separator: "_")
+        
         return mangledName
     }
     
@@ -899,16 +906,25 @@ public class RvalueExpressionTypeChecker: NSObject {
         
         // Bind types in a new symbol table to apply the type arguments.
         let symbolsWithTypeArguments = SymbolTable(parent: symbols)
+        var evaluatedTypeArguments: [SymbolType] = []
         for i in 0..<expr.arguments.count {
             let typVariable = genericFunctionType.typeVariables[i]
             let typeArgument = try check(expression: expr.arguments[i])
             symbolsWithTypeArguments.bind(identifier: typVariable.identifier, symbolType: typeArgument)
+            evaluatedTypeArguments.append(typeArgument)
         }
         let inner = RvalueExpressionTypeChecker(symbols: symbolsWithTypeArguments)
         
         // Evaluate the function type template using the above symbols to get
         // the concrete function type result.
-        let result = try inner.check(functionType: genericFunctionType.template)
+        let returnType = try inner.check(expression: genericFunctionType.template.returnType)
+        let arguments = try inner.evaluateFunctionArguments(genericFunctionType.template.arguments)
+        let mangledName = inner.mangleFunctionName(genericFunctionType.template.name, evaluatedTypeArguments: evaluatedTypeArguments)
+        let functionType = FunctionType(name: genericFunctionType.template.name,
+                                        mangledName: mangledName,
+                                        returnType: returnType,
+                                        arguments: arguments)
+        let result = SymbolType.function(functionType)
         
         return result
     }

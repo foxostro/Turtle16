@@ -604,7 +604,15 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
         
     public func check(identifier expr: Expression.Identifier) throws -> SymbolType {
-        return try symbols.resolveTypeOfIdentifier(sourceAnchor: expr.sourceAnchor, identifier: expr.identifier)
+        let rvalueType = try symbols.resolveTypeOfIdentifier(sourceAnchor: expr.sourceAnchor, identifier: expr.identifier)
+        
+        switch rvalueType {
+        case .genericFunction(let typ):
+            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot instantiate generic function `\(typ.shortDescription)'")
+            
+        default:
+            return rvalueType
+        }
     }
         
     public func check(call: Expression.Call) throws -> SymbolType {
@@ -866,11 +874,13 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
     
     public func check(genericFunctionType expr: Expression.GenericFunctionType) throws -> SymbolType {
-        return .genericFunction(expr)
+        throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot instantiate generic function `\(expr.shortDescription)'")
     }
     
     public func check(genericTypeApplication expr: Expression.GenericTypeApplication) throws -> SymbolType {
-        switch try check(identifier: expr.identifier) {
+        let typeOfIdentifier = try symbols.resolveTypeOfIdentifier(sourceAnchor: expr.sourceAnchor, identifier: expr.identifier.identifier)
+        
+        switch typeOfIdentifier {
         case .genericFunction(let typ):
             return try apply(genericTypeApplication: expr, genericFunctionType: typ)
             

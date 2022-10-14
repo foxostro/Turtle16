@@ -5195,16 +5195,18 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
     
-    func testGenericFunctionType() throws {
+    func testCannotInstantiateGenericFunctionTypeWithoutApplication() throws {
         let typeChecker = RvalueExpressionTypeChecker()
         let template = Expression.FunctionType(name: "foo",
                                                returnType: Expression.Identifier("T"),
                                                arguments: [Expression.Identifier("T")])
         let expr = Expression.GenericFunctionType(typeVariables: [Expression.Identifier("T")],
                                                   template: template)
-        let expected = SymbolType.genericFunction(expr)
-        let actual = try typeChecker.check(expression: expr)
-        XCTAssertEqual(actual, expected)
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot instantiate generic function `func foo<T>(T) -> T'")
+        }
     }
     
     func testGenericFunctionApplication_FailsWithIncorrectNumberOfArguments() throws {
@@ -5249,5 +5251,62 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                                         ast: nil))
         let actual = try typeChecker.check(expression: expr)
         XCTAssertEqual(actual, expected)
+    }
+    
+    func testCannotTakeTheAddressOfGenericFunctionWithoutTypeArguments() {
+        let template = Expression.FunctionType(name: "foo",
+                                               returnType: Expression.Identifier("T"),
+                                               arguments: [Expression.Identifier("T")])
+        let genericFunctionType = Expression.GenericFunctionType(typeVariables: [Expression.Identifier("T")],
+                                                                 template: template)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .genericFunction(genericFunctionType)))
+        ])
+        
+        let expr = Expression.Unary(op: .ampersand, expression: Expression.Identifier("foo"))
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot instantiate generic function `func foo<T>(T) -> T'")
+        }
+    }
+    
+    func testCannotTakeTheAddressOfGenericFunctionWithInappropriateTypeArguments() {
+        let constU16 = SymbolType.arithmeticType(.immutableInt(.u16))
+        let template = Expression.FunctionType(name: "foo",
+                                               returnType: Expression.Identifier("T"),
+                                               arguments: [Expression.Identifier("T")])
+        let genericFunctionType = Expression.GenericFunctionType(typeVariables: [Expression.Identifier("T")],
+                                                                 template: template)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .genericFunction(genericFunctionType)))
+        ])
+        
+        let expr = Expression.Unary(op: .ampersand, expression: Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"), arguments: [Expression.PrimitiveType(constU16), Expression.PrimitiveType(constU16)]))
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "incorrect number of type arguments in application of generic function type `foo<const u16, const u16>'")
+        }
+    }
+    
+    func testTakeTheAddressOfGenericFunctionWithGoodTypeArguments() throws {
+        let constU16 = SymbolType.arithmeticType(.immutableInt(.u16))
+        let template = Expression.FunctionType(name: "foo",
+                                               returnType: Expression.Identifier("T"),
+                                               arguments: [Expression.Identifier("T")])
+        let genericFunctionType = Expression.GenericFunctionType(typeVariables: [Expression.Identifier("T")],
+                                                                 template: template)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .genericFunction(genericFunctionType)))
+        ])
+        
+        let expr = Expression.Unary(op: .ampersand, expression: Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"), arguments: [Expression.PrimitiveType(constU16)]))
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        let result = try typeChecker.check(expression: expr)
+        let expected: SymbolType = .pointer(.function(FunctionType(returnType: constU16, arguments: [constU16])))
+        XCTAssertEqual(result, expected)
     }
 }

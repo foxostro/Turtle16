@@ -36,6 +36,8 @@ public class LvalueExpressionTypeChecker: NSObject {
             else {
                 return nil
             }
+        case let expr as Expression.GenericTypeApplication:
+            return try check(genericTypeApplication: expr)
         default:
             return nil
         }
@@ -90,5 +92,9 @@ public class LvalueExpressionTypeChecker: NSObject {
             break
         }
         throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "value of type `\(resultType)' has no member `\(name)'")
+    }
+    
+    public func check(genericTypeApplication expr: Expression.GenericTypeApplication) throws -> SymbolType? {
+        return try rvalueContext().check(genericTypeApplication: expr)
     }
 }

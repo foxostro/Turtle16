@@ -244,4 +244,43 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertNil(result)
     }
+    
+    func testCannotInstantiateGenericFunctionTypeWithoutApplication() throws {
+        let template = Expression.FunctionType(name: "foo",
+                                               returnType: Expression.Identifier("T"),
+                                               arguments: [Expression.Identifier("T")])
+        let genericFunctionType = Expression.GenericFunctionType(typeVariables: [Expression.Identifier("T")],
+                                                                 template: template)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .genericFunction(genericFunctionType)))
+        ])
+        let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
+        XCTAssertThrowsError(try typeChecker.check(identifier: Expression.Identifier("foo"))) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot instantiate generic function `func foo<T>(T) -> T'")
+        }
+    }
+    
+    func testGenericFunctionApplication() throws {
+        let constU16 = SymbolType.arithmeticType(.immutableInt(.u16))
+        let template = Expression.FunctionType(name: "foo",
+                                               returnType: Expression.Identifier("T"),
+                                               arguments: [Expression.Identifier("T")])
+        let genericFunctionType = Expression.GenericFunctionType(typeVariables: [Expression.Identifier("T")],
+                                                                 template: template)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .genericFunction(genericFunctionType)))
+        ])
+        let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
+        let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
+                                                     arguments: [Expression.PrimitiveType(constU16)])
+        let expected = SymbolType.function(FunctionType(name: "foo",
+                                                        mangledName: "foo",
+                                                        returnType: constU16,
+                                                        arguments: [constU16],
+                                                        ast: nil))
+        let actual = try typeChecker.check(expression: expr)
+        XCTAssertEqual(actual, expected)
+    }
 }

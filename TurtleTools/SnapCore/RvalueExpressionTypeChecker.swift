@@ -610,7 +610,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         
         switch rvalueType {
         case .genericFunction(let typ):
-            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot instantiate generic function `\(typ.shortDescription)'")
+            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot instantiate generic function `\(typ.description)'")
             
         default:
             return rvalueType
@@ -883,7 +883,7 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
     
     public func check(genericFunctionType expr: Expression.GenericFunctionType) throws -> SymbolType {
-        throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot instantiate generic function `\(expr.shortDescription)'")
+        throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot instantiate generic function `\(expr.description)'")
     }
     
     public func check(genericTypeApplication expr: Expression.GenericTypeApplication) throws -> SymbolType {
@@ -900,7 +900,7 @@ public class RvalueExpressionTypeChecker: NSObject {
     
     fileprivate func apply(genericTypeApplication expr: Expression.GenericTypeApplication,
                            genericFunctionType: Expression.GenericFunctionType) throws -> SymbolType {
-        guard expr.arguments.count == genericFunctionType.typeVariables.count else {
+        guard expr.arguments.count == genericFunctionType.typeArguments.count else {
             throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "incorrect number of type arguments in application of generic function type `\(expr.shortDescription)'")
         }
         
@@ -910,19 +910,19 @@ public class RvalueExpressionTypeChecker: NSObject {
         let symbolsWithTypeArguments = SymbolTable(parent: symbols)
         var evaluatedTypeArguments: [SymbolType] = []
         for i in 0..<expr.arguments.count {
-            let typVariable = genericFunctionType.typeVariables[i]
+            let typeVariable = genericFunctionType.typeArguments[i]
             let typeArgument = try check(expression: expr.arguments[i])
-            symbolsWithTypeArguments.bind(identifier: typVariable.identifier, symbolType: typeArgument)
+            symbolsWithTypeArguments.bind(identifier: typeVariable.identifier, symbolType: typeArgument)
             evaluatedTypeArguments.append(typeArgument)
         }
         let inner = RvalueExpressionTypeChecker(symbols: symbolsWithTypeArguments)
         
         // Evaluate the function type template using the above symbols to get
         // the concrete function type result.
-        let returnType = try inner.check(expression: genericFunctionType.template.returnType)
-        let arguments = try inner.evaluateFunctionArguments(genericFunctionType.template.arguments)
-        let mangledName = inner.mangleFunctionName(genericFunctionType.template.name, evaluatedTypeArguments: evaluatedTypeArguments)
-        let functionType = FunctionType(name: genericFunctionType.template.name,
+        let returnType = try inner.check(expression: genericFunctionType.returnType)
+        let arguments = try inner.evaluateFunctionArguments(genericFunctionType.arguments)
+        let mangledName = inner.mangleFunctionName(genericFunctionType.name, evaluatedTypeArguments: evaluatedTypeArguments)
+        let functionType = FunctionType(name: genericFunctionType.name,
                                         mangledName: mangledName,
                                         returnType: returnType,
                                         arguments: arguments)

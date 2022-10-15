@@ -246,11 +246,17 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testCannotInstantiateGenericFunctionTypeWithoutApplication() throws {
-        let template = Expression.FunctionType(name: "foo",
-                                               returnType: Expression.Identifier("T"),
-                                               arguments: [Expression.Identifier("T")])
-        let genericFunctionType = Expression.GenericFunctionType(typeVariables: [Expression.Identifier("T")],
-                                                                 template: template)
+        let functionType = Expression.FunctionType(name: "foo",
+                                                   returnType: Expression.Identifier("T"),
+                                                   arguments: [Expression.Identifier("T")])
+        let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
+                                           functionType: functionType,
+                                           argumentNames: ["a"],
+                                           typeArguments: [Expression.Identifier("T")],
+                                           body: Block(),
+                                           visibility: .privateVisibility,
+                                           symbols: SymbolTable())
+        let genericFunctionType = Expression.GenericFunctionType(template: template)
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .genericFunction(genericFunctionType)))
         ])
@@ -258,17 +264,23 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(identifier: Expression.Identifier("foo"))) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot instantiate generic function `func foo<T>(T) -> T'")
+            XCTAssertEqual(compilerError?.message, "cannot instantiate generic function `func foo<T>(a: T) -> T'")
         }
     }
     
     func testGenericFunctionApplication() throws {
         let constU16 = SymbolType.arithmeticType(.immutableInt(.u16))
-        let template = Expression.FunctionType(name: "foo",
-                                               returnType: Expression.Identifier("T"),
-                                               arguments: [Expression.Identifier("T")])
-        let genericFunctionType = Expression.GenericFunctionType(typeVariables: [Expression.Identifier("T")],
-                                                                 template: template)
+        let functionType = Expression.FunctionType(name: "foo",
+                                                   returnType: Expression.Identifier("T"),
+                                                   arguments: [Expression.Identifier("T")])
+        let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
+                                           functionType: functionType,
+                                           argumentNames: ["a"],
+                                           typeArguments: [Expression.Identifier("T")],
+                                           body: Block(),
+                                           visibility: .privateVisibility,
+                                           symbols: SymbolTable())
+        let genericFunctionType = Expression.GenericFunctionType(template: template)
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .genericFunction(genericFunctionType)))
         ])

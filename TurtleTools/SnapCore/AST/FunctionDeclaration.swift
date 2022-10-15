@@ -12,7 +12,7 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
     public let identifier: Expression.Identifier
     public let functionType: Expression
     public let argumentNames: [String]
-    public let typeArguments: [Expression]
+    public let typeArguments: [Expression.Identifier]
     public let body: Block
     public let visibility: SymbolVisibility
     public let symbols: SymbolTable
@@ -25,7 +25,7 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
                 identifier: Expression.Identifier,
                 functionType: Expression,
                 argumentNames: [String],
-                typeArguments: [Expression] = [],
+                typeArguments: [Expression.Identifier] = [],
                 body: Block,
                 visibility: SymbolVisibility = .privateVisibility,
                 symbols: SymbolTable = SymbolTable()) {
@@ -55,13 +55,13 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
     
     public func withBody(_ body: Block) -> FunctionDeclaration {
         FunctionDeclaration(sourceAnchor: sourceAnchor,
-                                   identifier: identifier,
-                                   functionType: functionType,
-                                   argumentNames: argumentNames,
-                                   typeArguments: typeArguments,
-                                   body: body,
-                                   visibility: visibility,
-                                   symbols: symbols)
+                            identifier: identifier,
+                            functionType: functionType,
+                            argumentNames: argumentNames,
+                            typeArguments: typeArguments,
+                            body: body,
+                            visibility: visibility,
+                            symbols: symbols)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

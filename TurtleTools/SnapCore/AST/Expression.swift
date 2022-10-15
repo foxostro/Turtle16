@@ -937,64 +937,39 @@ public class Expression: AbstractSyntaxTreeNode {
     // function type only when given type arguments to fulfill specified type
     // variables.
     public class GenericFunctionType: Expression {
-        public let typeVariables: [Expression.Identifier]
-        public let template: Expression.FunctionType
+        public let template: FunctionDeclaration
+        
+        public var name: String {
+            template.identifier.identifier
+        }
+        
+        public var typeArguments: [Expression.Identifier] {
+            template.typeArguments
+        }
+        
+        public var functionType: Expression.FunctionType {
+            template.functionType as! Expression.FunctionType
+        }
+        
+        public var arguments: [Expression] {
+            functionType.arguments
+        }
+        
+        public var returnType: Expression {
+            functionType.returnType
+        }
         
         public init(sourceAnchor: SourceAnchor? = nil,
-                    typeVariables: [Expression.Identifier],
-                    template: Expression.FunctionType) {
-            self.typeVariables = typeVariables
+                    template: FunctionDeclaration) {
             self.template = template
             super.init(sourceAnchor: sourceAnchor)
         }
         
-        public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> GenericFunctionType {
-            if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-                return self
-            }
-            return GenericFunctionType(sourceAnchor: sourceAnchor,
-                                       typeVariables: typeVariables,
-                                       template: template)
-        }
-        
-        public var shortDescription: String {
-            let name = template.name ?? ""
-            let typeVariablesDescription = typeVariables.map({$0.description}).joined(separator: ", ")
-            let argumentsDescription = template.arguments.map({$0.description}).joined(separator: ", ")
-            return "func \(name)<\(typeVariablesDescription)>(\(argumentsDescription)) -> \(template.returnType)"
-        }
-        
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: """
-                                  %@%@
-                                  %@name: %@
-                                  %@typeVariables: %@
-                                  %@template: %@
-                                  """,
-                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                          String(describing: type(of: self)),
-                          makeIndent(depth: depth+1),
-                          template.name ?? "none",
-                          makeIndent(depth: depth+1),
-                          makeTypeVariablesDescription(depth: depth+1),
-                          makeIndent(depth: depth+1),
-                          template.makeIndentedDescription(depth: depth+1))
-        }
-        
-        private func makeTypeVariablesDescription(depth: Int) -> String {
-            var result: String = ""
-            if typeVariables.isEmpty {
-                result = "none"
-            } else {
-                for i in 0..<typeVariables.count {
-                    let variable = typeVariables[i]
-                    result += "\n"
-                    result += makeIndent(depth: depth + 1)
-                    result += "\(i) -- "
-                    result += variable.makeIndentedDescription(depth: depth + 1)
-                }
-            }
-            return result
+            let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+            let typeArgumentsDescription = typeArguments.map({$0.description}).joined(separator: ", ")
+            let argumentsDescription = zip(template.argumentNames, arguments).map({"\($0.0): \($0.1)"}).joined(separator: ", ")
+            return "\(indent)func \(name)<\(typeArgumentsDescription)>(\(argumentsDescription)) -> \(returnType)"
         }
         
         public static func ==(lhs: GenericFunctionType, rhs: GenericFunctionType) -> Bool {
@@ -1014,9 +989,6 @@ public class Expression: AbstractSyntaxTreeNode {
             guard let rhs = rhs as? GenericFunctionType else {
                 return false
             }
-            guard typeVariables == rhs.typeVariables else {
-                return false
-            }
             guard template == rhs.template else {
                 return false
             }
@@ -1025,7 +997,6 @@ public class Expression: AbstractSyntaxTreeNode {
         
         public override var hash: Int {
             var hasher = Hasher()
-            hasher.combine(typeVariables)
             hasher.combine(template)
             return hasher.finalize()
         }

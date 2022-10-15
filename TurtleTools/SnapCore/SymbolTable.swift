@@ -205,7 +205,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         case .function(let functionType):
             return functionType.description
         case .genericFunction(let genericFunctionType):
-            return genericFunctionType.shortDescription
+            return genericFunctionType.description
         case .constStructType(let typ):
             return "const \(typ.name)"
         case .structType(let typ):

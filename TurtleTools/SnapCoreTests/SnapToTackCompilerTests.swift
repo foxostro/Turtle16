@@ -222,7 +222,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr0"),
                 ParameterNumber(272)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr1"),
                 ParameterNumber(42)
             ]),
@@ -261,7 +261,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr3"),
                 ParameterNumber(273)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr4"),
                 ParameterNumber(42)
             ]),
@@ -321,7 +321,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr0"),
                 ParameterNumber(0)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr2"),
                 ParameterNumber(0xabcd)
             ]),
@@ -338,7 +338,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr3"),
                 ParameterNumber(1)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr5"),
                 ParameterNumber(0xffff)
             ]),
@@ -664,7 +664,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr1"),
                 ParameterNumber(274)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr2"),
                 ParameterNumber(1)
             ]),
@@ -716,7 +716,7 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))))
-        let expected = TackInstructionNode(instruction: .li16, parameters: [
+        let expected = TackInstructionNode(instruction: .liu16, parameters: [
             ParameterIdentifier("vr0"),
             ParameterNumber(1000)
         ])
@@ -3075,7 +3075,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr0"),
                 ParameterNumber(0x1000)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr1"),
                 ParameterNumber(42)
             ]),
@@ -3200,7 +3200,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr0"),
                 ParameterNumber(0xabcd)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr1"),
                 ParameterNumber(9)
             ]),
@@ -3285,7 +3285,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr0"),
                 ParameterNumber(0xabcd)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr1"),
                 ParameterNumber(9)
             ]),
@@ -3355,7 +3355,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr0"),
                 ParameterNumber(0)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr2"),
                 ParameterNumber(9)
             ]),
@@ -3480,7 +3480,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr1"),
                 ParameterIdentifier("vr0"),
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr3"),
                 ParameterNumber(42)
             ]),
@@ -3960,7 +3960,7 @@ class SnapToTackCompilerTests: XCTestCase {
             Expression.LiteralInt(0x1000)
         ]))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr0"),
                 ParameterNumber(0x1000)
             ]),
@@ -3991,7 +3991,7 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: [Expression.LiteralInt(0xabcd)]))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr0"),
                 ParameterNumber(0xabcd)
             ]),
@@ -4062,7 +4062,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr0"),
                 ParameterNumber(0)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr2"),
                 ParameterNumber(1000)
             ]),
@@ -4403,7 +4403,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr0"),
                 ParameterNumber(0)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr2"),
                 ParameterNumber(0xabcd)
             ]),
@@ -4420,7 +4420,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr3"),
                 ParameterNumber(1)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr5"),
                 ParameterNumber(0xffff)
             ]),
@@ -4474,7 +4474,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr0"),
                 ParameterNumber(0)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr2"),
                 ParameterNumber(0xabcd)
             ]),
@@ -4491,7 +4491,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr3"),
                 ParameterNumber(1)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr5"),
                 ParameterNumber(0xffff)
             ]),
@@ -4518,7 +4518,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr0"),
                 ParameterNumber(0x0110)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr1"),
                 ParameterNumber(42)
             ]),
@@ -4711,7 +4711,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr3"),
                 ParameterNumber(1)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr5"),
                 ParameterNumber(1)
             ]),
@@ -4753,7 +4753,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr0"),
                 ParameterNumber(0)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr2"),
                 ParameterNumber(1)
             ]),
@@ -4779,7 +4779,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr5"),
                 ParameterNumber(1)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr7"),
                 ParameterNumber(2)
             ]),
@@ -4911,7 +4911,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr0"),
                 ParameterNumber(0)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr2"),
                 ParameterNumber(3)
             ]),
@@ -4937,7 +4937,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr5"),
                 ParameterNumber(1)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr7"),
                 ParameterNumber(2)
             ]),
@@ -5071,7 +5071,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr0"),
                 ParameterNumber(0)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr2"),
                 ParameterNumber(3)
             ]),
@@ -5206,7 +5206,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr4"),
                 ParameterNumber(1)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr6"),
                 ParameterNumber(1)
             ]),
@@ -5343,7 +5343,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr0"),
                 ParameterNumber(0)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr2"),
                 ParameterNumber(3)
             ]),
@@ -5374,7 +5374,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr6"),
                 ParameterNumber(1)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr8"),
                 ParameterNumber(2)
             ]),
@@ -5418,7 +5418,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr0"),
                 ParameterNumber(0)
             ]),
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr2"),
                 ParameterNumber(3)
             ]),
@@ -6096,7 +6096,7 @@ class SnapToTackCompilerTests: XCTestCase {
                                 visibility: .privateVisibility,
                                 symbols: SymbolTable()),
             Expression.Call(callee: Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"), arguments: [ Expression.PrimitiveType(SymbolType.arithmeticType(.immutableInt(.u16))) ]),
-                            arguments: [ Expression.LiteralInt(32767) ])
+                            arguments: [ Expression.LiteralInt(65535) ])
         ])
         
         let symbols = SymbolTable()
@@ -6111,9 +6111,9 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = SnapToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
         let actual = try compiler.compileWithEpilog(ast1)
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr0"),
-                ParameterNumber(32767)
+                ParameterNumber(65535)
             ]),
             TackInstructionNode(instruction: .alloca, parameters: [
                 ParameterIdentifier("vr1"),
@@ -6193,7 +6193,7 @@ class SnapToTackCompilerTests: XCTestCase {
                                 visibility: .privateVisibility,
                                 symbols: SymbolTable()),
             Expression.Call(callee: Expression.Identifier("foo"),
-                            arguments: [ Expression.LiteralInt(32767) ])
+                            arguments: [ Expression.LiteralInt(65535) ])
         ])
         
         let symbols = SymbolTable()
@@ -6209,9 +6209,9 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = SnapToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
         let actual = try compiler.compileWithEpilog(ast1)
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .li16, parameters: [
+            TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr0"),
-                ParameterNumber(32767)
+                ParameterNumber(65535)
             ]),
             TackInstructionNode(instruction: .alloca, parameters: [
                 ParameterIdentifier("vr1"),

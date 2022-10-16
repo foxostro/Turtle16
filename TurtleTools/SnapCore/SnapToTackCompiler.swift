@@ -1099,14 +1099,23 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             ])
             
         case (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.mutableInt(.i16))),
-             (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.i16))),
-             (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.mutableInt(.u16))),
-             (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.u16))):
+             (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.i16))):
             // The expression produces a value that is known at compile time.
             // Add an instruction to load a register with that known value.
             let dst = nextRegister()
             pushRegister(dst)
             result = TackInstructionNode(instruction: .li16, parameters: [
+                ParameterIdentifier(dst),
+                ParameterNumber(a)
+            ])
+            
+        case (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.mutableInt(.u16))),
+             (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.u16))):
+            // The expression produces a value that is known at compile time.
+            // Add an instruction to load a register with that known value.
+            let dst = nextRegister()
+            pushRegister(dst)
+            result = TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier(dst),
                 ParameterNumber(a)
             ])

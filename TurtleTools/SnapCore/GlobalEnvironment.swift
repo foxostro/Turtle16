@@ -8,6 +8,7 @@
 
 public class FunctionsToCompile: NSObject {
     private var queue: [FunctionType] = []
+    private var alreadyQueued = Set<String>()
     
     public var isEmpty: Bool {
         queue.isEmpty
@@ -18,7 +19,11 @@ public class FunctionsToCompile: NSObject {
     }
     
     public func enqueue(_ fn: FunctionType) {
-        queue.append(fn)
+        let mangledName = fn.mangledName!
+        if !alreadyQueued.contains(mangledName) { // skip duplicates
+            queue.append(fn)
+            alreadyQueued.insert(mangledName)
+        }
     }
 }
 

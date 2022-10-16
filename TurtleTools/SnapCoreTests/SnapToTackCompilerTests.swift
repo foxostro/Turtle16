@@ -6022,4 +6022,63 @@ class SnapToTackCompilerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "value of type `const u16' has no member `count'")
         }
     }
+    
+    func testSuccessfulInstantiationOfGenericFunction() throws {
+        let ast0 = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
+                                functionType: Expression.FunctionType(name: "foo",
+                                                                      returnType: Expression.Identifier("T"),
+                                                                      arguments: [Expression.Identifier("T")]),
+                                argumentNames: ["a"],
+                                typeArguments: [Expression.Identifier("T")],
+                                body: Block(children: [
+                                    Return(Expression.Identifier("a"))
+                                ]),
+                                visibility: .privateVisibility,
+                                symbols: SymbolTable()),
+            Expression.Unary(op: .ampersand, expression: Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"), arguments: [
+                Expression.PrimitiveType(SymbolType.arithmeticType(.immutableInt(.u16)))
+            ]))
+        ])
+        
+        let symbols = SymbolTable()
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
+        let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
+        contractStep.compile(ast0)
+        let ast1 = contractStep.ast
+        let compiler = SnapToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
+        let actual = try compiler.compileWithEpilog(ast1)
+        let expected = Seq(children: [
+            TackInstructionNode(instruction: .la, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterIdentifier("foo_const_u16")
+            ]),
+            Subroutine(identifier: "foo_const_u16", children: [
+                TackInstructionNode(instruction: .enter, parameters: [
+                    ParameterNumber(0)
+                ]),
+                TackInstructionNode(instruction: .addi16, parameters: [
+                    ParameterIdentifier("vr1"),
+                    ParameterIdentifier("fp"),
+                    ParameterNumber(8)
+                ]),
+                TackInstructionNode(instruction: .addi16, parameters: [
+                    ParameterIdentifier("vr2"),
+                    ParameterIdentifier("fp"),
+                    ParameterNumber(7)
+                ]),
+                TackInstructionNode(instruction: .load, parameters: [
+                    ParameterIdentifier("vr3"),
+                    ParameterIdentifier("vr2")
+                ]),
+                TackInstructionNode(instruction: .store, parameters: [
+                    ParameterIdentifier("vr3"),
+                    ParameterIdentifier("vr1")
+                ]),
+                TackInstructionNode(instruction: .leave),
+                TackInstructionNode(instruction: .ret)
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+    }
 }

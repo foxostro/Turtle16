@@ -6081,4 +6081,199 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         XCTAssertEqual(actual, expected)
     }
+    
+    func testCalleeOfCallCanBeGenericFunctionApplicationWithExplicitTypes() throws {
+        let ast0 = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
+                                functionType: Expression.FunctionType(name: "foo",
+                                                                      returnType: Expression.Identifier("T"),
+                                                                      arguments: [Expression.Identifier("T")]),
+                                argumentNames: ["a"],
+                                typeArguments: [Expression.Identifier("T")],
+                                body: Block(children: [
+                                    Return(Expression.Identifier("a"))
+                                ]),
+                                visibility: .privateVisibility,
+                                symbols: SymbolTable()),
+            Expression.Call(callee: Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"), arguments: [ Expression.PrimitiveType(SymbolType.arithmeticType(.immutableInt(.u16))) ]),
+                            arguments: [ Expression.LiteralInt(32767) ])
+        ])
+        
+        let symbols = SymbolTable()
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
+        let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
+        contractStep.compile(ast0)
+        if contractStep.hasError {
+            XCTFail("contract step failed before the test")
+            return
+        }
+        let ast1 = contractStep.ast
+        let compiler = SnapToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
+        let actual = try compiler.compileWithEpilog(ast1)
+        let expected = Seq(children: [
+            TackInstructionNode(instruction: .li16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(32767)
+            ]),
+            TackInstructionNode(instruction: .alloca, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterNumber(1)
+            ]),
+            TackInstructionNode(instruction: .alloca, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterNumber(1)
+            ]),
+            TackInstructionNode(instruction: .store, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterIdentifier("vr2")
+            ]),
+            TackInstructionNode(instruction: .call, parameters: [
+                ParameterIdentifier("foo_const_u16")
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterNumber(272)
+            ]),
+            TackInstructionNode(instruction: .memcpy, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr1"),
+                ParameterNumber(1)
+            ]),
+            TackInstructionNode(instruction: .free, parameters: [
+                ParameterNumber(2)
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterNumber(272)
+            ]),
+            TackInstructionNode(instruction: .load, parameters: [
+                ParameterIdentifier("vr5"),
+                ParameterIdentifier("vr4")
+            ]),
+            Subroutine(identifier: "foo_const_u16", children: [
+                TackInstructionNode(instruction: .enter, parameters: [
+                    ParameterNumber(0)
+                ]),
+                TackInstructionNode(instruction: .addi16, parameters: [
+                    ParameterIdentifier("vr6"),
+                    ParameterIdentifier("fp"),
+                    ParameterNumber(8)
+                ]),
+                TackInstructionNode(instruction: .addi16, parameters: [
+                    ParameterIdentifier("vr7"),
+                    ParameterIdentifier("fp"),
+                    ParameterNumber(7)
+                ]),
+                TackInstructionNode(instruction: .load, parameters: [
+                    ParameterIdentifier("vr8"),
+                    ParameterIdentifier("vr7")
+                ]),
+                TackInstructionNode(instruction: .store, parameters: [
+                    ParameterIdentifier("vr8"),
+                    ParameterIdentifier("vr6")
+                ]),
+                TackInstructionNode(instruction: .leave),
+                TackInstructionNode(instruction: .ret)
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testCallCanTriggerConcreteInstantiationWithTypesInferredFromContext() throws {
+        let ast0 = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
+                                functionType: Expression.FunctionType(name: "foo",
+                                                                      returnType: Expression.Identifier("T"),
+                                                                      arguments: [Expression.Identifier("T")]),
+                                argumentNames: ["a"],
+                                typeArguments: [Expression.Identifier("T")],
+                                body: Block(children: [
+                                    Return(Expression.Identifier("a"))
+                                ]),
+                                visibility: .privateVisibility,
+                                symbols: SymbolTable()),
+            Expression.Call(callee: Expression.Identifier("foo"),
+                            arguments: [ Expression.LiteralInt(32767) ])
+        ])
+        
+        let symbols = SymbolTable()
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
+        let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
+        contractStep.compile(ast0)
+        if contractStep.hasError {
+            let error = CompilerError.makeOmnibusError(fileName: nil, errors: contractStep.errors)
+            XCTFail("contract step failed before the test: \(error.description)")
+            return
+        }
+        let ast1 = contractStep.ast
+        let compiler = SnapToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
+        let actual = try compiler.compileWithEpilog(ast1)
+        let expected = Seq(children: [
+            TackInstructionNode(instruction: .li16, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterNumber(32767)
+            ]),
+            TackInstructionNode(instruction: .alloca, parameters: [
+                ParameterIdentifier("vr1"),
+                ParameterNumber(1)
+            ]),
+            TackInstructionNode(instruction: .alloca, parameters: [
+                ParameterIdentifier("vr2"),
+                ParameterNumber(1)
+            ]),
+            TackInstructionNode(instruction: .store, parameters: [
+                ParameterIdentifier("vr0"),
+                ParameterIdentifier("vr2")
+            ]),
+            TackInstructionNode(instruction: .call, parameters: [
+                ParameterIdentifier("foo_u16")
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterNumber(272)
+            ]),
+            TackInstructionNode(instruction: .memcpy, parameters: [
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr1"),
+                ParameterNumber(1)
+            ]),
+            TackInstructionNode(instruction: .free, parameters: [
+                ParameterNumber(2)
+            ]),
+            TackInstructionNode(instruction: .liu16, parameters: [
+                ParameterIdentifier("vr4"),
+                ParameterNumber(272)
+            ]),
+            TackInstructionNode(instruction: .load, parameters: [
+                ParameterIdentifier("vr5"),
+                ParameterIdentifier("vr4")
+            ]),
+            Subroutine(identifier: "foo_u16", children: [
+                TackInstructionNode(instruction: .enter, parameters: [
+                    ParameterNumber(0)
+                ]),
+                TackInstructionNode(instruction: .addi16, parameters: [
+                    ParameterIdentifier("vr6"),
+                    ParameterIdentifier("fp"),
+                    ParameterNumber(8)
+                ]),
+                TackInstructionNode(instruction: .addi16, parameters: [
+                    ParameterIdentifier("vr7"),
+                    ParameterIdentifier("fp"),
+                    ParameterNumber(7)
+                ]),
+                TackInstructionNode(instruction: .load, parameters: [
+                    ParameterIdentifier("vr8"),
+                    ParameterIdentifier("vr7")
+                ]),
+                TackInstructionNode(instruction: .store, parameters: [
+                    ParameterIdentifier("vr8"),
+                    ParameterIdentifier("vr6")
+                ]),
+                TackInstructionNode(instruction: .leave),
+                TackInstructionNode(instruction: .ret)
+            ])
+        ])
+        XCTAssertEqual(actual, expected)
+    }
 }

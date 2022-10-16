@@ -265,6 +265,9 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             ])
             return result
             
+        case .genericFunction:
+            fatalError()
+            
         default:
             let resolution = try symbols!.resolveWithStackFrameDepth(sourceAnchor: node.sourceAnchor, identifier: node.identifier)
             let symbol = resolution.0
@@ -2349,11 +2352,26 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     func rvalue(call expr: Expression.Call) throws -> AbstractSyntaxTreeNode {
-        let calleeType = try typeCheck(rexpr: expr.callee)
+        let calleeType: SymbolType
+        if let symbols,
+           let identifier = expr.callee as? Expression.Identifier {
+            calleeType = try symbols.resolveTypeOfIdentifier(sourceAnchor: identifier.sourceAnchor, identifier: identifier.identifier)
+        }
+        else {
+            calleeType = try typeCheck(rexpr: expr.callee)
+        }
         
         switch calleeType {
         case .function(let typ), .pointer(.function(let typ)), .constPointer(.function(let typ)):
             return try rvalue(call: expr, typ: typ)
+            
+        case .genericFunction(let typ):
+            let typeChecker = RvalueExpressionTypeChecker(symbols: symbols!, functionsToCompile: globalEnvironment.functionsToCompile)
+            let app = try typeChecker.synthesizeGenericTypeApplication(call: expr, genericFunctionType: typ)
+            let expr1 = Expression.Call(sourceAnchor: expr.sourceAnchor,
+                                        callee: app,
+                                        arguments: expr.arguments)
+            return try rvalue(call: expr1)
             
         default:
             fatalError("cannot call value of non-function type `\(calleeType)'")

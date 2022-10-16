@@ -273,6 +273,8 @@
 		6FBDDD442670859B0098BEC8 /* PipelineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBDDD422670859B0098BEC8 /* PipelineViewController.swift */; };
 		6FBDDD452670859B0098BEC8 /* PipelineViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6FBDDD432670859B0098BEC8 /* PipelineViewController.xib */; };
 		6FBDDD4726712E320098BEC8 /* PipelineTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBDDD4626712E320098BEC8 /* PipelineTableViewDataSource.swift */; };
+		6FC4E6ED28FBEB900079A88C /* GenericFunctionTypeArgumentSolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FC4E6EC28FBEB900079A88C /* GenericFunctionTypeArgumentSolver.swift */; };
+		6FC4E6EF28FBEBA30079A88C /* GenericFunctionTypeArgumentSolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FC4E6EE28FBEBA30079A88C /* GenericFunctionTypeArgumentSolverTests.swift */; };
 		6FCA942525264C61000C2A2D /* Assert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCA942425264C61000C2A2D /* Assert.swift */; };
 		6FCB681A2472050900798905 /* SnapLexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCB6818247204F900798905 /* SnapLexer.swift */; };
 		6FCB681C2472051200798905 /* SnapLexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCB681B2472051200798905 /* SnapLexerTests.swift */; };
@@ -800,6 +802,8 @@
 		6FBDDD422670859B0098BEC8 /* PipelineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PipelineViewController.swift; sourceTree = "<group>"; };
 		6FBDDD432670859B0098BEC8 /* PipelineViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PipelineViewController.xib; sourceTree = "<group>"; };
 		6FBDDD4626712E320098BEC8 /* PipelineTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PipelineTableViewDataSource.swift; sourceTree = "<group>"; };
+		6FC4E6EC28FBEB900079A88C /* GenericFunctionTypeArgumentSolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericFunctionTypeArgumentSolver.swift; sourceTree = "<group>"; };
+		6FC4E6EE28FBEBA30079A88C /* GenericFunctionTypeArgumentSolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericFunctionTypeArgumentSolverTests.swift; sourceTree = "<group>"; };
 		6FC9262025045F5E006FAE8C /* AudioRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRenderer.swift; sourceTree = "<group>"; };
 		6FCA942425264C61000C2A2D /* Assert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assert.swift; sourceTree = "<group>"; };
 		6FCB6818247204F900798905 /* SnapLexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapLexer.swift; sourceTree = "<group>"; };
@@ -1207,6 +1211,7 @@
 				6F53372F2474BE0B00CFD33C /* AST */,
 				6F5337322474BE4B00CFD33C /* Token */,
 				6F40731A26B29E9F007D8382 /* CompilerIntrinsicSymbolBinder.swift */,
+				6FC4E6EC28FBEB900079A88C /* GenericFunctionTypeArgumentSolver.swift */,
 				6F469E0826BEF5020004613B /* GlobalEnvironment.swift */,
 				6FEC3DFD24D78CF800E9C299 /* LabelMaker.swift */,
 				6F3F00FD275F45E900875339 /* LinearScanRegisterAllocator.swift */,
@@ -1269,6 +1274,7 @@
 			children = (
 				6F5337332474BE7100CFD33C /* AST */,
 				6F924E7D248B4CCA00F43741 /* ExprUtils.swift */,
+				6FC4E6EE28FBEBA30079A88C /* GenericFunctionTypeArgumentSolverTests.swift */,
 				6F469E0A26BEF5220004613B /* GlobalEnvironmentTests.swift */,
 				6F3F00FF275F45F200875339 /* LinearScanRegisterAllocatorTests.swift */,
 				6F25325924CB5D0B00339332 /* LvalueExpressionTypeCheckerTests.swift */,
@@ -1950,6 +1956,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6FC4E6ED28FBEB900079A88C /* GenericFunctionTypeArgumentSolver.swift in Sources */,
 				6F3F0106275FD47300875339 /* LiveInterval.swift in Sources */,
 				6FD2736A26CA187600749CDA /* MemoryLayoutStrategyTurtle16.swift in Sources */,
 				6F2E5AFE251A591A00928DD1 /* Typealias.swift in Sources */,
@@ -2062,6 +2069,7 @@
 				6FDC6AAE27331640003A8ABF /* SnapToTurtle16CompilerTests.swift in Sources */,
 				6F0D519F2506D57F00AB1C7E /* TypeContextTypeCheckerTests.swift in Sources */,
 				6F83480D26FD3B1200EB466E /* RegisterAllocatorNaiveTests.swift in Sources */,
+				6FC4E6EF28FBEBA30079A88C /* GenericFunctionTypeArgumentSolverTests.swift in Sources */,
 				6FF179C926BA344D0026F284 /* SnapSubcompilerImportTests.swift in Sources */,
 				6F3F010A275FEC8000875339 /* RegisterSpillerTests.swift in Sources */,
 				6F40731926B281C1007D8382 /* SnapAbstractSyntaxTreeCompilerTests.swift in Sources */,

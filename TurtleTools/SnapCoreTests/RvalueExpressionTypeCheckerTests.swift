@@ -5333,8 +5333,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         }
     }
     
-    func testTakeTheAddressOfGenericFunctionWithGoodTypeArguments() throws {
-        let constU16 = SymbolType.arithmeticType(.immutableInt(.u16))
+    func testInferTypeArgumentsOfGenericFromContextInCall_u16() throws {
         let functionType = Expression.FunctionType(name: "foo",
                                                    returnType: Expression.Identifier("T"),
                                                    arguments: [Expression.Identifier("T")])
@@ -5351,11 +5350,48 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .genericFunction(genericFunctionType)))
         ])
-        
-        let expr = Expression.Unary(op: .ampersand, expression: Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"), arguments: [Expression.PrimitiveType(constU16)]))
-        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, functionsToCompile: FunctionsToCompile())
-        let result = try typeChecker.check(expression: expr)
-        let expected: SymbolType = .pointer(.function(FunctionType(returnType: constU16, arguments: [constU16])))
-        XCTAssertEqual(result, expected)
+        let functionsToCompile = FunctionsToCompile()
+        let expr = Expression.Call(callee: Expression.Identifier("foo"),
+                                   arguments: [
+                                    ExprUtils.makeU16(value: 65535)
+                                   ])
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, functionsToCompile: functionsToCompile)
+        let expected = SymbolType.arithmeticType(.mutableInt(.u16))
+        let actual = try typeChecker.check(expression: expr)
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testInferTypeArgumentsOfGenericFromContextInCall_i8() throws {
+        let functionType = Expression.FunctionType(name: "foo",
+                                                   returnType: Expression.Identifier("T"),
+                                                   arguments: [Expression.Identifier("T")])
+        let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
+                                           functionType: functionType,
+                                           argumentNames: ["a"],
+                                           typeArguments: [Expression.Identifier("T")],
+                                           body: Block(children: [
+                                            Return(Expression.Identifier("a"))
+                                           ]),
+                                           visibility: .privateVisibility,
+                                           symbols: SymbolTable())
+        let genericFunctionType = Expression.GenericFunctionType(template: template)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .genericFunction(genericFunctionType)))
+        ])
+        let functionsToCompile = FunctionsToCompile()
+        let expr = Expression.Call(callee: Expression.Identifier("foo"),
+                                   arguments: [
+                                    ExprUtils.makeI8(value: -128)
+                                   ])
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, functionsToCompile: functionsToCompile)
+        let expected = SymbolType.arithmeticType(.mutableInt(.i8))
+        do {
+            let actual = try typeChecker.check(expression: expr)
+            XCTAssertEqual(actual, expected)
+        }
+        catch let err as CompilerError {
+            print(err.description)
+            throw err
+        }
     }
 }

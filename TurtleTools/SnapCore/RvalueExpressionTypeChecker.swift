@@ -618,12 +618,51 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
         
     public func check(call: Expression.Call) throws -> SymbolType {
-        let calleeType = try check(expression: call.callee)
+        let calleeType: SymbolType
+        if let identifier = call.callee as? Expression.Identifier {
+            calleeType = try symbols.resolveTypeOfIdentifier(sourceAnchor: identifier.sourceAnchor, identifier: identifier.identifier)
+        }
+        else {
+            calleeType = try check(expression: call.callee)
+        }
+        return try check(call: call, calleeType: calleeType)
+    }
+    
+    private func check(call: Expression.Call, calleeType: SymbolType) throws -> SymbolType {
         switch calleeType {
+        case .genericFunction(let typ):
+            return try check(call: call, genericFunctionType: typ)
         case .function(let typ), .pointer(.function(let typ)), .constPointer(.function(let typ)):
             return try check(call: call, typ: typ)
         default:
             throw CompilerError(sourceAnchor: call.sourceAnchor, message: "cannot call value of non-function type `\(calleeType)'")
+        }
+    }
+    
+    private func check(call expr: Expression.Call, genericFunctionType: Expression.GenericFunctionType) throws -> SymbolType {
+        let a = try synthesizeGenericTypeApplication(call: expr, genericFunctionType: genericFunctionType)
+        let calleeType = try check(genericTypeApplication: a)
+        return try check(call: expr, calleeType: calleeType)
+    }
+    
+    public func synthesizeGenericTypeApplication(call expr: Expression.Call, genericFunctionType: Expression.GenericFunctionType) throws -> Expression.GenericTypeApplication {
+        guard let identifier = expr.callee as? Expression.Identifier else {
+            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "expected identifier, got `\(expr.callee)'")
+        }
+        let typeArguments = try inferTypeArguments(call: expr, genericFunctionType: genericFunctionType)
+        let a = Expression.GenericTypeApplication(sourceAnchor: expr.sourceAnchor,
+                                                  identifier: identifier,
+                                                  arguments: typeArguments)
+        return a
+    }
+    
+    private func inferTypeArguments(call expr: Expression.Call, genericFunctionType generic: Expression.GenericFunctionType) throws -> [Expression] {
+        let solver = GenericFunctionTypeArgumentSolver()
+        let typeArguments = try solver.inferTypeArguments(call: expr,
+                                                          genericFunctionType: generic,
+                                                          symbols: symbols)
+        return typeArguments.map {
+            Expression.PrimitiveType($0)
         }
     }
     

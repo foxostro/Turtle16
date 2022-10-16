@@ -37,10 +37,6 @@ public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
                                             node: node0)
         reconnect(node1)
         
-        if node1.isGeneric {
-            fatalError("unimplemented")
-        }
-        
         // We defer compilation of the function body until later.
         return node1
     }

@@ -11,7 +11,7 @@ import TurtleCore
 public class SnapSubcompilerFunctionDeclaration: NSObject {
     public func compile(memoryLayoutStrategy: MemoryLayoutStrategy,
                         symbols: SymbolTable,
-                        node: FunctionDeclaration) throws -> FunctionDeclaration {
+                        node: FunctionDeclaration) throws -> FunctionDeclaration? {
         let name = node.identifier.identifier
         
         guard symbols.existsAndCannotBeShadowed(identifier: name) == false else {
@@ -19,7 +19,53 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
                                 message: "function redefines existing symbol: `\(name)'")
         }
         
+        if node.isGeneric {
+            try doGeneric(memoryLayoutStrategy: memoryLayoutStrategy,
+                          symbols: symbols,
+                          node: node)
+            return nil // erase the generic FunctionDeclaration
+        }
+        else {
+            return try doNonGeneric(memoryLayoutStrategy: memoryLayoutStrategy,
+                                    symbols: symbols,
+                                    node: node)
+        }
+    }
+    
+    private func doGeneric(memoryLayoutStrategy: MemoryLayoutStrategy,
+                           symbols: SymbolTable,
+                           node: FunctionDeclaration) throws {
+        let name = node.identifier.identifier
+        let typ = Expression.GenericFunctionType(template: node)
+        let symbol = Symbol(type: .genericFunction(typ),
+                            offset: 0,
+                            storage: .automaticStorage,
+                            visibility: node.visibility)
+        symbols.bind(identifier: name, symbol: symbol)
+    }
+    
+    private func doNonGeneric(memoryLayoutStrategy: MemoryLayoutStrategy,
+                              symbols: SymbolTable,
+                              node: FunctionDeclaration) throws -> FunctionDeclaration {
         let functionType = try evaluateFunctionTypeExpression(symbols, node.functionType)
+        try instantiate(memoryLayoutStrategy: memoryLayoutStrategy,
+                        functionType: functionType,
+                        functionDeclaration: node)
+        
+        let name = node.identifier.identifier
+        let symbol = Symbol(type: .function(functionType),
+                            offset: 0,
+                            storage: .automaticStorage,
+                            visibility: node.visibility)
+        symbols.bind(identifier: name, symbol: symbol)
+        
+        return functionType.ast!
+    }
+    
+    public func instantiate(memoryLayoutStrategy: MemoryLayoutStrategy,
+                            functionType: FunctionType,
+                            functionDeclaration node: FunctionDeclaration) throws {
+        let name = node.identifier.identifier
         
         node.symbols.enclosingFunctionTypeMode = .set(functionType)
         node.symbols.enclosingFunctionNameMode = .set(name)
@@ -29,10 +75,14 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
                               symbols: node.symbols,
                               functionType: functionType,
                               argumentNames: node.argumentNames)
-        try expectFunctionReturnExpressionIsCorrectType(symbols: node.symbols, func: node)
+        try expectFunctionReturnExpressionIsCorrectType(symbols: node.symbols,
+                                                        functionType: functionType,
+                                                        func: node)
         
         let body: Block
-        if try shouldSynthesizeTerminalReturnStatement(symbols: node.symbols, func: node) {
+        if try shouldSynthesizeTerminalReturnStatement(symbols: node.symbols,
+                                                       functionType: functionType,
+                                                       func: node) {
             let ret = Return(sourceAnchor: node.sourceAnchor, expression: nil)
             body = Block(sourceAnchor: node.body.sourceAnchor,
                          symbols: node.body.symbols,
@@ -40,12 +90,6 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
         } else {
             body = node.body
         }
-        
-        let symbol = Symbol(type: .function(functionType),
-                            offset: 0,
-                            storage: .automaticStorage,
-                            visibility: node.visibility)
-        symbols.bind(identifier: name, symbol: symbol)
         
         let rewrittenFunctionDeclaration = FunctionDeclaration(sourceAnchor: node.sourceAnchor,
                                                                identifier: node.identifier,
@@ -55,17 +99,17 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
                                                                visibility: node.visibility,
                                                                symbols: node.symbols)
         functionType.ast = rewrittenFunctionDeclaration
-        return rewrittenFunctionDeclaration
     }
     
-    func evaluateFunctionTypeExpression(_ symbols: SymbolTable, _ expr: Expression) throws -> FunctionType {
+    private func evaluateFunctionTypeExpression(_ symbols: SymbolTable,
+                                                _ expr: Expression) throws -> FunctionType {
         return try TypeContextTypeChecker(symbols: symbols).check(expression: expr).unwrapFunctionType()
     }
     
-    func bindFunctionArguments(memoryLayoutStrategy: MemoryLayoutStrategy,
-                               symbols: SymbolTable,
-                               functionType: FunctionType,
-                               argumentNames: [String]) {
+    private func bindFunctionArguments(memoryLayoutStrategy: MemoryLayoutStrategy,
+                                       symbols: SymbolTable,
+                                       functionType: FunctionType,
+                                       argumentNames: [String]) {
         var offset = memoryLayoutStrategy.sizeOfSaveArea
         
         for i in (0..<functionType.arguments.count).reversed() {
@@ -90,8 +134,9 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
         offset += sizeOfFunctionReturnType
     }
     
-    func expectFunctionReturnExpressionIsCorrectType(symbols: SymbolTable, func node: FunctionDeclaration) throws {
-        let functionType = try evaluateFunctionTypeExpression(symbols, node.functionType)
+    private func expectFunctionReturnExpressionIsCorrectType(symbols: SymbolTable,
+                                                             functionType: FunctionType,
+                                                             func node: FunctionDeclaration) throws {
         let tracer = StatementTracer(symbols: symbols)
         let traces = try tracer.trace(ast: node.body)
         for trace in traces {
@@ -101,23 +146,25 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
                     break
                 default:
                     if functionType.returnType != .void {
-                        throw makeErrorForMissingReturn(symbols, node)
+                        throw makeErrorForMissingReturn(symbols, functionType, node)
                     }
                 }
             } else if functionType.returnType != .void {
-                throw makeErrorForMissingReturn(symbols, node)
+                throw makeErrorForMissingReturn(symbols, functionType, node)
             }
         }
     }
     
-    func makeErrorForMissingReturn(_ symbols: SymbolTable, _ node: FunctionDeclaration) -> CompilerError {
-        let functionType = try! evaluateFunctionTypeExpression(symbols, node.functionType)
+    private func makeErrorForMissingReturn(_ symbols: SymbolTable,
+                                           _ functionType: FunctionType,
+                                           _ node: FunctionDeclaration) -> CompilerError {
         return CompilerError(sourceAnchor: node.identifier.sourceAnchor,
                              message: "missing return in a function expected to return `\(functionType.returnType)'")
     }
     
-    func shouldSynthesizeTerminalReturnStatement(symbols: SymbolTable, func node: FunctionDeclaration) throws -> Bool {
-        let functionType = try evaluateFunctionTypeExpression(symbols, node.functionType)
+    private func shouldSynthesizeTerminalReturnStatement(symbols: SymbolTable,
+                                                         functionType: FunctionType,
+                                                         func node: FunctionDeclaration) throws -> Bool {
         guard functionType.returnType == .void else {
             return false
         }

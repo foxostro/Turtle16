@@ -906,6 +906,8 @@ public class RvalueExpressionTypeChecker: NSObject {
         
         // TODO: check type constraints on the type variables here too
         
+        let originalFunctionDeclaration = genericFunctionType.template
+        
         // Bind types in a new symbol table to apply the type arguments.
         let symbolsWithTypeArguments = SymbolTable(parent: symbols)
         var evaluatedTypeArguments: [SymbolType] = []
@@ -925,8 +927,12 @@ public class RvalueExpressionTypeChecker: NSObject {
         let functionType = FunctionType(name: genericFunctionType.name,
                                         mangledName: mangledName,
                                         returnType: returnType,
-                                        arguments: arguments)
+                                        arguments: arguments,
+                                        ast: originalFunctionDeclaration)
         let result = SymbolType.function(functionType)
+        
+        let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16() // TODO: This needs to be fed into the type checker as a dependency
+        try SnapSubcompilerFunctionDeclaration().instantiate(memoryLayoutStrategy: memoryLayoutStrategy, functionType: functionType, functionDeclaration: originalFunctionDeclaration)
         
         functionsToCompile.enqueue(functionType)
         

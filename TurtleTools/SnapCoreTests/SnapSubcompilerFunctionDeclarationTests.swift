@@ -83,4 +83,29 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "code after return will never be executed")
         }
     }
+    
+    func testDeclareGenericFunction() throws {
+        let functionType = Expression.FunctionType(name: "foo",
+                                                   returnType: Expression.Identifier("T"),
+                                                   arguments: [Expression.Identifier("T")])
+        let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
+                                        functionType: functionType,
+                                        argumentNames: ["a"],
+                                        typeArguments: [Expression.Identifier("T")],
+                                        body: Block(children: [
+                                            Return(Expression.Identifier("a"))
+                                        ]),
+                                        visibility: .privateVisibility,
+                                        symbols: SymbolTable())
+        let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+        let symbols = SymbolTable()
+        let compiler = SnapSubcompilerFunctionDeclaration()
+        _ = try compiler.compile(memoryLayoutStrategy: memoryLayoutStrategy,
+                                 symbols: symbols,
+                                 node: input)
+        let actualSymbol = try symbols.resolve(identifier: "foo")
+        let actualType = actualSymbol.type
+        let expectedType = SymbolType.genericFunction(Expression.GenericFunctionType(template: input))
+        XCTAssertEqual(actualType, expectedType)
+    }
 }

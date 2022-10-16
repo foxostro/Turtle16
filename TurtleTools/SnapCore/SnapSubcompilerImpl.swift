@@ -39,7 +39,9 @@ public class SnapSubcompilerImpl: NSObject {
             let modifiedChild = try subcompiler.compile(memoryLayoutStrategy: memoryLayoutStrategy,
                                                         symbols: symbols,
                                                         node: child)
-            modifiedChildren.append(modifiedChild)
+            if let modifiedChild {
+                modifiedChildren.append(modifiedChild)
+            }
             
             // Put the symbol back into the struct type's symbol table too.
             typ.symbols.bind(identifier: identifier, symbol: symbols.symbolTable[identifier]!)

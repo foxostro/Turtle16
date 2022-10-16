@@ -143,6 +143,7 @@ public class SnapASTTransformerBase: NSObject {
                                          identifier: node.identifier,
                                          functionType: node.functionType,
                                          argumentNames: node.argumentNames,
+                                         typeArguments: node.typeArguments,
                                          body: try compile(node.body) as! Block,
                                          visibility: node.visibility,
                                          symbols: node.symbols)

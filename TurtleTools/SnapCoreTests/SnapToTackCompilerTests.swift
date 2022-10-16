@@ -5728,7 +5728,9 @@ class SnapToTackCompilerTests: XCTestCase {
                                            functionType: functionType,
                                            argumentNames: ["a"],
                                            typeArguments: [Expression.Identifier("T")],
-                                           body: Block(),
+                                           body: Block(children: [
+                                            Return(Expression.Identifier("a"))
+                                           ]),
                                            visibility: .privateVisibility,
                                            symbols: SymbolTable())
         let genericFunctionType = Expression.GenericFunctionType(template: template)
@@ -5887,7 +5889,9 @@ class SnapToTackCompilerTests: XCTestCase {
                                            functionType: functionType,
                                            argumentNames: ["a"],
                                            typeArguments: [Expression.Identifier("T")],
-                                           body: Block(),
+                                           body: Block(children: [
+                                            Return(Expression.Identifier("a"))
+                                           ]),
                                            visibility: .privateVisibility,
                                            symbols: SymbolTable())
         let genericFunctionType = Expression.GenericFunctionType(template: template)
@@ -5966,7 +5970,9 @@ class SnapToTackCompilerTests: XCTestCase {
                                            functionType: functionType,
                                            argumentNames: ["a"],
                                            typeArguments: [Expression.Identifier("T")],
-                                           body: Block(),
+                                           body: Block(children: [
+                                            Return(Expression.Identifier("a"))
+                                           ]),
                                            visibility: .privateVisibility,
                                            symbols: SymbolTable())
         let genericFunctionType = Expression.GenericFunctionType(template: template)
@@ -5983,5 +5989,37 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
+    }
+    
+    func testCompilationFailsOnConcreteInstantiationOfGenericFunction() throws {
+        let ast0 = TopLevel(children: [
+            FunctionDeclaration(identifier: Expression.Identifier("foo"),
+                                functionType: Expression.FunctionType(name: "foo",
+                                                                      returnType: Expression.Identifier("T"),
+                                                                      arguments: [Expression.Identifier("T")]),
+                                argumentNames: ["a"],
+                                typeArguments: [Expression.Identifier("T")],
+                                body: Block(children: [
+                                    Return(Expression.Get(expr: Expression.Identifier("a"), member: Expression.Identifier("count")))
+                                ]),
+                                visibility: .privateVisibility,
+                                symbols: SymbolTable()),
+            Expression.Unary(op: .ampersand, expression: Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"), arguments: [
+                Expression.PrimitiveType(SymbolType.arithmeticType(.immutableInt(.u16)))
+            ]))
+        ])
+        
+        let symbols = SymbolTable()
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
+        let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
+        contractStep.compile(ast0)
+        let ast1 = contractStep.ast
+        let compiler = SnapToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
+        
+        XCTAssertThrowsError(try compiler.compileWithEpilog(ast1)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "value of type `const u16' has no member `count'")
+        }
     }
 }

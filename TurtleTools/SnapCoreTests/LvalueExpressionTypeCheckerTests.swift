@@ -277,7 +277,9 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
                                            functionType: functionType,
                                            argumentNames: ["a"],
                                            typeArguments: [Expression.Identifier("T")],
-                                           body: Block(),
+                                           body: Block(children: [
+                                            Return(Expression.Identifier("a"))
+                                           ]),
                                            visibility: .privateVisibility,
                                            symbols: SymbolTable())
         let genericFunctionType = Expression.GenericFunctionType(template: template)

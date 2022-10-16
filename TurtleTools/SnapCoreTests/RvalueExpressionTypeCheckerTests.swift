@@ -5205,7 +5205,9 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                            functionType: functionType,
                                            argumentNames: ["a"],
                                            typeArguments: [Expression.Identifier("T")],
-                                           body: Block(),
+                                           body: Block(children: [
+                                            Return(Expression.Identifier("a"))
+                                           ]),
                                            visibility: .privateVisibility,
                                            symbols: SymbolTable())
         let expr = Expression.GenericFunctionType(template: template)
@@ -5225,7 +5227,9 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                            functionType: functionType,
                                            argumentNames: ["a"],
                                            typeArguments: [Expression.Identifier("T")],
-                                           body: Block(),
+                                           body: Block(children: [
+                                            Return(Expression.Identifier("a"))
+                                           ]),
                                            visibility: .privateVisibility,
                                            symbols: SymbolTable())
         let genericFunctionType = Expression.GenericFunctionType(template: template)
@@ -5253,7 +5257,9 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                            functionType: functionType,
                                            argumentNames: ["a"],
                                            typeArguments: [Expression.Identifier("T")],
-                                           body: Block(),
+                                           body: Block(children: [
+                                            Return(Expression.Identifier("a"))
+                                           ]),
                                            visibility: .privateVisibility,
                                            symbols: SymbolTable())
         let genericFunctionType = Expression.GenericFunctionType(template: template)
@@ -5267,7 +5273,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                                         mangledName: "foo_const_u16",
                                                         returnType: constU16,
                                                         arguments: [constU16],
-                                                        ast: nil))
+                                                        ast: template))
         let actual = try typeChecker.check(expression: expr)
         XCTAssertEqual(actual, expected)
     }
@@ -5280,7 +5286,9 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                            functionType: functionType,
                                            argumentNames: ["a"],
                                            typeArguments: [Expression.Identifier("T")],
-                                           body: Block(),
+                                           body: Block(children: [
+                                            Return(Expression.Identifier("a"))
+                                           ]),
                                            visibility: .privateVisibility,
                                            symbols: SymbolTable())
         let genericFunctionType = Expression.GenericFunctionType(template: template)
@@ -5306,7 +5314,9 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                            functionType: functionType,
                                            argumentNames: ["a"],
                                            typeArguments: [Expression.Identifier("T")],
-                                           body: Block(),
+                                           body: Block(children: [
+                                            Return(Expression.Identifier("a"))
+                                           ]),
                                            visibility: .privateVisibility,
                                            symbols: SymbolTable())
         let genericFunctionType = Expression.GenericFunctionType(template: template)
@@ -5332,7 +5342,9 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                            functionType: functionType,
                                            argumentNames: ["a"],
                                            typeArguments: [Expression.Identifier("T")],
-                                           body: Block(),
+                                           body: Block(children: [
+                                            Return(Expression.Identifier("a"))
+                                           ]),
                                            visibility: .privateVisibility,
                                            symbols: SymbolTable())
         let genericFunctionType = Expression.GenericFunctionType(template: template)

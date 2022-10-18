@@ -12,7 +12,7 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
     public let identifier: Expression.Identifier
     public let functionType: Expression
     public let argumentNames: [String]
-    public let typeArguments: [Expression.Identifier]
+    public let typeArguments: [Expression.GenericTypeArgument]
     public let body: Block
     public let visibility: SymbolVisibility
     public let symbols: SymbolTable
@@ -25,7 +25,7 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
                 identifier: Expression.Identifier,
                 functionType: Expression,
                 argumentNames: [String],
-                typeArguments: [Expression.Identifier] = [],
+                typeArguments: [Expression.GenericTypeArgument] = [],
                 body: Block,
                 visibility: SymbolVisibility = .privateVisibility,
                 symbols: SymbolTable = SymbolTable()) {

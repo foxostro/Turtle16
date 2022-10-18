@@ -73,7 +73,7 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
         let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                            functionType: functionType,
                                            argumentNames: ["a"],
-                                           typeArguments: [Expression.Identifier("T")],
+                                           typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
                                            body: Block(children: [
                                             Return(Expression.LiteralInt(0))
                                            ]),
@@ -99,7 +99,7 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
         let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                            functionType: functionType,
                                            argumentNames: [],
-                                           typeArguments: [Expression.Identifier("T")],
+                                           typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
                                            body: Block(children: [
                                             Return(Expression.LiteralInt(0))
                                            ]),
@@ -127,7 +127,7 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
         let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                            functionType: functionType,
                                            argumentNames: [],
-                                           typeArguments: [Expression.Identifier("T")],
+                                           typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
                                            body: Block(children: [
                                             Return(Expression.LiteralInt(0))
                                            ]),
@@ -161,7 +161,7 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
         let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                            functionType: functionType,
                                            argumentNames: ["a", "b"],
-                                           typeArguments: [Expression.Identifier("T")],
+                                           typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
                                            body: Block(),
                                            visibility: .privateVisibility,
                                            symbols: SymbolTable())
@@ -194,7 +194,7 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
         let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                            functionType: functionType,
                                            argumentNames: ["a", "b"],
-                                           typeArguments: [Expression.Identifier("T")],
+                                           typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
                                            body: Block(),
                                            visibility: .privateVisibility,
                                            symbols: SymbolTable())

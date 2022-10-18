@@ -51,6 +51,22 @@ open class Parser: NSObject {
         }
     }
     
+    public struct Checkpoint {
+        let previous: Token?
+        let tokens: [Token]
+        let errors: [CompilerError]
+    }
+    
+    public func checkpoint() -> Checkpoint {
+        return Checkpoint(previous: previous, tokens: tokens, errors: errors)
+    }
+    
+    public func restore(checkpoint: Checkpoint) {
+        previous = checkpoint.previous
+        tokens = checkpoint.tokens
+        errors = checkpoint.errors
+    }
+    
     public func advanceToNewline() {
         while let token = peek() {
             let tokenType = type(of: token)

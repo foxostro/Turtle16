@@ -517,6 +517,20 @@ public class SnapParser: Parser {
     
     private func consumeFunc(_ firstToken: Token, _ visibility: SymbolVisibility = .privateVisibility) throws -> [AbstractSyntaxTreeNode] {
         let tokenIdentifier = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: firstToken.sourceAnchor, message: "expected identifier in function declaration")) as! TokenIdentifier
+        
+        let typeArguments: [Expression.GenericTypeArgument]
+        if nil != accept(operator: .lt) {
+            typeArguments = try consumeTypeArgumentListWithConstraints()
+            
+            let rightAngleBracket = try expect(type: TokenOperator.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `>' in generic function type argument list")) as! TokenOperator
+            guard rightAngleBracket.op == .gt else {
+                throw CompilerError(sourceAnchor: rightAngleBracket.sourceAnchor, message: "expected `>' in generic type application")
+            }
+        }
+        else {
+            typeArguments = []
+        }
+        
         try expect(type: TokenParenLeft.self, error: CompilerError(sourceAnchor: tokenIdentifier.sourceAnchor, message: "expected `(' in argument list of function declaration"))
         
         var argumentNames: [String] = []
@@ -554,8 +568,38 @@ public class SnapParser: Parser {
                                     identifier: Expression.Identifier(sourceAnchor: tokenIdentifier.sourceAnchor, identifier: tokenIdentifier.lexeme),
                                     functionType: Expression.FunctionType(name: tokenIdentifier.lexeme, returnType: returnType, arguments: argumentTypes),
                                     argumentNames: argumentNames,
+                                    typeArguments: typeArguments,
                                     body: body,
                                     visibility: visibility)]
+    }
+    
+    private func consumeTypeArgumentListWithConstraints() throws -> [Expression.GenericTypeArgument] {
+        var arguments: [Expression.GenericTypeArgument] = []
+        
+        repeat {
+            if let identifierToken = accept(TokenIdentifier.self) as? TokenIdentifier {
+                let ident = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor,
+                                                  identifier: identifierToken.lexeme)
+                
+                var constraints: [Expression.Identifier] = []
+                if nil != accept(TokenColon.self) {
+                    repeat {
+                        let identifierToken = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in generic type constraint")) as! TokenIdentifier
+                        let ident = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor,
+                                                          identifier: identifierToken.lexeme)
+                        constraints.append(ident)
+                    } while(nil != accept(operator: .plus))
+                }
+                
+                let sourceAnchor = ident.sourceAnchor?.union(constraints.last?.sourceAnchor)
+                let arg = Expression.GenericTypeArgument(sourceAnchor: sourceAnchor,
+                                                         identifier: ident,
+                                                         constraints: constraints)
+                arguments.append(arg)
+            }
+        } while(nil != accept(TokenComma.self))
+        
+        return arguments
     }
     
     private func acceptEndOfStatement() -> Token? {
@@ -843,6 +887,9 @@ public class SnapParser: Parser {
         else if isStructInitializerExpressionAllowed.last!==true, let _ = peek(0) as? TokenIdentifier, let _ = peek(1) as? TokenCurlyLeft {
             return try consumeStructInitializer()
         }
+        else if let app = try maybeConsumeGenericTypeApplication() {
+            return app
+        }
         else if let identifierToken = accept(TokenIdentifier.self) as? TokenIdentifier {
             return Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor,
                                          identifier: identifierToken.lexeme)
@@ -917,6 +964,55 @@ public class SnapParser: Parser {
         return Expression.StructInitializer(sourceAnchor: identifierToken.sourceAnchor?.union(previous?.sourceAnchor),
                                             identifier: identifier,
                                             arguments: arguments)
+    }
+    
+    private func maybeConsumeGenericTypeApplication() throws -> Expression.GenericTypeApplication? {
+        let state = checkpoint()
+        if let app = try? consumeGenericTypeApplication() {
+            return app
+        }
+        else {
+            restore(checkpoint: state)
+            return nil
+        }
+    }
+    
+    private func consumeGenericTypeApplication() throws -> Expression.GenericTypeApplication {
+        let identifierToken = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in generic type application"))
+        let identifier = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
+        
+        let leftAngleBracket = try expect(type: TokenOperator.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `<' in generic type application")) as! TokenOperator
+        guard leftAngleBracket.op == .lt else {
+            throw CompilerError(sourceAnchor: leftAngleBracket.sourceAnchor, message: "expected `<' in generic type application")
+        }
+        
+        let arguments = try consumeTypeArgumentList()
+        
+        let rightAngleBracket = try expect(type: TokenOperator.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `>' in generic type application")) as! TokenOperator
+        guard rightAngleBracket.op == .gt else {
+            throw CompilerError(sourceAnchor: rightAngleBracket.sourceAnchor, message: "expected `>' in generic type application")
+        }
+        
+        let anchor = identifierToken.sourceAnchor?.union(rightAngleBracket.sourceAnchor)
+        
+        return Expression.GenericTypeApplication(sourceAnchor: anchor,
+                                                 identifier: identifier,
+                                                 arguments: arguments)
+    }
+    
+    private func consumeTypeArgumentList() throws -> [Expression] {
+        if let op = peek() as? TokenOperator, op.op == .gt {
+            return []
+        }
+        
+        var arguments: [Expression] = []
+        
+        repeat {
+            let type = try consumeType()
+            arguments.append(type)
+        } while(nil != accept(TokenComma.self))
+        
+        return arguments
     }
     
     private func useOfUnresolvedIdentifierError(_ instruction: Token) -> Error {

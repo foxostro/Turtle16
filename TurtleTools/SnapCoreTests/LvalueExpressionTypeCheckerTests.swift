@@ -252,7 +252,7 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
         let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                            functionType: functionType,
                                            argumentNames: ["a"],
-                                           typeArguments: [Expression.Identifier("T")],
+                                           typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
                                            body: Block(),
                                            visibility: .privateVisibility,
                                            symbols: SymbolTable())
@@ -276,7 +276,7 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
         let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                            functionType: functionType,
                                            argumentNames: ["a"],
-                                           typeArguments: [Expression.Identifier("T")],
+                                           typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
                                            body: Block(children: [
                                             Return(Expression.Identifier("a"))
                                            ]),
@@ -290,7 +290,7 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
                                                      arguments: [Expression.PrimitiveType(constU16)])
         let expected = SymbolType.function(FunctionType(name: "foo",
-                                                        mangledName: "foo_const_u16",
+                                                        mangledName: "__foo_const_u16",
                                                         returnType: constU16,
                                                         arguments: [constU16],
                                                         ast: nil))

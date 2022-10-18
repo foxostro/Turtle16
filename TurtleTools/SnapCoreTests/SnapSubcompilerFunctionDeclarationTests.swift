@@ -91,7 +91,7 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
         let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                         functionType: functionType,
                                         argumentNames: ["a"],
-                                        typeArguments: [Expression.Identifier("T")],
+                                        typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
                                         body: Block(children: [
                                             Return(Expression.Identifier("a"))
                                         ]),

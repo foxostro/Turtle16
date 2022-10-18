@@ -2711,4 +2711,45 @@ func foo() {
         let a = debugger?.loadSymbolU16("a")
         XCTAssertEqual(a, 1)
     }
+    
+    func test_EndToEndIntegration_GenericFunctionWithExplicitInstantiation() {
+        let debugger = run(program: """
+            func identity<T>(a: T) -> T {
+                return a
+            }
+            let a: u16 = identity<u16>(1000)
+            let b: i16 = identity<i16>(-1000)
+            """)
+        let a = debugger?.loadSymbolU16("a")
+        let b = debugger?.loadSymbolI16("b")
+        XCTAssertEqual(a, 1000)
+        XCTAssertEqual(b, -1000)
+    }
+    
+    func test_EndToEndIntegration_GenericFunctionWithAutomaticTypeArgumentDeduction() {
+        let debugger = run(program: """
+            func identity<T>(a: T) -> T {
+                return a
+            }
+            let a = identity(-1000)
+            """)
+        let a = debugger?.loadSymbolI16("a")
+        XCTAssertEqual(a, -1000)
+    }
+    
+    func test_EndToEndIntegration_CompileErrorOnConcreteInstantiationOfGenericFunction() {
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: """
+            func identity<T>(a: T) -> T {
+                return a.count
+            }
+            let a = identity(1)
+            """)
+        
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "a.count")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 1..<2)
+        XCTAssertEqual(compiler.errors.first?.message, "value of type `const u8' has no member `count'")
+    }
 }

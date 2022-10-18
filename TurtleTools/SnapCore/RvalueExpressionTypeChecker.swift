@@ -910,7 +910,9 @@ public class RvalueExpressionTypeChecker: NSObject {
             arg.description.replacingOccurrences(of: " ", with: "_")
         }
         
-        let mangledName = Array(NSOrderedSet(array: symbols.allEnclosingFunctionNames() + [name] + typeNameList)).map{$0 as! String}.joined(separator: "_")
+        let arr = Array(NSOrderedSet(array: symbols.allEnclosingFunctionNames() + [name] + typeNameList))
+        let prefix: String = (arr.count == 1) ? "" : "__"
+        let mangledName = prefix + arr.map{$0 as! String}.joined(separator: "_")
         
         return mangledName
     }

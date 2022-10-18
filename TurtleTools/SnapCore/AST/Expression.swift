@@ -23,7 +23,7 @@ public class Expression: AbstractSyntaxTreeNode {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Expression {
-        fatalError("unimplemented")
+        fatalError("withSourceAnchor() is unimplemented for \(self)")
     }
     
     // Useful for testing
@@ -944,7 +944,9 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public var typeArguments: [Expression.Identifier] {
-            template.typeArguments
+            template.typeArguments.map {
+                $0.identifier
+            }
         }
         
         public var functionType: Expression.FunctionType {
@@ -1091,6 +1093,77 @@ public class Expression: AbstractSyntaxTreeNode {
             var hasher = Hasher()
             hasher.combine(identifier)
             hasher.combine(arguments)
+            return hasher.finalize()
+        }
+    }
+    
+    public class GenericTypeArgument: Expression {
+        public let identifier: Identifier
+        public let constraints: [Identifier]
+        
+        public init(sourceAnchor: SourceAnchor? = nil,
+                    identifier: Identifier,
+                    constraints: [Identifier]) {
+            self.identifier = identifier
+            self.constraints = constraints
+            super.init(sourceAnchor: sourceAnchor)
+        }
+        
+        public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> GenericTypeArgument {
+            if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+                return self
+            }
+            return GenericTypeArgument(sourceAnchor: sourceAnchor,
+                                       identifier: identifier,
+                                       constraints: constraints)
+        }
+        
+        public var shortDescription: String {
+            if constraints.isEmpty {
+                return "\(identifier)"
+            }
+            else {
+                let argsDesc = constraints.map({$0.description}).joined(separator: " + ")
+                return "\(identifier): \(argsDesc)"
+            }
+        }
+        
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            let leading = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+            let desc = String(describing: type(of: self))
+            return "\(leading)\(desc): \(shortDescription)"
+        }
+        
+        public static func ==(lhs: GenericTypeArgument, rhs: GenericTypeArgument) -> Bool {
+            return lhs.isEqual(rhs)
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else {
+                return false
+            }
+            guard type(of: rhs!) == type(of: self) else {
+                return false
+            }
+            guard super.isEqual(rhs) else {
+                return false
+            }
+            guard let rhs = rhs as? GenericTypeArgument else {
+                return false
+            }
+            guard identifier == rhs.identifier else {
+                return false
+            }
+            guard constraints == rhs.constraints else {
+                return false
+            }
+            return true
+        }
+        
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(identifier)
+            hasher.combine(constraints)
             return hasher.finalize()
         }
     }

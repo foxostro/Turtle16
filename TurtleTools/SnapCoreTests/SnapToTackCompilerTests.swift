@@ -5702,7 +5702,7 @@ class SnapToTackCompilerTests: XCTestCase {
         let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                            functionType: functionType,
                                            argumentNames: ["a"],
-                                           typeArguments: [Expression.Identifier("T")],
+                                           typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
                                            body: Block(),
                                            visibility: .privateVisibility,
                                            symbols: SymbolTable())
@@ -5727,7 +5727,7 @@ class SnapToTackCompilerTests: XCTestCase {
         let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                            functionType: functionType,
                                            argumentNames: ["a"],
-                                           typeArguments: [Expression.Identifier("T")],
+                                           typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
                                            body: Block(children: [
                                             Return(Expression.Identifier("a"))
                                            ]),
@@ -5743,7 +5743,7 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.lvalue(expr: expr)
         let expected = TackInstructionNode(instruction: .la, parameters:[
             ParameterIdentifier("vr0"),
-            ParameterIdentifier("foo_const_u16")
+            ParameterIdentifier("__foo_const_u16")
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
@@ -5841,7 +5841,7 @@ class SnapToTackCompilerTests: XCTestCase {
         let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                            functionType: functionType,
                                            argumentNames: ["a"],
-                                           typeArguments: [Expression.Identifier("T")],
+                                           typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
                                            body: Block(),
                                            visibility: .privateVisibility,
                                            symbols: SymbolTable())
@@ -5861,7 +5861,7 @@ class SnapToTackCompilerTests: XCTestCase {
         let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                            functionType: functionType,
                                            argumentNames: ["a"],
-                                           typeArguments: [Expression.Identifier("T")],
+                                           typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
                                            body: Block(),
                                            visibility: .privateVisibility,
                                            symbols: SymbolTable())
@@ -5888,7 +5888,7 @@ class SnapToTackCompilerTests: XCTestCase {
         let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                            functionType: functionType,
                                            argumentNames: ["a"],
-                                           typeArguments: [Expression.Identifier("T")],
+                                           typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
                                            body: Block(children: [
                                             Return(Expression.Identifier("a"))
                                            ]),
@@ -5904,7 +5904,7 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: expr)
         let expected = TackInstructionNode(instruction: .la, parameters: [
             ParameterIdentifier("vr0"),
-            ParameterIdentifier("foo_const_u16")
+            ParameterIdentifier("__foo_const_u16")
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
@@ -5917,7 +5917,7 @@ class SnapToTackCompilerTests: XCTestCase {
         let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                            functionType: functionType,
                                            argumentNames: ["a"],
-                                           typeArguments: [Expression.Identifier("T")],
+                                           typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
                                            body: Block(),
                                            visibility: .privateVisibility,
                                            symbols: SymbolTable())
@@ -5943,7 +5943,7 @@ class SnapToTackCompilerTests: XCTestCase {
         let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                            functionType: functionType,
                                            argumentNames: ["a"],
-                                           typeArguments: [Expression.Identifier("T")],
+                                           typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
                                            body: Block(),
                                            visibility: .privateVisibility,
                                            symbols: SymbolTable())
@@ -5969,7 +5969,7 @@ class SnapToTackCompilerTests: XCTestCase {
         let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                            functionType: functionType,
                                            argumentNames: ["a"],
-                                           typeArguments: [Expression.Identifier("T")],
+                                           typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
                                            body: Block(children: [
                                             Return(Expression.Identifier("a"))
                                            ]),
@@ -5985,7 +5985,7 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: expr)
         let expected = TackInstructionNode(instruction: .la, parameters: [
             ParameterIdentifier("vr0"),
-            ParameterIdentifier("foo_const_u16")
+            ParameterIdentifier("__foo_const_u16")
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, "vr0")
@@ -5998,7 +5998,7 @@ class SnapToTackCompilerTests: XCTestCase {
                                                                       returnType: Expression.Identifier("T"),
                                                                       arguments: [Expression.Identifier("T")]),
                                 argumentNames: ["a"],
-                                typeArguments: [Expression.Identifier("T")],
+                                typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
                                 body: Block(children: [
                                     Return(Expression.Get(expr: Expression.Identifier("a"), member: Expression.Identifier("count")))
                                 ]),
@@ -6030,7 +6030,7 @@ class SnapToTackCompilerTests: XCTestCase {
                                                                       returnType: Expression.Identifier("T"),
                                                                       arguments: [Expression.Identifier("T")]),
                                 argumentNames: ["a"],
-                                typeArguments: [Expression.Identifier("T")],
+                                typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
                                 body: Block(children: [
                                     Return(Expression.Identifier("a"))
                                 ]),
@@ -6051,9 +6051,9 @@ class SnapToTackCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(instruction: .la, parameters: [
                 ParameterIdentifier("vr0"),
-                ParameterIdentifier("foo_const_u16")
+                ParameterIdentifier("__foo_const_u16")
             ]),
-            Subroutine(identifier: "foo_const_u16", children: [
+            Subroutine(identifier: "__foo_const_u16", children: [
                 TackInstructionNode(instruction: .enter, parameters: [
                     ParameterNumber(0)
                 ]),
@@ -6089,7 +6089,7 @@ class SnapToTackCompilerTests: XCTestCase {
                                                                       returnType: Expression.Identifier("T"),
                                                                       arguments: [Expression.Identifier("T")]),
                                 argumentNames: ["a"],
-                                typeArguments: [Expression.Identifier("T")],
+                                typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
                                 body: Block(children: [
                                     Return(Expression.Identifier("a"))
                                 ]),
@@ -6128,7 +6128,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr2")
             ]),
             TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("foo_const_u16")
+                ParameterIdentifier("__foo_const_u16")
             ]),
             TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr3"),
@@ -6150,7 +6150,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr5"),
                 ParameterIdentifier("vr4")
             ]),
-            Subroutine(identifier: "foo_const_u16", children: [
+            Subroutine(identifier: "__foo_const_u16", children: [
                 TackInstructionNode(instruction: .enter, parameters: [
                     ParameterNumber(0)
                 ]),
@@ -6186,7 +6186,7 @@ class SnapToTackCompilerTests: XCTestCase {
                                                                       returnType: Expression.Identifier("T"),
                                                                       arguments: [Expression.Identifier("T")]),
                                 argumentNames: ["a"],
-                                typeArguments: [Expression.Identifier("T")],
+                                typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
                                 body: Block(children: [
                                     Return(Expression.Identifier("a"))
                                 ]),
@@ -6226,7 +6226,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr2")
             ]),
             TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("foo_u16")
+                ParameterIdentifier("__foo_u16")
             ]),
             TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr3"),
@@ -6248,7 +6248,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 ParameterIdentifier("vr5"),
                 ParameterIdentifier("vr4")
             ]),
-            Subroutine(identifier: "foo_u16", children: [
+            Subroutine(identifier: "__foo_u16", children: [
                 TackInstructionNode(instruction: .enter, parameters: [
                     ParameterNumber(0)
                 ]),

@@ -1356,7 +1356,7 @@ while 1 {}
     
     func testParseFunctionDefinition_Generic() {
         let parser = parse("""
-            func identity<T>(a: T) -> T {
+            func identity[T](a: T) -> T {
                 return a
             }
             """)
@@ -2839,7 +2839,7 @@ impl Serial for SerialFake {
     }
     
     func testGenericTypeApplication_Empty() {
-        let parser = parse("foo<>")
+        let parser = parse("foo@[]")
         XCTAssertFalse(parser.hasError)
         guard !parser.hasError else {
             let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
@@ -2848,36 +2848,16 @@ impl Serial for SerialFake {
         }
         let foo = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3),
                                         identifier: "foo")
-        let app = Expression.GenericTypeApplication(sourceAnchor: parser.lineMapper.anchor(0, 5),
-                                                    identifier: foo,
-                                                    arguments: [])
-        let top = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 5),
-                           children: [app])
-        XCTAssertEqual(parser.syntaxTree, top)
-    }
-    
-    func testGenericTypeApplication_OneTypeArgument() {
-        let parser = parse("foo<T>")
-        XCTAssertFalse(parser.hasError)
-        guard !parser.hasError else {
-            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
-            print(omnibus.localizedDescription)
-            return
-        }
-        let foo = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3),
-                                        identifier: "foo")
-        let arg = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 5),
-                                        identifier: "T")
         let app = Expression.GenericTypeApplication(sourceAnchor: parser.lineMapper.anchor(0, 6),
                                                     identifier: foo,
-                                                    arguments: [arg])
+                                                    arguments: [])
         let top = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 6),
                            children: [app])
         XCTAssertEqual(parser.syntaxTree, top)
     }
     
-    func testGenericTypeApplication_TwoTypeArguments() {
-        let parser = parse("foo<U,V>")
+    func testGenericTypeApplication_OneTypeArgument() {
+        let parser = parse("foo@[T]")
         XCTAssertFalse(parser.hasError)
         guard !parser.hasError else {
             let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
@@ -2886,14 +2866,34 @@ impl Serial for SerialFake {
         }
         let foo = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3),
                                         identifier: "foo")
-        let arg0 = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 5),
+        let arg = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 6),
+                                        identifier: "T")
+        let app = Expression.GenericTypeApplication(sourceAnchor: parser.lineMapper.anchor(0, 7),
+                                                    identifier: foo,
+                                                    arguments: [arg])
+        let top = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 7),
+                           children: [app])
+        XCTAssertEqual(parser.syntaxTree, top)
+    }
+    
+    func testGenericTypeApplication_TwoTypeArguments() {
+        let parser = parse("foo@[U,V]")
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        let foo = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3),
+                                        identifier: "foo")
+        let arg0 = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 6),
                                          identifier: "U")
-        let arg1 = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(6, 7),
+        let arg1 = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(7, 8),
                                          identifier: "V")
-        let app = Expression.GenericTypeApplication(sourceAnchor: parser.lineMapper.anchor(0, 8),
+        let app = Expression.GenericTypeApplication(sourceAnchor: parser.lineMapper.anchor(0, 9),
                                                     identifier: foo,
                                                     arguments: [arg0, arg1])
-        let top = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 8),
+        let top = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 9),
                            children: [app])
         XCTAssertEqual(parser.syntaxTree, top)
     }

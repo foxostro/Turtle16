@@ -27,12 +27,12 @@ class SnapToTurtle16CompilerTests: XCTestCase {
     
     func testCompileFailsDuringLexing() {
         let compiler = SnapToTurtle16Compiler()
-        compiler.compile(program: "@")
+        compiler.compile(program: "`")
         XCTAssertTrue(compiler.hasError)
         XCTAssertEqual(compiler.errors.count, 1)
-        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "@")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "`")
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
-        XCTAssertEqual(compiler.errors.first?.message, "unexpected character: `@'")
+        XCTAssertEqual(compiler.errors.first?.message, "unexpected character: ``'")
     }
     
     func testCompileFailsDuringParsing() {
@@ -2714,11 +2714,11 @@ func foo() {
     
     func test_EndToEndIntegration_GenericFunctionWithExplicitInstantiation() {
         let debugger = run(program: """
-            func identity<T>(a: T) -> T {
+            func identity[T](a: T) -> T {
                 return a
             }
-            let a: u16 = identity<u16>(1000)
-            let b: i16 = identity<i16>(-1000)
+            let a: u16 = identity@[u16](1000)
+            let b: i16 = identity@[i16](-1000)
             """)
         let a = debugger?.loadSymbolU16("a")
         let b = debugger?.loadSymbolI16("b")
@@ -2728,7 +2728,7 @@ func foo() {
     
     func test_EndToEndIntegration_GenericFunctionWithAutomaticTypeArgumentDeduction() {
         let debugger = run(program: """
-            func identity<T>(a: T) -> T {
+            func identity[T](a: T) -> T {
                 return a
             }
             let a = identity(-1000)
@@ -2740,7 +2740,7 @@ func foo() {
     func test_EndToEndIntegration_CompileErrorOnConcreteInstantiationOfGenericFunction() {
         let compiler = SnapToTurtle16Compiler()
         compiler.compile(program: """
-            func identity<T>(a: T) -> T {
+            func identity[T](a: T) -> T {
                 return a.count
             }
             let a = identity(1)
@@ -2751,5 +2751,34 @@ func foo() {
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "a.count")
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 1..<2)
         XCTAssertEqual(compiler.errors.first?.message, "value of type `const u8' has no member `count'")
+    }
+    
+    func test_EndToEndIntegration_GenericStructMethod() {
+        let debugger = run(program: """
+            struct Point {
+                x: u16,
+                y: u16
+            }
+            
+            impl Point {
+                func add[T](p: *Point, x: T, y: T) -> Point {
+                    return Point {
+                        .x = p.x + x,
+                        .y = p.y + y
+                    }
+                }
+            }
+            
+            let p1 = Point { .x = 0, .y = 0 }
+            let p2 = Point.add@[u16](p, 1, 1)
+            let x = p2.x
+            let y = p2.y
+            
+            """)
+        
+        let x = debugger?.loadSymbolU16("x")
+        let y = debugger?.loadSymbolU16("y")
+        XCTAssertEqual(x, 1)
+        XCTAssertEqual(y, 1)
     }
 }

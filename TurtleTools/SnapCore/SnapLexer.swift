@@ -124,6 +124,9 @@ public class SnapLexer: Lexer {
             Rule(pattern: "\\]") {
                 TokenSquareBracketRight(sourceAnchor: $0)
             },
+            Rule(pattern: "@") {
+                TokenAt(sourceAnchor: $0)
+            },
             Rule(pattern: "_(?![a-zA-Z0-9_])") {
                 TokenUnderscore(sourceAnchor: $0)
             },

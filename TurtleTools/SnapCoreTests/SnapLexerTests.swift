@@ -76,11 +76,11 @@ class SnapLexerTests: XCTestCase {
     }
     
     func testFailToTokenizeInvalidIdentifier() {
-        let tokenizer = SnapLexer("@")
+        let tokenizer = SnapLexer("`")
         tokenizer.scanTokens()
         XCTAssertTrue(tokenizer.hasError)
         XCTAssertEqual(tokenizer.errors.first?.sourceAnchor, tokenizer.lineMapper.anchor(0, 1))
-        XCTAssertEqual(tokenizer.errors.first?.message, "unexpected character: `@'")
+        XCTAssertEqual(tokenizer.errors.first?.message, "unexpected character: ``'")
     }
     
     func testTokenizeDecimalLiteral() {
@@ -768,5 +768,12 @@ test
         tokenizer.scanTokens()
         XCTAssertEqual(tokenizer.tokens, [TokenSizeof(sourceAnchor: tokenizer.lineMapper.anchor(0, 6)),
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(6, 6))])
+    }
+    
+    func testTokenizeAt() {
+        let tokenizer = SnapLexer("@")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenAt(sourceAnchor: tokenizer.lineMapper.anchor(0, 1)),
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1))])
     }
 }

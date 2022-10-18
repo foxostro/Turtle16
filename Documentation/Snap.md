@@ -603,6 +603,40 @@ let r3 = fnptr(1, 1)
 // Proper closures and lambda expressions are not yet implemented.
 ```
 
+## Generic Functions
+```
+// Declare generic functions with type arguments listed in angle brackets
+// after the function name.
+func myGenericFn<T>(a: T) -> T {
+	return a
+}
+
+// The generic function must be instantiated in order to use it. This may
+// require providing explicit concrete types in angle brackets at the call
+// site.
+let fnptr: func(u8) -> u8 = &myGenericFn<u8>
+let r1 = fnptr(255)
+assert(r1 == 255)
+
+// These explicit type arguments can be passed in a Call expression too.
+let r2: u16 = myGenericFn<u16>(1000)
+assert(r2 == 1000)
+
+// The compiler is able to infer the type arguments from context in a Call
+// expression in many situations.
+let r3: i16 = myGenericFn(-1000)
+assert(r3 == -1000)
+
+// Generic functions which are never instantiated are never compiled at all.
+// Compiler errors in these unused functions will never be detected.
+// This is a work-in-progress and there are plans to allow the type
+// arguments of a generic function to include trait-based constraints so
+// that it is possible to type check the function before instantiation time.
+func myGenericFn2<T>(a: T) -> T {
+	blah // This actually will NOT cause a compile error right now.
+}
+```
+
 ## Struct Methods
 ```
 struct Point {

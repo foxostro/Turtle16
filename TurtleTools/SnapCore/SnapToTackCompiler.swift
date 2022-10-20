@@ -767,13 +767,17 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     func lvalue(get expr: Expression.Get) throws -> AbstractSyntaxTreeNode {
+        guard let member = expr.member as? Expression.Identifier else {
+            throw CompilerError(sourceAnchor: expr.member.sourceAnchor, message: "expected identifier in get expression")
+        }
+        
         if let structInitializer = expr.expr as? Expression.StructInitializer {
-            let argument = structInitializer.arguments.first(where: {$0.name == expr.member.identifier})
+            let argument = structInitializer.arguments.first(where: {$0.name == member.identifier})
             let memberExpr = argument!.expr
             return try lvalue(expr: memberExpr)
         }
         
-        let name = expr.member.identifier
+        let name = member.identifier
         let resultType = try typeCheck(rexpr: expr.expr)
         var children: [AbstractSyntaxTreeNode] = []
         
@@ -1047,8 +1051,9 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     
     func compileAndConvertExpression(rexpr: Expression, ltype: SymbolType, isExplicitCast: Bool) throws -> AbstractSyntaxTreeNode {
         if let getExpr = rexpr as? Expression.Get,
+           let member = getExpr.member as? Expression.Identifier,
            let structInitializer = getExpr.expr as? Expression.StructInitializer {
-            let argument = structInitializer.arguments.first(where: {$0.name == getExpr.member.identifier})
+            let argument = structInitializer.arguments.first(where: {$0.name == member.identifier})
             let memberExpr = argument!.expr
             let result = try compileAndConvertExpression(rexpr: memberExpr, ltype: ltype, isExplicitCast: isExplicitCast)
             return result
@@ -2193,15 +2198,19 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     func rvalue(get expr: Expression.Get) throws -> AbstractSyntaxTreeNode {
+        guard let member = expr.member as? Expression.Identifier else {
+            fatalError("expected identifier in get expression")
+        }
+        
         if let structInitializer = expr.expr as? Expression.StructInitializer {
-            let argument = structInitializer.arguments.first(where: {$0.name == expr.member.identifier})
+            let argument = structInitializer.arguments.first(where: {$0.name == member.identifier})
             guard let memberExpr = argument?.expr else {
                 fatalError("unimplemented")
             }
             return try rvalue(expr: memberExpr)
         }
         
-        let name = expr.member.identifier
+        let name = member.identifier
         let resultType = try typeCheck(rexpr: expr.expr)
         
         var children: [AbstractSyntaxTreeNode] = []
@@ -2548,7 +2557,8 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     
     fileprivate func rewriteStructMemberFunctionCallIfPossible(_ expr: Expression.Call) throws -> AbstractSyntaxTreeNode? {
         func matchStructMemberFunctionCall(_ expr: Expression.Call) throws -> StructMemberFunctionCallMatcher.Match? {
-            return try StructMemberFunctionCallMatcher(call: expr, typeChecker: RvalueExpressionTypeChecker(symbols: symbols!)).match()
+            let typeChecker = RvalueExpressionTypeChecker(symbols: symbols!, functionsToCompile: globalEnvironment.functionsToCompile)
+            return try StructMemberFunctionCallMatcher(call: expr, typeChecker: typeChecker).match()
         }
         
         func rewriteStructMemberFunctionCall(_ match: StructMemberFunctionCallMatcher.Match) throws -> AbstractSyntaxTreeNode {

@@ -810,13 +810,27 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
     
     public func check(get expr: Expression.Get) throws -> SymbolType {
+        if let _ = expr.member as? Expression.Identifier {
+            return try check(getIdent: expr)
+        }
+        else if let _ = expr.member as? Expression.GenericTypeApplication {
+            return try check(getApp: expr)
+        }
+        else {
+            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "unsupported get expression `\(expr)'")
+        }
+    }
+    
+    private func check(getIdent expr: Expression.Get) throws -> SymbolType {
+        let member = expr.member as! Expression.Identifier
+        
         if let structInitializer = expr.expr as? Expression.StructInitializer {
-            let argument = structInitializer.arguments.first(where: {$0.name == expr.member.identifier})
+            let argument = structInitializer.arguments.first(where: {$0.name == member.identifier})
             let memberExpr = argument!.expr
             return try check(expression: memberExpr)
         }
         
-        let name = expr.member.identifier
+        let name = member.identifier
         let resultType = try check(expression: expr.expr)
         switch resultType {
         case .array, .constDynamicArray, .dynamicArray:
@@ -856,6 +870,29 @@ public class RvalueExpressionTypeChecker: NSObject {
             return try check(get: Expression.Get(sourceAnchor: expr.sourceAnchor,
                                                  expr: Expression.Identifier(typ.nameOfTraitObjectType),
                                                  member: expr.member))
+        default:
+            break
+        }
+        throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "value of type `\(resultType)' has no member `\(name)'")
+    }
+    
+    private func check(getApp expr: Expression.Get) throws -> SymbolType {
+        let app = expr.member as! Expression.GenericTypeApplication
+        
+        let name = app.identifier.identifier
+        let resultType = try check(expression: expr.expr)
+        switch resultType {
+        case .constStructType(let typ), .structType(let typ):
+            let type = try check(genericTypeApplication: app, symbols: typ.symbols)
+            return type
+        case .constPointer(let typ), .pointer(let typ):
+            switch typ {
+            case .constStructType(let b), .structType(let b):
+                let type = try check(genericTypeApplication: app, symbols: b.symbols)
+                return type
+            default:
+                break
+            }
         default:
             break
         }
@@ -928,6 +965,10 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
     
     public func check(genericTypeApplication expr: Expression.GenericTypeApplication) throws -> SymbolType {
+        return try check(genericTypeApplication: expr, symbols: symbols)
+    }
+    
+    fileprivate func check(genericTypeApplication expr: Expression.GenericTypeApplication, symbols: SymbolTable) throws -> SymbolType {
         let typeOfIdentifier = try symbols.resolveTypeOfIdentifier(sourceAnchor: expr.sourceAnchor, identifier: expr.identifier.identifier)
         
         switch typeOfIdentifier {

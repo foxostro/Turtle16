@@ -556,6 +556,28 @@ test "Struct Methods" {
 	let p4 = Point.sub(p1, p2)
 }
 
+test "Generic Struct Methods" {
+	struct Point {
+		x: u16,
+		y: u16
+	}
+
+	// Struct methods may themselves be generic functions
+	impl Point {
+		func add[T](p1: *Point, x: T, y: T) -> Point {
+			return Point {
+				.x = p1.x + x,
+				.y = p1.y + y
+			}
+		}
+	}
+
+	let p1 = Point { .x = 1, .y = 1 }
+	let p2 = Point.add@[u16](p1, 1, 2)
+	assert(p2.x == 2)
+	assert(p2.y == 3)
+}
+
 test "Traits" {
 	// Define a trait and the collection of functions that make up its interface.
 	trait Serial {

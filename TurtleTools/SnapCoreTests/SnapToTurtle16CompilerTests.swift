@@ -2753,7 +2753,7 @@ func foo() {
         XCTAssertEqual(compiler.errors.first?.message, "value of type `const u8' has no member `count'")
     }
     
-    func test_EndToEndIntegration_GenericStructMethod() {
+    func test_EndToEndIntegration_GenericStructMethod_1() {
         let debugger = run(program: """
             struct Point {
                 x: u16,
@@ -2770,7 +2770,36 @@ func foo() {
             }
             
             let p1 = Point { .x = 0, .y = 0 }
-            let p2 = Point.add@[u16](p, 1, 1)
+            let p2 = Point.add@[u16](p1, 1, 1)
+            let x = p2.x
+            let y = p2.y
+            
+            """)
+        
+        let x = debugger?.loadSymbolU16("x")
+        let y = debugger?.loadSymbolU16("y")
+        XCTAssertEqual(x, 1)
+        XCTAssertEqual(y, 1)
+    }
+    
+    func test_EndToEndIntegration_GenericStructMethod_2() {
+        let debugger = run(program: """
+            struct Point {
+                x: u16,
+                y: u16
+            }
+            
+            impl Point {
+                func add[T](p: *Point, x: T, y: T) -> Point {
+                    return Point {
+                        .x = p.x + x,
+                        .y = p.y + y
+                    }
+                }
+            }
+            
+            let p1 = Point { .x = 0, .y = 0 }
+            let p2 = p1.add@[u16](1, 1)
             let x = p2.x
             let y = p2.y
             

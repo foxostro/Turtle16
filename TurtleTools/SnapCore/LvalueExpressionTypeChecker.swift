@@ -54,7 +54,20 @@ public class LvalueExpressionTypeChecker: NSObject {
     }
     
     public func check(get expr: Expression.Get) throws -> SymbolType? {
-        let name = expr.member.identifier
+        if let _ = expr.member as? Expression.Identifier {
+            return try check(getIdent: expr)
+        }
+        else if let _ = expr.member as? Expression.GenericTypeApplication {
+            return nil
+        }
+        else {
+            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "unsupported get expression `\(expr)'")
+        }
+    }
+    
+    private func check(getIdent expr: Expression.Get) throws -> SymbolType? {
+        let member = expr.member as! Expression.Identifier
+        let name = member.identifier
         let resultType = try rvalueContext().check(expression: expr.expr)
         switch resultType {
         case .array:

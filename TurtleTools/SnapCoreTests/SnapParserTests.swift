@@ -2897,4 +2897,29 @@ impl Serial for SerialFake {
                            children: [app])
         XCTAssertEqual(parser.syntaxTree, top)
     }
+    
+    func testGenericTypeApplication_InGetExpr() {
+        let parser = parse("Point.add@[u16]")
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        let point = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 5),
+                                          identifier: "Point")
+        let add = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(6, 9),
+                                        identifier: "add")
+        let u16 = Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(11, 14),
+                                           typ: .arithmeticType(.mutableInt(.u16)))
+        let app = Expression.GenericTypeApplication(sourceAnchor: parser.lineMapper.anchor(6, 15),
+                                                    identifier: add,
+                                                    arguments: [u16])
+        let get = Expression.Get(sourceAnchor: parser.lineMapper.anchor(0, 15),
+                                 expr: point,
+                                 member: app)
+        let top = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 15),
+                           children: [get])
+        XCTAssertEqual(parser.syntaxTree, top)
+    }
 }

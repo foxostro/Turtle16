@@ -855,9 +855,15 @@ public class SnapParser: Parser {
                 let lexeme = dot.sourceAnchor?.text ?? "."
                 let error = CompilerError(sourceAnchor: dot.sourceAnchor,
                                           message: "expected member name following `\(lexeme)'")
-                let identifierToken = try expect(type: TokenIdentifier.self, error: error)
-                let member = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor,
+                let member: Expression
+                if let app = try consumeGenericTypeApplication() {
+                    member = app
+                }
+                else {
+                    let identifierToken = try expect(type: TokenIdentifier.self, error: error)
+                    member = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor,
                                                    identifier: identifierToken.lexeme)
+                }
                 let sourceAnchor = expr.sourceAnchor?.union(member.sourceAnchor)
                 expr = Expression.Get(sourceAnchor: sourceAnchor,
                                       expr: expr,

@@ -18,6 +18,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     case constDynamicArray(elementType: SymbolType), dynamicArray(elementType: SymbolType)
     case constPointer(SymbolType), pointer(SymbolType)
     case constStructType(StructType), structType(StructType)
+    case genericStructType(GenericStructType)
     case constTraitType(TraitType), traitType(TraitType)
     case unionType(UnionType)
     
@@ -128,6 +129,15 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         }
     }
     
+    public func unwrapGenericStructType() -> GenericStructType {
+        switch self {
+        case .genericStructType(let typ):
+            return typ
+        default:
+            abort()
+        }
+    }
+    
     public func unwrapTraitType() -> TraitType {
         switch self {
         case .constTraitType(let typ), .traitType(let typ):
@@ -219,6 +229,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             return "const \(typ.name)"
         case .structType(let typ):
             return "\(typ.name)"
+        case .genericStructType(let typ):
+            return "\(typ.description)"
         case .constTraitType(let typ):
             return "const \(typ.name)"
         case .traitType(let typ):
@@ -645,6 +657,48 @@ struct \(name) {
         var hasher = Hasher()
         hasher.combine(name)
         hasher.combine(symbols)
+        return hasher.finalize()
+    }
+}
+
+public class GenericStructType: NSObject {
+    public let template: StructDeclaration
+    
+    public init(template: StructDeclaration) {
+        self.template = template
+    }
+    
+    public var typeArguments: [Expression.GenericTypeArgument] {
+        template.typeArguments
+    }
+    
+    public override var description: String {
+        return "\(template.name)\(template.typeArgumentsDescription)"
+    }
+    
+    public static func ==(lhs: GenericStructType, rhs: GenericStructType) -> Bool {
+        return lhs.isEqual(rhs)
+    }
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else {
+            return false
+        }
+        guard type(of: rhs!) == type(of: self) else {
+            return false
+        }
+        guard let rhs = rhs as? GenericStructType else {
+            return false
+        }
+        guard template == rhs.template else {
+            return false
+        }
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(template)
         return hasher.finalize()
     }
 }

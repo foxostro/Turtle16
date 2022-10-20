@@ -21,13 +21,14 @@ public class SnapSubcompilerStructDeclaration: NSObject {
         self.functionsToCompile = functionsToCompile
     }
     
-    public func compile(_ node: StructDeclaration) throws {
+    @discardableResult public func compile(_ node: StructDeclaration) throws -> SymbolType {
         let name = node.identifier.identifier
         
         let members = SymbolTable(parent: symbols)
         let fullyQualifiedStructType = StructType(name: name, symbols: members)
+        let type: SymbolType = node.isConst ? .constStructType(fullyQualifiedStructType) : .structType(fullyQualifiedStructType)
         symbols.bind(identifier: name,
-                     symbolType: node.isConst ? .constStructType(fullyQualifiedStructType) : .structType(fullyQualifiedStructType),
+                     symbolType: type,
                      visibility: node.visibility)
         
         members.enclosingFunctionNameMode = .set(name)
@@ -44,5 +45,7 @@ public class SnapSubcompilerStructDeclaration: NSObject {
         members.parent = nil
         
         // Erase the StructDeclaration now that it's been processd.
+        
+        return type
     }
 }

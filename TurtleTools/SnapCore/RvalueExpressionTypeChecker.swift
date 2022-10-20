@@ -14,6 +14,7 @@ import TurtleCore
 public class RvalueExpressionTypeChecker: NSObject {
     public let symbols: SymbolTable
     public let functionsToCompile: FunctionsToCompile!
+    private let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16() // TODO: This needs to be fed into the type checker as a dependency
     
     public init(symbols: SymbolTable = SymbolTable(), functionsToCompile: FunctionsToCompile? = nil) {
         self.symbols = symbols
@@ -612,6 +613,9 @@ public class RvalueExpressionTypeChecker: NSObject {
         case .genericFunction(let typ):
             throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot instantiate generic function `\(typ.description)'")
             
+        case .genericStructType(let typ):
+            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot instantiate generic struct `\(typ.description)'")
+            
         default:
             return rvalueType
         }
@@ -975,6 +979,9 @@ public class RvalueExpressionTypeChecker: NSObject {
         case .genericFunction(let typ):
             return try apply(genericTypeApplication: expr, genericFunctionType: typ)
             
+        case .genericStructType(let typ):
+            return try apply(genericTypeApplication: expr, genericStructType: typ)
+            
         default:
             throw unsupportedError(expression: expr)
         }
@@ -1013,12 +1020,38 @@ public class RvalueExpressionTypeChecker: NSObject {
                                         ast: originalFunctionDeclaration)
         let result = SymbolType.function(functionType)
         
-        let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16() // TODO: This needs to be fed into the type checker as a dependency
         try SnapSubcompilerFunctionDeclaration().instantiate(memoryLayoutStrategy: memoryLayoutStrategy, functionType: functionType, functionDeclaration: originalFunctionDeclaration)
         
         functionsToCompile.enqueue(functionType)
         
         return result
+    }
+    
+    fileprivate func apply(genericTypeApplication expr: Expression.GenericTypeApplication,
+                           genericStructType: GenericStructType) throws -> SymbolType {
+        guard expr.arguments.count == genericStructType.typeArguments.count else {
+            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "incorrect number of type arguments in application of generic struct type `\(expr.shortDescription)'")
+        }
+        
+        // TODO: check type constraints on the type variables here too
+        
+        // Bind types in a new symbol table to apply the type arguments.
+        let symbolsWithTypeArguments = SymbolTable(parent: symbols)
+        var evaluatedTypeArguments: [SymbolType] = []
+        for i in 0..<expr.arguments.count {
+            let typeVariable = genericStructType.typeArguments[i]
+            let typeArgument = try check(expression: expr.arguments[i])
+            symbolsWithTypeArguments.bind(identifier: typeVariable.identifier.identifier, symbolType: typeArgument)
+            evaluatedTypeArguments.append(typeArgument)
+        }
+        
+        // Bind the concrete struct type
+        let subcompiler = SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy,
+                                                           symbols: symbolsWithTypeArguments,
+                                                           functionsToCompile: functionsToCompile)
+        let concreteType = try subcompiler.compile(genericStructType.template)
+        
+        return concreteType
     }
     
     public func check(pointerType expr: Expression.PointerType) throws -> SymbolType {

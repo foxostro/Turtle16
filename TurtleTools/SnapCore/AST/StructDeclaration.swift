@@ -44,16 +44,23 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
     }
     
     public let identifier: Expression.Identifier
+    public let typeArguments: [Expression.GenericTypeArgument]
     public let members: [Member]
     public let visibility: SymbolVisibility
     public let isConst: Bool
     
+    public var name: String {
+        identifier.identifier
+    }
+    
     public init(sourceAnchor: SourceAnchor? = nil,
                 identifier: Expression.Identifier,
+                typeArguments: [Expression.GenericTypeArgument] = [],
                 members: [Member],
                 visibility: SymbolVisibility = .privateVisibility,
                 isConst: Bool = false) {
         self.identifier = identifier.withSourceAnchor(sourceAnchor)
+        self.typeArguments = typeArguments
         self.members = members.map {
             Member(name: $0.name,
                    type: $0.memberType.withSourceAnchor(sourceAnchor))
@@ -69,6 +76,7 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
         }
         return StructDeclaration(sourceAnchor: sourceAnchor,
                                  identifier: identifier,
+                                 typeArguments: typeArguments,
                                  members: members,
                                  visibility: visibility,
                                  isConst: isConst)
@@ -80,6 +88,7 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
         guard super.isEqual(rhs) else { return false }
         guard let rhs = rhs as? StructDeclaration else { return false }
         guard identifier == rhs.identifier else { return false }
+        guard typeArguments == rhs.typeArguments else { return false }
         guard members == rhs.members else { return false }
         guard visibility == rhs.visibility else { return false }
         guard isConst == rhs.isConst else { return false }
@@ -89,6 +98,7 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(identifier)
+        hasher.combine(typeArguments)
         hasher.combine(members)
         hasher.combine(visibility)
         hasher.combine(isConst)
@@ -97,28 +107,51 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@\n%@identifier: %@\n%@visibility: %@\n%@members: %@",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      (isConst ? "const " : "") + String(describing: type(of: self)),
-                      makeIndent(depth: depth + 1),
-                      identifier.makeIndentedDescription(depth: depth + 1),
-                      makeIndent(depth: depth + 1),
-                      visibility.description,
-                      makeIndent(depth: depth + 1),
-                      makeMembersDescription(depth: depth + 1))
+        let unindented = """
+            \(visibilityDescription) struct \(name)\(typeArgumentsDescription) {\(membersDescription)
+            }
+            """
+        let indented = indent(text: unindented, depth: depth)
+        return indented
     }
     
-    private func makeMembersDescription(depth: Int) -> String {
-        var result: String = ""
-        if members.isEmpty {
-            result = "none"
-        } else {
-            for member in members {
-                result += "\n"
-                result += makeIndent(depth: depth + 1)
-                result += "\(member.name): \(member.memberType.makeIndentedDescription(depth: depth + 1))"
-            }
+    private func indent(text: String, depth: Int) -> String {
+        let indentLine = makeIndent(depth: depth)
+        let indented = text.split(separator: "\n").map { line in
+            "\(indentLine)\(line)"
+        }.joined(separator: "\n")
+        return indented
+    }
+    
+    private var visibilityDescription: String {
+        switch visibility {
+        case .publicVisibility:
+            return "public"
+        case .privateVisibility:
+            return "private"
         }
+    }
+    
+    public var typeArgumentsDescription: String {
+        guard !typeArguments.isEmpty else {
+            return ""
+        }
+        
+        let str = typeArguments.map { arg in
+            arg.shortDescription
+        }.joined(separator: ", ")
+        
+        return "[\(str)]"
+    }
+    
+    private var membersDescription: String {
+        guard !members.isEmpty else {
+            return ""
+        }
+        
+        let result = "\n" + members.map { arg in
+            "\t\(arg.description)"
+        }.joined(separator: ",\n")
         return result
     }
 }

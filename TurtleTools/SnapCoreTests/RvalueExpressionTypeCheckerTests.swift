@@ -5394,4 +5394,93 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
             throw err
         }
     }
+    
+    func testCannotInstantiateGenericStructTypeWithoutApplication() throws {
+        let template = StructDeclaration(identifier: Expression.Identifier("foo"),
+                                         typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
+                                         members: [],
+                                         visibility: .privateVisibility,
+                                         isConst: false)
+        let symbols = SymbolTable()
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .genericStructType(GenericStructType(template: template))))
+        
+        let expr = Expression.Identifier("foo")
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot instantiate generic struct `foo[T]'")
+        }
+    }
+    
+    func testGenericStructApplicationRequiresCorrectNumberOfArguments() throws {
+        let constU16 = SymbolType.arithmeticType(.mutableInt(.u16))
+        let template = StructDeclaration(identifier: Expression.Identifier("foo"),
+                                         typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
+                                         members: [],
+                                         visibility: .privateVisibility,
+                                         isConst: false)
+        let symbols = SymbolTable()
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .genericStructType(GenericStructType(template: template))))
+        
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
+                                                     arguments: [Expression.PrimitiveType(constU16),
+                                                                 Expression.PrimitiveType(constU16)])
+        
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "incorrect number of type arguments in application of generic struct type `foo@[u16, u16]'")
+        }
+    }
+    
+    func testGenericStructApplication_Empty() throws {
+        let constU16 = SymbolType.arithmeticType(.mutableInt(.u16))
+        let template = StructDeclaration(identifier: Expression.Identifier("foo"),
+                                         typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
+                                         members: [],
+                                         visibility: .privateVisibility,
+                                         isConst: false)
+        let symbols = SymbolTable()
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .genericStructType(GenericStructType(template: template))))
+        
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, functionsToCompile: FunctionsToCompile())
+        let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
+                                                     arguments: [Expression.PrimitiveType(constU16)])
+        
+        let concreteStructSymbols = SymbolTable(tuples: [
+        ])
+        concreteStructSymbols.enclosingFunctionNameMode = .set("foo")
+        let expected = SymbolType.structType(StructType(name: "foo", symbols: concreteStructSymbols))
+        let actual = try typeChecker.check(expression: expr)
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testGenericStructApplication_OneMember() throws {
+        let constU16 = SymbolType.arithmeticType(.mutableInt(.u16))
+        let template = StructDeclaration(identifier: Expression.Identifier("foo"),
+                                         typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
+                                         members: [
+                                            StructDeclaration.Member(name: "bar", type: Expression.Identifier("T"))
+                                         ],
+                                         visibility: .privateVisibility,
+                                         isConst: false)
+        let symbols = SymbolTable()
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .genericStructType(GenericStructType(template: template))))
+        
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, functionsToCompile: FunctionsToCompile())
+        let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
+                                                     arguments: [Expression.PrimitiveType(constU16)])
+        
+        let concreteStructSymbols = SymbolTable(tuples: [
+            ("bar", Symbol(type: constU16, offset: 0, storage: .automaticStorage))
+        ])
+        concreteStructSymbols.storagePointer = 1
+        concreteStructSymbols.enclosingFunctionNameMode = .set("foo")
+        
+        let expected = SymbolType.structType(StructType(name: "foo", symbols: concreteStructSymbols))
+        let actual = try typeChecker.check(expression: expr)
+        XCTAssertEqual(actual, expected)
+    }
 }

@@ -5715,7 +5715,7 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertThrowsError(try compiler.lvalue(expr: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot instantiate generic function `func foo<T>(a: T) -> T'")
+            XCTAssertEqual(compilerError?.message, "cannot instantiate generic function `func foo[T](a: T) -> T'")
         }
     }
     
@@ -5849,7 +5849,7 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertThrowsError(try compiler.rvalue(expr: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot instantiate generic function `func foo<T>(a: T) -> T'")
+            XCTAssertEqual(compilerError?.message, "cannot instantiate generic function `func foo[T](a: T) -> T'")
         }
     }
     
@@ -5876,7 +5876,7 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertThrowsError(try compiler.rvalue(expr: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "incorrect number of type arguments in application of generic function type `foo<u16, u16>'")
+            XCTAssertEqual(compilerError?.message, "incorrect number of type arguments in application of generic function type `foo@[u16, u16]'")
         }
     }
     
@@ -5931,7 +5931,7 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertThrowsError(try compiler.rvalue(expr: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot instantiate generic function `func foo<T>(a: T) -> T'")
+            XCTAssertEqual(compilerError?.message, "cannot instantiate generic function `func foo[T](a: T) -> T'")
         }
     }
     
@@ -5957,7 +5957,7 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertThrowsError(try compiler.rvalue(expr: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "incorrect number of type arguments in application of generic function type `foo<const u16, const u16>'")
+            XCTAssertEqual(compilerError?.message, "incorrect number of type arguments in application of generic function type `foo@[const u16, const u16]'")
         }
     }
     

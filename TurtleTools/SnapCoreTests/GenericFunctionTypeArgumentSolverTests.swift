@@ -86,7 +86,7 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
                                                            symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "failed to infer the type arguments of the generic function `func foo<T>(a: T) -> T' in a call expression")
+            XCTAssertEqual(compilerError?.message, "failed to infer the type arguments of the generic function `func foo[T](a: T) -> T' in a call expression")
         }
     }
     
@@ -112,7 +112,7 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
                                                            symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "failed to infer the type arguments of the generic function `func foo<T>() -> T' in a call expression")
+            XCTAssertEqual(compilerError?.message, "failed to infer the type arguments of the generic function `func foo[T]() -> T' in a call expression")
         }
     }
     
@@ -205,7 +205,7 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
                                                            symbols: symbols)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "failed to infer the type arguments of the generic function `func foo<T>(a: T, b: T) -> void' in a call expression")
+            XCTAssertEqual(compilerError?.message, "failed to infer the type arguments of the generic function `func foo[T](a: T, b: T) -> void' in a call expression")
         }
     }
 }

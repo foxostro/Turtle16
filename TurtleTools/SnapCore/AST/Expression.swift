@@ -927,10 +927,6 @@ public class Expression: AbstractSyntaxTreeNode {
             hasher.combine(arguments)
             return hasher.finalize()
         }
-//        
-//        public func rename(_ name: String?) -> FunctionType {
-//            return FunctionType(sourceAnchor: sourceAnchor, name: name, returnType: returnType, arguments: arguments)
-//        }
     }
 
     // GenericFunctionType is a type function. It evaluates to a concrete
@@ -971,7 +967,7 @@ public class Expression: AbstractSyntaxTreeNode {
             let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
             let typeArgumentsDescription = typeArguments.map({$0.description}).joined(separator: ", ")
             let argumentsDescription = zip(template.argumentNames, arguments).map({"\($0.0): \($0.1)"}).joined(separator: ", ")
-            return "\(indent)func \(name)<\(typeArgumentsDescription)>(\(argumentsDescription)) -> \(returnType)"
+            return "\(indent)func \(name)[\(typeArgumentsDescription)](\(argumentsDescription)) -> \(returnType)"
         }
         
         public static func ==(lhs: GenericFunctionType, rhs: GenericFunctionType) -> Bool {
@@ -1030,7 +1026,7 @@ public class Expression: AbstractSyntaxTreeNode {
         
         public var shortDescription: String {
             let typeVariablesDescription = arguments.map({$0.description}).joined(separator: ", ")
-            return "\(identifier)<\(typeVariablesDescription)>"
+            return "\(identifier)@[\(typeVariablesDescription)]"
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {

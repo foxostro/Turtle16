@@ -264,7 +264,7 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(identifier: Expression.Identifier("foo"))) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "cannot instantiate generic function `func foo<T>(a: T) -> T'")
+            XCTAssertEqual(compilerError?.message, "cannot instantiate generic function `func foo[T](a: T) -> T'")
         }
     }
     

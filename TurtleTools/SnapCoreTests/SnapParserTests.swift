@@ -2433,6 +2433,35 @@ private struct foo {
         XCTAssertEqual(ast.children.first, expected)
     }
     
+    func testWellFormedStructDeclaration_Generic() {
+        let parser = parse("""
+            struct Foo[T] {
+            }
+            """)
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        XCTAssertNotNil(parser.syntaxTree)
+        guard let ast = parser.syntaxTree else {
+            return
+        }
+        XCTAssertEqual(ast.children.count, 1)
+        let expected = StructDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 17),
+                                         identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(7, 10),
+                                                                           identifier: "Foo"),
+                                         typeArguments: [
+                                            Expression.GenericTypeArgument(sourceAnchor: parser.lineMapper.anchor(11, 12),
+                                                                           identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(11, 12),
+                                                                                                             identifier: "T"),
+                                                                           constraints: [])
+                                         ],
+                                         members: [])
+        XCTAssertEqual(ast.children.first, expected)
+    }
+    
     func testWellformedPublicTypealiasStatement() {
         let parser = parse("public typealias Foo = Bar")
         XCTAssertFalse(parser.hasError)

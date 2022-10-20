@@ -31,7 +31,7 @@ public class SnapSubcompilerVarDeclaration: NSObject {
         // the type checker can determine what type it evaluates to.
         let explicitType: SymbolType?
         if let explicitTypeExpr = node.explicitType {
-            explicitType = try TypeContextTypeChecker(symbols: symbols).check(expression: explicitTypeExpr)
+            explicitType = try TypeContextTypeChecker(symbols: symbols, functionsToCompile: globalEnvironment.functionsToCompile).check(expression: explicitTypeExpr)
         } else {
             explicitType = nil
         }

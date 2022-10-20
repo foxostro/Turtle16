@@ -44,7 +44,7 @@ public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
     public override func compile(struct node0: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
         let subcompiler = SnapSubcompilerStructDeclaration(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy, symbols: symbols!, functionsToCompile: globalEnvironment.functionsToCompile)
         try subcompiler.compile(node0)
-        return nil // Erase the StructDeclaration now that it's been processd.
+        return nil // Erase the StructDeclaration now that it's been processed.
     }
     
     public override func compile(typealias node0: Typealias) throws -> AbstractSyntaxTreeNode? {

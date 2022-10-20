@@ -1049,7 +1049,8 @@ public class RvalueExpressionTypeChecker: NSObject {
         let subcompiler = SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy,
                                                            symbols: symbolsWithTypeArguments,
                                                            functionsToCompile: functionsToCompile)
-        let concreteType = try subcompiler.compile(genericStructType.template)
+        let template = genericStructType.template.eraseTypeArguments()
+        let concreteType = try subcompiler.compile(template)
         
         return concreteType
     }

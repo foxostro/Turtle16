@@ -2810,4 +2810,25 @@ func foo() {
         XCTAssertEqual(x, 1)
         XCTAssertEqual(y, 1)
     }
+    
+    func test_EndToEndIntegration_GenericStruct() {
+        let debugger = run(program: """
+            struct Point[T] {
+                x: T,
+                y: T
+            }
+            
+            var p: Point@[u16] = undefined
+            p.x = 1
+            p.y = 2
+            let x = p.x
+            let y = p.y
+            
+            """)
+        
+        let x = debugger?.loadSymbolU16("x")
+        let y = debugger?.loadSymbolU16("y")
+        XCTAssertEqual(x, 1)
+        XCTAssertEqual(y, 2)
+    }
 }

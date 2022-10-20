@@ -300,6 +300,8 @@ public class SnapParser: Parser {
             return try consumeArrayType()
         } else if let _ = peek() as? TokenFunc {
             return try consumeFunctionPointerType()
+        } else if let app = try consumeGenericTypeApplication() {
+            return app
         } else if let identifier = accept(TokenIdentifier.self) as? TokenIdentifier {
             return Expression.Identifier(sourceAnchor: identifier.sourceAnchor,
                                          identifier: identifier.lexeme)
@@ -1023,6 +1025,7 @@ public class SnapParser: Parser {
     private func consumeStruct(_ firstToken: Token, _ visibility: SymbolVisibility = .privateVisibility) throws -> [AbstractSyntaxTreeNode] {
         let identifierToken = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in struct declaration"))
         let identifier = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
+        let typeArguments = try consumeOptionalTypeArgumentListWithConstraints()
         
         try expect(type: TokenCurlyLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `{' in struct"))
         
@@ -1045,6 +1048,7 @@ public class SnapParser: Parser {
         let sourceAnchor = firstToken.sourceAnchor?.union(closingBrace.sourceAnchor!)
         return [StructDeclaration(sourceAnchor: sourceAnchor,
                                   identifier: identifier,
+                                  typeArguments: typeArguments,
                                   members: members,
                                   visibility: visibility)]
     }

@@ -53,6 +53,10 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
         identifier.identifier
     }
     
+    public var isGeneric: Bool {
+        !typeArguments.isEmpty
+    }
+    
     public init(sourceAnchor: SourceAnchor? = nil,
                 identifier: Expression.Identifier,
                 typeArguments: [Expression.GenericTypeArgument] = [],
@@ -77,6 +81,15 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
         return StructDeclaration(sourceAnchor: sourceAnchor,
                                  identifier: identifier,
                                  typeArguments: typeArguments,
+                                 members: members,
+                                 visibility: visibility,
+                                 isConst: isConst)
+    }
+    
+    public func eraseTypeArguments() -> StructDeclaration {
+        return StructDeclaration(sourceAnchor: sourceAnchor,
+                                 identifier: identifier,
+                                 typeArguments: [],
                                  members: members,
                                  visibility: visibility,
                                  isConst: isConst)

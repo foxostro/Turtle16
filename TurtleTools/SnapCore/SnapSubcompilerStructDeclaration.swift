@@ -22,6 +22,29 @@ public class SnapSubcompilerStructDeclaration: NSObject {
     }
     
     @discardableResult public func compile(_ node: StructDeclaration) throws -> SymbolType {
+        let type: SymbolType
+        if node.isGeneric {
+            type = try doGeneric(node)
+        }
+        else {
+            type = try doNonGeneric(node)
+        }
+        return type
+    }
+    
+    private func doGeneric(_ node: StructDeclaration) throws -> SymbolType {
+        assert(node.isGeneric)
+        let name = node.identifier.identifier
+        let type = SymbolType.genericStructType(GenericStructType(template: node))
+        symbols.bind(identifier: name,
+                     symbolType: type,
+                     visibility: node.visibility)
+        return type
+    }
+    
+    private func doNonGeneric(_ node: StructDeclaration) throws -> SymbolType {
+        assert(!node.isGeneric)
+        
         let name = node.identifier.identifier
         
         let members = SymbolTable(parent: symbols)
@@ -43,8 +66,6 @@ public class SnapSubcompilerStructDeclaration: NSObject {
             members.storagePointer += sizeOfMemberType
         }
         members.parent = nil
-        
-        // Erase the StructDeclaration now that it's been processd.
         
         return type
     }

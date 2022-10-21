@@ -18,8 +18,22 @@ public class SnapSubcompilerImpl: NSObject {
     }
     
     public func compile(_ node: Impl) throws -> Block {
-        let typ = try parent.resolveType(sourceAnchor: node.identifier.sourceAnchor, identifier: node.identifier.identifier).unwrapStructType()
+        let implWhat = try parent.resolveType(sourceAnchor: node.identifier.sourceAnchor,
+                                              identifier: node.identifier.identifier)
         
+        switch implWhat {
+        case .constStructType(let typ), .structType(let typ):
+            return try compileImplStruct(node, typ)
+            
+        case .genericStructType(let typ):
+            return try compileImplGenericStruct(node, typ)
+            
+        default:
+            fatalError("unsupported expression: \(node)")
+        }
+    }
+    
+    public func compileImplStruct(_ node: Impl, _ typ: StructType) throws -> Block {
         let symbols = SymbolTable(parent: parent)
         symbols.enclosingFunctionNameMode = .set(node.identifier.identifier)
         symbols.enclosingFunctionTypeMode = .set(nil)
@@ -51,5 +65,10 @@ public class SnapSubcompilerImpl: NSObject {
                           symbols: symbols,
                           children: modifiedChildren)
         return block
+    }
+    
+    public func compileImplGenericStruct(_ node: Impl, _ typ: GenericStructType) throws -> Block {
+        typ.implNodes.append(node)
+        return Block()
     }
 }

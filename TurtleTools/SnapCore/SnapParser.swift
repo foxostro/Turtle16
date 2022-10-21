@@ -644,12 +644,10 @@ public class SnapParser: Parser {
         return CompilerError(sourceAnchor: token.sourceAnchor, message: "expected to find the end of the statement: `\(token.lexeme)'")
     }
     
-    private var isStructInitializerExpressionAllowed: [Bool] = [true]
-    
     private func consumeExpression(allowsStructInitializer: Bool = true) throws -> Expression {
-        isStructInitializerExpressionAllowed.append(allowsStructInitializer)
+        pushAllowStructInitializer(allowsStructInitializer)
         let expr = try consumeAssignment()
-        isStructInitializerExpressionAllowed.removeLast()
+        popAllowStructInitializer()
         return expr
     }
     
@@ -803,10 +801,22 @@ public class SnapParser: Parser {
         return expr
     }
     
+    private var isStructInitializerExpressionAllowed: [Bool] = [true]
+    
+    private func pushAllowStructInitializer(_ allowStructInitializer: Bool) {
+        isStructInitializerExpressionAllowed.append(allowStructInitializer)
+    }
+    
+    private func popAllowStructInitializer() {
+        isStructInitializerExpressionAllowed.removeLast()
+    }
+    
     private func consumeRange() throws -> Expression {
         let beginExpr = try consumeSizeof()
         if nil != accept(TokenDoubleDot.self) {
+            pushAllowStructInitializer(false)
             let limitExpr = try consumeCall()
+            popAllowStructInitializer()
             let sourceAnchor = beginExpr.sourceAnchor?.union(limitExpr.sourceAnchor)
             typealias Arg = Expression.StructInitializer.Argument
             return Expression.StructInitializer(sourceAnchor: sourceAnchor,
@@ -838,7 +848,7 @@ public class SnapParser: Parser {
     }
     
     private func consumeCall() throws -> Expression {
-        var expr = try consumePrimary()
+        var expr = try consumeStructInitializer()
         while true {
             if nil != accept(TokenParenLeft.self) as? TokenParenLeft {
                 var arguments: [Expression] = []
@@ -878,6 +888,62 @@ public class SnapParser: Parser {
         return expr
     }
     
+    private func consumeStructInitializer() throws -> Expression {
+        let primary = try consumePrimary()
+        
+        // If the primary is an identifier or a generic type application then
+        // the expression might be a struct initializer.
+        if (nil == primary as? Expression.Identifier) && (nil == primary as? Expression.GenericTypeApplication) {
+            return primary
+        }
+        
+        // If the next token is a curly brace then the expression might be a
+        // struct initializer.
+        if nil == peek() as? TokenCurlyLeft {
+            return primary
+        }
+        
+        // We do not allow struct initializer expressions in some places, such
+        // as during the parsing of the limit of a Range expression. This is
+        // necessary because there are several places, such as if statements and
+        // for loops, where an expression is typically always followed by a
+        // left curly brace.
+        if false == isStructInitializerExpressionAllowed.last! {
+            return primary
+        }
+        
+        try expect(type: TokenCurlyLeft.self, error: CompilerError(message: "expected `{'"))
+        
+        var arguments: [Expression.StructInitializer.Argument] = []
+        
+        if nil == accept(TokenCurlyRight.self) {
+            repeat {
+                try expect(type: TokenDot.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "malformed argument to struct initializer: expected `.'"))
+                
+                let argumentIdentifier = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "malformed argument to struct initializer: expected identifier"))
+                
+                try expect(type: TokenEqual.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "malformed argument to struct initializer: expected `='"))
+                
+                if nil != accept(TokenCurlyRight.self) {
+                    throw CompilerError(sourceAnchor: previous?.sourceAnchor, message: "malformed argument to struct initializer: expected expression")
+                }
+                
+                if nil == accept(TokenUndefined.self) {
+                    let argumentExpression = try consumeExpression()
+                    let argument = Expression.StructInitializer.Argument(name: argumentIdentifier.lexeme, expr: argumentExpression)
+                    arguments.append(argument)
+                }
+            } while nil != accept(TokenComma.self)
+            
+            let sourceAnchor = primary.sourceAnchor?.union(peek()?.sourceAnchor)
+            try expect(type: TokenCurlyRight.self, error: CompilerError(sourceAnchor: sourceAnchor, message: "expected `}' in struct initializer expression"))
+        }
+        
+        return Expression.StructInitializer(sourceAnchor: primary.sourceAnchor?.union(previous?.sourceAnchor),
+                                            expr: primary,
+                                            arguments: arguments)
+    }
+    
     private func consumePrimary() throws -> Expression {
         if let numberToken = accept(TokenNumber.self) as? TokenNumber {
             return Expression.LiteralInt(sourceAnchor: numberToken.sourceAnchor,
@@ -886,9 +952,6 @@ public class SnapParser: Parser {
         else if let booleanToken = accept(TokenBoolean.self) as? TokenBoolean {
             return Expression.LiteralBool(sourceAnchor: booleanToken.sourceAnchor,
                                              value: booleanToken.literal)
-        }
-        else if isStructInitializerExpressionAllowed.last!==true, let _ = peek(0) as? TokenIdentifier, let _ = peek(1) as? TokenCurlyLeft {
-            return try consumeStructInitializer()
         }
         else if let app = try consumeGenericTypeApplication() {
             return app
@@ -933,40 +996,6 @@ public class SnapParser: Parser {
         } else {
             throw unexpectedEndOfInputError()
         }
-    }
-    
-    private func consumeStructInitializer() throws -> Expression {
-        let identifierToken = try expect(type: TokenIdentifier.self, error: CompilerError(message: "expected identifier"))
-        try expect(type: TokenCurlyLeft.self, error: CompilerError(message: "expected `{'"))
-        let identifier = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
-        var arguments: [Expression.StructInitializer.Argument] = []
-        
-        if nil == accept(TokenCurlyRight.self) {
-            repeat {
-                try expect(type: TokenDot.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "malformed argument to struct initializer: expected `.'"))
-                
-                let argumentIdentifier = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "malformed argument to struct initializer: expected identifier"))
-                
-                try expect(type: TokenEqual.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "malformed argument to struct initializer: expected `='"))
-                
-                if nil != accept(TokenCurlyRight.self) {
-                    throw CompilerError(sourceAnchor: previous?.sourceAnchor, message: "malformed argument to struct initializer: expected expression")
-                }
-                
-                if nil == accept(TokenUndefined.self) {
-                    let argumentExpression = try consumeExpression()
-                    let argument = Expression.StructInitializer.Argument(name: argumentIdentifier.lexeme, expr: argumentExpression)
-                    arguments.append(argument)
-                }
-            } while nil != accept(TokenComma.self)
-            
-            let sourceAnchor = identifierToken.sourceAnchor?.union(peek()?.sourceAnchor)
-            try expect(type: TokenCurlyRight.self, error: CompilerError(sourceAnchor: sourceAnchor, message: "expected `}' in struct initializer expression"))
-        }
-        
-        return Expression.StructInitializer(sourceAnchor: identifierToken.sourceAnchor?.union(previous?.sourceAnchor),
-                                            identifier: identifier,
-                                            arguments: arguments)
     }
     
     private func consumeGenericTypeApplication() throws -> Expression.GenericTypeApplication? {

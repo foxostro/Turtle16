@@ -2823,7 +2823,27 @@ func foo() {
             p.y = 2
             let x = p.x
             let y = p.y
+            """)
+        
+        let x = debugger?.loadSymbolU16("x")
+        let y = debugger?.loadSymbolU16("y")
+        XCTAssertEqual(x, 1)
+        XCTAssertEqual(y, 2)
+    }
+    
+    func test_EndToEndIntegration_StructInitializerWithGenericStruct() {
+        let debugger = run(program: """
+            struct Point[T] {
+                x: T,
+                y: T
+            }
             
+            let p = Point@[u16] {
+                .x = 1,
+                .y = 2
+            }
+            let x = p.x
+            let y = p.y
             """)
         
         let x = debugger?.loadSymbolU16("x")

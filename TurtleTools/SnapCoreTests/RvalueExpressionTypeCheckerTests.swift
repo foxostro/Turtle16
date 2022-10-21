@@ -4693,7 +4693,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
-            XCTAssertEqual(compilerError?.message, "use of undeclared type `Foo'")
+            XCTAssertEqual(compilerError?.message, "use of unresolved identifier: `Foo'")
         }
     }
     
@@ -5479,6 +5479,36 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         concreteStructSymbols.storagePointer = 1
         concreteStructSymbols.enclosingFunctionNameMode = .set("foo")
         
+        let expected = SymbolType.structType(StructType(name: "foo", symbols: concreteStructSymbols))
+        let actual = try typeChecker.check(expression: expr)
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testGenericStructApplication_StructInitializer() throws {
+        let constU16 = SymbolType.arithmeticType(.mutableInt(.u16))
+        let template = StructDeclaration(identifier: Expression.Identifier("foo"),
+                                         typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
+                                         members: [
+                                            StructDeclaration.Member(name: "bar", type: Expression.Identifier("T"))
+                                         ],
+                                         visibility: .privateVisibility,
+                                         isConst: false)
+        let symbols = SymbolTable()
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .genericStructType(GenericStructType(template: template))))
+
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, functionsToCompile: FunctionsToCompile())
+        let app = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
+                                                    arguments: [Expression.PrimitiveType(constU16)])
+        let expr = Expression.StructInitializer(expr: app, arguments: [
+            Expression.StructInitializer.Argument(name: "bar", expr: Expression.LiteralInt(1)),
+        ])
+
+        let concreteStructSymbols = SymbolTable(tuples: [
+            ("bar", Symbol(type: constU16, offset: 0, storage: .automaticStorage))
+        ])
+        concreteStructSymbols.storagePointer = 1
+        concreteStructSymbols.enclosingFunctionNameMode = .set("foo")
+
         let expected = SymbolType.structType(StructType(name: "foo", symbols: concreteStructSymbols))
         let actual = try typeChecker.check(expression: expr)
         XCTAssertEqual(actual, expected)

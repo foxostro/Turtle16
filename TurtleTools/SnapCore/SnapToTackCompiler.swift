@@ -1347,7 +1347,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
              (.pointer(let a), .constTraitType(let b)):
             let structType = a.unwrapStructType()
             let nameOfVtableInstance = "__\(b.name)_\(structType.name)_vtable_instance"
-            result = try rvalue(expr: Expression.StructInitializer(identifier: Expression.Identifier(b.nameOfTraitObjectType), arguments: [
+            result = try rvalue(expr: Expression.StructInitializer(expr: Expression.Identifier(b.nameOfTraitObjectType), arguments: [
                 // Take the pointer to the object and cast as an opaque *void
                 Expression.StructInitializer.Argument(name: "object", expr: Expression.Bitcast(expr: rexpr, targetType: Expression.PointerType(Expression.PrimitiveType(.void)))),
                 

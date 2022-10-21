@@ -1672,19 +1672,6 @@ struct foo { bar: u8, baz: u16, qux: bool }
         XCTAssertEqual(ast.children.first, expected)
     }
     
-    func testMalformedStructInitializerExpression_MissingRightBrace() {
-        typealias StructInitializer = Expression.StructInitializer
-        typealias Argument = Expression.StructInitializer.Argument
-        
-        let parser = parse("""
-Foo {
-""")
-        XCTAssertTrue(parser.hasError)
-        XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(5, 5))
-        XCTAssertEqual(parser.errors.first?.message, "malformed argument to struct initializer: expected `.'")
-    }
-    
     func testWellFormedStructInitializerExpression_WithNoArguments() {
         typealias StructInitializer = Expression.StructInitializer
         typealias Argument = Expression.StructInitializer.Argument
@@ -1814,6 +1801,32 @@ Foo { .bar = 1 +
                                             Argument(name: "baz", expr: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(46, 47), value: 2)),
                                             Argument(name: "qux", expr: Expression.LiteralBool(sourceAnchor: parser.lineMapper.anchor(56, 61), value: false)),
                                          ])
+        XCTAssertEqual(ast.children.first, expected)
+    }
+    
+    func testWellFormedStructInitializerExpression_GenericTypeApplication() {
+        let parser = parse("Foo@[u16] {}")
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        XCTAssertNotNil(parser.syntaxTree)
+        guard let ast = parser.syntaxTree else {
+            return
+        }
+        XCTAssertEqual(ast.children.count, 1)
+        let foo = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3),
+                                        identifier: "Foo")
+        let u16 = Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(5, 8),
+                                           typ: .arithmeticType(.mutableInt(.u16)))
+        let app = Expression.GenericTypeApplication(sourceAnchor: parser.lineMapper.anchor(0, 9),
+                                                    identifier: foo,
+                                                    arguments: [u16])
+        let expected = Expression.StructInitializer(sourceAnchor: parser.lineMapper.anchor(0, 12),
+                                                    expr: app,
+                                                    arguments: [])
         XCTAssertEqual(ast.children.first, expected)
     }
     
@@ -2868,62 +2881,86 @@ impl Serial for SerialFake {
     }
     
     func testGenericTypeApplication_Empty() {
-        let parser = parse("foo@[]")
+        let parser = parse("let a: foo@[] = undefined")
         XCTAssertFalse(parser.hasError)
         guard !parser.hasError else {
             let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
             print(omnibus.localizedDescription)
             return
         }
-        let foo = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3),
+        let foo = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(7, 10),
                                         identifier: "foo")
-        let app = Expression.GenericTypeApplication(sourceAnchor: parser.lineMapper.anchor(0, 6),
+        let app = Expression.GenericTypeApplication(sourceAnchor: parser.lineMapper.anchor(7, 13),
                                                     identifier: foo,
                                                     arguments: [])
-        let top = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 6),
-                           children: [app])
+        let a = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 5),
+                                      identifier: "a")
+        let varDecl = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 25),
+                                     identifier: a,
+                                     explicitType: app,
+                                     expression: nil,
+                                     storage: .automaticStorage,
+                                     isMutable: false)
+        let top = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 25),
+                           children: [varDecl])
         XCTAssertEqual(parser.syntaxTree, top)
     }
     
     func testGenericTypeApplication_OneTypeArgument() {
-        let parser = parse("foo@[T]")
+        let parser = parse("let a: foo@[T] = undefined")
         XCTAssertFalse(parser.hasError)
         guard !parser.hasError else {
             let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
             print(omnibus.localizedDescription)
             return
         }
-        let foo = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3),
+        let foo = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(7, 10),
                                         identifier: "foo")
-        let arg = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 6),
+        let arg = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(12, 13),
                                         identifier: "T")
-        let app = Expression.GenericTypeApplication(sourceAnchor: parser.lineMapper.anchor(0, 7),
+        let app = Expression.GenericTypeApplication(sourceAnchor: parser.lineMapper.anchor(7, 14),
                                                     identifier: foo,
                                                     arguments: [arg])
-        let top = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 7),
-                           children: [app])
+        let a = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 5),
+                                      identifier: "a")
+        let varDecl = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 26),
+                                     identifier: a,
+                                     explicitType: app,
+                                     expression: nil,
+                                     storage: .automaticStorage,
+                                     isMutable: false)
+        let top = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 26),
+                           children: [varDecl])
         XCTAssertEqual(parser.syntaxTree, top)
     }
     
     func testGenericTypeApplication_TwoTypeArguments() {
-        let parser = parse("foo@[U,V]")
+        let parser = parse("let a: foo@[U,V] = undefined")
         XCTAssertFalse(parser.hasError)
         guard !parser.hasError else {
             let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
             print(omnibus.localizedDescription)
             return
         }
-        let foo = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(0, 3),
+        let foo = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(7, 10),
                                         identifier: "foo")
-        let arg0 = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 6),
+        let arg0 = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(12, 13),
                                          identifier: "U")
-        let arg1 = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(7, 8),
+        let arg1 = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(14, 15),
                                          identifier: "V")
-        let app = Expression.GenericTypeApplication(sourceAnchor: parser.lineMapper.anchor(0, 9),
+        let app = Expression.GenericTypeApplication(sourceAnchor: parser.lineMapper.anchor(7, 16),
                                                     identifier: foo,
                                                     arguments: [arg0, arg1])
-        let top = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 9),
-                           children: [app])
+        let a = Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 5),
+                                      identifier: "a")
+        let varDecl = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 28),
+                                     identifier: a,
+                                     explicitType: app,
+                                     expression: nil,
+                                     storage: .automaticStorage,
+                                     isMutable: false)
+        let top = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 28),
+                           children: [varDecl])
         XCTAssertEqual(parser.syntaxTree, top)
     }
     

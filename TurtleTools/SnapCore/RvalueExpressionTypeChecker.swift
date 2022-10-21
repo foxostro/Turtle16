@@ -1066,12 +1066,12 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
     
     public func check(structInitializer expr: Expression.StructInitializer) throws -> SymbolType {
-        let result = try symbols.resolveType(identifier: expr.identifier.identifier)
+        let result = try check(expression: expr.expr)
         let typ = result.unwrapStructType()
         var membersAlreadyInitialized: [String] = []
         for arg in expr.arguments {
             guard typ.symbols.exists(identifier: arg.name) else {
-                throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "value of type `\(expr.identifier.identifier)' has no member `\(arg.name)'")
+                throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "value of type `\(expr.expr)' has no member `\(arg.name)'")
             }
             if membersAlreadyInitialized.contains(arg.name) {
                 throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "initialization of member `\(arg.name)' can only occur one time")

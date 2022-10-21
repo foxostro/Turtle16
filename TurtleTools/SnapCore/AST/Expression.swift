@@ -1392,11 +1392,15 @@ public class Expression: AbstractSyntaxTreeNode {
             }
         }
         
-        public let identifier: Identifier
+        public let expr: Expression
         public let arguments: [Argument]
         
-        public init(sourceAnchor: SourceAnchor? = nil, identifier: Identifier, arguments: [Argument]) {
-            self.identifier = identifier.withSourceAnchor(sourceAnchor)
+        public convenience init(sourceAnchor: SourceAnchor? = nil, identifier: Expression, arguments: [Argument]) {
+            self.init(sourceAnchor: sourceAnchor, expr: identifier, arguments: arguments)
+        }
+        
+        public init(sourceAnchor: SourceAnchor? = nil, expr: Expression, arguments: [Argument]) {
+            self.expr = expr.withSourceAnchor(sourceAnchor)
             self.arguments = arguments.map {
                 Argument(name: $0.name, expr: $0.expr.withSourceAnchor(sourceAnchor))
             }
@@ -1408,16 +1412,16 @@ public class Expression: AbstractSyntaxTreeNode {
                 return self
             }
             return StructInitializer(sourceAnchor: sourceAnchor,
-                                     identifier: identifier,
+                                     expr: expr,
                                      arguments: arguments)
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@%@\n%@identifier: %@\n%@arguments: %@",
+            return String(format: "%@%@\n%@expr: %@\n%@arguments: %@",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                           String(describing: type(of: self)),
                           makeIndent(depth: depth + 1),
-                          identifier.makeIndentedDescription(depth: depth + 1),
+                          expr.makeIndentedDescription(depth: depth + 1),
                           makeIndent(depth: depth + 1),
                           makeArgumentsDescription(depth: depth + 1))
         }
@@ -1456,7 +1460,7 @@ public class Expression: AbstractSyntaxTreeNode {
             guard let rhs = rhs as? StructInitializer else {
                 return false
             }
-            guard identifier == rhs.identifier else {
+            guard expr == rhs.expr else {
                 return false
             }
             guard arguments == rhs.arguments else {
@@ -1467,7 +1471,7 @@ public class Expression: AbstractSyntaxTreeNode {
         
         public override var hash: Int {
             var hasher = Hasher()
-            hasher.combine(identifier)
+            hasher.combine(expr)
             hasher.combine(arguments)
             return hasher.finalize()
         }

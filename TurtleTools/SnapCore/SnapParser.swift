@@ -1140,6 +1140,8 @@ public class SnapParser: Parser {
     }
     
     private func consumeImpl(_ tokenImpl: TokenImpl) throws -> [AbstractSyntaxTreeNode] {
+        let typeArguments = try consumeOptionalTypeArgumentListWithConstraints()
+        
         let identifierToken = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in impl declaration"))
         let identifier = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
         
@@ -1173,7 +1175,13 @@ public class SnapParser: Parser {
             else if nil != accept(TokenCurlyRight.self) {
                 let sourceAnchor = tokenImpl.sourceAnchor?.union(openingCurlyBrace.sourceAnchor)
                 if let structIdentifier = structIdentifier {
-                    return [ImplFor(sourceAnchor: sourceAnchor, traitIdentifier: identifier, structIdentifier: structIdentifier, children: children)]
+                    return [
+                        ImplFor(sourceAnchor: sourceAnchor,
+                                typeArguments: typeArguments,
+                                traitIdentifier: identifier,
+                                structIdentifier: structIdentifier,
+                                children: children)
+                    ]
                 } else {
                     return [Impl(sourceAnchor: sourceAnchor, identifier: identifier, children: children)]
                 }

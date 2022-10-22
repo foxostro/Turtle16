@@ -189,7 +189,8 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
                                          members: [bar],
                                          visibility: .privateVisibility)
         let fake = StructDeclaration(identifier: Expression.Identifier("SerialFake"), members: [])
-        let implFor = ImplFor(traitIdentifier: Expression.Identifier("Serial"),
+        let implFor = ImplFor(typeArguments: [],
+                              traitIdentifier: Expression.Identifier("Serial"),
                               structIdentifier: Expression.Identifier("SerialFake"),
                               children: [
                                 FunctionDeclaration(identifier: Expression.Identifier("puts"),

@@ -5380,7 +5380,6 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .genericFunction(genericFunctionType)))
         ])
-        let functionsToCompile = FunctionsToCompile()
         let expr = Expression.Call(callee: Expression.Identifier("foo"),
                                    arguments: [
                                     ExprUtils.makeI8(value: -128)

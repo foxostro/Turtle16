@@ -163,6 +163,7 @@ public class SnapASTTransformerBase: NSObject {
     
     public func compile(implFor node: ImplFor) throws -> AbstractSyntaxTreeNode? {
         return ImplFor(sourceAnchor: node.sourceAnchor,
+                       typeArguments: node.typeArguments,
                        traitIdentifier: node.traitIdentifier,
                        structIdentifier: node.structIdentifier,
                        children: try node.children.map { try compile($0) as! FunctionDeclaration })

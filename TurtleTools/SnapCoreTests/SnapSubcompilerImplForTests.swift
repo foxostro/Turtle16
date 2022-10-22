@@ -47,7 +47,8 @@ class SnapSubcompilerImplForTests: XCTestCase {
         compileSerialTrait(globalEnvironment, globalSymbols)
         compileSerialFake(globalEnvironment, globalSymbols)
         
-        let ast = ImplFor(traitIdentifier: Expression.Identifier("Serial"),
+        let ast = ImplFor(typeArguments: [],
+                          traitIdentifier: Expression.Identifier("Serial"),
                           structIdentifier: Expression.Identifier("SerialFake"),
                           children: [
                               FunctionDeclaration(identifier: Expression.Identifier("puts"),
@@ -92,7 +93,8 @@ class SnapSubcompilerImplForTests: XCTestCase {
         compileSerialTrait(globalEnvironment, globalSymbols)
         compileSerialFake(globalEnvironment, globalSymbols)
         
-        let ast = ImplFor(traitIdentifier: Expression.Identifier("Serial"),
+        let ast = ImplFor(typeArguments: [],
+                          traitIdentifier: Expression.Identifier("Serial"),
                           structIdentifier: Expression.Identifier("SerialFake"),
                           children: [])
         
@@ -111,7 +113,8 @@ class SnapSubcompilerImplForTests: XCTestCase {
         compileSerialTrait(globalEnvironment, globalSymbols)
         compileSerialFake(globalEnvironment, globalSymbols)
         
-        let ast = ImplFor(traitIdentifier: Expression.Identifier("Serial"),
+        let ast = ImplFor(typeArguments: [],
+                          traitIdentifier: Expression.Identifier("Serial"),
                           structIdentifier: Expression.Identifier("SerialFake"),
                           children: [
                               FunctionDeclaration(identifier: Expression.Identifier("puts"),
@@ -137,7 +140,8 @@ class SnapSubcompilerImplForTests: XCTestCase {
         compileSerialTrait(globalEnvironment, globalSymbols)
         compileSerialFake(globalEnvironment, globalSymbols)
         
-        let ast = ImplFor(traitIdentifier: Expression.Identifier("Serial"),
+        let ast = ImplFor(typeArguments: [],
+                          traitIdentifier: Expression.Identifier("Serial"),
                           structIdentifier: Expression.Identifier("SerialFake"),
                           children: [
                               FunctionDeclaration(identifier: Expression.Identifier("puts"),
@@ -164,7 +168,8 @@ class SnapSubcompilerImplForTests: XCTestCase {
         compileSerialTrait(globalEnvironment, globalSymbols)
         compileSerialFake(globalEnvironment, globalSymbols)
         
-        let ast = ImplFor(traitIdentifier: Expression.Identifier("Serial"),
+        let ast = ImplFor(typeArguments: [],
+                          traitIdentifier: Expression.Identifier("Serial"),
                           structIdentifier: Expression.Identifier("SerialFake"),
                           children: [
                               FunctionDeclaration(identifier: Expression.Identifier("puts"),
@@ -191,7 +196,8 @@ class SnapSubcompilerImplForTests: XCTestCase {
         compileSerialTrait(globalEnvironment, globalSymbols)
         compileSerialFake(globalEnvironment, globalSymbols)
         
-        let ast = ImplFor(traitIdentifier: Expression.Identifier("Serial"),
+        let ast = ImplFor(typeArguments: [],
+                          traitIdentifier: Expression.Identifier("Serial"),
                           structIdentifier: Expression.Identifier("SerialFake"),
                           children: [
                               FunctionDeclaration(identifier: Expression.Identifier("puts"),

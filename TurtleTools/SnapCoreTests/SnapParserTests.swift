@@ -2679,6 +2679,7 @@ impl Serial for SerialFake {
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
             ImplFor(sourceAnchor: parser.lineMapper.anchor(0, 28),
+                    typeArguments: [],
                     traitIdentifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 11), identifier: "Serial"),
                     structIdentifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(16, 26), identifier: "SerialFake"),
                     children: [
@@ -2691,6 +2692,28 @@ impl Serial for SerialFake {
                                             argumentNames: ["self", "s"],
                                             body: Block(sourceAnchor: parser.lineMapper.anchor(77, 84))),
                     ])
+        ])
+    }
+    
+    func testImplForStatementWithGenericTypeArguments() {
+        let parser = parse("""
+            impl[T] Serial for SerialFake {
+            }
+            """)
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        XCTAssertEqual(parser.syntaxTree?.children, [
+            ImplFor(sourceAnchor: parser.lineMapper.anchor(0, 31),
+                    typeArguments: [Expression.GenericTypeArgument(sourceAnchor: parser.lineMapper.anchor(5, 6),
+                                                                   identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 6), identifier: "T"),
+                                                                   constraints: [])],
+                    traitIdentifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(8, 14), identifier: "Serial"),
+                    structIdentifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(19, 29), identifier: "SerialFake"),
+                    children: [])
         ])
     }
     

@@ -10,11 +10,11 @@ import TurtleCore
 
 public class SnapSubcompilerImpl: NSObject {
     public let parent: SymbolTable
-    public let memoryLayoutStrategy: MemoryLayoutStrategy
+    public let globalEnvironment: GlobalEnvironment
     
-    public init(memoryLayoutStrategy: MemoryLayoutStrategy, symbols: SymbolTable) {
+    public init(symbols: SymbolTable, globalEnvironment: GlobalEnvironment) {
         self.parent = symbols
-        self.memoryLayoutStrategy = memoryLayoutStrategy
+        self.globalEnvironment = globalEnvironment
     }
     
     public func compile(_ node: Impl) throws -> Block {
@@ -50,7 +50,7 @@ public class SnapSubcompilerImpl: NSObject {
             }
             
             let subcompiler = SnapSubcompilerFunctionDeclaration()
-            let modifiedChild = try subcompiler.compile(memoryLayoutStrategy: memoryLayoutStrategy,
+            let modifiedChild = try subcompiler.compile(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy,
                                                         symbols: symbols,
                                                         node: child)
             if let modifiedChild {

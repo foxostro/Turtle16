@@ -28,8 +28,8 @@ public class SnapSubcompilerImplFor: NSObject {
         let vtableType = try typeChecker.check(identifier: Expression.Identifier(traitType.nameOfVtableType)).unwrapStructType()
         
         let impl = Impl(sourceAnchor: node.sourceAnchor, identifier: node.structIdentifier, children: node.children)
-        resultArr.append(try SnapSubcompilerImpl(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy,
-                                                 symbols: symbols).compile(impl))
+        resultArr.append(try SnapSubcompilerImpl(symbols: symbols,
+                                                 globalEnvironment: globalEnvironment).compile(impl))
         
         let sortedTraitSymbols = traitType.symbols.symbolTable.sorted { $0.0 < $1.0 }
         for (requiredMethodName, requiredMethodSymbol) in sortedTraitSymbols {

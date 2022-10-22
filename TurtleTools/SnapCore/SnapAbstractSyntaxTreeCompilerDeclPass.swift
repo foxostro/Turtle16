@@ -62,7 +62,7 @@ public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
     }
     
     public override func compile(impl node0: Impl) throws -> AbstractSyntaxTreeNode? {
-        let subcompiler = SnapSubcompilerImpl(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy, symbols: symbols!)
+        let subcompiler = SnapSubcompilerImpl(symbols: symbols!, globalEnvironment: globalEnvironment)
         let node1 = try subcompiler.compile(node0)
         return node1
     }

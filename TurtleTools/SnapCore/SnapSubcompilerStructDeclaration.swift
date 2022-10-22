@@ -42,9 +42,9 @@ public class SnapSubcompilerStructDeclaration: NSObject {
     private func doNonGeneric(_ node: StructDeclaration) throws -> SymbolType {
         assert(!node.isGeneric)
         
-        let name = node.identifier.identifier
-        
         let members = SymbolTable(parent: symbols)
+        let typeChecker = TypeContextTypeChecker(symbols: members, globalEnvironment: globalEnvironment)
+        let name = node.identifier.identifier
         let fullyQualifiedStructType = StructType(name: name, symbols: members)
         let type: SymbolType = node.isConst ? .constStructType(fullyQualifiedStructType) : .structType(fullyQualifiedStructType)
         symbols.bind(identifier: name,
@@ -53,7 +53,7 @@ public class SnapSubcompilerStructDeclaration: NSObject {
         
         members.enclosingFunctionNameMode = .set(name)
         for memberDeclaration in node.members {
-            let memberType = try TypeContextTypeChecker(symbols: members, globalEnvironment: globalEnvironment).check(expression: memberDeclaration.memberType)
+            let memberType = try typeChecker.check(expression: memberDeclaration.memberType)
             if memberType == .structType(fullyQualifiedStructType) || memberType == .constStructType(fullyQualifiedStructType) {
                 throw CompilerError(sourceAnchor: memberDeclaration.memberType.sourceAnchor, message: "a struct cannot contain itself recursively")
             }

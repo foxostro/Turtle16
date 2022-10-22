@@ -53,8 +53,7 @@ class SnapSubcompilerImplTests: XCTestCase {
         
         let (impl, symbols) = try makeImpl()
         
-        let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
-        let compiler = SnapSubcompilerImpl(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols)
+        let compiler = SnapSubcompilerImpl(symbols: symbols, globalEnvironment: globalEnvironment)
         var output: AbstractSyntaxTreeNode? = nil
         XCTAssertNoThrow(output = try compiler.compile(impl))
         
@@ -105,7 +104,7 @@ class SnapSubcompilerImplTests: XCTestCase {
         let (impl, symbols) = try makeImpl()
         
     
-        let compiler = SnapSubcompilerImpl(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy, symbols: symbols)
+        let compiler = SnapSubcompilerImpl(symbols: symbols, globalEnvironment: globalEnvironment)
         
         XCTAssertThrowsError(try compiler.compile(impl)) {
             let error = $0 as? CompilerError

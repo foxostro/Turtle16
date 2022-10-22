@@ -3545,7 +3545,7 @@ class SnapToTackCompilerTests: XCTestCase {
         let impl = seq.children[2] as! Impl
         _ = try SnapSubcompilerStructDeclaration(symbols: symbols, globalEnvironment: globalEnvironment).compile(vtableDecl)
         _ = try SnapSubcompilerStructDeclaration(symbols: symbols, globalEnvironment: globalEnvironment).compile(objectDecl)
-        _ = try SnapSubcompilerImpl(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy, symbols: symbols).compile(impl)
+        _ = try SnapSubcompilerImpl(symbols: symbols, globalEnvironment: globalEnvironment).compile(impl)
         
         let traitObjectType = try symbols.resolveType(identifier: traitDecl.nameOfTraitObjectType)
         symbols.bind(identifier: "foo", symbol: Symbol(type: .pointer(traitObjectType), offset: 0x1000, storage: .staticStorage))

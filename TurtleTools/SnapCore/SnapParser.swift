@@ -1141,15 +1141,14 @@ public class SnapParser: Parser {
     
     private func consumeImpl(_ tokenImpl: TokenImpl) throws -> [AbstractSyntaxTreeNode] {
         let typeArguments = try consumeOptionalTypeArgumentListWithConstraints()
-        let structTypeExpr = try consumeTypeWithoutRegardForConst()
+        let firstTypeExpr = try consumeTypeWithoutRegardForConst()
         
         // An impl-for statement will have "for identifier" next.
-        let structIdentifier: Expression.Identifier?
+        let secondTypeExpr: Expression?
         if nil != accept(TokenFor.self) {
-            let tok = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in impl-for declaration"))
-            structIdentifier = Expression.Identifier(sourceAnchor: tok.sourceAnchor, identifier: tok.lexeme)
+            secondTypeExpr = try consumeTypeWithoutRegardForConst()
         } else {
-            structIdentifier = nil
+            secondTypeExpr = nil
         }
             
         let openingCurlyBrace = try expect(type: TokenCurlyLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `{' in impl declaration"))
@@ -1172,19 +1171,19 @@ public class SnapParser: Parser {
             }
             else if nil != accept(TokenCurlyRight.self) {
                 let sourceAnchor = tokenImpl.sourceAnchor?.union(openingCurlyBrace.sourceAnchor)
-                if let structIdentifier = structIdentifier {
+                if let secondTypeExpr {
                     return [
                         ImplFor(sourceAnchor: sourceAnchor,
                                 typeArguments: typeArguments,
-                                traitTypeExpr: structTypeExpr,
-                                structTypeExpr: structIdentifier,
+                                traitTypeExpr: firstTypeExpr,
+                                structTypeExpr: secondTypeExpr,
                                 children: children)
                     ]
                 } else {
                     return [
                         Impl(sourceAnchor: sourceAnchor,
                              typeArguments: typeArguments,
-                             structTypeExpr: structTypeExpr,
+                             structTypeExpr: firstTypeExpr,
                              children: children)
                     ]
                 }

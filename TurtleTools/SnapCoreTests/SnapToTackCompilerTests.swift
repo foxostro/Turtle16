@@ -3535,18 +3535,17 @@ class SnapToTackCompilerTests: XCTestCase {
     
     func testRvalue_Assignment_automatic_conversion_from_trait_to_pointer() throws {
         let symbols = SymbolTable()
-        let functionsToCompile = FunctionsToCompile()
+        let globalEnvironment = GlobalEnvironment()
         let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Foo"),
                                          members: [],
                                          visibility: .privateVisibility)
-        let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
-        let seq = try SnapSubcompilerTraitDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols).compile(traitDecl)
+        let seq = try SnapSubcompilerTraitDeclaration(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy, symbols: symbols).compile(traitDecl)
         let vtableDecl = seq.children[0] as! StructDeclaration
         let objectDecl = seq.children[1] as! StructDeclaration
         let impl = seq.children[2] as! Impl
-        _ = try SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols, functionsToCompile: functionsToCompile).compile(vtableDecl)
-        _ = try SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols, functionsToCompile: functionsToCompile).compile(objectDecl)
-        _ = try SnapSubcompilerImpl(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols).compile(impl)
+        _ = try SnapSubcompilerStructDeclaration(symbols: symbols, globalEnvironment: globalEnvironment).compile(vtableDecl)
+        _ = try SnapSubcompilerStructDeclaration(symbols: symbols, globalEnvironment: globalEnvironment).compile(objectDecl)
+        _ = try SnapSubcompilerImpl(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy, symbols: symbols).compile(impl)
         
         let traitObjectType = try symbols.resolveType(identifier: traitDecl.nameOfTraitObjectType)
         symbols.bind(identifier: "foo", symbol: Symbol(type: .pointer(traitObjectType), offset: 0x1000, storage: .staticStorage))

@@ -9,16 +9,13 @@
 import TurtleCore
 
 public class SnapSubcompilerImplFor: NSObject {
-    public let memoryLayoutStrategy: MemoryLayoutStrategy
     public let symbols: SymbolTable
-    public let functionsToCompile: FunctionsToCompile
+    public let globalEnvironment: GlobalEnvironment
     
-    public init(memoryLayoutStrategy: MemoryLayoutStrategy,
-                symbols: SymbolTable,
-                functionsToCompile: FunctionsToCompile) {
-        self.memoryLayoutStrategy = memoryLayoutStrategy
+    public init(symbols: SymbolTable,
+                globalEnvironment: GlobalEnvironment) {
         self.symbols = symbols
-        self.functionsToCompile = functionsToCompile
+        self.globalEnvironment = globalEnvironment
     }
     
     public func compile(_ node: ImplFor) throws -> Seq {
@@ -32,7 +29,8 @@ public class SnapSubcompilerImplFor: NSObject {
                                                  identifier: traitType.nameOfVtableType).unwrapStructType()
         
         let impl = Impl(sourceAnchor: node.sourceAnchor, identifier: node.structIdentifier, children: node.children)
-        resultArr.append(try SnapSubcompilerImpl(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols).compile(impl))
+        resultArr.append(try SnapSubcompilerImpl(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy,
+                                                 symbols: symbols).compile(impl))
         
         let sortedTraitSymbols = traitType.symbols.symbolTable.sorted { $0.0 < $1.0 }
         for (requiredMethodName, requiredMethodSymbol) in sortedTraitSymbols {
@@ -49,7 +47,7 @@ public class SnapSubcompilerImplFor: NSObject {
                 let actualArgumentType = actualMethodType.arguments[0]
                 let expectedArgumentType = expectedMethodType.arguments[0]
                 if actualArgumentType != expectedArgumentType {
-                    let typeChecker = TypeContextTypeChecker(symbols: symbols, functionsToCompile: functionsToCompile)
+                    let typeChecker = TypeContextTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment)
                     let genericMutableSelfPointerType = try typeChecker.check(expression: Expression.PointerType(Expression.Identifier(traitType.name)))
                     let concreteMutableSelfPointerType = try typeChecker.check(expression: Expression.PointerType(Expression.Identifier(structType.name)))
                     if expectedArgumentType == genericMutableSelfPointerType {

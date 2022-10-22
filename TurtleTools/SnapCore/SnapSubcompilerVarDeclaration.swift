@@ -31,7 +31,7 @@ public class SnapSubcompilerVarDeclaration: NSObject {
         // the type checker can determine what type it evaluates to.
         let explicitType: SymbolType?
         if let explicitTypeExpr = node.explicitType {
-            explicitType = try TypeContextTypeChecker(symbols: symbols, functionsToCompile: globalEnvironment.functionsToCompile).check(expression: explicitTypeExpr)
+            explicitType = try TypeContextTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment).check(expression: explicitTypeExpr)
         } else {
             explicitType = nil
         }
@@ -39,7 +39,7 @@ public class SnapSubcompilerVarDeclaration: NSObject {
         if let varDeclExpr = node.expression {
             // The type of the initial value expression may be used to infer the
             // symbol type in cases where the explicit type is not specified.
-            let expressionResultType = try RvalueExpressionTypeChecker(symbols: symbols, functionsToCompile: globalEnvironment.functionsToCompile).check(expression: varDeclExpr)
+            let expressionResultType = try RvalueExpressionTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment).check(expression: varDeclExpr)
 
             // An explicit array type does not specify the number of array elements.
             // If the explicit type is an array type then we must examine the

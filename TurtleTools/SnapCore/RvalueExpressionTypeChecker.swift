@@ -13,20 +13,19 @@ import TurtleCore
 // to a type error in the expression.
 public class RvalueExpressionTypeChecker: NSObject {
     public let symbols: SymbolTable
-    public let functionsToCompile: FunctionsToCompile!
-    private let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16() // TODO: This needs to be fed into the type checker as a dependency
+    public let globalEnvironment: GlobalEnvironment!
     
-    public init(symbols: SymbolTable = SymbolTable(), functionsToCompile: FunctionsToCompile? = nil) {
+    public init(symbols: SymbolTable = SymbolTable(), globalEnvironment: GlobalEnvironment? = nil) {
         self.symbols = symbols
-        self.functionsToCompile = functionsToCompile
+        self.globalEnvironment = globalEnvironment
     }
         
     func rvalueContext() -> RvalueExpressionTypeChecker {
-        return RvalueExpressionTypeChecker(symbols: symbols, functionsToCompile: functionsToCompile)
+        return RvalueExpressionTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment)
     }
         
     func lvalueContext() -> LvalueExpressionTypeChecker {
-        return LvalueExpressionTypeChecker(symbols: symbols, functionsToCompile: functionsToCompile)
+        return LvalueExpressionTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment)
     }
     
     @discardableResult public func check(expression: Expression) throws -> SymbolType {
@@ -1020,9 +1019,12 @@ public class RvalueExpressionTypeChecker: NSObject {
                                         ast: originalFunctionDeclaration)
         let result = SymbolType.function(functionType)
         
-        try SnapSubcompilerFunctionDeclaration().instantiate(memoryLayoutStrategy: memoryLayoutStrategy, functionType: functionType, functionDeclaration: originalFunctionDeclaration)
+        try SnapSubcompilerFunctionDeclaration()
+            .instantiate(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy,
+                         functionType: functionType,
+                         functionDeclaration: originalFunctionDeclaration)
         
-        functionsToCompile.enqueue(functionType)
+        globalEnvironment.functionsToCompile.enqueue(functionType)
         
         return result
     }
@@ -1046,26 +1048,26 @@ public class RvalueExpressionTypeChecker: NSObject {
         }
         
         // Bind the concrete struct type
-        let subcompiler = SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy,
-                                                           symbols: symbolsWithTypeArguments,
-                                                           functionsToCompile: functionsToCompile)
+        let subcompiler = SnapSubcompilerStructDeclaration(symbols: symbolsWithTypeArguments,
+                                                           globalEnvironment: globalEnvironment)
         let template = genericStructType.template.eraseTypeArguments()
         let concreteType = try subcompiler.compile(template)
         
         // Apply the deferred impl nodes now.
         for implNode in genericStructType.implNodes {
-            let subcompiler = SnapSubcompilerImpl(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbolsWithTypeArguments)
+            let subcompiler = SnapSubcompilerImpl(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy,
+                                                  symbols: symbolsWithTypeArguments)
             let node1 = try subcompiler.compile(implNode)
             for child in node1.children {
                 if let method = child as? FunctionDeclaration {
                     _ = try SnapSubcompilerFunctionDeclaration()
-                        .compile(memoryLayoutStrategy: memoryLayoutStrategy,
+                        .compile(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy,
                                  symbols: symbolsWithTypeArguments,
                                  node: method)
                     
                     // Record the function (by type) so we can revisit and compile it later.
                     let functionType = try node1.symbols.resolve(identifier: method.identifier.identifier).type.unwrapFunctionType()
-                    functionsToCompile.enqueue(functionType)
+                    globalEnvironment.functionsToCompile.enqueue(functionType)
                 }
             }
         }

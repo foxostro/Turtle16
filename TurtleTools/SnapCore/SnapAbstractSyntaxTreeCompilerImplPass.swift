@@ -25,7 +25,7 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: SnapASTTransformerBase {
     }
     
     public override func compile(expressionStatement node: Expression) throws -> AbstractSyntaxTreeNode? {
-        try RvalueExpressionTypeChecker(symbols: symbols!, functionsToCompile: globalEnvironment.functionsToCompile).check(expression: node)
+        try RvalueExpressionTypeChecker(symbols: symbols!, globalEnvironment: globalEnvironment).check(expression: node)
         return node
     }
     

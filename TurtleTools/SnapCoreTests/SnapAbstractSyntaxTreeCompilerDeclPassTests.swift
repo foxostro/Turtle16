@@ -112,7 +112,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
     }
     
     func testImpl() throws {
-        let functionsToCompile = FunctionsToCompile()
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         
         func makeImpl() throws -> (Impl, SymbolTable) {
             let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [
@@ -124,13 +124,13 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
             
             let symbols = SymbolTable()
             
-            let traitCompiler = SnapSubcompilerTraitDeclaration(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(), symbols: symbols)
+            let traitCompiler = SnapSubcompilerTraitDeclaration(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy, symbols: symbols)
             let seq = try traitCompiler.compile(foo)
             
-            let structCompiler0 = SnapSubcompilerStructDeclaration(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(), symbols: symbols, functionsToCompile: functionsToCompile)
+            let structCompiler0 = SnapSubcompilerStructDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
             _ = try structCompiler0.compile(seq.children[0] as! StructDeclaration)
             
-            let structCompiler1 = SnapSubcompilerStructDeclaration(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(), symbols: symbols, functionsToCompile: functionsToCompile)
+            let structCompiler1 = SnapSubcompilerStructDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
             _ = try structCompiler1.compile(seq.children[1] as! StructDeclaration)
             
             let impl = seq.children[2] as! Impl

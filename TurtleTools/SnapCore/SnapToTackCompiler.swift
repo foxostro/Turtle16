@@ -218,12 +218,12 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     @discardableResult func typeCheck(rexpr: Expression) throws -> SymbolType {
-        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols!, functionsToCompile: globalEnvironment.functionsToCompile)
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols!, globalEnvironment: globalEnvironment)
         return try typeChecker.check(expression: rexpr)
     }
     
     @discardableResult func typeCheck(lexpr: Expression) throws -> SymbolType? {
-        let typeChecker = LvalueExpressionTypeChecker(symbols: symbols!, functionsToCompile: globalEnvironment.functionsToCompile)
+        let typeChecker = LvalueExpressionTypeChecker(symbols: symbols!, globalEnvironment: globalEnvironment)
         return try typeChecker.check(expression: lexpr)
     }
     
@@ -2384,7 +2384,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             return try rvalue(call: expr, typ: typ)
             
         case .genericFunction(let typ):
-            let typeChecker = RvalueExpressionTypeChecker(symbols: symbols!, functionsToCompile: globalEnvironment.functionsToCompile)
+            let typeChecker = RvalueExpressionTypeChecker(symbols: symbols!, globalEnvironment: globalEnvironment)
             let app = try typeChecker.synthesizeGenericTypeApplication(call: expr, genericFunctionType: typ)
             let expr1 = Expression.Call(sourceAnchor: expr.sourceAnchor,
                                         callee: app,
@@ -2557,7 +2557,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     
     fileprivate func rewriteStructMemberFunctionCallIfPossible(_ expr: Expression.Call) throws -> AbstractSyntaxTreeNode? {
         func matchStructMemberFunctionCall(_ expr: Expression.Call) throws -> StructMemberFunctionCallMatcher.Match? {
-            let typeChecker = RvalueExpressionTypeChecker(symbols: symbols!, functionsToCompile: globalEnvironment.functionsToCompile)
+            let typeChecker = RvalueExpressionTypeChecker(symbols: symbols!, globalEnvironment: globalEnvironment)
             return try StructMemberFunctionCallMatcher(call: expr, typeChecker: typeChecker).match()
         }
         

@@ -9,16 +9,13 @@
 import TurtleCore
 
 public class SnapSubcompilerStructDeclaration: NSObject {
-    public let memoryLayoutStrategy: MemoryLayoutStrategy
     public let symbols: SymbolTable
-    public let functionsToCompile: FunctionsToCompile
+    public let globalEnvironment: GlobalEnvironment
     
-    public init(memoryLayoutStrategy: MemoryLayoutStrategy,
-                symbols: SymbolTable,
-                functionsToCompile: FunctionsToCompile) {
-        self.memoryLayoutStrategy = memoryLayoutStrategy
+    public init(symbols: SymbolTable,
+                globalEnvironment: GlobalEnvironment) {
         self.symbols = symbols
-        self.functionsToCompile = functionsToCompile
+        self.globalEnvironment = globalEnvironment
     }
     
     @discardableResult public func compile(_ node: StructDeclaration) throws -> SymbolType {
@@ -56,13 +53,13 @@ public class SnapSubcompilerStructDeclaration: NSObject {
         
         members.enclosingFunctionNameMode = .set(name)
         for memberDeclaration in node.members {
-            let memberType = try TypeContextTypeChecker(symbols: members, functionsToCompile: functionsToCompile).check(expression: memberDeclaration.memberType)
+            let memberType = try TypeContextTypeChecker(symbols: members, globalEnvironment: globalEnvironment).check(expression: memberDeclaration.memberType)
             if memberType == .structType(fullyQualifiedStructType) || memberType == .constStructType(fullyQualifiedStructType) {
                 throw CompilerError(sourceAnchor: memberDeclaration.memberType.sourceAnchor, message: "a struct cannot contain itself recursively")
             }
             let symbol = Symbol(type: memberType, offset: members.storagePointer, storage: .automaticStorage)
             members.bind(identifier: memberDeclaration.name, symbol: symbol)
-            let sizeOfMemberType = memoryLayoutStrategy.sizeof(type: memberType)
+            let sizeOfMemberType = globalEnvironment.memoryLayoutStrategy.sizeof(type: memberType)
             members.storagePointer += sizeOfMemberType
         }
         members.parent = nil

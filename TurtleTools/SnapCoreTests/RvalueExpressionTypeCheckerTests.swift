@@ -5135,8 +5135,8 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testAssignment_automatic_conversion_from_trait_to_pointer() throws {
+        let globalEnvironment = GlobalEnvironment()
         let symbols = SymbolTable()
-        let functionsToCompile = FunctionsToCompile()
         let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Foo"),
                                          members: [],
                                          visibility: .privateVisibility)
@@ -5145,8 +5145,8 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let vtableDecl = seq.children[0] as! StructDeclaration
         let objectDecl = seq.children[1] as! StructDeclaration
         let impl = seq.children[2] as! Impl
-        _ = try SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols, functionsToCompile: functionsToCompile).compile(vtableDecl)
-        _ = try SnapSubcompilerStructDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols, functionsToCompile: functionsToCompile).compile(objectDecl)
+        _ = try SnapSubcompilerStructDeclaration(symbols: symbols, globalEnvironment: globalEnvironment).compile(vtableDecl)
+        _ = try SnapSubcompilerStructDeclaration(symbols: symbols, globalEnvironment: globalEnvironment).compile(objectDecl)
         _ = try SnapSubcompilerImpl(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols).compile(impl)
         
         let traitObjectType = try symbols.resolveType(identifier: traitDecl.nameOfTraitObjectType)
@@ -5249,6 +5249,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testGenericFunctionApplication() throws {
+        let globalEnvironment = GlobalEnvironment()
         let constU16 = SymbolType.arithmeticType(.immutableInt(.u16))
         let functionType = Expression.FunctionType(name: "foo",
                                                    returnType: Expression.Identifier("T"),
@@ -5266,7 +5267,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .genericFunction(genericFunctionType)))
         ])
-        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, functionsToCompile: FunctionsToCompile())
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment)
         let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
                                                      arguments: [Expression.PrimitiveType(constU16)])
         let expected = SymbolType.function(FunctionType(name: "foo",
@@ -5334,6 +5335,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testInferTypeArgumentsOfGenericFromContextInCall_u16() throws {
+        let globalEnvironment = GlobalEnvironment()
         let functionType = Expression.FunctionType(name: "foo",
                                                    returnType: Expression.Identifier("T"),
                                                    arguments: [Expression.Identifier("T")])
@@ -5350,18 +5352,18 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .genericFunction(genericFunctionType)))
         ])
-        let functionsToCompile = FunctionsToCompile()
         let expr = Expression.Call(callee: Expression.Identifier("foo"),
                                    arguments: [
                                     ExprUtils.makeU16(value: 65535)
                                    ])
-        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, functionsToCompile: functionsToCompile)
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment)
         let expected = SymbolType.arithmeticType(.mutableInt(.u16))
         let actual = try typeChecker.check(expression: expr)
         XCTAssertEqual(actual, expected)
     }
     
     func testInferTypeArgumentsOfGenericFromContextInCall_i8() throws {
+        let globalEnvironment = GlobalEnvironment()
         let functionType = Expression.FunctionType(name: "foo",
                                                    returnType: Expression.Identifier("T"),
                                                    arguments: [Expression.Identifier("T")])
@@ -5383,7 +5385,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                    arguments: [
                                     ExprUtils.makeI8(value: -128)
                                    ])
-        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, functionsToCompile: functionsToCompile)
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment)
         let expected = SymbolType.arithmeticType(.mutableInt(.i8))
         do {
             let actual = try typeChecker.check(expression: expr)
@@ -5436,6 +5438,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testGenericStructApplication_Empty() throws {
+        let globalEnvironment = GlobalEnvironment()
         let constU16 = SymbolType.arithmeticType(.mutableInt(.u16))
         let template = StructDeclaration(identifier: Expression.Identifier("foo"),
                                          typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
@@ -5445,7 +5448,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let symbols = SymbolTable()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .genericStructType(GenericStructType(template: template))))
         
-        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, functionsToCompile: FunctionsToCompile())
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment)
         let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
                                                      arguments: [Expression.PrimitiveType(constU16)])
         
@@ -5458,6 +5461,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testGenericStructApplication_OneMember() throws {
+        let globalEnvironment = GlobalEnvironment()
         let constU16 = SymbolType.arithmeticType(.mutableInt(.u16))
         let template = StructDeclaration(identifier: Expression.Identifier("foo"),
                                          typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
@@ -5469,7 +5473,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let symbols = SymbolTable()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .genericStructType(GenericStructType(template: template))))
         
-        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, functionsToCompile: FunctionsToCompile())
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment)
         let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
                                                      arguments: [Expression.PrimitiveType(constU16)])
         
@@ -5485,6 +5489,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testGenericStructApplication_StructInitializer() throws {
+        let globalEnvironment = GlobalEnvironment()
         let constU16 = SymbolType.arithmeticType(.mutableInt(.u16))
         let template = StructDeclaration(identifier: Expression.Identifier("foo"),
                                          typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
@@ -5496,7 +5501,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let symbols = SymbolTable()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .genericStructType(GenericStructType(template: template))))
 
-        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, functionsToCompile: FunctionsToCompile())
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment)
         let app = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
                                                     arguments: [Expression.PrimitiveType(constU16)])
         let expr = Expression.StructInitializer(expr: app, arguments: [

@@ -12,7 +12,8 @@ import TurtleCore
 
 class SnapSubcompilerStructDeclarationTests: XCTestCase {
     fileprivate func makeCompiler(_ symbols: SymbolTable) -> SnapSubcompilerStructDeclaration {
-        return SnapSubcompilerStructDeclaration(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(), symbols: symbols, functionsToCompile: FunctionsToCompile())
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        return SnapSubcompilerStructDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
     }
     
     func testEmptyStruct() throws {

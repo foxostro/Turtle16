@@ -669,6 +669,10 @@ public class GenericStructType: NSObject {
     // instantiated with concrete types.
     public var implNodes: [Impl] = []
     
+    // Compilation of ImplFor nodes is deferred until the generic struct is
+    // instantiated with concrete types.
+    public var implForNodes: [ImplFor] = []
+    
     public init(template: StructDeclaration) {
         self.template = template
     }

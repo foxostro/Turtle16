@@ -21,10 +21,27 @@ public class SnapSubcompilerImplFor: NSObject {
     }
     
     public func compile(_ node: ImplFor) throws -> Seq {
+        let result: Seq
+        let structType = try typeChecker.check(expression: node.structTypeExpr)
+        
+        switch structType {
+        case .constStructType(let typ), .structType(let typ):
+            result = try compile(implFor: node, structType: typ)
+            
+        case .genericStructType(let typ):
+            result = compile(implFor: node, genericStructType: typ)
+            
+        default:
+            fatalError("unsupported type: \(structType)")
+        }
+        
+        return result
+    }
+    
+    private func compile(implFor node: ImplFor, structType: StructType) throws -> Seq {
         var resultArr: [AbstractSyntaxTreeNode] = []
         
         let traitType = try typeChecker.check(expression: node.traitTypeExpr).unwrapTraitType()
-        let structType = try typeChecker.check(expression: node.structTypeExpr).unwrapStructType()
         let vtableType = try typeChecker.check(identifier: Expression.Identifier(traitType.nameOfVtableType)).unwrapStructType()
         
         let impl = Impl(sourceAnchor: node.sourceAnchor,
@@ -104,5 +121,10 @@ public class SnapSubcompilerImplFor: NSObject {
         resultArr.append(vtableDeclaration)
         
         return Seq(sourceAnchor: node.sourceAnchor, children: resultArr)
+    }
+    
+    private func compile(implFor node: ImplFor, genericStructType typ: GenericStructType) -> Seq {
+        typ.implForNodes.append(node)
+        return Seq()
     }
 }

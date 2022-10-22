@@ -11,15 +11,16 @@ import TurtleCore
 public class SnapSubcompilerImpl: NSObject {
     public let parent: SymbolTable
     public let globalEnvironment: GlobalEnvironment
+    public let typeChecker: RvalueExpressionTypeChecker
     
     public init(symbols: SymbolTable, globalEnvironment: GlobalEnvironment) {
         self.parent = symbols
         self.globalEnvironment = globalEnvironment
+        typeChecker = RvalueExpressionTypeChecker(symbols: parent, globalEnvironment: globalEnvironment)
     }
     
     public func compile(_ node: Impl) throws -> Block {
-        let implWhat = try parent.resolveType(sourceAnchor: node.identifier.sourceAnchor,
-                                              identifier: node.identifier.identifier)
+        let implWhat = try typeChecker.check(expression: node.structTypeExpr)
         
         switch implWhat {
         case .constStructType(let typ), .structType(let typ):
@@ -34,8 +35,9 @@ public class SnapSubcompilerImpl: NSObject {
     }
     
     public func compileImplStruct(_ node: Impl, _ typ: StructType) throws -> Block {
+        let name = try typeChecker.check(expression: node.structTypeExpr).unwrapStructType().name
         let symbols = SymbolTable(parent: parent)
-        symbols.enclosingFunctionNameMode = .set(node.identifier.identifier)
+        symbols.enclosingFunctionNameMode = .set(name)
         symbols.enclosingFunctionTypeMode = .set(nil)
         
         SymbolTablesReconnector(symbols).reconnect(node)

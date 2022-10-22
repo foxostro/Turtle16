@@ -10,6 +10,7 @@ import TurtleCore
 
 public class Impl: AbstractSyntaxTreeNode {
     public let typeArguments: [Expression.GenericTypeArgument]
+    public let structTypeExpr: Expression
     public let children: [FunctionDeclaration]
     
     public var isGeneric: Bool {
@@ -18,8 +19,10 @@ public class Impl: AbstractSyntaxTreeNode {
     
     public init(sourceAnchor: SourceAnchor? = nil,
                 typeArguments: [Expression.GenericTypeArgument],
+                structTypeExpr: Expression,
                 children: [FunctionDeclaration]) {
         self.typeArguments = typeArguments
+        self.structTypeExpr = structTypeExpr.withSourceAnchor(sourceAnchor)
         self.children = children.map { $0.withSourceAnchor(sourceAnchor) }
         super.init(sourceAnchor: sourceAnchor)
     }
@@ -37,6 +40,7 @@ public class Impl: AbstractSyntaxTreeNode {
     public func eraseTypeArguments() -> Impl {
         return Impl(sourceAnchor: sourceAnchor,
                     typeArguments: [],
+                    structTypeExpr: structTypeExpr,
                     children: children)
     }
     
@@ -46,6 +50,7 @@ public class Impl: AbstractSyntaxTreeNode {
         guard super.isEqual(rhs) else { return false }
         guard let rhs = rhs as? Impl else { return false }
         guard typeArguments == rhs.typeArguments else { return false }
+        guard structTypeExpr == rhs.structTypeExpr else { return false }
         guard children == rhs.children else { return false }
         return true
     }
@@ -53,6 +58,7 @@ public class Impl: AbstractSyntaxTreeNode {
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(typeArguments)
+        hasher.combine(structTypeExpr)
         hasher.combine(children)
         hasher.combine(super.hash)
         return hasher.finalize()
@@ -65,7 +71,7 @@ public class Impl: AbstractSyntaxTreeNode {
                       makeIndent(depth: depth+1),
                       makeTypeArgumentsDescription(depth: depth+1),
                       makeIndent(depth: depth + 1),
-                      identifier.makeIndentedDescription(depth: depth + 1),
+                      structTypeExpr.makeIndentedDescription(depth: depth + 1),
                       makeChildrenDescription(depth: depth + 1))
     }
     

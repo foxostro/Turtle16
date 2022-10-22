@@ -1055,7 +1055,8 @@ public class RvalueExpressionTypeChecker: NSObject {
         
         // Apply the deferred impl nodes now.
         for implNode in genericStructType.implNodes {
-            let subcompiler = SnapSubcompilerImpl(symbols: symbolsWithTypeArguments, globalEnvironment: globalEnvironment)
+            let subcompiler = SnapSubcompilerImpl(symbols: symbolsWithTypeArguments,
+                                                  globalEnvironment: globalEnvironment)
             let node1 = try subcompiler.compile(implNode)
             for child in node1.children {
                 if let method = child as? FunctionDeclaration {

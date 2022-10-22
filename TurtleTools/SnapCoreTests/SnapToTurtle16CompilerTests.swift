@@ -2234,7 +2234,7 @@ func foo() {
         XCTAssertEqual(compiler.errors.count, 1)
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "Foo")
         XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 0..<1)
-        XCTAssertEqual(compiler.errors.first?.message, "use of undeclared type `Foo'")
+        XCTAssertEqual(compiler.errors.first?.message, "use of unresolved identifier: `Foo'")
     }
     
     func testBugWhereConstSelfPointerInTraitCausesCompilerCrash() {
@@ -2850,32 +2850,5 @@ func foo() {
         let y = debugger?.loadSymbolU16("y")
         XCTAssertEqual(x, 1)
         XCTAssertEqual(y, 2)
-    }
-    
-    func test_EndToEndIntegration_GenericStruct_Impl() {
-        let debugger = run(program: """
-            struct Foo[T] {
-                val: T
-            }
-            
-            impl Foo {
-                func baz(self: *Foo) -> T {
-                    return self.val + 1
-                }
-            }
-            
-            let foo = Foo@[u8] {
-                .val = 41
-            }
-            let p = foo.baz()
-            
-            let bar = Foo@[u16] {
-                .val = 1041
-            }
-            let q = bar.baz()
-            """)
-        
-        XCTAssertEqual(debugger?.loadSymbolU8("p"), 42)
-        XCTAssertEqual(debugger?.loadSymbolU16("q"), 1042)
     }
 }

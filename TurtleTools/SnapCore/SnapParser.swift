@@ -1141,9 +1141,7 @@ public class SnapParser: Parser {
     
     private func consumeImpl(_ tokenImpl: TokenImpl) throws -> [AbstractSyntaxTreeNode] {
         let typeArguments = try consumeOptionalTypeArgumentListWithConstraints()
-        
-        let identifierToken = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in impl declaration"))
-        let identifier = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
+        let structTypeExpr = try consumeTypeWithoutRegardForConst()
         
         // An impl-for statement will have "for identifier" next.
         let structIdentifier: Expression.Identifier?
@@ -1178,12 +1176,12 @@ public class SnapParser: Parser {
                     return [
                         ImplFor(sourceAnchor: sourceAnchor,
                                 typeArguments: typeArguments,
-                                traitIdentifier: identifier,
-                                structIdentifier: structIdentifier,
+                                traitTypeExpr: structTypeExpr,
+                                structTypeExpr: structIdentifier,
                                 children: children)
                     ]
                 } else {
-                    return [Impl(sourceAnchor: sourceAnchor, identifier: identifier, children: children)]
+                    return [Impl(sourceAnchor: sourceAnchor, identifier: structTypeExpr as! Expression.Identifier, children: children)]
                 }
             }
             else {

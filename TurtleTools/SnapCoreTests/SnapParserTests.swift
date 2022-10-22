@@ -1975,7 +1975,7 @@ for i in 0..10 {
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
         XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(4, 4))
-        XCTAssertEqual(parser.errors.first?.message, "expected identifier in impl declaration")
+        XCTAssertEqual(parser.errors.first?.message, "expected a type")
     }
     
     func testMalformedImplDeclarationWithoutBracesAfterIdentifier() {
@@ -2680,8 +2680,8 @@ impl Serial for SerialFake {
         XCTAssertEqual(parser.syntaxTree?.children, [
             ImplFor(sourceAnchor: parser.lineMapper.anchor(0, 28),
                     typeArguments: [],
-                    traitIdentifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 11), identifier: "Serial"),
-                    structIdentifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(16, 26), identifier: "SerialFake"),
+                    traitTypeExpr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 11), identifier: "Serial"),
+                    structTypeExpr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(16, 26), identifier: "SerialFake"),
                     children: [
                         FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(33, 84),
                                             identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(38, 42), identifier: "puts"),
@@ -2711,8 +2711,8 @@ impl Serial for SerialFake {
                     typeArguments: [Expression.GenericTypeArgument(sourceAnchor: parser.lineMapper.anchor(5, 6),
                                                                    identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 6), identifier: "T"),
                                                                    constraints: [])],
-                    traitIdentifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(8, 14), identifier: "Serial"),
-                    structIdentifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(19, 29), identifier: "SerialFake"),
+                    traitTypeExpr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(8, 14), identifier: "Serial"),
+                    structTypeExpr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(19, 29), identifier: "SerialFake"),
                     children: [])
         ])
     }

@@ -23,11 +23,11 @@ public class SnapSubcompilerImplFor: NSObject {
     public func compile(_ node: ImplFor) throws -> Seq {
         var resultArr: [AbstractSyntaxTreeNode] = []
         
-        let traitType = try typeChecker.check(identifier: node.traitIdentifier).unwrapTraitType()
-        let structType = try typeChecker.check(identifier: node.structIdentifier).unwrapStructType()
+        let traitType = try typeChecker.check(expression: node.traitTypeExpr).unwrapTraitType()
+        let structType = try typeChecker.check(expression: node.structTypeExpr).unwrapStructType()
         let vtableType = try typeChecker.check(identifier: Expression.Identifier(traitType.nameOfVtableType)).unwrapStructType()
         
-        let impl = Impl(sourceAnchor: node.sourceAnchor, identifier: node.structIdentifier, children: node.children)
+        let impl = Impl(sourceAnchor: node.sourceAnchor, identifier: node.structTypeExpr as! Expression.Identifier, children: node.children)
         resultArr.append(try SnapSubcompilerImpl(symbols: symbols,
                                                  globalEnvironment: globalEnvironment).compile(impl))
         
@@ -81,8 +81,16 @@ public class SnapSubcompilerImplFor: NSObject {
             arguments.append(arg)
         }
         let initializer = Expression.StructInitializer(identifier: Expression.Identifier(traitType.nameOfVtableType), arguments: arguments)
-        let visibility = try symbols.resolveTypeRecord(sourceAnchor: node.sourceAnchor,
-                                                       identifier: node.traitIdentifier.identifier).visibility
+        
+        let visibility: SymbolVisibility
+        if let identifier = node.traitTypeExpr as? Expression.Identifier {
+            let typeRecord = try symbols.resolveTypeRecord(sourceAnchor: node.sourceAnchor,
+                                                           identifier: identifier.identifier)
+            visibility = typeRecord.visibility
+        }
+        else {
+            visibility = .privateVisibility
+        }
         
         let vtableDeclaration = VarDeclaration(identifier: Expression.Identifier(nameOfVtableInstance),
                                                explicitType: Expression.Identifier(traitType.nameOfVtableType),

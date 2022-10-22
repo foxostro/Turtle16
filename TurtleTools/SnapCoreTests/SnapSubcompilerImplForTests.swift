@@ -48,8 +48,8 @@ class SnapSubcompilerImplForTests: XCTestCase {
         compileSerialFake(globalEnvironment, globalSymbols)
         
         let ast = ImplFor(typeArguments: [],
-                          traitIdentifier: Expression.Identifier("Serial"),
-                          structIdentifier: Expression.Identifier("SerialFake"),
+                          traitTypeExpr: Expression.Identifier("Serial"),
+                          structTypeExpr: Expression.Identifier("SerialFake"),
                           children: [
                               FunctionDeclaration(identifier: Expression.Identifier("puts"),
                                                   functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [
@@ -94,8 +94,8 @@ class SnapSubcompilerImplForTests: XCTestCase {
         compileSerialFake(globalEnvironment, globalSymbols)
         
         let ast = ImplFor(typeArguments: [],
-                          traitIdentifier: Expression.Identifier("Serial"),
-                          structIdentifier: Expression.Identifier("SerialFake"),
+                          traitTypeExpr: Expression.Identifier("Serial"),
+                          structTypeExpr: Expression.Identifier("SerialFake"),
                           children: [])
         
         let compiler = SnapSubcompilerImplFor(symbols: globalSymbols, globalEnvironment: globalEnvironment)
@@ -114,8 +114,8 @@ class SnapSubcompilerImplForTests: XCTestCase {
         compileSerialFake(globalEnvironment, globalSymbols)
         
         let ast = ImplFor(typeArguments: [],
-                          traitIdentifier: Expression.Identifier("Serial"),
-                          structIdentifier: Expression.Identifier("SerialFake"),
+                          traitTypeExpr: Expression.Identifier("Serial"),
+                          structTypeExpr: Expression.Identifier("SerialFake"),
                           children: [
                               FunctionDeclaration(identifier: Expression.Identifier("puts"),
                                                   functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [
@@ -141,8 +141,8 @@ class SnapSubcompilerImplForTests: XCTestCase {
         compileSerialFake(globalEnvironment, globalSymbols)
         
         let ast = ImplFor(typeArguments: [],
-                          traitIdentifier: Expression.Identifier("Serial"),
-                          structIdentifier: Expression.Identifier("SerialFake"),
+                          traitTypeExpr: Expression.Identifier("Serial"),
+                          structTypeExpr: Expression.Identifier("SerialFake"),
                           children: [
                               FunctionDeclaration(identifier: Expression.Identifier("puts"),
                                                   functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [
@@ -169,8 +169,8 @@ class SnapSubcompilerImplForTests: XCTestCase {
         compileSerialFake(globalEnvironment, globalSymbols)
         
         let ast = ImplFor(typeArguments: [],
-                          traitIdentifier: Expression.Identifier("Serial"),
-                          structIdentifier: Expression.Identifier("SerialFake"),
+                          traitTypeExpr: Expression.Identifier("Serial"),
+                          structTypeExpr: Expression.Identifier("SerialFake"),
                           children: [
                               FunctionDeclaration(identifier: Expression.Identifier("puts"),
                                                   functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [
@@ -197,8 +197,8 @@ class SnapSubcompilerImplForTests: XCTestCase {
         compileSerialFake(globalEnvironment, globalSymbols)
         
         let ast = ImplFor(typeArguments: [],
-                          traitIdentifier: Expression.Identifier("Serial"),
-                          structIdentifier: Expression.Identifier("SerialFake"),
+                          traitTypeExpr: Expression.Identifier("Serial"),
+                          structTypeExpr: Expression.Identifier("SerialFake"),
                           children: [
                               FunctionDeclaration(identifier: Expression.Identifier("puts"),
                                                   functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.bool(.mutableBool)), arguments: [

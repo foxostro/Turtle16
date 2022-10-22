@@ -10,8 +10,8 @@ import TurtleCore
 
 public class ImplFor: AbstractSyntaxTreeNode {
     public let typeArguments: [Expression.GenericTypeArgument]
-    public let traitIdentifier: Expression.Identifier
-    public let structIdentifier: Expression.Identifier
+    public let traitTypeExpr: Expression
+    public let structTypeExpr: Expression
     public let children: [FunctionDeclaration]
     
     public var isGeneric: Bool {
@@ -20,12 +20,12 @@ public class ImplFor: AbstractSyntaxTreeNode {
     
     public init(sourceAnchor: SourceAnchor? = nil,
                 typeArguments: [Expression.GenericTypeArgument],
-                traitIdentifier: Expression.Identifier,
-                structIdentifier: Expression.Identifier,
+                traitTypeExpr: Expression,
+                structTypeExpr: Expression,
                 children: [FunctionDeclaration]) {
         self.typeArguments = typeArguments.map { $0.withSourceAnchor(sourceAnchor) }
-        self.traitIdentifier = traitIdentifier.withSourceAnchor(sourceAnchor)
-        self.structIdentifier = structIdentifier.withSourceAnchor(sourceAnchor)
+        self.traitTypeExpr = traitTypeExpr.withSourceAnchor(sourceAnchor)
+        self.structTypeExpr = structTypeExpr.withSourceAnchor(sourceAnchor)
         self.children = children.map { $0.withSourceAnchor(sourceAnchor) }
         super.init(sourceAnchor: sourceAnchor)
     }
@@ -36,8 +36,8 @@ public class ImplFor: AbstractSyntaxTreeNode {
         }
         return ImplFor(sourceAnchor: sourceAnchor,
                        typeArguments: typeArguments,
-                       traitIdentifier: traitIdentifier,
-                       structIdentifier: structIdentifier,
+                       traitTypeExpr: traitTypeExpr,
+                       structTypeExpr: structTypeExpr,
                        children: children)
     }
     
@@ -47,8 +47,8 @@ public class ImplFor: AbstractSyntaxTreeNode {
         guard super.isEqual(rhs) else { return false }
         guard let rhs = rhs as? ImplFor else { return false }
         guard typeArguments == rhs.typeArguments else { return false }
-        guard traitIdentifier == rhs.traitIdentifier else { return false }
-        guard structIdentifier == rhs.structIdentifier else { return false }
+        guard traitTypeExpr == rhs.traitTypeExpr else { return false }
+        guard structTypeExpr == rhs.structTypeExpr else { return false }
         guard children == rhs.children else { return false }
         return true
     }
@@ -56,23 +56,23 @@ public class ImplFor: AbstractSyntaxTreeNode {
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(typeArguments)
-        hasher.combine(traitIdentifier)
-        hasher.combine(structIdentifier)
+        hasher.combine(traitTypeExpr)
+        hasher.combine(structTypeExpr)
         hasher.combine(children)
         hasher.combine(super.hash)
         return hasher.finalize()
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@\n%@typeArguments: %@\n%@traitIdentifier: %@\n%@structIdentifier: %@%@",
+        return String(format: "%@%@\n%@typeArguments: %@\n%@traitTypeExpr: %@\n%@structTypeExpr: %@%@",
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)),
                       makeIndent(depth: depth+1),
                       makeTypeArgumentsDescription(depth: depth+1),
                       makeIndent(depth: depth + 1),
-                      traitIdentifier.makeIndentedDescription(depth: depth + 1),
+                      traitTypeExpr.makeIndentedDescription(depth: depth + 1),
                       makeIndent(depth: depth + 1),
-                      structIdentifier.makeIndentedDescription(depth: depth + 1),
+                      structTypeExpr.makeIndentedDescription(depth: depth + 1),
                       makeChildrenDescription(depth: depth + 1))
     }
     

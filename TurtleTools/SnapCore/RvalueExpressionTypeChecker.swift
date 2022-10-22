@@ -1067,7 +1067,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         symbols.typeTable[identifier] = typeRecord
         
         // Apply the deferred impl nodes now.
-        for implNode in genericStructType.implNodes {
+        for implNode in genericStructType.implNodes.map({ $0.eraseTypeArguments() }) {
             let subcompiler = SnapSubcompilerImpl(symbols: symbolsWithTypeArguments,
                                                   globalEnvironment: globalEnvironment)
             let node1 = try subcompiler.compile(implNode)

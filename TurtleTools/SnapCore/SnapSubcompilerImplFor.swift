@@ -11,22 +11,21 @@ import TurtleCore
 public class SnapSubcompilerImplFor: NSObject {
     public let symbols: SymbolTable
     public let globalEnvironment: GlobalEnvironment
+    public let typeChecker: RvalueExpressionTypeChecker
     
     public init(symbols: SymbolTable,
                 globalEnvironment: GlobalEnvironment) {
         self.symbols = symbols
         self.globalEnvironment = globalEnvironment
+        typeChecker = RvalueExpressionTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment)
     }
     
     public func compile(_ node: ImplFor) throws -> Seq {
         var resultArr: [AbstractSyntaxTreeNode] = []
         
-        let traitType = try symbols.resolveType(sourceAnchor: node.sourceAnchor,
-                                                identifier: node.traitIdentifier.identifier).unwrapTraitType()
-        let structType = try symbols.resolveType(sourceAnchor: node.sourceAnchor,
-                                                 identifier: node.structIdentifier.identifier).unwrapStructType()
-        let vtableType = try symbols.resolveType(sourceAnchor: node.sourceAnchor,
-                                                 identifier: traitType.nameOfVtableType).unwrapStructType()
+        let traitType = try typeChecker.check(identifier: node.traitIdentifier).unwrapTraitType()
+        let structType = try typeChecker.check(identifier: node.structIdentifier).unwrapStructType()
+        let vtableType = try typeChecker.check(identifier: Expression.Identifier(traitType.nameOfVtableType)).unwrapStructType()
         
         let impl = Impl(sourceAnchor: node.sourceAnchor, identifier: node.structIdentifier, children: node.children)
         resultArr.append(try SnapSubcompilerImpl(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy,

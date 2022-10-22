@@ -2878,4 +2878,29 @@ func foo() {
         XCTAssertEqual(debugger?.loadSymbolU8("p"), 42)
         XCTAssertEqual(debugger?.loadSymbolU16("q"), 1042)
     }
+    
+    func test_EndToEndIntegration_GenericStruct_ImplFor() {
+        let debugger = run(program: """
+            trait Incrementer {
+                func increment(self: *Incrementer)
+            }
+
+            struct RealIncrementer[T] {
+                val: T
+            }
+
+            impl[T] Incrementer for RealIncrementer@[T] {
+                func increment(self: *RealIncrementer@[T]) {
+                    self.val = self.val + 1
+                }
+            }
+
+            var realIncrementer = RealIncrementer@[u16] { .val = 41 }
+            let incrementer: Incrementer = &realIncrementer
+            incrementer.increment()
+            let p = realIncrementer.val
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("p"), 42)
+    }
 }

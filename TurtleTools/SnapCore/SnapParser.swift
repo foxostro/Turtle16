@@ -1181,7 +1181,12 @@ public class SnapParser: Parser {
                                 children: children)
                     ]
                 } else {
-                    return [Impl(sourceAnchor: sourceAnchor, identifier: structTypeExpr as! Expression.Identifier, children: children)]
+                    return [
+                        Impl(sourceAnchor: sourceAnchor,
+                             typeArguments: typeArguments,
+                             structTypeExpr: structTypeExpr,
+                             children: children)
+                    ]
                 }
             }
             else {

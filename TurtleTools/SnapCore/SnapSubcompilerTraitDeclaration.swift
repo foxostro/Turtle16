@@ -122,7 +122,10 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
                                              symbols: outer)
             thunks.append(fnDecl)
         }
-        let implBlock = Impl(sourceAnchor: traitDecl.sourceAnchor, identifier: Expression.Identifier(traitDecl.nameOfTraitObjectType), children: thunks)
+        let implBlock = Impl(sourceAnchor: traitDecl.sourceAnchor,
+                             typeArguments: [], // TODO: Generic traits
+                             structTypeExpr: Expression.Identifier(traitDecl.nameOfTraitObjectType),
+                             children: thunks)
         return implBlock
     }
     

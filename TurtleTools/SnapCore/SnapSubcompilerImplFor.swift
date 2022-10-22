@@ -27,7 +27,10 @@ public class SnapSubcompilerImplFor: NSObject {
         let structType = try typeChecker.check(expression: node.structTypeExpr).unwrapStructType()
         let vtableType = try typeChecker.check(identifier: Expression.Identifier(traitType.nameOfVtableType)).unwrapStructType()
         
-        let impl = Impl(sourceAnchor: node.sourceAnchor, identifier: node.structTypeExpr as! Expression.Identifier, children: node.children)
+        let impl = Impl(sourceAnchor: node.sourceAnchor,
+                        typeArguments: node.typeArguments,
+                        structTypeExpr: node.structTypeExpr,
+                        children: node.children)
         resultArr.append(try SnapSubcompilerImpl(symbols: symbols,
                                                  globalEnvironment: globalEnvironment).compile(impl))
         

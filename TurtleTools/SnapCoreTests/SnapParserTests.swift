@@ -1994,7 +1994,8 @@ impl Foo {
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
             Impl(sourceAnchor: parser.lineMapper.anchor(0, 10),
-                 identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "Foo"),
+                 typeArguments: [],
+                 structTypeExpr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "Foo"),
                  children: [])
         ])
     }
@@ -2068,7 +2069,8 @@ impl Foo {
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
             Impl(sourceAnchor: parser.lineMapper.anchor(0, 10),
-                 identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "Foo"),
+                 typeArguments: [],
+                 structTypeExpr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "Foo"),
                  children: [
                     FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(15, 41),
                                         identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(20, 31), identifier: "doSomething"),
@@ -2093,7 +2095,8 @@ impl Foo {
         XCTAssertFalse(parser.hasError)
         XCTAssertEqual(parser.syntaxTree?.children, [
             Impl(sourceAnchor: parser.lineMapper.anchor(0, 10),
-                 identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "Foo"),
+                 typeArguments: [],
+                 structTypeExpr: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "Foo"),
                  children: [
                     FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(15, 42),
                                         identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(20, 32), identifier: "doSomething1"),

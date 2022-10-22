@@ -143,7 +143,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
                 StructDeclaration.Member(name: "object", type: Expression.PointerType(Expression.PrimitiveType(.void))),
                 StructDeclaration.Member(name: "vtable", type: Expression.PointerType(Expression.ConstType(Expression.Identifier("__Foo_vtable"))))
             ], visibility: .privateVisibility),
-            Impl(identifier: Expression.Identifier("__Foo_object"), children: [
+            Impl(typeArguments: [], structTypeExpr: Expression.Identifier("__Foo_object"), children: [
                 FunctionDeclaration(identifier: Expression.Identifier("bar"), functionType: Expression.FunctionType(name: "bar", returnType: Expression.PrimitiveType(.void), arguments: [Expression.PointerType(Expression.Identifier("__Foo_object"))]), argumentNames: ["self"], body: Block(children: [
                     Expression.Call(callee: Expression.Get(expr: Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("vtable")), member: Expression.Identifier("bar")), arguments: [
                         Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("object"))
@@ -177,7 +177,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
                 StructDeclaration.Member(name: "object", type: Expression.PointerType(Expression.PrimitiveType(.void))),
                 StructDeclaration.Member(name: "vtable", type: Expression.PointerType(Expression.ConstType(Expression.Identifier("__Foo_vtable"))))
             ], visibility: .privateVisibility),
-            Impl(identifier: Expression.Identifier("__Foo_object"), children: [
+            Impl(typeArguments: [], structTypeExpr: Expression.Identifier("__Foo_object"), children: [
                 FunctionDeclaration(identifier: Expression.Identifier("bar"), functionType: Expression.FunctionType(name: "bar", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [Expression.PointerType(Expression.Identifier("__Foo_object"))]), argumentNames: ["self"], body: Block(children: [
                     Return(Expression.Call(callee: Expression.Get(expr: Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("vtable")), member: Expression.Identifier("bar")), arguments: [
                         Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("object"))

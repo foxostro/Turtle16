@@ -9,13 +9,17 @@
 import TurtleCore
 
 public class Impl: AbstractSyntaxTreeNode {
-    public let identifier: Expression.Identifier
+    public let typeArguments: [Expression.GenericTypeArgument]
     public let children: [FunctionDeclaration]
     
+    public var isGeneric: Bool {
+        !typeArguments.isEmpty
+    }
+    
     public init(sourceAnchor: SourceAnchor? = nil,
-                identifier: Expression.Identifier,
+                typeArguments: [Expression.GenericTypeArgument],
                 children: [FunctionDeclaration]) {
-        self.identifier = identifier.withSourceAnchor(sourceAnchor)
+        self.typeArguments = typeArguments
         self.children = children.map { $0.withSourceAnchor(sourceAnchor) }
         super.init(sourceAnchor: sourceAnchor)
     }
@@ -25,7 +29,14 @@ public class Impl: AbstractSyntaxTreeNode {
             return self
         }
         return Impl(sourceAnchor: sourceAnchor,
-                    identifier: identifier,
+                    typeArguments: typeArguments,
+                    structTypeExpr: structTypeExpr,
+                    children: children)
+    }
+    
+    public func eraseTypeArguments() -> Impl {
+        return Impl(sourceAnchor: sourceAnchor,
+                    typeArguments: [],
                     children: children)
     }
     
@@ -34,26 +45,44 @@ public class Impl: AbstractSyntaxTreeNode {
         guard type(of: rhs!) == type(of: self) else { return false }
         guard super.isEqual(rhs) else { return false }
         guard let rhs = rhs as? Impl else { return false }
-        guard identifier == rhs.identifier else { return false }
+        guard typeArguments == rhs.typeArguments else { return false }
         guard children == rhs.children else { return false }
         return true
     }
     
     public override var hash: Int {
         var hasher = Hasher()
-        hasher.combine(identifier)
+        hasher.combine(typeArguments)
         hasher.combine(children)
         hasher.combine(super.hash)
         return hasher.finalize()
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@\n%@identifier: %@%@",
+        return String(format: "%@%@\n%@typeArguments: %@\n%@structTypeExpr: %@%@",
                       wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                       String(describing: type(of: self)),
+                      makeIndent(depth: depth+1),
+                      makeTypeArgumentsDescription(depth: depth+1),
                       makeIndent(depth: depth + 1),
                       identifier.makeIndentedDescription(depth: depth + 1),
                       makeChildrenDescription(depth: depth + 1))
+    }
+    
+    private func makeTypeArgumentsDescription(depth: Int) -> String {
+        var result: String = ""
+        if typeArguments.isEmpty {
+            result = "none"
+        } else {
+            for i in 0..<typeArguments.count {
+                let argument = typeArguments[i]
+                result += "\n"
+                result += makeIndent(depth: depth + 1)
+                result += "\(i) -- "
+                result += argument.makeIndentedDescription(depth: depth + 1)
+            }
+        }
+        return result
     }
     
     private func makeChildrenDescription(depth: Int) -> String {

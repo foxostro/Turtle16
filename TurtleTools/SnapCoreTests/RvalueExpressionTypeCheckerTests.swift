@@ -5454,7 +5454,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let concreteStructSymbols = SymbolTable(tuples: [
         ])
         concreteStructSymbols.enclosingFunctionNameMode = .set("foo")
-        let expected = SymbolType.structType(StructType(name: "foo", symbols: concreteStructSymbols))
+        let expected = SymbolType.structType(StructType(name: "__foo_u16", symbols: concreteStructSymbols))
         let actual = try typeChecker.check(expression: expr)
         XCTAssertEqual(actual, expected)
     }
@@ -5482,7 +5482,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         concreteStructSymbols.storagePointer = 1
         concreteStructSymbols.enclosingFunctionNameMode = .set("foo")
         
-        let expected = SymbolType.structType(StructType(name: "foo", symbols: concreteStructSymbols))
+        let expected = SymbolType.structType(StructType(name: "__foo_u16", symbols: concreteStructSymbols))
         let actual = try typeChecker.check(expression: expr)
         XCTAssertEqual(actual, expected)
     }
@@ -5513,7 +5513,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         concreteStructSymbols.storagePointer = 1
         concreteStructSymbols.enclosingFunctionNameMode = .set("foo")
 
-        let expected = SymbolType.structType(StructType(name: "foo", symbols: concreteStructSymbols))
+        let expected = SymbolType.structType(StructType(name: "__foo_u16", symbols: concreteStructSymbols))
         let actual = try typeChecker.check(expression: expr)
         XCTAssertEqual(actual, expected)
     }

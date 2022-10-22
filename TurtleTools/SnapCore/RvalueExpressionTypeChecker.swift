@@ -939,7 +939,7 @@ public class RvalueExpressionTypeChecker: NSObject {
                                       arguments: arguments))
     }
     
-    fileprivate func mangleFunctionName(_ name: String?, evaluatedTypeArguments: [SymbolType] = []) -> String? {
+    public func mangleFunctionName(_ name: String?, evaluatedTypeArguments: [SymbolType] = []) -> String? {
         guard let name else {
             return nil
         }
@@ -1047,11 +1047,24 @@ public class RvalueExpressionTypeChecker: NSObject {
             evaluatedTypeArguments.append(typeArgument)
         }
         
+        if let memoizedResult = genericStructType.instantiations[evaluatedTypeArguments] {
+            return memoizedResult
+        }
+        
         // Bind the concrete struct type
         let subcompiler = SnapSubcompilerStructDeclaration(symbols: symbolsWithTypeArguments,
                                                            globalEnvironment: globalEnvironment)
         let template = genericStructType.template.eraseTypeArguments()
-        let concreteType = try subcompiler.compile(template)
+        let concreteType = try subcompiler.compile(template, evaluatedTypeArguments)
+        genericStructType.instantiations[evaluatedTypeArguments] = concreteType // memoize
+        
+        // Move the type for the instantiated struct from the temporary symbol
+        // table we use for type substitutions to the persistent symbol table.
+        let identifier = concreteType.unwrapStructType().name
+        let typeRecord = symbolsWithTypeArguments.typeTable[identifier]
+        symbolsWithTypeArguments.typeTable[identifier] = nil
+        assert(symbols.typeTable[identifier] == nil)
+        symbols.typeTable[identifier] = typeRecord
         
         // Apply the deferred impl nodes now.
         for implNode in genericStructType.implNodes {

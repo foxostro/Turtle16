@@ -20,17 +20,23 @@ public class SnapSubcompilerImpl: NSObject {
     }
     
     public func compile(_ node: Impl) throws -> Block {
-        let implWhat = try typeChecker.check(expression: node.structTypeExpr)
-        
-        switch implWhat {
-        case .constStructType(let typ), .structType(let typ):
-            return try compileImplStruct(node, typ)
+        if node.isGeneric {
+            let app = node.structTypeExpr as! Expression.GenericTypeApplication
+            let genericStructType = try parent.resolveTypeOfIdentifier(sourceAnchor: app.sourceAnchor, identifier: app.identifier.identifier)
+            let typ = genericStructType.unwrapGenericStructType()
+            typ.implNodes.append(node)
+            return Block()
+        }
+        else {
+            let implWhat = try typeChecker.check(expression: node.structTypeExpr)
             
-        case .genericStructType(let typ):
-            return try compileImplGenericStruct(node, typ)
-            
-        default:
-            fatalError("unsupported expression: \(node)")
+            switch implWhat {
+            case .constStructType(let typ), .structType(let typ):
+                return try compileImplStruct(node, typ)
+                
+            default:
+                fatalError("unsupported expression: \(node)")
+            }
         }
     }
     
@@ -67,10 +73,5 @@ public class SnapSubcompilerImpl: NSObject {
                           symbols: symbols,
                           children: modifiedChildren)
         return block
-    }
-    
-    public func compileImplGenericStruct(_ node: Impl, _ typ: GenericStructType) throws -> Block {
-        typ.implNodes.append(node)
-        return Block()
     }
 }

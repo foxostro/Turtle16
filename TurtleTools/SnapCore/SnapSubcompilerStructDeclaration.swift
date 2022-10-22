@@ -18,13 +18,13 @@ public class SnapSubcompilerStructDeclaration: NSObject {
         self.globalEnvironment = globalEnvironment
     }
     
-    @discardableResult public func compile(_ node: StructDeclaration) throws -> SymbolType {
+    @discardableResult public func compile(_ node: StructDeclaration, _ evaluatedTypeArguments: [SymbolType] = []) throws -> SymbolType {
         let type: SymbolType
         if node.isGeneric {
             type = try doGeneric(node)
         }
         else {
-            type = try doNonGeneric(node)
+            type = try doNonGeneric(node, evaluatedTypeArguments)
         }
         return type
     }
@@ -39,15 +39,16 @@ public class SnapSubcompilerStructDeclaration: NSObject {
         return type
     }
     
-    private func doNonGeneric(_ node: StructDeclaration) throws -> SymbolType {
+    private func doNonGeneric(_ node: StructDeclaration, _ evaluatedTypeArguments: [SymbolType]) throws -> SymbolType {
         assert(!node.isGeneric)
         
         let members = SymbolTable(parent: symbols)
         let typeChecker = TypeContextTypeChecker(symbols: members, globalEnvironment: globalEnvironment)
         let name = node.identifier.identifier
-        let fullyQualifiedStructType = StructType(name: name, symbols: members)
+        let mangledName = typeChecker.mangleFunctionName(name, evaluatedTypeArguments: evaluatedTypeArguments)!
+        let fullyQualifiedStructType = StructType(name: mangledName, symbols: members)
         let type: SymbolType = node.isConst ? .constStructType(fullyQualifiedStructType) : .structType(fullyQualifiedStructType)
-        symbols.bind(identifier: name,
+        symbols.bind(identifier: mangledName,
                      symbolType: type,
                      visibility: node.visibility)
         

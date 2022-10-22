@@ -35,6 +35,11 @@ public class GlobalEnvironment: NSObject {
     public var modules: [String : Block] = [:]
     public let functionsToCompile: FunctionsToCompile
     
+    // Code sequences to insert into the beginning of the compiled program.
+    // This is currnetly used to setup global variables at the program entry
+    // point.
+    public var preamble: [Seq] = []
+    
     public init(memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16(),
                 functionsToCompile: FunctionsToCompile = FunctionsToCompile()) {
         self.memoryLayoutStrategy = memoryLayoutStrategy

@@ -83,6 +83,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         var children: [AbstractSyntaxTreeNode] = []
         let compiledNode = try compile(node0)
         children += try collectCompiledModuleCode()
+        children += try globalEnvironment.preamble.compactMap { try compile($0) }
         if let compiledNode {
             children.append(compiledNode)
         }

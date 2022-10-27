@@ -34,7 +34,8 @@ let kRangeType: SymbolType = .structType(StructType(name: kRangeName, symbols: S
 
 class SnapToTackCompilerTests: XCTestCase {
     func makeCompiler(options opts: SnapToTackCompiler.Options = SnapToTackCompiler.Options(isBoundsCheckEnabled: true), symbols: SymbolTable = SymbolTable()) -> SnapToTackCompiler {
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
+                                                  globalSymbols: symbols)
         return SnapToTackCompiler(symbols: symbols,
                                   globalEnvironment: globalEnvironment,
                                   options: opts)

@@ -40,8 +40,7 @@ public class SnapToTurtle16Compiler: NSObject {
     public private(set) var assembly: Result<TopLevel, Error>! = nil
     public private(set) var instructions: [UInt16] = []
     public var sandboxAccessManager: SandboxAccessManager? = nil
-    public let globalSymbols = SymbolTable()
-    public private(set) var symbolTableRoot: SymbolTable? = nil
+    public private(set) var symbolsOfTopLevelScope: SymbolTable? = nil
     public let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
     
     public private(set) var errors: [CompilerError] = []
@@ -98,26 +97,27 @@ public class SnapToTurtle16Compiler: NSObject {
     }
     
     func contract(_ syntaxTree: AbstractSyntaxTreeNode?) -> Result<AbstractSyntaxTreeNode?, Error> {
-        let contractionStep = SnapAbstractSyntaxTreeCompiler(shouldRunSpecificTest: options.shouldRunSpecificTest,
-                                                             injectModules: Array(options.injectedModules),
-                                                             isUsingStandardLibrary: options.isUsingStandardLibrary,
-                                                             runtimeSupport: options.runtimeSupport,
-                                                             sandboxAccessManager: sandboxAccessManager,
-                                                             globalEnvironment: globalEnvironment)
+        let contractionStep = SnapAbstractSyntaxTreeCompiler(
+            shouldRunSpecificTest: options.shouldRunSpecificTest,
+            injectModules: Array(options.injectedModules),
+            isUsingStandardLibrary: options.isUsingStandardLibrary,
+            runtimeSupport: options.runtimeSupport,
+            sandboxAccessManager: sandboxAccessManager,
+            globalEnvironment: globalEnvironment)
         contractionStep.compile(syntaxTree)
         let ast = contractionStep.ast
         let testNames = contractionStep.testNames
         if let error = contractionStep.errors.first {
             return .failure(error)
         }
-        self.symbolTableRoot = ast.symbols
+        self.symbolsOfTopLevelScope = ast.symbols
         self.testNames = testNames
         return .success(ast)
     }
     
     func compileSnapToTack(_ ast: AbstractSyntaxTreeNode?) -> Result<AbstractSyntaxTreeNode?, Error> {
         let opts = SnapToTackCompiler.Options(isBoundsCheckEnabled: self.options.isBoundsCheckEnabled)
-        let compiler = SnapToTackCompiler(symbols: globalSymbols,
+        let compiler = SnapToTackCompiler(symbols: globalEnvironment.globalSymbols,
                                           globalEnvironment: globalEnvironment,
                                           options: opts)
         self.tack = Result(catching: {
@@ -127,7 +127,7 @@ public class SnapToTurtle16Compiler: NSObject {
     }
     
     func compileTackToAssembly(_ input: AbstractSyntaxTreeNode?) -> Result<TopLevel, Error> {
-        let compiler = TackToTurtle16Compiler(globalSymbols)
+        let compiler = TackToTurtle16Compiler(globalEnvironment.globalSymbols)
         return Result(catching: {
             try compiler.compile(TopLevel(children: [
                 input ?? Seq()

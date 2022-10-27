@@ -129,12 +129,13 @@ func foo() {
     fileprivate let kMemoryMappedSerialOutputPort = MemoryAddress(0x0001)
     
     fileprivate func makeDebugger(options: Options, program: String) -> SnapDebugConsole? {
-        let opts2 = SnapToTurtle16Compiler.Options(isBoundsCheckEnabled: options.isBoundsCheckEnabled,
-                                                   shouldDefineCompilerIntrinsicFunctions: options.shouldDefineCompilerIntrinsicFunctions,
-                                                   isUsingStandardLibrary: options.isUsingStandardLibrary,
-                                                   runtimeSupport: options.runtimeSupport,
-                                                   shouldRunSpecificTest: options.shouldRunSpecificTest,
-                                                   injectedModules: options.injectModules)
+        let opts2 = SnapToTurtle16Compiler.Options(
+            isBoundsCheckEnabled: options.isBoundsCheckEnabled,
+            shouldDefineCompilerIntrinsicFunctions: options.shouldDefineCompilerIntrinsicFunctions,
+            isUsingStandardLibrary: options.isUsingStandardLibrary,
+            runtimeSupport: options.runtimeSupport,
+            shouldRunSpecificTest: options.shouldRunSpecificTest,
+            injectedModules: options.injectModules)
         let compiler = SnapToTurtle16Compiler(options: opts2)
         compiler.compile(program: program)
         XCTAssertFalse(compiler.hasError)
@@ -175,7 +176,7 @@ func foo() {
         
         let debugger = SnapDebugConsole(computer: computer)
         debugger.logger = PrintLogger()
-        debugger.symbols = compiler.symbolTableRoot
+        debugger.symbols = compiler.symbolsOfTopLevelScope
         
         return debugger
     }

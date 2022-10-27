@@ -200,7 +200,7 @@ public class SnapCommandLineDriver: NSObject {
         
         let debugger = SnapDebugConsole(computer: computer)
         debugger.logger = PrintLogger()
-        debugger.symbols = frontEnd.symbolTableRoot
+        debugger.symbols = frontEnd.symbolsOfTopLevelScope
         debugger.interpreter.runOne(instruction: .run)
         
         reportInfoMessage("\n\n")
@@ -270,7 +270,7 @@ public class SnapCommandLineDriver: NSObject {
         
         let debugger = SnapDebugConsole(computer: computer)
         debugger.logger = PrintLogger()
-        debugger.symbols = frontEnd.symbolTableRoot
+        debugger.symbols = frontEnd.symbolsOfTopLevelScope
         debugger.interpreter.runOne(instruction: .run)
         
         reportInfoMessage("\n\n")

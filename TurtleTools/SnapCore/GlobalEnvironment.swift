@@ -36,6 +36,7 @@ public class GlobalEnvironment: NSObject {
     public let tempNameMaker = LabelMaker(prefix: "__temp")
     public var modules: [String : Block] = [:]
     public let functionsToCompile: FunctionsToCompile
+    public let globalSymbols: SymbolTable
     
     // Code sequences to insert into the beginning of the compiled program.
     // This is currnetly used to setup global variables at the program entry
@@ -43,9 +44,11 @@ public class GlobalEnvironment: NSObject {
     public var preamble: [AbstractSyntaxTreeNode] = []
     
     public init(memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16(),
-                functionsToCompile: FunctionsToCompile = FunctionsToCompile()) {
+                functionsToCompile: FunctionsToCompile = FunctionsToCompile(),
+                globalSymbols: SymbolTable = SymbolTable()) {
         self.memoryLayoutStrategy = memoryLayoutStrategy
         self.functionsToCompile = functionsToCompile
+        self.globalSymbols = globalSymbols
     }
     
     public func hasModule(_ name: String) -> Bool {

@@ -113,7 +113,7 @@ class SnapBenchmarkDriver: NSObject {
         computer.reset()
         
         let debugger = SnapDebugConsole(computer: computer)
-        debugger.symbols = compiler.symbolTableRoot
+        debugger.symbols = compiler.symbolsOfTopLevelScope
         if let logger = logger {
             debugger.logger = logger
         }

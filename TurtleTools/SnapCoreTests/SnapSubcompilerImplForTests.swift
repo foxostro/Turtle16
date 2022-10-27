@@ -40,8 +40,8 @@ class SnapSubcompilerImplForTests: XCTestCase {
     }
     
     func testCompileImplForTrait() throws {
-        let globalSymbols = SymbolTable()
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let globalSymbols = globalEnvironment.globalSymbols
         
         compileSerialTrait(globalEnvironment, globalSymbols)
         compileSerialFake(globalEnvironment, globalSymbols)
@@ -74,7 +74,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
     
     func testFailToCompileImplForTraitBecauseMethodsAreMissing() {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let globalSymbols = SymbolTable()
+        let globalSymbols = globalEnvironment.globalSymbols
         
         compileSerialTrait(globalEnvironment, globalSymbols)
         compileSerialFake(globalEnvironment, globalSymbols)
@@ -93,8 +93,8 @@ class SnapSubcompilerImplForTests: XCTestCase {
     }
     
     func testFailToCompileImplForTraitBecauseMethodHasIncorrectNumberOfParameters() {
-        let globalSymbols = SymbolTable()
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let globalSymbols = globalEnvironment.globalSymbols
         
         compileSerialTrait(globalEnvironment, globalSymbols)
         compileSerialFake(globalEnvironment, globalSymbols)
@@ -120,8 +120,8 @@ class SnapSubcompilerImplForTests: XCTestCase {
     }
     
     func testFailToCompileImplForTraitBecauseMethodHasIncorrectParameterTypes() {
-        let globalSymbols = SymbolTable()
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let globalSymbols = globalEnvironment.globalSymbols
         
         compileSerialTrait(globalEnvironment, globalSymbols)
         compileSerialFake(globalEnvironment, globalSymbols)
@@ -148,8 +148,8 @@ class SnapSubcompilerImplForTests: XCTestCase {
     }
     
     func testFailToCompileImplForTraitBecauseMethodHasIncorrectSelfParameterTypes() {
-        let globalSymbols = SymbolTable()
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let globalSymbols = globalEnvironment.globalSymbols
         
         compileSerialTrait(globalEnvironment, globalSymbols)
         compileSerialFake(globalEnvironment, globalSymbols)
@@ -176,8 +176,8 @@ class SnapSubcompilerImplForTests: XCTestCase {
     }
     
     func testFailToCompileImplForTraitBecauseMethodHasIncorrectReturnType() {
-        let globalSymbols = SymbolTable()
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let globalSymbols = globalEnvironment.globalSymbols
         
         compileSerialTrait(globalEnvironment, globalSymbols)
         compileSerialFake(globalEnvironment, globalSymbols)

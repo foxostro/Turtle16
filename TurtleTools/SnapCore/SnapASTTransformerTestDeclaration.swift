@@ -16,22 +16,20 @@ public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
     var currentTest: TestDeclaration? = nil
     var depth = 0
     let shouldRunSpecificTest: String?
-    let memoryLayoutStrategy: MemoryLayoutStrategy
+    let globalEnvironment: GlobalEnvironment
     
-    public init(memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16(),
+    public init(globalEnvironment: GlobalEnvironment,
                 shouldRunSpecificTest: String? = nil,
                 isUsingStandardLibrary: Bool = false,
                 runtimeSupport: String? = nil,
                 isRuntimeModule: Bool = false) {
-        self.memoryLayoutStrategy = memoryLayoutStrategy
+        self.globalEnvironment = globalEnvironment
         self.shouldRunSpecificTest = shouldRunSpecificTest
         self.isUsingStandardLibrary = isUsingStandardLibrary
         self.runtimeSupport = runtimeSupport
     }
     
     public override func compile(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {
-        let binder = CompilerIntrinsicSymbolBinder(memoryLayoutStrategy: memoryLayoutStrategy)
-        let globalSymbols = binder.bindCompilerIntrinsics(symbols: SymbolTable())
         var children = node.children
         if isUsingStandardLibrary {
             let importStmt = Import(moduleName: kStandardLibraryModuleName)
@@ -41,7 +39,7 @@ public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
             children.insert(Import(moduleName: runtimeSupport), at: 0)
         }
         let block = Block(sourceAnchor: node.sourceAnchor,
-                          symbols: globalSymbols,
+                          symbols: SymbolTable(parent: globalEnvironment.globalSymbols),
                           children: children)
         return try compile(block: block)
     }
@@ -56,12 +54,22 @@ public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
             
             if let testName = shouldRunSpecificTest,
                let testDeclaration = testDeclarations.first(where: { $0.name == testName }) {
-                let testRunnerMain = FunctionDeclaration(identifier: Expression.Identifier(kTestMainFunctionName), functionType: Expression.FunctionType(name: kTestMainFunctionName, returnType: Expression.PrimitiveType(.void), arguments: []), argumentNames: [], body: Block(children: [
+                let fnSymbols = SymbolTable(parent: result.symbols)
+                let bodySymbols = SymbolTable(parent: fnSymbols)
+                testDeclaration.body.symbols.parent = bodySymbols
+                let body = Block(symbols: bodySymbols, children: [
                     testDeclaration.body,
                     Expression.Call(callee: Expression.Identifier("puts"), arguments: [Expression.LiteralString("passed\n")])
-//                    VarDeclaration(identifier: Expression.Identifier("kPassed"), explicitType: nil, expression: Expression.LiteralString("passed\n"), storage: .st, isMutable: false),
-//                    Expression.Call(callee: Expression.Identifier("puts"), arguments: [Expression.Identifier("kPassed")])
-                ]))
+                ])
+                let testRunnerMain = FunctionDeclaration(
+                    identifier: Expression.Identifier(kTestMainFunctionName),
+                    functionType: Expression.FunctionType(
+                        name: kTestMainFunctionName,
+                        returnType: Expression.PrimitiveType(.void),
+                        arguments: []),
+                    argumentNames: [],
+                    body: body,
+                    symbols: fnSymbols)
                 children += [
                     testRunnerMain,
                     Expression.Call(callee: Expression.Identifier(kTestMainFunctionName), arguments: [])
@@ -81,10 +89,10 @@ public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
                 }
             }
             
-            let result = Block(sourceAnchor: result.sourceAnchor,
-                               symbols: result.symbols,
-                               children: children)
-            return result
+            let result1 = Block(sourceAnchor: result.sourceAnchor,
+                                symbols: result.symbols,
+                                children: children)
+            return result1
         }
             
         return result

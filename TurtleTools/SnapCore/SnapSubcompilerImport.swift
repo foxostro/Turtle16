@@ -29,7 +29,7 @@ public class SnapSubcompilerImport: NSObject {
     }
     
     public func compile(_ node: Import) throws {
-        guard symbols.parent == nil else {
+        guard symbols.parent == nil || symbols.parent == globalEnvironment.globalSymbols else {
             throw CompilerError(sourceAnchor: node.sourceAnchor, message: "declaration is only valid at file scope")
         }
         
@@ -45,10 +45,11 @@ public class SnapSubcompilerImport: NSObject {
         let isUsingStandardLibrary = (node.moduleName != kStandardLibraryModuleName) && (runtimeSupport == nil)
         let moduleData = try readModuleFromFile(sourceAnchor: node.sourceAnchor, moduleName: node.moduleName)
         let topLevel = try parse(url: moduleData.1, text: moduleData.0)
-        let compiler = SnapAbstractSyntaxTreeCompiler(isUsingStandardLibrary: isUsingStandardLibrary,
-                                                      runtimeSupport: (node.moduleName == runtimeSupport) ? nil : runtimeSupport,
-                                                      sandboxAccessManager: sandboxAccessManager,
-                                                      globalEnvironment: globalEnvironment)
+        let compiler = SnapAbstractSyntaxTreeCompiler(
+            isUsingStandardLibrary: isUsingStandardLibrary,
+            runtimeSupport: (node.moduleName == runtimeSupport) ? nil : runtimeSupport,
+            sandboxAccessManager: sandboxAccessManager,
+            globalEnvironment: globalEnvironment)
         compiler.compile(topLevel)
         if compiler.hasError {
             let fileName = topLevel.sourceAnchor?.url?.lastPathComponent

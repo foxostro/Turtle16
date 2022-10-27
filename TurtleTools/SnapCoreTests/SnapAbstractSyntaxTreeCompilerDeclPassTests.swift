@@ -118,28 +118,20 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let globalSymbols = globalEnvironment.globalSymbols
         
-        func makeImpl() throws -> (Impl, SymbolTable) {
+        func makeImpl() throws {
             let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [
                 Expression.PointerType(Expression.Identifier("Foo"))
             ])))
             let foo = TraitDeclaration(identifier: Expression.Identifier("Foo"),
                                        members: [bar],
                                        visibility: .privateVisibility)
-            
-            let symbols = globalEnvironment.globalSymbols
-            
-            let traitCompiler = SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment)
-            let seq = try traitCompiler.compile(foo)
-            
-            let structCompiler0 = SnapSubcompilerStructDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
-            _ = try structCompiler0.compile(seq.children[0] as! StructDeclaration)
-            
-            let structCompiler1 = SnapSubcompilerStructDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
-            _ = try structCompiler1.compile(seq.children[1] as! StructDeclaration)
-            
-            let impl = seq.children[2] as! Impl
-            
-            return (impl, symbols)
+            try SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment).compile(foo)
+        }
+        try makeImpl()
+        
+        XCTAssertFalse(globalEnvironment.functionsToCompile.isEmpty)
+        guard !globalEnvironment.functionsToCompile.isEmpty else {
+            return
         }
         
         func makeExpectedMethodType(symbols: SymbolTable, globalEnvironment: GlobalEnvironment) -> FunctionType {
@@ -151,28 +143,10 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
                                                   arguments: [argType])
             return expectedMethodType
         }
+        let expectedMethodType = makeExpectedMethodType(symbols: globalSymbols, globalEnvironment: globalEnvironment)
         
-        let (impl, symbols) = try makeImpl()
-        let input = Block(symbols: symbols, children: [impl])
-        
-        let compiler = SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment)
-        let output = try compiler.compile(input)
-        
-        guard let block = output as? Block else {
-            XCTFail()
-            return
-        }
-        
-        XCTAssertTrue(block.children.isEmpty)
-        
-        XCTAssertFalse(globalEnvironment.functionsToCompile.isEmpty)
-        guard !globalEnvironment.functionsToCompile.isEmpty else {
-            return
-        }
-        
-        let methodType = globalEnvironment.functionsToCompile.removeFirst()
-        let expectedMethodType = makeExpectedMethodType(symbols: symbols, globalEnvironment: globalEnvironment)
-        XCTAssertEqual(methodType, expectedMethodType)
+        let actualMethodType = globalEnvironment.functionsToCompile.removeFirst()
+        XCTAssertEqual(actualMethodType, expectedMethodType)
     }
     
     func testCompileImplForTrait() throws {

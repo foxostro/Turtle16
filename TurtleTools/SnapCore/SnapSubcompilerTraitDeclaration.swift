@@ -21,12 +21,11 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
         self.globalEnvironment = globalEnvironment
     }
     
-    public func compile(_ node: TraitDeclaration) throws -> Seq {
+    public func compile(_ node: TraitDeclaration) throws {
         try declareTraitType(node)
-        let vtable = try declareVtableType(node)
-        let traitObject = declareTraitObjectType(node)
-        let thunks = try declareTraitObjectThunks(node)
-        return Seq(sourceAnchor: node.sourceAnchor, children: [vtable, traitObject, thunks])
+        try declareVtableType(node)
+        try declareTraitObjectType(node)
+        try declareTraitObjectThunks(node)
     }
     
     func declareTraitType(_ traitDecl: TraitDeclaration) throws {
@@ -49,7 +48,7 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
         members.parent = nil
     }
     
-    func declareVtableType(_ traitDecl: TraitDeclaration) throws -> StructDeclaration {
+    func declareVtableType(_ traitDecl: TraitDeclaration) throws {
         let traitName = traitDecl.identifier.identifier
         let members: [StructDeclaration.Member] = traitDecl.members.map {
             let memberType = rewriteTraitMemberTypeForVtable(traitName, $0.memberType)
@@ -61,7 +60,9 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
                                            members: members,
                                            visibility: traitDecl.visibility,
                                            isConst: true)
-        return structDecl
+        _ = try SnapSubcompilerStructDeclaration(
+            symbols: globalEnvironment.globalSymbols,
+            globalEnvironment: globalEnvironment).compile(structDecl)
     }
     
     func rewriteTraitMemberTypeForVtable(_ traitName: String, _ expr: Expression) -> Expression {
@@ -86,7 +87,7 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
         return expr
     }
     
-    func declareTraitObjectType(_ traitDecl: TraitDeclaration) -> StructDeclaration {
+    func declareTraitObjectType(_ traitDecl: TraitDeclaration) throws {
         let members: [StructDeclaration.Member] = [
             StructDeclaration.Member(name: "object", type: Expression.PointerType(Expression.PrimitiveType(.void))),
             StructDeclaration.Member(name: "vtable", type: Expression.PointerType(Expression.ConstType(Expression.Identifier(traitDecl.nameOfVtableType))))
@@ -96,10 +97,12 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
                                            members: members,
                                            visibility: traitDecl.visibility,
                                            isConst: false) // TODO: Should isConst be true here?
-        return structDecl
+        _ = try SnapSubcompilerStructDeclaration(
+            symbols: globalEnvironment.globalSymbols,
+            globalEnvironment: globalEnvironment).compile(structDecl)
     }
     
-    func declareTraitObjectThunks(_ traitDecl: TraitDeclaration) throws -> Impl {
+    func declareTraitObjectThunks(_ traitDecl: TraitDeclaration) throws {
         var thunks: [FunctionDeclaration] = []
         for method in traitDecl.members {
             let functionType = rewriteTraitMemberTypeForThunk(traitDecl, method)
@@ -130,7 +133,9 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
                              typeArguments: [], // TODO: Generic traits
                              structTypeExpr: Expression.Identifier(traitDecl.nameOfTraitObjectType),
                              children: thunks)
-        return implBlock
+        try SnapSubcompilerImpl(
+            symbols: globalEnvironment.globalSymbols,
+            globalEnvironment: globalEnvironment).compile(implBlock)
     }
     
     func rewriteTraitMemberTypeForThunk(_ traitDecl: TraitDeclaration, _ method: TraitDeclaration.Member) -> Expression.FunctionType {

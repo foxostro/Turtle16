@@ -12,7 +12,7 @@ import TurtleCore
 
 class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
     func testFunctionRedefinesExistingSymbol() throws {
-        let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let symbols = SymbolTable()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .void))
         let compiler = SnapSubcompilerFunctionDeclaration()
@@ -20,21 +20,21 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
                                         functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: []),
                                         argumentNames: [],
                                         body: Block(children: []))
-        XCTAssertThrowsError(try compiler.compile(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols, node: input)) {
+        XCTAssertThrowsError(try compiler.compile(globalEnvironment: globalEnvironment, symbols: symbols, node: input)) {
             let error = $0 as? CompilerError
             XCTAssertEqual(error?.message, "function redefines existing symbol: `foo\'")
         }
     }
     
     func testFunctionBodyMissingReturn() throws {
-        let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let symbols = SymbolTable()
         let compiler = SnapSubcompilerFunctionDeclaration()
         let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                         functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: []),
                                         argumentNames: [],
                                         body: Block(children: []))
-        XCTAssertThrowsError(try compiler.compile(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols, node: input)) {
+        XCTAssertThrowsError(try compiler.compile(globalEnvironment: globalEnvironment, symbols: symbols, node: input)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "missing return in a function expected to return `u8'")
@@ -42,9 +42,8 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
     }
     
     func testDeclareFunction() throws {
-        let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let symbols = SymbolTable()
-        let compiler = SnapSubcompilerFunctionDeclaration()
         let originalBody = Block(children: [])
         let expectedRewrittenBody = Block(children: [Return()])
         let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
@@ -59,15 +58,16 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
         let expected = Symbol(type: .function(functionType),
                               offset: 0,
                               storage: .automaticStorage)
-        XCTAssertNoThrow(try compiler.compile(memoryLayoutStrategy: memoryLayoutStrategy,
-                                              symbols: symbols,
-                                              node: input))
-        let actual = try? symbols.resolve(identifier: "foo")
+        try SnapSubcompilerFunctionDeclaration()
+            .compile(globalEnvironment: globalEnvironment,
+                     symbols: symbols,
+                     node: input)
+        let actual = try symbols.resolve(identifier: "foo")
         XCTAssertEqual(actual, expected)
     }
     
     func testCompilationFailsBecauseCodeAfterReturnWillNeverBeExecuted() {
-        let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let symbols = SymbolTable()
         let compiler = SnapSubcompilerFunctionDeclaration()
         let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
@@ -77,7 +77,7 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
                                             Return(Expression.LiteralBool(true)),
                                             Expression.LiteralBool(false)
                                         ]))
-        XCTAssertThrowsError(try compiler.compile(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols, node: input)) {
+        XCTAssertThrowsError(try compiler.compile(globalEnvironment: globalEnvironment, symbols: symbols, node: input)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "code after return will never be executed")
@@ -97,12 +97,13 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
                                         ]),
                                         visibility: .privateVisibility,
                                         symbols: SymbolTable())
-        let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let symbols = SymbolTable()
-        let compiler = SnapSubcompilerFunctionDeclaration()
-        _ = try compiler.compile(memoryLayoutStrategy: memoryLayoutStrategy,
-                                 symbols: symbols,
-                                 node: input)
+        let compiler =
+        try SnapSubcompilerFunctionDeclaration()
+            .compile(globalEnvironment: globalEnvironment,
+                     symbols: symbols,
+                     node: input)
         let actualSymbol = try symbols.resolve(identifier: "foo")
         let actualType = actualSymbol.type
         let expectedType = SymbolType.genericFunction(Expression.GenericFunctionType(template: input))

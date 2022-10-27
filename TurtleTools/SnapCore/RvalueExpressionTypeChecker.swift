@@ -1068,22 +1068,18 @@ public class RvalueExpressionTypeChecker: NSObject {
         
         // Apply the deferred impl nodes now.
         for implNode in genericStructType.implNodes.map({ $0.eraseTypeArguments() }) {
-            let subcompiler = SnapSubcompilerImpl(symbols: symbolsWithTypeArguments,
-                                                  globalEnvironment: globalEnvironment)
-            let node1 = try subcompiler.compile(implNode)
-            for child in node1.children {
-                if let method = child as? FunctionDeclaration {
-                    _ = try SnapSubcompilerFunctionDeclaration()
-                        .compile(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy,
-                                 symbols: symbolsWithTypeArguments,
-                                 node: method)
-                    
-                    // Record the function (by type) so we can revisit and compile it later.
-                    let functionType = try node1.symbols.resolve(identifier: method.identifier.identifier).type.unwrapFunctionType()
-                    globalEnvironment.functionsToCompile.enqueue(functionType)
-                }
-            }
+            try SnapSubcompilerImpl(symbols: symbolsWithTypeArguments, globalEnvironment: globalEnvironment).compile(implNode)
         }
+        
+//        // Apply the deferred impl-for nodes now.
+//        for node0 in genericStructType.implForNodes {
+//            let subcompiler = SnapSubcompilerImplFor(symbols: symbolsWithTypeArguments, globalEnvironment: globalEnvironment)
+//            let node1 = try subcompiler.compile(node0)
+//            let node2 = try SnapAbstractSyntaxTreeCompilerImplPass(symbols: symbolsWithTypeArguments,
+//                                                                   globalEnvironment: globalEnvironment).compile(node1)
+//            let node2desc = node2?.description ?? "none"
+//            print("node2: \(node2desc)")
+//        }
         
         return concreteType
     }

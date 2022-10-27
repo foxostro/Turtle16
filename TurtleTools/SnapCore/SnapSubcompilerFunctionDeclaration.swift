@@ -9,9 +9,9 @@
 import TurtleCore
 
 public class SnapSubcompilerFunctionDeclaration: NSObject {
-    public func compile(memoryLayoutStrategy: MemoryLayoutStrategy,
+    public func compile(globalEnvironment: GlobalEnvironment,
                         symbols: SymbolTable,
-                        node: FunctionDeclaration) throws -> FunctionDeclaration? {
+                        node: FunctionDeclaration) throws {
         let name = node.identifier.identifier
         
         guard symbols.existsAndCannotBeShadowed(identifier: name) == false else {
@@ -20,20 +20,17 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
         }
         
         if node.isGeneric {
-            try doGeneric(memoryLayoutStrategy: memoryLayoutStrategy,
-                          symbols: symbols,
+            try doGeneric(symbols: symbols,
                           node: node)
-            return nil // erase the generic FunctionDeclaration
         }
         else {
-            return try doNonGeneric(memoryLayoutStrategy: memoryLayoutStrategy,
-                                    symbols: symbols,
-                                    node: node)
+            try doNonGeneric(globalEnvironment: globalEnvironment,
+                             symbols: symbols,
+                             node: node)
         }
     }
     
-    private func doGeneric(memoryLayoutStrategy: MemoryLayoutStrategy,
-                           symbols: SymbolTable,
+    private func doGeneric(symbols: SymbolTable,
                            node: FunctionDeclaration) throws {
         let name = node.identifier.identifier
         let typ = Expression.GenericFunctionType(template: node)
@@ -44,11 +41,11 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
         symbols.bind(identifier: name, symbol: symbol)
     }
     
-    private func doNonGeneric(memoryLayoutStrategy: MemoryLayoutStrategy,
+    private func doNonGeneric(globalEnvironment: GlobalEnvironment,
                               symbols: SymbolTable,
-                              node: FunctionDeclaration) throws -> FunctionDeclaration {
+                              node: FunctionDeclaration) throws {
         let functionType = try evaluateFunctionTypeExpression(symbols, node.functionType)
-        try instantiate(memoryLayoutStrategy: memoryLayoutStrategy,
+        try instantiate(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy,
                         functionType: functionType,
                         functionDeclaration: node)
         
@@ -59,7 +56,7 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
                             visibility: node.visibility)
         symbols.bind(identifier: name, symbol: symbol)
         
-        return functionType.ast!
+        globalEnvironment.functionsToCompile.enqueue(functionType)
     }
     
     public func instantiate(memoryLayoutStrategy: MemoryLayoutStrategy,

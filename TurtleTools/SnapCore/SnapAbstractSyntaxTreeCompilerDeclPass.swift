@@ -32,13 +32,10 @@ public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
     
     public override func compile(func node0: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
         let subcompiler = SnapSubcompilerFunctionDeclaration()
-        let node1 = try subcompiler.compile(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy,
-                                            symbols: symbols!,
-                                            node: node0)
-        reconnect(node1)
-        
-        // We defer compilation of the function body until later.
-        return node1
+        try subcompiler.compile(globalEnvironment: globalEnvironment,
+                                symbols: symbols!,
+                                node: node0)
+        return nil
     }
     
     public override func compile(struct node0: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
@@ -62,9 +59,8 @@ public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
     }
     
     public override func compile(impl node0: Impl) throws -> AbstractSyntaxTreeNode? {
-        let subcompiler = SnapSubcompilerImpl(symbols: symbols!, globalEnvironment: globalEnvironment)
-        let node1 = try subcompiler.compile(node0)
-        return node1
+        try SnapSubcompilerImpl(symbols: symbols!, globalEnvironment: globalEnvironment).compile(node0)
+        return nil // Erase the Impl node now that it's been processed.
     }
     
     public override func compile(import node0: Import) throws -> AbstractSyntaxTreeNode? {

@@ -19,20 +19,22 @@ public class SnapSubcompilerImpl: NSObject {
         typeChecker = RvalueExpressionTypeChecker(symbols: parent, globalEnvironment: globalEnvironment)
     }
     
-    public func compile(_ node: Impl) throws -> Block {
+    public func compile(_ node: Impl) throws {
         if node.isGeneric {
-            let app = node.structTypeExpr as! Expression.GenericTypeApplication
+            guard let app = node.structTypeExpr as? Expression.GenericTypeApplication else {
+                throw CompilerError(sourceAnchor: node.structTypeExpr.sourceAnchor, message: "expected a generic type application: `\(node.structTypeExpr)'")
+            }
+            
             let genericStructType = try parent.resolveTypeOfIdentifier(sourceAnchor: app.sourceAnchor, identifier: app.identifier.identifier)
             let typ = genericStructType.unwrapGenericStructType()
             typ.implNodes.append(node)
-            return Block()
         }
         else {
             let implWhat = try typeChecker.check(expression: node.structTypeExpr)
             
             switch implWhat {
             case .constStructType(let typ), .structType(let typ):
-                return try compileImplStruct(node, typ)
+                try compileImplStruct(node, typ)
                 
             default:
                 fatalError("unsupported expression: \(node)")
@@ -40,15 +42,12 @@ public class SnapSubcompilerImpl: NSObject {
         }
     }
     
-    public func compileImplStruct(_ node: Impl, _ typ: StructType) throws -> Block {
-        let name = try typeChecker.check(expression: node.structTypeExpr).unwrapStructType().name
+    public func compileImplStruct(_ node: Impl, _ typ: StructType) throws {
         let symbols = SymbolTable(parent: parent)
-        symbols.enclosingFunctionNameMode = .set(name)
+        symbols.enclosingFunctionNameMode = .set(typ.name)
         symbols.enclosingFunctionTypeMode = .set(nil)
         
         SymbolTablesReconnector(symbols).reconnect(node)
-        
-        var modifiedChildren: [FunctionDeclaration] = []
         
         for child in node.children {
             let identifier = child.identifier.identifier
@@ -57,21 +56,14 @@ public class SnapSubcompilerImpl: NSObject {
                                     message: "function redefines existing symbol: `\(identifier)'")
             }
             
-            let subcompiler = SnapSubcompilerFunctionDeclaration()
-            let modifiedChild = try subcompiler.compile(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy,
-                                                        symbols: symbols,
-                                                        node: child)
-            if let modifiedChild {
-                modifiedChildren.append(modifiedChild)
-            }
+            // Enqueue the function to be compiled later
+            try SnapSubcompilerFunctionDeclaration()
+                .compile(globalEnvironment: globalEnvironment,
+                         symbols: symbols,
+                         node: child)
             
             // Put the symbol back into the struct type's symbol table too.
             typ.symbols.bind(identifier: identifier, symbol: symbols.symbolTable[identifier]!)
         }
-        
-        let block = Block(sourceAnchor: node.sourceAnchor,
-                          symbols: symbols,
-                          children: modifiedChildren)
-        return block
     }
 }

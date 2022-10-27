@@ -22,16 +22,15 @@ class SnapSubcompilerImplForTests: XCTestCase {
         _ = compileTrait(globalEnvironment, globalSymbols, traitDecl)
     }
     
-    fileprivate func compileTrait(_ globalEnvironment: GlobalEnvironment,  _ globalSymbols: SymbolTable, _ traitDecl: TraitDeclaration) -> Block {
+    fileprivate func compileTrait(_ globalEnvironment: GlobalEnvironment,  _ globalSymbols: SymbolTable, _ traitDecl: TraitDeclaration) {
         let t0 = try! SnapSubcompilerTraitDeclaration(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy, symbols: globalSymbols)
             .compile(traitDecl)
         try! SnapSubcompilerStructDeclaration(symbols: globalSymbols, globalEnvironment: globalEnvironment)
             .compile(t0.children[0] as! StructDeclaration)
         try! SnapSubcompilerStructDeclaration(symbols: globalSymbols, globalEnvironment: globalEnvironment)
             .compile(t0.children[1] as! StructDeclaration)
-        let t1 = try! SnapSubcompilerImpl(symbols: globalSymbols, globalEnvironment: globalEnvironment)
+        try! SnapSubcompilerImpl(symbols: globalSymbols, globalEnvironment: globalEnvironment)
             .compile(t0.children[2] as! Impl)
-        return t1
     }
     
     fileprivate func compileSerialFake(_ globalEnvironment: GlobalEnvironment,  _ globalSymbols: SymbolTable) {

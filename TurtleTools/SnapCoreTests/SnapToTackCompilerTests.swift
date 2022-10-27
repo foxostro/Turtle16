@@ -123,9 +123,16 @@ class SnapToTackCompilerTests: XCTestCase {
                                         Return()
                                      ]))
         let symbols = SymbolTable()
-        let fn2 = try SnapSubcompilerFunctionDeclaration().compile(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(), symbols: symbols, node: fn1)
-        let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.compileWithEpilog(fn2)
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
+        try SnapSubcompilerFunctionDeclaration()
+            .compile(globalEnvironment: globalEnvironment,
+                     symbols: symbols,
+                     node: fn1)
+        let opts = SnapToTackCompiler.Options(isBoundsCheckEnabled: true)
+        let compiler = SnapToTackCompiler(symbols: symbols,
+                                          globalEnvironment: globalEnvironment,
+                                          options: opts)
+        let actual = try compiler.compileWithEpilog(nil)
         let expected = Subroutine(identifier: "foo", children: [
             TackInstructionNode(instruction: .enter, parameters: [
                 ParameterNumber(0)

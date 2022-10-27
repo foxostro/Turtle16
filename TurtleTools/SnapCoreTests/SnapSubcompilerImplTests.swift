@@ -38,40 +38,28 @@ class SnapSubcompilerImplTests: XCTestCase {
             return (impl, symbols)
         }
         
-        func makeExpectedMethod() -> FunctionDeclaration {
-            let expectedMethod = FunctionDeclaration(identifier: Expression.Identifier("bar"),
-                                                     functionType: Expression.FunctionType(name: "bar", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [Expression.PointerType(Expression.Identifier("__Foo_object"))]),
-                                                     argumentNames: ["self"],
-                                                     body: Block(children: [
-                                                      Return(Expression.Call(callee: Expression.Get(expr: Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("vtable")), member: Expression.Identifier("bar")), arguments: [Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("object"))]))
-                                                     ]))
-            let implSymbols = SymbolTable()
-            implSymbols.enclosingFunctionNameMode = .set("Foo")
-            SymbolTablesReconnector(implSymbols).reconnect(expectedMethod)
-            return expectedMethod
+        func makeExpectedMethodType(symbols: SymbolTable, globalEnvironment: GlobalEnvironment) -> FunctionType {
+            let argTypeExpr = Expression.PointerType(Expression.Identifier("__Foo_object"))
+            let argType = try! RvalueExpressionTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment).check(expression: argTypeExpr)
+            let expectedMethodType = FunctionType(name: "bar",
+                                                  mangledName: "____Foo_object_bar",
+                                                  returnType: .arithmeticType(.mutableInt(.u8)),
+                                                  arguments: [argType])
+            return expectedMethodType
         }
         
         let (impl, symbols) = try makeImpl()
         
-        let compiler = SnapSubcompilerImpl(symbols: symbols, globalEnvironment: globalEnvironment)
-        var output: AbstractSyntaxTreeNode? = nil
-        XCTAssertNoThrow(output = try compiler.compile(impl))
+        try SnapSubcompilerImpl(symbols: symbols, globalEnvironment: globalEnvironment).compile(impl)
         
-        guard let block = output as? Block else {
-            XCTFail()
+        XCTAssertFalse(globalEnvironment.functionsToCompile.isEmpty)
+        guard !globalEnvironment.functionsToCompile.isEmpty else {
             return
         }
         
-        XCTAssertEqual(block.children.count, 1)
-        
-        guard let method = block.children.first as? FunctionDeclaration else {
-            XCTFail()
-            return
-        }
-        
-        let expectedMethod = makeExpectedMethod()
-        
-        XCTAssertEqual(method, expectedMethod)
+        let methodType = globalEnvironment.functionsToCompile.removeFirst()
+        let expectedMethodType = makeExpectedMethodType(symbols: symbols, globalEnvironment: globalEnvironment)
+        XCTAssertEqual(methodType, expectedMethodType)
     }
     
     func testRedefinesExistingSymbol() throws {

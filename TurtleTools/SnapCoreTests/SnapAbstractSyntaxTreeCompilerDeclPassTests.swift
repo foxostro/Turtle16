@@ -11,8 +11,8 @@ import SnapCore
 import TurtleCore
 
 class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
-    func makeCompiler() -> SnapAbstractSyntaxTreeCompilerDeclPass {
-        return SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: GlobalEnvironment())
+    func makeCompiler(globalEnvironment: GlobalEnvironment = GlobalEnvironment()) -> SnapAbstractSyntaxTreeCompilerDeclPass {
+        return SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment)
     }
     
     func testExample() throws {
@@ -138,44 +138,37 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
             return (impl, symbols)
         }
         
-        func makeExpectedMethod() -> FunctionDeclaration {
-            let expectedMethod = FunctionDeclaration(identifier: Expression.Identifier("bar"),
-                                                     functionType: Expression.FunctionType(name: "bar", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [Expression.PointerType(Expression.Identifier("__Foo_object"))]),
-                                                     argumentNames: ["self"],
-                                                     body: Block(children: [
-                                                      Return(Expression.Call(callee: Expression.Get(expr: Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("vtable")), member: Expression.Identifier("bar")), arguments: [Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("object"))]))
-                                                     ]))
-            let implSymbols = SymbolTable()
-            implSymbols.enclosingFunctionNameMode = .set("Foo")
-            SymbolTablesReconnector(implSymbols).reconnect(expectedMethod)
-            return expectedMethod
+        func makeExpectedMethodType(symbols: SymbolTable, globalEnvironment: GlobalEnvironment) -> FunctionType {
+            let argTypeExpr = Expression.PointerType(Expression.Identifier("__Foo_object"))
+            let argType = try! RvalueExpressionTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment).check(expression: argTypeExpr)
+            let expectedMethodType = FunctionType(name: "bar",
+                                                  mangledName: "____Foo_object_bar",
+                                                  returnType: .arithmeticType(.mutableInt(.u8)),
+                                                  arguments: [argType])
+            return expectedMethodType
         }
         
         let (impl, symbols) = try makeImpl()
         let input = Block(symbols: symbols, children: [impl])
         
-        let compiler = makeCompiler()
-        var output: AbstractSyntaxTreeNode? = nil
-        XCTAssertNoThrow(output = try compiler.compile(input))
+        let compiler = makeCompiler(globalEnvironment: globalEnvironment)
+        let output = try compiler.compile(input)
         
-        guard let outerBlock = output as? Block else {
+        guard let block = output as? Block else {
             XCTFail()
             return
         }
         
-        guard let innerBlock = outerBlock.children.first as? Block else {
-            XCTFail()
+        XCTAssertTrue(block.children.isEmpty)
+        
+        XCTAssertFalse(globalEnvironment.functionsToCompile.isEmpty)
+        guard !globalEnvironment.functionsToCompile.isEmpty else {
             return
         }
         
-        guard let method = innerBlock.children.first as? FunctionDeclaration else {
-            XCTFail()
-            return
-        }
-        
-        let expectedMethod = makeExpectedMethod()
-        
-        XCTAssertEqual(method, expectedMethod)
+        let methodType = globalEnvironment.functionsToCompile.removeFirst()
+        let expectedMethodType = makeExpectedMethodType(symbols: symbols, globalEnvironment: globalEnvironment)
+        XCTAssertEqual(methodType, expectedMethodType)
     }
     
     func testCompileImplForTrait() {

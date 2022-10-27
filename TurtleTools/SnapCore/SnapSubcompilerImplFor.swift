@@ -39,8 +39,6 @@ public class SnapSubcompilerImplFor: NSObject {
     }
     
     private func compile(implFor node: ImplFor, structType: StructType) throws -> Seq {
-        var resultArr: [AbstractSyntaxTreeNode] = []
-        
         let traitType = try typeChecker.check(expression: node.traitTypeExpr).unwrapTraitType()
         let vtableType = try typeChecker.check(identifier: Expression.Identifier(traitType.nameOfVtableType)).unwrapStructType()
         
@@ -48,8 +46,7 @@ public class SnapSubcompilerImplFor: NSObject {
                         typeArguments: node.typeArguments,
                         structTypeExpr: node.structTypeExpr,
                         children: node.children)
-        resultArr.append(try SnapSubcompilerImpl(symbols: symbols,
-                                                 globalEnvironment: globalEnvironment).compile(impl))
+        try SnapSubcompilerImpl(symbols: symbols, globalEnvironment: globalEnvironment).compile(impl)
         
         let sortedTraitSymbols = traitType.symbols.symbolTable.sorted { $0.0 < $1.0 }
         for (requiredMethodName, requiredMethodSymbol) in sortedTraitSymbols {
@@ -118,9 +115,8 @@ public class SnapSubcompilerImplFor: NSObject {
                                                storage: .staticStorage,
                                                isMutable: false,
                                                visibility: visibility)
-        resultArr.append(vtableDeclaration)
         
-        return Seq(sourceAnchor: node.sourceAnchor, children: resultArr)
+        return Seq(sourceAnchor: node.sourceAnchor, children: [vtableDeclaration])
     }
     
     private func compile(implFor node: ImplFor, genericStructType typ: GenericStructType) -> Seq {

@@ -6,6 +6,8 @@
 //  Copyright © 2021 Andrew Fox. All rights reserved.
 //
 
+import TurtleCore
+
 public class FunctionsToCompile: NSObject {
     private var queue: [FunctionType] = []
     private var alreadyQueued = Set<String>()
@@ -38,7 +40,7 @@ public class GlobalEnvironment: NSObject {
     // Code sequences to insert into the beginning of the compiled program.
     // This is currnetly used to setup global variables at the program entry
     // point.
-    public var preamble: [Seq] = []
+    public var preamble: [AbstractSyntaxTreeNode] = []
     
     public init(memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16(),
                 functionsToCompile: FunctionsToCompile = FunctionsToCompile()) {

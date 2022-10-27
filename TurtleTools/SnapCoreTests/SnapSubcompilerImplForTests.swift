@@ -39,7 +39,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
             .compile(fake)
     }
     
-    func testCompileImplForTrait() {
+    func testCompileImplForTrait() throws {
         let globalSymbols = SymbolTable()
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         
@@ -59,30 +59,17 @@ class SnapSubcompilerImplForTests: XCTestCase {
                                                   body: Block())
                           ])
         
-        let compiler = SnapSubcompilerImplFor(symbols: globalSymbols, globalEnvironment: globalEnvironment)
+        try SnapSubcompilerImplFor(symbols: globalSymbols, globalEnvironment: globalEnvironment).compile(ast)
         
-        var seq: Seq? = nil
-        XCTAssertNoThrow(seq = try compiler.compile(ast))
-        
-        // Compile the vtable instance so we can compare it's type against our
-        // expectations. We could also examine the type expression in the
-        // uncompiled VarDeclaration node, but this ensures we evaluate that
-        // expression in the same way it would be in the full compiler.
-        guard let vtableDeclaration = seq?.children.last as? VarDeclaration else {
-            XCTFail()
-            return
-        }
-        
-        _ = try? SnapSubcompilerVarDeclaration(symbols: globalSymbols, globalEnvironment: globalEnvironment).compile(vtableDeclaration)
-        
+        // Let's examine, for correctness, the vtable symbol
         let nameOfVtableInstance = "__Serial_SerialFake_vtable_instance"
-        let vtableInstance = try? globalSymbols.resolve(identifier: nameOfVtableInstance)
-        let vtableStructType = vtableInstance?.type.unwrapStructType()
-        XCTAssertEqual(vtableStructType?.name, "__Serial_vtable")
-        XCTAssertEqual(vtableStructType?.symbols.exists(identifier: "puts"), true)
-        let putsSymbol = try? vtableStructType?.symbols.resolve(identifier: "puts")
-        XCTAssertEqual(putsSymbol?.type, .pointer(.function(FunctionType(returnType: .void, arguments: [.pointer(.void), .dynamicArray(elementType: .arithmeticType(.mutableInt(.u8)))]))))
-        XCTAssertEqual(putsSymbol?.offset, 0)
+        let vtableInstance = try globalSymbols.resolve(identifier: nameOfVtableInstance)
+        let vtableStructType = vtableInstance.type.unwrapStructType()
+        XCTAssertEqual(vtableStructType.name, "__Serial_vtable")
+        XCTAssertEqual(vtableStructType.symbols.exists(identifier: "puts"), true)
+        let putsSymbol = try vtableStructType.symbols.resolve(identifier: "puts")
+        XCTAssertEqual(putsSymbol.type, .pointer(.function(FunctionType(returnType: .void, arguments: [.pointer(.void), .dynamicArray(elementType: .arithmeticType(.mutableInt(.u8)))]))))
+        XCTAssertEqual(putsSymbol.offset, 0)
     }
     
     func testFailToCompileImplForTraitBecauseMethodsAreMissing() {

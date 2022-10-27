@@ -81,13 +81,19 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     
     public func compileWithEpilog(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
         var children: [AbstractSyntaxTreeNode] = []
+        
+        let compiledModules = try collectCompiledModuleCode()
         let compiledNode = try compile(node0)
-        children += try collectCompiledModuleCode()
-        children += try globalEnvironment.preamble.compactMap { try compile($0) }
+        let compiledFunctions = try compileFunctions()
+        let compiledPreamble = try compilePreamble(node0)
+        
+        children += compiledPreamble
+        children += compiledModules
         if let compiledNode {
             children.append(compiledNode)
         }
-        children += try compileFunctions()
+        children += compiledFunctions
+        
         let seq = Seq(sourceAnchor: node0?.sourceAnchor, children: children)
         let result = flatten(seq)
         return result
@@ -144,6 +150,22 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
             body3
         ])
         return subroutine
+    }
+    
+    fileprivate func compilePreamble(_ top: AbstractSyntaxTreeNode?) throws -> [AbstractSyntaxTreeNode] {
+        var result: [AbstractSyntaxTreeNode] = []
+        let prevSymbols = symbols
+        if let top = top as? Block {
+            symbols = top.symbols
+        }
+        while !globalEnvironment.preamble.isEmpty {
+            let node = globalEnvironment.preamble.removeFirst()
+            if let compiled = try compile(node) {
+                result.append(compiled)
+            }
+        }
+        symbols = prevSymbols
+        return result
     }
     
     func flatten(_ node: AbstractSyntaxTreeNode?) -> AbstractSyntaxTreeNode? {

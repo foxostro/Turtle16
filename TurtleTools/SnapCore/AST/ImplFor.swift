@@ -41,6 +41,14 @@ public class ImplFor: AbstractSyntaxTreeNode {
                        children: children)
     }
     
+    public func eraseTypeArguments() -> ImplFor {
+        return ImplFor(sourceAnchor: sourceAnchor,
+                       typeArguments: [],
+                       traitTypeExpr: traitTypeExpr,
+                       structTypeExpr: structTypeExpr,
+                       children: children)
+    }
+    
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else { return false }
         guard type(of: rhs!) == type(of: self) else { return false }

@@ -957,6 +957,24 @@ public class RvalueExpressionTypeChecker: NSObject {
         return mangledName
     }
     
+    public func mangleStructName(_ name: String?, evaluatedTypeArguments: [SymbolType] = []) -> String? {
+        guard let name else {
+            return nil
+        }
+        
+        // Each concrete instance must have a unique mangled name. We append a
+        // suffix derived from the type argument list to ensure it.
+        let typeNameList = evaluatedTypeArguments.map { arg in
+            arg.description.replacingOccurrences(of: " ", with: "_")
+        }
+        
+        let arr = Array(NSOrderedSet(array: [name] + typeNameList))
+        let prefix: String = (arr.count == 1) ? "" : "__"
+        let mangledName = prefix + arr.map{$0 as! String}.joined(separator: "_")
+        
+        return mangledName
+    }
+    
     fileprivate func evaluateFunctionArguments(_ argsToEvaluate: [Expression]) throws -> [SymbolType] {
         try argsToEvaluate.map {
             try check(expression: $0)
@@ -1058,28 +1076,45 @@ public class RvalueExpressionTypeChecker: NSObject {
         let concreteType = try subcompiler.compile(template, evaluatedTypeArguments)
         genericStructType.instantiations[evaluatedTypeArguments] = concreteType // memoize
         
-        // Move the type for the instantiated struct from the temporary symbol
-        // table we use for type substitutions to the persistent symbol table.
-        let identifier = concreteType.unwrapStructType().name
-        let typeRecord = symbolsWithTypeArguments.typeTable[identifier]
-        symbolsWithTypeArguments.typeTable[identifier] = nil
-        assert(symbols.typeTable[identifier] == nil)
-        symbols.typeTable[identifier] = typeRecord
-        
         // Apply the deferred impl nodes now.
         for implNode in genericStructType.implNodes.map({ $0.eraseTypeArguments() }) {
             try SnapSubcompilerImpl(symbols: symbolsWithTypeArguments, globalEnvironment: globalEnvironment).compile(implNode)
         }
         
-//        // Apply the deferred impl-for nodes now.
-//        for node0 in genericStructType.implForNodes {
-//            let subcompiler = SnapSubcompilerImplFor(symbols: symbolsWithTypeArguments, globalEnvironment: globalEnvironment)
-//            let node1 = try subcompiler.compile(node0)
-//            let node2 = try SnapAbstractSyntaxTreeCompilerImplPass(symbols: symbolsWithTypeArguments,
-//                                                                   globalEnvironment: globalEnvironment).compile(node1)
-//            let node2desc = node2?.description ?? "none"
-//            print("node2: \(node2desc)")
-//        }
+        // Apply the deferred impl-for nodes now.
+        for node0 in genericStructType.implForNodes {
+            let node1 = node0.eraseTypeArguments()
+            try SnapSubcompilerImplFor(symbols: symbolsWithTypeArguments,
+                                       globalEnvironment: globalEnvironment)
+            .compile(node1)
+        }
+        
+        // Collect the new types and symbols that were bound above in
+        // `symbolsWithTypeArguments' and move them to `symbols'.
+        // Not the type variables, though, avoid those.
+        for typeVariable in genericStructType.typeArguments {
+            let identifier = typeVariable.identifier.identifier
+            symbolsWithTypeArguments.typeTable.removeValue(forKey: identifier)
+        }
+        
+        for typeName in symbolsWithTypeArguments.typeTable.keys {
+            let typeRecord = symbolsWithTypeArguments.typeTable[typeName]!
+            let symbolType = typeRecord.symbolType
+            guard !symbols.existsAsTypeAndCannotBeShadowed(identifier: typeName) else {
+                throw CompilerError(sourceAnchor: expr.sourceAnchor,
+                                    message: "generic type application redefines existing type: `\(typeName)'")
+            }
+            symbols.bind(identifier: typeName, symbolType: symbolType)
+        }
+        
+        for symbolName in symbolsWithTypeArguments.symbolTable.keys {
+            let symbol = symbolsWithTypeArguments.symbolTable[symbolName]!
+            guard !symbols.existsAndCannotBeShadowed(identifier: symbolName) else {
+                throw CompilerError(sourceAnchor: expr.sourceAnchor,
+                                    message: "generic type application redefines existing symbol: `\(symbolName)'")
+            }
+            symbols.bind(identifier: symbolName, symbol: symbol)
+        }
         
         return concreteType
     }

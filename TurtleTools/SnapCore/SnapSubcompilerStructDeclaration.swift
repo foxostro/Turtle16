@@ -45,7 +45,7 @@ public class SnapSubcompilerStructDeclaration: NSObject {
         let members = SymbolTable(parent: symbols)
         let typeChecker = TypeContextTypeChecker(symbols: members, globalEnvironment: globalEnvironment)
         let name = node.identifier.identifier
-        let mangledName = typeChecker.mangleFunctionName(name, evaluatedTypeArguments: evaluatedTypeArguments)!
+        let mangledName = typeChecker.mangleStructName(name, evaluatedTypeArguments: evaluatedTypeArguments)!
         let fullyQualifiedStructType = StructType(name: mangledName, symbols: members)
         let type: SymbolType = node.isConst ? .constStructType(fullyQualifiedStructType) : .structType(fullyQualifiedStructType)
         symbols.bind(identifier: mangledName,

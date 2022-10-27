@@ -5542,49 +5542,45 @@ class SnapToTackCompilerTests: XCTestCase {
             ]),
             TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr1"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
                 ParameterNumber(0x0112)
             ]),
             TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr3"),
                 ParameterIdentifier("vr2"),
+                ParameterIdentifier("vr1"),
                 ParameterNumber(0)
             ]),
             TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr4"),
+                ParameterIdentifier("vr3"),
                 ParameterNumber(0x0110)
             ]),
             TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3")
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr2")
             ]),
             TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr5"),
+                ParameterIdentifier("vr4"),
                 ParameterNumber(0x0112)
             ]),
             TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr6"),
                 ParameterIdentifier("vr5"),
+                ParameterIdentifier("vr4"),
                 ParameterNumber(1)
             ]),
             TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr7"),
+                ParameterIdentifier("vr6"),
                 ParameterNumber(0x0110)
             ]),
             TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr7"),
-                ParameterIdentifier("vr6")
+                ParameterIdentifier("vr6"),
+                ParameterIdentifier("vr5")
             ]),
             TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr8"),
+                ParameterIdentifier("vr7"),
                 ParameterNumber(0x0112)
             ]),
             TackInstructionNode(instruction: .memcpy, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr8"),
+                ParameterIdentifier("vr0"),
+                ParameterIdentifier("vr7"),
                 ParameterNumber(2)
             ])
         ])
@@ -5621,8 +5617,7 @@ class SnapToTackCompilerTests: XCTestCase {
         let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
         contractStep.compile(ast0)
         let ast1 = contractStep.ast
-        let compiler = SnapToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment, options: opts)
-        let actual = try compiler.compile(ast1)
+        let actual = try SnapToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment, options: opts).compile(ast1)
         
         let expected = Seq(children: [
             TackInstructionNode(instruction: .liu16, parameters: [
@@ -5631,49 +5626,45 @@ class SnapToTackCompilerTests: XCTestCase {
             ]),
             TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr1"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
                 ParameterNumber(0x0112)
             ]),
             TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr3"),
                 ParameterIdentifier("vr2"),
+                ParameterIdentifier("vr1"),
                 ParameterNumber(0)
             ]),
             TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr4"),
+                ParameterIdentifier("vr3"),
                 ParameterNumber(0x0110)
             ]),
             TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3")
+                ParameterIdentifier("vr3"),
+                ParameterIdentifier("vr2")
             ]),
             TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr5"),
+                ParameterIdentifier("vr4"),
                 ParameterNumber(0x0112)
             ]),
             TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr6"),
                 ParameterIdentifier("vr5"),
+                ParameterIdentifier("vr4"),
                 ParameterNumber(1)
             ]),
             TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr7"),
+                ParameterIdentifier("vr6"),
                 ParameterNumber(0x0110)
             ]),
             TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr7"),
-                ParameterIdentifier("vr6")
+                ParameterIdentifier("vr6"),
+                ParameterIdentifier("vr5")
             ]),
             TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr8"),
+                ParameterIdentifier("vr7"),
                 ParameterNumber(0x0112)
             ]),
             TackInstructionNode(instruction: .memcpy, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr8"),
+                ParameterIdentifier("vr0"),
+                ParameterIdentifier("vr7"),
                 ParameterNumber(2)
             ])
         ])

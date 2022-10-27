@@ -20,25 +20,39 @@ public class SnapSubcompilerImplFor: NSObject {
         typeChecker = RvalueExpressionTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment)
     }
     
-    public func compile(_ node: ImplFor) throws -> Seq {
-        let result: Seq
-        let structType = try typeChecker.check(expression: node.structTypeExpr)
+    public func compile(_ node: ImplFor) throws {
+        // It may be the case that we can't resolve the generic type application
+        // because the arugment is an unbound generic type variables. If so then
+        // we need to ensure the expression resolves to a generic struct type
+        // and deal with it later.
+        let structType: SymbolType
+        switch node.structTypeExpr {
+        case let app as Expression.GenericTypeApplication:
+            if let s = try? typeChecker.check(expression: node.structTypeExpr) {
+                structType = s
+            }
+            else {
+                structType = try symbols.resolveTypeOfIdentifier(sourceAnchor: app.identifier.sourceAnchor,
+                                                                 identifier: app.identifier.identifier)
+            }
+            
+        default:
+            structType = try typeChecker.check(expression: node.structTypeExpr)
+        }
         
         switch structType {
         case .constStructType(let typ), .structType(let typ):
-            result = try compile(implFor: node, structType: typ)
+            try compile(implFor: node, structType: typ)
             
         case .genericStructType(let typ):
-            result = compile(implFor: node, genericStructType: typ)
+            typ.implForNodes.append(node)
             
         default:
             fatalError("unsupported type: \(structType)")
         }
-        
-        return result
     }
     
-    private func compile(implFor node: ImplFor, structType: StructType) throws -> Seq {
+    private func compile(implFor node: ImplFor, structType: StructType) throws {
         let traitType = try typeChecker.check(expression: node.traitTypeExpr).unwrapTraitType()
         let vtableType = try typeChecker.check(identifier: Expression.Identifier(traitType.nameOfVtableType)).unwrapStructType()
         
@@ -90,6 +104,13 @@ public class SnapSubcompilerImplFor: NSObject {
             }
         }
         
+        try makeVtableDeclaration(traitType, structType, vtableType, node)
+    }
+    
+    private func makeVtableDeclaration(_ traitType: TraitType,
+                                       _ structType: StructType,
+                                       _ vtableType: StructType,
+                                       _ node: ImplFor) throws {
         let nameOfVtableInstance = "__\(traitType.name)_\(structType.name)_vtable_instance"
         var arguments: [Expression.StructInitializer.Argument] = []
         let sortedVtableSymbols = vtableType.symbols.symbolTable.sorted { $0.0 < $1.0 }
@@ -116,11 +137,8 @@ public class SnapSubcompilerImplFor: NSObject {
                                                isMutable: false,
                                                visibility: visibility)
         
-        return Seq(sourceAnchor: node.sourceAnchor, children: [vtableDeclaration])
-    }
-    
-    private func compile(implFor node: ImplFor, genericStructType typ: GenericStructType) -> Seq {
-        typ.implForNodes.append(node)
-        return Seq()
+        let initialAssignment = try SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment).compile(vtableDeclaration)
+        
+        globalEnvironment.preamble.append(initialAssignment!)
     }
 }

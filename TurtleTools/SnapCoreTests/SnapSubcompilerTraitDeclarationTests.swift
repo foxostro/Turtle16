@@ -11,24 +11,22 @@ import SnapCore
 import TurtleCore
 
 class SnapSubcompilerTraitDeclarationTests: XCTestCase {
-    fileprivate func makeCompiler(_ symbols: SymbolTable) -> SnapSubcompilerTraitDeclaration {
-        return SnapSubcompilerTraitDeclaration(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(), symbols: symbols)
-    }
-    
-    func testCompileTraitAddsToTypeTable_Empty() {
+    func testCompileTraitAddsToTypeTable_Empty() throws {
         let ast = TraitDeclaration(identifier: Expression.Identifier("Foo"), members: [])
         
-        let globalSymbols = SymbolTable()
-        let _ = try? makeCompiler(globalSymbols).compile(ast)
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let globalSymbols = globalEnvironment.globalSymbols
+        let compiler = SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment)
+        let _ = try compiler.compile(ast)
         
         let expectedSymbols = SymbolTable()
         expectedSymbols.enclosingFunctionNameMode = .set("Foo")
         let expected: SymbolType = .traitType(TraitType(name: "Foo", nameOfTraitObjectType: "__Foo_object", nameOfVtableType: "__Foo_vtable", symbols: expectedSymbols))
-        let actual = try? globalSymbols.resolveType(identifier: "Foo")
+        let actual = try globalSymbols.resolveType(identifier: "Foo")
         XCTAssertEqual(expected, actual)
     }
     
-    func testCompileTraitAddsToTypeTable_HasMethod() {
+    func testCompileTraitAddsToTypeTable_HasMethod() throws {
         let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [
             Expression.PointerType(Expression.Identifier("Foo"))
         ])))
@@ -36,8 +34,10 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
                                    members: [bar],
                                    visibility: .privateVisibility)
 
-        let globalSymbols = SymbolTable()
-        let _ = try? makeCompiler(globalSymbols).compile(ast)
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let globalSymbols = globalEnvironment.globalSymbols
+        let compiler = SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment)
+        let _ = try compiler.compile(ast)
 
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
         let members = SymbolTable()
@@ -51,28 +51,30 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
         members.storagePointer += sizeOfMemoryType
         members.parent = nil
 
-        let actual = try? globalSymbols.resolveType(identifier: "Foo")
+        let actual = try globalSymbols.resolveType(identifier: "Foo")
         XCTAssertEqual(expected, actual)
     }
 
-    func testCompileTraitAddsVtableType_Empty() {
+    func testCompileTraitAddsVtableType_Empty() throws {
         let ast = TraitDeclaration(identifier: Expression.Identifier("Foo"), members: [])
 
-        let globalSymbols = SymbolTable()
-        let result = try? makeCompiler(globalSymbols).compile(ast)
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let globalSymbols = globalEnvironment.globalSymbols
+        let compiler = SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment)
+        let result = try compiler.compile(ast)
         
-        let traitType = try? globalSymbols.resolveType(identifier: "Foo")
-        let nameOfVtableType = traitType?.unwrapTraitType().nameOfVtableType ?? ""
+        let traitType = try globalSymbols.resolveType(identifier: "Foo")
+        let nameOfVtableType = traitType.unwrapTraitType().nameOfVtableType ?? ""
         XCTAssertEqual("__Foo_vtable", nameOfVtableType)
         
         let expected = StructDeclaration(identifier: Expression.Identifier("__Foo_vtable"),
                                          members: [],
                                          visibility: .privateVisibility,
                                          isConst: true)
-        XCTAssertEqual(result?.children.first, expected)
+        XCTAssertEqual(result.children.first, expected)
     }
 
-    func testCompileTraitAddsVtableType_HasMethod() {
+    func testCompileTraitAddsVtableType_HasMethod() throws {
         let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [
             Expression.PointerType(Expression.Identifier("Foo"))
         ])))
@@ -80,11 +82,13 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
                                    members: [bar],
                                    visibility: .privateVisibility)
 
-        let globalSymbols = SymbolTable()
-        let result = try? makeCompiler(globalSymbols).compile(ast)
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let globalSymbols = globalEnvironment.globalSymbols
+        let compiler = SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment)
+        let result = try compiler.compile(ast)
         
-        let traitType = try? globalSymbols.resolveType(identifier: "Foo")
-        let nameOfVtableType = traitType?.unwrapTraitType().nameOfVtableType ?? ""
+        let traitType = try globalSymbols.resolveType(identifier: "Foo")
+        let nameOfVtableType = traitType.unwrapTraitType().nameOfVtableType ?? ""
         XCTAssertEqual("__Foo_vtable", nameOfVtableType)
         
         let expected = StructDeclaration(identifier: Expression.Identifier("__Foo_vtable"),
@@ -93,10 +97,10 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
                                          ],
                                          visibility: .privateVisibility,
                                          isConst: true)
-        XCTAssertEqual(result?.children.first, expected)
+        XCTAssertEqual(result.children.first, expected)
     }
 
-    func testCompileTraitAddsVtableType_HasConstMethod() {
+    func testCompileTraitAddsVtableType_HasConstMethod() throws {
         let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [
             Expression.PointerType(Expression.ConstType(Expression.Identifier("Foo")))
         ])))
@@ -104,11 +108,13 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
                                    members: [bar],
                                    visibility: .privateVisibility)
 
-        let globalSymbols = SymbolTable()
-        let result = try? makeCompiler(globalSymbols).compile(ast)
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let globalSymbols = globalEnvironment.globalSymbols
+        let compiler = SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment)
+        let result = try compiler.compile(ast)
         
-        let traitType = try? globalSymbols.resolveType(identifier: "Foo")
-        let nameOfVtableType = traitType?.unwrapTraitType().nameOfVtableType ?? ""
+        let traitType = try globalSymbols.resolveType(identifier: "Foo")
+        let nameOfVtableType = traitType.unwrapTraitType().nameOfVtableType ?? ""
         XCTAssertEqual("__Foo_vtable", nameOfVtableType)
         
         let expected = StructDeclaration(identifier: Expression.Identifier("__Foo_vtable"),
@@ -117,10 +123,10 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
                                          ],
                                          visibility: .privateVisibility,
                                          isConst: true)
-        XCTAssertEqual(result?.children.first, expected)
+        XCTAssertEqual(result.children.first, expected)
     }
     
-    func testCompileTraitAddsTraitObjectType_VoidReturn() {
+    func testCompileTraitAddsTraitObjectType_VoidReturn() throws {
         let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.void), arguments: [
             Expression.PointerType(Expression.Identifier("Foo"))
         ])))
@@ -128,12 +134,14 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
                                    members: [bar],
                                    visibility: .privateVisibility)
         
-        let globalSymbols = SymbolTable()
-        let result = try? makeCompiler(globalSymbols).compile(ast)
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let globalSymbols = globalEnvironment.globalSymbols
+        let compiler = SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment)
+        let result = try compiler.compile(ast)
         
-        let traitType = try? globalSymbols.resolveType(identifier: "Foo")
-        XCTAssertEqual("__Foo_vtable", traitType?.unwrapTraitType().nameOfVtableType)
-        XCTAssertEqual("__Foo_object", traitType?.unwrapTraitType().nameOfTraitObjectType)
+        let traitType = try globalSymbols.resolveType(identifier: "Foo")
+        XCTAssertEqual("__Foo_vtable", traitType.unwrapTraitType().nameOfVtableType)
+        XCTAssertEqual("__Foo_object", traitType.unwrapTraitType().nameOfTraitObjectType)
         
         let expected = Seq(children: [
             StructDeclaration(identifier: Expression.Identifier("__Foo_vtable"), members: [
@@ -154,7 +162,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
         XCTAssertEqual(result, expected)
     }
 
-    func testCompileTraitAddsTraitObjectType() {
+    func testCompileTraitAddsTraitObjectType() throws {
         let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [
             Expression.PointerType(Expression.Identifier("Foo"))
         ])))
@@ -162,12 +170,14 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
                                    members: [bar],
                                    visibility: .privateVisibility)
         
-        let globalSymbols = SymbolTable()
-        let result = try? makeCompiler(globalSymbols).compile(ast)
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let globalSymbols = globalEnvironment.globalSymbols
+        let compiler = SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment)
+        let result = try compiler.compile(ast)
         
-        let traitType = try? globalSymbols.resolveType(identifier: "Foo")
-        XCTAssertEqual("__Foo_vtable", traitType?.unwrapTraitType().nameOfVtableType)
-        XCTAssertEqual("__Foo_object", traitType?.unwrapTraitType().nameOfTraitObjectType)
+        let traitType = try globalSymbols.resolveType(identifier: "Foo")
+        XCTAssertEqual("__Foo_vtable", traitType.unwrapTraitType().nameOfVtableType)
+        XCTAssertEqual("__Foo_object", traitType.unwrapTraitType().nameOfTraitObjectType)
         
         let expected = Seq(children: [
             StructDeclaration(identifier: Expression.Identifier("__Foo_vtable"), members: [

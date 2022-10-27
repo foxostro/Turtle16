@@ -12,7 +12,7 @@ import TurtleCore
 
 class SnapSubcompilerImplTests: XCTestCase {
     func testExample() throws {
-        let globalEnvironment = GlobalEnvironment()
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         
         func makeImpl() throws -> (Impl, SymbolTable) {
             let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [
@@ -22,9 +22,9 @@ class SnapSubcompilerImplTests: XCTestCase {
                                        members: [bar],
                                        visibility: .privateVisibility)
             
-            let symbols = SymbolTable()
+            let symbols = SymbolTable(parent: globalEnvironment.globalSymbols)
             
-            let traitCompiler = SnapSubcompilerTraitDeclaration(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(), symbols: symbols)
+            let traitCompiler = SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment)
             let seq = try traitCompiler.compile(foo)
             
             let structCompiler0 = SnapSubcompilerStructDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
@@ -63,7 +63,7 @@ class SnapSubcompilerImplTests: XCTestCase {
     }
     
     func testRedefinesExistingSymbol() throws {
-        let globalEnvironment = GlobalEnvironment()
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         
         func makeImpl() throws -> (Impl, SymbolTable) {
             let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [
@@ -73,9 +73,9 @@ class SnapSubcompilerImplTests: XCTestCase {
                                        members: [bar, bar],
                                        visibility: .privateVisibility)
             
-            let symbols = SymbolTable()
+            let symbols = SymbolTable(parent: globalEnvironment.globalSymbols)
             
-            let traitCompiler = SnapSubcompilerTraitDeclaration(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL(), symbols: symbols)
+            let traitCompiler = SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment)
             let seq = try traitCompiler.compile(foo)
             
             let structCompiler0 = SnapSubcompilerStructDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)

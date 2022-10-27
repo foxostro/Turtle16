@@ -5136,12 +5136,11 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testAssignment_automatic_conversion_from_trait_to_pointer() throws {
         let globalEnvironment = GlobalEnvironment()
-        let symbols = SymbolTable()
+        let symbols = globalEnvironment.globalSymbols
         let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Foo"),
                                          members: [],
                                          visibility: .privateVisibility)
-        let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
-        let seq = try SnapSubcompilerTraitDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols).compile(traitDecl)
+        let seq = try SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment).compile(traitDecl)
         let vtableDecl = seq.children[0] as! StructDeclaration
         let objectDecl = seq.children[1] as! StructDeclaration
         let impl = seq.children[2] as! Impl

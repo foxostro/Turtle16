@@ -19,11 +19,11 @@ class SnapSubcompilerImplForTests: XCTestCase {
         let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Serial"),
                                          members: [bar],
                                          visibility: .privateVisibility)
-        _ = compileTrait(globalEnvironment, globalSymbols, traitDecl)
+        compileTrait(globalEnvironment, globalSymbols, traitDecl)
     }
     
     fileprivate func compileTrait(_ globalEnvironment: GlobalEnvironment,  _ globalSymbols: SymbolTable, _ traitDecl: TraitDeclaration) {
-        let t0 = try! SnapSubcompilerTraitDeclaration(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy, symbols: globalSymbols)
+        let t0 = try! SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment)
             .compile(traitDecl)
         try! SnapSubcompilerStructDeclaration(symbols: globalSymbols, globalEnvironment: globalEnvironment)
             .compile(t0.children[0] as! StructDeclaration)

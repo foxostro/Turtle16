@@ -9,12 +9,16 @@
 import TurtleCore
 
 public class SnapSubcompilerTraitDeclaration: NSObject {
-    public let symbols: SymbolTable
-    public let memoryLayoutStrategy: MemoryLayoutStrategy
+    public let globalEnvironment: GlobalEnvironment
+    private var memoryLayoutStrategy: MemoryLayoutStrategy {
+        globalEnvironment.memoryLayoutStrategy
+    }
+    private var symbols: SymbolTable {
+        globalEnvironment.globalSymbols
+    }
     
-    public init(memoryLayoutStrategy: MemoryLayoutStrategy, symbols: SymbolTable) {
-        self.symbols = symbols
-        self.memoryLayoutStrategy = memoryLayoutStrategy
+    public init(globalEnvironment: GlobalEnvironment) {
+        self.globalEnvironment = globalEnvironment
     }
     
     public func compile(_ node: TraitDeclaration) throws -> Seq {

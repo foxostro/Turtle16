@@ -3542,12 +3542,12 @@ class SnapToTackCompilerTests: XCTestCase {
     }
     
     func testRvalue_Assignment_automatic_conversion_from_trait_to_pointer() throws {
-        let symbols = SymbolTable()
         let globalEnvironment = GlobalEnvironment()
+        let symbols = globalEnvironment.globalSymbols
         let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Foo"),
                                          members: [],
                                          visibility: .privateVisibility)
-        let seq = try SnapSubcompilerTraitDeclaration(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy, symbols: symbols).compile(traitDecl)
+        let seq = try SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment).compile(traitDecl)
         let vtableDecl = seq.children[0] as! StructDeclaration
         let objectDecl = seq.children[1] as! StructDeclaration
         let impl = seq.children[2] as! Impl
@@ -5504,7 +5504,8 @@ class SnapToTackCompilerTests: XCTestCase {
     }
     
     func testRvalue_convert_pointer_to_trait() throws {
-        let symbols = SymbolTable()
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
+        let symbols = globalEnvironment.globalSymbols
         
         let ast0 = Block(symbols: symbols, children: [
             TraitDeclaration(identifier: Expression.Identifier("Serial"),
@@ -5529,7 +5530,6 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         
         let opts = SnapToTackCompiler.Options.defaultOptions
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
         let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
         contractStep.compile(ast0)
         let ast1 = contractStep.ast
@@ -5589,7 +5589,8 @@ class SnapToTackCompilerTests: XCTestCase {
     }
     
     func testRvalue_convert_struct_to_trait() throws {
-        let symbols = SymbolTable()
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
+        let symbols = globalEnvironment.globalSymbols
         
         let ast0 = Block(symbols: symbols, children: [
             TraitDeclaration(identifier: Expression.Identifier("Serial"),
@@ -5614,7 +5615,6 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         
         let opts = SnapToTackCompiler.Options.defaultOptions
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
         let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
         contractStep.compile(ast0)
         let ast1 = contractStep.ast

@@ -125,7 +125,9 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
             let foo = TraitDeclaration(identifier: Expression.Identifier("Foo"),
                                        members: [bar],
                                        visibility: .privateVisibility)
-            try SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment).compile(foo)
+            try SnapSubcompilerTraitDeclaration(
+                globalEnvironment: globalEnvironment,
+                symbols: globalEnvironment.globalSymbols).compile(foo)
         }
         try makeImpl()
         

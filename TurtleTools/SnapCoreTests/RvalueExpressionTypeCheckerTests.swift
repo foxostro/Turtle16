@@ -5140,7 +5140,9 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Foo"),
                                          members: [],
                                          visibility: .privateVisibility)
-        try SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment).compile(traitDecl)
+        try SnapSubcompilerTraitDeclaration(
+            globalEnvironment: globalEnvironment,
+            symbols: globalEnvironment.globalSymbols).compile(traitDecl)
         
         let traitObjectType = try symbols.resolveType(identifier: traitDecl.nameOfTraitObjectType)
         symbols.bind(identifier: "foo", symbol: Symbol(type: .pointer(traitObjectType), offset: 0x1000, storage: .staticStorage))

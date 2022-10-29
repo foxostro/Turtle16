@@ -38,11 +38,6 @@ public class GlobalEnvironment: NSObject {
     public let functionsToCompile: FunctionsToCompile
     public let globalSymbols: SymbolTable
     
-    // Code sequences to insert into the beginning of the compiled program.
-    // This is currnetly used to setup global variables at the program entry
-    // point.
-    public var preamble: [AbstractSyntaxTreeNode] = []
-    
     public init(memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16(),
                 functionsToCompile: FunctionsToCompile = FunctionsToCompile(),
                 globalSymbols: SymbolTable = SymbolTable()) {

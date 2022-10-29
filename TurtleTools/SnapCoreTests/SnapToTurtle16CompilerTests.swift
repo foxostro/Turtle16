@@ -2904,4 +2904,46 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolU16("p"), 42)
     }
+    
+    func test_EndToEndIntegration_GenericStruct_ImplFor_WithinAFunction() {
+        let debugger = run(program: """
+            func myFunction() -> u16 {
+                trait Incrementer {
+                    func increment(self: *Incrementer)
+                }
+
+                struct RealIncrementer[T] {
+                    val: T
+                }
+
+                impl[T] Incrementer for RealIncrementer@[T] {
+                    func increment(self: *RealIncrementer@[T]) {
+                        self.val = self.val + 1
+                    }
+                }
+
+                var realIncrementer = RealIncrementer@[u16] { .val = 41 }
+                let incrementer: Incrementer = &realIncrementer
+                incrementer.increment()
+                return realIncrementer.val
+            }
+            let p = myFunction()
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("p"), 42)
+    }
+    
+    func DISABLED_test_EndToEndIntegration_InferReturnTypeVoidLeadsToCompilerCrash() {
+        // We're going to infer a return type of void for `myFunction' which
+        // means `p' has a return type of void. The compiler then proceeds to
+        // crash in peekRegister() while trying to compile this bad assignment.
+        let debugger = run(program: """
+            func myFunction() {
+                return 1000
+            }
+            let p = myFunction()
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("p"), 42)
+    }
 }

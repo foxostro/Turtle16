@@ -894,6 +894,10 @@ public class SymbolTable: NSObject {
     public var highwaterMark: Int
     public var stackFrameIndex: Int
     
+    // This is a code sequence which needs to execute when entering this scope.
+    // Used to insert code for setting up vtables and such.
+    public var scopePrologue: Seq = Seq()
+    
     public enum EnclosingFunctionType: Hashable, Equatable {
         case inherit, set(FunctionType?)
     }

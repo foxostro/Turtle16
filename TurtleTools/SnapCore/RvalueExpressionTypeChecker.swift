@@ -520,6 +520,9 @@ public class RvalueExpressionTypeChecker: NSObject {
                 if vtableInstance != nil {
                     return .acceptable(ltype)
                 }
+                else {
+                    print("missing vtable: \(nameOfVtableInstance)")
+                }
             
             default:
                 break
@@ -1115,6 +1118,8 @@ public class RvalueExpressionTypeChecker: NSObject {
             }
             symbols.bind(identifier: symbolName, symbol: symbol)
         }
+        
+        symbols.scopePrologue = symbols.scopePrologue.appending(children: symbolsWithTypeArguments.scopePrologue.children)
         
         return concreteType
     }

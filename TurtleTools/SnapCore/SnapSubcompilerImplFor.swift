@@ -138,9 +138,9 @@ public class SnapSubcompilerImplFor: NSObject {
                                                visibility: visibility)
         
         let initialAssignment = try SnapSubcompilerVarDeclaration(
-            symbols: globalEnvironment.globalSymbols,
-            globalEnvironment: globalEnvironment).compile(vtableDeclaration)
+            symbols: symbols,
+            globalEnvironment: globalEnvironment).compile(vtableDeclaration)!
         
-        globalEnvironment.preamble.append(initialAssignment!)
+        symbols.scopePrologue = symbols.scopePrologue.appending(child: initialAssignment)
     }
 }

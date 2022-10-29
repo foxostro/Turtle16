@@ -3547,7 +3547,9 @@ class SnapToTackCompilerTests: XCTestCase {
         let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Foo"),
                                          members: [],
                                          visibility: .privateVisibility)
-        try SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment).compile(traitDecl)
+        try SnapSubcompilerTraitDeclaration(
+            globalEnvironment: globalEnvironment,
+            symbols: globalEnvironment.globalSymbols).compile(traitDecl)
         
         let traitObjectType = try symbols.resolveType(identifier: traitDecl.nameOfTraitObjectType)
         symbols.bind(identifier: "foo", symbol: Symbol(type: .pointer(traitObjectType), offset: 0x1000, storage: .staticStorage))
@@ -5531,6 +5533,10 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.compile(ast1)
         
         let expected = Seq(children: [
+            TackInstructionNode(instruction: .liu16, parameters: [ // TODO: make sure the optimizer can remove dead stores like this one
+                ParameterIdentifier("vr8"),
+                ParameterNumber(0x0110)
+            ]),
             TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr0"),
                 ParameterNumber(0x0110)
@@ -5615,6 +5621,10 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try SnapToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment, options: opts).compile(ast1)
         
         let expected = Seq(children: [
+            TackInstructionNode(instruction: .liu16, parameters: [ // TODO: make sure the optimizer can remove dead stores like this one
+                ParameterIdentifier("vr8"),
+                ParameterNumber(0x0110)
+            ]),
             TackInstructionNode(instruction: .liu16, parameters: [
                 ParameterIdentifier("vr0"),
                 ParameterNumber(0x0110)

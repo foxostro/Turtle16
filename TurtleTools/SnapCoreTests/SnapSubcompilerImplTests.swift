@@ -21,7 +21,9 @@ class SnapSubcompilerImplTests: XCTestCase {
             let foo = TraitDeclaration(identifier: Expression.Identifier("Foo"),
                                        members: [bar],
                                        visibility: .privateVisibility)
-            try SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment).compile(foo)
+            try SnapSubcompilerTraitDeclaration(
+                globalEnvironment: globalEnvironment,
+                symbols: globalEnvironment.globalSymbols).compile(foo)
         }
         try makeImpl()
         
@@ -54,7 +56,7 @@ class SnapSubcompilerImplTests: XCTestCase {
         let foo = TraitDeclaration(identifier: Expression.Identifier("Foo"),
                                    members: [bar, bar],
                                    visibility: .privateVisibility)
-        XCTAssertThrowsError(try SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment).compile(foo)) {
+        XCTAssertThrowsError(try SnapSubcompilerTraitDeclaration( globalEnvironment: globalEnvironment, symbols: globalEnvironment.globalSymbols).compile(foo)) {
             let error = $0 as? CompilerError
             XCTAssertEqual(error?.message, "function redefines existing symbol: `bar'")
         }

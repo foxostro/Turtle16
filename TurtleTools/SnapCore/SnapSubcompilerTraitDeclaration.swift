@@ -13,12 +13,11 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
     private var memoryLayoutStrategy: MemoryLayoutStrategy {
         globalEnvironment.memoryLayoutStrategy
     }
-    private var symbols: SymbolTable {
-        globalEnvironment.globalSymbols
-    }
+    public let symbols: SymbolTable
     
-    public init(globalEnvironment: GlobalEnvironment) {
+    public init(globalEnvironment: GlobalEnvironment, symbols: SymbolTable) {
         self.globalEnvironment = globalEnvironment
+        self.symbols = symbols
     }
     
     public func compile(_ node: TraitDeclaration) throws {
@@ -61,7 +60,7 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
                                            visibility: traitDecl.visibility,
                                            isConst: true)
         _ = try SnapSubcompilerStructDeclaration(
-            symbols: globalEnvironment.globalSymbols,
+            symbols: symbols,
             globalEnvironment: globalEnvironment).compile(structDecl)
     }
     
@@ -98,7 +97,7 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
                                            visibility: traitDecl.visibility,
                                            isConst: false) // TODO: Should isConst be true here?
         _ = try SnapSubcompilerStructDeclaration(
-            symbols: globalEnvironment.globalSymbols,
+            symbols: symbols,
             globalEnvironment: globalEnvironment).compile(structDecl)
     }
     
@@ -134,7 +133,7 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
                              structTypeExpr: Expression.Identifier(traitDecl.nameOfTraitObjectType),
                              children: thunks)
         try SnapSubcompilerImpl(
-            symbols: globalEnvironment.globalSymbols,
+            symbols: symbols,
             globalEnvironment: globalEnvironment).compile(implBlock)
     }
     

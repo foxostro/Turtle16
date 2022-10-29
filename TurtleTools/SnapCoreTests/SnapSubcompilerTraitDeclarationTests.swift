@@ -16,8 +16,9 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
         
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let globalSymbols = globalEnvironment.globalSymbols
-        let compiler = SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment)
-        let _ = try compiler.compile(ast)
+        try SnapSubcompilerTraitDeclaration(
+            globalEnvironment: globalEnvironment,
+            symbols: globalEnvironment.globalSymbols).compile(ast)
         
         let expectedSymbols = SymbolTable()
         expectedSymbols.enclosingFunctionNameMode = .set("Foo")
@@ -36,8 +37,9 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
 
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let globalSymbols = globalEnvironment.globalSymbols
-        let compiler = SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment)
-        let _ = try compiler.compile(ast)
+        try SnapSubcompilerTraitDeclaration(
+            globalEnvironment: globalEnvironment,
+            symbols: globalEnvironment.globalSymbols).compile(ast)
 
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
         let members = SymbolTable()
@@ -60,7 +62,9 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
 
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let globalSymbols = globalEnvironment.globalSymbols
-        try SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment).compile(ast)
+        try SnapSubcompilerTraitDeclaration(
+            globalEnvironment: globalEnvironment,
+            symbols: globalEnvironment.globalSymbols).compile(ast)
         
         let traitType = try globalSymbols.resolveType(identifier: "Foo")
         let nameOfVtableType = traitType.unwrapTraitType().nameOfVtableType
@@ -77,7 +81,9 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
 
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let globalSymbols = globalEnvironment.globalSymbols
-        try SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment).compile(ast)
+        try SnapSubcompilerTraitDeclaration(
+            globalEnvironment: globalEnvironment,
+            symbols: globalEnvironment.globalSymbols).compile(ast)
         
         let traitType = try globalSymbols.resolveType(identifier: "Foo")
         let nameOfVtableType = traitType.unwrapTraitType().nameOfVtableType
@@ -94,7 +100,9 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
 
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let globalSymbols = globalEnvironment.globalSymbols
-        try SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment).compile(ast)
+        try SnapSubcompilerTraitDeclaration(
+            globalEnvironment: globalEnvironment,
+            symbols: globalEnvironment.globalSymbols).compile(ast)
         
         let traitType = try globalSymbols.resolveType(identifier: "Foo")
         let nameOfVtableType = traitType.unwrapTraitType().nameOfVtableType
@@ -111,7 +119,9 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
         
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let globalSymbols = globalEnvironment.globalSymbols
-        try SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment).compile(ast)
+        try SnapSubcompilerTraitDeclaration(
+            globalEnvironment: globalEnvironment,
+            symbols: globalEnvironment.globalSymbols).compile(ast)
         
         let traitType = try globalSymbols.resolveType(identifier: "Foo")
         XCTAssertEqual("__Foo_vtable", traitType.unwrapTraitType().nameOfVtableType)
@@ -128,7 +138,9 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
         
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let globalSymbols = globalEnvironment.globalSymbols
-        try SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment).compile(ast)
+        try SnapSubcompilerTraitDeclaration(
+            globalEnvironment: globalEnvironment,
+            symbols: globalEnvironment.globalSymbols).compile(ast)
         
         let traitType = try globalSymbols.resolveType(identifier: "Foo")
         XCTAssertEqual("__Foo_vtable", traitType.unwrapTraitType().nameOfVtableType)

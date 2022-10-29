@@ -24,6 +24,14 @@ public class Seq: AbstractSyntaxTreeNode {
         return Seq(sourceAnchor: sourceAnchor, children: children)
     }
     
+    public func appending(child: AbstractSyntaxTreeNode) -> Seq {
+        return Seq(sourceAnchor: sourceAnchor, children: children + [child])
+    }
+    
+    public func appending(children moreChildren: [AbstractSyntaxTreeNode]) -> Seq {
+        return Seq(sourceAnchor: sourceAnchor, children: children + moreChildren)
+    }
+    
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else { return false }
         guard type(of: rhs!) == type(of: self) else { return false }

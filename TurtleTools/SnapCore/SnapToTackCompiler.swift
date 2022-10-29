@@ -85,9 +85,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         let compiledModules = try collectCompiledModuleCode()
         let compiledNode = try compile(node0)
         let compiledFunctions = try compileFunctions()
-        let compiledPreamble = try compilePreamble(node0)
         
-        children += compiledPreamble
         children += compiledModules
         if let compiledNode {
             children.append(compiledNode)
@@ -152,22 +150,6 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         return subroutine
     }
     
-    fileprivate func compilePreamble(_ top: AbstractSyntaxTreeNode?) throws -> [AbstractSyntaxTreeNode] {
-        var result: [AbstractSyntaxTreeNode] = []
-        let prevSymbols = symbols
-        if let top = top as? Block {
-            symbols = top.symbols
-        }
-        while !globalEnvironment.preamble.isEmpty {
-            let node = globalEnvironment.preamble.removeFirst()
-            if let compiled = try compile(node) {
-                result.append(compiled)
-            }
-        }
-        symbols = prevSymbols
-        return result
-    }
-    
     func flatten(_ node: AbstractSyntaxTreeNode?) -> AbstractSyntaxTreeNode? {
         return try! SnapASTTransformerFlattenSeq().compile(node)
     }
@@ -179,8 +161,25 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
     }
     
     public override func compile(block node0: Block) throws -> AbstractSyntaxTreeNode? {
-        let node1 = try super.compile(block: node0) as! Block
-        return Seq(sourceAnchor: node0.sourceAnchor, children: node1.children)
+        let parent = symbols
+        symbols = node0.symbols
+        let children: [AbstractSyntaxTreeNode] = try node0.children.compactMap { try compile($0) }
+        let seq: Seq
+        if let scopePrologue = symbols?.scopePrologue,
+           !scopePrologue.children.isEmpty,
+           let compiledPrologue = try compile(seq: scopePrologue) {
+            seq = Seq(sourceAnchor: node0.sourceAnchor,
+                      children: [compiledPrologue] + children)
+        }
+        else {
+            seq = Seq(sourceAnchor: node0.sourceAnchor,
+                      children: children)
+        }
+        symbols = parent
+        if let symbols = symbols, node0.symbols.stackFrameIndex == symbols.stackFrameIndex {
+            symbols.highwaterMark = max(symbols.highwaterMark, node0.symbols.highwaterMark)
+        }
+        return seq
     }
     
     public override func compile(return node: Return) throws -> AbstractSyntaxTreeNode? {

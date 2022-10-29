@@ -19,7 +19,9 @@ class SnapSubcompilerImplForTests: XCTestCase {
         let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Serial"),
                                          members: [bar],
                                          visibility: .privateVisibility)
-        try SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment).compile(traitDecl)
+        try SnapSubcompilerTraitDeclaration(
+            globalEnvironment: globalEnvironment,
+            symbols: globalEnvironment.globalSymbols).compile(traitDecl)
     }
     
     fileprivate func compileSerialFake(_ globalEnvironment: GlobalEnvironment,  _ globalSymbols: SymbolTable) throws {

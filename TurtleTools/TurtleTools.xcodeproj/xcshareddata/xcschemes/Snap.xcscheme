@@ -92,6 +92,14 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "-t"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "Traits"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "${PROJECT_DIR}/Examples/SnapLanguageTests.snap"
             isEnabled = "YES">
          </CommandLineArgument>

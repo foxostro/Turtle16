@@ -21,7 +21,7 @@ class SnapSubcompilerImplTests: XCTestCase {
             let foo = TraitDeclaration(identifier: Expression.Identifier("Foo"),
                                        members: [bar],
                                        visibility: .privateVisibility)
-            try SnapSubcompilerTraitDeclaration(
+            _ = try SnapSubcompilerTraitDeclaration(
                 globalEnvironment: globalEnvironment,
                 symbols: globalEnvironment.globalSymbols).compile(foo)
         }
@@ -38,7 +38,7 @@ class SnapSubcompilerImplTests: XCTestCase {
             let argTypeExpr = Expression.PointerType(Expression.Identifier("__Foo_object"))
             let argType = try! RvalueExpressionTypeChecker(symbols: globalEnvironment.globalSymbols, globalEnvironment: globalEnvironment).check(expression: argTypeExpr)
             let expectedMethodType = FunctionType(name: "bar",
-                                                  mangledName: "____Foo_object_bar",
+                                                  mangledName: "__Foo_object_bar",
                                                   returnType: .arithmeticType(.mutableInt(.u8)),
                                                   arguments: [argType])
             return expectedMethodType

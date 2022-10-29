@@ -27,6 +27,20 @@ class SnapSubcompilerStructDeclarationTests: XCTestCase {
         XCTAssertEqual(actualType, expectedType)
     }
     
+    func testConstStruct() throws {
+        let symbols = SymbolTable()
+        let input = StructDeclaration(
+            identifier: Expression.Identifier("None"),
+            members: [],
+            isConst: true)
+        XCTAssertNoThrow(try makeCompiler(symbols).compile(input))
+        let expectedStructSymbols = SymbolTable()
+        expectedStructSymbols.enclosingFunctionNameMode = .set("None")
+        let expectedType: SymbolType = .constStructType(StructType(name: "None", symbols: expectedStructSymbols))
+        let actualType = try? symbols.resolveType(identifier: "None")
+        XCTAssertEqual(actualType, expectedType)
+    }
+    
     func testStructWithOneMember() throws {
         let symbols = SymbolTable()
         let input = StructDeclaration(identifier: Expression.Identifier("Foo"), members: [
@@ -53,5 +67,25 @@ class SnapSubcompilerStructDeclarationTests: XCTestCase {
             let error = $0 as? CompilerError
             XCTAssertEqual(error?.message, "a struct cannot contain itself recursively")
         }
+    }
+    
+    func testGenericStruct() throws {
+        let symbols = SymbolTable()
+        let input = StructDeclaration(
+            identifier: Expression.Identifier("Foo"),
+            typeArguments: [
+                Expression.GenericTypeArgument(
+                    identifier: Expression.Identifier("T"),
+                    constraints: [])
+            ],
+            members: [])
+        try makeCompiler(symbols).compile(input)
+        let actualType = try symbols.resolveType(identifier: "Foo")
+        
+        let expectedStructSymbols = SymbolTable()
+        expectedStructSymbols.enclosingFunctionNameMode = .set("Foo")
+        let expectedType: SymbolType = .genericStructType(GenericStructType(template: input))
+        
+        XCTAssertEqual(actualType, expectedType)
     }
 }

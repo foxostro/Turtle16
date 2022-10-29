@@ -1085,56 +1085,64 @@ public class SnapParser: Parser {
     private func consumeTrait(_ firstToken: Token, _ visibility: SymbolVisibility = .privateVisibility) throws -> [AbstractSyntaxTreeNode] {
         let identifierToken = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in trait declaration"))
         let identifier = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
+        let typeArguments = try consumeOptionalTypeArgumentListWithConstraints()
         
         try expect(type: TokenCurlyLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `{' in trait"))
         
         var closingBrace: Token? = nil;
         var members: [TraitDeclaration.Member] = []
-        while true {
-            let tokenFunc = try expect(type: TokenFunc.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `func' in trait method list"))
-            let tokenIdentifier = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: firstToken.sourceAnchor, message: "expected identifier in function declaration")) as! TokenIdentifier
-            try expect(type: TokenParenLeft.self, error: CompilerError(sourceAnchor: tokenIdentifier.sourceAnchor, message: "expected `(' in argument list of function declaration"))
-            
-            var argumentTypes: [Expression] = []
-            
-            if type(of: peek()!) != TokenParenRight.self {
-                repeat {
-                    let tokenIdentifier = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected parameter name followed by `:'")) as! TokenIdentifier
-                    if type(of: peek()!) == TokenParenRight.self || type(of: peek()!) == TokenComma.self {
-                        throw CompilerError(sourceAnchor: tokenIdentifier.sourceAnchor, message: "parameter requires an explicit type")
-                    }
-                    guard let type = try consumeTypeAnnotation() else {
-                        throw CompilerError(sourceAnchor: previous?.sourceAnchor, message: "expected parameter name followed by `:'")
-                    }
-                    argumentTypes.append(type)
-                } while nil != accept(TokenComma.self)
-            }
-            
-            try expect(type: TokenParenRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `)' in argument list of function declaration"))
-            
-            let returnType: Expression
-            if nil == accept(TokenArrow.self) {
-                returnType = Expression.PrimitiveType(.void)
-            } else {
-                returnType = try consumeType()
-            }
-            
-            let funcSourceAnchor = tokenFunc.sourceAnchor?.union(previous?.sourceAnchor)
-            
-            let typeExpr = Expression.PointerType(sourceAnchor: funcSourceAnchor, typ: Expression.FunctionType(sourceAnchor: funcSourceAnchor, name: nil, returnType: returnType, arguments: argumentTypes))
-            members.append(TraitDeclaration.Member(name: tokenIdentifier.lexeme, type: typeExpr))
-            
-            if let tok = accept(TokenCurlyRight.self) {
-                closingBrace = tok
-                break
-            } else {
-                try expect(type: TokenNewline.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected newline"))
-            }
+        
+        if let tok = accept(TokenCurlyRight.self) {
+            closingBrace = tok
         }
+        else {
+            while true {
+                let tokenFunc = try expect(type: TokenFunc.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `func' in trait method list"))
+                let tokenIdentifier = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: firstToken.sourceAnchor, message: "expected identifier in function declaration")) as! TokenIdentifier
+                try expect(type: TokenParenLeft.self, error: CompilerError(sourceAnchor: tokenIdentifier.sourceAnchor, message: "expected `(' in argument list of function declaration"))
+                
+                var argumentTypes: [Expression] = []
+                
+                if type(of: peek()!) != TokenParenRight.self {
+                    repeat {
+                        let tokenIdentifier = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected parameter name followed by `:'")) as! TokenIdentifier
+                        if type(of: peek()!) == TokenParenRight.self || type(of: peek()!) == TokenComma.self {
+                            throw CompilerError(sourceAnchor: tokenIdentifier.sourceAnchor, message: "parameter requires an explicit type")
+                        }
+                        guard let type = try consumeTypeAnnotation() else {
+                            throw CompilerError(sourceAnchor: previous?.sourceAnchor, message: "expected parameter name followed by `:'")
+                        }
+                        argumentTypes.append(type)
+                    } while nil != accept(TokenComma.self)
+                }
+                
+                try expect(type: TokenParenRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `)' in argument list of function declaration"))
+                
+                let returnType: Expression
+                if nil == accept(TokenArrow.self) {
+                    returnType = Expression.PrimitiveType(.void)
+                } else {
+                    returnType = try consumeType()
+                }
+                
+                let funcSourceAnchor = tokenFunc.sourceAnchor?.union(previous?.sourceAnchor)
+                
+                let typeExpr = Expression.PointerType(sourceAnchor: funcSourceAnchor, typ: Expression.FunctionType(sourceAnchor: funcSourceAnchor, name: nil, returnType: returnType, arguments: argumentTypes))
+                members.append(TraitDeclaration.Member(name: tokenIdentifier.lexeme, type: typeExpr))
+                
+                if let tok = accept(TokenCurlyRight.self) {
+                    closingBrace = tok
+                    break
+                } else {
+                    try expect(type: TokenNewline.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected newline"))
+                }
+            } // while
+        } // else
         
         let sourceAnchor = firstToken.sourceAnchor?.union(closingBrace?.sourceAnchor)
         return [TraitDeclaration(sourceAnchor: sourceAnchor,
                                  identifier: identifier,
+                                 typeArguments: typeArguments,
                                  members: members,
                                  visibility: visibility)]
     }

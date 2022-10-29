@@ -51,7 +51,7 @@ public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
     }
     
     public override func compile(trait node0: TraitDeclaration) throws -> AbstractSyntaxTreeNode? {
-        try SnapSubcompilerTraitDeclaration(
+        _ = try SnapSubcompilerTraitDeclaration(
             globalEnvironment: globalEnvironment,
             symbols: symbols!).compile(node0)
         return nil // Erase the trait declaration now that we've bound new types in the environment.

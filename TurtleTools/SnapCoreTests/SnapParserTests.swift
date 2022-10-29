@@ -2672,6 +2672,40 @@ trait Foo {
         XCTAssertEqual(ast.children.first, expr)
     }
     
+    func testParseWellformedTrait_Generic() {
+        let parser = parse("""
+            trait Foo[T] {
+            }
+            """)
+        XCTAssertFalse(parser.hasError)
+        guard !parser.hasError else {
+            let omnibus = CompilerError.makeOmnibusError(fileName: nil, errors: parser.errors)
+            print(omnibus.localizedDescription)
+            return
+        }
+        XCTAssertNotNil(parser.syntaxTree)
+        guard let ast = parser.syntaxTree else {
+            return
+        }
+        XCTAssertEqual(ast.children.count, 1)
+        let expr = TraitDeclaration(
+            sourceAnchor: parser.lineMapper.anchor(0, 16),
+            identifier: Expression.Identifier(
+                sourceAnchor: parser.lineMapper.anchor(6, 9),
+                identifier: "Foo"),
+            typeArguments: [
+                Expression.GenericTypeArgument(
+                    sourceAnchor: parser.lineMapper.anchor(10, 11),
+                    identifier: Expression.Identifier(
+                        sourceAnchor: parser.lineMapper.anchor(10, 11),
+                        identifier: "T"),
+                    constraints: [])
+            ],
+            members: [],
+            visibility: .privateVisibility)
+        XCTAssertEqual(ast.children.first, expr)
+    }
+    
     func testImplForStatement() {
         let parser = parse("""
 impl Serial for SerialFake {

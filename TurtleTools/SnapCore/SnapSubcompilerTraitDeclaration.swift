@@ -20,34 +20,85 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
         self.symbols = symbols
     }
     
-    public func compile(_ node: TraitDeclaration) throws {
-        try declareTraitType(node)
-        try declareVtableType(node)
-        try declareTraitObjectType(node)
-        try declareTraitObjectThunks(node)
+    public func compile(_ node: TraitDeclaration) throws -> SymbolType {
+        if node.isGeneric {
+            return try doGeneric(node)
+        }
+        else {
+            return try doNonGeneric(traitDecl: node,
+                                    evaluatedTypeArguments: [],
+                                    genericTraitType: nil)
+        }
     }
     
-    func declareTraitType(_ traitDecl: TraitDeclaration) throws {
-        let name = traitDecl.identifier.identifier
-        
-        let members = SymbolTable(parent: symbols)
-        let fullyQualifiedTraitType = TraitType(name: name, nameOfTraitObjectType: traitDecl.nameOfTraitObjectType, nameOfVtableType: traitDecl.nameOfVtableType, symbols: members)
+    private func doGeneric(_ node: TraitDeclaration) throws -> SymbolType {
+        assert(node.isGeneric)
+        let name = node.identifier.identifier
+        let type = SymbolType.genericTraitType(GenericTraitType(template: node))
         symbols.bind(identifier: name,
-                     symbolType: .traitType(fullyQualifiedTraitType),
+                     symbolType: type,
+                     visibility: node.visibility)
+        return type
+    }
+    
+    public func instantiate(_ genericTraitType: GenericTraitType, _ evaluatedTypeArguments: [SymbolType]) throws -> SymbolType {
+        let template = genericTraitType.template.eraseTypeArguments()
+        return try doNonGeneric(traitDecl: template,
+                                evaluatedTypeArguments: evaluatedTypeArguments,
+                                genericTraitType: genericTraitType)
+    }
+    
+    private func doNonGeneric(traitDecl node0: TraitDeclaration,
+                              evaluatedTypeArguments: [SymbolType],
+                              genericTraitType: GenericTraitType?) throws -> SymbolType {
+        assert(!node0.isGeneric)
+        
+        let mangledName = TypeContextTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment)
+            .mangleTraitName(node0.name, evaluatedTypeArguments: evaluatedTypeArguments)!
+        let node1 = node0.withMangledName(mangledName)
+        
+        let result = try declareTraitType(node1, evaluatedTypeArguments, genericTraitType)
+        try declareVtableType(node1)
+        try declareTraitObjectType(node1)
+        try declareTraitObjectThunks(node1)
+        
+        return result
+    }
+    
+    private func declareTraitType(_ traitDecl: TraitDeclaration,
+                                  _ evaluatedTypeArguments: [SymbolType] = [],
+                                  _ genericTraitType: GenericTraitType? = nil) throws -> SymbolType {
+        let mangledName = traitDecl.mangledName
+        let members = SymbolTable(parent: symbols)
+        let typeChecker = TypeContextTypeChecker(symbols: members, globalEnvironment: globalEnvironment)
+        let fullyQualifiedTraitType = TraitType(
+            name: mangledName,
+            nameOfTraitObjectType: traitDecl.nameOfTraitObjectType,
+            nameOfVtableType: traitDecl.nameOfVtableType,
+            symbols: members)
+        let result = SymbolType.traitType(fullyQualifiedTraitType)
+        symbols.bind(identifier: mangledName,
+                     symbolType: result,
                      visibility: traitDecl.visibility)
         
-        members.enclosingFunctionNameMode = .set(name)
+        if let genericTraitType {
+            genericTraitType.instantiations[evaluatedTypeArguments] = result // memoize
+        }
+        
+        members.enclosingFunctionNameMode = .set(mangledName)
         for memberDeclaration in traitDecl.members {
-            let memberType = try TypeContextTypeChecker(symbols: members).check(expression: memberDeclaration.memberType)
+            let memberType = try typeChecker.check(expression: memberDeclaration.memberType)
             let symbol = Symbol(type: memberType, offset: members.storagePointer, storage: .automaticStorage)
             members.bind(identifier: memberDeclaration.name, symbol: symbol)
             let sizeOfMemberType = memoryLayoutStrategy.sizeof(type: memberType)
             members.storagePointer += sizeOfMemberType
         }
         members.parent = nil
+        
+        return result
     }
     
-    func declareVtableType(_ traitDecl: TraitDeclaration) throws {
+    private func declareVtableType(_ traitDecl: TraitDeclaration) throws {
         let traitName = traitDecl.identifier.identifier
         let members: [StructDeclaration.Member] = traitDecl.members.map {
             let memberType = rewriteTraitMemberTypeForVtable(traitName, $0.memberType)
@@ -64,7 +115,7 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
             globalEnvironment: globalEnvironment).compile(structDecl)
     }
     
-    func rewriteTraitMemberTypeForVtable(_ traitName: String, _ expr: Expression) -> Expression {
+    private func rewriteTraitMemberTypeForVtable(_ traitName: String, _ expr: Expression) -> Expression {
         if let functionType = (expr as? Expression.PointerType)?.typ as? Expression.FunctionType {
             if let arg0 = functionType.arguments.first {
                 if ((arg0 as? Expression.PointerType)?.typ as? Expression.Identifier)?.identifier == traitName {
@@ -80,13 +131,22 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
                     let modifiedFunctionType = Expression.FunctionType(returnType: functionType.returnType, arguments: arguments)
                     return Expression.PointerType(modifiedFunctionType)
                 }
+                
+                if let pointerType = arg0 as? Expression.PointerType,
+                   let app = pointerType.typ as? Expression.GenericTypeApplication,
+                   app.identifier.identifier == traitName {
+                    var arguments: [Expression] = functionType.arguments
+                    arguments[0] = Expression.PointerType(Expression.PrimitiveType(.void))
+                    let modifiedFunctionType = Expression.FunctionType(returnType: functionType.returnType, arguments: arguments)
+                    return Expression.PointerType(modifiedFunctionType)
+                }
             }
         }
         
         return expr
     }
     
-    func declareTraitObjectType(_ traitDecl: TraitDeclaration) throws {
+    private func declareTraitObjectType(_ traitDecl: TraitDeclaration) throws {
         let members: [StructDeclaration.Member] = [
             StructDeclaration.Member(name: "object", type: Expression.PointerType(Expression.PrimitiveType(.void))),
             StructDeclaration.Member(name: "vtable", type: Expression.PointerType(Expression.ConstType(Expression.Identifier(traitDecl.nameOfVtableType))))
@@ -101,7 +161,7 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
             globalEnvironment: globalEnvironment).compile(structDecl)
     }
     
-    func declareTraitObjectThunks(_ traitDecl: TraitDeclaration) throws {
+    private func declareTraitObjectThunks(_ traitDecl: TraitDeclaration) throws {
         var thunks: [FunctionDeclaration] = []
         for method in traitDecl.members {
             let functionType = rewriteTraitMemberTypeForThunk(traitDecl, method)
@@ -137,8 +197,7 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
             globalEnvironment: globalEnvironment).compile(implBlock)
     }
     
-    func rewriteTraitMemberTypeForThunk(_ traitDecl: TraitDeclaration, _ method: TraitDeclaration.Member) -> Expression.FunctionType {
-        
+    private func rewriteTraitMemberTypeForThunk(_ traitDecl: TraitDeclaration, _ method: TraitDeclaration.Member) -> Expression.FunctionType {
         let traitName = traitDecl.identifier.identifier
         let traitObjectName = traitDecl.nameOfTraitObjectType
         let functionType = (method.memberType as! Expression.PointerType).typ as! Expression.FunctionType
@@ -155,6 +214,18 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
                 var arguments: [Expression] = functionType.arguments
                 arguments[0] = Expression.PointerType(Expression.ConstType(Expression.Identifier(traitObjectName)))
                 let modifiedFunctionType = Expression.FunctionType(name: method.name, returnType: functionType.returnType, arguments: arguments)
+                return modifiedFunctionType
+            }
+            
+            if let pointerType = arg0 as? Expression.PointerType,
+               let app = pointerType.typ as? Expression.GenericTypeApplication,
+               app.identifier.identifier == traitName {
+                var arguments: [Expression] = functionType.arguments
+                arguments[0] = Expression.PointerType(Expression.Identifier(traitObjectName))
+                let modifiedFunctionType = Expression.FunctionType(
+                    name: method.name,
+                    returnType: functionType.returnType,
+                    arguments: arguments)
                 return modifiedFunctionType
             }
         }

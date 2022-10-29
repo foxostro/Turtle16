@@ -19,7 +19,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
         let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Serial"),
                                          members: [bar],
                                          visibility: .privateVisibility)
-        try SnapSubcompilerTraitDeclaration(
+        _ = try SnapSubcompilerTraitDeclaration(
             globalEnvironment: globalEnvironment,
             symbols: globalEnvironment.globalSymbols).compile(traitDecl)
     }

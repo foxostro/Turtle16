@@ -44,24 +44,47 @@ public class TraitDeclaration: AbstractSyntaxTreeNode {
     }
     
     public let identifier: Expression.Identifier
-    public var nameOfVtableType: String {
-        return "__\(identifier.identifier)_vtable"
-    }
-    public var nameOfTraitObjectType: String {
-        return "__\(identifier.identifier)_object"
-    }
+    public let mangledName: String
+    public let typeArguments: [Expression.GenericTypeArgument]
     public let members: [Member]
     public let visibility: SymbolVisibility
     
+    public var nameOfVtableType: String {
+        var result = "\(mangledName)_vtable"
+        if !result.hasPrefix("__") {
+            result = "__" + result
+        }
+        return result
+    }
+    public var nameOfTraitObjectType: String {
+        var result = "\(mangledName)_object"
+        if !result.hasPrefix("__") {
+            result = "__" + result
+        }
+        return result
+    }
+    
+    public var name: String {
+        identifier.identifier
+    }
+    
+    public var isGeneric: Bool {
+        !typeArguments.isEmpty
+    }
+    
     public required init(sourceAnchor: SourceAnchor? = nil,
                          identifier: Expression.Identifier,
+                         typeArguments: [Expression.GenericTypeArgument] = [],
                          members: [Member],
-                         visibility: SymbolVisibility = .privateVisibility) {
+                         visibility: SymbolVisibility = .privateVisibility,
+                         mangledName: String? = nil) {
         self.identifier = identifier.withSourceAnchor(sourceAnchor)
+        self.typeArguments = typeArguments
         self.members = members.map {
             Member(name: $0.name, type: $0.memberType.withSourceAnchor(sourceAnchor))
         }
         self.visibility = visibility
+        self.mangledName = mangledName ?? identifier.identifier
         super.init(sourceAnchor: sourceAnchor)
     }
     
@@ -71,8 +94,28 @@ public class TraitDeclaration: AbstractSyntaxTreeNode {
         }
         return TraitDeclaration(sourceAnchor: sourceAnchor,
                                 identifier: identifier,
+                                typeArguments: typeArguments,
                                 members: members,
-                                visibility: visibility)
+                                visibility: visibility,
+                                mangledName: mangledName)
+    }
+    
+    public func withMangledName(_ mangledName: String) -> TraitDeclaration {
+        return TraitDeclaration(sourceAnchor: sourceAnchor,
+                                identifier: identifier,
+                                typeArguments: typeArguments,
+                                members: members,
+                                visibility: visibility,
+                                mangledName: mangledName)
+    }
+    
+    public func eraseTypeArguments() -> TraitDeclaration {
+        return TraitDeclaration(sourceAnchor: sourceAnchor,
+                                identifier: identifier,
+                                typeArguments: [],
+                                members: members,
+                                visibility: visibility,
+                                mangledName: mangledName)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
@@ -81,8 +124,10 @@ public class TraitDeclaration: AbstractSyntaxTreeNode {
         guard super.isEqual(rhs) else { return false }
         guard let rhs = rhs as? TraitDeclaration else { return false }
         guard identifier == rhs.identifier else { return false }
+        guard typeArguments == rhs.typeArguments else { return false }
         guard members == rhs.members else { return false }
         guard visibility == rhs.visibility else { return false }
+        guard mangledName == rhs.mangledName else { return false }
         return true
     }
     
@@ -90,34 +135,59 @@ public class TraitDeclaration: AbstractSyntaxTreeNode {
         var hasher = Hasher()
         hasher.combine(identifier)
         hasher.combine(members)
+        hasher.combine(typeArguments)
         hasher.combine(visibility)
+        hasher.combine(mangledName)
         hasher.combine(super.hash)
         return hasher.finalize()
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@\n%@identifier: %@\n%@visibility: %@\n%@members: %@",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      makeIndent(depth: depth + 1),
-                      identifier.makeIndentedDescription(depth: depth + 1),
-                      makeIndent(depth: depth + 1),
-                      visibility.description,
-                      makeIndent(depth: depth + 1),
-                      makeMembersDescription(depth: depth + 1))
+        let unindented = """
+            \(visibilityDescription) trait \(name)\(typeArgumentsDescription) {\(membersDescription)
+            }
+            """
+        let indented = indent(text: unindented, depth: depth)
+        return indented
     }
     
-    private func makeMembersDescription(depth: Int) -> String {
-        var result: String = ""
-        if members.isEmpty {
-            result = "none"
-        } else {
-            for member in members {
-                result += "\n"
-                result += makeIndent(depth: depth + 1)
-                result += "\(member.name): \(member.memberType.makeIndentedDescription(depth: depth + 1))"
-            }
+    private func indent(text: String, depth: Int) -> String {
+        let indentLine = makeIndent(depth: depth)
+        let indented = text.split(separator: "\n").map { line in
+            "\(indentLine)\(line)"
+        }.joined(separator: "\n")
+        return indented
+    }
+    
+    private var visibilityDescription: String {
+        switch visibility {
+        case .publicVisibility:
+            return "public"
+        case .privateVisibility:
+            return "private"
         }
+    }
+    
+    public var typeArgumentsDescription: String {
+        guard !typeArguments.isEmpty else {
+            return ""
+        }
+        
+        let str = typeArguments.map { arg in
+            arg.shortDescription
+        }.joined(separator: ", ")
+        
+        return "[\(str)]"
+    }
+    
+    private var membersDescription: String {
+        guard !members.isEmpty else {
+            return ""
+        }
+        
+        let result = "\n" + members.map { arg in
+            "\t\(arg.description)"
+        }.joined(separator: ",\n")
         return result
     }
 }

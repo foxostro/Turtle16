@@ -20,6 +20,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     case constStructType(StructType), structType(StructType)
     case genericStructType(GenericStructType)
     case constTraitType(TraitType), traitType(TraitType)
+    case genericTraitType(GenericTraitType)
     case unionType(UnionType)
     
     public var isPrimitive: Bool {
@@ -235,6 +236,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             return "const \(typ.name)"
         case .traitType(let typ):
             return "\(typ.name)"
+        case .genericTraitType(let genericTraitType):
+            return genericTraitType.description
         case .constPointer(let pointee):
             return "const *\(pointee.description)"
         case .pointer(let pointee):
@@ -786,6 +789,49 @@ trait \(name) {
         hasher.combine(name)
         hasher.combine(nameOfVtableType)
         hasher.combine(symbols)
+        return hasher.finalize()
+    }
+}
+
+public class GenericTraitType: NSObject {
+    public let template: TraitDeclaration
+    public var instantiations: [ [SymbolType] : SymbolType ] = [:]
+    
+    public init(template: TraitDeclaration) {
+        self.template = template
+    }
+    
+    public var typeArguments: [Expression.GenericTypeArgument] {
+        template.typeArguments
+    }
+    
+    public override var description: String {
+        return "\(template.name)\(template.typeArgumentsDescription)"
+    }
+    
+    public static func ==(lhs: GenericTraitType, rhs: GenericTraitType) -> Bool {
+        return lhs.isEqual(rhs)
+    }
+    
+    public override func isEqual(_ rhs: Any?) -> Bool {
+        guard rhs != nil else {
+            return false
+        }
+        guard type(of: rhs!) == type(of: self) else {
+            return false
+        }
+        guard let rhs = rhs as? GenericTraitType else {
+            return false
+        }
+        guard template == rhs.template else {
+            return false
+        }
+        return true
+    }
+    
+    public override var hash: Int {
+        var hasher = Hasher()
+        hasher.combine(template)
         return hasher.finalize()
     }
 }

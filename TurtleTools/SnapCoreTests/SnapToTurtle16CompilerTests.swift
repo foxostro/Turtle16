@@ -2933,6 +2933,31 @@ func foo() {
         XCTAssertEqual(debugger?.loadSymbolU16("p"), 42)
     }
     
+    func test_EndToEndIntegration_GenericTrait() {
+        let debugger = run(program: """
+            trait Adder[T] {
+                func add(self: *Adder@[T], amount: T) -> T
+            }
+
+            struct MyAdder[T] {
+                val: T
+            }
+
+            impl[T] Adder@[T] for MyAdder@[T] {
+                func add(self: *MyAdder@[T], amount: T) -> T {
+                    self.val = self.val + amount
+                    return self.val
+                }
+            }
+
+            var myAdder = MyAdder@[u16] { .val = 41 }
+            let adder: Adder@[u16] = &myAdder
+            let a = adder.add(1)
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("a"), 42)
+    }
+    
     func DISABLED_test_EndToEndIntegration_InferReturnTypeVoidLeadsToCompilerCrash() {
         // We're going to infer a return type of void for `myFunction' which
         // means `p' has a return type of void. The compiler then proceeds to

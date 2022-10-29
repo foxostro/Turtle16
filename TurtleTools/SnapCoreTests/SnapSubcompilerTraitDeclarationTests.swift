@@ -16,7 +16,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
         
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let globalSymbols = globalEnvironment.globalSymbols
-        try SnapSubcompilerTraitDeclaration(
+        _ = try SnapSubcompilerTraitDeclaration(
             globalEnvironment: globalEnvironment,
             symbols: globalEnvironment.globalSymbols).compile(ast)
         
@@ -37,7 +37,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
 
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let globalSymbols = globalEnvironment.globalSymbols
-        try SnapSubcompilerTraitDeclaration(
+        _ = try SnapSubcompilerTraitDeclaration(
             globalEnvironment: globalEnvironment,
             symbols: globalEnvironment.globalSymbols).compile(ast)
 
@@ -62,7 +62,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
 
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let globalSymbols = globalEnvironment.globalSymbols
-        try SnapSubcompilerTraitDeclaration(
+        _ = try SnapSubcompilerTraitDeclaration(
             globalEnvironment: globalEnvironment,
             symbols: globalEnvironment.globalSymbols).compile(ast)
         
@@ -81,7 +81,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
 
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let globalSymbols = globalEnvironment.globalSymbols
-        try SnapSubcompilerTraitDeclaration(
+        _ = try SnapSubcompilerTraitDeclaration(
             globalEnvironment: globalEnvironment,
             symbols: globalEnvironment.globalSymbols).compile(ast)
         
@@ -100,7 +100,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
 
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let globalSymbols = globalEnvironment.globalSymbols
-        try SnapSubcompilerTraitDeclaration(
+        _ = try SnapSubcompilerTraitDeclaration(
             globalEnvironment: globalEnvironment,
             symbols: globalEnvironment.globalSymbols).compile(ast)
         
@@ -119,7 +119,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
         
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let globalSymbols = globalEnvironment.globalSymbols
-        try SnapSubcompilerTraitDeclaration(
+        _ = try SnapSubcompilerTraitDeclaration(
             globalEnvironment: globalEnvironment,
             symbols: globalEnvironment.globalSymbols).compile(ast)
         
@@ -138,12 +138,33 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
         
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let globalSymbols = globalEnvironment.globalSymbols
-        try SnapSubcompilerTraitDeclaration(
+        _ = try SnapSubcompilerTraitDeclaration(
             globalEnvironment: globalEnvironment,
             symbols: globalEnvironment.globalSymbols).compile(ast)
         
         let traitType = try globalSymbols.resolveType(identifier: "Foo")
         XCTAssertEqual("__Foo_vtable", traitType.unwrapTraitType().nameOfVtableType)
         XCTAssertEqual("__Foo_object", traitType.unwrapTraitType().nameOfTraitObjectType)
+    }
+    
+    func testCompileTraitAddsToTypeTable_EmptyGenericTrait() throws {
+        let ast = TraitDeclaration(
+            identifier: Expression.Identifier("Foo"),
+            typeArguments: [
+                Expression.GenericTypeArgument(
+                    identifier: Expression.Identifier("T"),
+                    constraints: [])
+            ],
+            members: [])
+        
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let globalSymbols = globalEnvironment.globalSymbols
+        _ = try SnapSubcompilerTraitDeclaration(
+            globalEnvironment: globalEnvironment,
+            symbols: globalEnvironment.globalSymbols).compile(ast)
+        let actual = try globalSymbols.resolveType(identifier: "Foo")
+        
+        let expected: SymbolType = .genericTraitType(GenericTraitType(template: ast))
+        XCTAssertEqual(expected, actual)
     }
 }

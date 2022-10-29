@@ -618,6 +618,9 @@ public class RvalueExpressionTypeChecker: NSObject {
         case .genericStructType(let typ):
             throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot instantiate generic struct `\(typ.description)'")
             
+        case .genericTraitType(let typ):
+            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot instantiate generic trait `\(typ.description)'")
+            
         default:
             return rvalueType
         }
@@ -954,8 +957,11 @@ public class RvalueExpressionTypeChecker: NSObject {
         }
         
         let arr = Array(NSOrderedSet(array: symbols.allEnclosingFunctionNames() + [name] + typeNameList))
-        let prefix: String = (arr.count == 1) ? "" : "__"
-        let mangledName = prefix + arr.map{$0 as! String}.joined(separator: "_")
+        var mangledName = arr.map{$0 as! String}.joined(separator: "_")
+        
+        if arr.count > 1 && !mangledName.hasPrefix("__") {
+            mangledName = "__" + mangledName
+        }
         
         return mangledName
     }
@@ -976,6 +982,10 @@ public class RvalueExpressionTypeChecker: NSObject {
         let mangledName = prefix + arr.map{$0 as! String}.joined(separator: "_")
         
         return mangledName
+    }
+    
+    public func mangleTraitName(_ name: String?, evaluatedTypeArguments: [SymbolType] = []) -> String? {
+        return mangleStructName(name, evaluatedTypeArguments: evaluatedTypeArguments)
     }
     
     fileprivate func evaluateFunctionArguments(_ argsToEvaluate: [Expression]) throws -> [SymbolType] {
@@ -1001,6 +1011,9 @@ public class RvalueExpressionTypeChecker: NSObject {
             
         case .genericStructType(let typ):
             return try apply(genericTypeApplication: expr, genericStructType: typ)
+            
+        case .genericTraitType(let typ):
+            return try apply(genericTypeApplication: expr, genericTraitType: typ)
             
         default:
             throw unsupportedError(expression: expr)
@@ -1092,10 +1105,55 @@ public class RvalueExpressionTypeChecker: NSObject {
             .compile(node1)
         }
         
+        try exportSymbols(typeArguments: genericStructType.typeArguments,
+                          symbolsWithTypeArguments: symbolsWithTypeArguments,
+                          expr: expr)
+        
+        return concreteType
+    }
+    
+    fileprivate func apply(genericTypeApplication expr: Expression.GenericTypeApplication,
+                           genericTraitType: GenericTraitType) throws -> SymbolType {
+        guard expr.arguments.count == genericTraitType.typeArguments.count else {
+            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "incorrect number of type arguments in application of generic trait type `\(expr.shortDescription)'")
+        }
+        
+        // TODO: check type constraints on the type variables here too
+        
+        // Bind types in a new symbol table to apply the type arguments.
+        let symbolsWithTypeArguments = SymbolTable(parent: symbols)
+        var evaluatedTypeArguments: [SymbolType] = []
+        for i in 0..<expr.arguments.count {
+            let typeVariable = genericTraitType.typeArguments[i]
+            let typeArgument = try check(expression: expr.arguments[i])
+            symbolsWithTypeArguments.bind(identifier: typeVariable.identifier.identifier, symbolType: typeArgument)
+            evaluatedTypeArguments.append(typeArgument)
+        }
+        
+        if let memoizedResult = genericTraitType.instantiations[evaluatedTypeArguments] {
+            return memoizedResult
+        }
+        
+        // Bind the concrete trait type
+        let subcompiler = SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment,
+                                                          symbols: symbolsWithTypeArguments)
+        let concreteType = try subcompiler.instantiate(genericTraitType, evaluatedTypeArguments)
+        genericTraitType.instantiations[evaluatedTypeArguments] = concreteType // memoize
+        
+        try exportSymbols(typeArguments: genericTraitType.typeArguments,
+                          symbolsWithTypeArguments: symbolsWithTypeArguments,
+                          expr: expr)
+        
+        return concreteType
+    }
+    
+    fileprivate func exportSymbols(typeArguments: [Expression.GenericTypeArgument],
+                                   symbolsWithTypeArguments: SymbolTable,
+                                   expr: Expression.GenericTypeApplication) throws {
         // Collect the new types and symbols that were bound above in
         // `symbolsWithTypeArguments' and move them to `symbols'.
         // Not the type variables, though, avoid those.
-        for typeVariable in genericStructType.typeArguments {
+        for typeVariable in typeArguments {
             let identifier = typeVariable.identifier.identifier
             symbolsWithTypeArguments.typeTable.removeValue(forKey: identifier)
         }
@@ -1120,8 +1178,6 @@ public class RvalueExpressionTypeChecker: NSObject {
         }
         
         symbols.scopePrologue = symbols.scopePrologue.appending(children: symbolsWithTypeArguments.scopePrologue.children)
-        
-        return concreteType
     }
     
     public func check(pointerType expr: Expression.PointerType) throws -> SymbolType {

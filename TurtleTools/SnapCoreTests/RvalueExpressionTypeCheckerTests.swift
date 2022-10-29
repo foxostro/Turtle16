@@ -5140,7 +5140,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Foo"),
                                          members: [],
                                          visibility: .privateVisibility)
-        try SnapSubcompilerTraitDeclaration(
+        _ = try SnapSubcompilerTraitDeclaration(
             globalEnvironment: globalEnvironment,
             symbols: globalEnvironment.globalSymbols).compile(traitDecl)
         
@@ -5509,6 +5509,133 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         concreteStructSymbols.enclosingFunctionNameMode = .set("foo")
 
         let expected = SymbolType.structType(StructType(name: "__foo_u16", symbols: concreteStructSymbols))
+        let actual = try typeChecker.check(expression: expr)
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testCannotInstantiateGenericTraitTypeWithoutApplication() throws {
+        let template = TraitDeclaration(
+            identifier: Expression.Identifier("Foo"),
+            typeArguments: [
+                Expression.GenericTypeArgument(
+                    identifier: Expression.Identifier("T"),
+                    constraints: [])
+            ],
+            members: [],
+            visibility: .privateVisibility)
+        let symbols = SymbolTable()
+        symbols.bind(identifier: "Foo", symbol: Symbol(type: .genericTraitType(GenericTraitType(template: template))))
+        
+        let expr = Expression.Identifier("Foo")
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot instantiate generic trait `Foo[T]'")
+        }
+    }
+    
+    func testGenericTraitApplicationRequiresCorrectNumberOfArguments() throws {
+        let constU16 = SymbolType.arithmeticType(.mutableInt(.u16))
+        let template = TraitDeclaration(
+            identifier: Expression.Identifier("Foo"),
+            typeArguments: [
+                Expression.GenericTypeArgument(
+                    identifier: Expression.Identifier("T"),
+                    constraints: [])
+            ],
+            members: [],
+            visibility: .privateVisibility)
+        let symbols = SymbolTable()
+        symbols.bind(identifier: "Foo", symbol: Symbol(type: .genericTraitType(GenericTraitType(template: template))))
+        
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("Foo"),
+                                                     arguments: [Expression.PrimitiveType(constU16),
+                                                                 Expression.PrimitiveType(constU16)])
+        
+        XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "incorrect number of type arguments in application of generic trait type `Foo@[u16, u16]'")
+        }
+    }
+    
+    func testGenericTraitApplication_Empty() throws {
+        let globalEnvironment = GlobalEnvironment()
+        let constU16 = SymbolType.arithmeticType(.mutableInt(.u16))
+        let template = TraitDeclaration(
+            identifier: Expression.Identifier("Foo"),
+            typeArguments: [
+                Expression.GenericTypeArgument(
+                    identifier: Expression.Identifier("T"),
+                    constraints: [])
+            ],
+            members: [],
+            visibility: .privateVisibility)
+        let symbols = SymbolTable()
+        symbols.bind(identifier: "Foo", symbol: Symbol(type: .genericTraitType(GenericTraitType(template: template))))
+        
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment)
+        let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("Foo"),
+                                                     arguments: [Expression.PrimitiveType(constU16)])
+        
+        let expectedSymbols = SymbolTable()
+        expectedSymbols.enclosingFunctionNameMode = .set("__Foo_u16")
+        let expected = SymbolType.traitType(TraitType(
+            name: "__Foo_u16",
+            nameOfTraitObjectType: "__Foo_u16_object",
+            nameOfVtableType: "__Foo_u16_vtable",
+            symbols: expectedSymbols))
+        let actual = try typeChecker.check(expression: expr)
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testGenericTraitApplication_OneMember() throws {
+        let globalEnvironment = GlobalEnvironment()
+        let constU16 = SymbolType.arithmeticType(.mutableInt(.u16))
+        let template = TraitDeclaration(
+            identifier: Expression.Identifier("Foo"),
+            typeArguments: [
+                Expression.GenericTypeArgument(
+                    identifier: Expression.Identifier("T"),
+                    constraints: [])
+            ],
+            members: [
+                TraitDeclaration.Member(
+                    name: "bar",
+                    type: Expression.PointerType(Expression.FunctionType(
+                            name: "bar",
+                            returnType: Expression.Identifier("T"),
+                            arguments: [
+                                Expression.Identifier("T")
+                            ])))
+            ],
+            visibility: .privateVisibility)
+        let symbols = SymbolTable()
+        symbols.bind(identifier: "Foo", symbol: Symbol(type: .genericTraitType(GenericTraitType(template: template))))
+        
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment)
+        let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("Foo"),
+                                                     arguments: [Expression.PrimitiveType(constU16)])
+        
+        let concreteTraitSymbols = SymbolTable(tuples: [
+            ("bar", Symbol(type: .pointer(.function(FunctionType(
+                name: "bar",
+                mangledName: "__Foo_u16_bar",
+                returnType: constU16,
+                arguments: [constU16],
+                ast: nil
+            ))), offset: 0, storage: .automaticStorage))
+        ])
+        concreteTraitSymbols.enclosingFunctionNameMode = .set("__Foo_u16")
+        concreteTraitSymbols.storagePointer = 1
+        
+        let expected = SymbolType.traitType(TraitType(
+            name: "__Foo_u16",
+            nameOfTraitObjectType: "__Foo_u16_object",
+            nameOfVtableType: "__Foo_u16_vtable",
+            symbols: concreteTraitSymbols))
         let actual = try typeChecker.check(expression: expr)
         XCTAssertEqual(actual, expected)
     }

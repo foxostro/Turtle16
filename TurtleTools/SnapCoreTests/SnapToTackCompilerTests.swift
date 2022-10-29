@@ -3547,7 +3547,7 @@ class SnapToTackCompilerTests: XCTestCase {
         let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Foo"),
                                          members: [],
                                          visibility: .privateVisibility)
-        try SnapSubcompilerTraitDeclaration(
+        _ = try SnapSubcompilerTraitDeclaration(
             globalEnvironment: globalEnvironment,
             symbols: globalEnvironment.globalSymbols).compile(traitDecl)
         

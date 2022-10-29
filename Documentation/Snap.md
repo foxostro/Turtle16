@@ -708,6 +708,35 @@ let concreteObject = SerialFake {}
 let traitObject: Serial = concreteObject
 ```
 
+It is possible to declare a Generic Trait. This defines defines a template for an interface. The actual, concrete interface depends on type arguments which have yet to be specified.
+```
+trait Adder[T] {
+    func add(self: *Adder@[T], amount: T) -> T
+}
+```
+
+Instantiate a concrete instance of the generic trait with the @[] syntax for a generic type application. Here, MyAdder@[T] promises conforms to the trait Serial@[T] when instantiated with a concrete type "T".
+```
+struct MyAdder[T] {
+    val: T
+}
+
+impl[T] Adder@[T] for MyAdder@[T] {
+    func add(self: *MyAdder@[T], amount: T) -> T {
+        self.val = self.val + amount
+        return self.val
+    }
+}
+```
+
+There's no type argument deduction for generic traits. (TODO: yet) The program must explicitly specify a conforming concrete trait in an expression to convert to a trait object.
+```
+var myAdder = MyAdder@[u16] { .val = 41 }
+let adder: Adder@[u16] = &myAdder
+let a = adder.add(1)
+assert(a == 42)
+```
+
 
 ## Modules and Import
 Code may be written across multiple source files. Use the import keyword to instruct the compiler to import another source file as a module. Public symbols found in the module are imported into the global namespace. Private symbols (the default) are not imported.

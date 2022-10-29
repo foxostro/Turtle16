@@ -603,6 +603,36 @@ test "Traits" {
     let traitObject: Serial = concreteObject
 }
 
+test "Generic Traits" {
+    // A generic trait defines a template for an interface. The actual, concrete
+    // interface depends on type arguments which have yet to be specified.
+    trait Adder[T] {
+        func add(self: *Adder@[T], amount: T) -> T
+    }
+
+    struct MyAdder[T] {
+        val: T
+    }
+
+    // Instantiate a concrete instance of the generic trait with the @[] syntax
+    // for a generic type application. Here, MyAdder@[T] promises conforms to
+    // the trait Serial@[T] when instantiated with a concrete type "T".
+    impl[T] Adder@[T] for MyAdder@[T] {
+        func add(self: *MyAdder@[T], amount: T) -> T {
+            self.val = self.val + amount
+            return self.val
+        }
+    }
+
+    // There's no type argument deduction for generic traits. (TODO: yet) The
+    // program must explicitly specify a conforming concrete trait in an
+    // expression to convert to a trait object.
+    var myAdder = MyAdder@[u16] { .val = 41 }
+    let adder: Adder@[u16] = &myAdder
+    let a = adder.add(1)
+    assert(a == 42)
+}
+
 test "Compiler Instinsics" {
     // Halt execution immediately
     hlt()

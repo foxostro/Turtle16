@@ -7,9 +7,7 @@ struct Point2 {
 
 impl Point2 {
 	func clone(self: *Point2) -> *Point2 {
-		// Until generics are implemented, callers of malloc must use an unsafe
-		// bitcast to convert the returned address to an actual pointer.
-		let point = malloc(sizeof(Point2)) bitcastAs *Point2
+		let point = malloc@[Point2]()
 		point.x = self.x
 		point.y = self.y
 		return point

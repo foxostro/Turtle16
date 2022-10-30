@@ -1201,4 +1201,20 @@ public class SymbolTable: NSObject {
         hasher.combine(stackFrameIndex)
         return hasher.finalize()
     }
+    
+    public func clone() -> SymbolTable {
+        let result = SymbolTable()
+        result.declarationOrder = declarationOrder
+        result.symbolTable = symbolTable
+        result.typeTable = typeTable
+        result.parent = parent
+        result.storagePointer = storagePointer
+        result.highwaterMark = highwaterMark
+        result.stackFrameIndex = stackFrameIndex
+        result.scopePrologue = scopePrologue
+        result.enclosingFunctionTypeMode = enclosingFunctionTypeMode
+        result.enclosingFunctionNameMode = enclosingFunctionNameMode
+        result.modulesAlreadyImported = modulesAlreadyImported
+        return result
+    }
 }

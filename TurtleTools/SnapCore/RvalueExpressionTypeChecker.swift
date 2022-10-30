@@ -1028,10 +1028,10 @@ public class RvalueExpressionTypeChecker: NSObject {
         
         // TODO: check type constraints on the type variables here too
         
-        let originalFunctionDeclaration = genericFunctionType.template
+        let originalFunctionDeclaration = genericFunctionType.template.clone()
+        let symbolsWithTypeArguments = originalFunctionDeclaration.symbols
         
         // Bind types in a new symbol table to apply the type arguments.
-        let symbolsWithTypeArguments = SymbolTable(parent: symbols)
         var evaluatedTypeArguments: [SymbolType] = []
         for i in 0..<expr.arguments.count {
             let typeVariable = genericFunctionType.typeArguments[i]

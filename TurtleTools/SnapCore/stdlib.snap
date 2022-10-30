@@ -7,10 +7,9 @@ let kHeapStart: usize = 0x1000
 var addrOfNextAllocation: usize = kHeapStart
 
 // Simple bump allocator for demonstration purposes.
-// Until generics are implemented, the caller will have to perform an
-// unsafe bitcast to convert the return value to an actual pointer.
-public func malloc(size: usize) -> usize {
-    let result = addrOfNextAllocation
+public func malloc[T]() -> *T {
+    let size = sizeof(T)
+    let result: *T = addrOfNextAllocation bitcastAs *T
     addrOfNextAllocation = addrOfNextAllocation + size
     return result
 }

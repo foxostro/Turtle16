@@ -2971,4 +2971,21 @@ func foo() {
         
         XCTAssertEqual(debugger?.loadSymbolU16("p"), 42)
     }
+    
+    func test_EndToEndIntegration_UseGenericTypeVariableInFunction() {
+        let debugger = run(program: """
+            typealias usize = u16
+            let kHeapStart: usize = 0x1000
+            var addrOfNextAllocation: usize = kHeapStart
+            func malloc[T]() -> *T {
+                let size = sizeof(T)
+                let result: *T = addrOfNextAllocation bitcastAs *T
+                addrOfNextAllocation = addrOfNextAllocation + size
+                return result
+            }
+            let a = malloc@[u16]()
+            """)
+        
+        XCTAssertEqual(0x1000, debugger?.loadSymbolPointer("a"))
+    }
 }

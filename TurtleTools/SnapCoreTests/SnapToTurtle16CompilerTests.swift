@@ -91,7 +91,7 @@ func foo() {
             ENTER 1
             SUBI r0, fp, 1
             LI r1, 1
-            STORE r1, r0
+            STORE r1, r0, 0
             LEAVE
             RET
             """)

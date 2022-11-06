@@ -86,36 +86,30 @@ class SnapToTackCompilerTests: XCTestCase {
     func testGoto() throws {
         let compiler = makeCompiler()
         let result = try compiler.compileWithEpilog(Goto(target: "foo"))
-        XCTAssertEqual(result, TackInstructionNode(instruction: .jmp, parameters: [ParameterIdentifier("foo")]))
+        XCTAssertEqual(result, TackInstructionNode(.jmp("foo")))
     }
     
     func testGotoIfFalse() throws {
         let compiler = makeCompiler()
         let actual = try compiler.compileWithEpilog(GotoIfFalse(condition: Expression.LiteralBool(false), target: "bar"))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .li16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .bz, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterIdentifier("bar")
-            ])
+            TackInstructionNode(.li16(.vr(0), 0)),
+            TackInstructionNode(.bz(.vr(0), "bar"))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertTrue(compiler.registerStack.isEmpty)
     }
-    
+
     func testRet() throws {
         let compiler = makeCompiler()
         let actual = try compiler.compileWithEpilog(Return())
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .leave),
-            TackInstructionNode(instruction: .ret)
+            TackInstructionNode(.leave),
+            TackInstructionNode(.ret)
         ])
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testCompileFunctionDeclaration_Simplest() throws {
         let fn1 = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                      functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
@@ -135,115 +129,82 @@ class SnapToTackCompilerTests: XCTestCase {
                                           options: opts)
         let actual = try compiler.compileWithEpilog(nil)
         let expected = Subroutine(identifier: "foo", children: [
-            TackInstructionNode(instruction: .enter, parameters: [
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .leave),
-            TackInstructionNode(instruction: .ret)
+            TackInstructionNode(.enter(0)),
+            TackInstructionNode(.leave),
+            TackInstructionNode(.ret)
         ])
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testExpr_LiteralBoolFalse() throws {
         let compiler = makeCompiler()
         let actual = try compiler.compileWithEpilog(Expression.LiteralBool(false))
-        let expected = TackInstructionNode(instruction: .li16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(0)
-        ])
+        let expected = TackInstructionNode(.li16(.vr(0), 0))
         XCTAssertEqual(actual, expected)
         XCTAssertNil(compiler.registerStack.last)
     }
-    
+
     func testRvalue_LiteralBoolFalse() throws {
         let compiler = makeCompiler()
         let actual = try compiler.rvalue(expr: Expression.LiteralBool(false))
-        let expected = TackInstructionNode(instruction: .li16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(0)
-        ])
+        let expected = TackInstructionNode(.li16(.vr(0), 0))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_LiteralBoolTrue() throws {
         let compiler = makeCompiler()
         let actual = try compiler.rvalue(expr: Expression.LiteralBool(true))
-        let expected = TackInstructionNode(instruction: .li16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(1)
-        ])
+        let expected = TackInstructionNode(.li16(.vr(0), 1))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_LiteralInt_Small_Positive() throws {
         let compiler = makeCompiler()
         let actual = try compiler.rvalue(expr: Expression.LiteralInt(1))
-        let expected = TackInstructionNode(instruction: .liu8, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(1)
-        ])
+        let expected = TackInstructionNode(.liu8(.vr(0), 1))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_LiteralInt_Small_Negative() throws {
         let compiler = makeCompiler()
         let actual = try compiler.rvalue(expr: Expression.LiteralInt(-1))
-        let expected = TackInstructionNode(instruction: .li8, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(-1)
-        ])
+        let expected = TackInstructionNode(.li8(.vr(0), -1))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_LiteralInt_Big() throws {
         let compiler = makeCompiler()
         let actual = try compiler.rvalue(expr: Expression.LiteralInt(0x1000))
-        let expected = TackInstructionNode(instruction: .liu16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(0x1000)
-        ])
+        let expected = TackInstructionNode(.liu16(.vr(0), 0x1000))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_LiteralInt_Big_Negative() throws {
         let compiler = makeCompiler()
         let actual = try compiler.rvalue(expr: Expression.LiteralInt(-1000))
-        let expected = TackInstructionNode(instruction: .li16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(-1000)
-        ])
+        let expected = TackInstructionNode(.li16(.vr(0), -1000))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_LiteralArray_primitive_type() throws {
         let compiler = makeCompiler()
         let arrType = Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))
         let actual = try compiler.rvalue(expr: Expression.LiteralArray(arrayType: arrType, elements: [Expression.LiteralInt(42)]))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(272)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(42)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 272)),
+            TackInstructionNode(.liu16(.vr(1), 42)),
+            TackInstructionNode(.store(.vr(1), .vr(0), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_LiteralArray_non_primitive_type() throws {
         let compiler = makeCompiler()
         let inner = Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))
@@ -252,63 +213,30 @@ class SnapToTackCompilerTests: XCTestCase {
             Expression.LiteralArray(arrayType: inner, elements: [Expression.LiteralInt(42)])
         ]))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(272)
-            ]),
-            TackInstructionNode(instruction: .liu8, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .add16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterNumber(273)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterNumber(42)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .memcpy, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr3"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterNumber(272)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 272)),
+            TackInstructionNode(.liu8(.vr(1), 0)),
+            TackInstructionNode(.add16(.vr(2), .vr(1), .vr(0))),
+            TackInstructionNode(.liu16(.vr(3), 273)),
+            TackInstructionNode(.liu16(.vr(4), 42)),
+            TackInstructionNode(.store(.vr(4), .vr(3), 0)),
+            TackInstructionNode(.memcpy(.vr(2), .vr(3), 1)),
+            TackInstructionNode(.liu16(.vr(5), 272))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr5")
+        XCTAssertEqual(compiler.registerStack.last, .vr(5))
     }
-    
+
     func testRvalue_LiteralString() throws {
         let compiler = makeCompiler()
         let actual = try compiler.rvalue(expr: Expression.LiteralString("a"))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(272)
-            ]),
-            TackInstructionNode(instruction: .ststr, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterString("a")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 272)),
+            TackInstructionNode(.ststr(.vr(0), "a"))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_StructInitializer() throws {
         let symbols = SymbolTable()
         symbols.bind(identifier: kSliceName, symbolType: kSliceType)
@@ -320,49 +248,20 @@ class SnapToTackCompilerTests: XCTestCase {
                                                   expr: Expression.LiteralInt(0xffff))
         ]))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(272)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterNumber(272)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterNumber(0xffff)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr4")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr6"),
-                ParameterNumber(272)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 272)),
+            TackInstructionNode(.addi16(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 0xabcd)),
+            TackInstructionNode(.store(.vr(2), .vr(1), 0)),
+            TackInstructionNode(.liu16(.vr(3), 272)),
+            TackInstructionNode(.addi16(.vr(4), .vr(3), 1)),
+            TackInstructionNode(.liu16(.vr(5), 0xffff)),
+            TackInstructionNode(.store(.vr(5), .vr(4), 0)),
+            TackInstructionNode(.liu16(.vr(6), 272))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr6")
+        XCTAssertEqual(compiler.registerStack.last, .vr(6))
     }
-    
+
     func testRvalue_Identifier_Static_u16() throws {
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let compiler = makeCompiler(symbols: SymbolTable(tuples: [
@@ -370,19 +269,13 @@ class SnapToTackCompilerTests: XCTestCase {
         ]))
         let actual = try compiler.rvalue(expr: Expression.Identifier("foo"))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(offset)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-            ])
+            TackInstructionNode(.liu16(.vr(0), offset)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
+        XCTAssertEqual(compiler.registerStack.last, .vr(1))
     }
-    
+
     func testRvalue_Identifier_Stack_u16() throws {
         let offset = 4
         let symbols = SymbolTable(tuples: [
@@ -392,34 +285,24 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Identifier("foo"))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .subi16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterIdentifier("fp"),
-                ParameterNumber(offset)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-            ])
+            TackInstructionNode(.subi16(.vr(0), .fp, offset)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
+        XCTAssertEqual(compiler.registerStack.last, .vr(1))
     }
-    
+
     func testRvalue_Identifier_struct() throws {
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let compiler = makeCompiler(symbols: SymbolTable(tuples: [
             ("foo", Symbol(type: kSliceType, offset: offset, storage: .staticStorage))
         ]))
         let actual = try compiler.rvalue(expr: Expression.Identifier("foo"))
-        let expected = TackInstructionNode(instruction: .liu16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(offset)
-        ])
+        let expected = TackInstructionNode(.liu16(.vr(0), offset))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_As_u8_to_u8() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0xabcd, storage: .staticStorage))
@@ -429,19 +312,13 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8)))))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
+        XCTAssertEqual(compiler.registerStack.last, .vr(1))
     }
-    
+
     func testRvalue_As_u8_to_u16() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0xabcd, storage: .staticStorage))
@@ -451,19 +328,13 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
+        XCTAssertEqual(compiler.registerStack.last, .vr(1))
     }
-    
+
     func testRvalue_As_u16_to_u8() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0xabcd, storage: .staticStorage))
@@ -473,24 +344,14 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8)))))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-            ]),
-            TackInstructionNode(instruction: .andi16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-                ParameterNumber(0x00ff )
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.andi16(.vr(2), .vr(1), 0x00ff))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr2")
+        XCTAssertEqual(compiler.registerStack.last, .vr(2))
     }
-    
+
     func testRvalue_As_u8_to_i16() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0xabcd, storage: .staticStorage))
@@ -500,19 +361,13 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.i16)))))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
+        XCTAssertEqual(compiler.registerStack.last, .vr(1))
     }
-    
+
     func testRvalue_As_i16_to_i8() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 0xabcd, storage: .staticStorage))
@@ -522,23 +377,14 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.i8)))))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-            ]),
-            TackInstructionNode(instruction: .sxt8, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.sxt8(.vr(2), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr2")
+        XCTAssertEqual(compiler.registerStack.last, .vr(2))
     }
-    
+
     func testRvalue_As_array_to_array_of_same_type() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 1, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
@@ -546,14 +392,11 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))))
-        let expected = TackInstructionNode(instruction: .liu16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(0xabcd)
-        ])
+        let expected = TackInstructionNode(.liu16(.vr(0), 0xabcd))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_As_array_to_array_with_different_type_that_can_be_trivially_reinterpreted() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 0, elementType: .arithmeticType(.mutableInt(.u8))), offset: 0xabcd, storage: .staticStorage))
@@ -561,14 +404,11 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.ArrayType(count: Expression.LiteralInt(0), elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))))
-        let expected = TackInstructionNode(instruction: .liu16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(0xabcd)
-        ])
+        let expected = TackInstructionNode(.liu16(.vr(0), 0xabcd))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_As_array_to_array_where_each_element_must_be_converted() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 1, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0x1000, storage: .staticStorage))
@@ -577,54 +417,21 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(272)
-            ]),
-            TackInstructionNode(instruction: .liu8, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .add16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .liu8, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .add16, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3")
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr6"),
-                ParameterIdentifier("vr5")
-            ]),
-            TackInstructionNode(instruction: .andi16, parameters: [
-                ParameterIdentifier("vr7"),
-                ParameterIdentifier("vr6"),
-                ParameterNumber(0x00ff)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr7"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr8"),
-                ParameterNumber(272)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 272)),
+            TackInstructionNode(.liu8(.vr(1), 0)),
+            TackInstructionNode(.add16(.vr(2), .vr(1), .vr(0))),
+            TackInstructionNode(.liu16(.vr(3), 0x1000)),
+            TackInstructionNode(.liu8(.vr(4), 0)),
+            TackInstructionNode(.add16(.vr(5), .vr(4), .vr(3))),
+            TackInstructionNode(.load(.vr(6), .vr(5), 0)),
+            TackInstructionNode(.andi16(.vr(7), .vr(6), 0x00ff)),
+            TackInstructionNode(.store(.vr(7), .vr(2), 0)),
+            TackInstructionNode(.liu16(.vr(8), 272))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr8")
+        XCTAssertEqual(compiler.registerStack.last, .vr(8))
     }
-    
+
     func testRvalue_As_array_to_dynamic_array() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 1, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0x1000, storage: .staticStorage))
@@ -632,74 +439,33 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(272)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(1)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 272)),
+            TackInstructionNode(.liu16(.vr(1), 0x1000)),
+            TackInstructionNode(.store(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 1)),
+            TackInstructionNode(.store(.vr(2), .vr(0), 1))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_As_literal_array_to_dynamic_array() throws {
         let compiler = makeCompiler()
         let arr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))), elements: [Expression.LiteralInt(1)])
         let actual = try compiler.rvalue(expr: Expression.As(expr: arr, targetType: Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(272)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(274)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(1)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 272)),
+            TackInstructionNode(.liu16(.vr(1), 274)),
+            TackInstructionNode(.liu16(.vr(2), 1)),
+            TackInstructionNode(.store(.vr(2), .vr(1), 0)),
+            TackInstructionNode(.store(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(3), 1)),
+            TackInstructionNode(.store(.vr(3), .vr(0), 1))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_As_compTimeInt_small() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.compTimeInt(42)), offset: 0xabcd, storage: .staticStorage))
@@ -708,14 +474,11 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                         targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8)))))
-        let expected = TackInstructionNode(instruction: .liu8, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(42)
-        ])
+        let expected = TackInstructionNode(.liu8(.vr(0), 42))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_As_compTimeInt_big() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.compTimeInt(1000)), offset: 0xabcd, storage: .staticStorage))
@@ -724,14 +487,11 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))))
-        let expected = TackInstructionNode(instruction: .liu16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(1000)
-        ])
+        let expected = TackInstructionNode(.liu16(.vr(0), 1000))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_As_compTimeBool_true() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .bool(.compTimeBool(true)), offset: 0xabcd, storage: .staticStorage))
@@ -740,14 +500,11 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.bool(.mutableBool))))
-        let expected = TackInstructionNode(instruction: .li16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(1)
-        ])
+        let expected = TackInstructionNode(.li16(.vr(0), 1))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_As_compTimeBool_false() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .bool(.compTimeBool(false)), offset: 0xabcd, storage: .staticStorage))
@@ -756,14 +513,11 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.bool(.mutableBool))))
-        let expected = TackInstructionNode(instruction: .li16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(0)
-        ])
+        let expected = TackInstructionNode(.li16(.vr(0), 0))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_As_pointer_to_pointer() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(.arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
@@ -773,19 +527,13 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PointerType(Expression.PrimitiveType(.arithmeticType(.immutableInt(.u16))))))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
+        XCTAssertEqual(compiler.registerStack.last, .vr(1))
     }
-    
+
     func testRvalue_As_union_to_union() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .unionType(UnionType([.arithmeticType(.mutableInt(.u16))])), offset: 0xabcd, storage: .staticStorage))
@@ -794,14 +542,11 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.UnionType([Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))])))
-        let expected = TackInstructionNode(instruction: .liu16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(0xabcd)
-        ])
+        let expected = TackInstructionNode(.liu16(.vr(0), 0xabcd))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_As_union_to_primitive() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .unionType(UnionType([.arithmeticType(.mutableInt(.u16))])), offset: 0xabcd, storage: .staticStorage))
@@ -811,20 +556,13 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(1)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 1))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
+        XCTAssertEqual(compiler.registerStack.last, .vr(1))
     }
-    
+
     func testRvalue_As_union_to_non_primitive() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .unionType(UnionType([.array(count: 1, elementType: .arithmeticType(.mutableInt(.u16)))])), offset: 0xabcd, storage: .staticStorage))
@@ -834,20 +572,13 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(1)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.addi16(.vr(1), .vr(0), 1))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
+        XCTAssertEqual(compiler.registerStack.last, .vr(1))
     }
-    
+
     func testRvalue_As_convert_primitive_value_to_union() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0xabcd, storage: .staticStorage))
@@ -856,38 +587,17 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))])))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .subi16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterIdentifier("fp"),
-                ParameterNumber(2)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(1)
-            ])
+            TackInstructionNode(.subi16(.vr(0), .fp, 2)),
+            TackInstructionNode(.liu16(.vr(1), 0)),
+            TackInstructionNode(.store(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 0xabcd)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.store(.vr(3), .vr(0), 1))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_As_determine_union_type_tag() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0xabcd, storage: .staticStorage))
@@ -896,38 +606,17 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.PrimitiveType(.bool(.mutableBool)), Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))])))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .subi16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterIdentifier("fp"),
-                ParameterNumber(2)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(1)
-            ])
+            TackInstructionNode(.subi16(.vr(0), .fp, 2)),
+            TackInstructionNode(.liu16(.vr(1), 1)),
+            TackInstructionNode(.store(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 0xabcd)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.store(.vr(3), .vr(0), 1))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_As_convert_non_primitive_value_to_union() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 2, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
@@ -936,39 +625,17 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.ArrayType(count: Expression.LiteralInt(2), elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))])))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .subi16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterIdentifier("fp"),
-                ParameterNumber(3)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .memcpy, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr3"),
-                ParameterNumber(2)
-            ])
+            TackInstructionNode(.subi16(.vr(0), .fp, 3)),
+            TackInstructionNode(.liu16(.vr(1), 0)),
+            TackInstructionNode(.store(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.addi16(.vr(2), .vr(0), 1)),
+            TackInstructionNode(.liu16(.vr(3), 0xabcd)),
+            TackInstructionNode(.memcpy(.vr(2), .vr(3), 2))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_As_union_to_primitive_with_dynamic_type_check() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .unionType(UnionType([.bool(.mutableBool), .arithmeticType(.mutableInt(.u16))])), offset: 0xabcd, storage: .staticStorage))
@@ -978,38 +645,18 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .subi16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .bz, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier(".L0")
-            ]),
-            TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("__oob")
-            ]),
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.subi16(.vr(2), .vr(1), 1)),
+            TackInstructionNode(.bz(.vr(2), ".L0")),
+            TackInstructionNode(.call("__oob")),
             LabelDeclaration(identifier: ".L0"),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(1)
-            ])
+            TackInstructionNode(.load(.vr(3), .vr(0), 1))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr3")
+        XCTAssertEqual(compiler.registerStack.last, .vr(3))
     }
-    
+
     func testRvalue_Bitcast_u16_to_pointer() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0xabcd, storage: .staticStorage))
@@ -1019,30 +666,21 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Bitcast(expr: Expression.Identifier("foo"),
                                                                   targetType: Expression.PointerType(Expression.PrimitiveType(.arithmeticType(.immutableInt(.u16))))))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
+        XCTAssertEqual(compiler.registerStack.last, .vr(1))
     }
-    
+
     func testRvalue_Group() throws {
         let compiler = makeCompiler()
         let actual = try compiler.rvalue(expr: Expression.Group(Expression.LiteralBool(false)))
-        let expected = TackInstructionNode(instruction: .li16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(0)
-        ])
+        let expected = TackInstructionNode(.li16(.vr(0), 0))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Unary_minus_u8() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage))
@@ -1050,28 +688,15 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .minus, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu8, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .sub8, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 100)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu8(.vr(2), 0)),
+            TackInstructionNode(.sub8(.vr(3), .vr(2), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(3))
     }
-    
+
     func testRvalue_Unary_minus_u16() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage))
@@ -1079,28 +704,15 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .minus, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .sub16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 100)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 0)),
+            TackInstructionNode(.sub16(.vr(3), .vr(2), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr3")
+        XCTAssertEqual(compiler.registerStack.last, .vr(3))
     }
-    
+
     func testRvalue_Unary_minus_i8() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.i8)), offset: 100, storage: .staticStorage))
@@ -1108,28 +720,15 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .minus, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu8, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .sub8, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 100)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu8(.vr(2), 0)),
+            TackInstructionNode(.sub8(.vr(3), .vr(2), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(3))
     }
-    
+
     func testRvalue_Unary_minus_i16() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 100, storage: .staticStorage))
@@ -1137,28 +736,15 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .minus, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .sub16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 100)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 0)),
+            TackInstructionNode(.sub16(.vr(3), .vr(2), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr3")
+        XCTAssertEqual(compiler.registerStack.last, .vr(3))
     }
-    
+
     func testRvalue_Unary_bang_bool() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .bool(.mutableBool), offset: 100, storage: .staticStorage))
@@ -1166,23 +752,14 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .bang, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .not, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-            ])
+            TackInstructionNode(.liu16(.vr(0), 100)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.not(.vr(2), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr3")
+        XCTAssertEqual(compiler.registerStack.last, .vr(3))
     }
-    
+
     func testRvalue_Unary_tilde_u8() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage))
@@ -1190,23 +767,14 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .tilde, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .neg8, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-            ])
+            TackInstructionNode(.liu16(.vr(0), 100)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.neg8(.vr(2), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr3")
+        XCTAssertEqual(compiler.registerStack.last, .vr(2))
     }
-    
+
     func testRvalue_Unary_tilde_u16() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage))
@@ -1214,23 +782,14 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .tilde, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .neg16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-            ])
+            TackInstructionNode(.liu16(.vr(0), 100)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.neg16(.vr(2), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr2")
+        XCTAssertEqual(compiler.registerStack.last, .vr(2))
     }
-    
+
     func testRvalue_Unary_tilde_i8() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.i8)), offset: 100, storage: .staticStorage))
@@ -1238,23 +797,14 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .tilde, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .neg8, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-            ])
+            TackInstructionNode(.liu16(.vr(0), 100)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.neg8(.vr(2), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr3")
+        XCTAssertEqual(compiler.registerStack.last, .vr(2))
     }
-    
+
     func testRvalue_Unary_tilde_i16() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 100, storage: .staticStorage))
@@ -1262,51 +812,36 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .tilde, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .neg16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-            ])
+            TackInstructionNode(.liu16(.vr(0), 100)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.neg16(.vr(2), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr2")
+        XCTAssertEqual(compiler.registerStack.last, .vr(2))
     }
-    
+
     func testRvalue_Unary_addressOf_Function() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .void, arguments: []))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .ampersand, expression: Expression.Identifier("foo")))
-        let expected = TackInstructionNode(instruction: .la, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("foo"),
-        ])
+        let expected = TackInstructionNode(.la(.vr(0), "foo"))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Unary_addressOf_Identifier() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .ampersand, expression: Expression.Identifier("foo")))
-        let expected = TackInstructionNode(instruction: .liu16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(100)
-        ])
+        let expected = TackInstructionNode(.liu16(.vr(0), 100))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Binary_add16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
@@ -1315,32 +850,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .plus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .add16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.add16(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_sub16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
@@ -1349,32 +868,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .minus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .sub16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.sub16(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_mul16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
@@ -1383,32 +886,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .star, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .mul16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.mul16(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_div16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
@@ -1417,32 +904,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .div16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.div16(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_mod16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
@@ -1451,32 +922,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .modulus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .mod16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.mod16(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_lsl16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
@@ -1485,32 +940,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .leftDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .lsl16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.lsl16(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_lsr16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
@@ -1519,32 +958,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .rightDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .lsr16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.lsr16(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_and16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
@@ -1553,32 +976,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ampersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .and16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.and16(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_or16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
@@ -1587,32 +994,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .pipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .or16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.or16(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_xor16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
@@ -1621,32 +1012,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .caret, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .xor16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.xor16(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_eq16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
@@ -1655,32 +1030,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .eq16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.eq16(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_ne16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
@@ -1689,32 +1048,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .ne16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.ne16(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_lt16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 100, storage: .staticStorage)),
@@ -1723,32 +1066,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .lt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .lt16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.lt16(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_ge16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 100, storage: .staticStorage)),
@@ -1757,32 +1084,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ge, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .ge16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.ge16(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_le16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 100, storage: .staticStorage)),
@@ -1791,32 +1102,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .le, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .le16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.le16(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_gt16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 100, storage: .staticStorage)),
@@ -1825,32 +1120,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .gt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .gt16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.gt16(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_ltu16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
@@ -1859,32 +1138,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .lt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .ltu16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.ltu16(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_geu16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
@@ -1893,32 +1156,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ge, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .geu16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.geu16(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_leu16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
@@ -1927,32 +1174,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .le, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .leu16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.leu16(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_gtu16() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
@@ -1961,32 +1192,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .gt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .gtu16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.gtu16(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_add8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
@@ -1995,32 +1210,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .plus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .add8, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.add8(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_sub8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
@@ -2029,32 +1228,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .minus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .sub8, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.sub8(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_mul8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
@@ -2063,32 +1246,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .star, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .mul8, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.mul8(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_div8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
@@ -2097,32 +1264,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .div8, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.div8(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_mod8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
@@ -2131,32 +1282,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .modulus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .mod8, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.mod8(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_lsl8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
@@ -2165,32 +1300,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .leftDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .lsl8, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.lsl8(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_lsr8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
@@ -2199,32 +1318,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .rightDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .lsr8, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.lsr8(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_and8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
@@ -2233,32 +1336,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ampersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .and8, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.and8(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_or8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
@@ -2267,32 +1354,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .pipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .or8, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.or8(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_xor8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
@@ -2301,32 +1372,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .caret, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .xor8, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.xor8(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_eq8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
@@ -2335,32 +1390,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .eq8, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.eq8(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_ne8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
@@ -2369,32 +1408,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .ne8, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.ne8(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_ltu8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
@@ -2403,32 +1426,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .lt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .ltu8, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.ltu8(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_geu8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
@@ -2437,32 +1444,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ge, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .geu8, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.geu8(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_leu8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
@@ -2471,32 +1462,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .le, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .leu8, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.leu8(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_gtu8() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
@@ -2505,32 +1480,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .gt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .gtu8, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.gtu8(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_comptime_eq() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(1)))),
@@ -2538,14 +1497,11 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = TackInstructionNode(instruction: .li16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(1)
-        ])
+        let expected = TackInstructionNode(.li16(.vr(0), 1))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Binary_comptime_ne() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(1)))),
@@ -2553,14 +1509,11 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = TackInstructionNode(instruction: .li16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(0)
-        ])
+        let expected = TackInstructionNode(.li16(.vr(0), 0))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Binary_comptime_lt() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(1)))),
@@ -2568,14 +1521,11 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .lt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = TackInstructionNode(instruction: .li16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(1)
-        ])
+        let expected = TackInstructionNode(.li16(.vr(0), 1))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Binary_comptime_gt() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(2)))),
@@ -2583,14 +1533,11 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .gt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = TackInstructionNode(instruction: .li16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(1)
-        ])
+        let expected = TackInstructionNode(.li16(.vr(0), 1))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Binary_comptime_le() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(1)))),
@@ -2598,14 +1545,11 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .le, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = TackInstructionNode(instruction: .li16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(1)
-        ])
+        let expected = TackInstructionNode(.li16(.vr(0), 1))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Binary_comptime_ge() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(1)))),
@@ -2613,14 +1557,11 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ge, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = TackInstructionNode(instruction: .li16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(1)
-        ])
+        let expected = TackInstructionNode(.li16(.vr(0), 1))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Binary_comptime_add() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(-1000)))),
@@ -2628,14 +1569,11 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .plus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = TackInstructionNode(instruction: .li16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(-2000)
-        ])
+        let expected = TackInstructionNode(.li16(.vr(0), -2000))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Binary_comptime_sub() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(1)))),
@@ -2643,14 +1581,11 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .minus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = TackInstructionNode(instruction: .liu8, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(0)
-        ])
+        let expected = TackInstructionNode(.liu8(.vr(0), 0))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Binary_comptime_mul() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(1)))),
@@ -2658,14 +1593,11 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .star, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = TackInstructionNode(instruction: .liu8, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(1)
-        ])
+        let expected = TackInstructionNode(.liu8(.vr(0), 1))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Binary_comptime_div() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(1)))),
@@ -2673,14 +1605,11 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = TackInstructionNode(instruction: .liu8, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(1)
-        ])
+        let expected = TackInstructionNode(.liu8(.vr(0), 1))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Binary_comptime_mod() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(3)))),
@@ -2688,14 +1617,11 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .modulus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = TackInstructionNode(instruction: .liu8, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(1)
-        ])
+        let expected = TackInstructionNode(.liu8(.vr(0), 1))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Binary_comptime_and() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(0xab)))),
@@ -2703,14 +1629,11 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ampersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = TackInstructionNode(instruction: .liu8, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(0xb)
-        ])
+        let expected = TackInstructionNode(.liu8(.vr(0), 0xb))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Binary_comptime_or() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(0xab)))),
@@ -2718,14 +1641,11 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .pipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = TackInstructionNode(instruction: .liu8, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(0xaf)
-        ])
+        let expected = TackInstructionNode(.liu8(.vr(0), 0xaf))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Binary_comptime_xor() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(0xab)))),
@@ -2733,14 +1653,11 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .caret, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = TackInstructionNode(instruction: .liu8, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(0)
-        ])
+        let expected = TackInstructionNode(.liu8(.vr(0), 0))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Binary_comptime_lsl() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(2)))),
@@ -2748,14 +1665,11 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .leftDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = TackInstructionNode(instruction: .liu8, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(8)
-        ])
+        let expected = TackInstructionNode(.liu8(.vr(0), 8))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Binary_comptime_lsr() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.compTimeInt(8)))),
@@ -2763,14 +1677,11 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .rightDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = TackInstructionNode(instruction: .liu8, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(2)
-        ])
+        let expected = TackInstructionNode(.liu8(.vr(0), 2))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Binary_eq_bool() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .bool(.mutableBool), offset: 100, storage: .staticStorage)),
@@ -2779,32 +1690,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .eq16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.eq16(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_ne_bool() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .bool(.mutableBool), offset: 100, storage: .staticStorage)),
@@ -2813,32 +1708,16 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .ne16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 200)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 100)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.ne16(.vr(4), .vr(3), .vr(1)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_logical_and() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .bool(.mutableBool), offset: 100, storage: .staticStorage)),
@@ -2847,48 +1726,22 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .doubleAmpersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .bz, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier(".L0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .bz, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier(".L0")
-            ]),
-            TackInstructionNode(instruction: .li16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .jmp, parameters: [
-                ParameterIdentifier(".L1")
-            ]),
+            TackInstructionNode(.liu16(.vr(0), 100)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.bz(.vr(1), ".L0")),
+            TackInstructionNode(.liu16(.vr(2), 200)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.bz(.vr(3), ".L0")),
+            TackInstructionNode(.li16(.vr(4), 1)),
+            TackInstructionNode(.jmp(".L1")),
             LabelDeclaration(identifier: ".L0"),
-            TackInstructionNode(instruction: .li16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterNumber(0)
-            ]),
+            TackInstructionNode(.li16(.vr(4), 0)),
             LabelDeclaration(identifier: ".L1")
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_logical_or() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .bool(.mutableBool), offset: 100, storage: .staticStorage)),
@@ -2897,48 +1750,22 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .doublePipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .bnz, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier(".L0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(200)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .bnz, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier(".L0")
-            ]),
-            TackInstructionNode(instruction: .li16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .jmp, parameters: [
-                ParameterIdentifier(".L1")
-            ]),
+            TackInstructionNode(.liu16(.vr(0), 100)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.bnz(.vr(1), ".L0")),
+            TackInstructionNode(.liu16(.vr(2), 200)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.bnz(.vr(3), ".L0")),
+            TackInstructionNode(.li16(.vr(4), 0)),
+            TackInstructionNode(.jmp(".L1")),
             LabelDeclaration(identifier: ".L0"),
-            TackInstructionNode(instruction: .li16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterNumber(1)
-            ]),
+            TackInstructionNode(.li16(.vr(4), 1)),
             LabelDeclaration(identifier: ".L1")
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr4")
+        XCTAssertEqual(compiler.registerStack.last, .vr(4))
     }
-    
+
     func testRvalue_Binary_comptime_bool_eq() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .bool(.compTimeBool(true)))),
@@ -2946,14 +1773,11 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = TackInstructionNode(instruction: .li16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(1)
-        ])
+        let expected = TackInstructionNode(.li16(.vr(0), 1))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Binary_comptime_bool_ne() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .bool(.compTimeBool(true)))),
@@ -2961,14 +1785,11 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = TackInstructionNode(instruction: .li16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(0)
-        ])
+        let expected = TackInstructionNode(.li16(.vr(0), 0))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Binary_comptime_bool_and() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .bool(.compTimeBool(true)))),
@@ -2976,14 +1797,11 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .doubleAmpersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = TackInstructionNode(instruction: .li16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(1)
-        ])
+        let expected = TackInstructionNode(.li16(.vr(0), 1))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Binary_comptime_bool_or() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .bool(.compTimeBool(true)))),
@@ -2991,28 +1809,22 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .doublePipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
-        let expected = TackInstructionNode(instruction: .li16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(1)
-        ])
+        let expected = TackInstructionNode(.li16(.vr(0), 1))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Is_comptime_bool() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .bool(.compTimeBool(true))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Is(expr: Expression.Identifier("foo"), testType: Expression.PrimitiveType(.bool(.compTimeBool(true)))))
-        let expected = TackInstructionNode(instruction: .li16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(1)
-        ])
+        let expected = TackInstructionNode(.li16(.vr(0), 1))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Is_test_union_type_tag() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .unionType(UnionType([.arithmeticType(.mutableInt(.u8)), .bool(.mutableBool)])), offset: 100, storage: .staticStorage))
@@ -3020,28 +1832,15 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Is(expr: Expression.Identifier("foo"), testType: Expression.PrimitiveType(.bool(.mutableBool))))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .li16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1")
-            ]),
-            TackInstructionNode(instruction: .eq16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr0")
-            ])
+            TackInstructionNode(.li16(.vr(0), 1)),
+            TackInstructionNode(.liu16(.vr(1), 100)),
+            TackInstructionNode(.load(.vr(2), .vr(1), 0)),
+            TackInstructionNode(.eq16(.vr(3), .vr(2), .vr(0)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr3")
+        XCTAssertEqual(compiler.registerStack.last, .vr(3))
     }
-    
+
     func testRvalue_Is_test_union_type_tag_const() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .unionType(UnionType([.arithmeticType(.immutableInt(.u8)), .bool(.immutableBool)])), offset: 100, storage: .staticStorage))
@@ -3049,28 +1848,15 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Is(expr: Expression.Identifier("foo"), testType: Expression.PrimitiveType(.bool(.mutableBool))))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .li16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(100)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1")
-            ]),
-            TackInstructionNode(instruction: .eq16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr0")
-            ])
+            TackInstructionNode(.li16(.vr(0), 1)),
+            TackInstructionNode(.liu16(.vr(1), 100)),
+            TackInstructionNode(.load(.vr(2), .vr(1), 0)),
+            TackInstructionNode(.eq16(.vr(3), .vr(2), .vr(0)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr3")
+        XCTAssertEqual(compiler.registerStack.last, .vr(3))
     }
-    
+
     func testRvalue_Assignment_ToPrimitiveScalar() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0x1000, storage: .staticStorage))
@@ -3079,23 +1865,14 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
                                                                      rexpr: Expression.LiteralInt(42)))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(42)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0x1000)),
+            TackInstructionNode(.liu16(.vr(1), 42)),
+            TackInstructionNode(.store(.vr(1), .vr(0), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
+        XCTAssertEqual(compiler.registerStack.last, .vr(1))
     }
-    
+
     func testRvalue_Assignment_ArrayToArray_Size_0() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 0, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0x1000, storage: .staticStorage)),
@@ -3104,14 +1881,11 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
                                                                      rexpr: Expression.Identifier("bar")))
-        let expected = TackInstructionNode(instruction: .liu16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(0x1000)
-        ])
+        let expected = TackInstructionNode(.liu16(.vr(0), 0x1000))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Assignment_ArrayToArray_Size_1() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 1, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0x1000, storage: .staticStorage)),
@@ -3121,24 +1895,14 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
                                                                      rexpr: Expression.Identifier("bar")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(0x2000)
-            ]),
-            TackInstructionNode(instruction: .memcpy, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterIdentifier("vr1"),
-                ParameterNumber(1)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0x1000)),
+            TackInstructionNode(.liu16(.vr(1), 0x2000)),
+            TackInstructionNode(.memcpy(.vr(0), .vr(1), 1))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
+        XCTAssertEqual(compiler.registerStack.last, .vr(1))
     }
-    
+
     func testRvalue_Assignment_ArrayToArray_Size_2() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 2, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0x1000, storage: .staticStorage)),
@@ -3148,24 +1912,14 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
                                                                      rexpr: Expression.Identifier("bar")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(0x2000)
-            ]),
-            TackInstructionNode(instruction: .memcpy, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterIdentifier("vr1"),
-                ParameterNumber(2)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0x1000)),
+            TackInstructionNode(.liu16(.vr(1), 0x2000)),
+            TackInstructionNode(.memcpy(.vr(0), .vr(1), 2))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
+        XCTAssertEqual(compiler.registerStack.last, .vr(1))
     }
-    
+
     func testRvalue_SubscriptRvalue_CompileTimeIndexAndPrimitiveElement() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 10, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
@@ -3174,28 +1928,15 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: Expression.LiteralInt(9)))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .liu8, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(9)
-            ]),
-            TackInstructionNode(instruction: .add16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.liu8(.vr(1), 9)),
+            TackInstructionNode(.add16(.vr(2), .vr(1), .vr(0))),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr3")
+        XCTAssertEqual(compiler.registerStack.last, .vr(3))
     }
-    
+
     func testRvalue_SubscriptRvalue_RuntimeTimeIndexAndPrimitiveElement() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 10, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
@@ -3204,62 +1945,25 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(9)
-            ]),
-            TackInstructionNode(instruction: .li16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .ge16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .bnz, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier(".L0")
-            ]),
-            TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("__oob")
-            ]),
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.liu16(.vr(1), 9)),
+            TackInstructionNode(.li16(.vr(2), 0)),
+            TackInstructionNode(.ge16(.vr(3), .vr(1), .vr(2))),
+            TackInstructionNode(.bnz(.vr(3), ".L0")),
+            TackInstructionNode(.call("__oob")),
             LabelDeclaration(identifier: ".L0"),
-            TackInstructionNode(instruction: .li16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterNumber(10)
-            ]),
-            TackInstructionNode(instruction: .lt16, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr4")
-            ]),
-            TackInstructionNode(instruction: .bnz, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier(".L1")
-            ]),
-            TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("__oob")
-            ]),
+            TackInstructionNode(.li16(.vr(4), 10)),
+            TackInstructionNode(.lt16(.vr(5), .vr(1), .vr(4))),
+            TackInstructionNode(.bnz(.vr(5), ".L1")),
+            TackInstructionNode(.call("__oob")),
             LabelDeclaration(identifier: ".L1"),
-            TackInstructionNode(instruction: .add16, parameters: [
-                ParameterIdentifier("vr6"),
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr7"),
-                ParameterIdentifier("vr6")
-            ])
+            TackInstructionNode(.add16(.vr(6), .vr(1), .vr(0))),
+            TackInstructionNode(.load(.vr(7), .vr(6), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr7")
+        XCTAssertEqual(compiler.registerStack.last, .vr(7))
     }
-    
+
     func testRvalue_SubscriptRvalue_ZeroSizeElement() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 10, elementType: .void), offset: 0xabcd, storage: .staticStorage))
@@ -3268,19 +1972,13 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
+        XCTAssertEqual(compiler.registerStack.last, .vr(1))
     }
-    
+
     func testRvalue_SubscriptRvalue_NestedArray() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 10, elementType: .array(count: 2, elementType: .arithmeticType(.mutableInt(.u16)))), offset: 0xabcd, storage: .staticStorage))
@@ -3289,63 +1987,25 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(9)
-            ]),
-            TackInstructionNode(instruction: .li16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .ge16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .bnz, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier(".L0")
-            ]),
-            TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("__oob")
-            ]),
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.liu16(.vr(1), 9)),
+            TackInstructionNode(.li16(.vr(2), 0)),
+            TackInstructionNode(.ge16(.vr(3), .vr(1), .vr(2))),
+            TackInstructionNode(.bnz(.vr(3), ".L0")),
+            TackInstructionNode(.call("__oob")),
             LabelDeclaration(identifier: ".L0"),
-            TackInstructionNode(instruction: .li16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterNumber(10)
-            ]),
-            TackInstructionNode(instruction: .lt16, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr4")
-            ]),
-            TackInstructionNode(instruction: .bnz, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier(".L1")
-            ]),
-            TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("__oob")
-            ]),
+            TackInstructionNode(.li16(.vr(4), 10)),
+            TackInstructionNode(.lt16(.vr(5), .vr(1), .vr(4))),
+            TackInstructionNode(.bnz(.vr(5), ".L1")),
+            TackInstructionNode(.call("__oob")),
             LabelDeclaration(identifier: ".L1"),
-            TackInstructionNode(instruction: .muli16, parameters: [
-                ParameterIdentifier("vr6"),
-                ParameterIdentifier("vr1"),
-                ParameterNumber(2)
-            ]),
-            TackInstructionNode(instruction: .add16, parameters: [
-                ParameterIdentifier("vr7"),
-                ParameterIdentifier("vr6"),
-                ParameterIdentifier("vr0"),
-            ])
+            TackInstructionNode(.muli16(.vr(6), .vr(1), 2)),
+            TackInstructionNode(.add16(.vr(7), .vr(6), .vr(0)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr7")
+        XCTAssertEqual(compiler.registerStack.last, .vr(7))
     }
-    
+
     func testRvalue_SubscriptRvalue_DynamicArray() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .dynamicArray(elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
@@ -3354,68 +2014,26 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(9)
-            ]),
-            TackInstructionNode(instruction: .li16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .ge16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr3")
-            ]),
-            TackInstructionNode(instruction: .bnz, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier(".L0")
-            ]),
-            TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("__oob")
-            ]),
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 9)),
+            TackInstructionNode(.li16(.vr(3), 0)),
+            TackInstructionNode(.ge16(.vr(4), .vr(2), .vr(3))),
+            TackInstructionNode(.bnz(.vr(4), ".L0")),
+            TackInstructionNode(.call("__oob")),
             LabelDeclaration(identifier: ".L0"),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .lt16, parameters: [
-                ParameterIdentifier("vr6"),
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr5")
-            ]),
-            TackInstructionNode(instruction: .bnz, parameters: [
-                ParameterIdentifier("vr6"),
-                ParameterIdentifier(".L1")
-            ]),
-            TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("__oob")
-            ]),
+            TackInstructionNode(.load(.vr(5), .vr(0), 1)),
+            TackInstructionNode(.lt16(.vr(6), .vr(2), .vr(5))),
+            TackInstructionNode(.bnz(.vr(6), ".L1")),
+            TackInstructionNode(.call("__oob")),
             LabelDeclaration(identifier: ".L1"),
-            TackInstructionNode(instruction: .add16, parameters: [
-                ParameterIdentifier("vr7"),
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr8"),
-                ParameterIdentifier("vr7"),
-            ])
+            TackInstructionNode(.add16(.vr(7), .vr(2), .vr(1))),
+            TackInstructionNode(.load(.vr(8), .vr(7), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr8")
+        XCTAssertEqual(compiler.registerStack.last, .vr(8))
     }
-    
+
     func testRvalue_compiler_error_when_index_is_known_negative_at_compile_time() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .dynamicArray(elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
@@ -3427,7 +2045,7 @@ class SnapToTackCompilerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "Array index is always out of bounds: `-1' is less than zero")
         }
     }
-    
+
     func testRvalue_compiler_error_when_index_is_known_oob_at_compile_time() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 10, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
@@ -3439,7 +2057,7 @@ class SnapToTackCompilerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "Array index is always out of bounds: `100' is not in 0..10")
         }
     }
-    
+
     func testLvalue_compiler_error_when_index_is_known_negative_at_compile_time() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .dynamicArray(elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
@@ -3451,7 +2069,7 @@ class SnapToTackCompilerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "Array index is always out of bounds: `-1' is less than zero")
         }
     }
-    
+
     func testLvalue_compiler_error_when_index_is_known_oob_at_compile_time() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 10, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
@@ -3463,7 +2081,7 @@ class SnapToTackCompilerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "Array index is always out of bounds: `100' is not in 0..10")
         }
     }
-    
+
     func testRvalue_Assignment_ToArrayElementViaSubscript() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 10, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0x1000, storage: .staticStorage))
@@ -3475,32 +2093,16 @@ class SnapToTackCompilerTests: XCTestCase {
             rexpr: Expression.LiteralInt(42))
         )
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .liu8, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(9)
-            ]),
-            TackInstructionNode(instruction: .add16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterNumber(42)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0x1000)),
+            TackInstructionNode(.liu8(.vr(1), 9)),
+            TackInstructionNode(.add16(.vr(2), .vr(1), .vr(0))),
+            TackInstructionNode(.liu16(.vr(3), 42)),
+            TackInstructionNode(.store(.vr(3), .vr(2), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr3")
+        XCTAssertEqual(compiler.registerStack.last, .vr(3))
     }
-    
+
     func testRvalue_Assignment_automatic_conversion_from_object_to_pointer() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(.arithmeticType(.mutableInt(.u16))), offset: 0x1000, storage: .staticStorage)),
@@ -3510,23 +2112,14 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
                                                                      rexpr: Expression.Identifier("bar")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(0x2000)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0x1000)),
+            TackInstructionNode(.liu16(.vr(1), 0x2000)),
+            TackInstructionNode(.store(.vr(1), .vr(0), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
+        XCTAssertEqual(compiler.registerStack.last, .vr(1))
     }
-    
+
     func testRvalue_Assignment_automatic_conversion_from_object_to_pointer_requires_lvalue() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(.arithmeticType(.mutableInt(.u16))), offset: 0x1000, storage: .staticStorage))
@@ -3540,7 +2133,7 @@ class SnapToTackCompilerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "lvalue required")
         }
     }
-    
+
     func testRvalue_Assignment_automatic_conversion_from_trait_to_pointer() throws {
         let globalEnvironment = GlobalEnvironment()
         let symbols = globalEnvironment.globalSymbols
@@ -3550,34 +2143,25 @@ class SnapToTackCompilerTests: XCTestCase {
         _ = try SnapSubcompilerTraitDeclaration(
             globalEnvironment: globalEnvironment,
             symbols: globalEnvironment.globalSymbols).compile(traitDecl)
-        
+
         let traitObjectType = try symbols.resolveType(identifier: traitDecl.nameOfTraitObjectType)
         symbols.bind(identifier: "foo", symbol: Symbol(type: .pointer(traitObjectType), offset: 0x1000, storage: .staticStorage))
-        
+
         let traitType = try symbols.resolveType(identifier: traitDecl.identifier.identifier)
         symbols.bind(identifier: "bar", symbol: Symbol(type: traitType, offset: 0x2000, storage: .staticStorage))
-        
+
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
                                                                      rexpr: Expression.Identifier("bar")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(0x2000)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0x1000)),
+            TackInstructionNode(.liu16(.vr(1), 0x2000)),
+            TackInstructionNode(.store(.vr(1), .vr(0), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
+        XCTAssertEqual(compiler.registerStack.last, .vr(1))
     }
-    
+
     func testRvalue_Get_array_count() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 42, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
@@ -3586,14 +2170,11 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("count")))
-        let expected = TackInstructionNode(instruction: .liu16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(42)
-        ])
+        let expected = TackInstructionNode(.liu16(.vr(0), 42))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Get_dynamic_array_count() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .dynamicArray(elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
@@ -3603,20 +2184,13 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("count")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(1)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 1))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
+        XCTAssertEqual(compiler.registerStack.last, .vr(1))
     }
-    
+
     func testRvalue_Get_struct_member_primitive() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: kSliceType, offset: 0xabcd, storage: .staticStorage))
@@ -3626,20 +2200,13 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("count")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(1)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 1))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
+        XCTAssertEqual(compiler.registerStack.last, .vr(1))
     }
-    
+
     func testRvalue_Get_struct_member_not_primitive() throws {
         let type: SymbolType = .structType(StructType(name: "bar", symbols: SymbolTable(tuples: [
             ("wat", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0)),
@@ -3653,20 +2220,13 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("baz")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(1)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.addi16(.vr(1), .vr(0), 1))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
+        XCTAssertEqual(compiler.registerStack.last, .vr(1))
     }
-    
+
     func testRvalue_Get_pointee_primitive() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(.arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
@@ -3676,23 +2236,14 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("pointee")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.load(.vr(2), .vr(1), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr2")
+        XCTAssertEqual(compiler.registerStack.last, .vr(2))
     }
-    
+
     func testLvalue_Get_pointee_primitive() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(.arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
@@ -3702,19 +2253,13 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.lvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("pointee")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
+        XCTAssertEqual(compiler.registerStack.last, .vr(1))
     }
-    
+
     func testLvalue_Bitcast() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(.arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
@@ -3723,19 +2268,13 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.lvalue(expr: Expression.Bitcast(expr: Expression.Get(expr: Expression.Identifier("foo"), member: Expression.Identifier("pointee")), targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8)))))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
+        XCTAssertEqual(compiler.registerStack.last, .vr(1))
     }
-    
+
     func testRvalue_Get_pointee_not_primitive() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(.array(count: 1, elementType: .arithmeticType(.mutableInt(.u16)))), offset: 0xabcd, storage: .staticStorage))
@@ -3745,19 +2284,13 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("pointee")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
+        XCTAssertEqual(compiler.registerStack.last, .vr(1))
     }
-    
+
     func testRvalue_Get_array_count_via_pointer() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(.array(count: 42, elementType: .arithmeticType(.mutableInt(.u16)))), offset: 0xabcd, storage: .staticStorage))
@@ -3766,14 +2299,11 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("count")))
-        let expected = TackInstructionNode(instruction: .liu16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(42)
-        ])
+        let expected = TackInstructionNode(.liu16(.vr(0), 42))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_Get_dynamic_array_count_via_pointer() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(.dynamicArray(elementType: .arithmeticType(.mutableInt(.u16)))), offset: 0xabcd, storage: .staticStorage))
@@ -3783,24 +2313,14 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("count")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-                ParameterNumber(1)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.load(.vr(2), .vr(1), 1))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr2")
+        XCTAssertEqual(compiler.registerStack.last, .vr(2))
     }
-    
+
     func testRvalue_Get_primitive_struct_member_via_pointer() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(kSliceType), offset: 0xabcd, storage: .staticStorage))
@@ -3810,24 +2330,14 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("count")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-                ParameterNumber(1)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.load(.vr(2), .vr(1), 1))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr2")
+        XCTAssertEqual(compiler.registerStack.last, .vr(2))
     }
-    
+
     func testRvalue_Get_non_primitive_struct_member_via_pointer() throws {
         let type: SymbolType = .pointer(.structType(StructType(name: "bar", symbols: SymbolTable(tuples: [
             ("wat", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0)),
@@ -3841,36 +2351,24 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("baz")))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-                ParameterNumber(1)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.addi16(.vr(2), .vr(1), 1))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr2")
+        XCTAssertEqual(compiler.registerStack.last, .vr(2))
     }
-    
+
     func testRvalue_Call_no_return_no_args() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .void, arguments: []))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: []))
-        let expected = TackInstructionNode(instruction: .call, parameters: [
-            ParameterIdentifier("foo")
-        ])
+        let expected = TackInstructionNode(.call("foo"))
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testRvalue_Call_return_some_primitive_value_and_no_args() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .arithmeticType(.mutableInt(.u16)), arguments: []))))
@@ -3879,40 +2377,18 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: []))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .alloca, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("foo")
-            ]),
-            TackInstructionNode(instruction: .subi16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("fp"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .memcpy, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .free, parameters: [
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .subi16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("fp"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2"),
-            ])
+            TackInstructionNode(.alloca(.vr(0), 1)),
+            TackInstructionNode(.call("foo")),
+            TackInstructionNode(.subi16(.vr(1), .fp, 1)),
+            TackInstructionNode(.memcpy(.vr(1), .vr(0), 1)),
+            TackInstructionNode(.free(1)),
+            TackInstructionNode(.subi16(.vr(2), .fp, 1)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr3")
+        XCTAssertEqual(compiler.registerStack.last, .vr(3))
     }
-    
+
     func testRvalue_Call_return_some_non_primitive_value_and_no_args() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .dynamicArray(elementType: .arithmeticType(.mutableInt(.u16))), arguments: []))))
@@ -3921,36 +2397,17 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: []))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .alloca, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(2)
-            ]),
-            TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("foo")
-            ]),
-            TackInstructionNode(instruction: .subi16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("fp"),
-                ParameterNumber(2)
-            ]),
-            TackInstructionNode(instruction: .memcpy, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(2)
-            ]),
-            TackInstructionNode(instruction: .free, parameters: [
-                ParameterNumber(2)
-            ]),
-            TackInstructionNode(instruction: .subi16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("fp"),
-                ParameterNumber(2)
-            ])
+            TackInstructionNode(.alloca(.vr(0), 2)),
+            TackInstructionNode(.call("foo")),
+            TackInstructionNode(.subi16(.vr(1), .fp, 2)),
+            TackInstructionNode(.memcpy(.vr(1), .vr(0), 2)),
+            TackInstructionNode(.free(2)),
+            TackInstructionNode(.subi16(.vr(2), .fp, 2))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr2")
+        XCTAssertEqual(compiler.registerStack.last, .vr(2))
     }
-    
+
     func testRvalue_Call_one_primitive_arg() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .void, arguments: [
@@ -3963,29 +2420,16 @@ class SnapToTackCompilerTests: XCTestCase {
             Expression.LiteralInt(0x1000)
         ]))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .alloca, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterIdentifier("vr1")
-            ]),
-            TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("foo")
-            ]),
-            TackInstructionNode(instruction: .free, parameters: [
-                ParameterNumber(1)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0x1000)),
+            TackInstructionNode(.alloca(.vr(1), 1)),
+            TackInstructionNode(.store(.vr(0), .vr(1), 0)),
+            TackInstructionNode(.call("foo")),
+            TackInstructionNode(.free(1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertNil(compiler.registerStack.last)
     }
-    
+
     func testRvalue_Call_return_value_and_one_arg() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .arithmeticType(.mutableInt(.u16)), arguments: [.arithmeticType(.mutableInt(.u16))]))))
@@ -3994,52 +2438,21 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: [Expression.LiteralInt(0xabcd)]))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .alloca, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .alloca, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterIdentifier("vr2"),
-            ]),
-            TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("foo")
-            ]),
-            TackInstructionNode(instruction: .subi16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("fp"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .memcpy, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .free, parameters: [
-                ParameterNumber(2)
-            ]),
-            TackInstructionNode(instruction: .subi16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("fp"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr4"),
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.alloca(.vr(1), 1)),
+            TackInstructionNode(.alloca(.vr(2), 1)),
+            TackInstructionNode(.store(.vr(0), .vr(2), 0)),
+            TackInstructionNode(.call("foo")),
+            TackInstructionNode(.subi16(.vr(3), .fp, 1)),
+            TackInstructionNode(.memcpy(.vr(3), .vr(1), 1)),
+            TackInstructionNode(.free(2)),
+            TackInstructionNode(.subi16(.vr(4), .fp, 1)),
+            TackInstructionNode(.load(.vr(5), .vr(4), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr5")
+        XCTAssertEqual(compiler.registerStack.last, .vr(5))
     }
-    
+
     func testRvalue_Call_return_value_and_one_non_primitive_arg() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .arithmeticType(.mutableInt(.u16)), arguments: [.unionType(UnionType([.arithmeticType(.mutableInt(.u16))]))])))),
@@ -4051,72 +2464,25 @@ class SnapToTackCompilerTests: XCTestCase {
             Expression.LiteralInt(1000)
         ]))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .subi16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterIdentifier("fp"),
-                ParameterNumber(3)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(1000)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .alloca, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .alloca, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterNumber(2)
-            ]),
-            TackInstructionNode(instruction: .memcpy, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(2)
-            ]),
-            TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("foo")
-            ]),
-            TackInstructionNode(instruction: .subi16, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("fp"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .memcpy, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr3"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .free, parameters: [
-                ParameterNumber(3)
-            ]),
-            TackInstructionNode(instruction: .subi16, parameters: [
-                ParameterIdentifier("vr6"),
-                ParameterIdentifier("fp"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr7"),
-                ParameterIdentifier("vr6"),
-            ])
+            TackInstructionNode(.subi16(.vr(0), .fp, 3)),
+            TackInstructionNode(.liu16(.vr(1), 0)),
+            TackInstructionNode(.store(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 1000)),
+            TackInstructionNode(.store(.vr(2), .vr(0), 1)),
+            TackInstructionNode(.alloca(.vr(3), 1)),
+            TackInstructionNode(.alloca(.vr(4), 2)),
+            TackInstructionNode(.memcpy(.vr(4), .vr(0), 2)),
+            TackInstructionNode(.call("foo")),
+            TackInstructionNode(.subi16(.vr(5), .fp, 1)),
+            TackInstructionNode(.memcpy(.vr(5), .vr(3), 1)),
+            TackInstructionNode(.free(3)),
+            TackInstructionNode(.subi16(.vr(6), .fp, 1)),
+            TackInstructionNode(.load(.vr(7), .vr(6), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr7")
+        XCTAssertEqual(compiler.registerStack.last, .vr(7))
     }
-    
+
     func testRvalue_Call_function_pointer() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(.function(FunctionType(returnType: .void, arguments: []))), offset: 0xabcd))
@@ -4124,21 +2490,13 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: []))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .callptr, parameters: [
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.callptr(.vr(1)))
         ])
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testRvalue_Call_panic_with_string_arg() throws {
         let symbols = SymbolTable(tuples: [
             ("panic", Symbol(type: .function(FunctionType(name: "panic", mangledName: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .arithmeticType(.immutableInt(.u8)))]))))
@@ -4149,54 +2507,21 @@ class SnapToTackCompilerTests: XCTestCase {
             Expression.LiteralString("panic")
         ]))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .subi16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterIdentifier("fp"),
-                ParameterNumber(2)
-            ]),
-            TackInstructionNode(instruction: .subi16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("fp"),
-                ParameterNumber(7)
-            ]),
-            TackInstructionNode(instruction: .ststr, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterString("panic")
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(5)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .alloca, parameters: [ // TODO: This ALLOCA and MEMCPY are not actually necessary since vr0 contains the address of the dynamic array in memory already.
-                ParameterIdentifier("vr3"),
-                ParameterNumber(2)
-            ]),
-            TackInstructionNode(instruction: .memcpy, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(2)
-            ]),
-            TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("panic")
-            ]),
-            TackInstructionNode(instruction: .free, parameters: [
-                ParameterNumber(2)
-            ])
+            TackInstructionNode(.subi16(.vr(0), .fp, 2)),
+            TackInstructionNode(.subi16(.vr(1), .fp, 7)),
+            TackInstructionNode(.ststr(.vr(1), "panic")),
+            TackInstructionNode(.store(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 5)),
+            TackInstructionNode(.store(.vr(2), .vr(0), 1)),
+            TackInstructionNode(.alloca(.vr(3), 2)), // TODO: This ALLOCA and MEMCPY are not actually necessary since vr0 contains the address of the dynamic array in memory already.
+            TackInstructionNode(.memcpy(.vr(3), .vr(0), 2)),
+            TackInstructionNode(.call("panic")),
+            TackInstructionNode(.free(2))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertNil(compiler.registerStack.last)
     }
-    
+
     func testRvalue_Call_struct_member_function_call_1() throws {
         // Define an instance `foo' of a struct `Foo' which contains a function
         // pointer member `bar(*const Foo)'.
@@ -4216,49 +2541,24 @@ class SnapToTackCompilerTests: XCTestCase {
         fooSymbols.bind(identifier: "bar", symbol: Symbol(type: .function(fnType)))
         globalSymbols.bind(identifier: "Foo", symbolType: fooType)
         globalSymbols.bind(identifier: "foo", symbol: Symbol(type: fooType, offset: 0x1000, storage: .staticStorage))
-        
+
         let compiler = makeCompiler(symbols: globalSymbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Get(expr: Expression.Identifier("foo"), member: Expression.Identifier("bar")), arguments: []))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(272)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(272)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .alloca, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr4")
-            ]),
-            TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("bar")
-            ]),
-            TackInstructionNode(instruction: .free, parameters: [
-                ParameterNumber(1)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 272)),
+            TackInstructionNode(.liu16(.vr(1), 0x1000)),
+            TackInstructionNode(.store(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 272)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.alloca(.vr(4), 1)),
+            TackInstructionNode(.store(.vr(3), .vr(4), 0)),
+            TackInstructionNode(.call("bar")),
+            TackInstructionNode(.free(1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertNil(compiler.registerStack.last)
     }
-    
+
     func testRvalue_Call_struct_member_function_call_2() throws {
         // Define an instance `foo' of a struct `Foo' which contains a function
         // pointer member `bar(*const Foo)'.
@@ -4278,49 +2578,24 @@ class SnapToTackCompilerTests: XCTestCase {
         fooSymbols.bind(identifier: "bar", symbol: Symbol(type: .function(fnType)))
         globalSymbols.bind(identifier: "Foo", symbolType: fooType)
         globalSymbols.bind(identifier: "foo", symbol: Symbol(type: fooType, offset: 0x1000, storage: .staticStorage))
-        
+
         let compiler = makeCompiler(symbols: globalSymbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Get(expr: Expression.Identifier("foo"), member: Expression.Identifier("bar")), arguments: []))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(272)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(272)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .alloca, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr4")
-            ]),
-            TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("bar")
-            ]),
-            TackInstructionNode(instruction: .free, parameters: [
-                ParameterNumber(1)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 272)),
+            TackInstructionNode(.liu16(.vr(1), 0x1000)),
+            TackInstructionNode(.store(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 272)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.alloca(.vr(4), 1)),
+            TackInstructionNode(.store(.vr(3), .vr(4), 0)),
+            TackInstructionNode(.call("bar")),
+            TackInstructionNode(.free(1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertNil(compiler.registerStack.last)
     }
-    
+
     func testRvalue_Call_struct_member_function_call_3() throws {
         // Define an instance `foo' of a struct `Foo' which contains a function
         // pointer member `bar(const *const Foo)'.
@@ -4340,49 +2615,24 @@ class SnapToTackCompilerTests: XCTestCase {
         fooSymbols.bind(identifier: "bar", symbol: Symbol(type: .function(fnType)))
         globalSymbols.bind(identifier: "Foo", symbolType: fooType)
         globalSymbols.bind(identifier: "foo", symbol: Symbol(type: fooType, offset: 0x1000, storage: .staticStorage))
-        
+
         let compiler = makeCompiler(symbols: globalSymbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Get(expr: Expression.Identifier("foo"), member: Expression.Identifier("bar")), arguments: []))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(272)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(272)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .alloca, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr4")
-            ]),
-            TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("bar")
-            ]),
-            TackInstructionNode(instruction: .free, parameters: [
-                ParameterNumber(1)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 272)),
+            TackInstructionNode(.liu16(.vr(1), 0x1000)),
+            TackInstructionNode(.store(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 272)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.alloca(.vr(4), 1)),
+            TackInstructionNode(.store(.vr(3), .vr(4), 0)),
+            TackInstructionNode(.call("bar")),
+            TackInstructionNode(.free(1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertNil(compiler.registerStack.last)
     }
-    
+
     func testRvalue_Assignment_with_StructInitializer() throws {
         let symbols = SymbolTable()
         symbols.bind(identifier: "foo", symbol: Symbol(type: kSliceType, offset: 0x1000, storage: .staticStorage))
@@ -4397,45 +2647,19 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: lexpr, rexpr: rexpr))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterNumber(0xffff)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr4")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0x1000)),
+            TackInstructionNode(.addi16(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 0xabcd)),
+            TackInstructionNode(.store(.vr(2), .vr(1), 0)),
+            TackInstructionNode(.liu16(.vr(3), 0x1000)),
+            TackInstructionNode(.addi16(.vr(4), .vr(3), 1)),
+            TackInstructionNode(.liu16(.vr(5), 0xffff)),
+            TackInstructionNode(.store(.vr(5), .vr(4), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr5")
+        XCTAssertEqual(compiler.registerStack.last, .vr(5))
     }
-    
+
     func testRvalue_Assignment_with_StructInitializer_NoArgs() throws {
         let symbols = SymbolTable()
         symbols.bind(identifier: "foo", symbol: Symbol(type: kSliceType, offset: 0x1000, storage: .staticStorage))
@@ -4449,7 +2673,7 @@ class SnapToTackCompilerTests: XCTestCase {
         XCTAssertEqual(actual, expected)
         XCTAssertTrue(compiler.registerStack.isEmpty)
     }
-    
+
     func testFixBugInvolvingInitialAssignmentWithStructInitializer() throws {
         let symbols = SymbolTable()
         let kSliceType: SymbolType = .constStructType(StructType(name: kSliceName, symbols: SymbolTable(tuples: [
@@ -4468,45 +2692,19 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         let actual = try compiler.rvalue(expr: Expression.InitialAssignment(lexpr: lexpr, rexpr: rexpr))
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterNumber(0xffff)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr4")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0x1000)),
+            TackInstructionNode(.addi16(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 0xabcd)),
+            TackInstructionNode(.store(.vr(2), .vr(1), 0)),
+            TackInstructionNode(.liu16(.vr(3), 0x1000)),
+            TackInstructionNode(.addi16(.vr(4), .vr(3), 1)),
+            TackInstructionNode(.liu16(.vr(5), 0xffff)),
+            TackInstructionNode(.store(.vr(5), .vr(4), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr5")
+        XCTAssertEqual(compiler.registerStack.last, .vr(5))
     }
-    
+
     func testRvalue_As_LiteralArray() throws {
         let compiler = makeCompiler()
         let literalArrayType = Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
@@ -4517,24 +2715,14 @@ class SnapToTackCompilerTests: XCTestCase {
         let asExpr = Expression.As(expr: literalArray, targetType: targetType)
         let actual = try compiler.rvalue(expr: asExpr)
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(42)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0x0110)),
+            TackInstructionNode(.liu16(.vr(1), 42)),
+            TackInstructionNode(.store(.vr(1), .vr(0), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testFixBugWithCompilerTemporaryOfArrayTypeWithNoExplicitCount() throws {
         let compiler = makeCompiler()
         let symbols = SymbolTable(tuples: [
@@ -4552,7 +2740,7 @@ class SnapToTackCompilerTests: XCTestCase {
         let actual = compiler.globalEnvironment.memoryLayoutStrategy.sizeof(type: type)
         XCTAssertEqual(actual, 2)
     }
-    
+
     func testAssignConstStructToNonConstStructElementOfUnion() throws {
         let None = SymbolType.structType(StructType(name: "None", symbols: SymbolTable()))
         let OptU8 = SymbolType.unionType(UnionType([.arithmeticType(.mutableInt(.u8)), None]))
@@ -4567,47 +2755,19 @@ class SnapToTackCompilerTests: XCTestCase {
         let expr = Expression.InitialAssignment(lexpr: Expression.Identifier("r"), rexpr: Expression.Identifier("none"))
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0x0111)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .memcpy, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr4"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .memcpy, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterIdentifier("vr1"),
-                ParameterNumber(2)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0x0111)),
+            TackInstructionNode(.liu16(.vr(1), 0x0110)),
+            TackInstructionNode(.liu16(.vr(2), 1)),
+            TackInstructionNode(.store(.vr(2), .vr(1), 0)),
+            TackInstructionNode(.addi16(.vr(3), .vr(1), 1)),
+            TackInstructionNode(.liu16(.vr(4), 0x0110)),
+            TackInstructionNode(.memcpy(.vr(3), .vr(4), 0)),
+            TackInstructionNode(.memcpy(.vr(0), .vr(1), 2))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
+        XCTAssertEqual(compiler.registerStack.last, .vr(1))
     }
-    
+
     func testRvalue_ArraySlice_WithNonRangeArgument() throws {
         let symbols = SymbolTable(tuples: [ ("foo", Symbol(type: .array(count: 2, elementType: .arithmeticType(.mutableInt(.u16))))) ],
                                   typeDict: [ kSliceName : kSliceType ])
@@ -4623,7 +2783,7 @@ class SnapToTackCompilerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "cannot subscript a value of type `[2]u16' with an argument of type `Slice'")
         }
     }
-    
+
     func testRvalue_ArraySlice_RangeBeginIsOutOfBoundsAtCompileTime() throws {
         let symbols = SymbolTable(tuples: [ ("foo", Symbol(type: .array(count: 1, elementType: .arithmeticType(.mutableInt(.u16))))) ],
                                   typeDict: [ kRangeName : kRangeType ])
@@ -4639,7 +2799,7 @@ class SnapToTackCompilerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "Array index is always out of bounds: `200' is not in 0..1")
         }
     }
-    
+
     func testRvalue_ArraySlice_RangeLimitIsOutOfBoundsAtCompileTime() throws {
         let symbols = SymbolTable(tuples: [ ("foo", Symbol(type: .array(count: 1, elementType: .arithmeticType(.mutableInt(.u16))))) ],
                                   typeDict: [ kRangeName : kRangeType ])
@@ -4655,7 +2815,7 @@ class SnapToTackCompilerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "Array index is always out of bounds: `201' is not in 0..1")
         }
     }
-    
+
     func testRvalue_ArraySlice_RangeLimitIsOutOfBoundsAtCompileTime_2() throws {
         let symbols = SymbolTable(tuples: [ ("foo", Symbol(type: .array(count: 2, elementType: .arithmeticType(.mutableInt(.u16))))) ],
                                   typeDict: [ kRangeName : kRangeType ])
@@ -4671,7 +2831,7 @@ class SnapToTackCompilerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "Range requires begin less than or equal to limit: `1..0'")
         }
     }
-    
+
     func testRvalue_ArraySlice_0() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 1, elementType: .arithmeticType(.mutableInt(.u16))),
@@ -4688,49 +2848,20 @@ class SnapToTackCompilerTests: XCTestCase {
         let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr4")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr6"),
-                ParameterNumber(0x0110)
-            ]),
+            TackInstructionNode(.liu16(.vr(0), 0x0110)),
+            TackInstructionNode(.addi16(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 0x1000)),
+            TackInstructionNode(.store(.vr(2), .vr(1), 0)),
+            TackInstructionNode(.liu16(.vr(3), 0x0110)),
+            TackInstructionNode(.addi16(.vr(4), .vr(3), 1)),
+            TackInstructionNode(.liu16(.vr(5), 1)),
+            TackInstructionNode(.store(.vr(5), .vr(4), 0)),
+            TackInstructionNode(.liu16(.vr(6), 0x0110)),
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr6")
+        XCTAssertEqual(compiler.registerStack.last, .vr(6))
     }
-    
+
     func testRvalue_ArraySlice_1() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 3, elementType: .arithmeticType(.mutableInt(.u16))),
@@ -4747,58 +2878,22 @@ class SnapToTackCompilerTests: XCTestCase {
         let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .add16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr1")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr6"),
-                ParameterIdentifier("vr5"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr7"),
-                ParameterNumber(2)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr7"),
-                ParameterIdentifier("vr6")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr8"),
-                ParameterNumber(0x0110)
-            ]),
+            TackInstructionNode(.liu16(.vr(0), 0x0110)),
+            TackInstructionNode(.addi16(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 1)),
+            TackInstructionNode(.liu16(.vr(3), 0x1000)),
+            TackInstructionNode(.add16(.vr(4), .vr(3), .vr(2))),
+            TackInstructionNode(.store(.vr(4), .vr(1), 0)),
+            TackInstructionNode(.liu16(.vr(5), 0x0110)),
+            TackInstructionNode(.addi16(.vr(6), .vr(5), 1)),
+            TackInstructionNode(.liu16(.vr(7), 2)),
+            TackInstructionNode(.store(.vr(7), .vr(6), 0)),
+            TackInstructionNode(.liu16(.vr(8), 0x0110)),
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr8")
+        XCTAssertEqual(compiler.registerStack.last, .vr(8))
     }
-    
+
     func testRvalue_ArraySlice_2() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 3, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0x1000)),
@@ -4817,79 +2912,27 @@ class SnapToTackCompilerTests: XCTestCase {
         let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(0x2000)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .add16, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3")
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr1")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr6"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr7"),
-                ParameterIdentifier("vr6"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr8"),
-                ParameterNumber(0x2000)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr9"),
-                ParameterIdentifier("vr8")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr10"),
-                ParameterNumber(0x2001)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr11"),
-                ParameterIdentifier("vr10")
-            ]),
-            TackInstructionNode(instruction: .sub16, parameters: [
-                ParameterIdentifier("vr12"),
-                ParameterIdentifier("vr11"),
-                ParameterIdentifier("vr9")
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr12"),
-                ParameterIdentifier("vr7")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr13"),
-                ParameterNumber(0x0110)
-            ]),
+            TackInstructionNode(.liu16(.vr(0), 0x0110)),
+            TackInstructionNode(.addi16(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 0x2000)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.liu16(.vr(4), 0x1000)),
+            TackInstructionNode(.add16(.vr(5), .vr(4), .vr(3))),
+            TackInstructionNode(.store(.vr(5), .vr(1), 0)),
+            TackInstructionNode(.liu16(.vr(6), 0x0110)),
+            TackInstructionNode(.addi16(.vr(7), .vr(6), 1)),
+            TackInstructionNode(.liu16(.vr(8), 0x2000)),
+            TackInstructionNode(.load(.vr(9), .vr(8), 0)),
+            TackInstructionNode(.liu16(.vr(10), 0x2001)),
+            TackInstructionNode(.load(.vr(11), .vr(10), 0)),
+            TackInstructionNode(.sub16(.vr(12), .vr(11), .vr(9))),
+            TackInstructionNode(.store(.vr(12), .vr(7), 0)),
+            TackInstructionNode(.liu16(.vr(13), 0x0110)),
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr13")
+        XCTAssertEqual(compiler.registerStack.last, .vr(13))
     }
-    
+
     func testRvalue_ArraySlice_ElementSizeGreaterThanOne_1() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 3, elementType: .array(count: 3, elementType: .arithmeticType(.mutableInt(.u16)))), offset: 0x1000))
@@ -4905,58 +2948,22 @@ class SnapToTackCompilerTests: XCTestCase {
         let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(3)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .add16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr1")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr6"),
-                ParameterIdentifier("vr5"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr7"),
-                ParameterNumber(2)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr7"),
-                ParameterIdentifier("vr6")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr8"),
-                ParameterNumber(0x0110)
-            ]),
+            TackInstructionNode(.liu16(.vr(0), 0x0110)),
+            TackInstructionNode(.addi16(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 3)),
+            TackInstructionNode(.liu16(.vr(3), 0x1000)),
+            TackInstructionNode(.add16(.vr(4), .vr(3), .vr(2))),
+            TackInstructionNode(.store(.vr(4), .vr(1), 0)),
+            TackInstructionNode(.liu16(.vr(5), 0x0110)),
+            TackInstructionNode(.addi16(.vr(6), .vr(5), 1)),
+            TackInstructionNode(.liu16(.vr(7), 2)),
+            TackInstructionNode(.store(.vr(7), .vr(6), 0)),
+            TackInstructionNode(.liu16(.vr(8), 0x0110)),
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr8")
+        XCTAssertEqual(compiler.registerStack.last, .vr(8))
     }
-    
+
     func testRvalue_ArraySlice_Identifier() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 2, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0x1000)),
@@ -4971,82 +2978,27 @@ class SnapToTackCompilerTests: XCTestCase {
                                         argument: Expression.Identifier("range"))
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(0x2000)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .add16, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3")
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr1")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr6"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr7"),
-                ParameterIdentifier("vr6"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr8"),
-                ParameterNumber(0x2000)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr9"),
-                ParameterIdentifier("vr8"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr10"),
-                ParameterNumber(0x2000)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr11"),
-                ParameterIdentifier("vr10"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .sub16, parameters: [
-                ParameterIdentifier("vr12"),
-                ParameterIdentifier("vr11"),
-                ParameterIdentifier("vr9")
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr12"),
-                ParameterIdentifier("vr7")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr13"),
-                ParameterNumber(0x0110)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0x0110)),
+            TackInstructionNode(.addi16(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 0x2000)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.liu16(.vr(4), 0x1000)),
+            TackInstructionNode(.add16(.vr(5), .vr(4), .vr(3))),
+            TackInstructionNode(.store(.vr(5), .vr(1), 0)),
+            TackInstructionNode(.liu16(.vr(6), 0x0110)),
+            TackInstructionNode(.addi16(.vr(7), .vr(6), 1)),
+            TackInstructionNode(.liu16(.vr(8), 0x2000)),
+            TackInstructionNode(.load(.vr(9), .vr(8), 0)),
+            TackInstructionNode(.liu16(.vr(10), 0x2000)),
+            TackInstructionNode(.load(.vr(11), .vr(10), 1)),
+            TackInstructionNode(.sub16(.vr(12), .vr(11), .vr(9))),
+            TackInstructionNode(.store(.vr(12), .vr(7), 0)),
+            TackInstructionNode(.liu16(.vr(13), 0x0110))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr13")
+        XCTAssertEqual(compiler.registerStack.last, .vr(13))
     }
-    
+
     func testRvalue_ArraySlice_ElementSizeGreaterThanOne_2() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 3, elementType: .array(count: 3, elementType: .arithmeticType(.mutableInt(.u16)))), offset: 0x1000)),
@@ -5065,88 +3017,29 @@ class SnapToTackCompilerTests: XCTestCase {
         let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(3)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterNumber(0x2000)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3")
-            ]),
-            TackInstructionNode(instruction: .mul16, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr6"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .add16, parameters: [
-                ParameterIdentifier("vr7"),
-                ParameterIdentifier("vr6"),
-                ParameterIdentifier("vr5")
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr7"),
-                ParameterIdentifier("vr1")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr8"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr9"),
-                ParameterIdentifier("vr8"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr10"),
-                ParameterNumber(0x2000)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr11"),
-                ParameterIdentifier("vr10"),
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr12"),
-                ParameterNumber(0x2001)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr13"),
-                ParameterIdentifier("vr12"),
-            ]),
-            TackInstructionNode(instruction: .sub16, parameters: [
-                ParameterIdentifier("vr14"),
-                ParameterIdentifier("vr13"),
-                ParameterIdentifier("vr11")
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr14"),
-                ParameterIdentifier("vr9")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr15"),
-                ParameterNumber(0x0110)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0x0110)),
+            TackInstructionNode(.addi16(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 3)),
+            TackInstructionNode(.liu16(.vr(3), 0x2000)),
+            TackInstructionNode(.load(.vr(4), .vr(3), 0)),
+            TackInstructionNode(.mul16(.vr(5), .vr(4), .vr(2))),
+            TackInstructionNode(.liu16(.vr(6), 0x1000)),
+            TackInstructionNode(.add16(.vr(7), .vr(6), .vr(5))),
+            TackInstructionNode(.store(.vr(7), .vr(1), 0)),
+            TackInstructionNode(.liu16(.vr(8), 0x0110)),
+            TackInstructionNode(.addi16(.vr(9), .vr(8), 1)),
+            TackInstructionNode(.liu16(.vr(10), 0x2000)),
+            TackInstructionNode(.load(.vr(11), .vr(10), 0)),
+            TackInstructionNode(.liu16(.vr(12), 0x2001)),
+            TackInstructionNode(.load(.vr(13), .vr(12), 0)),
+            TackInstructionNode(.sub16(.vr(14), .vr(13), .vr(11))),
+            TackInstructionNode(.store(.vr(14), .vr(9), 0)),
+            TackInstructionNode(.liu16(.vr(15), 0x0110))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr15")
+        XCTAssertEqual(compiler.registerStack.last, .vr(15))
     }
-    
+
     func testRvalue_SubscriptDynamicArray_WithNonRangeArgument() throws {
         let symbols = SymbolTable(tuples: [ ("foo", Symbol(type: .dynamicArray(elementType: .arithmeticType(.mutableInt(.u16))))) ],
                                   typeDict: [ kSliceName : kSliceType ])
@@ -5162,7 +3055,7 @@ class SnapToTackCompilerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "cannot subscript a value of type `[]u16' with an argument of type `Slice'")
         }
     }
-    
+
     func testRvalue_DynamicArraySlice_1() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .constDynamicArray(elementType: .arithmeticType(.mutableInt(.u16))), offset: 0x1000))
@@ -5178,54 +3071,21 @@ class SnapToTackCompilerTests: XCTestCase {
         let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr4"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr6"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr6"),
-                ParameterIdentifier("vr5")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr7"),
-                ParameterNumber(0x0110)
-            ]),
+            TackInstructionNode(.liu16(.vr(0), 0x0110)),
+            TackInstructionNode(.addi16(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 0x1000)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.store(.vr(3), .vr(1), 0)),
+            TackInstructionNode(.liu16(.vr(4), 0x0110)),
+            TackInstructionNode(.addi16(.vr(5), .vr(4), 1)),
+            TackInstructionNode(.liu16(.vr(6), 1)),
+            TackInstructionNode(.store(.vr(6), .vr(5), 0)),
+            TackInstructionNode(.liu16(.vr(7), 0x0110)),
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr7")
+        XCTAssertEqual(compiler.registerStack.last, .vr(7))
     }
-    
+
     func testRvalue_DynamicArraySlice_2() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .constDynamicArray(elementType: .arithmeticType(.mutableInt(.u16))), offset: 0x1000)),
@@ -5244,84 +3104,28 @@ class SnapToTackCompilerTests: XCTestCase {
         let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(0x2000)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr4"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .add16, parameters: [
-                ParameterIdentifier("vr6"),
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr3")
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr6"),
-                ParameterIdentifier("vr1")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr7"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr8"),
-                ParameterIdentifier("vr7"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr9"),
-                ParameterNumber(0x2000)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr10"),
-                ParameterIdentifier("vr9")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr11"),
-                ParameterNumber(0x2001)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr12"),
-                ParameterIdentifier("vr11")
-            ]),
-            TackInstructionNode(instruction: .sub16, parameters: [
-                ParameterIdentifier("vr13"),
-                ParameterIdentifier("vr12"),
-                ParameterIdentifier("vr10")
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr13"),
-                ParameterIdentifier("vr8")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr14"),
-                ParameterNumber(0x0110)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0x0110)),
+            TackInstructionNode(.addi16(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 0x2000)),
+            TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.liu16(.vr(4), 0x1000)),
+            TackInstructionNode(.load(.vr(5), .vr(4), 0)),
+            TackInstructionNode(.add16(.vr(6), .vr(5), .vr(3))),
+            TackInstructionNode(.store(.vr(6), .vr(1), 0)),
+            TackInstructionNode(.liu16(.vr(7), 0x0110)),
+            TackInstructionNode(.addi16(.vr(8), .vr(7), 1)),
+            TackInstructionNode(.liu16(.vr(9), 0x2000)),
+            TackInstructionNode(.load(.vr(10), .vr(9), 0)),
+            TackInstructionNode(.liu16(.vr(11), 0x2001)),
+            TackInstructionNode(.load(.vr(12), .vr(11), 0)),
+            TackInstructionNode(.sub16(.vr(13), .vr(12), .vr(10))),
+            TackInstructionNode(.store(.vr(13), .vr(8), 0)),
+            TackInstructionNode(.liu16(.vr(14), 0x0110))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr14")
+        XCTAssertEqual(compiler.registerStack.last, .vr(14))
     }
-    
+
     func testRvalue_DynamicArraySlice_ElementSizeGreaterThanOne_1() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .constDynamicArray(elementType: .array(count: 3, elementType: .arithmeticType(.mutableInt(.u16)))), offset: 0x1000))
@@ -5337,63 +3141,23 @@ class SnapToTackCompilerTests: XCTestCase {
         let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(3)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .add16, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr1")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr6"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr7"),
-                ParameterIdentifier("vr6"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr8"),
-                ParameterNumber(2)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr8"),
-                ParameterIdentifier("vr7")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr9"),
-                ParameterNumber(0x0110)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0x0110)),
+            TackInstructionNode(.addi16(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 3)),
+            TackInstructionNode(.liu16(.vr(3), 0x1000)),
+            TackInstructionNode(.load(.vr(4), .vr(3), 0)),
+            TackInstructionNode(.add16(.vr(5), .vr(4), .vr(2))),
+            TackInstructionNode(.store(.vr(5), .vr(1), 0)),
+            TackInstructionNode(.liu16(.vr(6), 0x0110)),
+            TackInstructionNode(.addi16(.vr(7), .vr(6), 1)),
+            TackInstructionNode(.liu16(.vr(8), 2)),
+            TackInstructionNode(.store(.vr(8), .vr(7), 0)),
+            TackInstructionNode(.liu16(.vr(9), 0x0110))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr9")
+        XCTAssertEqual(compiler.registerStack.last, .vr(9))
     }
-    
+
     func testRvalue_DynamicArraySlice_ElementSizeGreaterThanOne_2() throws {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .constDynamicArray(elementType: .array(count: 3, elementType: .arithmeticType(.mutableInt(.u16)))), offset: 0x1000)),
@@ -5412,97 +3176,34 @@ class SnapToTackCompilerTests: XCTestCase {
         let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(3)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterNumber(0x2000)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr3")
-            ]),
-            TackInstructionNode(instruction: .mul16, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr4"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr6"),
-                ParameterNumber(0x1000)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr7"),
-                ParameterIdentifier("vr6"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .add16, parameters: [
-                ParameterIdentifier("vr8"),
-                ParameterIdentifier("vr7"),
-                ParameterIdentifier("vr5")
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr8"),
-                ParameterIdentifier("vr1")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr9"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr10"),
-                ParameterIdentifier("vr9"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr11"),
-                ParameterNumber(0x2000)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr12"),
-                ParameterIdentifier("vr11")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr13"),
-                ParameterNumber(0x2001)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr14"),
-                ParameterIdentifier("vr13")
-            ]),
-            TackInstructionNode(instruction: .sub16, parameters: [
-                ParameterIdentifier("vr15"),
-                ParameterIdentifier("vr14"),
-                ParameterIdentifier("vr12")
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr15"),
-                ParameterIdentifier("vr10")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr16"),
-                ParameterNumber(0x0110)
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0x0110)),
+            TackInstructionNode(.addi16(.vr(1), .vr(0), 0)),
+            TackInstructionNode(.liu16(.vr(2), 3)),
+            TackInstructionNode(.liu16(.vr(3), 0x2000)),
+            TackInstructionNode(.load(.vr(4), .vr(3), 0)),
+            TackInstructionNode(.mul16(.vr(5), .vr(4), .vr(2))),
+            TackInstructionNode(.liu16(.vr(6), 0x1000)),
+            TackInstructionNode(.load(.vr(7), .vr(6), 0)),
+            TackInstructionNode(.add16(.vr(8), .vr(7), .vr(5))),
+            TackInstructionNode(.store(.vr(8), .vr(1), 0)),
+            TackInstructionNode(.liu16(.vr(9), 0x0110)),
+            TackInstructionNode(.addi16(.vr(10), .vr(9), 1)),
+            TackInstructionNode(.liu16(.vr(11), 0x2000)),
+            TackInstructionNode(.load(.vr(12), .vr(11), 0)),
+            TackInstructionNode(.liu16(.vr(13), 0x2001)),
+            TackInstructionNode(.load(.vr(14), .vr(13), 0)),
+            TackInstructionNode(.sub16(.vr(15), .vr(14), .vr(12))),
+            TackInstructionNode(.store(.vr(15), .vr(10), 0)),
+            TackInstructionNode(.liu16(.vr(16), 0x0110))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr16")
+        XCTAssertEqual(compiler.registerStack.last, .vr(16))
     }
-    
+
     func testRvalue_convert_pointer_to_trait() throws {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
         let symbols = globalEnvironment.globalSymbols
-        
+
         let ast0 = Block(symbols: symbols, children: [
             TraitDeclaration(identifier: Expression.Identifier("Serial"),
                              members: [],
@@ -5524,74 +3225,35 @@ class SnapToTackCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        
+
         let opts = SnapToTackCompiler.Options.defaultOptions
         let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
         contractStep.compile(ast0)
         let ast1 = contractStep.ast
         let compiler = SnapToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment, options: opts)
         let actual = try compiler.compile(ast1)
-        
+
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [ // TODO: make sure the optimizer can remove dead stores like this one
-                ParameterIdentifier("vr8"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(0x0112)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterNumber(0x0112)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr4"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr6"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr6"),
-                ParameterIdentifier("vr5")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr7"),
-                ParameterNumber(0x0112)
-            ]),
-            TackInstructionNode(instruction: .memcpy, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterIdentifier("vr7"),
-                ParameterNumber(2)
-            ])
+            TackInstructionNode(.liu16(.vr(8), 0x0110)), // TODO: make sure the optimizer can remove dead stores like this one
+            TackInstructionNode(.liu16(.vr(0), 0x0110)),
+            TackInstructionNode(.liu16(.vr(1), 0x0112)),
+            TackInstructionNode(.addi16(.vr(2), .vr(1), 0)),
+            TackInstructionNode(.liu16(.vr(3), 0x0110)),
+            TackInstructionNode(.store(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.liu16(.vr(4), 0x0112)),
+            TackInstructionNode(.addi16(.vr(5), .vr(4), 1)),
+            TackInstructionNode(.liu16(.vr(6), 0x0110)),
+            TackInstructionNode(.store(.vr(6), .vr(5), 0)),
+            TackInstructionNode(.liu16(.vr(7), 0x0112)),
+            TackInstructionNode(.memcpy(.vr(0), .vr(7), 2))
         ])
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testRvalue_convert_struct_to_trait() throws {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
         let symbols = globalEnvironment.globalSymbols
-        
+
         let ast0 = Block(symbols: symbols, children: [
             TraitDeclaration(identifier: Expression.Identifier("Serial"),
                              members: [],
@@ -5613,69 +3275,30 @@ class SnapToTackCompilerTests: XCTestCase {
                            storage: .staticStorage,
                            isMutable: false)
         ])
-        
+
         let opts = SnapToTackCompiler.Options.defaultOptions
         let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
         contractStep.compile(ast0)
         let ast1 = contractStep.ast
         let actual = try SnapToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment, options: opts).compile(ast1)
-        
+
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [ // TODO: make sure the optimizer can remove dead stores like this one
-                ParameterIdentifier("vr8"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(0x0112)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-                ParameterNumber(0)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterNumber(0x0112)
-            ]),
-            TackInstructionNode(instruction: .addi16, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr4"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr6"),
-                ParameterNumber(0x0110)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr6"),
-                ParameterIdentifier("vr5")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr7"),
-                ParameterNumber(0x0112)
-            ]),
-            TackInstructionNode(instruction: .memcpy, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterIdentifier("vr7"),
-                ParameterNumber(2)
-            ])
+            TackInstructionNode(.liu16(.vr(8), 0x0110)), // TODO: make sure the optimizer can remove dead stores like this one
+            TackInstructionNode(.liu16(.vr(0), 0x0110)),
+            TackInstructionNode(.liu16(.vr(1), 0x0112)),
+            TackInstructionNode(.addi16(.vr(2), .vr(1), 0)),
+            TackInstructionNode(.liu16(.vr(3), 0x0110)),
+            TackInstructionNode(.store(.vr(3), .vr(2), 0)),
+            TackInstructionNode(.liu16(.vr(4), 0x0112)),
+            TackInstructionNode(.addi16(.vr(5), .vr(4), 1)),
+            TackInstructionNode(.liu16(.vr(6), 0x0110)),
+            TackInstructionNode(.store(.vr(6), .vr(5), 0)),
+            TackInstructionNode(.liu16(.vr(7), 0x0112)),
+            TackInstructionNode(.memcpy(.vr(0), .vr(7), 2))
         ])
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testLvalue_LvalueOfMemberOfStructInitializer() throws {
         let typ = StructType(name: "Foo", symbols: SymbolTable(tuples: [
             ("bar", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0, storage: .automaticStorage))
@@ -5691,14 +3314,11 @@ class SnapToTackCompilerTests: XCTestCase {
         let expr = Expression.Get(expr: si, member: Expression.Identifier("bar"))
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.lvalue(expr: expr)
-        let expected = TackInstructionNode(instruction: .liu16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(0xabcd)
-        ])
+        let expected = TackInstructionNode(.liu16(.vr(0), 0xabcd))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testLvalue_CannotInstantiateGenericFunctionTypeWithoutApplication() {
         let functionType = Expression.FunctionType(name: "foo",
                                                    returnType: Expression.Identifier("T"),
@@ -5722,7 +3342,7 @@ class SnapToTackCompilerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "cannot instantiate generic function `func foo[T](a: T) -> T'")
         }
     }
-    
+
     func testLvalue_GenericFunctionApplication() throws {
         let constU16 = SymbolType.arithmeticType(.immutableInt(.u16))
         let functionType = Expression.FunctionType(name: "foo",
@@ -5745,14 +3365,11 @@ class SnapToTackCompilerTests: XCTestCase {
                                                      arguments: [Expression.PrimitiveType(constU16)])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.lvalue(expr: expr)
-        let expected = TackInstructionNode(instruction: .la, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("__foo_const_u16")
-        ])
+        let expected = TackInstructionNode(.la(.vr(0), "__foo_const_u16"))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_RvalueOfMemberOfStructInitializer() throws {
         let typ = StructType(name: "Foo", symbols: SymbolTable(tuples: [
             ("bar", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0, storage: .automaticStorage))
@@ -5769,26 +3386,20 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(0xabcd)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ])
+            TackInstructionNode(.liu16(.vr(0), 0xabcd)),
+            TackInstructionNode(.load(.vr(1), .vr(0), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr1")
+        XCTAssertEqual(compiler.registerStack.last, .vr(1))
     }
-    
+
     func testAsm_Empty() throws {
         let compiler = makeCompiler()
         let actual = try compiler.compile(asm: Asm(assemblyCode: ""))
         let expected = Seq(children: [])
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testAsm_HltWithNoParameters() throws {
         let compiler = makeCompiler()
         let actual = try compiler.compile(asm: Asm(assemblyCode: "HLT"))
@@ -5797,7 +3408,7 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testAsm_AddWithParameters() throws {
         let compiler = makeCompiler()
         let actual = try compiler.compile(asm: Asm(assemblyCode: "ADD r0, r1, r2"))
@@ -5810,18 +3421,15 @@ class SnapToTackCompilerTests: XCTestCase {
         ])
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testRvalue_SizeOf() throws {
         let compiler = makeCompiler()
         let actual = try compiler.rvalue(expr: Expression.SizeOf(ExprUtils.makeU8(value: 1)))
-        let expected = TackInstructionNode(instruction: .liu16, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterNumber(1)
-        ])
+        let expected = TackInstructionNode(.liu16(.vr(0), 1))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_FunctionByIdentifier() throws {
         let symbols = SymbolTable(tuples: [
             ("panic", Symbol(type: .function(FunctionType(name: "panic", mangledName: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .arithmeticType(.immutableInt(.u8)))]))))
@@ -5829,14 +3437,11 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let expr = Expression.Identifier("panic")
         let actual = try compiler.rvalue(expr: expr)
-        let expected = TackInstructionNode(instruction: .la, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("panic")
-        ])
+        let expected = TackInstructionNode(.la(.vr(0), "panic"))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_CannotInstantiateGenericFunctionTypeWithoutApplication() throws {
         let compiler = makeCompiler()
         let functionType = Expression.FunctionType(name: "foo",
@@ -5856,7 +3461,7 @@ class SnapToTackCompilerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "cannot instantiate generic function `func foo[T](a: T) -> T'")
         }
     }
-    
+
     func testRvalue_GenericFunctionApplication_FailsWithIncorrectNumberOfArguments() throws {
         let constU16 = SymbolType.arithmeticType(.mutableInt(.u16))
         let functionType = Expression.FunctionType(name: "foo",
@@ -5883,7 +3488,7 @@ class SnapToTackCompilerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "incorrect number of type arguments in application of generic function type `foo@[u16, u16]'")
         }
     }
-    
+
     func testRvalue_GenericFunctionApplication() throws {
         let constU16 = SymbolType.arithmeticType(.immutableInt(.u16))
         let functionType = Expression.FunctionType(name: "foo",
@@ -5906,14 +3511,11 @@ class SnapToTackCompilerTests: XCTestCase {
         let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
                                                      arguments: [Expression.PrimitiveType(constU16)])
         let actual = try compiler.rvalue(expr: expr)
-        let expected = TackInstructionNode(instruction: .la, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("__foo_const_u16")
-        ])
+        let expected = TackInstructionNode(.la(.vr(0), "__foo_const_u16"))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testRvalue_CannotTakeTheAddressOfGenericFunctionWithoutTypeArguments() {
         let functionType = Expression.FunctionType(name: "foo",
                                                    returnType: Expression.Identifier("T"),
@@ -5929,7 +3531,7 @@ class SnapToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .genericFunction(genericFunctionType)))
         ])
-        
+
         let expr = Expression.Unary(op: .ampersand, expression: Expression.Identifier("foo"))
         let compiler = makeCompiler(symbols: symbols)
         XCTAssertThrowsError(try compiler.rvalue(expr: expr)) {
@@ -5938,7 +3540,7 @@ class SnapToTackCompilerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "cannot instantiate generic function `func foo[T](a: T) -> T'")
         }
     }
-    
+
     func testRvalue_CannotTakeTheAddressOfGenericFunctionWithInappropriateTypeArguments() {
         let constU16 = SymbolType.arithmeticType(.immutableInt(.u16))
         let functionType = Expression.FunctionType(name: "foo",
@@ -5955,7 +3557,7 @@ class SnapToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .genericFunction(genericFunctionType)))
         ])
-        
+
         let expr = Expression.Unary(op: .ampersand, expression: Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"), arguments: [Expression.PrimitiveType(constU16), Expression.PrimitiveType(constU16)]))
         let compiler = makeCompiler(symbols: symbols)
         XCTAssertThrowsError(try compiler.rvalue(expr: expr)) {
@@ -5964,7 +3566,7 @@ class SnapToTackCompilerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "incorrect number of type arguments in application of generic function type `foo@[const u16, const u16]'")
         }
     }
-    
+
     func testRvalue_TakeTheAddressOfGenericFunctionWithGoodTypeArguments() throws {
         let constU16 = SymbolType.arithmeticType(.immutableInt(.u16))
         let functionType = Expression.FunctionType(name: "foo",
@@ -5983,18 +3585,15 @@ class SnapToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .genericFunction(genericFunctionType)))
         ])
-        
+
         let expr = Expression.Unary(op: .ampersand, expression: Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"), arguments: [Expression.PrimitiveType(constU16)]))
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: expr)
-        let expected = TackInstructionNode(instruction: .la, parameters: [
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("__foo_const_u16")
-        ])
+        let expected = TackInstructionNode(.la(.vr(0), "__foo_const_u16"))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, "vr0")
+        XCTAssertEqual(compiler.registerStack.last, .vr(0))
     }
-    
+
     func testCompilationFailsOnConcreteInstantiationOfGenericFunction() throws {
         let ast0 = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
@@ -6012,21 +3611,21 @@ class SnapToTackCompilerTests: XCTestCase {
                 Expression.PrimitiveType(SymbolType.arithmeticType(.immutableInt(.u16)))
             ]))
         ])
-        
+
         let symbols = SymbolTable()
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
         let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
         contractStep.compile(ast0)
         let ast1 = contractStep.ast
         let compiler = SnapToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
-        
+
         XCTAssertThrowsError(try compiler.compileWithEpilog(ast1)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "value of type `const u16' has no member `count'")
         }
     }
-    
+
     func testSuccessfulInstantiationOfGenericFunction() throws {
         let ast0 = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
@@ -6044,7 +3643,7 @@ class SnapToTackCompilerTests: XCTestCase {
                 Expression.PrimitiveType(SymbolType.arithmeticType(.immutableInt(.u16)))
             ]))
         ])
-        
+
         let symbols = SymbolTable()
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
         let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
@@ -6053,39 +3652,20 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = SnapToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
         let actual = try compiler.compileWithEpilog(ast1)
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .la, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterIdentifier("__foo_const_u16")
-            ]),
+            TackInstructionNode(.la(.vr(0), "__foo_const_u16")),
             Subroutine(identifier: "__foo_const_u16", children: [
-                TackInstructionNode(instruction: .enter, parameters: [
-                    ParameterNumber(0)
-                ]),
-                TackInstructionNode(instruction: .addi16, parameters: [
-                    ParameterIdentifier("vr1"),
-                    ParameterIdentifier("fp"),
-                    ParameterNumber(8)
-                ]),
-                TackInstructionNode(instruction: .addi16, parameters: [
-                    ParameterIdentifier("vr2"),
-                    ParameterIdentifier("fp"),
-                    ParameterNumber(7)
-                ]),
-                TackInstructionNode(instruction: .load, parameters: [
-                    ParameterIdentifier("vr3"),
-                    ParameterIdentifier("vr2")
-                ]),
-                TackInstructionNode(instruction: .store, parameters: [
-                    ParameterIdentifier("vr3"),
-                    ParameterIdentifier("vr1")
-                ]),
-                TackInstructionNode(instruction: .leave),
-                TackInstructionNode(instruction: .ret)
+                TackInstructionNode(.enter(0)),
+                TackInstructionNode(.addi16(.vr(1), .fp, 8)),
+                TackInstructionNode(.addi16(.vr(2), .fp, 7)),
+                TackInstructionNode(.load(.vr(3), .vr(2), 0)),
+                TackInstructionNode(.store(.vr(3), .vr(1), 0)),
+                TackInstructionNode(.leave),
+                TackInstructionNode(.ret)
             ])
         ])
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testCalleeOfCallCanBeGenericFunctionApplicationWithExplicitTypes() throws {
         let ast0 = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
@@ -6102,7 +3682,7 @@ class SnapToTackCompilerTests: XCTestCase {
             Expression.Call(callee: Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"), arguments: [ Expression.PrimitiveType(SymbolType.arithmeticType(.immutableInt(.u16))) ]),
                             arguments: [ Expression.LiteralInt(65535) ])
         ])
-        
+
         let symbols = SymbolTable()
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
         let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
@@ -6115,74 +3695,29 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = SnapToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
         let actual = try compiler.compileWithEpilog(ast1)
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(65535)
-            ]),
-            TackInstructionNode(instruction: .alloca, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .alloca, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("__foo_const_u16")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterNumber(272)
-            ]),
-            TackInstructionNode(instruction: .memcpy, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .free, parameters: [
-                ParameterNumber(2)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterNumber(272)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr4")
-            ]),
+            TackInstructionNode(.liu16(.vr(0), 0xffff)),
+            TackInstructionNode(.alloca(.vr(1), 1)),
+            TackInstructionNode(.alloca(.vr(2), 1)),
+            TackInstructionNode(.store(.vr(0), .vr(2), 0)),
+            TackInstructionNode(.call("__foo_const_u16")),
+            TackInstructionNode(.liu16(.vr(3), 272)),
+            TackInstructionNode(.memcpy(.vr(3), .vr(1), 1)),
+            TackInstructionNode(.free(2)),
+            TackInstructionNode(.liu16(.vr(4), 272)),
+            TackInstructionNode(.load(.vr(5), .vr(4), 0)),
             Subroutine(identifier: "__foo_const_u16", children: [
-                TackInstructionNode(instruction: .enter, parameters: [
-                    ParameterNumber(0)
-                ]),
-                TackInstructionNode(instruction: .addi16, parameters: [
-                    ParameterIdentifier("vr6"),
-                    ParameterIdentifier("fp"),
-                    ParameterNumber(8)
-                ]),
-                TackInstructionNode(instruction: .addi16, parameters: [
-                    ParameterIdentifier("vr7"),
-                    ParameterIdentifier("fp"),
-                    ParameterNumber(7)
-                ]),
-                TackInstructionNode(instruction: .load, parameters: [
-                    ParameterIdentifier("vr8"),
-                    ParameterIdentifier("vr7")
-                ]),
-                TackInstructionNode(instruction: .store, parameters: [
-                    ParameterIdentifier("vr8"),
-                    ParameterIdentifier("vr6")
-                ]),
-                TackInstructionNode(instruction: .leave),
-                TackInstructionNode(instruction: .ret)
+                TackInstructionNode(.enter(0)),
+                TackInstructionNode(.addi16(.vr(6), .fp, 8)),
+                TackInstructionNode(.addi16(.vr(7), .fp, 7)),
+                TackInstructionNode(.load(.vr(8), .vr(7), 0)),
+                TackInstructionNode(.store(.vr(8), .vr(6), 0)),
+                TackInstructionNode(.leave),
+                TackInstructionNode(.ret)
             ])
         ])
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testCallCanTriggerConcreteInstantiationWithTypesInferredFromContext() throws {
         let ast0 = TopLevel(children: [
             FunctionDeclaration(identifier: Expression.Identifier("foo"),
@@ -6199,7 +3734,7 @@ class SnapToTackCompilerTests: XCTestCase {
             Expression.Call(callee: Expression.Identifier("foo"),
                             arguments: [ Expression.LiteralInt(65535) ])
         ])
-        
+
         let symbols = SymbolTable()
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
         let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
@@ -6213,69 +3748,24 @@ class SnapToTackCompilerTests: XCTestCase {
         let compiler = SnapToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
         let actual = try compiler.compileWithEpilog(ast1)
         let expected = Seq(children: [
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterNumber(65535)
-            ]),
-            TackInstructionNode(instruction: .alloca, parameters: [
-                ParameterIdentifier("vr1"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .alloca, parameters: [
-                ParameterIdentifier("vr2"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .store, parameters: [
-                ParameterIdentifier("vr0"),
-                ParameterIdentifier("vr2")
-            ]),
-            TackInstructionNode(instruction: .call, parameters: [
-                ParameterIdentifier("__foo_u16")
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterNumber(272)
-            ]),
-            TackInstructionNode(instruction: .memcpy, parameters: [
-                ParameterIdentifier("vr3"),
-                ParameterIdentifier("vr1"),
-                ParameterNumber(1)
-            ]),
-            TackInstructionNode(instruction: .free, parameters: [
-                ParameterNumber(2)
-            ]),
-            TackInstructionNode(instruction: .liu16, parameters: [
-                ParameterIdentifier("vr4"),
-                ParameterNumber(272)
-            ]),
-            TackInstructionNode(instruction: .load, parameters: [
-                ParameterIdentifier("vr5"),
-                ParameterIdentifier("vr4")
-            ]),
+            TackInstructionNode(.liu16(.vr(0), 0xffff)),
+            TackInstructionNode(.alloca(.vr(1), 1)),
+            TackInstructionNode(.alloca(.vr(2), 1)),
+            TackInstructionNode(.store(.vr(0), .vr(2), 0)),
+            TackInstructionNode(.call("__foo_u16")),
+            TackInstructionNode(.liu16(.vr(3), 272)),
+            TackInstructionNode(.memcpy(.vr(3), .vr(1), 1)),
+            TackInstructionNode(.free(2)),
+            TackInstructionNode(.liu16(.vr(4), 272)),
+            TackInstructionNode(.load(.vr(5), .vr(4), 0)),
             Subroutine(identifier: "__foo_u16", children: [
-                TackInstructionNode(instruction: .enter, parameters: [
-                    ParameterNumber(0)
-                ]),
-                TackInstructionNode(instruction: .addi16, parameters: [
-                    ParameterIdentifier("vr6"),
-                    ParameterIdentifier("fp"),
-                    ParameterNumber(8)
-                ]),
-                TackInstructionNode(instruction: .addi16, parameters: [
-                    ParameterIdentifier("vr7"),
-                    ParameterIdentifier("fp"),
-                    ParameterNumber(7)
-                ]),
-                TackInstructionNode(instruction: .load, parameters: [
-                    ParameterIdentifier("vr8"),
-                    ParameterIdentifier("vr7")
-                ]),
-                TackInstructionNode(instruction: .store, parameters: [
-                    ParameterIdentifier("vr8"),
-                    ParameterIdentifier("vr6")
-                ]),
-                TackInstructionNode(instruction: .leave),
-                TackInstructionNode(instruction: .ret)
+                TackInstructionNode(.enter(0)),
+                TackInstructionNode(.addi16(.vr(6), .fp, 8)),
+                TackInstructionNode(.addi16(.vr(7), .fp, 7)),
+                TackInstructionNode(.load(.vr(8), .vr(7), 0)),
+                TackInstructionNode(.store(.vr(8), .vr(6), 0)),
+                TackInstructionNode(.leave),
+                TackInstructionNode(.ret)
             ])
         ])
         XCTAssertEqual(actual, expected)

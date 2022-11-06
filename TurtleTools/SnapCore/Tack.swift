@@ -10,167 +10,188 @@ import Foundation
 import TurtleCore
 
 // Program are compiled to an intermediate language called Tack
-public enum TackInstruction {
+public enum TackInstruction: Equatable, Hashable {
+    public typealias Label = String
+    public typealias Count = Int
+    public typealias Offset = Int
+    public typealias Imm = Int
+    
+    public enum Register: Equatable, Hashable {
+        case sp, fp, ra, vr(Int)
+        
+        public var description: String {
+            switch self {
+            case .sp:
+                return "sp"
+            case .fp:
+                return "fp"
+            case .ra:
+                return "ra"
+            case .vr(let i):
+                return "vr\(i)"
+            }
+        }
+    }
+    
     case hlt
-    case call
-    case callptr
-    case enter
+    case call(Label)
+    case callptr(Register)
+    case enter(Count)
     case leave
     case ret
-    case jmp
-    case not
-    case la
-    case bz
-    case bnz
-    case load
-    case store
-    case ststr
-    case memcpy
-    case alloca
-    case free
-    case andi16
-    case addi16
-    case subi16
-    case muli16
-    case li16
-    case liu16
-    case and16
-    case or16
-    case xor16
-    case neg16
-    case add16
-    case sub16
-    case mul16
-    case div16
-    case mod16
-    case lsl16
-    case lsr16
-    case eq16
-    case ne16
-    case lt16
-    case ge16
-    case le16
-    case gt16
-    case ltu16
-    case geu16
-    case leu16
-    case gtu16
-    case li8
-    case liu8
-    case and8
-    case or8
-    case xor8
-    case neg8
-    case add8
-    case sub8
-    case mul8
-    case div8
-    case mod8
-    case lsl8
-    case lsr8
-    case eq8
-    case ne8
-    case lt8
-    case ge8
-    case le8
-    case gt8
-    case ltu8
-    case geu8
-    case leu8
-    case gtu8
-    case sxt8
+    case jmp(Label)
+    case not(Register, Register)
+    case la(Register, Label)
+    case bz(Register, Label)
+    case bnz(Register, Label)
+    case load(Register, Register, Offset)
+    case store(Register, Register, Offset)
+    case ststr(Register, Label)
+    case memcpy(Register, Register, Count)
+    case alloca(Register, Count)
+    case free(Count)
+    case andi16(Register, Register, Imm)
+    case addi16(Register, Register, Imm)
+    case subi16(Register, Register, Imm)
+    case muli16(Register, Register, Imm)
+    case li16(Register, Int)
+    case liu16(Register, Int)
+    case and16(Register, Register, Register)
+    case or16(Register, Register, Register)
+    case xor16(Register, Register, Register)
+    case neg16(Register, Register)
+    case add16(Register, Register, Register)
+    case sub16(Register, Register, Register)
+    case mul16(Register, Register, Register)
+    case div16(Register, Register, Register)
+    case mod16(Register, Register, Register)
+    case lsl16(Register, Register, Register)
+    case lsr16(Register, Register, Register)
+    case eq16(Register, Register, Register)
+    case ne16(Register, Register, Register)
+    case lt16(Register, Register, Register)
+    case ge16(Register, Register, Register)
+    case le16(Register, Register, Register)
+    case gt16(Register, Register, Register)
+    case ltu16(Register, Register, Register)
+    case geu16(Register, Register, Register)
+    case leu16(Register, Register, Register)
+    case gtu16(Register, Register, Register)
+    case li8(Register, Int)
+    case liu8(Register, Int)
+    case and8(Register, Register, Register)
+    case or8(Register, Register, Register)
+    case xor8(Register, Register, Register)
+    case neg8(Register, Register)
+    case add8(Register, Register, Register)
+    case sub8(Register, Register, Register)
+    case mul8(Register, Register, Register)
+    case div8(Register, Register, Register)
+    case mod8(Register, Register, Register)
+    case lsl8(Register, Register, Register)
+    case lsr8(Register, Register, Register)
+    case eq8(Register, Register, Register)
+    case ne8(Register, Register, Register)
+    case lt8(Register, Register, Register)
+    case ge8(Register, Register, Register)
+    case le8(Register, Register, Register)
+    case gt8(Register, Register, Register)
+    case ltu8(Register, Register, Register)
+    case geu8(Register, Register, Register)
+    case leu8(Register, Register, Register)
+    case gtu8(Register, Register, Register)
+    case sxt8(Register, Register)
     
     public var description: String {
         switch self {
         case .hlt: return "HLT"
-        case .call: return "CALL"
-        case .callptr: return "CALLPTR"
-        case .enter: return "ENTER"
+        case .call(let target): return "CALL \(target)"
+        case .callptr(let register): return "CALLPTR \(register.description)"
+        case .enter(let count): return "ENTER \(count)"
         case .leave: return "LEAVE"
         case .ret: return "RET"
-        case .jmp: return "JMP"
-        case .not: return "NOT"
-        case .la: return "LA"
-        case .bz: return "BZ"
-        case .bnz: return "BNZ"
-        case .load: return "LOAD"
-        case .store: return "STORE"
-        case .ststr: return "STSTR"
-        case .memcpy: return "MEMCPY"
-        case .alloca: return "ALLOCA"
-        case .free: return "FREE"
-        case .andi16: return "ANDI16"
-        case .addi16: return "ADDI16"
-        case .subi16: return "SUBI16"
-        case .muli16: return "MULI16"
-        case .li16: return "LI16"
-        case .liu16: return "LIU16"
-        case .and16: return "AND16"
-        case .or16: return "OR16"
-        case .xor16: return "XOR16"
-        case .neg16: return "NEG16"
-        case .add16: return "ADD16"
-        case .sub16: return "SUB16"
-        case .mul16: return "MUL16"
-        case .div16: return "DIV16"
-        case .mod16: return "MOD16"
-        case .lsl16: return "LSL16"
-        case .lsr16: return "LSR16"
-        case .eq16: return "EQ16"
-        case .ne16: return "NE16"
-        case .lt16: return "LT16"
-        case .ge16: return "GE16"
-        case .le16: return "LE16"
-        case .gt16: return "GT16"
-        case .ltu16: return "LTU16"
-        case .geu16: return "GEU16"
-        case .leu16: return "LEU16"
-        case .gtu16: return "GTU16"
-        case .li8: return "LI8"
-        case .liu8: return "LIU8"
-        case .and8: return "AND8"
-        case .or8: return "OR8"
-        case .xor8: return "XOR8"
-        case .neg8: return "NEG8"
-        case .add8: return "ADD8"
-        case .sub8: return "SUB8"
-        case .mul8: return "MUL8"
-        case .div8: return "DIV8"
-        case .mod8: return "MOD8"
-        case .lsl8: return "LSL8"
-        case .lsr8: return "LSR8"
-        case .eq8: return "EQ8"
-        case .ne8: return "NE8"
-        case .lt8: return "LT8"
-        case .ge8: return "GE8"
-        case .le8: return "LE8"
-        case .gt8: return "GT8"
-        case .ltu8: return "LTU8"
-        case .geu8: return "GEU8"
-        case .leu8: return "LEU8"
-        case .gtu8: return "GTU8"
-        case .sxt8: return "SXT8"
+        case .jmp(let target): return "JMP \(target)"
+        case .not(let dst, let src): return "NOT \(dst.description), \(src.description)"
+        case .la(let dst, let label): return "LA \(dst.description), \(label)"
+        case .bz(let test, let target): return "BZ \(test) \(target)"
+        case .bnz(let test, let target): return "BNZ \(test) \(target)"
+        case .load(let dst, let addr, let offset): return "LOAD \(dst.description), \(addr.description), \(offset)"
+        case .store(let src, let addr, let offset): return "STORE \(src.description), \(addr.description), \(offset)"
+        case .ststr(let dst, let str): return "STSTR \(dst.description), \"\(str)\""
+        case .memcpy(let dst, let src, let count): return "MEMCPY \(dst.description), \(src.description), \(count)"
+        case .alloca(let dst, let count): return "ALLOCA \(dst.description), \(count)"
+        case .free(let count): return "FREE \(count)"
+        case .andi16(let c, let a, let b): return "ANDI16 \(c.description), \(a.description), \(b.description)"
+        case .addi16(let c, let a, let b): return "ADDI16 \(c.description), \(a.description), \(b.description)"
+        case .subi16(let c, let a, let b): return "SUBI16 \(c.description), \(a.description), \(b.description)"
+        case .muli16(let c, let a, let b): return "MULII16 \(c.description), \(a.description), \(b.description)"
+        case .li16(let dst, let imm): return "LI16 \(dst.description), \(imm)"
+        case .liu16(let dst, let imm): return "LIU16 \(dst.description), \(imm)"
+        case .and16(let c, let a, let b): return "AND16 \(c.description), \(a.description), \(b.description)"
+        case .or16(let c, let a, let b): return "OR16 \(c.description), \(a.description), \(b.description)"
+        case .xor16(let c, let a, let b): return "XOR16 \(c.description), \(a.description), \(b.description)"
+        case .neg16(let c, let a): return "NEG16 \(c.description), \(a.description)"
+        case .add16(let c, let a, let b): return "ADD16 \(c.description), \(a.description), \(b.description)"
+        case .sub16(let c, let a, let b): return "SUB16 \(c.description), \(a.description), \(b.description)"
+        case .mul16(let c, let a, let b): return "MUL16 \(c.description), \(a.description), \(b.description)"
+        case .div16(let c, let a, let b): return "DIV16 \(c.description), \(a.description), \(b.description)"
+        case .mod16(let c, let a, let b): return "MOD16 \(c.description), \(a.description), \(b.description)"
+        case .lsl16(let c, let a, let b): return "LSL16 \(c.description), \(a.description), \(b.description)"
+        case .lsr16(let c, let a, let b): return "LSR16 \(c.description), \(a.description), \(b.description)"
+        case .eq16(let c, let a, let b): return "EQ16 \(c.description), \(a.description), \(b.description)"
+        case .ne16(let c, let a, let b): return "NE16 \(c.description), \(a.description), \(b.description)"
+        case .lt16(let c, let a, let b): return "LT16 \(c.description), \(a.description), \(b.description)"
+        case .ge16(let c, let a, let b): return "GE16 \(c.description), \(a.description), \(b.description)"
+        case .le16(let c, let a, let b): return "LE16 \(c.description), \(a.description), \(b.description)"
+        case .gt16(let c, let a, let b): return "GT16 \(c.description), \(a.description), \(b.description)"
+        case .ltu16(let c, let a, let b): return "LTU16 \(c.description), \(a.description), \(b.description)"
+        case .geu16(let c, let a, let b): return "GEU16 \(c.description), \(a.description), \(b.description)"
+        case .leu16(let c, let a, let b): return "LEU16 \(c.description), \(a.description), \(b.description)"
+        case .gtu16(let c, let a, let b): return "GTU16 \(c.description), \(a.description), \(b.description)"
+        case .li8(let dst, let imm): return "LI8 \(dst.description), \(imm)"
+        case .liu8(let dst, let imm): return "LIU8 \(dst.description), \(imm)"
+        case .and8(let c, let a, let b): return "AND8 \(c.description), \(a.description), \(b.description)"
+        case .or8(let c, let a, let b): return "OR8 \(c.description), \(a.description), \(b.description)"
+        case .xor8(let c, let a, let b): return "XOR8 \(c.description), \(a.description), \(b.description)"
+        case .neg8(let c, let a): return "NEG8 \(c.description), \(a.description)"
+        case .add8(let c, let a, let b): return "ADD8 \(c.description), \(a.description), \(b.description)"
+        case .sub8(let c, let a, let b): return "SUB8 \(c.description), \(a.description), \(b.description)"
+        case .mul8(let c, let a, let b): return "MUL8 \(c.description), \(a.description), \(b.description)"
+        case .div8(let c, let a, let b): return "DIV8 \(c.description), \(a.description), \(b.description)"
+        case .mod8(let c, let a, let b): return "MOD8 \(c.description), \(a.description), \(b.description)"
+        case .lsl8(let c, let a, let b): return "LSL8 \(c.description), \(a.description), \(b.description)"
+        case .lsr8(let c, let a, let b): return "LSR8 \(c.description), \(a.description), \(b.description)"
+        case .eq8(let c, let a, let b): return "EQ8 \(c.description), \(a.description), \(b.description)"
+        case .ne8(let c, let a, let b): return "NE8 \(c.description), \(a.description), \(b.description)"
+        case .lt8(let c, let a, let b): return "LT8 \(c.description), \(a.description), \(b.description)"
+        case .ge8(let c, let a, let b): return "GE8 \(c.description), \(a.description), \(b.description)"
+        case .le8(let c, let a, let b): return "LE8 \(c.description), \(a.description), \(b.description)"
+        case .gt8(let c, let a, let b): return "GT8 \(c.description), \(a.description), \(b.description)"
+        case .ltu8(let c, let a, let b): return "LTU8 \(c.description), \(a.description), \(b.description)"
+        case .geu8(let c, let a, let b): return "GEU8 \(c.description), \(a.description), \(b.description)"
+        case .leu8(let c, let a, let b): return "LEU8 \(c.description), \(a.description), \(b.description)"
+        case .gtu8(let c, let a, let b): return "GTU8 \(c.description), \(a.description), \(b.description)"
+        case .sxt8(let dst, let src): return "SXT8 \(dst.description), \(src.description)"
         }
     }
 }
 
+// A program in Tack consists of instrutions and some bits of required metadata.
+public struct TackProgram {
+    public let instructions: [TackInstruction]
+    public let labels: [String: Int]
+}
+
+// Allows a TackInstruction to be embedded in an Abstract Syntax Tree
 public class TackInstructionNode: AbstractSyntaxTreeNode {
     public let instruction: TackInstruction
-    public let parameters: [Parameter]
     
-    public convenience init(sourceAnchor: SourceAnchor? = nil,
-                            instruction: TackInstruction,
-                            parameter: Parameter) {
-        self.init(sourceAnchor: sourceAnchor,
-                  instruction: instruction,
-                  parameters: [parameter])
+    public convenience init(_ instruction: TackInstruction) {
+        self.init(sourceAnchor: nil, instruction: instruction)
     }
     
-    public init(sourceAnchor: SourceAnchor? = nil,
-                instruction: TackInstruction,
-                parameters: [Parameter] = []) {
+    public init(sourceAnchor: SourceAnchor?, instruction: TackInstruction) {
         self.instruction = instruction
-        self.parameters = parameters.map { $0.withSourceAnchor(sourceAnchor) as! Parameter }
         super.init(sourceAnchor: sourceAnchor)
     }
     
@@ -179,32 +200,34 @@ public class TackInstructionNode: AbstractSyntaxTreeNode {
             return self
         }
         return TackInstructionNode(sourceAnchor: sourceAnchor,
-                                   instruction: instruction,
-                                   parameters: parameters)
+                                   instruction: instruction)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
-        guard let rhs = rhs as? TackInstructionNode else { return false }
-        guard instruction == rhs.instruction else { return false }
-        guard parameters == rhs.parameters else { return false }
+        guard rhs != nil else {
+            return false
+        }
+        guard type(of: rhs!) == type(of: self) else {
+            return false
+        }
+        guard let rhs = rhs as? TackInstructionNode else {
+            return false
+        }
+        guard instruction == rhs.instruction else {
+            return false
+        }
         return true
     }
     
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(instruction)
-        hasher.combine(parameters)
         hasher.combine(super.hash)
         return hasher.finalize()
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        let param = parameters.map {
-            $0.makeIndentedDescription(depth: depth+1, wantsLeadingWhitespace: false)
-        }.joined(separator: ", ")
-        return "\(indent)\(instruction) \(param)"
+        return "\(indent)\(instruction.description)"
     }
 }

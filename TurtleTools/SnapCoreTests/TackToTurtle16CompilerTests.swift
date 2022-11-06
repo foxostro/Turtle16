@@ -65,11 +65,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testADD16() throws {
-        let input = TackInstructionNode(instruction: .add16, parameters:[
-            ParameterIdentifier("vr2"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0")
-        ])
+        let input = TackInstructionNode(.add16(.vr(2), .vr(1), .vr(0)))
         let expected = InstructionNode(instruction: kADD, parameters:[
             ParameterIdentifier("r2"),
             ParameterIdentifier("r1"),
@@ -78,13 +74,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testADD16_sp_and_fp_and_ra() throws {
-        let input = TackInstructionNode(instruction: .add16, parameters:[
-            ParameterIdentifier("sp"),
-            ParameterIdentifier("fp"),
-            ParameterIdentifier("ra")
-        ])
+        let input = TackInstructionNode(.add16(.sp, .fp, .ra))
         let expected = InstructionNode(instruction: kADD, parameters:[
             ParameterIdentifier("sp"),
             ParameterIdentifier("fp"),
@@ -94,13 +86,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compiler.compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testSUB16() throws {
-        let input = TackInstructionNode(instruction: .sub16, parameters:[
-            ParameterIdentifier("vr2"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0")
-        ])
+        let input = TackInstructionNode(.sub16(.vr(2), .vr(1), .vr(0)))
         let expected = InstructionNode(instruction: kSUB, parameters:[
             ParameterIdentifier("r2"),
             ParameterIdentifier("r1"),
@@ -109,12 +97,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testNEG16() throws {
-        let input = TackInstructionNode(instruction: .neg16, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0")
-        ])
+        let input = TackInstructionNode(.neg16(.vr(1), .vr(0)))
         let expected = InstructionNode(instruction: kNOT, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0")
@@ -122,13 +107,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testXOR16() throws {
-        let input = TackInstructionNode(instruction: .xor16, parameters:[
-            ParameterIdentifier("vr2"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0")
-        ])
+        let input = TackInstructionNode(.xor16(.vr(2), .vr(1), .vr(0)))
         let expected = InstructionNode(instruction: kXOR, parameters:[
             ParameterIdentifier("r2"),
             ParameterIdentifier("r1"),
@@ -137,13 +118,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testOR16() throws {
-        let input = TackInstructionNode(instruction: .or16, parameters:[
-            ParameterIdentifier("vr2"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0")
-        ])
+        let input = TackInstructionNode(.or16(.vr(2), .vr(1), .vr(0)))
         let expected = InstructionNode(instruction: kOR, parameters:[
             ParameterIdentifier("r2"),
             ParameterIdentifier("r1"),
@@ -152,13 +129,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testAND16() throws {
-        let input = TackInstructionNode(instruction: .and16, parameters:[
-            ParameterIdentifier("vr2"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0")
-        ])
+        let input = TackInstructionNode(.and16(.vr(2), .vr(1), .vr(0)))
         let expected = InstructionNode(instruction: kAND, parameters:[
             ParameterIdentifier("r2"),
             ParameterIdentifier("r1"),
@@ -167,44 +140,39 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testJMP() throws {
-        let input = TackInstructionNode(instruction: .jmp, parameters:[
-            ParameterIdentifier("foo")
-        ])
+        let input = TackInstructionNode(.jmp("foo"))
         let expected = InstructionNode(instruction: kJMP, parameters:[
             ParameterIdentifier("foo")
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testRET() throws {
-        let input = TackInstructionNode(instruction: .ret)
+        let input = TackInstructionNode(.ret)
         let expected = InstructionNode(instruction: kRET)
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testENTER() throws {
-        let input = TackInstructionNode(instruction: .enter)
-        let expected = InstructionNode(instruction: kENTER)
+        let input = TackInstructionNode(.enter(0))
+        let expected = InstructionNode(instruction: kENTER, parameter: ParameterNumber(0))
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testLEAVE() throws {
-        let input = TackInstructionNode(instruction: .leave)
+        let input = TackInstructionNode(.leave)
         let expected = InstructionNode(instruction: kLEAVE)
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testNOT() throws {
-        let input = TackInstructionNode(instruction: .not, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0")
-        ])
+        let input = TackInstructionNode(.not(.vr(1), .vr(0)))
         let expected = Seq(children: [
             InstructionNode(instruction: kNOT, parameters:[
                 ParameterIdentifier("vr1"),
@@ -220,16 +188,11 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compiler.compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testNOT_subsequent_use_of_registers_map_correctly() throws {
         let input = Seq(children: [
-            TackInstructionNode(instruction: .not, parameters:[
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            TackInstructionNode(instruction: .callptr, parameters:[
-                ParameterIdentifier("vr1")
-            ])
+            TackInstructionNode(.not(.vr(1), .vr(0))),
+            TackInstructionNode(.callptr(.vr(1)))
         ])
         let expected = Seq(children: [
             InstructionNode(instruction: kNOT, parameters:[
@@ -249,12 +212,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compiler.compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testLA() throws {
-        let input = TackInstructionNode(instruction: .la, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("foo")
-        ])
+        let input = TackInstructionNode(.la(.vr(1), "foo"))
         let expected = InstructionNode(instruction: kLA, parameters:[
             ParameterIdentifier("r0"),
             ParameterIdentifier("foo")
@@ -262,34 +222,27 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testCALL() throws {
-        let input = TackInstructionNode(instruction: .call, parameters:[
-            ParameterIdentifier("foo")
-        ])
+        let input = TackInstructionNode(.call("foo"))
         let expected = InstructionNode(instruction: kCALL, parameters:[
             ParameterIdentifier("foo")
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testCALLPTR() throws {
-        let input = TackInstructionNode(instruction: .callptr, parameters:[
-            ParameterIdentifier("vr0")
-        ])
+        let input = TackInstructionNode(.callptr(.vr(0)))
         let expected = InstructionNode(instruction: kCALLPTR, parameters:[
             ParameterIdentifier("r0")
         ])
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testBZ() throws {
-        let input = TackInstructionNode(instruction: .bz, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("foo")
-        ])
+        let input = TackInstructionNode(.bz(.vr(0), "foo"))
         let expected = Seq(children: [
             InstructionNode(instruction: kCMPI, parameters:[
                 ParameterIdentifier("r0"),
@@ -302,12 +255,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testBNZ() throws {
-        let input = TackInstructionNode(instruction: .bnz, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("foo")
-        ])
+        let input = TackInstructionNode(.bnz(.vr(0), "foo"))
         let expected = Seq(children: [
             InstructionNode(instruction: kCMPI, parameters:[
                 ParameterIdentifier("r0"),
@@ -320,13 +270,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testLOAD_small_offset_pos() throws {
-        let input = TackInstructionNode(instruction: .load, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(15)
-        ])
+        let input = TackInstructionNode(.load(.vr(1), .vr(0), 15))
         let expected = InstructionNode(instruction: kLOAD, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -335,13 +281,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testLOAD_small_offset_neg() throws {
-        let input = TackInstructionNode(instruction: .load, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(-16)
-        ])
+        let input = TackInstructionNode(.load(.vr(1), .vr(0), -16))
         let expected = InstructionNode(instruction: kLOAD, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -350,13 +292,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testLOAD_large_offset_pos() throws {
-        let input = TackInstructionNode(instruction: .load, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(16)
-        ])
+        let input = TackInstructionNode(.load(.vr(1), .vr(0), 16))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr1"),
@@ -379,13 +317,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try TackToTurtle16Compiler().compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testLOAD_large_offset_neg() throws {
-        let input = TackInstructionNode(instruction: .load, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(-17)
-        ])
+        let input = TackInstructionNode(.load(.vr(1), .vr(0), -17))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr1"),
@@ -408,13 +342,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try TackToTurtle16Compiler().compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testSTORE_small_offset_pos() throws {
-        let input = TackInstructionNode(instruction: .store, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(15)
-        ])
+        let input = TackInstructionNode(.store(.vr(1), .vr(0), 15))
         let expected = InstructionNode(instruction: kSTORE, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -423,13 +353,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testSTORE_small_offset_neg() throws {
-        let input = TackInstructionNode(instruction: .store, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(-16)
-        ])
+        let input = TackInstructionNode(.store(.vr(1), .vr(0), -16))
         let expected = InstructionNode(instruction: kSTORE, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -438,13 +364,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testSTORE_large_offset_pos() throws {
-        let input = TackInstructionNode(instruction: .store, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(16)
-        ])
+        let input = TackInstructionNode(.store(.vr(1), .vr(0), 16))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr1"),
@@ -467,13 +389,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try TackToTurtle16Compiler().compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testSTORE_large_offset_neg() throws {
-        let input = TackInstructionNode(instruction: .store, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(-17)
-        ])
+        let input = TackInstructionNode(.store(.vr(1), .vr(0), -17))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr1"),
@@ -496,12 +414,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try TackToTurtle16Compiler().compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testSTSTR() throws {
-        let input = TackInstructionNode(instruction: .ststr, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterString("ABC")
-        ])
+        let input = TackInstructionNode(.ststr(.vr(0), "ABC"))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -511,32 +426,21 @@ class TackToTurtle16CompilerTests: XCTestCase {
         XCTAssertEqual(debugger.computer.cpu.load(MemoryAddress(0x1001)), 66)
         XCTAssertEqual(debugger.computer.cpu.load(MemoryAddress(0x1002)), 67)
     }
-    
+
     func testSTSTR_empty_string() throws {
-        let input = TackInstructionNode(instruction: .ststr, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterString("")
-        ])
+        let input = TackInstructionNode(.ststr(.vr(0), ""))
         let actual = try compile(input)
         XCTAssertEqual(actual, Seq())
     }
-    
+
     func testMEMCPY_zero_words() throws {
-        let input = TackInstructionNode(instruction: .memcpy, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterNumber(0)
-        ])
+        let input = TackInstructionNode(.memcpy(.vr(1), .vr(0), 0))
         let actual = try compile(input)
         XCTAssertEqual(actual, Seq())
     }
-    
+
     func testMEMCPY_one_word() throws {
-        let input = TackInstructionNode(instruction: .memcpy, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterNumber(1)
-        ])
+        let input = TackInstructionNode(.memcpy(.vr(1), .vr(0), 1))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -546,13 +450,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.cpu.load(MemoryAddress(0x1000)), 65)
     }
-    
+
     func testMEMCPY_multiple_words() throws {
-        let input = TackInstructionNode(instruction: .memcpy, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterNumber(3)
-        ])
+        let input = TackInstructionNode(.memcpy(.vr(1), .vr(0), 3))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -566,13 +466,10 @@ class TackToTurtle16CompilerTests: XCTestCase {
         XCTAssertEqual(debugger.computer.cpu.load(MemoryAddress(0x1001)), 66)
         XCTAssertEqual(debugger.computer.cpu.load(MemoryAddress(0x1002)), 67)
     }
-    
+
     func testALLOCA() throws {
+        let input = TackInstructionNode(.alloca(.vr(0), 2))
         let sp = "r6"
-        let input = TackInstructionNode(instruction: .alloca, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterNumber(2)
-        ])
         let expected = Seq(children: [
             InstructionNode(instruction: kSUBI, parameters:[
                 ParameterIdentifier(sp),
@@ -588,13 +485,10 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testALLOCA_large() throws {
+        let input = TackInstructionNode(.alloca(.vr(0), 0xabcd))
         let sp = "r6"
-        let input = TackInstructionNode(instruction: .alloca, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterNumber(0xabcd)
-        ])
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("r0"),
@@ -618,12 +512,10 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testFREE() throws {
+        let input = TackInstructionNode(.free(2))
         let sp = "r6"
-        let input = TackInstructionNode(instruction: .free, parameters:[
-            ParameterNumber(2)
-        ])
         let expected = InstructionNode(instruction: kADDI, parameters:[
             ParameterIdentifier(sp),
             ParameterIdentifier(sp),
@@ -632,12 +524,10 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testFREE_large() throws {
         let sp = "r6"
-        let input = TackInstructionNode(instruction: .free, parameters:[
-            ParameterNumber(0xabcd)
-        ])
+        let input = TackInstructionNode(.free(0xabcd))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("r0"),
@@ -656,13 +546,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testADDI16_small_imm_pos() throws {
-        let input = TackInstructionNode(instruction: .addi16, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(15)
-        ])
+        let input = TackInstructionNode(.addi16(.vr(1), .vr(0), 15))
         let expected = InstructionNode(instruction: kADDI, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -671,13 +557,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testADDI16_small_imm_neg() throws {
-        let input = TackInstructionNode(instruction: .addi16, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(-16)
-        ])
+        let input = TackInstructionNode(.addi16(.vr(1), .vr(0), -16))
         let expected = InstructionNode(instruction: kADDI, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -686,13 +568,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testADDI16_large_imm_pos() throws {
-        let input = TackInstructionNode(instruction: .addi16, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(16)
-        ])
+        let input = TackInstructionNode(.addi16(.vr(1), .vr(0), 16))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("r1"),
@@ -711,13 +589,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testADDI16_large_imm_neg() throws {
-        let input = TackInstructionNode(instruction: .addi16, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(-17)
-        ])
+        let input = TackInstructionNode(.addi16(.vr(1), .vr(0), -17))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("r1"),
@@ -736,13 +610,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testSUBI16() throws {
-        let input = TackInstructionNode(instruction: .subi16, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(15)
-        ])
+        let input = TackInstructionNode(.subi16(.vr(1), .vr(0), 15))
         let expected = InstructionNode(instruction: kSUBI, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -751,13 +621,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testANDI16() throws {
-        let input = TackInstructionNode(instruction: .andi16, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(15)
-        ])
+        let input = TackInstructionNode(.andi16(.vr(1), .vr(0), 15))
         let expected = InstructionNode(instruction: kANDI, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -766,13 +632,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testMULI16_zero() throws {
-        let input = TackInstructionNode(instruction: .muli16, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(0)
-        ])
+        let input = TackInstructionNode(.muli16(.vr(1), .vr(0), 0))
         let expected = InstructionNode(instruction: kLI, parameters:[
             ParameterIdentifier("r1"),
             ParameterNumber(0)
@@ -780,13 +642,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testMULI16_pos_one() throws {
-        let input = TackInstructionNode(instruction: .muli16, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(1)
-        ])
+        let input = TackInstructionNode(.muli16(.vr(1), .vr(0), 1))
         let expected = InstructionNode(instruction: kADDI, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -795,13 +653,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testMULI16_pos_two() throws {
-        let input = TackInstructionNode(instruction: .muli16, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(2)
-        ])
+        let input = TackInstructionNode(.muli16(.vr(1), .vr(0), 2))
         let expected = InstructionNode(instruction: kADD, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -810,13 +664,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testMULI16_pos_three() throws {
-        let input = TackInstructionNode(instruction: .muli16, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(3)
-        ])
+        let input = TackInstructionNode(.muli16(.vr(1), .vr(0), 3))
         let expected = Seq(children: [
             InstructionNode(instruction: kADD, parameters:[
                 ParameterIdentifier("r1"),
@@ -832,13 +682,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testMULI16_pos_four() throws {
-        let input = TackInstructionNode(instruction: .muli16, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(4)
-        ])
+        let input = TackInstructionNode(.muli16(.vr(1), .vr(0), 4))
         let expected = Seq(children: [
             InstructionNode(instruction: kADD, parameters:[
                 ParameterIdentifier("r1"),
@@ -854,13 +700,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testMULI16_pos_five() throws {
-        let input = TackInstructionNode(instruction: .muli16, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(5)
-        ])
+        let input = TackInstructionNode(.muli16(.vr(1), .vr(0), 5))
         let expected = Seq(children: [
             InstructionNode(instruction: kADD, parameters:[
                 ParameterIdentifier("r1"),
@@ -881,13 +723,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testMULI16_pos_six() throws {
-        let input = TackInstructionNode(instruction: .muli16, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(6)
-        ])
+        let input = TackInstructionNode(.muli16(.vr(1), .vr(0), 6))
         let expected = Seq(children: [
             InstructionNode(instruction: kADD, parameters:[
                 ParameterIdentifier("r1"),
@@ -913,13 +751,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testMULI16_pos_seven() throws {
-        let input = TackInstructionNode(instruction: .muli16, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(7)
-        ])
+        let input = TackInstructionNode(.muli16(.vr(1), .vr(0), 7))
         let expected = Seq(children: [
             InstructionNode(instruction: kADD, parameters:[
                 ParameterIdentifier("r1"),
@@ -950,13 +784,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testMULI16_pos_eight() throws {
-        let input = TackInstructionNode(instruction: .muli16, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(8)
-        ])
+        let input = TackInstructionNode(.muli16(.vr(1), .vr(0), 8))
         let expected = Seq(children: [
             InstructionNode(instruction: kADD, parameters:[
                 ParameterIdentifier("r1"),
@@ -977,13 +807,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testMULI16_neg_one() throws {
-        let input = TackInstructionNode(instruction: .muli16, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(-1)
-        ])
+        let input = TackInstructionNode(.muli16(.vr(1), .vr(0), -1))
         let expected = Seq(children: [
             InstructionNode(instruction: kNOT, parameters:[
                 ParameterIdentifier("r1"),
@@ -998,13 +824,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testMULI16_neg_two() throws {
-        let input = TackInstructionNode(instruction: .muli16, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(-2)
-        ])
+        let input = TackInstructionNode(.muli16(.vr(1), .vr(0), -2))
         let expected = Seq(children: [
             InstructionNode(instruction: kADD, parameters:[
                 ParameterIdentifier("r1"),
@@ -1024,13 +846,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testMULI16_three_element_sum() throws {
-        let input = TackInstructionNode(instruction: .muli16, parameters:[
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0"),
-            ParameterNumber(14)
-        ])
+        let input = TackInstructionNode(.muli16(.vr(1), .vr(0), 14))
         let expected = Seq(children: [
             InstructionNode(instruction: kADD, parameters:[
                 ParameterIdentifier("r1"),
@@ -1076,12 +894,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testLI16_small_pos() throws {
-        let input = TackInstructionNode(instruction: .li16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterNumber(127)
-        ])
+        let input = TackInstructionNode(.li16(.vr(0), 127))
         let expected = InstructionNode(instruction: kLI, parameters:[
             ParameterIdentifier("r0"),
             ParameterNumber(127)
@@ -1089,12 +904,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testLI16_small_neg() throws {
-        let input = TackInstructionNode(instruction: .li16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterNumber(-128)
-        ])
+        let input = TackInstructionNode(.li16(.vr(0), -128))
         let expected = InstructionNode(instruction: kLI, parameters:[
             ParameterIdentifier("r0"),
             ParameterNumber(-128)
@@ -1102,12 +914,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testLI16_med_pos() throws {
-        let input = TackInstructionNode(instruction: .li16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterNumber(127)
-        ])
+        let input = TackInstructionNode(.li16(.vr(0), 127))
         let expected = InstructionNode(instruction: kLI, parameters:[
             ParameterIdentifier("r0"),
             ParameterNumber(127)
@@ -1115,12 +924,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testLI16_large_pos_1() throws {
-        let input = TackInstructionNode(instruction: .li16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterNumber(255)
-        ])
+        let input = TackInstructionNode(.li16(.vr(0), 255))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("r0"),
@@ -1134,12 +940,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testLI16_large_pos_2() throws {
-        let input = TackInstructionNode(instruction: .li16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterNumber(0x7fff)
-        ])
+        let input = TackInstructionNode(.li16(.vr(0), 0x7fff))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("r0"),
@@ -1153,12 +956,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testLIU16_small_pos() throws {
-        let input = TackInstructionNode(instruction: .liu16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterNumber(255)
-        ])
+        let input = TackInstructionNode(.liu16(.vr(0), 255))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("r0"),
@@ -1172,12 +972,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testLIU16_large_pos() throws {
-        let input = TackInstructionNode(instruction: .liu16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterNumber(0x8000)
-        ])
+        let input = TackInstructionNode(.liu16(.vr(0), 0x8000))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("r0"),
@@ -1191,13 +988,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let actual = try compile(input)
         XCTAssertEqual(actual, expected)
     }
-    
+
     func testMUL16_0_x_0() throws {
-        let input = TackInstructionNode(instruction: .mul16, parameters:[
-            ParameterIdentifier("vr2"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0")
-        ])
+        let input = TackInstructionNode(.mul16(.vr(2), .vr(1), .vr(0)))
         let computer = makeDebugger(assembly: try compile(input)).computer
         computer.setRegister(0, 0)
         computer.setRegister(1, 0)
@@ -1205,13 +998,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         computer.run()
         XCTAssertEqual(computer.getRegister(3), 0)
     }
-    
+
     func testMUL16_1_x_1() throws {
-        let input = TackInstructionNode(instruction: .mul16, parameters:[
-            ParameterIdentifier("vr2"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0")
-        ])
+        let input = TackInstructionNode(.mul16(.vr(2), .vr(1), .vr(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 1)
@@ -1220,13 +1009,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(3), 1)
     }
-    
+
     func testMUL16_2_x_2() throws {
-        let input = TackInstructionNode(instruction: .mul16, parameters:[
-            ParameterIdentifier("vr2"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0")
-        ])
+        let input = TackInstructionNode(.mul16(.vr(2), .vr(1), .vr(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 2)
@@ -1235,13 +1020,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(3), 4)
     }
-    
+
     func testDIV16_0_div_0() throws {
-        let input = TackInstructionNode(instruction: .div16, parameters:[
-            ParameterIdentifier("vr2"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0")
-        ])
+        let input = TackInstructionNode(.div16(.vr(2), .vr(1), .vr(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 0)
@@ -1257,13 +1038,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
 //        }
         XCTAssertEqual(debugger.computer.getRegister(3), 0)
     }
-    
+
     func testDIV16_1_div_1() throws {
-        let input = TackInstructionNode(instruction: .div16, parameters:[
-            ParameterIdentifier("vr2"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0")
-        ])
+        let input = TackInstructionNode(.div16(.vr(2), .vr(1), .vr(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 1)
@@ -1273,13 +1050,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(3), 1)
     }
-    
+
     func testDIV16_12_div_4() throws {
-        let input = TackInstructionNode(instruction: .div16, parameters:[
-            ParameterIdentifier("vr2"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0")
-        ])
+        let input = TackInstructionNode(.div16(.vr(2), .vr(1), .vr(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 4)
@@ -1289,13 +1062,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(3), 3)
     }
-    
+
     func testDIV16_0xabcd_div_16() throws {
-        let input = TackInstructionNode(instruction: .div16, parameters:[
-            ParameterIdentifier("vr2"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0")
-        ])
+        let input = TackInstructionNode(.div16(.vr(2), .vr(1), .vr(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 16)
@@ -1303,13 +1072,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(3), 0xabc)
     }
-    
+
     func testMOD16_0_mod_0() throws {
-        let input = TackInstructionNode(instruction: .mod16, parameters:[
-            ParameterIdentifier("vr2"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0")
-        ])
+        let input = TackInstructionNode(.mod16(.vr(2), .vr(1), .vr(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 0)
@@ -1318,13 +1083,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(2), 0)
     }
-    
+
     func testMOD16_3_mod_2() throws {
-        let input = TackInstructionNode(instruction: .mod16, parameters:[
-            ParameterIdentifier("vr2"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0")
-        ])
+        let input = TackInstructionNode(.mod16(.vr(2), .vr(1), .vr(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 2)
@@ -1333,13 +1094,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
-    
+
     func testMOD16_0xabcd_mod_16() throws {
-        let input = TackInstructionNode(instruction: .mod16, parameters:[
-            ParameterIdentifier("vr2"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0")
-        ])
+        let input = TackInstructionNode(.mod16(.vr(2), .vr(1), .vr(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 16)
@@ -1347,13 +1104,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(2), 13)
     }
-    
+
     func testLSL16_0_shift_0() throws {
-        let input = TackInstructionNode(instruction: .lsl16, parameters:[
-            ParameterIdentifier("vr2"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0")
-        ])
+        let input = TackInstructionNode(.lsl16(.vr(2), .vr(1), .vr(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 0)
@@ -1362,7 +1115,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(2), 0)
     }
-    
+
     func test_left_shift_algorithm() throws {
         let N = 16
         var b = 0
@@ -1381,13 +1134,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         }
         XCTAssertEqual(b, 4)
     }
-    
+
     func testLSL16_2_shift_1() throws {
-        let input = TackInstructionNode(instruction: .lsl16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.lsl16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1410,7 +1159,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
         XCTAssertEqual(debugger.computer.getRegister(a), 2)
         XCTAssertEqual(debugger.computer.getRegister(n), 1)
     }
-    
+
     func test_right_shift_algorithm() throws {
         let N = 16
         var b = 0
@@ -1429,13 +1178,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         }
         XCTAssertEqual(b, 1)
     }
-    
+
     func testLSR16_2_shift_1() throws {
-        let input = TackInstructionNode(instruction: .lsr16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.lsr16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1458,460 +1203,345 @@ class TackToTurtle16CompilerTests: XCTestCase {
         XCTAssertEqual(debugger.computer.getRegister(a), 2)
         XCTAssertEqual(debugger.computer.getRegister(n), 1)
     }
-    
+
     func testEQ16_equal() throws {
-        let input = TackInstructionNode(instruction: .eq16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.eq16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 42)
-        debugger.computer.setRegister(2, 42)
+        debugger.computer.setRegister(0, 42)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+        XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
-    
+
     func testEQ16_not_equal() throws {
-        let input = TackInstructionNode(instruction: .eq16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.eq16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 42)
-        debugger.computer.setRegister(2, 43)
+        debugger.computer.setRegister(0, 43)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+        XCTAssertEqual(debugger.computer.getRegister(2), 0)
     }
-    
+
     func testNE16_equal() throws {
-        let input = TackInstructionNode(instruction: .ne16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.ne16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 42)
-        debugger.computer.setRegister(2, 42)
+        debugger.computer.setRegister(0, 42)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+        XCTAssertEqual(debugger.computer.getRegister(2), 0)
     }
-    
+
     func testNE16_not_equal() throws {
-        let input = TackInstructionNode(instruction: .ne16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.ne16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 42)
-        debugger.computer.setRegister(2, 43)
+        debugger.computer.setRegister(0, 43)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+        XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
-    
+
     func testLT16_less_than() throws {
-        let input = TackInstructionNode(instruction: .lt16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.lt16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, UInt16(0) &- 1)
-        debugger.computer.setRegister(2, 1)
+        debugger.computer.setRegister(0, 1)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+        XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
-    
+
     func testLT16_equal() throws {
-        let input = TackInstructionNode(instruction: .lt16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.lt16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, UInt16(0) &- 1)
-        debugger.computer.setRegister(2, UInt16(0) &- 1)
+        debugger.computer.setRegister(0, UInt16(0) &- 1)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+        XCTAssertEqual(debugger.computer.getRegister(2), 0)
     }
-    
+
     func testLT16_greater_than() throws {
-        let input = TackInstructionNode(instruction: .lt16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.lt16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 1)
-        debugger.computer.setRegister(2, UInt16(0) &- 1)
+        debugger.computer.setRegister(0, UInt16(0) &- 1)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+        XCTAssertEqual(debugger.computer.getRegister(2), 0)
     }
-    
+
     func testGE16_less_than() throws {
-        let input = TackInstructionNode(instruction: .ge16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.ge16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, UInt16(0) &- 1)
-        debugger.computer.setRegister(2, 1)
+        debugger.computer.setRegister(0, 1)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+        XCTAssertEqual(debugger.computer.getRegister(2), 0)
     }
-    
+
     func testGE16_equal() throws {
-        let input = TackInstructionNode(instruction: .ge16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.ge16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, UInt16(0) &- 1)
-        debugger.computer.setRegister(2, UInt16(0) &- 1)
+        debugger.computer.setRegister(0, UInt16(0) &- 1)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+        XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
-    
+
     func testGE16_greater_than() throws {
-        let input = TackInstructionNode(instruction: .ge16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.ge16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 1)
-        debugger.computer.setRegister(2, UInt16(0) &- 1)
+        debugger.computer.setRegister(0, UInt16(0) &- 1)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+        XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
-    
+
     func testLE16_less_than() throws {
-        let input = TackInstructionNode(instruction: .le16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.le16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, UInt16(0) &- 1)
-        debugger.computer.setRegister(2, 1)
+        debugger.computer.setRegister(0, 1)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+        XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
-    
+
     func testLE16_equal() throws {
-        let input = TackInstructionNode(instruction: .le16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.le16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, UInt16(0) &- 1)
-        debugger.computer.setRegister(2, UInt16(0) &- 1)
+        debugger.computer.setRegister(0, UInt16(0) &- 1)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+        XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
-    
+
     func testLE16_greater_than() throws {
-        let input = TackInstructionNode(instruction: .le16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.le16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 1)
-        debugger.computer.setRegister(2, UInt16(0) &- 1)
+        debugger.computer.setRegister(0, UInt16(0) &- 1)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+        XCTAssertEqual(debugger.computer.getRegister(2), 0)
     }
-    
+
     func testGT16_less_than() throws {
-        let input = TackInstructionNode(instruction: .gt16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.gt16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 1)
-        debugger.computer.setRegister(2, UInt16(0) &- 1)
+        debugger.computer.setRegister(0, UInt16(0) &- 1)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+        XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
-    
+
     func testGT16_equal() throws {
-        let input = TackInstructionNode(instruction: .gt16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.gt16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, UInt16(0) &- 1)
-        debugger.computer.setRegister(2, UInt16(0) &- 1)
+        debugger.computer.setRegister(0, UInt16(0) &- 1)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+        XCTAssertEqual(debugger.computer.getRegister(2), 0)
     }
-    
+
     func testGT16_greater_than() throws {
-        let input = TackInstructionNode(instruction: .gt16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.gt16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 1)
-        debugger.computer.setRegister(2, UInt16(0) &- 1)
+        debugger.computer.setRegister(0, UInt16(0) &- 1)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+        XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
-    
+
     func testLTU16_less_than() throws {
-        let input = TackInstructionNode(instruction: .ltu16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.ltu16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 42)
-        debugger.computer.setRegister(2, 43)
+        debugger.computer.setRegister(0, 43)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+        XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
-    
+
     func testLTU16_equal() throws {
-        let input = TackInstructionNode(instruction: .ltu16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.ltu16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 42)
-        debugger.computer.setRegister(2, 42)
+        debugger.computer.setRegister(0, 42)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+        XCTAssertEqual(debugger.computer.getRegister(2), 0)
     }
-    
+
     func testLTU16_greater_than() throws {
-        let input = TackInstructionNode(instruction: .ltu16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.ltu16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 43)
-        debugger.computer.setRegister(2, 42)
+        debugger.computer.setRegister(0, 42)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+        XCTAssertEqual(debugger.computer.getRegister(2), 0)
     }
-    
+
     func testGEU16_less_than() throws {
-        let input = TackInstructionNode(instruction: .geu16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.geu16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 42)
-        debugger.computer.setRegister(2, 43)
+        debugger.computer.setRegister(0, 43)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+        XCTAssertEqual(debugger.computer.getRegister(2), 0)
     }
-    
+
     func testGEU16_equal() throws {
-        let input = TackInstructionNode(instruction: .geu16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.geu16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 42)
-        debugger.computer.setRegister(2, 42)
+        debugger.computer.setRegister(0, 42)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+        XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
-    
+
     func testGEU16_greater_than() throws {
-        let input = TackInstructionNode(instruction: .geu16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.geu16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 43)
-        debugger.computer.setRegister(2, 42)
+        debugger.computer.setRegister(0, 42)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+        XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
-    
+
     func testLEU16_less_than() throws {
-        let input = TackInstructionNode(instruction: .leu16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.leu16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 42)
-        debugger.computer.setRegister(2, 43)
+        debugger.computer.setRegister(0, 43)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+        XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
-    
+
     func testLEU16_equal() throws {
-        let input = TackInstructionNode(instruction: .leu16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.leu16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 42)
-        debugger.computer.setRegister(2, 42)
+        debugger.computer.setRegister(0, 42)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+        XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
-    
+
     func testLEU16_greater_than() throws {
-        let input = TackInstructionNode(instruction: .leu16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.leu16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 43)
-        debugger.computer.setRegister(2, 42)
+        debugger.computer.setRegister(0, 42)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+        XCTAssertEqual(debugger.computer.getRegister(2), 0)
     }
-    
+
     func testGTU16_less_than() throws {
-        let input = TackInstructionNode(instruction: .gtu16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.gtu16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 42)
-        debugger.computer.setRegister(2, 43)
+        debugger.computer.setRegister(0, 43)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+        XCTAssertEqual(debugger.computer.getRegister(2), 0)
     }
-    
+
     func testGTU16_equal() throws {
-        let input = TackInstructionNode(instruction: .gtu16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.gtu16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 42)
-        debugger.computer.setRegister(2, 42)
+        debugger.computer.setRegister(0, 42)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+        XCTAssertEqual(debugger.computer.getRegister(2), 0)
     }
-    
+
     func testGTU16_greater_than() throws {
-        let input = TackInstructionNode(instruction: .gtu16, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.gtu16(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 43)
-        debugger.computer.setRegister(2, 42)
+        debugger.computer.setRegister(0, 42)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+        XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
-    
+
     fileprivate func doTestLI8(_ value: Int) throws {
-        let input = TackInstructionNode(instruction: .li8, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterNumber(value)
-        ])
+        let input = TackInstructionNode(.li16(.vr(0), value))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1925,32 +1555,29 @@ class TackToTurtle16CompilerTests: XCTestCase {
         }
         XCTAssertEqual(debugger.computer.getRegister(0), expected)
     }
-    
+
     func testLI8_zero() throws {
         try doTestLI8(0)
     }
-    
+
     func testLI8_one() throws {
         try doTestLI8(1)
     }
-    
+
     func testLI8_neg_one() throws {
         try doTestLI8(-1)
     }
-    
+
     func testLI8_max_signed() throws {
         try doTestLI8(127)
     }
-    
+
     func testLI8_min_signed() throws {
         try doTestLI8(-128)
     }
-    
+
     fileprivate func doTestLIU8(_ value: Int) throws {
-        let input = TackInstructionNode(instruction: .liu8, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterNumber(value)
-        ])
+        let input = TackInstructionNode(.liu8(.vr(0), value))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1964,17 +1591,13 @@ class TackToTurtle16CompilerTests: XCTestCase {
         }
         XCTAssertEqual(debugger.computer.getRegister(0), expected)
     }
-    
+
     func testLIU8_max_unsigned() throws {
         try doTestLIU8(255)
     }
-    
+
     func testAND8() throws {
-        let input = TackInstructionNode(instruction: .and8, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.and8(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1986,64 +1609,49 @@ class TackToTurtle16CompilerTests: XCTestCase {
         XCTAssertEqual(debugger.computer.getRegister(1), 0xff01)
         XCTAssertEqual(debugger.computer.getRegister(2), 0x0001)
     }
-    
+
     func testOR8() throws {
-        let input = TackInstructionNode(instruction: .or8, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.or8(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0xfffe)
+        debugger.computer.setRegister(2, 0xfffe)
         debugger.computer.setRegister(1, 0xff01)
-        debugger.computer.setRegister(2, 0xdead)
+        debugger.computer.setRegister(0, 0xdead)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 0xfffe)
+        XCTAssertEqual(debugger.computer.getRegister(2), 0xfffe)
         XCTAssertEqual(debugger.computer.getRegister(1), 0xff01)
-        XCTAssertEqual(debugger.computer.getRegister(2), 0x00ff)
+        XCTAssertEqual(debugger.computer.getRegister(0), 0x00ff)
     }
-    
+
     func testXOR8() throws {
-        let input = TackInstructionNode(instruction: .xor8, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.xor8(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0xabab)
+        debugger.computer.setRegister(2, 0xabab)
         debugger.computer.setRegister(1, 0xcdcd)
-        debugger.computer.setRegister(2, 0xdead)
+        debugger.computer.setRegister(0, 0xdead)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 0xabab)
+        XCTAssertEqual(debugger.computer.getRegister(2), 0xabab)
         XCTAssertEqual(debugger.computer.getRegister(1), 0xcdcd)
-        XCTAssertEqual(debugger.computer.getRegister(2), 0x0066)
+        XCTAssertEqual(debugger.computer.getRegister(0), 0x0066)
     }
-    
+
     func testNEG8() throws {
-        let input = TackInstructionNode(instruction: .neg8, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1")
-        ])
+        let input = TackInstructionNode(.neg8(.vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
         debugger.computer.setRegister(1, 0xdead)
+        debugger.computer.setRegister(0, 0x00)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 0)
-        XCTAssertEqual(debugger.computer.getRegister(1), 0x00ff)
+        XCTAssertEqual(debugger.computer.getRegister(1), 0xff)
+        XCTAssertEqual(debugger.computer.getRegister(0), 0x00)
     }
-    
+
     func testADD8_positive_result() throws {
-        let input = TackInstructionNode(instruction: .add8, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.add8(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -2055,13 +1663,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         XCTAssertEqual(debugger.computer.getRegister(1), 2)
         XCTAssertEqual(debugger.computer.getRegister(2), 3)
     }
-    
+
     func testADD8_negative_result() throws {
-        let input = TackInstructionNode(instruction: .add8, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.add8(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -2073,13 +1677,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         XCTAssertEqual(debugger.computer.getRegister(1), 1)
         XCTAssertEqual(debugger.computer.getRegister(2), UInt16(0) &- 1)
     }
-    
+
     func testSUB8_positive_result() throws {
-        let input = TackInstructionNode(instruction: .sub8, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.sub8(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -2091,13 +1691,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         XCTAssertEqual(debugger.computer.getRegister(1), 2)
         XCTAssertEqual(debugger.computer.getRegister(0), 1)
     }
-    
+
     func testSUB8_negative_result() throws {
-        let input = TackInstructionNode(instruction: .sub8, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.sub8(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -2109,13 +1705,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         XCTAssertEqual(debugger.computer.getRegister(1), 1)
         XCTAssertEqual(debugger.computer.getRegister(0), 2)
     }
-    
+
     func testMUL8() throws {
-        let input = TackInstructionNode(instruction: .mul8, parameters:[
-            ParameterIdentifier("vr2"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0")
-        ])
+        let input = TackInstructionNode(.mul8(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -2126,13 +1718,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         XCTAssertEqual(debugger.computer.getRegister(1), 2)
         XCTAssertEqual(debugger.computer.getRegister(3), 4)
     }
-    
+
     func testDIV8() throws {
-        let input = TackInstructionNode(instruction: .div8, parameters:[
-            ParameterIdentifier("vr2"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0")
-        ])
+        let input = TackInstructionNode(.div8(.vr(2), .vr(1), .vr(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 4)
@@ -2142,13 +1730,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(3), 3)
     }
-    
+
     func testMOD8() throws {
-        let input = TackInstructionNode(instruction: .mod8, parameters:[
-            ParameterIdentifier("vr2"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr0")
-        ])
+        let input = TackInstructionNode(.mod8(.vr(2), .vr(1), .vr(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 2)
@@ -2157,13 +1741,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         debugger.computer.run()
         XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
-    
+
     func testLSL8_2_shift_1() throws {
-        let input = TackInstructionNode(instruction: .lsl8, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.lsl8(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -2186,13 +1766,9 @@ class TackToTurtle16CompilerTests: XCTestCase {
         XCTAssertEqual(debugger.computer.getRegister(a), 2)
         XCTAssertEqual(debugger.computer.getRegister(n), 1)
     }
-    
+
     func testLSR8_2_shift_1() throws {
-        let input = TackInstructionNode(instruction: .lsr8, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.lsr8(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -2215,194 +1791,147 @@ class TackToTurtle16CompilerTests: XCTestCase {
         XCTAssertEqual(debugger.computer.getRegister(a), 2)
         XCTAssertEqual(debugger.computer.getRegister(n), 1)
     }
-    
+
     func testEQ8_equal() throws {
-        let input = TackInstructionNode(instruction: .eq8, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.eq8(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 0xff42)
-        debugger.computer.setRegister(2, 0x0042)
+        debugger.computer.setRegister(0, 0x0042)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+        XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
-    
+
     func testEQ8_not_equal() throws {
-        let input = TackInstructionNode(instruction: .eq8, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.eq8(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 0xab42)
-        debugger.computer.setRegister(2, 0xcd43)
+        debugger.computer.setRegister(0, 0xcd43)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+        XCTAssertEqual(debugger.computer.getRegister(2), 0)
     }
-    
+
     func testNE8_equal() throws {
-        let input = TackInstructionNode(instruction: .ne8, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.ne8(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 0xff42)
-        debugger.computer.setRegister(2, 0x0042)
+        debugger.computer.setRegister(0, 0x0042)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+        XCTAssertEqual(debugger.computer.getRegister(2), 0)
     }
-    
+
     func testNE8_not_equal() throws {
-        let input = TackInstructionNode(instruction: .ne8, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.ne8(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 0xab42)
-        debugger.computer.setRegister(2, 0xcd43)
+        debugger.computer.setRegister(0, 0xcd43)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+        XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
-    
+
     func testLT8() throws {
-        let input = TackInstructionNode(instruction: .lt8, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.lt8(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 0x00fe)
-        debugger.computer.setRegister(2, 0xffff)
+        debugger.computer.setRegister(0, 0xffff)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+        XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
-    
+
     func testLE8() throws {
-        let input = TackInstructionNode(instruction: .le8, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.le8(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 0x00fe)
-        debugger.computer.setRegister(2, 0xffff)
+        debugger.computer.setRegister(0, 0xffff)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+        XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
-    
+
     func testGT8() throws {
-        let input = TackInstructionNode(instruction: .gt8, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.gt8(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 0xffff)
-        debugger.computer.setRegister(2, 0x0000)
+        debugger.computer.setRegister(0, 0x0000)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+        XCTAssertEqual(debugger.computer.getRegister(2), 0)
     }
-    
+
     func testGE8() throws {
-        let input = TackInstructionNode(instruction: .ge8, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.ge8(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 0xffff)
-        debugger.computer.setRegister(2, 0x0000)
+        debugger.computer.setRegister(0, 0x0000)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 0)
+        XCTAssertEqual(debugger.computer.getRegister(2), 0)
     }
-    
+
     func testLTU8() throws {
-        let input = TackInstructionNode(instruction: .ltu8, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.ltu8(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 0xff00)
-        debugger.computer.setRegister(2, 0x00ff)
+        debugger.computer.setRegister(0, 0x00ff)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+        XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
-    
+
     func testLEU8() throws {
-        let input = TackInstructionNode(instruction: .leu8, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.leu8(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 0xff00)
-        debugger.computer.setRegister(2, 0x00ff)
+        debugger.computer.setRegister(0, 0x00ff)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+        XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
-    
+
     func testGTU8() throws {
-        let input = TackInstructionNode(instruction: .gtu8, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1"),
-            ParameterIdentifier("vr2")
-        ])
+        let input = TackInstructionNode(.gtu8(.vr(2), .vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(2, 0)
         debugger.computer.setRegister(1, 0x00ff)
-        debugger.computer.setRegister(2, 0xff00)
+        debugger.computer.setRegister(0, 0xff00)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 1)
+        XCTAssertEqual(debugger.computer.getRegister(2), 1)
     }
     
     func testSXT8() throws {
-        let input = TackInstructionNode(instruction: .sxt8, parameters:[
-            ParameterIdentifier("vr0"),
-            ParameterIdentifier("vr1")
-        ])
+        let input = TackInstructionNode(.sxt8(.vr(1), .vr(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
-        debugger.computer.setRegister(0, 0x0000)
-        debugger.computer.setRegister(1, 0xffff)
+        debugger.computer.setRegister(1, 0x0000)
+        debugger.computer.setRegister(0, 0xffff)
         debugger.computer.run()
-        XCTAssertEqual(debugger.computer.getRegister(0), 0xffff)
+        XCTAssertEqual(debugger.computer.getRegister(1), 0xffff)
     }
 }

@@ -22,6 +22,7 @@ public class TackVirtualMachine: NSObject {
     public typealias Word = UInt16
     
     public let kMemoryMappedSerialOutputPort: Word = 0x0001
+    public let kPageSize = 4096
     
     public let program: FlatTack
     public var pc: Word = 0
@@ -29,7 +30,7 @@ public class TackVirtualMachine: NSObject {
     public var isHalted = false
     private var globalRegisters: [Register : Word] = [:]
     private var registers: [[Register : Word]] = [[:]]
-    private var ram: [Word] = Array<Word>(repeating: 0, count: Int(Word.max)+1)
+    private var memoryPages: [Int : [Word]] = [:]
     public var onSerialOutput: (Word) -> Void = {_ in}
     
     public init(_ program: FlatTack) {
@@ -106,16 +107,31 @@ public class TackVirtualMachine: NSObject {
         registers.removeLast()
     }
     
-    public func load(address: Word) -> Word {
-        return ram[Int(address)]
+    public func load(address address_: Word) -> Word {
+        let address = Int(address_)
+        let pageMask = kPageSize-1
+        let pageIndex = address & ~pageMask
+        let pageOffset = address & pageMask
+        if memoryPages[pageIndex] == nil {
+            memoryPages[pageIndex] = Array<Word>(repeating: 0, count: kPageSize)
+        }
+        let result = memoryPages[pageIndex]![pageOffset]
+        return result
     }
     
-    public func store(value: Word, address: Word) {
+    public func store(value: Word, address address_: Word) {
+        let address = Int(address_)
         if address == kMemoryMappedSerialOutputPort {
             onSerialOutput(value)
         }
         else {
-            ram[Int(address)] = value
+            let pageMask = kPageSize-1
+            let pageIndex = address & ~pageMask
+            let pageOffset = address & pageMask
+            if memoryPages[pageIndex] == nil {
+                memoryPages[pageIndex] = Array<Word>(repeating: 0, count: kPageSize)
+            }
+            memoryPages[pageIndex]![pageOffset] = value
         }
     }
     

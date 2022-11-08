@@ -33,6 +33,7 @@ public enum TackInstruction: Equatable, Hashable {
         }
     }
     
+    case nop
     case hlt
     case call(Label)
     case callptr(Register)
@@ -46,7 +47,7 @@ public enum TackInstruction: Equatable, Hashable {
     case bnz(Register, Label)
     case load(Register, Register, Offset)
     case store(Register, Register, Offset)
-    case ststr(Register, Label)
+    case ststr(Register, String)
     case memcpy(Register, Register, Count)
     case alloca(Register, Count)
     case free(Count)
@@ -104,6 +105,7 @@ public enum TackInstruction: Equatable, Hashable {
     
     public var description: String {
         switch self {
+        case .nop: return "NOP"
         case .hlt: return "HLT"
         case .call(let target): return "CALL \(target)"
         case .callptr(let register): return "CALLPTR \(register.description)"
@@ -174,12 +176,6 @@ public enum TackInstruction: Equatable, Hashable {
         case .sxt8(let dst, let src): return "SXT8 \(dst.description), \(src.description)"
         }
     }
-}
-
-// A program in Tack consists of instrutions and some bits of required metadata.
-public struct TackProgram {
-    public let instructions: [TackInstruction]
-    public let labels: [String: Int]
 }
 
 // Allows a TackInstruction to be embedded in an Abstract Syntax Tree

@@ -211,6 +211,10 @@
 		6F809DE026615A8D0098A7FF /* InstructionMemoryLoTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F809DDF26615A8D0098A7FF /* InstructionMemoryLoTableViewDataSource.swift */; };
 		6F83480B26FD3B0100EB466E /* RegisterAllocatorNaive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F83480A26FD3B0100EB466E /* RegisterAllocatorNaive.swift */; };
 		6F83480D26FD3B1200EB466E /* RegisterAllocatorNaiveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F83480C26FD3B1200EB466E /* RegisterAllocatorNaiveTests.swift */; };
+		6F8405102918050400C9B957 /* TackVirtualMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F84050F2918050400C9B957 /* TackVirtualMachine.swift */; };
+		6F8405122918051500C9B957 /* TackVirtualMachineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F8405112918051500C9B957 /* TackVirtualMachineTests.swift */; };
+		6F840514291808D900C9B957 /* TackFlattener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F840513291808D900C9B957 /* TackFlattener.swift */; };
+		6F840516291808E100C9B957 /* TackFlattenerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F840515291808E100C9B957 /* TackFlattenerTests.swift */; };
 		6F870FEB2505913900FE2B25 /* StructDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F870FEA2505913900FE2B25 /* StructDeclaration.swift */; };
 		6F870FED2505918400FE2B25 /* StructDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F870FEC2505918400FE2B25 /* StructDeclarationTests.swift */; };
 		6F87A546261E23A40093750D /* HazardControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F87A545261E23A40093750D /* HazardControl.swift */; };
@@ -734,6 +738,10 @@
 		6F809DDF26615A8D0098A7FF /* InstructionMemoryLoTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionMemoryLoTableViewDataSource.swift; sourceTree = "<group>"; };
 		6F83480A26FD3B0100EB466E /* RegisterAllocatorNaive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterAllocatorNaive.swift; sourceTree = "<group>"; };
 		6F83480C26FD3B1200EB466E /* RegisterAllocatorNaiveTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterAllocatorNaiveTests.swift; sourceTree = "<group>"; };
+		6F84050F2918050400C9B957 /* TackVirtualMachine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TackVirtualMachine.swift; sourceTree = "<group>"; };
+		6F8405112918051500C9B957 /* TackVirtualMachineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TackVirtualMachineTests.swift; sourceTree = "<group>"; };
+		6F840513291808D900C9B957 /* TackFlattener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TackFlattener.swift; sourceTree = "<group>"; };
+		6F840515291808E100C9B957 /* TackFlattenerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TackFlattenerTests.swift; sourceTree = "<group>"; };
 		6F870FEA2505913900FE2B25 /* StructDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructDeclaration.swift; sourceTree = "<group>"; };
 		6F870FEC2505918400FE2B25 /* StructDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructDeclarationTests.swift; sourceTree = "<group>"; };
 		6F87A545261E23A40093750D /* HazardControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HazardControl.swift; sourceTree = "<group>"; };
@@ -1259,7 +1267,9 @@
 				6F5A00E9231C6454003E7C7F /* SymbolTable.swift */,
 				6F15421D26B34E3300BA9572 /* SymbolTablesReconnector.swift */,
 				6FBCFA5926F7F4D400193819 /* Tack.swift */,
+				6F840513291808D900C9B957 /* TackFlattener.swift */,
 				6FBCFA5B26F7F52400193819 /* TackToTurtle16Compiler.swift */,
+				6F84050F2918050400C9B957 /* TackVirtualMachine.swift */,
 				6F0D519A2506D0B100AB1C7E /* TypeContextTypeChecker.swift */,
 				6F9201E72471DAC7009E1410 /* SnapCore.h */,
 				6F9201E82471DAC7009E1410 /* Info.plist */,
@@ -1315,7 +1325,9 @@
 				6FBCFA5726F5123700193819 /* StructMemberFunctionCallMatcherTests.swift */,
 				6F15421F26B34E4400BA9572 /* SymbolTablesReconnectorTests.swift */,
 				6F50DB0D247F5F9500643DAC /* SymbolTableTests.swift */,
+				6F840515291808E100C9B957 /* TackFlattenerTests.swift */,
 				6FBCFA5D26F7F5FC00193819 /* TackToTurtle16CompilerTests.swift */,
+				6F8405112918051500C9B957 /* TackVirtualMachineTests.swift */,
 				6F0D519E2506D57F00AB1C7E /* TypeContextTypeCheckerTests.swift */,
 				6F9201F42471DAC7009E1410 /* Info.plist */,
 			);
@@ -1961,6 +1973,7 @@
 				6FD2736A26CA187600749CDA /* MemoryLayoutStrategyTurtle16.swift in Sources */,
 				6F2E5AFE251A591A00928DD1 /* Typealias.swift in Sources */,
 				6F6AED40251696C5002E3AC5 /* Impl.swift in Sources */,
+				6F840514291808D900C9B957 /* TackFlattener.swift in Sources */,
 				6F4F3C43249EAEB30018BBBC /* FunctionDeclaration.swift in Sources */,
 				6FEC3DFE24D78CF800E9C299 /* LabelMaker.swift in Sources */,
 				6F603CB02515BB7900B2C54E /* ForIn.swift in Sources */,
@@ -2014,6 +2027,7 @@
 				6F40731726B281B7007D8382 /* SnapAbstractSyntaxTreeCompiler.swift in Sources */,
 				6F13825B26BF36F1002CF167 /* SnapSubcompilerForIn.swift in Sources */,
 				6F238AD9248C6A560040250D /* Block.swift in Sources */,
+				6F8405102918050400C9B957 /* TackVirtualMachine.swift in Sources */,
 				6F3F00F4274F651C00875339 /* Subroutine.swift in Sources */,
 				6FD2735A26C9C1E800749CDA /* Goto.swift in Sources */,
 				6FF179CB26BA34760026F284 /* SnapSubcompilerImport.swift in Sources */,
@@ -2051,6 +2065,7 @@
 				6F40731F26B2A194007D8382 /* SnapSubcompilerAssertTests.swift in Sources */,
 				6F25325A24CB5D0C00339332 /* LvalueExpressionTypeCheckerTests.swift in Sources */,
 				6F469E0B26BEF5220004613B /* GlobalEnvironmentTests.swift in Sources */,
+				6F840516291808E100C9B957 /* TackFlattenerTests.swift in Sources */,
 				6F13826526C0E893002CF167 /* SnapSubcompilerReturnTests.swift in Sources */,
 				6F1D24C724823EC60095D7B4 /* IfTests.swift in Sources */,
 				6FCB68202472064800798905 /* SnapParserTests.swift in Sources */,
@@ -2068,6 +2083,7 @@
 				6FBCFA5E26F7F5FC00193819 /* TackToTurtle16CompilerTests.swift in Sources */,
 				6FDC6AAE27331640003A8ABF /* SnapToTurtle16CompilerTests.swift in Sources */,
 				6F0D519F2506D57F00AB1C7E /* TypeContextTypeCheckerTests.swift in Sources */,
+				6F8405122918051500C9B957 /* TackVirtualMachineTests.swift in Sources */,
 				6F83480D26FD3B1200EB466E /* RegisterAllocatorNaiveTests.swift in Sources */,
 				6FC4E6EF28FBEBA30079A88C /* GenericFunctionTypeArgumentSolverTests.swift in Sources */,
 				6FF179C926BA344D0026F284 /* SnapSubcompilerImportTests.swift in Sources */,

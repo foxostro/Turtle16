@@ -64,6 +64,13 @@ class TackToTurtle16CompilerTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
     
+    func testNOP() throws {
+        let input = TackInstructionNode(.nop)
+        let expected = InstructionNode(instruction: kNOP)
+        let actual = try compile(input)
+        XCTAssertEqual(actual, expected)
+    }
+    
     func testADD16() throws {
         let input = TackInstructionNode(.add16(.vr(2), .vr(1), .vr(0)))
         let expected = InstructionNode(instruction: kADD, parameters:[

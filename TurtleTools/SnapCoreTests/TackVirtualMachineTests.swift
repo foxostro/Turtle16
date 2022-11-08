@@ -622,7 +622,7 @@ final class TackVirtualMachineTests: XCTestCase {
         let vm = TackVirtualMachine(program)
         vm.setRegister(.vr(0), 0)
         try vm.step()
-        XCTAssertEqual(0xffff, try vm.getRegister(.vr(1)))
+        XCTAssertEqual(Word(0) &- 1, try vm.getRegister(.vr(1)))
     }
     
     func testSUBI16_pos() throws {
@@ -632,7 +632,7 @@ final class TackVirtualMachineTests: XCTestCase {
         let vm = TackVirtualMachine(program)
         vm.setRegister(.vr(0), 0)
         try vm.step()
-        XCTAssertEqual(0xffff, try vm.getRegister(.vr(1)))
+        XCTAssertEqual(Word(0) &- 1, try vm.getRegister(.vr(1)))
     }
     
     func testSUBI16_neg() throws {
@@ -1706,7 +1706,7 @@ final class TackVirtualMachineTests: XCTestCase {
         let vm = TackVirtualMachine(program)
         vm.setRegister(.vr(0), 0x80)
         try vm.step()
-        XCTAssertEqual(0xff80, try vm.getRegister(.vr(1)))
+        XCTAssertEqual(Word(0) &- 0x80, try vm.getRegister(.vr(1)))
     }
     
     func testSerialOutput() throws {

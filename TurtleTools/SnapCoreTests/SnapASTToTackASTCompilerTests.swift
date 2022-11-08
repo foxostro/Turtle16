@@ -1,5 +1,5 @@
 //
-//  SnapToTackCompilerTests.swift
+//  SnapASTToTackASTCompilerTests.swift
 //  SnapCoreTests
 //
 //  Created by Andrew Fox on 7/28/21.
@@ -32,11 +32,11 @@ let kRangeType: SymbolType = .structType(StructType(name: kRangeName, symbols: S
 ])))
 
 
-class SnapToTackCompilerTests: XCTestCase {
-    func makeCompiler(options opts: SnapToTackCompiler.Options = SnapToTackCompiler.Options(isBoundsCheckEnabled: true), symbols: SymbolTable = SymbolTable()) -> SnapToTackCompiler {
+class SnapASTToTackASTCompilerTests: XCTestCase {
+    func makeCompiler(options opts: SnapASTToTackASTCompiler.Options = SnapASTToTackASTCompiler.Options(isBoundsCheckEnabled: true), symbols: SymbolTable = SymbolTable()) -> SnapASTToTackASTCompiler {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
                                                   globalSymbols: symbols)
-        return SnapToTackCompiler(symbols: symbols,
+        return SnapASTToTackASTCompiler(symbols: symbols,
                                   globalEnvironment: globalEnvironment,
                                   options: opts)
     }
@@ -123,8 +123,8 @@ class SnapToTackCompilerTests: XCTestCase {
             .compile(globalEnvironment: globalEnvironment,
                      symbols: symbols,
                      node: fn1)
-        let opts = SnapToTackCompiler.Options(isBoundsCheckEnabled: true)
-        let compiler = SnapToTackCompiler(symbols: symbols,
+        let opts = SnapASTToTackASTCompiler.Options(isBoundsCheckEnabled: true)
+        let compiler = SnapASTToTackASTCompiler(symbols: symbols,
                                           globalEnvironment: globalEnvironment,
                                           options: opts)
         let actual = try compiler.compileWithEpilog(nil)
@@ -2903,7 +2903,7 @@ class SnapToTackCompilerTests: XCTestCase {
             kRangeName : kRangeType,
             kSliceName : kSliceType
         ])
-        let opts = SnapToTackCompiler.Options(isBoundsCheckEnabled: false)
+        let opts = SnapASTToTackASTCompiler.Options(isBoundsCheckEnabled: false)
         let compiler = makeCompiler(options: opts, symbols: symbols)
         let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
             Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.Identifier("a")),
@@ -2972,7 +2972,7 @@ class SnapToTackCompilerTests: XCTestCase {
             kRangeName : kRangeType,
             kSliceName : kSliceType
         ])
-        let opts = SnapToTackCompiler.Options(isBoundsCheckEnabled: false)
+        let opts = SnapASTToTackASTCompiler.Options(isBoundsCheckEnabled: false)
         let compiler = makeCompiler(options: opts, symbols: symbols)
         let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"),
                                         argument: Expression.Identifier("range"))
@@ -3008,7 +3008,7 @@ class SnapToTackCompilerTests: XCTestCase {
             kRangeName : kRangeType,
             kSliceName : kSliceType
         ])
-        let opts = SnapToTackCompiler.Options(isBoundsCheckEnabled: false)
+        let opts = SnapASTToTackASTCompiler.Options(isBoundsCheckEnabled: false)
         let compiler = makeCompiler(options: opts, symbols: symbols)
         let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
             Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.Identifier("a")),
@@ -3095,7 +3095,7 @@ class SnapToTackCompilerTests: XCTestCase {
             kRangeName : kRangeType,
             kSliceName : kSliceType
         ])
-        let opts = SnapToTackCompiler.Options(isBoundsCheckEnabled: false)
+        let opts = SnapASTToTackASTCompiler.Options(isBoundsCheckEnabled: false)
         let compiler = makeCompiler(options: opts, symbols: symbols)
         let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
             Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.Identifier("a")),
@@ -3167,7 +3167,7 @@ class SnapToTackCompilerTests: XCTestCase {
             kRangeName : kRangeType,
             kSliceName : kSliceType
         ])
-        let opts = SnapToTackCompiler.Options(isBoundsCheckEnabled: false)
+        let opts = SnapASTToTackASTCompiler.Options(isBoundsCheckEnabled: false)
         let compiler = makeCompiler(options: opts, symbols: symbols)
         let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
             Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.Identifier("a")),
@@ -3226,11 +3226,11 @@ class SnapToTackCompilerTests: XCTestCase {
                            isMutable: false)
         ])
 
-        let opts = SnapToTackCompiler.Options.defaultOptions
+        let opts = SnapASTToTackASTCompiler.Options.defaultOptions
         let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
         contractStep.compile(ast0)
         let ast1 = contractStep.ast
-        let compiler = SnapToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment, options: opts)
+        let compiler = SnapASTToTackASTCompiler(symbols: symbols, globalEnvironment: globalEnvironment, options: opts)
         let actual = try compiler.compile(ast1)
 
         let expected = Seq(children: [
@@ -3276,11 +3276,11 @@ class SnapToTackCompilerTests: XCTestCase {
                            isMutable: false)
         ])
 
-        let opts = SnapToTackCompiler.Options.defaultOptions
+        let opts = SnapASTToTackASTCompiler.Options.defaultOptions
         let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
         contractStep.compile(ast0)
         let ast1 = contractStep.ast
-        let actual = try SnapToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment, options: opts).compile(ast1)
+        let actual = try SnapASTToTackASTCompiler(symbols: symbols, globalEnvironment: globalEnvironment, options: opts).compile(ast1)
 
         let expected = Seq(children: [
             TackInstructionNode(.liu16(.vr(8), 0x0110)), // TODO: make sure the optimizer can remove dead stores like this one
@@ -3617,7 +3617,7 @@ class SnapToTackCompilerTests: XCTestCase {
         let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
         contractStep.compile(ast0)
         let ast1 = contractStep.ast
-        let compiler = SnapToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
+        let compiler = SnapASTToTackASTCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
 
         XCTAssertThrowsError(try compiler.compileWithEpilog(ast1)) {
             let compilerError = $0 as? CompilerError
@@ -3649,7 +3649,7 @@ class SnapToTackCompilerTests: XCTestCase {
         let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
         contractStep.compile(ast0)
         let ast1 = contractStep.ast
-        let compiler = SnapToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
+        let compiler = SnapASTToTackASTCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
         let actual = try compiler.compileWithEpilog(ast1)
         let expected = Seq(children: [
             TackInstructionNode(.la(.vr(0), "__foo_const_u16")),
@@ -3692,7 +3692,7 @@ class SnapToTackCompilerTests: XCTestCase {
             return
         }
         let ast1 = contractStep.ast
-        let compiler = SnapToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
+        let compiler = SnapASTToTackASTCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
         let actual = try compiler.compileWithEpilog(ast1)
         let expected = Seq(children: [
             TackInstructionNode(.liu16(.vr(0), 0xffff)),
@@ -3745,7 +3745,7 @@ class SnapToTackCompilerTests: XCTestCase {
             return
         }
         let ast1 = contractStep.ast
-        let compiler = SnapToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
+        let compiler = SnapASTToTackASTCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
         let actual = try compiler.compileWithEpilog(ast1)
         let expected = Seq(children: [
             TackInstructionNode(.liu16(.vr(0), 0xffff)),

@@ -1,5 +1,5 @@
 //
-//  SnapToTackCompiler.swift
+//  SnapASTToTackASTCompiler.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 7/28/21.
@@ -9,7 +9,7 @@
 import TurtleCore
 import Turtle16SimulatorCore
 
-public class SnapToTackCompiler: SnapASTTransformerBase {
+public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
     public typealias Register = TackInstruction.Register
     public struct Options {
         public let isBoundsCheckEnabled: Bool
@@ -65,7 +65,7 @@ public class SnapToTackCompiler: SnapASTTransformerBase {
         return result
     }
     
-    public init(symbols: SymbolTable, globalEnvironment: GlobalEnvironment, options: SnapToTackCompiler.Options = SnapToTackCompiler.Options.defaultOptions) {
+    public init(symbols: SymbolTable, globalEnvironment: GlobalEnvironment, options: SnapASTToTackASTCompiler.Options = SnapASTToTackASTCompiler.Options.defaultOptions) {
         self.globalEnvironment = globalEnvironment
         self.options = options
         kUnionTypeTagOffset = 0

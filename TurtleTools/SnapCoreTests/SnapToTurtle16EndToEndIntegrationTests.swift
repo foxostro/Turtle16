@@ -1,5 +1,5 @@
 //
-//  SnapToTurtle16CompilerTests.swift
+//  SnapToTurtle16EndToEndIntegrationTests.swift
 //  SnapCoreTests
 //
 //  Created by Andrew Fox on 11/3/21.
@@ -11,7 +11,7 @@ import SnapCore
 import Turtle16SimulatorCore
 import TurtleCore
 
-class SnapToTurtle16CompilerTests: XCTestCase {
+class SnapToTurtle16EndToEndIntegrationTests: XCTestCase {
     let kRuntime = "runtime"
     let kUnionPayloadOffset = 1
     
@@ -147,7 +147,7 @@ func foo() {
         
         if options.isVerboseLogging {
             print(AssemblerListingMaker().makeListing(try! compiler.assembly.get()))
-            print((try! compiler.tack.get() as! Seq).makeChildDescriptions())
+            print((try! compiler.tack.get().ast as! Seq).makeChildDescriptions())
         }
         
         let computer = Turtle16Computer(SchematicLevelCPUModel())

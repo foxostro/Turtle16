@@ -9,23 +9,15 @@
 import Foundation
 import TurtleCore
 
-public struct FlatTack: Equatable {
-    public let instructions: [TackInstruction]
-    public let labels: [String : Int]
-    
-    public init(instructions: [TackInstruction], labels: [String : Int]) {
-        self.instructions = instructions
-        self.labels = labels
-    }
-}
-
 public class TackFlattener: NSObject {
     private var instructions: [TackInstruction] = []
     private var labels: [String : Int] = [:]
     
-    public func compile(_ node: AbstractSyntaxTreeNode) throws -> FlatTack {
+    public func compile(_ node: AbstractSyntaxTreeNode) throws -> TackProgram {
         try innerCompile(node)
-        return FlatTack(instructions: instructions, labels: labels)
+        return TackProgram(instructions: instructions,
+                        labels: labels,
+                        ast: node)
     }
     
     private func innerCompile(_ node: AbstractSyntaxTreeNode) throws {
@@ -48,7 +40,7 @@ public class TackFlattener: NSObject {
             }
             
         default:
-            throw CompilerError(sourceAnchor: node.sourceAnchor, message: "unsupported node: `\(node)'")
+            throw CompilerError(sourceAnchor: node.sourceAnchor, message: "unsupported node: `\(node.description)'")
         }
     }
     

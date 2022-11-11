@@ -12,7 +12,7 @@ import TurtleCore
 
 final class TackFlattenerTests: XCTestCase {
     func testFlattenEmptyProgram() throws {
-        let expected = FlatTack(instructions: [], labels: [:])
+        let expected = TackProgram(instructions: [], labels: [:])
         let program = Seq()
         let actual = try TackFlattener().compile(program)
         XCTAssertEqual(actual, expected)
@@ -28,29 +28,29 @@ final class TackFlattenerTests: XCTestCase {
     }
     
     func testSingleInstruction() throws {
-        let expected = FlatTack(instructions: [.nop], labels: [:])
         let program = TackInstructionNode(.nop)
+        let expected = TackProgram(instructions: [.nop], labels: [:], ast: program)
         let actual = try TackFlattener().compile(program)
         XCTAssertEqual(actual, expected)
     }
     
     func testSeqWithOneLevel() throws {
-        let expected = FlatTack(instructions: [.nop], labels: [:])
         let program = Seq(children: [TackInstructionNode(.nop)])
+        let expected = TackProgram(instructions: [.nop], labels: [:], ast: program)
         let actual = try TackFlattener().compile(program)
         XCTAssertEqual(actual, expected)
     }
     
     func testSeqWithTwoLevels() throws {
-        let expected = FlatTack(instructions: [.nop], labels: [:])
         let program = Seq(children: [Seq(children: [TackInstructionNode(.nop)])])
+        let expected = TackProgram(instructions: [.nop], labels: [:], ast: program)
         let actual = try TackFlattener().compile(program)
         XCTAssertEqual(actual, expected)
     }
     
     func testLabelDeclaration() throws {
-        let expected = FlatTack(instructions: [], labels: ["foo":0])
         let program = Seq(children: [LabelDeclaration(ParameterIdentifier("foo"))])
+        let expected = TackProgram(instructions: [], labels: ["foo":0], ast: program)
         let actual = try TackFlattener().compile(program)
         XCTAssertEqual(actual, expected)
     }
@@ -68,10 +68,10 @@ final class TackFlattenerTests: XCTestCase {
     }
     
     func testSubroutine() throws {
-        let expected = FlatTack(instructions: [.nop], labels: ["foo":0])
         let program = Subroutine(identifier: "foo", children: [
             TackInstructionNode(.nop)
         ])
+        let expected = TackProgram(instructions: [.nop], labels: ["foo":0], ast: program)
         let actual = try TackFlattener().compile(program)
         XCTAssertEqual(actual, expected)
     }

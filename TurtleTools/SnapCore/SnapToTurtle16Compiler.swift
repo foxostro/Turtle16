@@ -7,161 +7,56 @@
 //
 
 import TurtleCore
-import Turtle16SimulatorCore
 
+// Convenience class that puts together a Snap front end and Turtle16 back end.
+// This always compiles a Snap program to Turtle16 machine code.
 public class SnapToTurtle16Compiler: NSObject {
-    public struct Options {
-        public let isBoundsCheckEnabled: Bool
-        public let shouldDefineCompilerIntrinsicFunctions: Bool
-        public let isUsingStandardLibrary: Bool
-        public let runtimeSupport: String?
-        public let shouldRunSpecificTest: String?
-        public let injectedModules: [String : String]
-        
-        public init(isBoundsCheckEnabled: Bool = false,
-                    shouldDefineCompilerIntrinsicFunctions: Bool = false,
-                    isUsingStandardLibrary: Bool = false,
-                    runtimeSupport: String? = nil,
-                    shouldRunSpecificTest: String? = nil,
-                    injectedModules: [String : String] = [:]) {
-            self.isBoundsCheckEnabled = isBoundsCheckEnabled
-            self.shouldDefineCompilerIntrinsicFunctions = shouldDefineCompilerIntrinsicFunctions
-            self.isUsingStandardLibrary = isUsingStandardLibrary
-            self.runtimeSupport = runtimeSupport
-            self.shouldRunSpecificTest = shouldRunSpecificTest
-            self.injectedModules = injectedModules
-        }
-    }
+    public typealias Options = SnapCompilerFrontEnd.Options
     
     public let options: Options
+    public let globalEnvironment: GlobalEnvironment
+    
     public private(set) var testNames: [String] = []
+    public private(set) var symbolsOfTopLevelScope: SymbolTable? = nil
     public private(set) var syntaxTree: AbstractSyntaxTreeNode! = nil
-    public private(set) var tack: Result<AbstractSyntaxTreeNode?, Error>! = nil
+    public private(set) var tack: Result<TackProgram, Error>! = nil
     public private(set) var assembly: Result<TopLevel, Error>! = nil
     public private(set) var instructions: [UInt16] = []
-    public var sandboxAccessManager: SandboxAccessManager? = nil
-    public private(set) var symbolsOfTopLevelScope: SymbolTable? = nil
-    public let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-    
     public private(set) var errors: [CompilerError] = []
+    
     public var hasError:Bool {
         return errors.count != 0
     }
     
-    public init(options: Options = Options()) {
+    public init(options: Options = Options(),
+                memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()) {
         self.options = options
+        self.globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: memoryLayoutStrategy)
     }
     
     public func compile(program text: String, base: Int = 0, url: URL? = nil) {
         instructions = []
         errors = []
         
-        let result = lex(text, url)
-            .flatMap(parse)
-            .flatMap(contract)
-            .flatMap(compileSnapToTack)
-            .flatMap(compileTackToAssembly)
-            .flatMap(registerAllocation)
-            .flatMap(compileToLowerAssembly)
-            .flatMap(compileAssemblyToMachineCode)
+        let frontEnd = SnapCompilerFrontEnd(options: options, globalEnvironment: globalEnvironment)
+        tack = frontEnd.compile(program: text, base: base, url: url)
+        testNames = frontEnd.testNames
+        syntaxTree = frontEnd.syntaxTree
+        symbolsOfTopLevelScope = frontEnd.symbolsOfTopLevelScope
+        
+        let backEnd = SnapCompilerBackEndTurtle16(globalEnvironment: globalEnvironment)
+        let result = tack.flatMap { backEnd.compile(tackProgram: $0) }
+        assembly = backEnd.assembly
         
         switch result {
-        case .success(let instructions):
-            self.instructions = instructions
+        case .success(let ins):
+            instructions = ins
             
         case .failure(let error as CompilerError):
-            self.errors = [error]
+            errors = [error]
             
         case .failure(let error):
             fatalError("unknown error: \(error)")
         }
-    }
-    
-    func lex(_ text: String, _ url: URL?) -> Result<[Token], Error> {
-        let lexer = SnapLexer(text, url)
-        lexer.scanTokens()
-        if let error = lexer.errors.first {
-            return .failure(error)
-        }
-        return .success(lexer.tokens)
-    }
-    
-    func parse(_ tokens: [Token]) -> Result<AbstractSyntaxTreeNode?, Error> {
-        let parser = SnapParser(tokens: tokens)
-        parser.parse()
-        if let error = parser.errors.first {
-            return .failure(error)
-        }
-        self.syntaxTree = parser.syntaxTree
-        return .success(parser.syntaxTree)
-    }
-    
-    func contract(_ syntaxTree: AbstractSyntaxTreeNode?) -> Result<AbstractSyntaxTreeNode?, Error> {
-        let contractionStep = SnapAbstractSyntaxTreeCompiler(
-            shouldRunSpecificTest: options.shouldRunSpecificTest,
-            injectModules: Array(options.injectedModules),
-            isUsingStandardLibrary: options.isUsingStandardLibrary,
-            runtimeSupport: options.runtimeSupport,
-            sandboxAccessManager: sandboxAccessManager,
-            globalEnvironment: globalEnvironment)
-        contractionStep.compile(syntaxTree)
-        let ast = contractionStep.ast
-        let testNames = contractionStep.testNames
-        if let error = contractionStep.errors.first {
-            return .failure(error)
-        }
-        self.symbolsOfTopLevelScope = ast.symbols
-        self.testNames = testNames
-        return .success(ast)
-    }
-    
-    func compileSnapToTack(_ ast: AbstractSyntaxTreeNode?) -> Result<AbstractSyntaxTreeNode?, Error> {
-        let opts = SnapASTToTackASTCompiler.Options(isBoundsCheckEnabled: self.options.isBoundsCheckEnabled)
-        let compiler = SnapASTToTackASTCompiler(symbols: globalEnvironment.globalSymbols,
-                                          globalEnvironment: globalEnvironment,
-                                          options: opts)
-        self.tack = Result(catching: {
-            try compiler.compileWithEpilog(ast)
-        })
-        return self.tack
-    }
-    
-    func compileTackToAssembly(_ input: AbstractSyntaxTreeNode?) -> Result<TopLevel, Error> {
-        let compiler = TackToTurtle16Compiler(globalEnvironment.globalSymbols)
-        return Result(catching: {
-            try compiler.compile(TopLevel(children: [
-                input ?? Seq()
-            ])) as! TopLevel
-        })
-    }
-    
-    func registerAllocation(_ input: TopLevel) -> Result<TopLevel, Error> {
-        return Result(catching: {
-            try RegisterAllocatorDriver().compile(topLevel: input)
-        })
-    }
-    
-    func compileToLowerAssembly(_ input: TopLevel) -> Result<TopLevel, Error> {
-        self.assembly = Result(catching: {
-            //try SnapASTTransformerFlattenSeq().compile(
-            var topLevel = try SnapSubcompilerSubroutine().compile(input) as! TopLevel
-            
-            // The hardware requires us to place a NOP at the first instruction.
-            if topLevel.children.first != InstructionNode(instruction: kNOP) {
-                topLevel = TopLevel(children: [InstructionNode(instruction: kNOP)] + topLevel.children)
-            }
-            
-            return topLevel
-        })
-        return self.assembly
-    }
-    
-    func compileAssemblyToMachineCode(_ topLevel: TopLevel) -> Result<[UInt16], Error> {
-        let compiler = AssemblerCompiler()
-        compiler.compile(topLevel)
-        if let error = compiler.errors.first {
-            return .failure(error)
-        }
-        return .success(compiler.instructions)
     }
 }

@@ -102,6 +102,7 @@ public enum TackInstruction: Equatable, Hashable {
     case leu8(Register, Register, Register)
     case gtu8(Register, Register, Register)
     case sxt8(Register, Register)
+    case inlineAssembly(String)
     
     public var description: String {
         switch self {
@@ -174,6 +175,23 @@ public enum TackInstruction: Equatable, Hashable {
         case .leu8(let c, let a, let b): return "LEU8 \(c.description), \(a.description), \(b.description)"
         case .gtu8(let c, let a, let b): return "GTU8 \(c.description), \(a.description), \(b.description)"
         case .sxt8(let dst, let src): return "SXT8 \(dst.description), \(src.description)"
+        case .inlineAssembly(let asm):
+            return "ASM \(makeInlineAssemblyDescription(asm))"
+        }
+    }
+    
+    private func makeInlineAssemblyDescription(_ asm: String) -> String {
+        if asm == "" {
+            return "\"\""
+        }
+        
+        let lines = asm.split(separator: "\n")
+        if lines.count == 1 {
+            return "\"\(lines.first!)\""
+        }
+        else {
+            let formatted = lines.map{"\t\($0)"}.joined(separator: "\n")
+            return "\"\"\"\n\(formatted)\t\"\"\""
         }
     }
 }
@@ -224,6 +242,24 @@ public class TackInstructionNode: AbstractSyntaxTreeNode {
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        return "\(indent)\(instruction.description)"
+        let result = "\(indent)\(instruction.description)"
+        return result
+    }
+}
+
+// Representation of the program in the Tack intermediate language.
+// This can be compiled to assembly code for some target, or it can be executed
+// in the Tack virtual machine.
+public struct TackProgram: Equatable {
+    public let instructions: [TackInstruction]
+    public let labels: [String : Int]
+    public let ast: AbstractSyntaxTreeNode
+    
+    public init(instructions: [TackInstruction],
+                labels: [String : Int],
+                ast: AbstractSyntaxTreeNode = Seq()) {
+        self.instructions = instructions
+        self.labels = labels
+        self.ast = ast
     }
 }

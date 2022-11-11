@@ -3396,29 +3396,14 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
     func testAsm_Empty() throws {
         let compiler = makeCompiler()
         let actual = try compiler.compile(asm: Asm(assemblyCode: ""))
-        let expected = Seq(children: [])
+        let expected = TackInstructionNode(.inlineAssembly(""))
         XCTAssertEqual(actual, expected)
     }
 
-    func testAsm_HltWithNoParameters() throws {
+    func testAsm_HLT() throws {
         let compiler = makeCompiler()
         let actual = try compiler.compile(asm: Asm(assemblyCode: "HLT"))
-        let expected = Seq(children: [
-            InstructionNode(instruction: "HLT")
-        ])
-        XCTAssertEqual(actual, expected)
-    }
-
-    func testAsm_AddWithParameters() throws {
-        let compiler = makeCompiler()
-        let actual = try compiler.compile(asm: Asm(assemblyCode: "ADD r0, r1, r2"))
-        let expected = Seq(children: [
-            InstructionNode(instruction: "ADD", parameters: [
-                ParameterIdentifier("r0"),
-                ParameterIdentifier("r1"),
-                ParameterIdentifier("r2")
-            ])
-        ])
+        let expected = TackInstructionNode(.inlineAssembly("HLT"))
         XCTAssertEqual(actual, expected)
     }
 

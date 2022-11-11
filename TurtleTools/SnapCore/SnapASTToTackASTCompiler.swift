@@ -196,24 +196,9 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
     }
     
     public override func compile(asm node: Asm) throws -> AbstractSyntaxTreeNode? {
-        // Lexer pass
-        let lexer = AssemblerLexer(node.assemblyCode)
-        lexer.scanTokens()
-        guard !lexer.hasError else {
-            let fileName = node.sourceAnchor?.url?.lastPathComponent
-            throw CompilerError.makeOmnibusError(fileName: fileName, errors: lexer.errors)
-        }
-        
-        // Compile to an abstract syntax tree
-        let parser = AssemblerParser(tokens: lexer.tokens, lineMapper: lexer.lineMapper)
-        parser.parse()
-        guard !parser.hasError else {
-            let fileName = node.sourceAnchor?.url?.lastPathComponent
-            throw CompilerError.makeOmnibusError(fileName: fileName, errors: parser.errors)
-        }
-        let syntaxTree = parser.syntaxTree!
-        
-        return Seq(sourceAnchor: node.sourceAnchor, children: syntaxTree.children)
+        return TackInstructionNode(
+            sourceAnchor: node.sourceAnchor,
+            instruction: .inlineAssembly(node.assemblyCode))
     }
     
     public override func compile(goto node: Goto) throws -> AbstractSyntaxTreeNode? {

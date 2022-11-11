@@ -120,6 +120,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         case .leu8(let c, let a, let b): return leu8(anc, c, a, b)
         case .gtu8(let c, let a, let b): return gtu8(anc, c, a, b)
         case .sxt8(let dst, let src): return sxt8(anc, dst, src)
+        case .inlineAssembly(let asm): return try inlineAssembly(asm)
         }
     }
     
@@ -1564,5 +1565,25 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
                 temp
             ])
         ])
+    }
+    
+    func inlineAssembly(_ assemblyCode: String) throws -> AbstractSyntaxTreeNode? {
+        // Lexer pass
+        let lexer = AssemblerLexer(assemblyCode)
+        lexer.scanTokens()
+        if let error = lexer.errors.first {
+            throw error
+        }
+        
+        // Compile to an abstract syntax tree
+        let parser = AssemblerParser(tokens: lexer.tokens, lineMapper: lexer.lineMapper)
+        parser.parse()
+        if let error = parser.errors.first {
+            throw error
+        }
+        guard let syntaxTree = parser.syntaxTree else {
+            return nil
+        }
+        return Seq(children: syntaxTree.children)
     }
 }

@@ -15,6 +15,7 @@ public enum TackVirtualMachineError: Error {
     case invalidArgument
     case underflowRegisterStack
     case divideByZero
+    case inlineAssemblyNotSupported
 }
 
 public class TackVirtualMachine: NSObject {
@@ -24,7 +25,7 @@ public class TackVirtualMachine: NSObject {
     public let kMemoryMappedSerialOutputPort: Word = 0x0001
     public let kPageSize = 4096
     
-    public let program: FlatTack
+    public let program: TackProgram
     public var pc: Word = 0
     public var nextPc: Word = 0
     public var isHalted = false
@@ -33,7 +34,7 @@ public class TackVirtualMachine: NSObject {
     private var memoryPages: [Int : [Word]] = [:]
     public var onSerialOutput: (Word) -> Void = {_ in}
     
-    public init(_ program: FlatTack) {
+    public init(_ program: TackProgram) {
         self.program = program
         super.init()
         setRegister(.sp, 0)
@@ -297,6 +298,8 @@ public class TackVirtualMachine: NSObject {
             try gtu8(dst, left, right)
         case .sxt8(let dst, let src):
             try sxt8(dst, src)
+        case .inlineAssembly(let asm):
+            try inlineAssembly(asm)
         }
         
         pc = nextPc
@@ -819,5 +822,9 @@ public class TackVirtualMachine: NSObject {
         let src = try getRegister(srcRegister)
         let result = signExtend8(src)
         setRegister(dst, result)
+    }
+    
+    private func inlineAssembly(_ asm: String) throws {
+        throw TackVirtualMachineError.inlineAssemblyNotSupported
     }
 }

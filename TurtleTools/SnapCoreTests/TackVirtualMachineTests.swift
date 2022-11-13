@@ -1761,4 +1761,39 @@ final class TackVirtualMachineTests: XCTestCase {
             }
         }
     }
+    
+    func testInlineAssembly_HLTisSpecial() throws {
+        let program = TackProgram(instructions: [
+            .inlineAssembly("HLT"),
+        ], labels: [:])
+        let vm = TackVirtualMachine(program)
+        try vm.step()
+        XCTAssertTrue(vm.isHalted)
+    }
+    
+    func testInlineAssembly_BREAKisSpecial() throws {
+        let program = TackProgram(instructions: [
+            .inlineAssembly("BREAK"),
+            .nop
+        ], labels: [:])
+        let vm = TackVirtualMachine(program)
+        try vm.run()
+        XCTAssertTrue(vm.pc == 1)
+        XCTAssertFalse(vm.isHalted)
+    }
+    
+    func testBreakPoint() throws {
+        let program = TackProgram(instructions: [
+            .nop,
+            .nop
+        ], labels: [:])
+        let vm = TackVirtualMachine(program)
+        vm.setBreakPoint(pc: 1, value: true)
+        try vm.run()
+        XCTAssertTrue(vm.pc == 1)
+        XCTAssertFalse(vm.isHalted)
+        try vm.run()
+        XCTAssertTrue(vm.pc == 2)
+        XCTAssertTrue(vm.isHalted)
+    }
 }

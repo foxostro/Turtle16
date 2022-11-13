@@ -112,6 +112,19 @@ class AssemblerCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.instructions, [])
     }
     
+    func testCompileBREAK() throws {
+        // The BREAK instruction compiles to the same machine code as HLT.
+        let compiler = AssemblerCompiler()
+        compiler.compile(ast: [
+            InstructionNode(instruction: "BREAK")
+        ])
+        XCTAssertFalse(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 0)
+        XCTAssertEqual(compiler.instructions, [
+            0x0800
+        ])
+    }
+    
     func testLOADExpectsTwoOrThreeOperands_1() throws {
         let compiler = AssemblerCompiler()
         compiler.compile(ast: [

@@ -47,6 +47,7 @@ public let kCALLPTR = "CALLPTR"
 public let kENTER = "ENTER"
 public let kLEAVE = "LEAVE"
 public let kRET = "RET"
+public let kBREAK = "BREAK"
 
 public class AssemblerCompiler: NSObject {
     let codeGenerator = AssemblerCodeGenerator()
@@ -104,7 +105,7 @@ public class AssemblerCompiler: NSObject {
         case kNOP:
             try compileNOP(node)
             
-        case kHLT:
+        case kHLT, kBREAK:
             try compileHLT(node)
             
         case kLOAD:

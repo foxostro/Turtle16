@@ -151,13 +151,15 @@ public class TackVirtualMachine: NSObject {
         }
     }
     
-    public func run(shouldStepOver: Bool = false) throws {
+    public func run() throws {
+        var shouldStepOver = true
         while !isHalted {
             if pc < program.instructions.count && breakPoints[Int(pc)] && !shouldStepOver {
                 return
             }
             
             try step()
+            shouldStepOver = false
         }
     }
     
@@ -841,10 +843,14 @@ public class TackVirtualMachine: NSObject {
     }
     
     private func inlineAssembly(_ asm: String) throws {
-        if asm == "HLT" {
+        switch asm {
+        case "HLT":
             hlt()
-        }
-        else {
+        
+        case "BREAK":
+            breakPoints[Int(nextPc)] = true
+            
+        default:
             throw TackVirtualMachineError.inlineAssemblyNotSupported
         }
     }

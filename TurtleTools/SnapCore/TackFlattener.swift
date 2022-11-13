@@ -9,8 +9,10 @@
 import Foundation
 import TurtleCore
 
+// Accepts a Tack AST and produces a TackProgram.
 public class TackFlattener: NSObject {
     private var instructions: [TackInstruction] = []
+    private var didProcessSubroutine = false
     private var labels: [String : Int] = [:]
     
     public func compile(_ node: AbstractSyntaxTreeNode) throws -> TackProgram {
@@ -34,10 +36,14 @@ public class TackFlattener: NSObject {
             try label(node.sourceAnchor, node.identifier)
             
         case let node as Subroutine:
+            if !didProcessSubroutine {
+                instructions.append(.hlt)
+            }
             try label(node.sourceAnchor, node.identifier)
             for child in node.children {
                 try innerCompile(child)
             }
+            didProcessSubroutine = true
             
         default:
             throw CompilerError(sourceAnchor: node.sourceAnchor, message: "unsupported node: `\(node.description)'")

@@ -68,10 +68,16 @@ final class TackFlattenerTests: XCTestCase {
     }
     
     func testSubroutine() throws {
+        // There must be a HLT instruction separating the first compiled
+        // subroutine body from the initial portion of the program. Execution
+        // starts at PC=0 and must not run blindly into the subroutine bodies.
         let program = Subroutine(identifier: "foo", children: [
             TackInstructionNode(.nop)
         ])
-        let expected = TackProgram(instructions: [.nop], labels: ["foo":0], ast: program)
+        let expected = TackProgram(instructions: [
+            .hlt,
+            .nop
+        ], labels: ["foo" : 1], ast: program)
         let actual = try TackFlattener().compile(program)
         XCTAssertEqual(actual, expected)
     }

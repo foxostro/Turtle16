@@ -32,13 +32,20 @@ public class TackVirtualMachine: NSObject {
     private var globalRegisters: [Register : Word] = [:]
     private var registers: [[Register : Word]] = [[:]]
     private var memoryPages: [Int : [Word]] = [:]
+    private var breakPoints: [Bool]
     public var onSerialOutput: (Word) -> Void = {_ in}
     
     public init(_ program: TackProgram) {
         self.program = program
+        breakPoints = Array<Bool>(repeating: false, count: program.instructions.count)
         super.init()
         setRegister(.sp, 0)
         setRegister(.fp, 0)
+    }
+    
+    public func setBreakPoint(pc: Word, value: Bool) {
+        assert(pc >= 0 && pc < program.instructions.count)
+        breakPoints[Int(pc)] = value
     }
     
     public func wordToInt(_ word: Word) -> Int {
@@ -81,7 +88,7 @@ public class TackVirtualMachine: NSObject {
     
     public func getRegister(_ reg: Register) throws -> Word {
         switch reg {
-        case .vr:
+        case .vr, .ra:
             guard let value = registers[registers.count-1][reg] else {
                 throw TackVirtualMachineError.undefinedRegister(reg)
             }
@@ -97,7 +104,7 @@ public class TackVirtualMachine: NSObject {
     
     public func setRegister(_ reg: Register, _ value: Word) {
         switch reg {
-        case .vr:
+        case .vr, .ra:
             registers[registers.count-1][reg] = value
             
         default:
@@ -144,8 +151,12 @@ public class TackVirtualMachine: NSObject {
         }
     }
     
-    public func run() throws {
+    public func run(shouldStepOver: Bool = false) throws {
         while !isHalted {
+            if pc < program.instructions.count && breakPoints[Int(pc)] && !shouldStepOver {
+                return
+            }
+            
             try step()
         }
     }
@@ -302,7 +313,9 @@ public class TackVirtualMachine: NSObject {
             try inlineAssembly(asm)
         }
         
-        pc = nextPc
+        if !isHalted {
+            pc = nextPc
+        }
         
         if pc >= program.instructions.count {
             isHalted = true
@@ -331,6 +344,8 @@ public class TackVirtualMachine: NSObject {
         nextPc = destination
     }
     
+    let kSizeOfSavedRegisters: Word = 7 // TODO: The size of this register save-area needs to be machine-specific. Different targets will need different sizes.
+    
     private func enter(_ numberOfWords: Int) throws {
         guard numberOfWords >= 0 else {
             throw TackVirtualMachineError.invalidArgument
@@ -339,7 +354,7 @@ public class TackVirtualMachine: NSObject {
         try pushRegisters()
         let fp = try getRegister(.fp)
         var sp = try getRegister(.sp)
-        sp = sp &- 1
+        sp = sp &- kSizeOfSavedRegisters
         store(value: fp, address: sp)
         setRegister(.fp, sp)
         sp = sp &- Word(numberOfWords)
@@ -348,9 +363,10 @@ public class TackVirtualMachine: NSObject {
     
     private func leave() throws {
         let fp = try getRegister(.fp)
-        let stashedFp = load(address: fp)
-        setRegister(.fp, stashedFp)
-        setRegister(.sp, fp &+ 1)
+        var sp = fp
+        setRegister(.fp, load(address: sp))
+        sp = sp &+ kSizeOfSavedRegisters
+        setRegister(.sp, sp)
         try popRegisters()
     }
     
@@ -825,6 +841,11 @@ public class TackVirtualMachine: NSObject {
     }
     
     private func inlineAssembly(_ asm: String) throws {
-        throw TackVirtualMachineError.inlineAssemblyNotSupported
+        if asm == "HLT" {
+            hlt()
+        }
+        else {
+            throw TackVirtualMachineError.inlineAssemblyNotSupported
+        }
     }
 }

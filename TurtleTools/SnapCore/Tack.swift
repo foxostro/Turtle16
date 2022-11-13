@@ -175,8 +175,7 @@ public enum TackInstruction: Equatable, Hashable {
         case .leu8(let c, let a, let b): return "LEU8 \(c.description), \(a.description), \(b.description)"
         case .gtu8(let c, let a, let b): return "GTU8 \(c.description), \(a.description), \(b.description)"
         case .sxt8(let dst, let src): return "SXT8 \(dst.description), \(src.description)"
-        case .inlineAssembly(let asm):
-            return "ASM \(makeInlineAssemblyDescription(asm))"
+        case .inlineAssembly(let asm): return "ASM \(makeInlineAssemblyDescription(asm))"
         }
     }
     
@@ -255,11 +254,48 @@ public struct TackProgram: Equatable {
     public let labels: [String : Int]
     public let ast: AbstractSyntaxTreeNode
     
-    public init(instructions: [TackInstruction],
-                labels: [String : Int],
+    public init(instructions: [TackInstruction] = [],
+                labels: [String : Int] = [:],
                 ast: AbstractSyntaxTreeNode = Seq()) {
         self.instructions = instructions
         self.labels = labels
         self.ast = ast
+    }
+    
+    public var listing: String {
+        var rowToLabel: [Int : String] = [:]
+        for key in labels.keys {
+            if let row = labels[key] {
+                rowToLabel[row] = key
+            }
+        }
+        var rows: [(Int, String?, String)] = []
+        for i in 0..<instructions.count {
+            let label = rowToLabel[i]
+            let insDesc = instructions[i].description
+            rows.append((i, label, insDesc))
+        }
+        var longestLabelLength = 0
+        for (_, label, _) in rows {
+            if let label {
+                longestLabelLength = max(longestLabelLength, label.count+2)
+            }
+        }
+        var lines: [String] = []
+        for (addr, label, insDesc) in rows {
+            let labelCol: String
+            if let label {
+                let formattedLabelPart = "\(label): "
+                let pad = String(repeating: " ", count: longestLabelLength-formattedLabelPart.count)
+                labelCol = pad + formattedLabelPart
+            }
+            else {
+                labelCol = String(repeating: " ", count: longestLabelLength)
+            }
+            let addrCol = String(format: "%04x  ", addr)
+            lines.append("\(addrCol)\(labelCol)\(insDesc)")
+        }
+        let result = lines.joined(separator: "\n")
+        return result
     }
 }

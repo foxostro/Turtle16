@@ -394,14 +394,6 @@ func foo() {
     }
     
     func test_EndToEndIntegration_Fibonacci_U8_2() {
-        // TODO: The u8 type should always use unsigned arithmetic. Add new i8 and i16 types to the compiler for signed arithmetic.
-        // If we do 0..10 then b will be 144 which exceeds the maximum value of
-        // 127 for a signed eight-bit integer. The compiler doesn't draw a good
-        // enough distinction between signed and unsigned numbers which leads
-        // this value to being sign-extended in memory to sixteen bits wide.
-        // While this allows for efficient conversion from u8 to u16 by simply
-        // reinterpreting the in-memory value, it is definitely not the behavior
-        // we expect from a u8 type.
         let debugger = run(program: """
             var a: u8 = 1
             var b: u8 = 1

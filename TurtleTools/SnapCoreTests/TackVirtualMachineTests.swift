@@ -11,6 +11,7 @@ import SnapCore
 
 final class TackVirtualMachineTests: XCTestCase {
     public typealias Word = TackVirtualMachine.Word
+    fileprivate let kSizeOfSavedRegisters: Word = 7
     
     func testRunEmptyProgram() throws {
         let program = TackProgram(instructions: [], labels: [:])
@@ -32,7 +33,7 @@ final class TackVirtualMachineTests: XCTestCase {
         let program = TackProgram(instructions: [.hlt, .nop], labels: [:])
         let vm = TackVirtualMachine(program)
         try vm.run()
-        XCTAssertEqual(vm.pc, 1)
+        XCTAssertEqual(vm.pc, 0)
         XCTAssertTrue(vm.isHalted)
     }
     
@@ -295,10 +296,8 @@ final class TackVirtualMachineTests: XCTestCase {
             .enter(0)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.ra, 1)
         vm.setRegister(.vr(0), 1)
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.ra))
         XCTAssertThrowsError(try vm.getRegister(.vr(0))) {
             guard let error = $0 as? TackVirtualMachineError else {
                 XCTFail()
@@ -313,27 +312,49 @@ final class TackVirtualMachineTests: XCTestCase {
         }
     }
     
+    func testENTER_PushesNewRegisterSet_PushesReturnAddressToo() throws {
+        let program = TackProgram(instructions: [
+            .enter(0)
+        ], labels: [:])
+        let vm = TackVirtualMachine(program)
+        vm.setRegister(.ra, 1)
+        try vm.step()
+        XCTAssertThrowsError(try vm.getRegister(.ra)) {
+            guard let error = $0 as? TackVirtualMachineError else {
+                XCTFail()
+                return
+            }
+            if case .undefinedRegister(let reg) = error {
+                XCTAssertEqual(reg, .ra)
+            }
+            else {
+                XCTFail("unexpected error: \($0)")
+            }
+        }
+    }
+    
     func testENTER_SetupNewStackFrame() throws {
         let program = TackProgram(instructions: [
             .enter(0)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         try vm.step()
-        let a = vm.load(address: Word(0) &- 1)
+        let a = vm.load(address: Word(0) &- kSizeOfSavedRegisters)
         XCTAssertEqual(a, 0)
-        let expectedSp = Word(0) &- 1
+        let expectedSp = Word(0) &- kSizeOfSavedRegisters
         XCTAssertEqual(expectedSp, try vm.getRegister(.sp))
     }
     
     func testENTER_AllocateStorageWithinStackFrame() throws {
+        let size = 10
         let program = TackProgram(instructions: [
-            .enter(10)
+            .enter(size)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         try vm.step()
-        let a = vm.load(address: Word(0) &- 1)
+        let a = vm.load(address: Word(0) &- kSizeOfSavedRegisters)
         XCTAssertEqual(a, 0)
-        let expectedSp = Word(0) &- 11
+        let expectedSp = Word(0) &- kSizeOfSavedRegisters &- Word(size)
         XCTAssertEqual(expectedSp, try vm.getRegister(.sp))
     }
     

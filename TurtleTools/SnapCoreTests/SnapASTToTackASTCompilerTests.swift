@@ -34,11 +34,13 @@ let kRangeType: SymbolType = .structType(StructType(name: kRangeName, symbols: S
 
 class SnapASTToTackASTCompilerTests: XCTestCase {
     func makeCompiler(options opts: SnapASTToTackASTCompiler.Options = SnapASTToTackASTCompiler.Options(isBoundsCheckEnabled: true), symbols: SymbolTable = SymbolTable()) -> SnapASTToTackASTCompiler {
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
-                                                  globalSymbols: symbols)
-        return SnapASTToTackASTCompiler(symbols: symbols,
-                                  globalEnvironment: globalEnvironment,
-                                  options: opts)
+        let globalEnvironment = GlobalEnvironment(
+            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
+            globalSymbols: symbols)
+        return SnapASTToTackASTCompiler(
+            symbols: symbols,
+            globalEnvironment: globalEnvironment,
+            options: opts)
     }
     
     func testLabelDeclaration() throws {

@@ -198,22 +198,40 @@ public enum TackInstruction: Equatable, Hashable {
 // Allows a TackInstruction to be embedded in an Abstract Syntax Tree
 public class TackInstructionNode: AbstractSyntaxTreeNode {
     public let instruction: TackInstruction
+    public let symbols: SymbolTable?
     
     public convenience init(_ instruction: TackInstruction) {
-        self.init(sourceAnchor: nil, instruction: instruction)
+        self.init(instruction: instruction,
+                  sourceAnchor: nil,
+                  symbols: nil)
     }
     
-    public init(sourceAnchor: SourceAnchor?, instruction: TackInstruction) {
+    public init(instruction: TackInstruction,
+                sourceAnchor: SourceAnchor?,
+                symbols: SymbolTable?) {
         self.instruction = instruction
+        self.symbols = symbols
         super.init(sourceAnchor: sourceAnchor)
+    }
+    
+    public func withSymbols(_ symbols: SymbolTable?) -> TackInstructionNode {
+        if (self.symbols != nil) || (self.symbols == symbols) {
+            return self
+        }
+        return TackInstructionNode(
+            instruction: instruction,
+            sourceAnchor: sourceAnchor,
+            symbols: symbols)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> TackInstructionNode {
         if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
             return self
         }
-        return TackInstructionNode(sourceAnchor: sourceAnchor,
-                                   instruction: instruction)
+        return TackInstructionNode(
+            instruction: instruction,
+            sourceAnchor: sourceAnchor,
+            symbols: symbols)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
@@ -229,12 +247,16 @@ public class TackInstructionNode: AbstractSyntaxTreeNode {
         guard instruction == rhs.instruction else {
             return false
         }
+        
+        // Symbol tables do not affect equality.
+        
         return true
     }
     
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(instruction)
+        // Symbol tables do not affect the hash.
         hasher.combine(super.hash)
         return hasher.finalize()
     }

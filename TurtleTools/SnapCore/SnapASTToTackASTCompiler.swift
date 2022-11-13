@@ -141,10 +141,16 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         ast.symbols.highwaterMark = max(ast.symbols.highwaterMark, ast.body.symbols.highwaterMark)
         let sizeOfLocalVariables = ast.symbols.highwaterMark
         
-        let subroutine = Subroutine(sourceAnchor: ast.sourceAnchor, identifier: mangledName, children: [
-            TackInstructionNode(.enter(sizeOfLocalVariables)),
-            body3
-        ])
+        let subroutine = Subroutine(
+            sourceAnchor: ast.sourceAnchor,
+            identifier: mangledName,
+            children: [
+                TackInstructionNode(
+                    instruction: .enter(sizeOfLocalVariables),
+                    sourceAnchor: ast.sourceAnchor,
+                    symbols: symbols),
+                body3
+            ])
         return subroutine
     }
     
@@ -166,12 +172,14 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         if let scopePrologue = symbols?.scopePrologue,
            !scopePrologue.children.isEmpty,
            let compiledPrologue = try compile(seq: scopePrologue) {
-            seq = Seq(sourceAnchor: node0.sourceAnchor,
-                      children: [compiledPrologue] + children)
+            seq = Seq(
+                sourceAnchor: node0.sourceAnchor,
+                children: [compiledPrologue] + children)
         }
         else {
-            seq = Seq(sourceAnchor: node0.sourceAnchor,
-                      children: children)
+            seq = Seq(
+                sourceAnchor: node0.sourceAnchor,
+                children: children)
         }
         symbols = parent
         if let symbols = symbols, node0.symbols.stackFrameIndex == symbols.stackFrameIndex {
@@ -182,10 +190,18 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
     
     public override func compile(return node: Return) throws -> AbstractSyntaxTreeNode? {
         assert(node.expression == nil)
-        return Seq(sourceAnchor: node.sourceAnchor, children: [
-            TackInstructionNode(.leave),
-            TackInstructionNode(.ret)
-        ])
+        return Seq(
+            sourceAnchor: node.sourceAnchor,
+            children: [
+                TackInstructionNode(
+                    instruction: .leave,
+                    sourceAnchor: node.sourceAnchor,
+                    symbols: symbols),
+                TackInstructionNode(
+                    instruction: .ret,
+                    sourceAnchor: node.sourceAnchor,
+                    symbols: symbols)
+            ])
     }
     
     public override func compile(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
@@ -197,18 +213,25 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
     
     public override func compile(asm node: Asm) throws -> AbstractSyntaxTreeNode? {
         return TackInstructionNode(
+            instruction: .inlineAssembly(node.assemblyCode),
             sourceAnchor: node.sourceAnchor,
-            instruction: .inlineAssembly(node.assemblyCode))
+            symbols: symbols)
     }
     
     public override func compile(goto node: Goto) throws -> AbstractSyntaxTreeNode? {
-        return TackInstructionNode(.jmp(node.target))
+        return TackInstructionNode(
+            instruction: .jmp(node.target),
+            sourceAnchor: node.sourceAnchor,
+            symbols: symbols)
     }
     
     public override func compile(gotoIfFalse node: GotoIfFalse) throws -> AbstractSyntaxTreeNode? {
-        return Seq(children: [
+        return Seq(sourceAnchor: node.sourceAnchor, children: [
             try rvalue(expr: node.condition),
-            TackInstructionNode(.bz(popRegister(), node.target))
+            TackInstructionNode(
+                instruction: .bz(popRegister(), node.target),
+                sourceAnchor: node.sourceAnchor,
+                symbols: symbols)
         ])
     }
     
@@ -261,7 +284,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             
             let dst = nextRegister()
             pushRegister(dst)
-            let result = TackInstructionNode(.la(dst, mangledName))
+            let result = TackInstructionNode(
+                instruction: .la(dst, mangledName),
+                sourceAnchor: node.sourceAnchor,
+                symbols: symbols)
             return result
             
         case .genericFunction:
@@ -334,7 +360,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             let baseAddr = nextRegister()
             pushRegister(baseAddr)
             children += [
-                TackInstructionNode(.load(baseAddr, sliceAddr, kSliceBaseAddressOffset))
+                TackInstructionNode(
+                    instruction: .load(baseAddr, sliceAddr, kSliceBaseAddressOffset),
+                    sourceAnchor: expr.sourceAnchor,
+                    symbols: symbols)
             ]
             
         default:
@@ -356,11 +385,25 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 let tempComparison1 = nextRegister()
                 let labelPassesLowerBoundsCheck = globalEnvironment.labelMaker.next()
                 children += [
-                    TackInstructionNode(.li16(tempLowerBound, lowerBound)),
-                    TackInstructionNode(.ge16(tempComparison1, index, tempLowerBound)),
-                    TackInstructionNode(.bnz(tempComparison1, labelPassesLowerBoundsCheck)),
-                    TackInstructionNode(.call(kOOB)),
-                    LabelDeclaration(identifier: labelPassesLowerBoundsCheck)
+                    TackInstructionNode(
+                        instruction: .li16(tempLowerBound, lowerBound),
+                        sourceAnchor: expr.sourceAnchor,
+                        symbols: symbols),
+                    TackInstructionNode(
+                        instruction: .ge16(tempComparison1, index, tempLowerBound),
+                        sourceAnchor: expr.sourceAnchor,
+                        symbols: symbols),
+                    TackInstructionNode(
+                        instruction: .bnz(tempComparison1, labelPassesLowerBoundsCheck),
+                        sourceAnchor: expr.sourceAnchor,
+                        symbols: symbols),
+                    TackInstructionNode(
+                        instruction: .call(kOOB),
+                        sourceAnchor: expr.sourceAnchor,
+                        symbols: symbols),
+                    LabelDeclaration(
+                        sourceAnchor: expr.sourceAnchor,
+                        identifier: labelPassesLowerBoundsCheck)
                 ]
                 
                 // Upper bound
@@ -375,7 +418,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 case .dynamicArray, .constDynamicArray:
                     // The upper bound is embedded in the slice object
                     children += [
-                        TackInstructionNode(.load(tempUpperBound, sliceAddr, kSliceCountOffset))
+                        TackInstructionNode(
+                            instruction: .load(tempUpperBound, sliceAddr, kSliceCountOffset),
+                            sourceAnchor: expr.sourceAnchor,
+                            symbols: symbols)
                     ]
                     
                 default:
@@ -385,10 +431,21 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 let tempComparison2 = nextRegister()
                 let labelPassesUpperBoundsCheck = globalEnvironment.labelMaker.next()
                 children += [
-                    TackInstructionNode(.lt16(tempComparison2, index, tempUpperBound)),
-                    TackInstructionNode(.bnz(tempComparison2, labelPassesUpperBoundsCheck)),
-                    TackInstructionNode(.call(kOOB)),
-                    LabelDeclaration(identifier: labelPassesUpperBoundsCheck),
+                    TackInstructionNode(
+                        instruction: .lt16(tempComparison2, index, tempUpperBound),
+                        sourceAnchor: expr.sourceAnchor,
+                        symbols: symbols),
+                    TackInstructionNode(
+                        instruction: .bnz(tempComparison2, labelPassesUpperBoundsCheck),
+                        sourceAnchor: expr.sourceAnchor,
+                        symbols: symbols),
+                    TackInstructionNode(
+                        instruction: .call(kOOB),
+                        sourceAnchor: expr.sourceAnchor,
+                        symbols: symbols),
+                    LabelDeclaration(
+                        sourceAnchor: expr.sourceAnchor,
+                        identifier: labelPassesUpperBoundsCheck),
                 ]
             }
             
@@ -396,15 +453,24 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 let accessAddr = nextRegister()
                 pushRegister(accessAddr)
                 children += [
-                    TackInstructionNode(.add16(accessAddr, index, baseAddr))
+                    TackInstructionNode(
+                        instruction: .add16(accessAddr, index, baseAddr),
+                        sourceAnchor: expr.sourceAnchor,
+                        symbols: symbols)
                 ]
             } else {
                 let offset = nextRegister()
                 let accessAddr = nextRegister()
                 pushRegister(accessAddr)
                 children += [
-                    TackInstructionNode(.muli16(offset, index, elementSize)),
-                    TackInstructionNode(.add16(accessAddr, offset, baseAddr))
+                    TackInstructionNode(
+                        instruction: .muli16(offset, index, elementSize),
+                        sourceAnchor: expr.sourceAnchor,
+                        symbols: symbols),
+                    TackInstructionNode(
+                        instruction: .add16(accessAddr, offset, baseAddr),
+                        sourceAnchor: expr.sourceAnchor,
+                        symbols: symbols)
                 ]
             }
         }
@@ -469,7 +535,18 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         // Insert bounds check when bounds cannot be verified at compile time.
         if options.isBoundsCheckEnabled {
             if maybeBegin == nil {
-                let boundsCheck0 = If(condition: Expression.Binary(op: .ge, left: beginExpr, right: Expression.LiteralInt(upperBound)), then: Expression.Call(callee: Expression.Identifier(kOOB)))
+                let boundsCheck0 = If(
+                    sourceAnchor: expr.sourceAnchor,
+                    condition: Expression.Binary(
+                        sourceAnchor: expr.sourceAnchor,
+                        op: .ge,
+                        left: beginExpr,
+                        right: Expression.LiteralInt(
+                            sourceAnchor: expr.sourceAnchor,
+                            value: upperBound)),
+                    then: Expression.Call(
+                        sourceAnchor: expr.sourceAnchor,
+                        callee: Expression.Identifier(kOOB)))
                 let boundsCheck1 = try SnapSubcompilerIf().compile(if: boundsCheck0, symbols: symbols!, labelMaker: globalEnvironment.labelMaker)
                 reconnect(boundsCheck1)
                 if let boundsCheck2 = try super.compile(boundsCheck1) {
@@ -478,7 +555,20 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             }
             
             if maybeLimit == nil {
-                let boundsCheck0 = If(condition: Expression.Binary(op: .gt, left: limitExpr, right: Expression.LiteralInt(upperBound)), then: Expression.Call(callee: Expression.Identifier(kOOB)))
+                let boundsCheck0 = If(
+                    sourceAnchor: expr.sourceAnchor,
+                    condition: Expression.Binary(
+                        sourceAnchor: expr.sourceAnchor,
+                        op: .gt,
+                        left: limitExpr,
+                        right: Expression.LiteralInt(
+                            sourceAnchor: expr.sourceAnchor,
+                            value: upperBound)),
+                    then: Expression.Call(
+                        sourceAnchor: expr.sourceAnchor,
+                        callee: Expression.Identifier(
+                            sourceAnchor: expr.sourceAnchor,
+                            identifier: kOOB)))
                 let boundsCheck1 = try SnapSubcompilerIf().compile(if: boundsCheck0, symbols: symbols!, labelMaker: globalEnvironment.labelMaker)
                 reconnect(boundsCheck1)
                 if let boundsCheck2 = try super.compile(boundsCheck1) {
@@ -493,7 +583,15 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         let sliceType = try typeCheck(rexpr: expr)
         let elementSize = globalEnvironment.memoryLayoutStrategy.sizeof(type: sliceType.arrayElementType)
         
-        let arrayBeginExpr = Expression.Bitcast(expr: Expression.Unary(op: .ampersand, expression: expr.subscriptable), targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))
+        let arrayBeginExpr = Expression.Bitcast(
+            sourceAnchor: expr.sourceAnchor,
+            expr: Expression.Unary(
+                sourceAnchor: expr.sourceAnchor,
+                op: .ampersand,
+                expression: expr.subscriptable),
+            targetType: Expression.PrimitiveType(
+                sourceAnchor: expr.sourceAnchor,
+                typ: .arithmeticType(.mutableInt(.u16))))
         
         let baseExpr: Expression
         if let begin = maybeBegin {
@@ -501,31 +599,67 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 baseExpr = arrayBeginExpr
             }
             else {
-                baseExpr = Expression.Binary(op: .plus, left: arrayBeginExpr, right: Expression.LiteralInt(begin * elementSize))
+                baseExpr = Expression.Binary(
+                    sourceAnchor: expr.sourceAnchor,
+                    op: .plus,
+                    left: arrayBeginExpr,
+                    right: Expression.LiteralInt(
+                        sourceAnchor: expr.sourceAnchor,
+                        value: begin * elementSize))
             }
         }
         else {
             if elementSize == 1 {
-                baseExpr = Expression.Binary(op: .plus, left: arrayBeginExpr, right: beginExpr)
+                baseExpr = Expression.Binary(
+                    sourceAnchor: expr.sourceAnchor,
+                    op: .plus,
+                    left: arrayBeginExpr,
+                    right: beginExpr)
             }
             else {
-                baseExpr = Expression.Binary(op: .plus, left: arrayBeginExpr, right: Expression.Binary(op: .star, left: beginExpr, right: Expression.LiteralInt(elementSize)))
+                baseExpr = Expression.Binary(
+                    sourceAnchor: expr.sourceAnchor,
+                    op: .plus,
+                    left: arrayBeginExpr,
+                    right: Expression.Binary(
+                        sourceAnchor: expr.sourceAnchor,
+                        op: .star,
+                        left: beginExpr,
+                        right: Expression.LiteralInt(
+                            sourceAnchor: expr.sourceAnchor,
+                            value: elementSize)))
             }
         }
         
         let countExpr: Expression
         if let begin = maybeBegin, let limit = maybeLimit {
-            countExpr = Expression.LiteralInt(limit - begin)
+            countExpr = Expression.LiteralInt(
+                sourceAnchor: expr.sourceAnchor,
+                value: limit - begin)
         }
         else {
-            countExpr = Expression.Binary(op: .minus, left: limitExpr, right: beginExpr)
+            countExpr = Expression.Binary(
+                sourceAnchor: expr.sourceAnchor,
+                op: .minus,
+                left: limitExpr,
+                right: beginExpr)
         }
         
-        let sliceExpr = Expression.StructInitializer(identifier: Expression.Identifier(kSliceName), arguments: [
-            Expression.StructInitializer.Argument(name: kSliceBase, expr: baseExpr),
-            Expression.StructInitializer.Argument(name: kSliceCount, expr: countExpr)
-        ])
-        let bitcastExpr = Expression.Bitcast(expr: sliceExpr, targetType: Expression.PrimitiveType(sliceType))
+        let sliceExpr = Expression.StructInitializer(
+            sourceAnchor: expr.sourceAnchor,
+            identifier: Expression.Identifier(
+                sourceAnchor: expr.sourceAnchor,
+                identifier: kSliceName),
+            arguments: [
+                Expression.StructInitializer.Argument(name: kSliceBase, expr: baseExpr),
+                Expression.StructInitializer.Argument(name: kSliceCount, expr: countExpr)
+            ])
+        let bitcastExpr = Expression.Bitcast(
+            sourceAnchor: expr.sourceAnchor,
+            expr: sliceExpr,
+            targetType: Expression.PrimitiveType(
+                sourceAnchor: expr.sourceAnchor,
+                typ: sliceType))
         let compiledNode = try rvalue(expr: bitcastExpr)
         children.append(compiledNode)
         
@@ -581,10 +715,31 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         
         // Insert dynamic bounds check
         if options.isBoundsCheckEnabled {
-            let upperBoundExpr = Expression.Get(expr: Expression.Bitcast(expr: expr.subscriptable, targetType: Expression.Identifier(kSliceName)), member: Expression.Identifier(kSliceCount))
+            let upperBoundExpr = Expression.Get(
+                sourceAnchor: expr.sourceAnchor,
+                expr: Expression.Bitcast(
+                    sourceAnchor: expr.sourceAnchor,
+                    expr: expr.subscriptable,
+                    targetType: Expression.Identifier(
+                        sourceAnchor: expr.sourceAnchor,
+                        identifier: kSliceName)),
+                member: Expression.Identifier(
+                    sourceAnchor: expr.sourceAnchor,
+                    identifier: kSliceCount))
             
             if maybeBegin == nil {
-                let boundsCheck0 = If(condition: Expression.Binary(op: .ge, left: beginExpr, right: upperBoundExpr), then: Expression.Call(callee: Expression.Identifier(kOOB)))
+                let boundsCheck0 = If(
+                    sourceAnchor: expr.sourceAnchor,
+                    condition: Expression.Binary(
+                        sourceAnchor: expr.sourceAnchor,
+                        op: .ge,
+                        left: beginExpr,
+                        right: upperBoundExpr),
+                    then: Expression.Call(
+                        sourceAnchor: expr.sourceAnchor,
+                        callee: Expression.Identifier(
+                            sourceAnchor: expr.sourceAnchor,
+                            identifier: kOOB)))
                 let boundsCheck1 = try SnapSubcompilerIf().compile(if: boundsCheck0, symbols: symbols!, labelMaker: globalEnvironment.labelMaker)
                 reconnect(boundsCheck1)
                 if let boundsCheck2 = try super.compile(boundsCheck1) {
@@ -593,7 +748,18 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             }
             
             if maybeLimit == nil {
-                let boundsCheck0 = If(condition: Expression.Binary(op: .gt, left: limitExpr, right: upperBoundExpr), then: Expression.Call(callee: Expression.Identifier(kOOB)))
+                let boundsCheck0 = If(
+                    sourceAnchor: expr.sourceAnchor,
+                    condition: Expression.Binary(
+                        sourceAnchor: expr.sourceAnchor,
+                        op: .gt,
+                        left: limitExpr,
+                        right: upperBoundExpr),
+                    then: Expression.Call(
+                        sourceAnchor: expr.sourceAnchor,
+                        callee: Expression.Identifier(
+                            sourceAnchor: expr.sourceAnchor,
+                            identifier: kOOB)))
                 let boundsCheck1 = try SnapSubcompilerIf().compile(if: boundsCheck0, symbols: symbols!, labelMaker: globalEnvironment.labelMaker)
                 reconnect(boundsCheck1)
                 if let boundsCheck2 = try super.compile(boundsCheck1) {
@@ -605,7 +771,17 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         // Compile an expression to initialize a Slice struct with populated
         // base and count fields. This involves some unsafe, platform-specific
         // bitcasts and assumptions about the memory layout.
-        let arrayBeginExpr = Expression.Get(expr: Expression.Bitcast(expr: expr.subscriptable, targetType: Expression.PrimitiveType(kSliceType)), member: Expression.Identifier(kSliceBase))
+        let arrayBeginExpr = Expression.Get(
+            sourceAnchor: expr.sourceAnchor,
+            expr: Expression.Bitcast(
+                sourceAnchor: expr.sourceAnchor,
+                expr: expr.subscriptable,
+                targetType: Expression.PrimitiveType(
+                    sourceAnchor: expr.sourceAnchor,
+                    typ: kSliceType)),
+            member: Expression.Identifier(
+                sourceAnchor: expr.sourceAnchor,
+                identifier: kSliceBase))
         let sliceType = try typeCheck(rexpr: expr)
         let elementSize = globalEnvironment.memoryLayoutStrategy.sizeof(type: sliceType.arrayElementType)
         
@@ -615,31 +791,67 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 baseExpr = arrayBeginExpr
             }
             else {
-                baseExpr = Expression.Binary(op: .plus, left: arrayBeginExpr, right: Expression.LiteralInt(begin * elementSize))
+                baseExpr = Expression.Binary(
+                    sourceAnchor: expr.sourceAnchor,
+                    op: .plus,
+                    left: arrayBeginExpr,
+                    right: Expression.LiteralInt(
+                        sourceAnchor: expr.sourceAnchor,
+                        value: begin * elementSize))
             }
         }
         else {
             if elementSize == 1 {
-                baseExpr = Expression.Binary(op: .plus, left: arrayBeginExpr, right: beginExpr)
+                baseExpr = Expression.Binary(
+                    sourceAnchor: expr.sourceAnchor,
+                    op: .plus,
+                    left: arrayBeginExpr,
+                    right: beginExpr)
             }
             else {
-                baseExpr = Expression.Binary(op: .plus, left: arrayBeginExpr, right: Expression.Binary(op: .star, left: beginExpr, right: Expression.LiteralInt(elementSize)))
+                baseExpr = Expression.Binary(
+                    sourceAnchor: expr.sourceAnchor,
+                    op: .plus,
+                    left: arrayBeginExpr,
+                    right: Expression.Binary(
+                        sourceAnchor: expr.sourceAnchor,
+                        op: .star,
+                        left: beginExpr,
+                        right: Expression.LiteralInt(
+                            sourceAnchor: expr.sourceAnchor,
+                            value: elementSize)))
             }
         }
         
         let countExpr: Expression
         if let begin = maybeBegin, let limit = maybeLimit {
-            countExpr = Expression.LiteralInt(limit - begin)
+            countExpr = Expression.LiteralInt(
+                sourceAnchor: expr.sourceAnchor,
+                value: limit - begin)
         }
         else {
-            countExpr = Expression.Binary(op: .minus, left: limitExpr, right: beginExpr)
+            countExpr = Expression.Binary(
+                sourceAnchor: expr.sourceAnchor,
+                op: .minus,
+                left: limitExpr,
+                right: beginExpr)
         }
         
-        let sliceExpr = Expression.StructInitializer(identifier: Expression.Identifier(kSliceName), arguments: [
-            Expression.StructInitializer.Argument(name: kSliceBase, expr: baseExpr),
-            Expression.StructInitializer.Argument(name: kSliceCount, expr: countExpr)
-        ])
-        let bitcastExpr = Expression.Bitcast(expr: sliceExpr, targetType: Expression.PrimitiveType(sliceType))
+        let sliceExpr = Expression.StructInitializer(
+            sourceAnchor: expr.sourceAnchor,
+            identifier: Expression.Identifier(
+                sourceAnchor: expr.sourceAnchor,
+                identifier: kSliceName),
+            arguments: [
+                Expression.StructInitializer.Argument(name: kSliceBase, expr: baseExpr),
+                Expression.StructInitializer.Argument(name: kSliceCount, expr: countExpr)
+            ])
+        let bitcastExpr = Expression.Bitcast(
+            sourceAnchor: expr.sourceAnchor,
+            expr: sliceExpr,
+            targetType: Expression.PrimitiveType(
+                sourceAnchor: expr.sourceAnchor,
+                typ: sliceType))
         children.append(try rvalue(expr: bitcastExpr))
         
         return Seq(sourceAnchor: expr.sourceAnchor, children: children)
@@ -653,11 +865,18 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             let temp = nextRegister()
             pushRegister(temp)
             children += [
-                TackInstructionNode(.liu16(temp, symbol.offset))
+                TackInstructionNode(
+                    instruction: .liu16(temp, symbol.offset),
+                    sourceAnchor: sourceAnchor,
+                    symbols: symbols
+                )
             ]
         case .automaticStorage:
             children += [
-                computeAddressOfLocalVariable(sourceAnchor: sourceAnchor, offset: symbol.offset, depth: depth)
+                computeAddressOfLocalVariable(
+                    sourceAnchor: sourceAnchor,
+                    offset: symbol.offset,
+                    depth: depth)
             ]
         }
         return Seq(sourceAnchor: sourceAnchor, children: children)
@@ -676,13 +895,19 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             temp_framePointer = nextRegister()
             
             children += [
-                TackInstructionNode(.load(temp_framePointer, .fp, 0))
+                TackInstructionNode(
+                    instruction: .load(temp_framePointer, .fp, 0),
+                    sourceAnchor: sourceAnchor,
+                    symbols: symbols)
             ]
             
             // Follow the frame pointer `depth' times.
             for _ in 1..<depth {
                 children += [
-                    TackInstructionNode(.load(temp_framePointer, temp_framePointer, 0))
+                    TackInstructionNode(
+                        instruction: .load(temp_framePointer, temp_framePointer, 0),
+                        sourceAnchor: sourceAnchor,
+                        symbols: symbols)
                 ]
             }
         }
@@ -691,11 +916,17 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         
         if offset >= 0 {
             children += [
-                TackInstructionNode(.subi16(temp_result, temp_framePointer, offset))
+                TackInstructionNode(
+                    instruction: .subi16(temp_result, temp_framePointer, offset),
+                    sourceAnchor: sourceAnchor,
+                    symbols: symbols)
             ]
         } else {
             children += [
-                TackInstructionNode(.addi16(temp_result, temp_framePointer, -offset))
+                TackInstructionNode(
+                    instruction: .addi16(temp_result, temp_framePointer, -offset),
+                    sourceAnchor: sourceAnchor,
+                    symbols: symbols)
             ]
         }
         
@@ -730,7 +961,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             let dst = nextRegister()
             pushRegister(dst)
             children += [
-                TackInstructionNode(.addi16(dst, tempStructAddress, symbol.offset))
+                TackInstructionNode(
+                    instruction: .addi16(dst, tempStructAddress, symbol.offset),
+                    sourceAnchor: expr.sourceAnchor,
+                    symbols: symbols)
             ]
             
         case .constPointer(let typ), .pointer(let typ):
@@ -750,7 +984,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                     let dst = nextRegister()
                     pushRegister(dst)
                     children += [
-                        TackInstructionNode(.addi16(dst, tempStructAddress, symbol.offset))
+                        TackInstructionNode(
+                            instruction: .addi16(dst, tempStructAddress, symbol.offset),
+                            sourceAnchor: expr.sourceAnchor,
+                            symbols: symbols)
                     ]
                     
                 default:
@@ -827,16 +1064,28 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         let result: AbstractSyntaxTreeNode
         switch ArithmeticType.compTimeInt(node.value).intClass {
         case .i8:
-            result = TackInstructionNode(.li8(dest, node.value))
+            result = TackInstructionNode(
+                instruction: .li8(dest, node.value),
+                sourceAnchor: node.sourceAnchor,
+                symbols: symbols)
             
         case .u8:
-            result = TackInstructionNode(.liu8(dest, node.value))
+            result = TackInstructionNode(
+                instruction: .liu8(dest, node.value),
+                sourceAnchor: node.sourceAnchor,
+                symbols: symbols)
             
         case .i16:
-            result = TackInstructionNode(.li16(dest, node.value))
+            result = TackInstructionNode(
+                instruction: .li16(dest, node.value),
+                sourceAnchor: node.sourceAnchor,
+                symbols: symbols)
             
         case .u16:
-            result = TackInstructionNode(.liu16(dest, node.value))
+            result = TackInstructionNode(
+                instruction: .liu16(dest, node.value),
+                sourceAnchor: node.sourceAnchor,
+                symbols: symbols)
             
         case .none:
             fatalError("Expected to be able to determine the type of an integer literal at this point: \(node)")
@@ -848,7 +1097,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
     func rvalue(literalBoolean node: Expression.LiteralBool) -> AbstractSyntaxTreeNode {
         let dest = nextRegister()
         pushRegister(dest)
-        let result = TackInstructionNode(.li16(dest, node.value ? 1 : 0))
+        let result = TackInstructionNode(
+            instruction: .li16(dest, node.value ? 1 : 0),
+            sourceAnchor: node.sourceAnchor,
+            symbols: symbols)
         return result
     }
     
@@ -856,7 +1108,9 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         let arrayType = try typeCheck(rexpr: expr)
         let arrayElementType = try typeCheck(rexpr: expr.arrayType).arrayElementType
         if arrayElementType.isPrimitive {
-            let tempArrayId = try makeCompilerTemporary(expr.sourceAnchor, Expression.PrimitiveType(arrayType))
+            let tempArrayId = try makeCompilerTemporary(expr.sourceAnchor, Expression.PrimitiveType(
+                    sourceAnchor: expr.sourceAnchor,
+                    typ: arrayType))
             var children: [AbstractSyntaxTreeNode] = [
                 try lvalue(identifier: tempArrayId)
             ]
@@ -864,7 +1118,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             for i in 0..<expr.elements.count {
                 children += [
                     try rvalue(as: Expression.As(expr: expr.elements[i], targetType: Expression.PrimitiveType(arrayElementType))),
-                    TackInstructionNode(.store(popRegister(), tempArrayAddr, i))
+                    TackInstructionNode(
+                        instruction: .store(popRegister(), tempArrayAddr, i),
+                        sourceAnchor: expr.sourceAnchor,
+                        symbols: symbols)
                 ]
             }
             pushRegister(tempArrayAddr)
@@ -874,10 +1131,16 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             let tempArrayId = try makeCompilerTemporary(expr.sourceAnchor, expr.arrayType)
             var children: [AbstractSyntaxTreeNode] = []
             for i in 0..<expr.elements.count {
-                let slot = Expression.Subscript(subscriptable: tempArrayId,
-                                                argument: Expression.LiteralInt(i))
-                let child =  try rvalue(expr: Expression.Assignment(lexpr: slot,
-                                                                    rexpr: expr.elements[i]))
+                let slot = Expression.Subscript(
+                    sourceAnchor: expr.sourceAnchor,
+                    subscriptable: tempArrayId,
+                    argument: Expression.LiteralInt(
+                        sourceAnchor: expr.sourceAnchor,
+                        value: i))
+                let child =  try rvalue(expr: Expression.Assignment(
+                    sourceAnchor: expr.sourceAnchor,
+                    lexpr: slot,
+                    rexpr: expr.elements[i]))
                 children.append(child)
             }
             registerStack = savedRegisterStack
@@ -889,26 +1152,38 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
     }
     
     func makeCompilerTemporary(_ sourceAnchor: SourceAnchor?, _ type: Expression) throws -> Expression.Identifier {
-        let tempArrayId = Expression.Identifier(sourceAnchor: sourceAnchor, identifier: globalEnvironment.tempNameMaker.next())
-        let tempDecl = VarDeclaration(sourceAnchor: sourceAnchor,
-                                      identifier: tempArrayId,
-                                      explicitType: type,
-                                      expression: nil,
-                                      storage: .automaticStorage,
-                                      isMutable: true,
-                                      visibility: .privateVisibility)
+        let tempArrayId = Expression.Identifier(
+            sourceAnchor: sourceAnchor,
+            identifier: globalEnvironment.tempNameMaker.next())
+        let tempDecl = VarDeclaration(
+            sourceAnchor: sourceAnchor,
+            identifier: tempArrayId,
+            explicitType: type,
+            expression: nil,
+            storage: .automaticStorage,
+            isMutable: true,
+            visibility: .privateVisibility)
         let varDeclCompiler = SnapSubcompilerVarDeclaration(symbols: symbols!, globalEnvironment: globalEnvironment)
         let _ = try varDeclCompiler.compile(tempDecl)
         return tempArrayId
     }
     
     func rvalue(literalString expr: Expression.LiteralString) throws -> AbstractSyntaxTreeNode {
-        let arrayType = Expression.ArrayType(count: Expression.LiteralInt(expr.value.count),
-                                             elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
+        let arrayType = Expression.ArrayType(
+            sourceAnchor: expr.sourceAnchor,
+            count: Expression.LiteralInt(
+                sourceAnchor: expr.sourceAnchor,
+                value: expr.value.count),
+            elementType: Expression.PrimitiveType(
+                sourceAnchor: expr.sourceAnchor,
+                typ: .arithmeticType(.mutableInt(.u8))))
         let tempArrayId = try makeCompilerTemporary(expr.sourceAnchor, arrayType)
         return Seq(sourceAnchor: expr.sourceAnchor, children: [
             try lvalue(identifier: tempArrayId),
-            TackInstructionNode(.ststr(peekRegister(), expr.value))
+            TackInstructionNode(
+                instruction: .ststr(peekRegister(), expr.value),
+                sourceAnchor: expr.sourceAnchor,
+                symbols: symbols)
         ])
     }
     
@@ -924,7 +1199,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             let dest = nextRegister()
             pushRegister(dest)
             children += [
-                TackInstructionNode(.load(dest, addr, 0))
+                TackInstructionNode(
+                    instruction: .load(dest, addr, 0),
+                    sourceAnchor: node.sourceAnchor,
+                    symbols: symbols)
             ]
         }
         
@@ -936,17 +1214,24 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         if case .array = targetType, let literalArray0 = expr.expr as? Expression.LiteralArray {
             let elementType = targetType.arrayElementType
             let elements = literalArray0.elements.map {
-                Expression.As(sourceAnchor: expr.sourceAnchor,
-                              expr: $0,
-                              targetType: Expression.PrimitiveType(elementType))
+                Expression.As(
+                    sourceAnchor: expr.sourceAnchor,
+                    expr: $0,
+                    targetType: Expression.PrimitiveType(
+                        sourceAnchor: expr.sourceAnchor,
+                        typ: elementType))
             }
-            let literalArray1 = Expression.LiteralArray(sourceAnchor: literalArray0.sourceAnchor,
-                                                        arrayType: expr.targetType,
-                                                        elements: elements)
+            let literalArray1 = Expression.LiteralArray(
+                sourceAnchor: literalArray0.sourceAnchor,
+                arrayType: expr.targetType,
+                elements: elements)
             return try rvalue(literalArray: literalArray1)
         }
         else {
-            return try compileAndConvertExpression(rexpr: expr.expr, ltype: targetType, isExplicitCast: true)
+            return try compileAndConvertExpression(
+                rexpr: expr.expr,
+                ltype: targetType,
+                isExplicitCast: true)
         }
     }
     
@@ -960,7 +1245,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
            let structInitializer = getExpr.expr as? Expression.StructInitializer {
             let argument = structInitializer.arguments.first(where: {$0.name == member.identifier})
             let memberExpr = argument!.expr
-            let result = try compileAndConvertExpression(rexpr: memberExpr, ltype: ltype, isExplicitCast: isExplicitCast)
+            let result = try compileAndConvertExpression(
+                rexpr: memberExpr,
+                ltype: ltype,
+                isExplicitCast: isExplicitCast)
             return result
         }
         
@@ -981,7 +1269,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             // Add an instruction to load a register with that known value.
             let dst = nextRegister()
             pushRegister(dst)
-            result = TackInstructionNode(.li16(dst, a ? 1 : 0))
+            result = TackInstructionNode(
+                instruction: .li16(dst, a ? 1 : 0),
+                sourceAnchor: rexpr.sourceAnchor,
+                symbols: symbols)
             
         case (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.mutableInt(.u8))),
              (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.u8))):
@@ -989,7 +1280,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             // Add an instruction to load a register with that known value.
             let dst = nextRegister()
             pushRegister(dst)
-            result = TackInstructionNode(.liu8(dst, a))
+            result = TackInstructionNode(
+                instruction: .liu8(dst, a),
+                sourceAnchor: rexpr.sourceAnchor,
+                symbols: symbols)
             
         case (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.mutableInt(.i8))),
              (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.i8))):
@@ -997,7 +1291,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             // Add an instruction to load a register with that known value.
             let dst = nextRegister()
             pushRegister(dst)
-            result = TackInstructionNode(.li8(dst, a))
+            result = TackInstructionNode(
+                instruction: .li8(dst, a),
+                sourceAnchor: rexpr.sourceAnchor,
+                symbols: symbols)
             
         case (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.mutableInt(.i16))),
              (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.i16))):
@@ -1005,7 +1302,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             // Add an instruction to load a register with that known value.
             let dst = nextRegister()
             pushRegister(dst)
-            result = TackInstructionNode(.li16(dst, a))
+            result = TackInstructionNode(
+                instruction: .li16(dst, a),
+                sourceAnchor: rexpr.sourceAnchor,
+                symbols: symbols)
             
         case (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.mutableInt(.u16))),
              (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.u16))):
@@ -1013,7 +1313,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             // Add an instruction to load a register with that known value.
             let dst = nextRegister()
             pushRegister(dst)
-            result = TackInstructionNode(.liu16(dst, a))
+            result = TackInstructionNode(
+                instruction: .liu16(dst, a),
+                sourceAnchor: rexpr.sourceAnchor,
+                symbols: symbols)
             
         case (.arithmeticType(let src), .arithmeticType(let dst)):
             switch (src.intClass, dst.intClass) {
@@ -1032,7 +1335,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 let dst = nextRegister()
                 pushRegister(dst)
                 children += [
-                    TackInstructionNode(.andi16(dst, src, 0x00ff))
+                    TackInstructionNode(
+                        instruction: .andi16(dst, src, 0x00ff),
+                        sourceAnchor: rexpr.sourceAnchor,
+                        symbols: symbols)
                 ]
                 result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
                 
@@ -1049,7 +1355,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 let dst = nextRegister()
                 pushRegister(dst)
                 children += [
-                    TackInstructionNode(.sxt8(dst, src))
+                    TackInstructionNode(
+                        instruction: .sxt8(dst, src),
+                        sourceAnchor: rexpr.sourceAnchor,
+                        symbols: symbols)
                 ]
                 result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
                 
@@ -1071,11 +1380,24 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             for i in 0..<n {
                 children += [
                     try rvalue(expr: Expression.Assignment(
-                        lexpr: Expression.Subscript(subscriptable: tempArrayId,
-                                                    argument: Expression.LiteralInt(i)),
-                        rexpr: Expression.As(expr: Expression.Subscript(subscriptable: rexpr,
-                                                                        argument: Expression.LiteralInt(i)),
-                                             targetType: Expression.PrimitiveType(b))))
+                        sourceAnchor: rexpr.sourceAnchor,
+                        lexpr: Expression.Subscript(
+                            sourceAnchor: rexpr.sourceAnchor,
+                            subscriptable: tempArrayId,
+                            argument: Expression.LiteralInt(
+                                sourceAnchor: rexpr.sourceAnchor,
+                                value: i)),
+                        rexpr: Expression.As(
+                            sourceAnchor: rexpr.sourceAnchor,
+                            expr: Expression.Subscript(
+                                sourceAnchor: rexpr.sourceAnchor,
+                                subscriptable: rexpr,
+                                argument: Expression.LiteralInt(
+                                    sourceAnchor: rexpr.sourceAnchor,
+                                    value: i)),
+                            targetType: Expression.PrimitiveType(
+                                sourceAnchor: rexpr.sourceAnchor,
+                                typ: b))))
                 ]
             }
             registerStack = savedRegisterStack
@@ -1095,18 +1417,29 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             let dst = popRegister()
             children += [
                 try rvalue(expr: rexpr),
-                TackInstructionNode(.store(popRegister(), dst, kSliceBaseAddressOffset))
+                TackInstructionNode(
+                    instruction: .store(popRegister(), dst, kSliceBaseAddressOffset),
+                    sourceAnchor: rexpr.sourceAnchor,
+                    symbols: symbols)
             ]
             let countReg = nextRegister()
             children += [
-                TackInstructionNode(.liu16(countReg, n)),
-                TackInstructionNode(.store(countReg, dst, kSliceCountOffset))
+                TackInstructionNode(
+                    instruction: .liu16(countReg, n),
+                    sourceAnchor: rexpr.sourceAnchor,
+                    symbols: symbols),
+                TackInstructionNode(
+                    instruction: .store(countReg, dst, kSliceCountOffset),
+                    sourceAnchor: rexpr.sourceAnchor,
+                    symbols: symbols)
             ]
             registerStack = savedRegisterStack
             result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
             
         case (_, .unionType(let typ)):
-            let tempArrayId = try makeCompilerTemporary(rexpr.sourceAnchor, Expression.PrimitiveType(ltype))
+            let tempArrayId = try makeCompilerTemporary(rexpr.sourceAnchor, Expression.PrimitiveType(
+                    sourceAnchor: rexpr.sourceAnchor,
+                    typ: ltype))
             var children: [AbstractSyntaxTreeNode] = [
                 try lvalue(expr: tempArrayId)
             ]
@@ -1115,21 +1448,46 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             let targetType = determineUnionTargetType(typ, rtype)!
             let unionTypeTag = determineUnionTypeTag(typ, targetType)!
             children += [
-                TackInstructionNode(.liu16(tempUnionTypeTag, unionTypeTag)),
-                TackInstructionNode(.store(tempUnionTypeTag, tempUnionAddr, kUnionTypeTagOffset))
+                TackInstructionNode(
+                    instruction: .liu16(tempUnionTypeTag, unionTypeTag),
+                    sourceAnchor: rexpr.sourceAnchor,
+                    symbols: symbols),
+                TackInstructionNode(
+                    instruction: .store(tempUnionTypeTag, tempUnionAddr, kUnionTypeTagOffset),
+                    sourceAnchor: rexpr.sourceAnchor,
+                    symbols: symbols)
             ]
             if targetType.isPrimitive {
                 children += [
-                    try rvalue(as: Expression.As(expr: rexpr, targetType: Expression.PrimitiveType(targetType))),
-                    TackInstructionNode(.store(popRegister(), tempUnionAddr, kUnionPayloadOffset))
+                    try rvalue(as: Expression.As(
+                        sourceAnchor: rexpr.sourceAnchor,
+                        expr: rexpr,
+                        targetType: Expression.PrimitiveType(
+                            sourceAnchor: rexpr.sourceAnchor,
+                            typ: targetType))),
+                    TackInstructionNode(
+                        instruction: .store(popRegister(), tempUnionAddr, kUnionPayloadOffset),
+                        sourceAnchor: rexpr.sourceAnchor,
+                        symbols: symbols)
                 ]
             } else {
                 let size = globalEnvironment.memoryLayoutStrategy.sizeof(type: rtype)
                 let tempUnionPayloadAddress = nextRegister()
                 children += [
-                    TackInstructionNode(.addi16(tempUnionPayloadAddress, tempUnionAddr, kUnionPayloadOffset)),
-                    try rvalue(as: Expression.As(expr: rexpr, targetType: Expression.PrimitiveType(targetType))),
-                    TackInstructionNode(.memcpy(tempUnionPayloadAddress, popRegister(), size))
+                    TackInstructionNode(
+                        instruction: .addi16(tempUnionPayloadAddress, tempUnionAddr, kUnionPayloadOffset),
+                        sourceAnchor: rexpr.sourceAnchor,
+                        symbols: symbols),
+                    try rvalue(as: Expression.As(
+                        sourceAnchor: rexpr.sourceAnchor,
+                        expr: rexpr,
+                        targetType: Expression.PrimitiveType(
+                            sourceAnchor: rexpr.sourceAnchor,
+                            typ: targetType))),
+                    TackInstructionNode(
+                        instruction: .memcpy(tempUnionPayloadAddress, popRegister(), size),
+                        sourceAnchor: rexpr.sourceAnchor,
+                        symbols: symbols)
                 ]
             }
             pushRegister(tempUnionAddr)
@@ -1150,11 +1508,25 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 let tempComparison = nextRegister()
                 let labelSkipPanic = globalEnvironment.labelMaker.next()
                 children += [
-                    TackInstructionNode(.load(tempUnionTag, tempUnionAddr, kUnionTypeTagOffset)),
-                    TackInstructionNode(.subi16(tempComparison, tempUnionTag, unionTypeTag)),
-                    TackInstructionNode(.bz(tempComparison, labelSkipPanic)),
-                    TackInstructionNode(.call(kOOB)),
-                    LabelDeclaration(identifier: labelSkipPanic)
+                    TackInstructionNode(
+                        instruction: .load(tempUnionTag, tempUnionAddr, kUnionTypeTagOffset),
+                        sourceAnchor: rexpr.sourceAnchor,
+                        symbols: symbols),
+                    TackInstructionNode(
+                        instruction: .subi16(tempComparison, tempUnionTag, unionTypeTag),
+                        sourceAnchor: rexpr.sourceAnchor,
+                        symbols: symbols),
+                    TackInstructionNode(
+                        instruction: .bz(tempComparison, labelSkipPanic),
+                        sourceAnchor: rexpr.sourceAnchor,
+                        symbols: symbols),
+                    TackInstructionNode(
+                        instruction: .call(kOOB),
+                        sourceAnchor: rexpr.sourceAnchor,
+                        symbols: symbols),
+                    LabelDeclaration(
+                        sourceAnchor: rexpr.sourceAnchor,
+                        identifier: labelSkipPanic)
                 ]
             }
             
@@ -1163,11 +1535,17 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             
             if ltype.isPrimitive {
                 children += [
-                    TackInstructionNode(.load(dst, tempUnionAddr, kUnionPayloadOffset))
+                    TackInstructionNode(
+                        instruction: .load(dst, tempUnionAddr, kUnionPayloadOffset),
+                        sourceAnchor: rexpr.sourceAnchor,
+                        symbols: symbols)
                 ]
             } else {
                 children += [
-                    TackInstructionNode(.addi16(dst, tempUnionAddr, kUnionPayloadOffset))
+                    TackInstructionNode(
+                        instruction: .addi16(dst, tempUnionAddr, kUnionPayloadOffset),
+                        sourceAnchor: rexpr.sourceAnchor,
+                        symbols: symbols)
                 ]
             }
             
@@ -1179,12 +1557,33 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
              (.pointer(let a), .constTraitType(let b)):
             let structType = a.unwrapStructType()
             let nameOfVtableInstance = "__\(b.name)_\(structType.name)_vtable_instance"
-            result = try rvalue(expr: Expression.StructInitializer(expr: Expression.Identifier(b.nameOfTraitObjectType), arguments: [
-                // Take the pointer to the object and cast as an opaque *void
-                Expression.StructInitializer.Argument(name: "object", expr: Expression.Bitcast(expr: rexpr, targetType: Expression.PointerType(Expression.PrimitiveType(.void)))),
+            result = try rvalue(expr: Expression.StructInitializer(
+                sourceAnchor: rexpr.sourceAnchor,
+                expr: Expression.Identifier(
+                    sourceAnchor: rexpr.sourceAnchor,
+                    identifier: b.nameOfTraitObjectType),
+                arguments: [
+                    // Take the pointer to the object and cast as an opaque *void
+                    Expression.StructInitializer.Argument(
+                        name: "object",
+                        expr: Expression.Bitcast(
+                            sourceAnchor: rexpr.sourceAnchor,
+                            expr: rexpr,
+                            targetType: Expression.PointerType(
+                                sourceAnchor: rexpr.sourceAnchor,
+                                typ: Expression.PrimitiveType(
+                                    sourceAnchor: rexpr.sourceAnchor,
+                                    typ: .void)))),
                 
-                // Attach a pointer to the appropriate vtable instance.
-                Expression.StructInitializer.Argument(name: "vtable", expr: Expression.Unary(op: .ampersand, expression: Expression.Identifier(nameOfVtableInstance)))
+                    // Attach a pointer to the appropriate vtable instance.
+                    Expression.StructInitializer.Argument(
+                        name: "vtable",
+                        expr: Expression.Unary(
+                            sourceAnchor: rexpr.sourceAnchor,
+                            op: .ampersand,
+                            expression: Expression.Identifier(
+                                sourceAnchor: rexpr.sourceAnchor,
+                                identifier: nameOfVtableInstance)))
             ]))
             
         case (.constStructType(let structType), .traitType(let b)),
@@ -1192,14 +1591,36 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
              (.constStructType(let structType), .constTraitType(let b)),
              (.structType(let structType), .constTraitType(let b)):
             let nameOfVtableInstance = "__\(b.name)_\(structType.name)_vtable_instance"
-            let objectPointer = Expression.Unary(op: .ampersand, expression: rexpr)
-            result = try rvalue(expr: Expression.StructInitializer(identifier: Expression.Identifier(b.nameOfTraitObjectType), arguments: [
-                // Take the pointer to the object and cast as an opaque *void
-                Expression.StructInitializer.Argument(name: "object", expr: Expression.Bitcast(expr: objectPointer, targetType: Expression.PointerType(Expression.PrimitiveType(.void)))),
+            let objectPointer = Expression.Unary(
+                sourceAnchor: rexpr.sourceAnchor,
+                op: .ampersand,
+                expression: rexpr)
+            result = try rvalue(expr: Expression.StructInitializer(
+                sourceAnchor: rexpr.sourceAnchor,
+                identifier: Expression.Identifier(
+                    sourceAnchor: rexpr.sourceAnchor,
+                    identifier: b.nameOfTraitObjectType),
+                arguments: [
+                    // Take the pointer to the object and cast as an opaque *void
+                    Expression.StructInitializer.Argument(name: "object", expr: Expression.Bitcast(
+                            sourceAnchor: rexpr.sourceAnchor,
+                            expr: objectPointer,
+                            targetType: Expression.PointerType(
+                                sourceAnchor: rexpr.sourceAnchor,
+                                typ: Expression.PrimitiveType(
+                                    sourceAnchor: rexpr.sourceAnchor,
+                                    typ: .void)))),
                 
-                // Attach a pointer to the appropriate vtable instance.
-                Expression.StructInitializer.Argument(name: "vtable", expr: Expression.Unary(op: .ampersand, expression: Expression.Identifier(nameOfVtableInstance)))
-            ]))
+                    // Attach a pointer to the appropriate vtable instance.
+                    Expression.StructInitializer.Argument(
+                        name: "vtable",
+                        expr: Expression.Unary(
+                            sourceAnchor: rexpr.sourceAnchor,
+                            op: .ampersand,
+                            expression: Expression.Identifier(
+                                sourceAnchor: rexpr.sourceAnchor,
+                                identifier: nameOfVtableInstance)))
+                ]))
             
         case (_, .constPointer(let b)),
              (_, .pointer(let b)):
@@ -1290,7 +1711,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             case .function(let typ):
                 let label = typ.mangledName ?? typ.name!
                 let dst = nextRegister()
-                result = TackInstructionNode(.la(dst, label))
+                result = TackInstructionNode(
+                    instruction: .la(dst, label),
+                    sourceAnchor: expr.sourceAnchor,
+                    symbols: symbols)
                 pushRegister(dst)
             default:
                 result = try lvalue(expr: expr.child)
@@ -1307,7 +1731,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 let c = nextRegister()
                 pushRegister(c)
                 instructions += [
-                    TackInstructionNode(.not(a, b))
+                    TackInstructionNode(
+                        instruction: .not(a, b),
+                        sourceAnchor: expr.sourceAnchor,
+                        symbols: symbols)
                 ]
                 
             case (.arithmeticType(.mutableInt(.u8)), .minus),
@@ -1316,8 +1743,14 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 let c = nextRegister()
                 pushRegister(c)
                 instructions += [
-                    TackInstructionNode(.liu8(a, 0)),
-                    TackInstructionNode(.sub8(c, a, b))
+                    TackInstructionNode(
+                        instruction: .liu8(a, 0),
+                        sourceAnchor: expr.sourceAnchor,
+                        symbols: symbols),
+                    TackInstructionNode(
+                        instruction: .sub8(c, a, b),
+                        sourceAnchor: expr.sourceAnchor,
+                        symbols: symbols)
                 ]
                 
             case (.arithmeticType(.mutableInt(.u16)), .minus),
@@ -1326,8 +1759,14 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 let c = nextRegister()
                 pushRegister(c)
                 instructions += [
-                    TackInstructionNode(.liu16(a, 0)),
-                    TackInstructionNode(.sub16(c, a, b))
+                    TackInstructionNode(
+                        instruction: .liu16(a, 0),
+                        sourceAnchor: expr.sourceAnchor,
+                        symbols: symbols),
+                    TackInstructionNode(
+                        instruction: .sub16(c, a, b),
+                        sourceAnchor: expr.sourceAnchor,
+                        symbols: symbols)
                 ]
                 
             case (.arithmeticType(.mutableInt(.u8)), .tilde),
@@ -1335,7 +1774,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 let c = nextRegister()
                 pushRegister(c)
                 instructions += [
-                    TackInstructionNode(.neg8(c, b))
+                    TackInstructionNode(
+                        instruction: .neg8(c, b),
+                        sourceAnchor: expr.sourceAnchor,
+                        symbols: symbols)
                 ]
                 
             case (.arithmeticType(.mutableInt(.u16)), .tilde),
@@ -1343,7 +1785,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 let c = nextRegister()
                 pushRegister(c)
                 instructions += [
-                    TackInstructionNode(.neg16(c, b))
+                    TackInstructionNode(
+                        instruction: .neg16(c, b),
+                        sourceAnchor: expr.sourceAnchor,
+                        symbols: symbols)
                 ]
                 
             default:
@@ -1398,7 +1843,16 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                     a,
                     b)
                 
-                return Seq(sourceAnchor: binary.sourceAnchor, children: [right, left, TackInstructionNode(ins)])
+                return Seq(
+                    sourceAnchor: binary.sourceAnchor,
+                    children: [
+                        right,
+                        left,
+                        TackInstructionNode(
+                            instruction: ins,
+                            sourceAnchor: binary.sourceAnchor,
+                            symbols: symbols)
+                    ])
             }
             
         default:
@@ -1639,7 +2093,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             fatalError("Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(binary)")
         }
         
-        return TackInstructionNode(ins)
+        return TackInstructionNode(
+            instruction: ins,
+            sourceAnchor: binary.sourceAnchor,
+            symbols: symbols)
     }
     
     func compileBooleanBinaryExpression(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> AbstractSyntaxTreeNode {
@@ -1657,7 +2114,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             let b = popRegister()
             let c = nextRegister()
             pushRegister(c)
-            let op = TackInstructionNode(.eq16(c, a, b))
+            let op = TackInstructionNode(
+                instruction: .eq16(c, a, b),
+                sourceAnchor: binary.sourceAnchor,
+                symbols: symbols)
             return Seq(sourceAnchor: binary.sourceAnchor, children: [right, left, op])
             
         case .ne:
@@ -1667,7 +2127,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             let b = popRegister()
             let c = nextRegister()
             pushRegister(c)
-            let op = TackInstructionNode(.ne16(c, a, b))
+            let op = TackInstructionNode(
+                instruction: .ne16(c, a, b),
+                sourceAnchor: binary.sourceAnchor,
+                symbols: symbols)
             return Seq(sourceAnchor: binary.sourceAnchor, children: [right, left, op])
             
         case .doubleAmpersand:
@@ -1708,7 +2171,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         let dst = nextRegister()
         pushRegister(dst)
         
-        return TackInstructionNode(.li16(dst, value))
+        return TackInstructionNode(
+            instruction: .li16(dst, value),
+            sourceAnchor: binary.sourceAnchor,
+            symbols: symbols)
     }
     
     func logicalAnd(_ binary: Expression.Binary) throws -> AbstractSyntaxTreeNode {
@@ -1718,19 +2184,41 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         instructions.append(try compileAndConvertExpression(rexpr: binary.left, ltype: .bool(.mutableBool), isExplicitCast: false))
         let a = popRegister()
         instructions += [
-            TackInstructionNode(.bz(a, labelFalse)),
-            try compileAndConvertExpression(rexpr: binary.right, ltype: .bool(.mutableBool), isExplicitCast: false)
+            TackInstructionNode(
+                instruction: .bz(a, labelFalse),
+                sourceAnchor: binary.sourceAnchor,
+                symbols: symbols),
+            try compileAndConvertExpression(
+                rexpr: binary.right,
+                ltype: .bool(.mutableBool),
+                isExplicitCast: false)
         ]
         let b = popRegister()
         let c = nextRegister()
         pushRegister(c)
         instructions += [
-            TackInstructionNode(.bz(b, labelFalse)),
-            TackInstructionNode(.li16(c, 1)),
-            TackInstructionNode(.jmp(labelTail)),
-            LabelDeclaration(identifier: labelFalse),
-            TackInstructionNode(.li16(c, 0)),
-            LabelDeclaration(identifier: labelTail)
+            TackInstructionNode(
+                instruction: .bz(b, labelFalse),
+                sourceAnchor: binary.sourceAnchor,
+                symbols: symbols),
+            TackInstructionNode(
+                instruction: .li16(c, 1),
+                sourceAnchor: binary.sourceAnchor,
+                symbols: symbols),
+            TackInstructionNode(
+                instruction: .jmp(labelTail),
+                sourceAnchor: binary.sourceAnchor,
+                symbols: symbols),
+            LabelDeclaration(
+                sourceAnchor: binary.sourceAnchor,
+                identifier: labelFalse),
+            TackInstructionNode(
+                instruction: .li16(c, 0),
+                sourceAnchor: binary.sourceAnchor,
+                symbols: symbols),
+            LabelDeclaration(
+                sourceAnchor: binary.sourceAnchor,
+                identifier: labelTail)
         ]
         return Seq(sourceAnchor: binary.sourceAnchor, children: instructions)
     }
@@ -1742,19 +2230,41 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         instructions.append(try compileAndConvertExpression(rexpr: binary.left, ltype: .bool(.mutableBool), isExplicitCast: false))
         let a = popRegister()
         instructions += [
-            TackInstructionNode(.bnz(a, labelTrue)),
-            try compileAndConvertExpression(rexpr: binary.right, ltype: .bool(.mutableBool), isExplicitCast: false)
+            TackInstructionNode(
+                instruction: .bnz(a, labelTrue),
+                sourceAnchor: binary.sourceAnchor,
+                symbols: symbols),
+            try compileAndConvertExpression(
+                rexpr: binary.right,
+                ltype: .bool(.mutableBool),
+                isExplicitCast: false)
         ]
         let b = popRegister()
         let c = nextRegister()
         pushRegister(c)
         instructions += [
-            TackInstructionNode(.bnz(b, labelTrue)),
-            TackInstructionNode(.li16(c, 0)),
-            TackInstructionNode(.jmp(labelTail)),
-            LabelDeclaration(identifier: labelTrue),
-            TackInstructionNode(.li16(c, 1)),
-            LabelDeclaration(identifier: labelTail)
+            TackInstructionNode(
+                instruction: .bnz(b, labelTrue),
+                sourceAnchor: binary.sourceAnchor,
+                symbols: symbols),
+            TackInstructionNode(
+                instruction: .li16(c, 0),
+                sourceAnchor: binary.sourceAnchor,
+                symbols: symbols),
+            TackInstructionNode(
+                instruction: .jmp(labelTail),
+                sourceAnchor: binary.sourceAnchor,
+                symbols: symbols),
+            LabelDeclaration(
+                sourceAnchor: binary.sourceAnchor,
+                identifier: labelTrue),
+            TackInstructionNode(
+                instruction: .li16(c, 1),
+                sourceAnchor: binary.sourceAnchor,
+                symbols: symbols),
+            LabelDeclaration(
+                sourceAnchor: binary.sourceAnchor,
+                identifier: labelTail)
         ]
         return Seq(sourceAnchor: binary.sourceAnchor, children: instructions)
     }
@@ -1765,7 +2275,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         switch exprType {
         case .bool(.compTimeBool(let val)):
             let tempResult = nextRegister()
-            let result = TackInstructionNode(.li16(tempResult, val ? 1 : 0))
+            let result = TackInstructionNode(
+                instruction: .li16(tempResult, val ? 1 : 0),
+                sourceAnchor: expr.sourceAnchor,
+                symbols: symbols)
             pushRegister(tempResult)
             return result
             
@@ -1788,7 +2301,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         let typeTag: Int! = determineUnionTypeTag(typ, testType)
         let tempTestTag = nextRegister()
         children += [
-            TackInstructionNode(.li16(tempTestTag, typeTag))
+            TackInstructionNode(
+                instruction: .li16(tempTestTag, typeTag),
+                sourceAnchor: expr.sourceAnchor,
+                symbols: symbols)
         ]
         
         // Get the address of the union in memory.
@@ -1800,13 +2316,19 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         // Read the union type tag in memory.
         let tempActualTag = nextRegister()
         children += [
-            TackInstructionNode(.load(tempActualTag, tempUnionAddr, 0))
+            TackInstructionNode(
+                instruction: .load(tempActualTag, tempUnionAddr, 0),
+                sourceAnchor: expr.sourceAnchor,
+                symbols: symbols)
         ]
         
         // Compare the union's actual type tag against the tag of the test type.
         let tempResult = nextRegister()
         children += [
-            TackInstructionNode(.eq16(tempResult, tempActualTag, tempTestTag))
+            TackInstructionNode(
+                instruction: .eq16(tempResult, tempActualTag, tempTestTag),
+                sourceAnchor: expr.sourceAnchor,
+                symbols: symbols)
         ]
         
         pushRegister(tempResult)
@@ -1888,7 +2410,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             result = Seq(sourceAnchor: expr.sourceAnchor, children: [
                 lvalueProc,
                 rvalueProc,
-                TackInstructionNode(.store(src, dst, 0))
+                TackInstructionNode(
+                    instruction: .store(src, dst, 0),
+                    sourceAnchor: expr.sourceAnchor,
+                    symbols: symbols)
             ])
         } else if size == 0 {
             result = Seq(sourceAnchor: expr.sourceAnchor, children: [
@@ -1901,9 +2426,15 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                                        member: Expression.Identifier($0.name))
                 let assig: Expression.Assignment
                 if expr is Expression.InitialAssignment {
-                    assig = Expression.InitialAssignment(lexpr: g, rexpr: $0.expr)
+                    assig = Expression.InitialAssignment(
+                        sourceAnchor: expr.sourceAnchor,
+                        lexpr: g,
+                        rexpr: $0.expr)
                 } else {
-                    assig = Expression.Assignment(lexpr: g, rexpr: $0.expr)
+                    assig = Expression.Assignment(
+                        sourceAnchor: expr.sourceAnchor,
+                        lexpr: g,
+                        rexpr: $0.expr)
                 }
                 return assig
             }
@@ -1921,7 +2452,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             result = Seq(sourceAnchor: expr.sourceAnchor, children: [
                 lvalueProc,
                 rvalueProc,
-                TackInstructionNode(.memcpy(dst, src, size))
+                TackInstructionNode(
+                    instruction: .memcpy(dst, src, size),
+                    sourceAnchor: expr.sourceAnchor,
+                    symbols: symbols)
             ])
         }
         
@@ -1940,7 +2474,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             let dest = nextRegister()
             pushRegister(dest)
             children += [
-                TackInstructionNode(.load(dest, addr, 0))
+                TackInstructionNode(
+                    instruction: .load(dest, addr, 0),
+                    sourceAnchor: expr.sourceAnchor,
+                    symbols: symbols)
             ]
         }
         
@@ -1971,7 +2508,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             let countReg = nextRegister()
             pushRegister(countReg)
             children += [
-                TackInstructionNode(.liu16(countReg, count!))
+                TackInstructionNode(
+                    instruction: .liu16(countReg, count!),
+                    sourceAnchor: expr.sourceAnchor,
+                    symbols: symbols)
             ]
             
         case .constDynamicArray, .dynamicArray:
@@ -1983,7 +2523,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             let countReg = nextRegister()
             pushRegister(countReg)
             children += [
-                TackInstructionNode(.load(countReg, sliceAddr, kSliceCountOffset))
+                TackInstructionNode(
+                    instruction: .load(countReg, sliceAddr, kSliceCountOffset),
+                    sourceAnchor: expr.sourceAnchor,
+                    symbols: symbols)
             ]
         
         case .constStructType(let typ), .structType(let typ):
@@ -1998,7 +2541,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 let dst = nextRegister()
                 pushRegister(dst)
                 children += [
-                    TackInstructionNode(.load(dst, tempStructAddress, symbol.offset))
+                    TackInstructionNode(
+                        instruction: .load(dst, tempStructAddress, symbol.offset),
+                        sourceAnchor: expr.sourceAnchor,
+                        symbols: symbols)
                 ]
             } else {
                 children += [
@@ -2020,7 +2566,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                     let pointeeValue = nextRegister()
                     pushRegister(pointeeValue)
                     children += [
-                        TackInstructionNode(.load(pointeeValue, pointerValue, 0))
+                        TackInstructionNode(
+                            instruction: .load(pointeeValue, pointerValue, 0),
+                            sourceAnchor: expr.sourceAnchor,
+                            symbols: symbols)
                     ]
                 }
             } else {
@@ -2030,7 +2579,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                     let countReg = nextRegister()
                     pushRegister(countReg)
                     children += [
-                        TackInstructionNode(.liu16(countReg, count!))
+                        TackInstructionNode(
+                            instruction: .liu16(countReg, count!),
+                            sourceAnchor: expr.sourceAnchor,
+                            symbols: symbols)
                     ]
                     
                 case .constDynamicArray, .dynamicArray:
@@ -2042,7 +2594,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                     let countReg = nextRegister()
                     pushRegister(countReg)
                     children += [
-                        TackInstructionNode(.load(countReg, sliceAddr, kSliceCountOffset))
+                        TackInstructionNode(
+                            instruction: .load(countReg, sliceAddr, kSliceCountOffset),
+                            sourceAnchor: expr.sourceAnchor,
+                            symbols: symbols)
                     ]
                     
                 case .constStructType(let b), .structType(let b):
@@ -2057,7 +2612,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                         let dst = nextRegister()
                         pushRegister(dst)
                         children += [
-                            TackInstructionNode(.load(dst, structAddr, symbol.offset))
+                            TackInstructionNode(
+                                instruction: .load(dst, structAddr, symbol.offset),
+                                sourceAnchor: expr.sourceAnchor,
+                                symbols: symbols)
                         ]
                     } else {
                         children += [
@@ -2080,11 +2638,23 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
     func rvalue(structInitializer expr: Expression.StructInitializer) throws -> AbstractSyntaxTreeNode {
         let resultType = try typeCheck(rexpr: expr)
         let savedRegisterStack = registerStack
-        let tempArrayId = try makeCompilerTemporary(expr.sourceAnchor, Expression.PrimitiveType(resultType))
+        let tempArrayId = try makeCompilerTemporary(
+            expr.sourceAnchor,
+            Expression.PrimitiveType(
+                sourceAnchor: expr.sourceAnchor,
+                typ: resultType))
         var children: [AbstractSyntaxTreeNode] = []
         for arg in expr.arguments {
-            let slot = Expression.Get(expr: tempArrayId, member: Expression.Identifier(arg.name))
-            let child =  try rvalue(expr: Expression.Assignment(lexpr: slot, rexpr: arg.expr))
+            let slot = Expression.Get(
+                sourceAnchor: expr.sourceAnchor,
+                expr: tempArrayId,
+                member: Expression.Identifier(
+                    sourceAnchor: expr.sourceAnchor,
+                    identifier: arg.name))
+            let child =  try rvalue(expr: Expression.Assignment(
+                sourceAnchor: expr.sourceAnchor,
+                lexpr: slot,
+                rexpr: arg.expr))
             children.append(child)
         }
         registerStack = savedRegisterStack
@@ -2142,7 +2712,11 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         // Allocate a temporary to hold the function call return value.
         var tempRetId: Expression.Identifier! = nil
         if typ.returnType != .void {
-            tempRetId = try makeCompilerTemporary(expr.sourceAnchor, Expression.PrimitiveType(typ.returnType))
+            tempRetId = try makeCompilerTemporary(
+                expr.sourceAnchor,
+                Expression.PrimitiveType(
+                    sourceAnchor: expr.sourceAnchor,
+                    typ: typ.returnType))
         }
         
         let parent = symbols
@@ -2160,7 +2734,12 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             let argType = typ.arguments[i]
             let argExpr = expr.arguments[i]
             children += [
-                try rvalue(expr: Expression.As(expr: argExpr, targetType: Expression.PrimitiveType(argType)))
+                try rvalue(expr: Expression.As(
+                    sourceAnchor: expr.sourceAnchor,
+                    expr: argExpr,
+                    targetType: Expression.PrimitiveType(
+                        sourceAnchor: expr.sourceAnchor,
+                        typ: argType)))
             ]
             tempArgs.append(popRegister())
         }
@@ -2171,7 +2750,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         if returnTypeSize > 0 {
             tempReturnValueAddr = nextRegister()
             children += [
-                TackInstructionNode(.alloca(tempReturnValueAddr, returnTypeSize))
+                TackInstructionNode(
+                    instruction: .alloca(tempReturnValueAddr, returnTypeSize),
+                    sourceAnchor: expr.sourceAnchor,
+                    symbols: symbols)
             ]
         }
         
@@ -2183,15 +2765,24 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             let dst = nextRegister()
             if argTypeSize > 0 {
                 children += [
-                    TackInstructionNode(.alloca(dst, argTypeSize))
+                    TackInstructionNode(
+                        instruction: .alloca(dst, argTypeSize),
+                        sourceAnchor: expr.sourceAnchor,
+                        symbols: symbols)
                 ]
                 if argType.isPrimitive {
                     children += [
-                        TackInstructionNode(.store(tempArg, dst, 0))
+                        TackInstructionNode(
+                            instruction: .store(tempArg, dst, 0),
+                            sourceAnchor: expr.sourceAnchor,
+                            symbols: symbols)
                     ]
                 } else {
                     children += [
-                        TackInstructionNode(.memcpy(dst, tempArg, argTypeSize))
+                        TackInstructionNode(
+                            instruction: .memcpy(dst, tempArg, argTypeSize),
+                            sourceAnchor: expr.sourceAnchor,
+                            symbols: symbols)
                     ]
                 }
             }
@@ -2201,13 +2792,19 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         switch calleeType {
         case .function:
             children += [
-                TackInstructionNode(.call(typ.mangledName!))
+                TackInstructionNode(
+                    instruction: .call(typ.mangledName!),
+                    sourceAnchor: expr.sourceAnchor,
+                    symbols: symbols)
             ]
             
         case .pointer, .constPointer:
             children += [
                 try rvalue(expr: expr.callee),
-                TackInstructionNode(.callptr(popRegister()))
+                TackInstructionNode(
+                    instruction: .callptr(popRegister()),
+                    sourceAnchor: expr.sourceAnchor,
+                    symbols: symbols)
             ]
             
         default:
@@ -2219,7 +2816,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         if returnTypeSize > 0 {
             children += [
                 try lvalue(identifier: tempRetId!),
-                TackInstructionNode(.memcpy(popRegister(), tempReturnValueAddr, returnTypeSize))
+                TackInstructionNode(
+                    instruction: .memcpy(popRegister(), tempReturnValueAddr, returnTypeSize),
+                    sourceAnchor: expr.sourceAnchor,
+                    symbols: symbols)
             ]
         }
         
@@ -2229,7 +2829,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         }
         if argPackSize + returnTypeSize > 0 {
             children += [
-                TackInstructionNode(.free(argPackSize + returnTypeSize))
+                TackInstructionNode(
+                    instruction: .free(argPackSize + returnTypeSize),
+                    sourceAnchor: expr.sourceAnchor,
+                    symbols: symbols)
             ]
         }
         
@@ -2270,12 +2873,15 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             registerStack.removeLast()
             return Seq(sourceAnchor: expr.sourceAnchor, children: [
                 assign,
-                try rvalue(call: Expression.Call(sourceAnchor: expr.sourceAnchor,
-                                                 callee: Expression.Get(sourceAnchor: expr.sourceAnchor,
-                                                                        expr: tempSelf,
-                                                                        member: match.getExpr.member),
-                                                 arguments: [tempSelf] + expr.arguments),
-                           typ: match.fnType)
+                try rvalue(
+                    call: Expression.Call(
+                        sourceAnchor: expr.sourceAnchor,
+                        callee: Expression.Get(
+                            sourceAnchor: expr.sourceAnchor,
+                            expr: tempSelf,
+                            member: match.getExpr.member),
+                        arguments: [tempSelf] + expr.arguments),
+                    typ: match.fnType)
             ])
         }
         
@@ -2290,7 +2896,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         let size = globalEnvironment.memoryLayoutStrategy.sizeof(type: targetType)
         let dest = nextRegister()
         pushRegister(dest)
-        let result = TackInstructionNode(.liu16(dest, size))
+        let result = TackInstructionNode(
+            instruction: .liu16(dest, size),
+            sourceAnchor: expr.sourceAnchor,
+            symbols: symbols)
         return result
     }
     
@@ -2309,7 +2918,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         
         let dst = nextRegister()
         pushRegister(dst)
-        let result = TackInstructionNode(.la(dst, mangledName))
+        let result = TackInstructionNode(
+            instruction: .la(dst, mangledName),
+            sourceAnchor: expr.sourceAnchor,
+            symbols: symbols)
         return result
     }
 }

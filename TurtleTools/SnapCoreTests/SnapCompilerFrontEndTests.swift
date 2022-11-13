@@ -455,19 +455,32 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     // with a new stack frame. In many cases, these variables are allocated in
     // the same stack frame, or in the next slot of the static storage area.
     func test_EndToEndIntegration_BlocksAreNotStackFrames_0() throws {
-        let debugger = try run(program: """
+        let opts = Options(isVerboseLogging: true)
+        let debugger = try run(options: opts, program: """
             var a = 0xaa
             {
                 var b = 0xbb
                 {
                     var c = 0xcc
+                    asm("BREAK")
                 }
             }
             """)
         
-        XCTAssertEqual(debugger.vm.load(address: Word(SnapCompilerMetrics.kStaticStorageStartAddress+0)), 0xaa) // var a
-        XCTAssertEqual(debugger.vm.load(address: Word(SnapCompilerMetrics.kStaticStorageStartAddress+1)), 0xbb) // var b
-        XCTAssertEqual(debugger.vm.load(address: Word(SnapCompilerMetrics.kStaticStorageStartAddress+2)), 0xcc) // var c
+        let a = try debugger.symbols?.resolve(identifier: "a")
+        XCTAssertEqual(a?.storage, .staticStorage)
+        XCTAssertEqual(a?.offset, SnapCompilerMetrics.kStaticStorageStartAddress+0)
+        XCTAssertEqual(debugger.loadSymbolU8("a"), 0xaa)
+        
+        let b = try debugger.symbols?.resolve(identifier: "b")
+        XCTAssertEqual(b?.storage, .staticStorage)
+        XCTAssertEqual(b?.offset, SnapCompilerMetrics.kStaticStorageStartAddress+1)
+        XCTAssertEqual(debugger.loadSymbolU8("b"), 0xbb)
+        
+        let c = try debugger.symbols?.resolve(identifier: "c")
+        XCTAssertEqual(c?.storage, .staticStorage)
+        XCTAssertEqual(c?.offset, SnapCompilerMetrics.kStaticStorageStartAddress+2)
+        XCTAssertEqual(debugger.loadSymbolU8("c"), 0xcc)
     }
 
     // Local variables declared in a local scope are not necessarily associated
@@ -482,15 +495,27 @@ final class SnapCompilerFrontEndTests: XCTestCase {
                     {
                         {
                             var c = b
+                            asm("BREAK")
                         }
                     }
                 }
             }
             """)
-
-        XCTAssertEqual(debugger.vm.load(address: Word(SnapCompilerMetrics.kStaticStorageStartAddress+0)), 0xaa) // var a
-        XCTAssertEqual(debugger.vm.load(address: Word(SnapCompilerMetrics.kStaticStorageStartAddress+1)), 0xaa) // var b
-        XCTAssertEqual(debugger.vm.load(address: Word(SnapCompilerMetrics.kStaticStorageStartAddress+2)), 0xaa) // var c
+        
+        let a = try debugger.symbols?.resolve(identifier: "a")
+        XCTAssertEqual(a?.storage, .staticStorage)
+        XCTAssertEqual(a?.offset, SnapCompilerMetrics.kStaticStorageStartAddress+0)
+        XCTAssertEqual(debugger.loadSymbolU8("a"), 0xaa)
+        
+        let b = try debugger.symbols?.resolve(identifier: "b")
+        XCTAssertEqual(b?.storage, .staticStorage)
+        XCTAssertEqual(b?.offset, SnapCompilerMetrics.kStaticStorageStartAddress+1)
+        XCTAssertEqual(debugger.loadSymbolU8("b"), 0xaa)
+        
+        let c = try debugger.symbols?.resolve(identifier: "c")
+        XCTAssertEqual(c?.storage, .staticStorage)
+        XCTAssertEqual(c?.offset, SnapCompilerMetrics.kStaticStorageStartAddress+2)
+        XCTAssertEqual(debugger.loadSymbolU8("c"), 0xaa)
     }
 
     func test_EndToEndIntegration_StoreLocalVariableDefinedSeveralScopesUp_StackFramesNotEqualToScopes() throws {

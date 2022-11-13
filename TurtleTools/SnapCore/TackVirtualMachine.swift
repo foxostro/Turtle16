@@ -36,12 +36,16 @@ public class TackVirtualMachine: NSObject {
     public var onSerialOutput: (Word) -> Void = {_ in}
     
     public var symbols: SymbolTable? {
-        if pc < program.symbols.count {
-            return program.symbols[Int(pc)]
+        var result: SymbolTable? = nil
+        var i = Int(pc)
+        while i >= 0 && result == nil {
+            if i < program.symbols.count {
+                result = program.symbols[i]
+            }
+            i = i - 1
+            
         }
-        else {
-            return nil
-        }
+        return result
     }
     
     public init(_ program: TackProgram) {

@@ -163,7 +163,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         vm.onSerialOutput = options.onSerialOutput
 
         let debugger = TackDebugger(vm, memoryLayoutStrategy)
-        debugger.symbols = compiler.symbolsOfTopLevelScope
+        debugger.symbolsOfTopLevelScope = compiler.symbolsOfTopLevelScope
 
         return debugger
     }
@@ -421,15 +421,34 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         XCTAssertEqual(debugger.loadSymbolU16("a"), 0xaa)
     }
 
-    func test_EndToEndIntegration_StaticVarInAFunctionContextIsStoredInStaticDataArea() throws {
+    func test_EndToEndIntegration_StaticVarInAFunctionContextIsGivenStaticStorage() throws {
         let debugger = try run(program: """
             func foo() {
                 static var a: u16 = 0xaa
+                asm("BREAK")
             }
             foo()
             """)
-        let word = debugger.vm.load(address: Word(SnapCompilerMetrics.kStaticStorageStartAddress))
-        XCTAssertEqual(word, 0xaa) // var a
+        let symbol = try debugger.symbols?.resolve(identifier: "a")
+        XCTAssertEqual(symbol?.storage, .staticStorage)
+        XCTAssertEqual(symbol?.offset, SnapCompilerMetrics.kStaticStorageStartAddress)
+        XCTAssertEqual(debugger.loadSymbolU16("a"), 0xaa) // var a
+        try debugger.vm.run()
+    }
+    
+    func test_EndToEndIntegration_VarInFunctionIsGivenAutomaticStackStorageByDefault() throws {
+        let debugger = try run(program: """
+            func foo() {
+                var a: u16 = 0xaa
+                asm("BREAK")
+            }
+            foo()
+            """)
+        let symbol = try debugger.symbols?.resolve(identifier: "a")
+        XCTAssertEqual(symbol?.storage, .automaticStorage)
+        XCTAssertEqual(symbol?.offset, 1)
+        XCTAssertEqual(debugger.loadSymbolU16("a"), 0xaa) // var a
+        try debugger.vm.run()
     }
 
     // Local variables declared in a local scope are not necessarily associated
@@ -469,7 +488,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             }
             """)
 
-        // TODO: The debugger should have a method to lookup a symbol table given a line number in the source file. Use this to look up the symbols on line 7 instead of assuming memory layouts here. Make a similar change in other unit tests which access memory at hard coded symbol addresses.
         XCTAssertEqual(debugger.vm.load(address: Word(SnapCompilerMetrics.kStaticStorageStartAddress+0)), 0xaa) // var a
         XCTAssertEqual(debugger.vm.load(address: Word(SnapCompilerMetrics.kStaticStorageStartAddress+1)), 0xaa) // var b
         XCTAssertEqual(debugger.vm.load(address: Word(SnapCompilerMetrics.kStaticStorageStartAddress+2)), 0xaa) // var c

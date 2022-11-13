@@ -35,6 +35,15 @@ public class TackVirtualMachine: NSObject {
     private var breakPoints: [Bool]
     public var onSerialOutput: (Word) -> Void = {_ in}
     
+    public var symbols: SymbolTable? {
+        if pc < program.symbols.count {
+            return program.symbols[Int(pc)]
+        }
+        else {
+            return nil
+        }
+    }
+    
     public init(_ program: TackProgram) {
         self.program = program
         breakPoints = Array<Bool>(repeating: false, count: program.instructions.count)
@@ -848,7 +857,9 @@ public class TackVirtualMachine: NSObject {
             hlt()
         
         case "BREAK":
-            breakPoints[Int(nextPc)] = true
+            if nextPc < breakPoints.count {
+                breakPoints[Int(nextPc)] = true
+            }
             
         default:
             throw TackVirtualMachineError.inlineAssemblyNotSupported

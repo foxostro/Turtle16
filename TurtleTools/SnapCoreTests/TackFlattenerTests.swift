@@ -74,10 +74,15 @@ final class TackFlattenerTests: XCTestCase {
         let program = Subroutine(identifier: "foo", children: [
             TackInstructionNode(.nop)
         ])
-        let expected = TackProgram(instructions: [
-            .hlt,
-            .nop
-        ], labels: ["foo" : 1], ast: program)
+        let expected = TackProgram(
+            instructions: [
+                .hlt,
+                .nop
+            ],
+            labels: [
+                "foo" : 1
+            ],
+            ast: program)
         let actual = try TackFlattener().compile(program)
         XCTAssertEqual(actual, expected)
     }

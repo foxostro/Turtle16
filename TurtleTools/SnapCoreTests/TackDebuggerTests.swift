@@ -21,7 +21,7 @@ final class TackDebuggerTests: XCTestCase {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
-        debugger.symbols = SymbolTable(tuples: [
+        debugger.symbolsOfTopLevelScope = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.immutableInt(.u16)),
                            offset: 100,
                            storage: .staticStorage,
@@ -34,7 +34,7 @@ final class TackDebuggerTests: XCTestCase {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
-        debugger.symbols = SymbolTable(tuples: [
+        debugger.symbolsOfTopLevelScope = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.immutableInt(.u8)),
                            offset: 100,
                            storage: .staticStorage,
@@ -55,7 +55,7 @@ final class TackDebuggerTests: XCTestCase {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
-        debugger.symbols = SymbolTable(tuples: [
+        debugger.symbolsOfTopLevelScope = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.immutableInt(.u8)),
                            offset: 100,
                            storage: .staticStorage,
@@ -68,7 +68,7 @@ final class TackDebuggerTests: XCTestCase {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
-        debugger.symbols = SymbolTable(tuples: [
+        debugger.symbolsOfTopLevelScope = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.immutableInt(.u16)),
                            offset: 100,
                            storage: .staticStorage,
@@ -89,7 +89,7 @@ final class TackDebuggerTests: XCTestCase {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
-        debugger.symbols = SymbolTable(tuples: [
+        debugger.symbolsOfTopLevelScope = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.immutableInt(.u16)),
                            offset: 100,
                            storage: .staticStorage,
@@ -102,7 +102,7 @@ final class TackDebuggerTests: XCTestCase {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
-        debugger.symbols = SymbolTable(tuples: [
+        debugger.symbolsOfTopLevelScope = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.immutableInt(.i8)),
                            offset: 100,
                            storage: .staticStorage,
@@ -123,7 +123,7 @@ final class TackDebuggerTests: XCTestCase {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
-        debugger.symbols = SymbolTable(tuples: [
+        debugger.symbolsOfTopLevelScope = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.immutableInt(.u16)),
                            offset: 100,
                            storage: .staticStorage,
@@ -136,7 +136,7 @@ final class TackDebuggerTests: XCTestCase {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
-        debugger.symbols = SymbolTable(tuples: [
+        debugger.symbolsOfTopLevelScope = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.immutableInt(.i16)),
                            offset: 100,
                            storage: .staticStorage,
@@ -157,7 +157,7 @@ final class TackDebuggerTests: XCTestCase {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
-        debugger.symbols = SymbolTable(tuples: [
+        debugger.symbolsOfTopLevelScope = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.immutableInt(.u16)),
                            offset: 100,
                            storage: .staticStorage,
@@ -170,7 +170,7 @@ final class TackDebuggerTests: XCTestCase {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
-        debugger.symbols = SymbolTable(tuples: [
+        debugger.symbolsOfTopLevelScope = SymbolTable(tuples: [
             ("foo", Symbol(type: .bool(.immutableBool),
                            offset: 100,
                            storage: .staticStorage,

@@ -79,6 +79,10 @@ final class TackFlattenerTests: XCTestCase {
                 .hlt,
                 .nop
             ],
+            subroutines: [
+                nil,
+                "foo"
+            ],
             labels: [
                 "foo" : 1
             ],

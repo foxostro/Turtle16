@@ -449,7 +449,7 @@ final class TackDebuggerTests: XCTestCase {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
-        XCTAssertEqual(debugger.showSourceList(debugger.vm.pc, 5), nil)
+        XCTAssertEqual(debugger.showSourceList(pc: debugger.vm.pc, count: 5), nil)
     }
     
     func testShowSourceList() throws {
@@ -461,11 +461,82 @@ final class TackDebuggerTests: XCTestCase {
             foo()
             """)
         
-        XCTAssertEqual(debugger.showSourceList(debugger.vm.pc, 5), """
+        XCTAssertEqual(debugger.showSourceList(pc: debugger.vm.pc, count: 5), """
                 2	->	    var bar: u16 = 0xabcd
                 3		}
                 4		foo()
             
+            """)
+    }
+    
+    func testShowFunctionName_NotInFunction() throws {
+        let debugger = try run(program: """
+            let a = 1
+            """)
+        
+        XCTAssertNil(debugger.showFunctionName(pc: 0))
+    }
+    
+    func testShowFunctionName() throws {
+        let opts = Options(isVerboseLogging: true)
+        let debugger = try run(options: opts, program: """
+            func foo() {
+                asm("BREAK")
+                var bar: u16 = 0xabcd
+            }
+            foo()
+            """)
+        
+        XCTAssertEqual(debugger.showFunctionName(pc: debugger.vm.pc), "foo")
+    }
+    
+    func testSymbolicatedBacktrace_TopLevel() throws {
+        let opts = Options(isVerboseLogging: true)
+        let debugger = try run(options: opts, program: """
+            let a = 1
+            asm("BREAK")
+            """)
+        
+        XCTAssertEqual(debugger.symbolicatedBacktrace, [])
+    }
+    
+    func testSymbolicatedBacktrace() throws {
+        let opts = Options(isVerboseLogging: true)
+        let debugger = try run(options: opts, program: """
+            func baz() {
+                asm("BREAK")
+            }
+            func bar() {
+                baz()
+            }
+            func foo() {
+                bar()
+            }
+            foo()
+            """)
+        
+        XCTAssertEqual(debugger.symbolicatedBacktrace, ["foo", "bar", "baz"])
+    }
+    
+    func testFormattedBacktrace() throws {
+        let opts = Options(isVerboseLogging: true)
+        let debugger = try run(options: opts, program: """
+            func baz() {
+                asm("BREAK")
+            }
+            func bar() {
+                baz()
+            }
+            func foo() {
+                bar()
+            }
+            foo()
+            """)
+        
+        XCTAssertEqual(debugger.formattedBacktrace, """
+            0	foo
+            1	bar
+            2	baz
             """)
     }
 }

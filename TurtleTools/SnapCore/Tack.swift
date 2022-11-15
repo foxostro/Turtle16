@@ -275,12 +275,14 @@ public struct TackProgram: Equatable {
     public let instructions: [TackInstruction]
     public let sourceAnchor: [SourceAnchor?]
     public let symbols: [SymbolTable?]
+    public let subroutines: [String?]
     public let labels: [String : Int]
     public let ast: AbstractSyntaxTreeNode
     
     public init(instructions: [TackInstruction] = [],
                 sourceAnchor: [SourceAnchor?]? = nil,
                 symbols: [SymbolTable?]? = nil,
+                subroutines: [String?]? = nil,
                 labels: [String : Int] = [:],
                 ast: AbstractSyntaxTreeNode = Seq()) {
         self.instructions = instructions
@@ -301,6 +303,14 @@ public struct TackProgram: Equatable {
         }
         else {
             self.symbols = Array<SymbolTable?>(repeating: nil, count: instructions.count)
+        }
+        
+        if let subroutines {
+            assert(subroutines.count == instructions.count)
+            self.subroutines = subroutines
+        }
+        else {
+            self.subroutines = Array<String?>(repeating: nil, count: instructions.count)
         }
     }
     

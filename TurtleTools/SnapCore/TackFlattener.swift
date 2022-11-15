@@ -11,9 +11,10 @@ import TurtleCore
 
 // Accepts a Tack AST and produces a TackProgram.
 public class TackFlattener: NSObject {
-    private var instructions: [(TackInstruction, SourceAnchor?, SymbolTable?)] = []
+    private var instructions: [(TackInstruction, SourceAnchor?, SymbolTable?, String?)] = []
     private var didProcessSubroutine = false
     private var labels: [String : Int] = [:]
+    private var currentSubroutine: String? = nil
     
     public func compile(_ node: AbstractSyntaxTreeNode) throws -> TackProgram {
         try innerCompile(node)
@@ -21,6 +22,7 @@ public class TackFlattener: NSObject {
             instructions: instructions.map{$0.0},
             sourceAnchor: instructions.map{$0.1},
             symbols: instructions.map{$0.2},
+            subroutines: instructions.map{$0.3},
             labels: labels,
             ast: node)
     }
@@ -31,7 +33,8 @@ public class TackFlattener: NSObject {
             instructions.append((
                 node.instruction,
                 node.sourceAnchor,
-                node.symbols))
+                node.symbols,
+                currentSubroutine))
             
         case let node as Seq:
             for child in node.children {
@@ -43,12 +46,14 @@ public class TackFlattener: NSObject {
             
         case let node as Subroutine:
             if !didProcessSubroutine {
-                instructions.append((.hlt, nil, nil))
+                instructions.append((.hlt, nil, nil, nil))
             }
+            currentSubroutine = node.identifier
             try label(node.sourceAnchor, node.identifier)
             for child in node.children {
                 try innerCompile(child)
             }
+            currentSubroutine = nil
             didProcessSubroutine = true
             
         default:

@@ -30,7 +30,7 @@ public class TackVirtualMachine: NSObject {
     public var nextPc: Word = 0
     public var isHalted = false
     private var globalRegisters: [Register : Word] = [:]
-    private var registers: [[Register : Word]] = [[:]]
+    public private(set) var registers: [[Register : Word]] = [[:]]
     private var memoryPages: [Int : [Word]] = [:]
     private var breakPoints: [Bool]
     public var onSerialOutput: (Word) -> Void = {_ in}

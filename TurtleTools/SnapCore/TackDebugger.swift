@@ -20,7 +20,33 @@ public class TackDebugger: NSObject {
         vm.symbols ?? symbolsOfTopLevelScope
     }
     
-    public func showSourceList(_ pc: Word, _ count: Int) -> String? {
+    public var backtrace: [Word] {
+        var result: [Word] = []
+        for registers in vm.registers {
+            guard let ra = registers[.ra] else {
+                break
+            }
+            result.append(ra)
+        }
+        result.append(vm.pc)
+        return result
+    }
+    
+    public var symbolicatedBacktrace: [String] {
+        backtrace.compactMap { ra in
+            showFunctionName(pc: ra)
+        }
+    }
+    
+    public var formattedBacktrace: String {
+        var lines: [String] = []
+        for i in 0..<symbolicatedBacktrace.count {
+            lines.append("\(i)\t\(symbolicatedBacktrace[i])")
+        }
+        return lines.joined(separator: "\n")
+    }
+    
+    public func showSourceList(pc: Word, count: Int) -> String? {
         guard let sourceAnchor = vm.findSourceAnchor(pc: pc),
               let lineNumbers = sourceAnchor.lineNumbers else {
             return nil
@@ -56,6 +82,13 @@ public class TackDebugger: NSObject {
         }
         
         return result
+    }
+    
+    public func showFunctionName(pc: Word) -> String? {
+        guard pc < vm.program.subroutines.count else {
+            return nil
+        }
+        return vm.program.subroutines[Int(pc)]
     }
     
     public init(_ vm: TackVirtualMachine, _ memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()) {

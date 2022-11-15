@@ -20,20 +20,8 @@ public class TackDebugger: NSObject {
         vm.symbols ?? symbolsOfTopLevelScope
     }
     
-    public var backtrace: [Word] {
-        var result: [Word] = []
-        for registers in vm.registers {
-            guard let ra = registers[.ra] else {
-                break
-            }
-            result.append(ra)
-        }
-        result.append(vm.pc)
-        return result
-    }
-    
     public var symbolicatedBacktrace: [String] {
-        backtrace.compactMap { ra in
+        vm.backtrace.compactMap { ra in
             showFunctionName(pc: ra)
         }
     }

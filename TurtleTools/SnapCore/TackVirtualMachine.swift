@@ -30,10 +30,22 @@ public class TackVirtualMachine: NSObject {
     public var nextPc: Word = 0
     public var isHalted = false
     private var globalRegisters: [Register : Word] = [:]
-    public private(set) var registers: [[Register : Word]] = [[:]]
+    public var registers: [[Register : Word]] = [[:]]
     private var memoryPages: [Int : [Word]] = [:]
     private var breakPoints: [Bool]
     public var onSerialOutput: (Word) -> Void = {_ in}
+    
+    public var backtrace: [Word] {
+        var result: [Word] = []
+        for registers in registers {
+            guard let ra = registers[.ra] else {
+                break
+            }
+            result.append(ra)
+        }
+        result.append(pc)
+        return result
+    }
     
     public var symbols: SymbolTable? {
         var result: SymbolTable? = nil

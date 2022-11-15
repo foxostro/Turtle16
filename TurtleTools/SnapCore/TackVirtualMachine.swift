@@ -48,9 +48,9 @@ public class TackVirtualMachine: NSObject {
         return result
     }
     
-    public var sourceAnchor: SourceAnchor? {
+    public func findSourceAnchor(pc pc_: Word) -> SourceAnchor? {
         var result: SourceAnchor? = nil
-        var i = Int(pc)
+        var i = Int(pc_)
         while i >= 0 && result == nil {
             if i < program.sourceAnchor.count {
                 result = program.sourceAnchor[i]

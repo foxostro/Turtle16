@@ -8,8 +8,81 @@
 
 import XCTest
 import SnapCore
+import TurtleCore
 
 final class TackDebuggerTests: XCTestCase {
+    fileprivate struct Options {
+        public let isVerboseLogging: Bool
+        public let isBoundsCheckEnabled: Bool
+        public let shouldDefineCompilerIntrinsicFunctions: Bool
+        public let isUsingStandardLibrary: Bool
+        public let runtimeSupport: String?
+        public let shouldRunSpecificTest: String?
+        public let onSerialOutput: (UInt16) -> Void
+        public let injectModules: [String:String]
+        
+        public init(isVerboseLogging: Bool = false,
+                    isBoundsCheckEnabled: Bool = false,
+                    shouldDefineCompilerIntrinsicFunctions: Bool = false,
+                    isUsingStandardLibrary: Bool = false,
+                    runtimeSupport: String? = nil,
+                    shouldRunSpecificTest: String? = nil,
+                    onSerialOutput: @escaping (UInt16) -> Void = {_ in},
+                    injectModules: [String:String] = [:]) {
+            self.isVerboseLogging = isVerboseLogging
+            self.isBoundsCheckEnabled = isBoundsCheckEnabled
+            self.shouldDefineCompilerIntrinsicFunctions = shouldDefineCompilerIntrinsicFunctions
+            self.isUsingStandardLibrary = isUsingStandardLibrary
+            self.runtimeSupport = runtimeSupport
+            self.shouldRunSpecificTest = shouldRunSpecificTest
+            self.onSerialOutput = onSerialOutput
+            self.injectModules = injectModules
+        }
+    }
+
+    fileprivate func makeDebugger(options: Options, program: String) throws -> TackDebugger {
+        let opts2 = SnapCompilerFrontEnd.Options(
+            isBoundsCheckEnabled: options.isBoundsCheckEnabled,
+            shouldDefineCompilerIntrinsicFunctions: options.shouldDefineCompilerIntrinsicFunctions,
+            isUsingStandardLibrary: options.isUsingStandardLibrary,
+            runtimeSupport: options.runtimeSupport,
+            shouldRunSpecificTest: options.shouldRunSpecificTest,
+            injectedModules: options.injectModules)
+        
+        let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: memoryLayoutStrategy)
+        let compiler = SnapCompilerFrontEnd(options: opts2, globalEnvironment: globalEnvironment)
+        
+        let result = compiler.compile(program: program)
+        let tackProgram: TackProgram
+        do {
+            tackProgram = try result.get()
+        }
+        catch (let error as CompilerError) {
+            let omnibusError = CompilerError.makeOmnibusError(fileName: nil, errors: [error])
+            print("compile error: \(omnibusError.message)")
+            throw error
+        }
+
+        if options.isVerboseLogging {
+            print("Listing:\n\(tackProgram.listing)")
+        }
+        
+        let vm = TackVirtualMachine(tackProgram)
+        vm.onSerialOutput = options.onSerialOutput
+
+        let debugger = TackDebugger(vm, memoryLayoutStrategy)
+        debugger.symbolsOfTopLevelScope = compiler.symbolsOfTopLevelScope
+
+        return debugger
+    }
+
+    fileprivate func run(options: Options = Options(), program: String) throws -> TackDebugger {
+        let debugger = try makeDebugger(options: options, program: program)
+        try debugger.vm.run()
+        return debugger
+    }
+    
     public func testLoadSymbolU8_NotFound() {
         let tackProgram = TackProgram()
         let vm = TackVirtualMachine(tackProgram)
@@ -178,5 +251,221 @@ final class TackDebuggerTests: XCTestCase {
         ])
         debugger.vm.store(value: 1, address: 100)
         XCTAssertEqual(true, debugger.loadSymbolBool("foo"))
+    }
+    
+    public func testLoadSymbolPointer_NotFound() {
+        let tackProgram = TackProgram()
+        let vm = TackVirtualMachine(tackProgram)
+        let debugger = TackDebugger(vm)
+        XCTAssertNil(debugger.loadSymbolPointer("foo"))
+    }
+    
+    public func testLoadSymbolPointer_WrongType() {
+        let tackProgram = TackProgram()
+        let vm = TackVirtualMachine(tackProgram)
+        let debugger = TackDebugger(vm)
+        debugger.symbolsOfTopLevelScope = SymbolTable(tuples: [
+            ("foo", Symbol(type: .arithmeticType(.immutableInt(.u16)),
+                           offset: 100,
+                           storage: .staticStorage,
+                           visibility: .publicVisibility))
+        ])
+        XCTAssertNil(debugger.loadSymbolPointer("foo"))
+    }
+    
+    public func testLoadSymbolPointer_Success() {
+        let tackProgram = TackProgram()
+        let vm = TackVirtualMachine(tackProgram)
+        let debugger = TackDebugger(vm)
+        debugger.symbolsOfTopLevelScope = SymbolTable(tuples: [
+            ("foo", Symbol(type: .pointer(.arithmeticType(.immutableInt(.u16))),
+                           offset: 100,
+                           storage: .staticStorage,
+                           visibility: .publicVisibility))
+        ])
+        debugger.vm.store(value: 0xabcd, address: 100)
+        XCTAssertEqual(0xabcd, debugger.loadSymbolPointer("foo"))
+    }
+    
+    public func testLoadSymbolArrayOfU8_NotFound() {
+        let tackProgram = TackProgram()
+        let vm = TackVirtualMachine(tackProgram)
+        let debugger = TackDebugger(vm)
+        XCTAssertNil(debugger.loadSymbolArrayOfU8(3, "foo"))
+    }
+    
+    public func testLoadSymbolSymbolArrayOfU8_WrongType() {
+        let tackProgram = TackProgram()
+        let vm = TackVirtualMachine(tackProgram)
+        let debugger = TackDebugger(vm)
+        debugger.symbolsOfTopLevelScope = SymbolTable(tuples: [
+            ("foo", Symbol(type: .arithmeticType(.immutableInt(.u16)),
+                           offset: 100,
+                           storage: .staticStorage,
+                           visibility: .publicVisibility))
+        ])
+        XCTAssertNil(debugger.loadSymbolArrayOfU8(3, "foo"))
+    }
+    
+    public func testLoadSymbolSymbolArrayOfU8_Success() {
+        let tackProgram = TackProgram()
+        let vm = TackVirtualMachine(tackProgram)
+        let debugger = TackDebugger(vm)
+        debugger.symbolsOfTopLevelScope = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 3, elementType: .arithmeticType(.immutableInt(.u8))),
+                           offset: 100,
+                           storage: .staticStorage,
+                           visibility: .publicVisibility))
+        ])
+        debugger.vm.store(value: 0xaaaa, address: 100)
+        debugger.vm.store(value: 0xbbbb, address: 101)
+        debugger.vm.store(value: 0xcccc, address: 102)
+        XCTAssertEqual([0xaa, 0xbb, 0xcc], debugger.loadSymbolArrayOfU8(3, "foo"))
+    }
+    
+    public func testLoadSymbolArrayOfU16_NotFound() {
+        let tackProgram = TackProgram()
+        let vm = TackVirtualMachine(tackProgram)
+        let debugger = TackDebugger(vm)
+        XCTAssertNil(debugger.loadSymbolArrayOfU16(3, "foo"))
+    }
+    
+    public func testLoadSymbolArrayOfU16_WrongType() {
+        let tackProgram = TackProgram()
+        let vm = TackVirtualMachine(tackProgram)
+        let debugger = TackDebugger(vm)
+        debugger.symbolsOfTopLevelScope = SymbolTable(tuples: [
+            ("foo", Symbol(type: .arithmeticType(.immutableInt(.u16)),
+                           offset: 100,
+                           storage: .staticStorage,
+                           visibility: .publicVisibility))
+        ])
+        XCTAssertNil(debugger.loadSymbolArrayOfU16(3, "foo"))
+    }
+    
+    public func testLoadSymbolArrayOfU16_Success() {
+        let tackProgram = TackProgram()
+        let vm = TackVirtualMachine(tackProgram)
+        let debugger = TackDebugger(vm)
+        debugger.symbolsOfTopLevelScope = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 3, elementType: .arithmeticType(.immutableInt(.u16))),
+                           offset: 100,
+                           storage: .staticStorage,
+                           visibility: .publicVisibility))
+        ])
+        debugger.vm.store(value: 0xaaaa, address: 100)
+        debugger.vm.store(value: 0xbbbb, address: 101)
+        debugger.vm.store(value: 0xcccc, address: 102)
+        XCTAssertEqual([0xaaaa, 0xbbbb, 0xcccc], debugger.loadSymbolArrayOfU16(3, "foo"))
+    }
+    
+    public func testLoadSymbolString_NotFound() {
+        let tackProgram = TackProgram()
+        let vm = TackVirtualMachine(tackProgram)
+        let debugger = TackDebugger(vm)
+        XCTAssertNil(debugger.loadSymbolString("foo"))
+    }
+    
+    public func testLoadSymbolString_WrongType() {
+        let tackProgram = TackProgram()
+        let vm = TackVirtualMachine(tackProgram)
+        let debugger = TackDebugger(vm)
+        debugger.symbolsOfTopLevelScope = SymbolTable(tuples: [
+            ("foo", Symbol(type: .arithmeticType(.immutableInt(.u16)),
+                           offset: 100,
+                           storage: .staticStorage,
+                           visibility: .publicVisibility))
+        ])
+        XCTAssertNil(debugger.loadSymbolString("foo"))
+    }
+    
+    public func testLoadSymbolString_Success() {
+        let tackProgram = TackProgram()
+        let vm = TackVirtualMachine(tackProgram)
+        let debugger = TackDebugger(vm)
+        debugger.symbolsOfTopLevelScope = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 3, elementType: .arithmeticType(.immutableInt(.u8))),
+                           offset: 100,
+                           storage: .staticStorage,
+                           visibility: .publicVisibility))
+        ])
+        debugger.vm.store(value: 65, address: 100)
+        debugger.vm.store(value: 66, address: 101)
+        debugger.vm.store(value: 67, address: 102)
+        XCTAssertEqual("ABC", debugger.loadSymbolString("foo"))
+    }
+    
+    public func testLoadSymbolStringSlice_NotFound() {
+        let tackProgram = TackProgram()
+        let vm = TackVirtualMachine(tackProgram)
+        let debugger = TackDebugger(vm)
+        XCTAssertNil(debugger.loadSymbolStringSlice("foo"))
+    }
+    
+    public func testLoadSymbolStringSlice_WrongType() {
+        let tackProgram = TackProgram()
+        let vm = TackVirtualMachine(tackProgram)
+        let debugger = TackDebugger(vm)
+        debugger.symbolsOfTopLevelScope = SymbolTable(tuples: [
+            ("foo", Symbol(type: .array(count: 3, elementType: .arithmeticType(.immutableInt(.u8))),
+                           offset: 100,
+                           storage: .staticStorage,
+                           visibility: .publicVisibility))
+        ])
+        XCTAssertNil(debugger.loadSymbolStringSlice("foo"))
+    }
+    
+    public func testLoadSymbolStringSlice_Success() {
+        let tackProgram = TackProgram()
+        let vm = TackVirtualMachine(tackProgram)
+        let debugger = TackDebugger(vm)
+        debugger.symbolsOfTopLevelScope = SymbolTable(tuples: [
+            ("foo", Symbol(type: .dynamicArray(elementType: .arithmeticType(.immutableInt(.u8))),
+                           offset: 100,
+                           storage: .staticStorage,
+                           visibility: .publicVisibility))
+        ])
+        debugger.vm.store(value: 200, address: 100)
+        debugger.vm.store(value: 3, address: 101)
+        debugger.vm.store(value: 65, address: 200)
+        debugger.vm.store(value: 66, address: 201)
+        debugger.vm.store(value: 67, address: 202)
+        XCTAssertEqual("ABC", debugger.loadSymbolStringSlice("foo"))
+    }
+    
+    func testLoadSymbolWhileStoppedAtBreakpoint() throws {
+        let debugger = try run(program: """
+            func foo() {
+                var bar: u16 = 0xabcd
+                asm("BREAK")
+            }
+            foo()
+            """)
+        
+        XCTAssertEqual(debugger.loadSymbolU16("bar"), 0xabcd)
+    }
+    
+    func testShowSourceEmptyProgram() throws {
+        let tackProgram = TackProgram()
+        let vm = TackVirtualMachine(tackProgram)
+        let debugger = TackDebugger(vm)
+        XCTAssertEqual(debugger.showSourceList(debugger.vm.pc, 5), nil)
+    }
+    
+    func testShowSourceList() throws {
+        let debugger = try run(program: """
+            func foo() {
+                asm("BREAK")
+                var bar: u16 = 0xabcd
+            }
+            foo()
+            """)
+        
+        XCTAssertEqual(debugger.showSourceList(debugger.vm.pc, 5), """
+                2	->	    var bar: u16 = 0xabcd
+                3		}
+                4		foo()
+            
+            """)
     }
 }

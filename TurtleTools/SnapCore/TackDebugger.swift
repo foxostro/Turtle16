@@ -20,21 +20,41 @@ public class TackDebugger: NSObject {
         vm.symbols ?? symbolsOfTopLevelScope
     }
     
-    public var sourceAnchor: SourceAnchor? {
-        vm.sourceAnchor
-    }
-    
-    public func showSourceList(_ pc: Word, _ count: Int) -> String {
+    public func showSourceList(_ pc: Word, _ count: Int) -> String? {
+        guard let sourceAnchor = vm.findSourceAnchor(pc: pc),
+              let lineNumbers = sourceAnchor.lineNumbers else {
+            return nil
+        }
+        
+        let currentlyExecutingLineNumber = vm.findSourceAnchor(pc: vm.pc)?.lineNumbers?.first
+        
+        let lines = sourceAnchor.lineMapper.text.split(separator: "\n")
+        let lineNumber = lineNumbers.first!
+        let lineRange = lineNumber..<(lineNumber+count)
+        
         var result = ""
-        let limit = pc &+ Word(count)
-        for i in pc..<limit {
-            guard i < vm.program.sourceAnchor.count,
-                  let sourceAnchor = vm.program.sourceAnchor[Int(i)],
-                  let line = String(sourceAnchor.text).split(separator: "\n").first else {
+        for i in lineRange {
+            guard i >= 0 && i < lines.count else {
                 break
             }
-            result += "\(line)\n"
+            let line = lines[i]
+            
+            let kLineNumberColWidth = 5
+            let lineNumberStr = "\(i)"
+            let pad = String(repeating: " ", count: kLineNumberColWidth-lineNumberStr.count)
+            let lineNumberCol = pad + lineNumberStr
+            
+            let indicator: String
+            if let currentlyExecutingLineNumber, i == currentlyExecutingLineNumber {
+                indicator = "->"
+            }
+            else {
+                indicator = ""
+            }
+            
+            result += "\(lineNumberCol)\t\(indicator)\t\(line)\n"
         }
+        
         return result
     }
     

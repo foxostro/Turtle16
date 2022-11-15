@@ -48,6 +48,19 @@ public class TackVirtualMachine: NSObject {
         return result
     }
     
+    public var sourceAnchor: SourceAnchor? {
+        var result: SourceAnchor? = nil
+        var i = Int(pc)
+        while i >= 0 && result == nil {
+            if i < program.sourceAnchor.count {
+                result = program.sourceAnchor[i]
+            }
+            i = i - 1
+            
+        }
+        return result
+    }
+    
     public init(_ program: TackProgram) {
         self.program = program
         breakPoints = Array<Bool>(repeating: false, count: program.instructions.count)

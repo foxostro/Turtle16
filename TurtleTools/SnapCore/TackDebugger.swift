@@ -15,8 +15,27 @@ public class TackDebugger: NSObject {
     public let vm: TackVirtualMachine
     public let memoryLayoutStrategy: MemoryLayoutStrategy
     public var symbolsOfTopLevelScope: SymbolTable? = nil
+    
     public var symbols: SymbolTable? {
         vm.symbols ?? symbolsOfTopLevelScope
+    }
+    
+    public var sourceAnchor: SourceAnchor? {
+        vm.sourceAnchor
+    }
+    
+    public func showSourceList(_ pc: Word, _ count: Int) -> String {
+        var result = ""
+        let limit = pc &+ Word(count)
+        for i in pc..<limit {
+            guard i < vm.program.sourceAnchor.count,
+                  let sourceAnchor = vm.program.sourceAnchor[Int(i)],
+                  let line = String(sourceAnchor.text).split(separator: "\n").first else {
+                break
+            }
+            result += "\(line)\n"
+        }
+        return result
     }
     
     public init(_ vm: TackVirtualMachine, _ memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()) {

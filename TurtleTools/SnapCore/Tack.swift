@@ -273,17 +273,27 @@ public class TackInstructionNode: AbstractSyntaxTreeNode {
 // in the Tack virtual machine.
 public struct TackProgram: Equatable {
     public let instructions: [TackInstruction]
+    public let sourceAnchor: [SourceAnchor?]
     public let symbols: [SymbolTable?]
     public let labels: [String : Int]
     public let ast: AbstractSyntaxTreeNode
     
     public init(instructions: [TackInstruction] = [],
+                sourceAnchor: [SourceAnchor?]? = nil,
                 symbols: [SymbolTable?]? = nil,
                 labels: [String : Int] = [:],
                 ast: AbstractSyntaxTreeNode = Seq()) {
         self.instructions = instructions
         self.labels = labels
         self.ast = ast
+        
+        if let sourceAnchor {
+            assert(sourceAnchor.count == instructions.count)
+            self.sourceAnchor = sourceAnchor
+        }
+        else {
+            self.sourceAnchor = Array<SourceAnchor?>(repeating: nil, count: instructions.count)
+        }
         
         if let symbols {
             assert(symbols.count == instructions.count)

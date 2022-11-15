@@ -133,7 +133,7 @@ public class TackDebugger: NSObject {
         guard symbol.type.correspondingConstType == .arithmeticType(.immutableInt(.u16)) else {
             return nil
         }
-        let word = vm.load(address: addressOfSymbol(symbol))
+        let word = UInt16(vm.load(address: addressOfSymbol(symbol)) & 0xffff)
         return word
     }
     
@@ -173,7 +173,7 @@ public class TackDebugger: NSObject {
         return word != 0
     }
     
-    public func loadSymbolPointer(_ identifier: String) -> UInt16? {
+    public func loadSymbolPointer(_ identifier: String) -> Word? {
         guard let symbol = symbols?.maybeResolve(identifier: identifier) else {
             return nil
         }
@@ -213,7 +213,7 @@ public class TackDebugger: NSObject {
         var arr: [UInt16] = []
         for i in 0..<count {
             let addr = baseAddr &+ Word(i*memoryLayoutStrategy.sizeof(type: .arithmeticType(.mutableInt(.u16))))
-            let word = vm.load(address: addr)
+            let word = UInt16(vm.load(address: addr) & 0xffff)
             arr.append(word)
         }
         return arr

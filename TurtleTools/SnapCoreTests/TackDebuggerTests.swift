@@ -18,7 +18,7 @@ final class TackDebuggerTests: XCTestCase {
         public let isUsingStandardLibrary: Bool
         public let runtimeSupport: String?
         public let shouldRunSpecificTest: String?
-        public let onSerialOutput: (UInt16) -> Void
+        public let onSerialOutput: (TackVirtualMachine.Word) -> Void
         public let injectModules: [String:String]
         
         public init(isVerboseLogging: Bool = false,
@@ -27,7 +27,7 @@ final class TackDebuggerTests: XCTestCase {
                     isUsingStandardLibrary: Bool = false,
                     runtimeSupport: String? = nil,
                     shouldRunSpecificTest: String? = nil,
-                    onSerialOutput: @escaping (UInt16) -> Void = {_ in},
+                    onSerialOutput: @escaping (TackVirtualMachine.Word) -> Void = {_ in},
                     injectModules: [String:String] = [:]) {
             self.isVerboseLogging = isVerboseLogging
             self.isBoundsCheckEnabled = isBoundsCheckEnabled

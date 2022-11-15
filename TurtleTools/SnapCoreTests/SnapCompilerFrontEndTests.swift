@@ -109,7 +109,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         public let isUsingStandardLibrary: Bool
         public let runtimeSupport: String?
         public let shouldRunSpecificTest: String?
-        public let onSerialOutput: (UInt16) -> Void
+        public let onSerialOutput: (Word) -> Void
         public let injectModules: [String:String]
         
         public init(isVerboseLogging: Bool = false,
@@ -118,7 +118,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
                     isUsingStandardLibrary: Bool = false,
                     runtimeSupport: String? = nil,
                     shouldRunSpecificTest: String? = nil,
-                    onSerialOutput: @escaping (UInt16) -> Void = {_ in},
+                    onSerialOutput: @escaping (Word) -> Void = {_ in},
                     injectModules: [String:String] = [:]) {
             self.isVerboseLogging = isVerboseLogging
             self.isBoundsCheckEnabled = isBoundsCheckEnabled
@@ -1185,7 +1185,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testSerialOutput_HelloWorld() throws {
         var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
+        let onSerialOutput = { (value: Word) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
@@ -1201,7 +1201,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testSerialOutput_Panic() throws {
         var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
+        let onSerialOutput = { (value: Word) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
@@ -1218,7 +1218,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testArrayOutOfBoundsError() throws {
         var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
+        let onSerialOutput = { (value: Word) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
@@ -1636,7 +1636,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testArraySlice() throws {
         var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
+        let onSerialOutput = { (value: Word) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
@@ -1656,7 +1656,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testArraySlice_PanicDueToArrayBoundsException_1() throws {
         var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
+        let onSerialOutput = { (value: Word) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
@@ -1676,7 +1676,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testArraySlice_PanicDueToArrayBoundsException_2() throws {
         var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
+        let onSerialOutput = { (value: Word) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
@@ -1695,7 +1695,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testDynamicArraySlice_PanicDueToArrayBoundsException_1() throws {
         var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
+        let onSerialOutput = { (value: Word) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
@@ -1715,7 +1715,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testDynamicArraySlice_PanicDueToArrayBoundsException_2() throws {
         var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
+        let onSerialOutput = { (value: Word) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
@@ -1735,7 +1735,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testAssertionFailed() throws {
         var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
+        let onSerialOutput = { (value: Word) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
@@ -1752,7 +1752,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testRunTests_AllTestsPassed() throws {
         var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
+        let onSerialOutput = { (value: Word) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
@@ -1771,7 +1771,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testRunTests_FailingAssertMentionsFailingTestByName() throws {
         var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
+        let onSerialOutput = { (value: Word) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
@@ -1791,7 +1791,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testImportModule() throws {
         var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
+        let onSerialOutput = { (value: Word) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
@@ -1815,7 +1815,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testBasicFunctionPointerDemonstration() throws {
         var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
+        let onSerialOutput = { (value: Word) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
@@ -1850,7 +1850,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testRebindAFunctionPointerAtRuntime_2() throws {
         var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
+        let onSerialOutput = { (value: Word) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
@@ -1872,7 +1872,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testFunctionPointerStructMemberCanBeCalledLikeAFunctionMemberCanBeCalled_1() throws {
         var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
+        let onSerialOutput = { (value: Word) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
@@ -1894,7 +1894,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testFunctionPointerStructMemberCanBeCalledLikeAFunctionMemberCanBeCalled_2() throws {
         var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
+        let onSerialOutput = { (value: Word) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
@@ -1962,7 +1962,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testBugWithCompilerTemporaryPushedTwiceInDynamicArrayBoundsCheck() throws {
         var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
+        let onSerialOutput = { (value: Word) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
@@ -2000,7 +2000,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testVtableDemo() throws {
         var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
+        let onSerialOutput = { (value: Word) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
@@ -2060,7 +2060,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testTraitsDemo() throws {
         var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
+        let onSerialOutput = { (value: Word) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
@@ -2187,7 +2187,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testBugWhereRangeInSubscriptCausesUnsupportedExpressionError() throws {
         var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
+        let onSerialOutput = { (value: Word) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
@@ -2286,7 +2286,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         // literal struct-initializer for a Range. In this example, passing a
         // variable of type `Range' fails.
         var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
+        let onSerialOutput = { (value: Word) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
@@ -2584,7 +2584,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testBUG_FailToPrintStringInUnitTest1() throws {
         var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
+        let onSerialOutput = { (value: Word) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
@@ -2606,7 +2606,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testBUG_PanicDuringIterationOfString() throws {
         var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
+        let onSerialOutput = { (value: Word) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
@@ -2633,7 +2633,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testBUG_InfiniteLoopDuringIterationOfString() throws {
         var serialOutput: [UInt8] = []
-        let onSerialOutput = { (value: UInt16) in
+        let onSerialOutput = { (value: Word) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,

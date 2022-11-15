@@ -20,7 +20,7 @@ public enum TackVirtualMachineError: Error {
 
 public class TackVirtualMachine: NSObject {
     public typealias Register = TackInstruction.Register
-    public typealias Word = UInt16
+    public typealias Word = UInt32
     
     public let kMemoryMappedSerialOutputPort: Word = 0x0001
     public let kPageSize = 4096

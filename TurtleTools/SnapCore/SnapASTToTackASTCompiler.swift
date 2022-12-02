@@ -11,23 +11,14 @@ import Turtle16SimulatorCore
 
 public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
     public typealias Register = TackInstruction.Register
-    public struct Options {
-        public let isBoundsCheckEnabled: Bool
-        
-        public init(isBoundsCheckEnabled: Bool) {
-            self.isBoundsCheckEnabled = isBoundsCheckEnabled
-        }
-        
-        public static var defaultOptions: Options {
-            Options(isBoundsCheckEnabled: true)
-        }
-    }
+    public typealias Options = SnapCompilerFrontEnd.Options
     
     public let options: Options
     public let globalEnvironment: GlobalEnvironment
     public internal(set) var registerStack: [Register] = []
     var nextRegisterIndex = 0
     let kOOB = "__oob"
+    let kHalt = "hlt"
     
     let kUnionPayloadOffset: Int
     let kUnionTypeTagOffset: Int
@@ -65,7 +56,7 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         return result
     }
     
-    public init(symbols: SymbolTable, globalEnvironment: GlobalEnvironment, options: SnapASTToTackASTCompiler.Options = SnapASTToTackASTCompiler.Options.defaultOptions) {
+    public init(symbols: SymbolTable, globalEnvironment: GlobalEnvironment, options: SnapASTToTackASTCompiler.Options = Options()) {
         self.globalEnvironment = globalEnvironment
         self.options = options
         kUnionTypeTagOffset = 0
@@ -120,6 +111,12 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             let m = globalEnvironment.functionsToCompile.removeFirst()
             let subroutine = try compileFunction(concreteInstance: m)
             result.append(subroutine)
+        }
+        
+        if options.shouldDefineCompilerIntrinsicFunctions {
+            result.append(Subroutine(identifier: kHalt, children: [
+                TackInstructionNode(.hlt)
+            ]))
         }
         
         return result

@@ -852,6 +852,17 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         XCTAssertEqual(debugger.vm.load(address: 0x5000), 0xabcd)
         XCTAssertEqual(debugger.loadSymbolU16("value"), 0xabcd)
     }
+    
+    func test_EndToEndIntegration_Hlt() throws {
+        let opts = Options(shouldDefineCompilerIntrinsicFunctions: true)
+        let debugger = try run(options: opts, program: """
+            var a: u16 = 0
+            hlt()
+            a = 1
+            """)
+        
+        XCTAssertEqual(debugger.loadSymbolU16("a"), 0)
+    }
 
     func test_EndToEndIntegration_DeclareArrayType_InferredType() throws {
         let debugger = try run(program: """

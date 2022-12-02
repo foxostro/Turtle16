@@ -14,9 +14,10 @@ public class CompilerIntrinsicSymbolBinder: NSObject {
     }
     
     public func bindCompilerIntrinsics(symbols symbols0: SymbolTable) -> SymbolTable {
-        let symbols1 = bindCompilerIntrinsicRangeType(symbols: symbols0)
-        let symbols2 = bindCompilerIntrinsicSliceType(symbols: symbols1)
-        return symbols2
+        let symbols1 = bindCompilerInstrinsicHlt(symbols: symbols0)
+        let symbols2 = bindCompilerIntrinsicRangeType(symbols: symbols1)
+        let symbols3 = bindCompilerIntrinsicSliceType(symbols: symbols2)
+        return symbols3
     }
     
     func bindCompilerIntrinsicSliceType(symbols: SymbolTable) -> SymbolTable {
@@ -38,6 +39,14 @@ public class CompilerIntrinsicSymbolBinder: NSObject {
             ("limit", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 1*sizeOfU16, storage: .automaticStorage))
         ])))
         symbols.bind(identifier: name, symbolType: typ, visibility: .privateVisibility)
+        return symbols
+    }
+    
+    func bindCompilerInstrinsicHlt(symbols: SymbolTable) -> SymbolTable{
+        let name = "hlt"
+        let typ: SymbolType = .function(FunctionType(name: name, returnType: .void, arguments: []))
+        let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage, visibility: .privateVisibility)
+        symbols.bind(identifier: name, symbol: symbol)
         return symbols
     }
 }

@@ -3228,7 +3228,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
                            isMutable: false)
         ])
 
-        let opts = SnapASTToTackASTCompiler.Options.defaultOptions
+        let opts = SnapASTToTackASTCompiler.Options()
         let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
         contractStep.compile(ast0)
         let ast1 = contractStep.ast
@@ -3278,7 +3278,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
                            isMutable: false)
         ])
 
-        let opts = SnapASTToTackASTCompiler.Options.defaultOptions
+        let opts = SnapASTToTackASTCompiler.Options()
         let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
         contractStep.compile(ast0)
         let ast1 = contractStep.ast

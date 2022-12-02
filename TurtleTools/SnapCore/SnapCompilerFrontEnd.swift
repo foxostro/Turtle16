@@ -99,10 +99,9 @@ public class SnapCompilerFrontEnd: NSObject {
     }
     
     func compileSnapToTack(_ ast: AbstractSyntaxTreeNode?) -> Result<TackProgram, Error> {
-        let opts = SnapASTToTackASTCompiler.Options(isBoundsCheckEnabled: self.options.isBoundsCheckEnabled)
         let compiler = SnapASTToTackASTCompiler(symbols: globalEnvironment.globalSymbols,
                                           globalEnvironment: globalEnvironment,
-                                          options: opts)
+                                          options: options)
         let tack = Result(catching: {
             let tackAst = try compiler.compileWithEpilog(ast) ?? Seq()
             let tackProgram = try TackFlattener().compile(tackAst)

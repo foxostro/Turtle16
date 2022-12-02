@@ -10,10 +10,6 @@ public func puts(s: []const u8) {
     }
 }
 
-public func hlt() {
-    asm("HLT")
-}
-
 public func panic(message: []const u8) {
     static let kPanicPrefix = "PANIC: "
     static let kPanicSuffix = "\n"

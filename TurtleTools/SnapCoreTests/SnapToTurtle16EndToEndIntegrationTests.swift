@@ -843,7 +843,16 @@ func foo() {
         XCTAssertEqual(debugger?.loadSymbolU16("value"), 0xabcd)
     }
     
-    // TODO: Instead of a flag to enable compiler intrinsics, pass the definitions of the compiler intrinsics themselves into the compiler from the top.
+    func test_EndToEndIntegration_Hlt() {
+        let opts = Options(shouldDefineCompilerIntrinsicFunctions: true)
+        let debugger = run(options: opts, program: """
+            var a: u16 = 0
+            hlt()
+            a = 1
+            """)
+        
+        XCTAssertEqual(debugger?.loadSymbolU16("a"), 0)
+    }
     
     func test_EndToEndIntegration_DeclareArrayType_InferredType() {
         let debugger = run(program: """

@@ -34,6 +34,12 @@ public class TackVirtualMachine: NSObject {
     private var memoryPages: [Int : [Word]] = [:]
     private var breakPoints: [Bool]
     public var onSerialOutput: (Word) -> Void = {_ in}
+    public var onStandardOutput: (Word) -> Void = {_ in}
+    public var onStandardInput: () -> Word = { 0 }
+    
+    public enum Syscall: Int {
+        case getc
+    }
     
     public var backtrace: [Word] {
         var result: [Word] = []
@@ -351,6 +357,8 @@ public class TackVirtualMachine: NSObject {
             try sxt8(dst, src)
         case .inlineAssembly(let asm):
             try inlineAssembly(asm)
+        case .syscall(let n, let ptr):
+            try syscall(n, ptr)
         }
         
         if !isHalted {
@@ -893,5 +901,28 @@ public class TackVirtualMachine: NSObject {
         default:
             throw TackVirtualMachineError.inlineAssemblyNotSupported
         }
+    }
+    
+    private func syscall(_ n_: Register, _ ptr_: Register) throws {
+        let n = Int(load(address: try getRegister(n_)))
+        let ptr = load(address: try getRegister(ptr_))
+        print("syscall(\(n), \(ptr))")
+        
+        switch Syscall(rawValue: n) {
+        case .none:
+            try breakPoint()
+            
+        case .getc:
+            getc(ptr)
+        }
+    }
+    
+    private func breakPoint() throws {
+        try inlineAssembly("BREAK")
+    }
+    
+    private func getc(_ ptr: Word) {
+        let value = onStandardInput()
+        store(value: value, address: ptr)
     }
 }

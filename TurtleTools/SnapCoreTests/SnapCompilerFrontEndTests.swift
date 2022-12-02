@@ -110,6 +110,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         public let runtimeSupport: String?
         public let shouldRunSpecificTest: String?
         public let onSerialOutput: (Word) -> Void
+        public var onStandardOutput: (Word) -> Void
+        public var onStandardInput: () -> Word
         public let injectModules: [String:String]
         
         public init(isVerboseLogging: Bool = false,
@@ -119,6 +121,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
                     runtimeSupport: String? = nil,
                     shouldRunSpecificTest: String? = nil,
                     onSerialOutput: @escaping (Word) -> Void = {_ in},
+                    onStandardOutput: @escaping (Word) -> Void = {_ in},
+                    onStandardInput: @escaping () -> Word = { 0 },
                     injectModules: [String:String] = [:]) {
             self.isVerboseLogging = isVerboseLogging
             self.isBoundsCheckEnabled = isBoundsCheckEnabled
@@ -127,6 +131,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             self.runtimeSupport = runtimeSupport
             self.shouldRunSpecificTest = shouldRunSpecificTest
             self.onSerialOutput = onSerialOutput
+            self.onStandardOutput = onStandardOutput
+            self.onStandardInput = onStandardInput
             self.injectModules = injectModules
         }
     }
@@ -161,6 +167,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         
         let vm = TackVirtualMachine(tackProgram)
         vm.onSerialOutput = options.onSerialOutput
+        vm.onStandardInput = options.onStandardInput
+        vm.onStandardOutput = options.onStandardOutput
 
         let debugger = TackDebugger(vm, memoryLayoutStrategy)
         debugger.symbolsOfTopLevelScope = compiler.symbolsOfTopLevelScope
@@ -2986,5 +2994,33 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             """)
 
         XCTAssertEqual(0x1000, debugger.loadSymbolPointer("a"))
+    }
+    
+    func test_EndToEndIntegration_syscall_invalid() throws {
+        let opts = Options(
+            shouldDefineCompilerIntrinsicFunctions: true,
+            isUsingStandardLibrary: true)
+        let debugger = try run(options: opts, program: """
+            var a: u16 = 0xffff
+            asm("BREAK")
+            let ptr: *void = undefined
+            __syscall(65535, ptr)
+            a = 0
+            """)
+        let addr = debugger.addressOfSymbol(try debugger.symbols!.resolve(identifier: "a"))
+        try debugger.vm.run()
+        XCTAssertEqual(0xffff, debugger.vm.load(address: addr))
+    }
+    
+    func test_EndToEndIntegration_syscall_getc() throws {
+        let opts = Options(
+            shouldDefineCompilerIntrinsicFunctions: true,
+            isUsingStandardLibrary: true,
+            onStandardInput: { 65 })
+        let debugger = try run(options: opts, program: """
+            let result = getc()
+            """)
+        
+        XCTAssertEqual(65, debugger.loadSymbolU8("result"))
     }
 }

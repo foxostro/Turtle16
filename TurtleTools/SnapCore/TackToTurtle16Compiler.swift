@@ -121,6 +121,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         case .gtu8(let c, let a, let b): return gtu8(anc, c, a, b)
         case .sxt8(let dst, let src): return sxt8(anc, dst, src)
         case .inlineAssembly(let asm): return try inlineAssembly(asm)
+        case .syscall(let n, let ptr): return syscall(anc, n, ptr)
         }
     }
     
@@ -1585,5 +1586,14 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
             return nil
         }
         return Seq(children: syntaxTree.children)
+    }
+    
+    func syscall(_ sourceAnchor: SourceAnchor?,
+                 _ n_: TackInstruction.Register,
+                 _ ptr_: TackInstruction.Register) -> AbstractSyntaxTreeNode? {
+        return Seq(sourceAnchor: sourceAnchor, children: [
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kNOP),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kHLT)
+        ])
     }
 }

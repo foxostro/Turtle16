@@ -103,6 +103,7 @@ public enum TackInstruction: Equatable, Hashable {
     case gtu8(Register, Register, Register)
     case sxt8(Register, Register)
     case inlineAssembly(String)
+    case syscall(Register, Register) // first register is the syscall number, second is a pointer to the arguments structure
     
     public var description: String {
         switch self {
@@ -176,6 +177,7 @@ public enum TackInstruction: Equatable, Hashable {
         case .gtu8(let c, let a, let b): return "GTU8 \(c.description), \(a.description), \(b.description)"
         case .sxt8(let dst, let src): return "SXT8 \(dst.description), \(src.description)"
         case .inlineAssembly(let asm): return "ASM \(makeInlineAssemblyDescription(asm))"
+        case .syscall(let n, let ptr): return "SYSCALL \(n.description), \(ptr.description)"
         }
     }
     

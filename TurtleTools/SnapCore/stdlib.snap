@@ -13,3 +13,14 @@ public func malloc[T]() -> *T {
     addrOfNextAllocation = addrOfNextAllocation + size
     return result
 }
+
+public func getc() -> u8 {
+    struct Arguments {
+        character: u8
+    }
+    let args = Arguments {
+        .character = 0
+    }
+    __syscall(0, &args bitcastAs *void)
+    return args.character
+}

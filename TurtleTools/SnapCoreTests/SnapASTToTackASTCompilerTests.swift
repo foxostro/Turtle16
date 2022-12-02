@@ -3757,4 +3757,6 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         ])
         XCTAssertEqual(actual, expected)
     }
+    
+    // TODO: Need unit tests which exercise the syscall path on Turtle16. On this target, the SYSCALL Tack instruction ought to compile to basically a function call to a system call handler in the Turtle16 runtime.
 }

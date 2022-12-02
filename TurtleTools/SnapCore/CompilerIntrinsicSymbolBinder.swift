@@ -15,9 +15,10 @@ public class CompilerIntrinsicSymbolBinder: NSObject {
     
     public func bindCompilerIntrinsics(symbols symbols0: SymbolTable) -> SymbolTable {
         let symbols1 = bindCompilerInstrinsicHlt(symbols: symbols0)
-        let symbols2 = bindCompilerIntrinsicRangeType(symbols: symbols1)
-        let symbols3 = bindCompilerIntrinsicSliceType(symbols: symbols2)
-        return symbols3
+        let symbols2 = bindCompilerInstrinsicSyscall(symbols: symbols1)
+        let symbols3 = bindCompilerIntrinsicRangeType(symbols: symbols2)
+        let symbols4 = bindCompilerIntrinsicSliceType(symbols: symbols3)
+        return symbols4
     }
     
     func bindCompilerIntrinsicSliceType(symbols: SymbolTable) -> SymbolTable {
@@ -42,9 +43,20 @@ public class CompilerIntrinsicSymbolBinder: NSObject {
         return symbols
     }
     
-    func bindCompilerInstrinsicHlt(symbols: SymbolTable) -> SymbolTable{
+    func bindCompilerInstrinsicHlt(symbols: SymbolTable) -> SymbolTable {
         let name = "hlt"
         let typ: SymbolType = .function(FunctionType(name: name, returnType: .void, arguments: []))
+        let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage, visibility: .privateVisibility)
+        symbols.bind(identifier: name, symbol: symbol)
+        return symbols
+    }
+    
+    func bindCompilerInstrinsicSyscall(symbols: SymbolTable) -> SymbolTable {
+        let name = "__syscall"
+        let typ: SymbolType = .function(FunctionType(name: name, returnType: .void, arguments: [
+            .arithmeticType(.immutableInt(.u16)),
+            .pointer(.void)
+        ]))
         let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage, visibility: .privateVisibility)
         symbols.bind(identifier: name, symbol: symbol)
         return symbols

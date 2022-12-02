@@ -19,6 +19,7 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
     var nextRegisterIndex = 0
     let kOOB = "__oob"
     let kHalt = "hlt"
+    let kSyscall = "__syscall"
     
     let kUnionPayloadOffset: Int
     let kUnionTypeTagOffset: Int
@@ -116,6 +117,14 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         if options.shouldDefineCompilerIntrinsicFunctions {
             result.append(Subroutine(identifier: kHalt, children: [
                 TackInstructionNode(.hlt)
+            ]))
+            result.append(Subroutine(identifier: kSyscall, children: [
+                TackInstructionNode(.enter(0)),
+                TackInstructionNode(.addi16(.vr(0), .fp, 8)), // syscall number
+                TackInstructionNode(.addi16(.vr(1), .fp, 7)), // pointer to argument struct
+                TackInstructionNode(.syscall(.vr(0), .vr(1))),
+                TackInstructionNode(.leave),
+                TackInstructionNode(.ret)
             ]))
         }
         

@@ -2950,18 +2950,27 @@ func foo() {
         XCTAssertEqual(debugger?.loadSymbolU16("a"), 42)
     }
     
-    func DISABLED_test_EndToEndIntegration_InferReturnTypeVoidLeadsToCompilerCrash() {
-        // We're going to infer a return type of void for `myFunction' which
-        // means `p' has a return type of void. The compiler then proceeds to
-        // crash in peekRegister() while trying to compile this bad assignment.
-        let debugger = run(program: """
+    func test_EndToEndIntegration_InferReturnTypeVoidLeadsToCompilerCrash() {
+        // This test tracks a fix for a bug where we try to assign a `void' type
+        // to a variable with inferred type `void'. The function myFunction()
+        // has an inferred type `void' and so `p' also has the type `void' The
+        // two types are equal and so the assignment was deemed acceptable.
+        // However, when we later underflow the compiler's register stack when
+        // we try to pop the stack to get the register containing its value.
+        // This leads to a crash in peekRegister(). The solution is to add a
+        // case to ban conversions from `void' to `void'.
+        let compiler = SnapToTurtle16Compiler()
+        compiler.compile(program: """
             func myFunction() {
-                return 1000
             }
             let p = myFunction()
             """)
         
-        XCTAssertEqual(debugger?.loadSymbolU16("p"), 42)
+        XCTAssertTrue(compiler.hasError)
+        XCTAssertEqual(compiler.errors.count, 1)
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.text, "myFunction()")
+        XCTAssertEqual(compiler.errors.first?.sourceAnchor?.lineNumbers, 2..<3)
+        XCTAssertEqual(compiler.errors.first?.message, "cannot assign value of type `void' to type `void'")
     }
     
     func test_EndToEndIntegration_UseGenericTypeVariableInFunction() {

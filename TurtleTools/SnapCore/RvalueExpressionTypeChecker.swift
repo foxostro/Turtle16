@@ -378,7 +378,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         }
         
         // If the types match exactly then the conversion is acceptable.
-        if rtype == ltype {
+        if rtype == ltype && rtype != .void {
             return .acceptable(ltype)
         }
         

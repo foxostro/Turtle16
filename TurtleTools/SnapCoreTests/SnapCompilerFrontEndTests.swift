@@ -3012,15 +3012,28 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         XCTAssertEqual(0xffff, debugger.vm.load(address: addr))
     }
     
-    func test_EndToEndIntegration_syscall_getc() throws {
+    func test_EndToEndIntegration_syscall_read() throws {
         let opts = Options(
             shouldDefineCompilerIntrinsicFunctions: true,
             isUsingStandardLibrary: true,
             onStandardInput: { 65 })
         let debugger = try run(options: opts, program: """
-            let result = getc()
+            let result = read()
             """)
         
         XCTAssertEqual(65, debugger.loadSymbolU8("result"))
+    }
+    
+    func test_EndToEndIntegration_syscall_write() throws {
+        var output: Word? = nil
+        let opts = Options(
+            shouldDefineCompilerIntrinsicFunctions: true,
+            isUsingStandardLibrary: true,
+            onStandardOutput: { output = $0 })
+        _ = try run(options: opts, program: """
+            write(65)
+            """)
+        
+        XCTAssertEqual(output, 65)
     }
 }

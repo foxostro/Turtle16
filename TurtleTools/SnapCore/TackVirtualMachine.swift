@@ -38,7 +38,8 @@ public class TackVirtualMachine: NSObject {
     public var onStandardInput: () -> Word = { 0 }
     
     public enum Syscall: Int {
-        case getc
+        case read
+        case write
     }
     
     public var backtrace: [Word] {
@@ -912,8 +913,11 @@ public class TackVirtualMachine: NSObject {
         case .none:
             try breakPoint()
             
-        case .getc:
-            getc(ptr)
+        case .read:
+            read(ptr)
+            
+        case .write:
+            write(ptr)
         }
     }
     
@@ -921,8 +925,13 @@ public class TackVirtualMachine: NSObject {
         try inlineAssembly("BREAK")
     }
     
-    private func getc(_ ptr: Word) {
+    private func read(_ ptr: Word) {
         let value = onStandardInput()
         store(value: value, address: ptr)
+    }
+    
+    private func write(_ ptr: Word) {
+        let value = load(address: ptr)
+        onStandardOutput(value)
     }
 }

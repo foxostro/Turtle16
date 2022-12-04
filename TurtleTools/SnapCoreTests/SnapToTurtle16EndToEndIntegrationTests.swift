@@ -12,7 +12,7 @@ import Turtle16SimulatorCore
 import TurtleCore
 
 class SnapToTurtle16EndToEndIntegrationTests: XCTestCase {
-    let kRuntime = "runtime"
+    let kRuntime = "runtime_Turtle16"
     let kUnionPayloadOffset = 1
     
     func testEmptyProgram() throws {

@@ -191,6 +191,7 @@
 		6F5337352474BE7D00CFD33C /* VarDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5337342474BE7D00CFD33C /* VarDeclarationTests.swift */; };
 		6F5462F3253C0560005DDAB6 /* TraitDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5462F2253C0560005DDAB6 /* TraitDeclaration.swift */; };
 		6F546311253D3B5F005DDAB6 /* ImplFor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F546310253D3B5F005DDAB6 /* ImplFor.swift */; };
+		6F565902293D641200AC1679 /* runtime_TackVM.snap in Resources */ = {isa = PBXBuildFile; fileRef = 6F565901293D641100AC1679 /* runtime_TackVM.snap */; };
 		6F603CB02515BB7900B2C54E /* ForIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F603CAF2515BB7900B2C54E /* ForIn.swift */; };
 		6F6956FB24F965B3006D66FC /* UInt8Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6956FA24F965B3006D66FC /* UInt8Extension.swift */; };
 		6F6AED40251696C5002E3AC5 /* Impl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6AED3F251696C5002E3AC5 /* Impl.swift */; };
@@ -207,7 +208,7 @@
 		6F7C14EA259A94C30034C7D0 /* EX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7C14E9259A94C30034C7D0 /* EX.swift */; };
 		6F7C14FC259A94E40034C7D0 /* EXTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7C14FB259A94E40034C7D0 /* EXTests.swift */; };
 		6F7D951826753D81003889FB /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7D951726753D81003889FB /* Document.swift */; };
-		6F7E16D427F3A3660067D059 /* runtime.snap in Resources */ = {isa = PBXBuildFile; fileRef = 6F7E16D327F3A3660067D059 /* runtime.snap */; };
+		6F7E16D427F3A3660067D059 /* runtime_Turtle16.snap in Resources */ = {isa = PBXBuildFile; fileRef = 6F7E16D327F3A3660067D059 /* runtime_Turtle16.snap */; };
 		6F7F356A24D2323F00BA8E37 /* stdlib.snap in Resources */ = {isa = PBXBuildFile; fileRef = 6F7F356924D2323F00BA8E37 /* stdlib.snap */; };
 		6F809DDE26615A860098A7FF /* InstructionMemoryHiTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F809DDD26615A860098A7FF /* InstructionMemoryHiTableViewDataSource.swift */; };
 		6F809DE026615A8D0098A7FF /* InstructionMemoryLoTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F809DDF26615A8D0098A7FF /* InstructionMemoryLoTableViewDataSource.swift */; };
@@ -707,6 +708,7 @@
 		6F5337342474BE7D00CFD33C /* VarDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VarDeclarationTests.swift; sourceTree = "<group>"; };
 		6F5462F2253C0560005DDAB6 /* TraitDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraitDeclaration.swift; sourceTree = "<group>"; };
 		6F546310253D3B5F005DDAB6 /* ImplFor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImplFor.swift; sourceTree = "<group>"; };
+		6F565901293D641100AC1679 /* runtime_TackVM.snap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = runtime_TackVM.snap; sourceTree = "<group>"; };
 		6F5A00E9231C6454003E7C7F /* SymbolTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolTable.swift; sourceTree = "<group>"; };
 		6F5A00ED231D029D003E7C7F /* Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
 		6F5A00F5231F63E0003E7C7F /* TokenNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenNumber.swift; sourceTree = "<group>"; };
@@ -737,7 +739,7 @@
 		6F7C14E9259A94C30034C7D0 /* EX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EX.swift; sourceTree = "<group>"; };
 		6F7C14FB259A94E40034C7D0 /* EXTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EXTests.swift; sourceTree = "<group>"; };
 		6F7D951726753D81003889FB /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
-		6F7E16D327F3A3660067D059 /* runtime.snap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = runtime.snap; sourceTree = "<group>"; };
+		6F7E16D327F3A3660067D059 /* runtime_Turtle16.snap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = runtime_Turtle16.snap; sourceTree = "<group>"; };
 		6F7F356924D2323F00BA8E37 /* stdlib.snap */ = {isa = PBXFileReference; lastKnownFileType = text; path = stdlib.snap; sourceTree = "<group>"; };
 		6F7F356D24D33C7700BA8E37 /* SourceAnchor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceAnchor.swift; sourceTree = "<group>"; };
 		6F7F356F24D33CC800BA8E37 /* SourceLineRangeMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceLineRangeMapper.swift; sourceTree = "<group>"; };
@@ -1289,7 +1291,8 @@
 				6F9201E72471DAC7009E1410 /* SnapCore.h */,
 				6F9201E82471DAC7009E1410 /* Info.plist */,
 				6F7F356924D2323F00BA8E37 /* stdlib.snap */,
-				6F7E16D327F3A3660067D059 /* runtime.snap */,
+				6F565901293D641100AC1679 /* runtime_TackVM.snap */,
+				6F7E16D327F3A3660067D059 /* runtime_Turtle16.snap */,
 			);
 			path = SnapCore;
 			sourceTree = "<group>";
@@ -1821,7 +1824,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6F7E16D427F3A3660067D059 /* runtime.snap in Resources */,
+				6F7E16D427F3A3660067D059 /* runtime_Turtle16.snap in Resources */,
+				6F565902293D641200AC1679 /* runtime_TackVM.snap in Resources */,
 				6F7F356A24D2323F00BA8E37 /* stdlib.snap in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

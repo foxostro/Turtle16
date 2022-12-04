@@ -12,7 +12,7 @@ import TurtleCore
 
 final class SnapCompilerFrontEndTests: XCTestCase {
     fileprivate typealias Word = TackVirtualMachine.Word
-    fileprivate let kRuntime = "runtime"
+    fileprivate let kRuntime = "runtime_TackVM"
     fileprivate let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
     fileprivate lazy var kUnionPayloadOffset: Int = {
         memoryLayoutStrategy.sizeof(type: .arithmeticType(.mutableInt(.u16)))
@@ -110,8 +110,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         public let runtimeSupport: String?
         public let shouldRunSpecificTest: String?
         public let onSerialOutput: (Word) -> Void
-        public var onStandardOutput: (Word) -> Void
-        public var onStandardInput: () -> Word
+        public var onSerialInput: () -> Word
         public let injectModules: [String:String]
         
         public init(isVerboseLogging: Bool = false,
@@ -121,8 +120,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
                     runtimeSupport: String? = nil,
                     shouldRunSpecificTest: String? = nil,
                     onSerialOutput: @escaping (Word) -> Void = {_ in},
-                    onStandardOutput: @escaping (Word) -> Void = {_ in},
-                    onStandardInput: @escaping () -> Word = { 0 },
+                    onSerialInput: @escaping () -> Word = { 0 },
                     injectModules: [String:String] = [:]) {
             self.isVerboseLogging = isVerboseLogging
             self.isBoundsCheckEnabled = isBoundsCheckEnabled
@@ -131,8 +129,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             self.runtimeSupport = runtimeSupport
             self.shouldRunSpecificTest = shouldRunSpecificTest
             self.onSerialOutput = onSerialOutput
-            self.onStandardOutput = onStandardOutput
-            self.onStandardInput = onStandardInput
+            self.onSerialInput = onSerialInput
             self.injectModules = injectModules
         }
     }
@@ -167,8 +164,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         
         let vm = TackVirtualMachine(tackProgram)
         vm.onSerialOutput = options.onSerialOutput
-        vm.onStandardInput = options.onStandardInput
-        vm.onStandardOutput = options.onStandardOutput
+        vm.onSerialInput = options.onSerialInput
 
         let debugger = TackDebugger(vm, memoryLayoutStrategy)
         debugger.symbolsOfTopLevelScope = compiler.symbolsOfTopLevelScope
@@ -3012,26 +3008,26 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         XCTAssertEqual(0xffff, debugger.vm.load(address: addr))
     }
     
-    func test_EndToEndIntegration_syscall_read() throws {
+    func test_EndToEndIntegration_syscall_getc() throws {
         let opts = Options(
             shouldDefineCompilerIntrinsicFunctions: true,
-            isUsingStandardLibrary: true,
-            onStandardInput: { 65 })
+            runtimeSupport: kRuntime,
+            onSerialInput: { 65 })
         let debugger = try run(options: opts, program: """
-            let result = read()
+            let result = getc()
             """)
         
         XCTAssertEqual(65, debugger.loadSymbolU8("result"))
     }
     
-    func test_EndToEndIntegration_syscall_write() throws {
+    func test_EndToEndIntegration_syscall_putc() throws {
         var output: Word? = nil
         let opts = Options(
             shouldDefineCompilerIntrinsicFunctions: true,
-            isUsingStandardLibrary: true,
-            onStandardOutput: { output = $0 })
+            runtimeSupport: kRuntime,
+            onSerialOutput: { output = $0 })
         _ = try run(options: opts, program: """
-            write(65)
+            putc(65)
             """)
         
         XCTAssertEqual(output, 65)

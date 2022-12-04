@@ -13,27 +13,3 @@ public func malloc[T]() -> *T {
     addrOfNextAllocation = addrOfNextAllocation + size
     return result
 }
-
-private let kSyscallRead = 0
-private let kSyscallWrite = 1
-
-public func read() -> u8 {
-    struct Arguments {
-        character: u8
-    }
-    let args = Arguments {
-        .character = 0
-    }
-    __syscall(kSyscallRead, &args bitcastAs *void)
-    return args.character
-}
-
-public func write(c: u8) {
-    struct Arguments {
-        character: u8
-    }
-    let args = Arguments {
-        .character = c
-    }
-    __syscall(kSyscallWrite, &args bitcastAs *void)
-}

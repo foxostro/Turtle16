@@ -40,7 +40,7 @@ public class SnapCommandLineDriver: NSObject {
     public var chooseSpecificTest: String? = nil
     public var shouldBeQuiet = false
     public var shouldEnableOptimizations = true
-    let kRuntime = "runtime"
+    let kRuntime = "runtime_Turtle16"
     let kMemoryMappedSerialOutputPort = MemoryAddress(0x0001)
     
     public required init(withArguments arguments: [String]) {

@@ -34,12 +34,11 @@ public class TackVirtualMachine: NSObject {
     private var memoryPages: [Int : [Word]] = [:]
     private var breakPoints: [Bool]
     public var onSerialOutput: (Word) -> Void = {_ in}
-    public var onStandardOutput: (Word) -> Void = {_ in}
-    public var onStandardInput: () -> Word = { 0 }
+    public var onSerialInput: () -> Word = { 0 }
     
     public enum Syscall: Int {
-        case read
-        case write
+        case getc
+        case putc
     }
     
     public var backtrace: [Word] {
@@ -907,17 +906,16 @@ public class TackVirtualMachine: NSObject {
     private func syscall(_ n_: Register, _ ptr_: Register) throws {
         let n = Int(load(address: try getRegister(n_)))
         let ptr = load(address: try getRegister(ptr_))
-        print("syscall(\(n), \(ptr))")
         
         switch Syscall(rawValue: n) {
         case .none:
             try breakPoint()
             
-        case .read:
-            read(ptr)
+        case .getc:
+            getc(ptr)
             
-        case .write:
-            write(ptr)
+        case .putc:
+            putc(ptr)
         }
     }
     
@@ -925,13 +923,13 @@ public class TackVirtualMachine: NSObject {
         try inlineAssembly("BREAK")
     }
     
-    private func read(_ ptr: Word) {
-        let value = onStandardInput()
+    private func getc(_ ptr: Word) {
+        let value = onSerialInput()
         store(value: value, address: ptr)
     }
     
-    private func write(_ ptr: Word) {
+    private func putc(_ ptr: Word) {
         let value = load(address: ptr)
-        onStandardOutput(value)
+        onSerialOutput(value)
     }
 }

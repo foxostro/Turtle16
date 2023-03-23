@@ -9,7 +9,7 @@
     (title "Turtle16: MEM + RAM")
     (date "2023-03-22")
     (rev "B")
-    (comment 4 "MEM pipeline stage and RAM")
+    (comment 4 "MEM pipeline stage, RAM, and ROM")
   )
 
   (layers

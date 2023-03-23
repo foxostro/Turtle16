@@ -1125,7 +1125,7 @@
     (property "Reference" "C8" (at 24.511 180.4416 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "100nF" (at 24.511 182.753 0)
+    (property "Value" "0.1μF" (at 24.511 182.753 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" (at 22.5552 185.42 0)

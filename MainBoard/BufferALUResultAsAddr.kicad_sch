@@ -6,8 +6,8 @@
 
   (title_block
     (title "MEM: Buffer ALUResult")
-    (date "2022-09-25")
-    (rev "C")
+    (date "2023-03-22")
+    (rev "B")
     (comment 4 "Buffer the effective address before it leaves the main board.")
   )
 
@@ -1120,10 +1120,10 @@
   (symbol (lib_id "Device:C") (at 240.03 152.4 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ff007e0)
-    (property "Reference" "C65" (at 242.951 151.2316 0)
+    (property "Reference" "C6" (at 242.951 151.2316 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "100nF" (at 242.951 153.543 0)
+    (property "Value" "0.1μF" (at 242.951 153.543 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" (at 240.9952 156.21 0)
@@ -1140,7 +1140,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/00000000-0000-0000-0000-000060af64de/00000000-0000-0000-0000-00005fb92c55"
-          (reference "C65") (unit 1)
+          (reference "C6") (unit 1)
         )
       )
     )
@@ -1149,7 +1149,7 @@
   (symbol (lib_id "power:VCC") (at 240.03 148.59 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ff007ec)
-    (property "Reference" "#PWR0343" (at 240.03 152.4 0)
+    (property "Reference" "#PWR040" (at 240.03 152.4 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "VCC" (at 240.4618 144.1958 0)
@@ -1165,7 +1165,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/00000000-0000-0000-0000-000060af64de/00000000-0000-0000-0000-00005fb92c55"
-          (reference "#PWR0343") (unit 1)
+          (reference "#PWR040") (unit 1)
         )
       )
     )
@@ -1174,7 +1174,7 @@
   (symbol (lib_id "power:GND") (at 240.03 158.75 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005ff007f5)
-    (property "Reference" "#PWR0344" (at 240.03 165.1 0)
+    (property "Reference" "#PWR041" (at 240.03 165.1 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 240.157 163.1442 0)
@@ -1190,7 +1190,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/00000000-0000-0000-0000-000060af64de/00000000-0000-0000-0000-00005fb92c55"
-          (reference "#PWR0344") (unit 1)
+          (reference "#PWR041") (unit 1)
         )
       )
     )
@@ -1199,7 +1199,7 @@
   (symbol (lib_id "power:GND") (at 157.48 114.3 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-000060746adb)
-    (property "Reference" "#PWR0342" (at 163.83 114.3 0)
+    (property "Reference" "#PWR039" (at 163.83 114.3 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 160.7312 114.173 90)
@@ -1215,7 +1215,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/00000000-0000-0000-0000-000060af64de/00000000-0000-0000-0000-00005fb92c55"
-          (reference "#PWR0342") (unit 1)
+          (reference "#PWR039") (unit 1)
         )
       )
     )
@@ -1224,7 +1224,7 @@
   (symbol (lib_id "74xx (kicad5):74AHCT16245_ba") (at 139.7 95.25 0) (mirror y) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00006219d879)
-    (property "Reference" "U62" (at 139.7 93.98 0)
+    (property "Reference" "U5" (at 139.7 93.98 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "74AHCT16245" (at 139.7 96.52 0)
@@ -1290,7 +1290,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/00000000-0000-0000-0000-000060af64de/00000000-0000-0000-0000-00005fb92c55"
-          (reference "U62") (unit 1)
+          (reference "U5") (unit 1)
         )
       )
     )
@@ -1299,7 +1299,7 @@
   (symbol (lib_id "power:GND") (at 146.05 128.27 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00006219d87f)
-    (property "Reference" "#PWR0341" (at 146.05 134.62 0)
+    (property "Reference" "#PWR038" (at 146.05 134.62 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 146.177 132.6642 0)
@@ -1315,7 +1315,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/00000000-0000-0000-0000-000060af64de/00000000-0000-0000-0000-00005fb92c55"
-          (reference "#PWR0341") (unit 1)
+          (reference "#PWR038") (unit 1)
         )
       )
     )
@@ -1324,7 +1324,7 @@
   (symbol (lib_id "power:VCC") (at 139.7 63.5 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00006219d885)
-    (property "Reference" "#PWR0340" (at 139.7 67.31 0)
+    (property "Reference" "#PWR037" (at 139.7 67.31 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "VCC" (at 140.1318 59.1058 0)
@@ -1340,7 +1340,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/00000000-0000-0000-0000-000060af64de/00000000-0000-0000-0000-00005fb92c55"
-          (reference "#PWR0340") (unit 1)
+          (reference "#PWR037") (unit 1)
         )
       )
     )

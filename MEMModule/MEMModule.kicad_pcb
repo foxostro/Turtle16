@@ -7,8 +7,8 @@
   (paper "USLetter")
   (title_block
     (title "Turtle16: MEM + RAM")
-    (date "2023-03-22")
-    (rev "B")
+    (date "2023-03-23")
+    (rev "B (e69e50a4)")
     (comment 4 "MEM pipeline stage, RAM, and ROM")
   )
 
@@ -88,7 +88,7 @@
       (mirror false)
       (drillshape 0)
       (scaleselection 1)
-      (outputdirectory "../Generated/MEMModule_Rev_A_4f569b36/")
+      (outputdirectory "../Generated/MEMModule_Rev_B_e69e50a4/")
     )
   )
 

@@ -1,0 +1,1 @@
+As of 3/22/23, at 8b4140adde068fa727f8fee9b63e7c8656dc348a, the MainBoard schematic and PCB is out of sync with the discrete modules. MEMModule has been updated to Rev B to include a built-in ROM and this change is NOT reflected on MainBoard.

@@ -16,8 +16,6 @@ While not a bug, a weakness of the CPU is the limited number of general-purpose 
 
 Another weakness of the CPU is that it does not include a hardware shifter. This means, unintuitively, that left and right shift are very slow operations implemented in terms of addition and bitwise logical operations. The addition of a one cycle barrel shifter would greatly improve performance.
 
-It may have been a mistake to have the RDY signal halt the Phi2 clock. If the Phi2 clock did not halt then peripheral devices could drive the bus independently of the CPU. This is necesary to implement DMA.
-
 There was a hardware bug on Rev A where a program must begin with a single leading NOP at address zero to ensure correct operation during the reset cycle. I'm not sure yet that I've completely solved this problem on Rev B.
 
 The data sheet for the '245 and '374 recommend a pull-up resistor on OE to ensure high impedance state during power up. I should look for places on the PCB, e.g. EX stage, which could benefit from such a change.

@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name EXModuleTestFixture)(type KiCad)(uri ${KIPRJMOD}/EXModuleTestFixture.pretty)(options "")(descr ""))
+)

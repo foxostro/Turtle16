@@ -24,6 +24,16 @@ struct BusOutputs {
   unsigned Addr;
   unsigned IO;
   unsigned OE;
+
+  BusOutputs();
+  BusOutputs memStore(bool isActive);
+  BusOutputs memLoad(bool isActive);
+  BusOutputs addr(unsigned addr);
+  BusOutputs data(unsigned data);
+  BusOutputs assertMemLoadStoreLines();
+  BusOutputs assertBankLines();
+  BusOutputs assertAddrLines();
+  BusOutputs assertDataLines();
 };
 
 struct BusOutputPorts {

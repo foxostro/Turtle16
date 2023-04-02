@@ -36,14 +36,7 @@ void testReset(unsigned ledState) {
   printf("Testing reset function...");
 
   // Assert the reset line
-  BusOutputs busOutputs = {
-    .MemLoad = 1,
-    .MemStore = 1,
-    .Bank = 0,
-    .Addr = 0,
-    .IO = 0,
-    .OE = ~0 // Do not assert any bits to the bus
-  };
+  BusOutputs busOutputs;
   TestFixtureOutputs testFixtureOutputs = {
     .PC_MEM = 0x0000,
     .Y_MEM = 0x0000,
@@ -85,14 +78,7 @@ void testNop(unsigned ledState) {
   printf("%s: ", __FUNCTION__);
   printf("Put a NOP through the MEM stage and check what it outputs to the text fixture...");
 
-  BusOutputs busOutputs = {
-    .MemLoad = 1,
-    .MemStore = 1,
-    .Bank = 0,
-    .Addr = 0,
-    .IO = 0,
-    .OE = ~0 // Do not assert any bits to the bus
-  };
+  BusOutputs busOutputs;
   TestFixtureOutputs testFixtureOutputs = {
     .PC_MEM = 0x0000,
     .Y_MEM = 0x0000,
@@ -142,38 +128,33 @@ void testWriteRAM(unsigned ledState) {
 
   // Bus transaction to Store a word to RAM.
   // Store 0xffff to RAM at address 0xfffe
-  BusOutputs busOutputs = {
-    .MemLoad = 1,
-    .MemStore = 0, // active low
-    .Bank = 0,
-    .Addr = 0xfffe,
-    .IO = 0xffff,
-    .OE = 0b010000 // Assert {MemLoad,MemStore} and Address and IO
-  };
+  BusOutputs busOutputs = BusOutputs()
+    .memStore(true)
+    .addr(0xfffe)
+    .data(0xffff)
+    .assertMemLoadStoreLines()
+    .assertAddrLines()
+    .assertDataLines();
   busOutputPorts.set(busOutputs);
 
   // Bus transaction to Store a word to RAM.
   // Store 0xabcd to RAM at address 0x1234
-  busOutputs = {
-    .MemLoad = 1,
-    .MemStore = 0, // active low
-    .Bank = 0,
-    .Addr = 0x1234,
-    .IO = 0xabcd,
-    .OE = 0b010000 // Assert {MemLoad,MemStore} and Address and IO
-  };
+  busOutputs = BusOutputs()
+    .memStore(true)
+    .addr(0x1234)
+    .data(0xabcd)
+    .assertMemLoadStoreLines()
+    .assertAddrLines()
+    .assertDataLines();
   busOutputPorts.set(busOutputs);
 
   // Bus transaction to Load a word from RAM.
   // Load from RAM at address 0xfffe
-  busOutputs = (BusOutputs){
-    .MemLoad = 0, // active low
-    .MemStore = 1,
-    .Bank = 0b111,
-    .Addr = 0xfffe,
-    .IO = 0,
-    .OE = 0b010011 // Assert {MemLoad,MemStore} and Address
-  };
+  busOutputs = BusOutputs()
+    .memLoad(true)
+    .addr(0xfffe)
+    .assertMemLoadStoreLines()
+    .assertAddrLines();
   busOutputPorts.set(busOutputs);
 
   // Read the value from the bus.
@@ -187,15 +168,12 @@ void testWriteRAM(unsigned ledState) {
   assertEqual(busOutputs.MemStore, actualBusInputs.MemStore, "Expect to be able to drive MemLoad from the peripheral side of the bus.");
 
   // Bus transaction to Load a second word from RAM.
-  // Load from RAM at address 0xfffe
-  busOutputs = (BusOutputs){
-    .MemLoad = 0, // active low
-    .MemStore = 1,
-    .Bank = 0b111,
-    .Addr = 0x1234,
-    .IO = 0,
-    .OE = 0b010011 // Assert {MemLoad,MemStore} and Address
-  };
+  // Load from RAM at address 0x1234
+  busOutputs = BusOutputs()
+    .memLoad(true)
+    .addr(0x1234)
+    .assertMemLoadStoreLines()
+    .assertAddrLines();
   busOutputPorts.set(busOutputs);
 
   // Read the second value from the bus.
@@ -211,21 +189,86 @@ void testWriteRAM(unsigned ledState) {
   printf("passed\n");
 }
 
-void testLoadStore() {
+void testLoad(unsigned ledState) {
   printf("%s: ", __FUNCTION__);
-  printf("Store a word to memory and load it again...");
+  printf("Simulate a LOAD instruction...");
+
+  // Set signals to put MEM into a Wait state.
+  // This ought to effectively disonnect MEM from the bus.
+  TestFixtureOutputs testFixtureOutputs1 = {
+    .PC_MEM = 0x0000,
+    .Y_MEM = 0x0000,
+    .StoreOp_MEM = 0x0000,
+    .led = ledState,
+    .Ctl_MEM = 0b1111111,
+    .SelC_MEM = 0b111,
+    .rdy = 1, // not ready
+    .rst = 1,
+    .phi1 = 0,
+    .phi2 = 0,
+    .flush_if = 1,
+  };
+  testFixtureOutputPorts.set(testFixtureOutputs1);
+
+  // Bus transaction to Store a word to RAM and then release the bus.
+  busOutputPorts.set(BusOutputs()
+    .memStore(true)
+    .addr(0x1234)
+    .data(0xffff)
+    .assertMemLoadStoreLines()
+    .assertAddrLines()
+    .assertDataLines());
+  busOutputPorts.set(BusOutputs());
+
+  // Simulate the control signals of a LOAD instruction as it passes through the MEM stage of the pipeline.
+  TestFixtureOutputs testFixtureOutputs = {
+    .PC_MEM = 0x0000,
+    .Y_MEM = 0x1234,
+    .StoreOp_MEM = 0x0000,
+    .led = ledState,
+    .Ctl_MEM = 0b1111110, // {WBEN, WRH, WRL, WriteBackSrc, AssertStoreOp, MemStore, MemLoad}
+    .SelC_MEM = 0b111,
+    .rdy = 0, // is ready
+    .rst = 1,
+    .phi1 = 0,
+    .phi2 = 0,
+    .flush_if = 1,
+  };
+  testFixtureOutputPorts.set(testFixtureOutputs);
+
+  // Tick the clock
+  testFixtureOutputs.phi1 = 1;
+  testFixtureOutputs.phi2 = 1;
+  testFixtureOutputPorts.set(testFixtureOutputs);
+  testFixtureOutputs.phi1 = 0;
+  testFixtureOutputs.phi2 = 0;
+  testFixtureOutputPorts.set(testFixtureOutputs);
+  
+  // Read the MEM module output signals
+  TestFixtureInputs actualTestFixtureInputs = testFixtureInputPorts.read();
+  assertEqual(0b1111, actualTestFixtureInputs.Ctl_WB, "Expect that no control signals are asserted.");
+  assertEqual(0b111, actualTestFixtureInputs.SelC_WB, "Expect that SelC is passed through unmodified.");
+  assertEqual(0x1234, actualTestFixtureInputs.Y_WB, "Expect that the memory address is passed through unmodified.");
+  assertEqual(0xffff, actualTestFixtureInputs.StoreOp_WB, "Expect that the word read is the same the one placed in RAM.");
+
+  printf("passed\n");
+}
+
+void testStore(unsigned ledState) {
+  printf("%s: ", __FUNCTION__);
+  printf("Simulate a STORE instruction...");
   assertEqual(0, 1, "unimplemented");
   printf("passed\n");
 }
 
-void testInstructionFetch() {
+void testInstructionFetch(unsigned ledState) {
   printf("%s: ", __FUNCTION__);
   printf("Fetch an instruction from RAM..");
   assertEqual(0, 1, "unimplemented");
   printf("passed\n");
 }
 
-void testModifyBankRegister() {
+void testModifyBankRegister(unsigned ledState) {
   printf("%s: ", __FUNCTION__);
   printf("Check that we can memory-mapped bank register...");
   assertEqual(0, 1, "unimplemented");
@@ -236,7 +279,8 @@ void (*allTests[])(unsigned) = {
   testReset,
   testNop,
   testWriteRAM,
-  // testLoadStore,
+  testLoad,
+  // testStore,
   // testInstructionFetch,
   // testModifyBankRegister,
 };

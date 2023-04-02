@@ -41,6 +41,63 @@ BusInputs BusInputPorts::read() {
   return updateBusInputs(*this);
 }
 
+BusOutputs::BusOutputs() :
+  MemLoad(1),
+  MemStore(1),
+  Bank(0),
+  Addr(0),
+  IO(0),
+  OE(0b111111) {
+}
+
+BusOutputs BusOutputs::memStore(bool isActive) {
+  BusOutputs result = *this;
+  result.MemStore = isActive ? 0 : 1; // active low
+  return result;
+}
+
+BusOutputs BusOutputs::memLoad(bool isActive) {
+  BusOutputs result = *this;
+  result.MemLoad = isActive ? 0 : 1; // active low
+  return result;
+}
+
+BusOutputs BusOutputs::addr(unsigned value) {
+  BusOutputs result = *this;
+  result.Addr = value;
+  return result;
+}
+
+BusOutputs BusOutputs::data(unsigned value) {
+  BusOutputs result = *this;
+  result.IO = value;
+  return result;
+}
+
+BusOutputs BusOutputs::assertMemLoadStoreLines() {
+  BusOutputs result = *this;
+  result.OE &= 0b011111;
+  return result;
+}
+
+BusOutputs BusOutputs::assertBankLines() {
+  BusOutputs result = *this;
+  result.OE &= 0b101111;
+  return result;
+}
+
+BusOutputs BusOutputs::assertAddrLines() {
+  BusOutputs result = *this;
+  result.OE &= 0b110011;
+  return result;
+}
+
+BusOutputs BusOutputs::assertDataLines() {
+  BusOutputs result = *this;
+  result.OE &= 0b111100;
+  return result;
+}
+
 void BusOutputPorts::initializeHardware() {
   pinMode(SI,   OUTPUT);
   pinMode(RCLK, OUTPUT);

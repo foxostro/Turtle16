@@ -16,8 +16,8 @@ static inline void strobeHigh(int pin) {
 
 template<typename InputPorts>
 unsigned readInputBit(const InputPorts &inputPorts) {
-  strobeHigh(inputPorts.SCK);
   unsigned value = digitalRead(inputPorts.SO)==LOW ? 0 : 1;
+  strobeHigh(inputPorts.SCK);
   return value;
 }
 

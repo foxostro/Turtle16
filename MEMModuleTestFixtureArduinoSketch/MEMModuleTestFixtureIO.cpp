@@ -17,8 +17,7 @@ static TestFixtureInputs updateTestFixtureInputs(const TestFixtureInputPorts &in
 
   // Rev A Hardware Requires the Input bits to be read in this order.
   // These are named after the corresponding nets in the KiCad schematic:
-  //unsigned unused = readInputBit(inputPorts);
-  //printf("unused: %x\n", unused);
+  unsigned unused = readInputBit(inputPorts);
   unsigned SelC_WB = readInputWord(3, inputPorts);
   unsigned Ctl_WB = readInputWord(4, inputPorts);
   unsigned StoreOp_WB = readInputWord(16, inputPorts);

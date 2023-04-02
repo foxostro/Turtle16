@@ -18,7 +18,6 @@ template<typename InputPorts>
 unsigned readInputBit(const InputPorts &inputPorts) {
   strobeHigh(inputPorts.SCK);
   unsigned value = digitalRead(inputPorts.SO)==LOW ? 0 : 1;
-  printf("readInputBit: %d\n", value);
   return value;
 }
 
@@ -26,10 +25,10 @@ template<typename InputPorts>
 unsigned readInputWord(int numBits, const InputPorts &inputPorts) {
   unsigned value = 0;
   for (int i = 0; i < numBits; ++i) {
-    strobeHigh(inputPorts.SCK);
     unsigned bit = digitalRead(inputPorts.SO);
     value <<= 1;
     value |= bit;
+    strobeHigh(inputPorts.SCK);
   }
   return value;
 }

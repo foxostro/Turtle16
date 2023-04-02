@@ -7,8 +7,8 @@
   (paper "USLetter")
   (title_block
     (title "Turtle16: MEM + RAM")
-    (date "2023-03-23")
-    (rev "B (e69e50a4)")
+    (date "2023-03-30")
+    (rev "C")
     (comment 4 "MEM pipeline stage, RAM, and ROM")
   )
 
@@ -7657,7 +7657,7 @@
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 7839acd8-75f7-40e2-932b-cd7a45290c5b)
     )
-    (fp_text value "Ctl_MEM" (at 2.54 -1.33 90) (layer "F.SilkS")
+    (fp_text value "Ctl_WB" (at 2.54 -1.33 90) (layer "F.SilkS")
         (effects (font (size 1 1) (thickness 0.15)) (justify left))
       (tstamp 9f68581d-12f0-46e5-a743-b4d6329f362b)
     )

@@ -1,0 +1,24 @@
+GAL22V10     ; Logic to control the memory-mapped bank register
+BankRegisterControl_RevA
+        
+A0    A1    A2    A3    A4    A5    A6    A7    A8    A9    A10    GND
+A11   A12   A13   A14   A15   B0    B1    B2    BS    CE1L  CE0L   VCC
+
+; LOW indicates that the RAM should be selected on the bus
+; This will happen when B=0 and the bank register is not selected.
+/CE0L = /B2 * /B1 * /B0 * BS
+
+; HIGH indicates that the RAM should be selected on the bus
+; This will happen when B=0 and the bank register is not selected.
+CE1L = /B2 * /B1 * /B0 * BS
+
+; LOW indicates that the Bank register should be selected on the bus.
+; This will happen when A=0xffff
+/BS = A15 * A14 * A13 * A12 * A11 * A10 * A9 * A8 * A7 * A6 * A5 * A4 * A3 * A2 * A1 * A0
+
+
+DESCRIPTION
+
+Logic to control the memory-mapped bank register for Rev A of the MEM module.
+Instruction RAM is selected for access on the system bus when the Bank register is 0
+The Bank register is selected for access on the system bus when the address is 0xffff, regardless of the currently selected bank.

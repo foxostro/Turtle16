@@ -316,7 +316,7 @@ int serial_putc(char c, FILE *) {
 }
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   fdevopen(&serial_putc, 0);
   printf("Starting...\n");
   pinMode(LED_BUILTIN, OUTPUT);

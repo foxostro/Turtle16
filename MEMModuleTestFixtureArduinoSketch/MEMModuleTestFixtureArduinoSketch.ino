@@ -37,32 +37,18 @@ void testReset(unsigned ledState) {
 
   // Assert the reset line
   BusOutputs busOutputs;
-  TestFixtureOutputs testFixtureOutputs = {
-    .PC_MEM = 0x0000,
-    .Y_MEM = 0x0000,
-    .StoreOp_MEM = 0x0000,
-    .led = ledState,
-    .Ctl_MEM = 0b1111111,
-    .SelC_MEM = 0b000,
-    .rdy = 1, // not ready
-    .rst = 0, // Reset cycle
-    .phi1 = 0,
-    .phi2 = 0,
-    .flush_if = 1,
-  };
+  TestFixtureOutputs testFixtureOutputs = TestFixtureOutputs()
+    .ready(false)
+    .reset(true)
+    .ledState(ledState);
   busOutputPorts.set(busOutputs);
   testFixtureOutputPorts.set(testFixtureOutputs);
 
   // Pulse the clock
-  testFixtureOutputs.phi1 = 1;
-  testFixtureOutputs.phi2 = 1;
-  testFixtureOutputPorts.set(testFixtureOutputs);
-  testFixtureOutputs.phi1 = 0;
-  testFixtureOutputs.phi2 = 0;
-  testFixtureOutputPorts.set(testFixtureOutputs);
+  testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);
 
   // De-assert the reset line
-  testFixtureOutputs.rst = 1;
+  testFixtureOutputs = testFixtureOutputs.reset(false);
   testFixtureOutputPorts.set(testFixtureOutputs);
   
   BusInputs actualBusInputs = busInputPorts.read();
@@ -79,19 +65,8 @@ void testNop(unsigned ledState) {
   printf("Put a NOP through the MEM stage and check what it outputs to the text fixture...");
 
   BusOutputs busOutputs;
-  TestFixtureOutputs testFixtureOutputs = {
-    .PC_MEM = 0x0000,
-    .Y_MEM = 0x0000,
-    .StoreOp_MEM = 0x0000,
-    .led = ledState,
-    .Ctl_MEM = 0b1111111,
-    .SelC_MEM = 0b111,
-    .rdy = 0, // is ready
-    .rst = 1,
-    .phi1 = 1,
-    .phi2 = 1,
-    .flush_if = 1,
-  };
+  TestFixtureOutputs testFixtureOutputs = TestFixtureOutputs()
+    .ledState(ledState);
   busOutputPorts.set(busOutputs);
   testFixtureOutputPorts.set(testFixtureOutputs);
 
@@ -111,19 +86,9 @@ void testWriteRAM(unsigned ledState) {
 
   // Set signals to put MEM into a Wait state.
   // This ought to effectively disonnect MEM from the bus.
-  TestFixtureOutputs testFixtureOutputs = {
-    .PC_MEM = 0x0000,
-    .Y_MEM = 0x0000,
-    .StoreOp_MEM = 0x0000,
-    .led = ledState,
-    .Ctl_MEM = 0b1111111,
-    .SelC_MEM = 0b111,
-    .rdy = 1, // not ready
-    .rst = 1,
-    .phi1 = 0,
-    .phi2 = 0,
-    .flush_if = 1,
-  };
+  TestFixtureOutputs testFixtureOutputs = TestFixtureOutputs()
+    .ready(false)
+    .ledState(ledState);
   testFixtureOutputPorts.set(testFixtureOutputs);
 
   // Bus transaction to Store a word to RAM.
@@ -195,20 +160,9 @@ void testLoad(unsigned ledState) {
 
   // Set signals to put MEM into a Wait state.
   // This ought to effectively disonnect MEM from the bus.
-  TestFixtureOutputs testFixtureOutputs1 = {
-    .PC_MEM = 0x0000,
-    .Y_MEM = 0x0000,
-    .StoreOp_MEM = 0x0000,
-    .led = ledState,
-    .Ctl_MEM = 0b1111111,
-    .SelC_MEM = 0b111,
-    .rdy = 1, // not ready
-    .rst = 1,
-    .phi1 = 0,
-    .phi2 = 0,
-    .flush_if = 1,
-  };
-  testFixtureOutputPorts.set(testFixtureOutputs1);
+  testFixtureOutputPorts.set(TestFixtureOutputs()
+    .ready(false)
+    .ledState(ledState));
 
   // Bus transaction to Store a word to RAM and then release the bus.
   busOutputPorts.set(BusOutputs()
@@ -220,29 +174,18 @@ void testLoad(unsigned ledState) {
     .assertDataLines());
   busOutputPorts.set(BusOutputs());
 
-  // Simulate the control signals of a LOAD instruction as it passes through the MEM stage of the pipeline.
-  TestFixtureOutputs testFixtureOutputs = {
-    .PC_MEM = 0x0000,
-    .Y_MEM = 0x1234,
-    .StoreOp_MEM = 0x0000,
-    .led = ledState,
-    .Ctl_MEM = 0b1111110, // {WBEN, WRH, WRL, WriteBackSrc, AssertStoreOp, MemStore, MemLoad}
-    .SelC_MEM = 0b111,
-    .rdy = 0, // is ready
-    .rst = 1,
-    .phi1 = 0,
-    .phi2 = 0,
-    .flush_if = 1,
-  };
+  // Simulate the control signals of a LOAD instruction as it passes through
+  // the MEM stage of the pipeline.
+  auto testFixtureOutputs = TestFixtureOutputs()
+    .ready(true)
+    .y_mem(0x1234)
+    .memLoad(true)
+    .selC(0b111)
+    .ledState(ledState);
   testFixtureOutputPorts.set(testFixtureOutputs);
 
   // Tick the clock
-  testFixtureOutputs.phi1 = 1;
-  testFixtureOutputs.phi2 = 1;
-  testFixtureOutputPorts.set(testFixtureOutputs);
-  testFixtureOutputs.phi1 = 0;
-  testFixtureOutputs.phi2 = 0;
-  testFixtureOutputPorts.set(testFixtureOutputs);
+  testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);
   
   // Read the MEM module output signals
   TestFixtureInputs actualTestFixtureInputs = testFixtureInputPorts.read();

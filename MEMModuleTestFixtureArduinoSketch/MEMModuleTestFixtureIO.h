@@ -29,6 +29,15 @@ struct TestFixtureOutputs {
   unsigned phi1;
   unsigned phi2;
   unsigned flush_if;
+
+  TestFixtureOutputs();
+  TestFixtureOutputs ready(bool isActive) const;
+  TestFixtureOutputs reset(bool isActive) const;
+  TestFixtureOutputs tick(unsigned value) const;
+  TestFixtureOutputs y_mem(unsigned value) const;
+  TestFixtureOutputs memLoad(bool isActive) const;
+  TestFixtureOutputs selC(int index) const;
+  TestFixtureOutputs ledState(unsigned value) const;
 };
 
 struct TestFixtureOutputPorts {
@@ -39,4 +48,5 @@ struct TestFixtureOutputPorts {
 
   void initializeHardware() const;
   void set(const TestFixtureOutputs &outputs) const;
+  TestFixtureOutputs tick(const TestFixtureOutputs &testFixtureOutputs) const;
 };

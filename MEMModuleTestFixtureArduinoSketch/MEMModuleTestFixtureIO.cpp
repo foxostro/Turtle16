@@ -39,6 +39,63 @@ TestFixtureInputs TestFixtureInputPorts::read() const {
   return updateTestFixtureInputs(*this);
 }
 
+TestFixtureOutputs::TestFixtureOutputs() :
+  PC_MEM(0),
+  Y_MEM(0),
+  StoreOp_MEM(0),
+  led(0),
+  Ctl_MEM(0b1111111),
+  SelC_MEM(0b111),
+  rdy(0),
+  rst(1),
+  phi1(0),
+  phi2(0),
+  flush_if(1) {
+}
+
+TestFixtureOutputs TestFixtureOutputs::ready(bool isActive) const {
+  TestFixtureOutputs result = *this;
+  result.rdy = isActive ? 0 : 1;
+  return result;
+}
+
+TestFixtureOutputs TestFixtureOutputs::reset(bool isActive) const {
+  TestFixtureOutputs result = *this;
+  result.rst = isActive ? 0 : 1;
+  return result;
+}
+
+TestFixtureOutputs TestFixtureOutputs::tick(unsigned value) const {
+  TestFixtureOutputs result = *this;
+  result.phi1 = value;
+  result.phi2 = value;
+  return result;
+}
+
+TestFixtureOutputs TestFixtureOutputs::y_mem(unsigned value) const {
+  TestFixtureOutputs result = *this;
+  result.Y_MEM = value;
+  return result;
+}
+
+TestFixtureOutputs TestFixtureOutputs::memLoad(bool isActive) const {
+  TestFixtureOutputs result = *this;
+  result.Ctl_MEM &= 0b1111110;
+  return result;
+}
+
+TestFixtureOutputs TestFixtureOutputs::selC(int index) const {
+  TestFixtureOutputs result = *this;
+  result.SelC_MEM = index;
+  return result;
+}
+
+TestFixtureOutputs TestFixtureOutputs::ledState(unsigned value) const {
+  TestFixtureOutputs result = *this;
+  result.led = value;
+  return result;
+}
+
 void TestFixtureOutputPorts::initializeHardware() const {
   pinMode(SI,   OUTPUT);
   pinMode(RCLK, OUTPUT);
@@ -214,4 +271,13 @@ static void updateTestFixtureOutputs(const TestFixtureOutputPorts &outputPorts, 
 
 void TestFixtureOutputPorts::set(const TestFixtureOutputs &outputs) const {
   updateTestFixtureOutputs(*this, outputs);
+}
+
+TestFixtureOutputs TestFixtureOutputPorts::tick(const TestFixtureOutputs &testFixtureOutputs_) const {
+  TestFixtureOutputs testFixtureOutputs = testFixtureOutputs_;
+  testFixtureOutputs = testFixtureOutputs.tick(1);
+  set(testFixtureOutputs);
+  testFixtureOutputs = testFixtureOutputs.tick(0);
+  set(testFixtureOutputs);
+  return testFixtureOutputs;
 }

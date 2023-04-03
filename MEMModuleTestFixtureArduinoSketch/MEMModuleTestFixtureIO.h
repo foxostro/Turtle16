@@ -40,6 +40,8 @@ struct TestFixtureOutputs {
   TestFixtureOutputs memStore(bool isActive) const;
   TestFixtureOutputs selC(int index) const;
   TestFixtureOutputs ledState(unsigned value) const;
+  TestFixtureOutputs pc(unsigned value) const;
+  TestFixtureOutputs flushInstruction(bool isActive) const;
 };
 
 struct TestFixtureOutputPorts {

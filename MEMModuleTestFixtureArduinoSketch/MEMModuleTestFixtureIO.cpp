@@ -50,7 +50,7 @@ TestFixtureOutputs::TestFixtureOutputs() :
   rst(1),
   phi1(0),
   phi2(0),
-  flush_if(1) {
+  flush_if(0) {
 }
 
 TestFixtureOutputs TestFixtureOutputs::ready(bool isActive) const {
@@ -115,6 +115,18 @@ TestFixtureOutputs TestFixtureOutputs::selC(int index) const {
 TestFixtureOutputs TestFixtureOutputs::ledState(unsigned value) const {
   TestFixtureOutputs result = *this;
   result.led = value;
+  return result;
+}
+
+TestFixtureOutputs TestFixtureOutputs::pc(unsigned value) const {
+  TestFixtureOutputs result = *this;
+  result.PC_MEM = value;
+  return result;
+}
+
+TestFixtureOutputs TestFixtureOutputs::flushInstruction(bool isActive) const {
+  TestFixtureOutputs result = *this;
+  result.flush_if = isActive ? 0 : 1;
   return result;
 }
 

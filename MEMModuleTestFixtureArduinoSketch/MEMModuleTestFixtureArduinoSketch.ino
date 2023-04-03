@@ -178,7 +178,7 @@ void testLoad(unsigned ledState) {
   // the MEM stage of the pipeline.
   auto testFixtureOutputs = TestFixtureOutputs()
     .ready(true)
-    .y_mem(0x1234)
+    .addr(0x1234)
     .memLoad(true)
     .selC(0b111)
     .ledState(ledState);
@@ -200,7 +200,46 @@ void testLoad(unsigned ledState) {
 void testStore(unsigned ledState) {
   printf("%s: ", __FUNCTION__);
   printf("Simulate a STORE instruction...");
-  assertEqual(0, 1, "unimplemented");
+
+  // Simulate the control signals of a STORE instruction as it passes through
+  // the MEM stage of the pipeline.
+  auto testFixtureOutputs = TestFixtureOutputs()
+    .ready(true)
+    .addr(0xcafe)
+    .storeOp(0xbeef)
+    .selC(0b111)
+    .memStore(true)
+    .ledState(ledState);
+  testFixtureOutputPorts.set(testFixtureOutputs);
+
+  // Tick the clock
+  testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);
+  
+  // Read the MEM module output signals
+  TestFixtureInputs actualTestFixtureInputs = testFixtureInputPorts.read();
+  assertEqual(0b1111, actualTestFixtureInputs.Ctl_WB, "Expect that no control signals are asserted.");
+  assertEqual(0b111, actualTestFixtureInputs.SelC_WB, "Expect that SelC is passed through unmodified.");
+  assertEqual(0xcafe, actualTestFixtureInputs.Y_WB, "Expect that the memory address is passed through unmodified.");
+  assertEqual(0xbeef, actualTestFixtureInputs.StoreOp_WB, "Expect that the word read is the same the one placed in RAM.");
+
+  // Set signals to put MEM into a Wait state.
+  // This ought to effectively disonnect MEM from the bus.
+  testFixtureOutputPorts.set(TestFixtureOutputs()
+    .ready(false)
+    .ledState(ledState));
+
+  // Read the RAM to verify that it contains the expected value.
+  auto busOutputs = BusOutputs()
+    .memLoad(true)
+    .addr(0xcafe)
+    .assertMemLoadStoreLines()
+    .assertAddrLines();
+  busOutputPorts.set(busOutputs);
+
+  // Read the value from the bus.
+  BusInputs actualBusInputs = busInputPorts.read();
+  assertEqual(0xbeef, actualBusInputs.IO, "Expect to find the value in RAM");
+
   printf("passed\n");
 }
 
@@ -223,7 +262,7 @@ void (*allTests[])(unsigned) = {
   testNop,
   testWriteRAM,
   testLoad,
-  // testStore,
+  testStore,
   // testInstructionFetch,
   // testModifyBankRegister,
 };

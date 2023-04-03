@@ -72,15 +72,37 @@ TestFixtureOutputs TestFixtureOutputs::tick(unsigned value) const {
   return result;
 }
 
-TestFixtureOutputs TestFixtureOutputs::y_mem(unsigned value) const {
+TestFixtureOutputs TestFixtureOutputs::addr(unsigned value) const {
   TestFixtureOutputs result = *this;
   result.Y_MEM = value;
   return result;
 }
 
+TestFixtureOutputs TestFixtureOutputs::storeOp(unsigned value) const {
+  TestFixtureOutputs result = *this;
+  result.StoreOp_MEM = value;
+  return result;
+}
+
 TestFixtureOutputs TestFixtureOutputs::memLoad(bool isActive) const {
   TestFixtureOutputs result = *this;
-  result.Ctl_MEM &= 0b1111110;
+  if (isActive) {
+    result.Ctl_MEM &= 0b1111110;
+  }
+  else {
+    result.Ctl_MEM |= 0b0000001;
+  }
+  return result;
+}
+
+TestFixtureOutputs TestFixtureOutputs::memStore(bool isActive) const {
+  TestFixtureOutputs result = *this;
+  if (isActive) {
+    result.Ctl_MEM &= 0b1111001;
+  }
+  else {
+    result.Ctl_MEM |= 0b0000110;
+  }
   return result;
 }
 

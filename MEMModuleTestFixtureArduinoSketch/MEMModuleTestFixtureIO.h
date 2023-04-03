@@ -34,8 +34,10 @@ struct TestFixtureOutputs {
   TestFixtureOutputs ready(bool isActive) const;
   TestFixtureOutputs reset(bool isActive) const;
   TestFixtureOutputs tick(unsigned value) const;
-  TestFixtureOutputs y_mem(unsigned value) const;
+  TestFixtureOutputs addr(unsigned value) const;
+  TestFixtureOutputs storeOp(unsigned value) const;
   TestFixtureOutputs memLoad(bool isActive) const;
+  TestFixtureOutputs memStore(bool isActive) const;
   TestFixtureOutputs selC(int index) const;
   TestFixtureOutputs ledState(unsigned value) const;
 };

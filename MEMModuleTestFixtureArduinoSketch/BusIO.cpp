@@ -3,7 +3,7 @@
 #include "ShiftRegisterIO.h"
 #include "BusIO.h"
 
-void BusInputPorts::initializeHardware() {
+void BusInputPorts::initializeHardware() const {
   pinMode(PL,  OUTPUT);
   pinMode(SCK, OUTPUT);
   pinMode(SO,  INPUT);
@@ -37,7 +37,7 @@ static BusInputs updateBusInputs(const BusInputPorts &inputPorts) {
   return busInputs;
 }
 
-BusInputs BusInputPorts::read() {
+BusInputs BusInputPorts::read() const {
   return updateBusInputs(*this);
 }
 
@@ -98,7 +98,7 @@ BusOutputs BusOutputs::assertDataLines() {
   return result;
 }
 
-void BusOutputPorts::initializeHardware() {
+void BusOutputPorts::initializeHardware() const {
   pinMode(SI,   OUTPUT);
   pinMode(RCLK, OUTPUT);
   pinMode(SCK,  OUTPUT);
@@ -183,6 +183,6 @@ static void updateBusOutputs(const BusOutputPorts &outputPorts, const BusOutputs
   strobeHigh(outputPorts.RCLK);
 }
 
-void BusOutputPorts::set(const BusOutputs &outputs) {
+void BusOutputPorts::set(const BusOutputs &outputs) const {
   updateBusOutputs(*this, outputs);
 }

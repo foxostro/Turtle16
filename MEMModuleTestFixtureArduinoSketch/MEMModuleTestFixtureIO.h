@@ -13,8 +13,8 @@ struct TestFixtureInputPorts {
   int SCK;
   int SO;
   
-  void initializeHardware();
-  TestFixtureInputs read();
+  void initializeHardware() const;
+  TestFixtureInputs read() const;
 };
 
 struct TestFixtureOutputs {
@@ -37,6 +37,6 @@ struct TestFixtureOutputPorts {
   int SCK;
   int CLR;
 
-  void initializeHardware();
-  void set(const TestFixtureOutputs &outputs);
+  void initializeHardware() const;
+  void set(const TestFixtureOutputs &outputs) const;
 };

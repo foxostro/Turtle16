@@ -3,7 +3,7 @@
 #include "ShiftRegisterIO.h"
 #include "MEMModuleTestFixtureIO.h"
 
-void TestFixtureInputPorts::initializeHardware() {
+void TestFixtureInputPorts::initializeHardware() const {
   pinMode(PL,  OUTPUT);
   pinMode(SCK, OUTPUT);
   pinMode(SO,  INPUT);
@@ -35,11 +35,11 @@ static TestFixtureInputs updateTestFixtureInputs(const TestFixtureInputPorts &in
   return testFixtureInputs;
 }
 
-TestFixtureInputs TestFixtureInputPorts::read() {
+TestFixtureInputs TestFixtureInputPorts::read() const {
   return updateTestFixtureInputs(*this);
 }
 
-void TestFixtureOutputPorts::initializeHardware() {
+void TestFixtureOutputPorts::initializeHardware() const {
   pinMode(SI,   OUTPUT);
   pinMode(RCLK, OUTPUT);
   pinMode(SCK,  OUTPUT);
@@ -212,6 +212,6 @@ static void updateTestFixtureOutputs(const TestFixtureOutputPorts &outputPorts, 
   strobeHigh(outputPorts.RCLK);
 }
 
-void TestFixtureOutputPorts::set(const TestFixtureOutputs &outputs) {
+void TestFixtureOutputPorts::set(const TestFixtureOutputs &outputs) const {
   updateTestFixtureOutputs(*this, outputs);
 }

@@ -13,8 +13,8 @@ struct BusInputPorts {
   int SCK;
   int SO;
   
-  void initializeHardware();
-  BusInputs read();
+  void initializeHardware() const;
+  BusInputs read() const;
 };
 
 struct BusOutputs {
@@ -42,6 +42,6 @@ struct BusOutputPorts {
   int SCK;
   int CLR;
 
-  void initializeHardware();
-  void set(const BusOutputs &outputs);
+  void initializeHardware() const;
+  void set(const BusOutputs &outputs) const;
 };

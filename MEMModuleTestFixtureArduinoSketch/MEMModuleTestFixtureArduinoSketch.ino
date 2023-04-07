@@ -85,7 +85,7 @@ void testWriteRAM(unsigned ledState) {
   printf("Store to RAM from the system memory bus while MEM is held in a wait state...");
 
   // Set signals to put MEM into a Wait state.
-  // This ought to effectively disonnect MEM from the bus.
+  // This ought to effectively disconnect MEM from the bus.
   TestFixtureOutputs testFixtureOutputs = TestFixtureOutputs()
     .ready(false)
     .ledState(ledState);
@@ -159,7 +159,7 @@ void testLoad(unsigned ledState) {
   printf("Simulate a LOAD instruction...");
 
   // Set signals to put MEM into a Wait state.
-  // This ought to effectively disonnect MEM from the bus.
+  // This ought to effectively disconnect MEM from the bus.
   testFixtureOutputPorts.set(TestFixtureOutputs()
     .ready(false)
     .ledState(ledState));
@@ -223,7 +223,7 @@ void testStore(unsigned ledState) {
   assertEqual(0xbeef, actualTestFixtureInputs.StoreOp_WB, "Expect that the word read is the same the one placed in RAM.");
 
   // Set signals to put MEM into a Wait state.
-  // This ought to effectively disonnect MEM from the bus.
+  // This ought to effectively disconnect MEM from the bus.
   testFixtureOutputPorts.set(TestFixtureOutputs()
     .ready(false)
     .ledState(ledState));
@@ -248,7 +248,7 @@ void testInstructionFlushInstruction(unsigned ledState) {
   printf("Flush the instruction being fetched this clock...");
 
   // Set signals to put MEM into a Wait state.
-  // This ought to effectively disonnect MEM from the bus.
+  // This ought to effectively disconnect MEM from the bus.
   testFixtureOutputPorts.set(TestFixtureOutputs()
     .ready(false)
     .ledState(ledState));
@@ -286,7 +286,7 @@ void testInstructionFetch(unsigned ledState) {
   printf("Fetch an instruction from RAM...");
 
   // Set signals to put MEM into a Wait state.
-  // This ought to effectively disonnect MEM from the bus.
+  // This ought to effectively disconnect MEM from the bus.
   testFixtureOutputPorts.set(TestFixtureOutputs()
     .ready(false)
     .ledState(ledState));
@@ -320,8 +320,35 @@ void testInstructionFetch(unsigned ledState) {
 
 void testModifyBankRegister(unsigned ledState) {
   printf("%s: ", __FUNCTION__);
-  printf("Check that we can memory-mapped bank register...");
-  assertEqual(0, 1, "unimplemented");
+  printf("Check that we can modify the memory-mapped bank register...");
+
+  // Set signals to put MEM into a Wait state.
+  // This ought to effectively disconnect MEM from the bus.
+  TestFixtureOutputs testFixtureOutputs = TestFixtureOutputs()
+    .ready(false)
+    .ledState(ledState);
+  testFixtureOutputPorts.set(testFixtureOutputs);
+
+  // The bank register is memory-mapped at 0xffff.
+  BusOutputs busOutputs = BusOutputs()
+    .memStore(true)
+    .addr(0xffff)
+    .data(0b111)
+    .assertMemLoadStoreLines()
+    .assertAddrLines()
+    .assertDataLines();
+  busOutputPorts.set(busOutputs);
+
+  // Tick the clock
+  testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);
+
+  // Release the bus.
+  busOutputPorts.set(BusOutputs());
+
+  // Read the the bus.
+  BusInputs actualBusInputs = busInputPorts.read();
+  assertEqual(0b111, actualBusInputs.Bank, "Expect that the bank has been modified.");
+  
   printf("passed\n");
 }
 
@@ -333,7 +360,7 @@ void (*allTests[])(unsigned) = {
   testStore,
   testInstructionFlushInstruction,
   testInstructionFetch,
-  // testModifyBankRegister,
+  testModifyBankRegister,
 };
 
 void doAllTests() {

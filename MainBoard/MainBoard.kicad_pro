@@ -447,7 +447,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "specctra_dsn": "../../../Desktop/MainBoard.dsn",
+      "specctra_dsn": "../../../Desktop/MainBoard-withROM.dsn",
       "step": "",
       "vrml": ""
     },

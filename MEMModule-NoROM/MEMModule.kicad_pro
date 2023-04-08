@@ -447,7 +447,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "../../../../../Applications/KiCad/",
-      "specctra_dsn": "../../../Desktop/MEMModule.dsn",
+      "specctra_dsn": "../../../Desktop/MEMModule-NoROM.dsn",
       "step": "",
       "vrml": ""
     },

@@ -180,7 +180,7 @@ public class Turtle16Computer: NSObject, NSSecureCoding {
     }
     
     public func restore(from snapshot: Data) {
-        let decodedComputer = try! NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(snapshot) as! Turtle16Computer
+        let decodedComputer = try! NSKeyedUnarchiver.unarchivedObject(ofClass: Turtle16Computer.self, from: snapshot)!
         cpu = decodedComputer.cpu
         ram = decodedComputer.ram
         cachedDisassembly = nil

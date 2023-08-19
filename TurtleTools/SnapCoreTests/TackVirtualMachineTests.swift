@@ -13,6 +13,15 @@ final class TackVirtualMachineTests: XCTestCase {
     public typealias Word = TackVirtualMachine.Word
     fileprivate let kSizeOfSavedRegisters: Word = 7
     
+    func testGetRegister_InvalidRegister_LocalRegister() throws {
+        let program = TackProgram(instructions: [])
+        let vm = TackVirtualMachine(program)
+        XCTAssertThrowsError(try vm.getRegister(.vr(0))) { error in
+            XCTAssertEqual(error as? TackVirtualMachineError,
+                           TackVirtualMachineError.undefinedRegister(.vr(0)))
+        }
+    }
+    
     func testRunEmptyProgram() throws {
         let program = TackProgram(instructions: [], labels: [:])
         let vm = TackVirtualMachine(program)

@@ -9,7 +9,7 @@
 import Foundation
 import TurtleCore
 
-public enum TackVirtualMachineError: Error {
+public enum TackVirtualMachineError: Error, Equatable {
     case undefinedLabel(String)
     case undefinedRegister(TackInstruction.Register)
     case invalidArgument
@@ -139,10 +139,8 @@ public class TackVirtualMachine: NSObject {
             return value
             
         default:
-            guard let value = globalRegisters[reg] else {
-                throw TackVirtualMachineError.undefinedRegister(reg)
-            }
-            return value
+            // We should have set fp and sp in init() so this ought never fail.
+            return globalRegisters[reg]!
         }
     }
     

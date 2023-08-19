@@ -1835,4 +1835,64 @@ final class TackVirtualMachineTests: XCTestCase {
         XCTAssertTrue(vm.isBreakPoint(pc: vm.pc))
         XCTAssertFalse(vm.isHalted)
     }
+    
+    func testSyscall_getc() throws {
+        let syscallNumber = TackVirtualMachine.Syscall.getc.rawValue
+        let addressOfArgumentStructure = UInt16(274)
+        let program = TackProgram(instructions: [
+            // Write the syscall number to memory at 272, keep address in vr0.
+            .liu16(.vr(0), 272),
+            .liu16(.vr(2), syscallNumber),
+            .store(.vr(2), .vr(0), 0),
+            
+            // Write the argument pointer to memory at 273, keep address in vr1.
+            // The syscall writes the return value to memory at this address.
+            .liu16(.vr(1), 273),
+            .liu16(.vr(2), Int(addressOfArgumentStructure)),
+            .store(.vr(2), .vr(1), 0),
+            
+            // Call the virtual machine
+            .syscall(.vr(0), // syscall number
+                     .vr(1)),// pointer to argument structure
+        ], labels: [:])
+        let vm = TackVirtualMachine(program)
+        vm.onSerialInput = { 65 }
+        try vm.run()
+        let result = vm.load(address: addressOfArgumentStructure)
+        XCTAssertEqual(result, 65)
+    }
+    
+    func testSyscall_putc() throws {
+        let syscallNumber = TackVirtualMachine.Syscall.putc.rawValue
+        let addressOfArgumentStructure = UInt16(274)
+        let argument = 65
+        let program = TackProgram(instructions: [
+            // Write the syscall number to memory at 272, keep address in vr0.
+            .liu16(.vr(0), 272),
+            .liu16(.vr(2), syscallNumber),
+            .store(.vr(2), .vr(0), 0),
+            
+            // Write the argument to memory at 274.
+            .liu16(.vr(1), Int(addressOfArgumentStructure)),
+            .liu16(.vr(2), argument),
+            .store(.vr(2), .vr(1), 0),
+            
+            // Write the argument pointer to memory at 273, keep address in vr1.
+            // The syscall writes the return value to memory at this address.
+            .liu16(.vr(1), 273),
+            .liu16(.vr(2), Int(addressOfArgumentStructure)),
+            .store(.vr(2), .vr(1), 0),
+            
+            // Call the virtual machine
+            .syscall(.vr(0), // syscall number
+                     .vr(1)),// pointer to argument structure
+        ], labels: [:])
+        let vm = TackVirtualMachine(program)
+        var result: Int? = nil
+        vm.onSerialOutput = { value in
+            result = Int(value)
+        }
+        try vm.run()
+        XCTAssertEqual(result, argument)
+    }
 }

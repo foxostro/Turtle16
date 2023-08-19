@@ -37,6 +37,7 @@ public class TackVirtualMachine: NSObject {
     public var onSerialInput: () -> Word = { 0 }
     
     public enum Syscall: Int {
+        case invalid
         case getc
         case putc
     }
@@ -906,7 +907,7 @@ public class TackVirtualMachine: NSObject {
         let ptr = load(address: try getRegister(ptr_))
         
         switch Syscall(rawValue: n) {
-        case .none:
+        case .invalid, .none:
             try breakPoint()
             
         case .getc:

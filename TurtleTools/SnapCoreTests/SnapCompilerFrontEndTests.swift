@@ -2994,13 +2994,14 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     
     func test_EndToEndIntegration_syscall_invalid() throws {
         let opts = Options(
+            isVerboseLogging: true,
             shouldDefineCompilerIntrinsicFunctions: true,
             isUsingStandardLibrary: true)
         let debugger = try run(options: opts, program: """
             var a: u16 = 0xffff
             asm("BREAK")
             let ptr: *void = undefined
-            __syscall(65535, ptr)
+            __syscall(0, ptr)
             a = 0
             """)
         let addr = debugger.addressOfSymbol(try debugger.symbols!.resolve(identifier: "a"))

@@ -1,5 +1,7 @@
-private let kSyscallRead = 0
-private let kSyscallWrite = 1
+// Syscall numbers must match those in TackVirtualMachine.swift
+private let kSyscallInvalid = 0
+private let kSyscallRead = 1
+private let kSyscallWrite = 2
 
 public func getc() -> u8 {
     struct Arguments {

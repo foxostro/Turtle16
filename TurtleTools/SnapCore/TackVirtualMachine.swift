@@ -93,6 +93,11 @@ public class TackVirtualMachine: NSObject {
         breakPoints[Int(pc)] = value
     }
     
+    public func isBreakPoint(pc: Word) -> Bool {
+        assert(pc >= 0 && pc < program.instructions.count)
+        return breakPoints[Int(pc)]
+    }
+    
     public func wordToInt(_ word: Word) -> Int {
         let result: Int
         if word > (Word.max>>1) {

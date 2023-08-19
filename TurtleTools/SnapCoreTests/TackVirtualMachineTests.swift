@@ -1805,4 +1805,34 @@ final class TackVirtualMachineTests: XCTestCase {
         XCTAssertTrue(vm.pc == 2)
         XCTAssertTrue(vm.isHalted)
     }
+    
+    func testSyscall_Invalid() throws {
+        let syscallNumber = TackVirtualMachine.Syscall.invalid.rawValue
+        let addressOfArgumentStructure = 0
+        let program = TackProgram(instructions: [
+            // Write the syscall number to memory at 272, keep address in vr0.
+            .liu16(.vr(0), 272),
+            .liu16(.vr(2), syscallNumber),
+            .store(.vr(2), .vr(0), 0),
+            
+            // Write the argument pointer to memory at 273, keep address in vr1.
+            .liu16(.vr(1), 273),
+            .liu16(.vr(2), addressOfArgumentStructure),
+            .store(.vr(2), .vr(1), 0),
+            
+            // Call the virtual machine
+            .syscall(.vr(0), // syscall number
+                     .vr(1)),// pointer to argument structure
+            
+            .hlt
+        ], labels: [:])
+        let vm = TackVirtualMachine(program)
+        try vm.run()
+        
+        // The program will run until it hits the breakpoint, at which point
+        // the virtual machine will stop running and return.
+        // This is not the same as the machine's halt state.
+        XCTAssertTrue(vm.isBreakPoint(pc: vm.pc))
+        XCTAssertFalse(vm.isHalted)
+    }
 }

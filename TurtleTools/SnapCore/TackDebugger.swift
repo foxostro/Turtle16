@@ -100,7 +100,7 @@ public class TackDebugger: NSObject {
         let addr: Word
         switch symbol.storage {
         case .automaticStorage:
-            let fp = try! vm.getRegister(.fp)
+            let fp = try! vm.getRegister(w: .fp)
             if symbol.offset < 0 {
                 addr = fp &+ Word(-symbol.offset)
             }

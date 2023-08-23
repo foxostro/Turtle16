@@ -73,18 +73,6 @@ public enum TackInstruction: Equatable, Hashable {
         }
     }
     
-    public enum RegisterValue: Equatable, Hashable {
-        case w(UInt16), b(UInt8), o(Bool)
-        
-        public var description: String {
-            switch self {
-            case .w(let v): return "\(v)"
-            case .b(let v): return "\(v)"
-            case .o(let v): return "\(v)"
-            }
-        }
-    }
-    
     public enum Register16: Equatable, Hashable {
         case sp, fp, ra, w(Int)
         

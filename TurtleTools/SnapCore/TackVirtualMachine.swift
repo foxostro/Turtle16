@@ -24,6 +24,7 @@ public class TackVirtualMachine: NSObject {
     public typealias RegisterBoolean = TackInstruction.RegisterBoolean
     public typealias Register16 = TackInstruction.Register16
     public typealias Register8 = TackInstruction.Register8
+    public typealias RegisterType = TackInstruction.RegisterType
     public typealias Word = UInt16
     
     public let kMemoryMappedSerialOutputPort: Word = 0x0001
@@ -33,12 +34,53 @@ public class TackVirtualMachine: NSObject {
     public var pc: Word = 0
     public var nextPc: Word = 0
     public var isHalted = false
-    private var globalRegisters: [Register : Word] = [:]
-    public var registers: [[Register : Word]] = [[:]]
+    private var globalRegisters: [Register : RegisterValue] = [:]
+    public var registers: [[Register : RegisterValue]] = [[:]]
     private var memoryPages: [Int : [Word]] = [:]
     private var breakPoints: [Bool]
     public var onSerialOutput: (Word) -> Void = {_ in}
     public var onSerialInput: () -> Word = { 0 }
+    
+    public enum RegisterValue: Equatable, Hashable {
+        case w(UInt16), b(UInt8), o(Bool)
+        
+        public var type: RegisterType {
+            switch self {
+            case .w: return .w
+            case .b: return .b
+            case .o: return .o
+            }
+        }
+        
+        public var unwrap16: UInt16? {
+            switch self {
+            case .w(let w): return w
+            default:        return nil
+            }
+        }
+        
+        public var unwrap8: UInt8? {
+            switch self {
+            case .b(let b): return b
+            default:        return nil
+            }
+        }
+        
+        public var unwrapBool: Bool? {
+            switch self {
+            case .o(let o): return o
+            default:        return nil
+            }
+        }
+        
+        public var description: String {
+            switch self {
+            case .w(let v): return "\(v)"
+            case .b(let v): return "\(v)"
+            case .o(let v): return "\(v)"
+            }
+        }
+    }
     
     public enum Syscall: Int {
         case invalid
@@ -49,10 +91,10 @@ public class TackVirtualMachine: NSObject {
     public var backtrace: [Word] {
         var result: [Word] = []
         for currentRegisterSet in registers {
-            guard let ra = currentRegisterSet[.ra] else {
+            guard let registerRA = currentRegisterSet[.ra] else {
                 break
             }
-            result.append(ra)
+            result.append(registerRA.unwrap16!)
         }
         result.append(pc)
         return result
@@ -88,8 +130,8 @@ public class TackVirtualMachine: NSObject {
         self.program = program
         breakPoints = Array<Bool>(repeating: false, count: program.instructions.count)
         super.init()
-        setRegister(.w(.sp), 0)
-        setRegister(.w(.fp), 0)
+        setRegister(.sp, w: 0)
+        setRegister(.fp, w: 0)
     }
     
     public func setBreakPoint(pc: Word, value: Bool) {
@@ -124,6 +166,17 @@ public class TackVirtualMachine: NSObject {
         return result
     }
     
+    public func intToUInt8(_ value: Int) -> UInt8 {
+        let result: UInt8
+        if value < 0 {
+            result = UInt8(0) &- UInt8(-value)
+        }
+        else {
+            result = UInt8(value)
+        }
+        return result
+    }
+    
     public func signExtend8(_ value: Word) -> Word {
         var result = value
         result = result & 0x00ff
@@ -140,7 +193,19 @@ public class TackVirtualMachine: NSObject {
         return result
     }
     
-    public func getRegister(_ reg: Register) throws -> Word {
+    public func getRegister(w reg: Register16) throws -> UInt16 {
+        try getRegister(.w(reg)).unwrap16!
+    }
+    
+    public func getRegister(b reg: Register8) throws -> UInt8 {
+        try getRegister(.b(reg)).unwrap8!
+    }
+    
+    public func getRegister(o reg: RegisterBoolean) throws -> Bool {
+        try getRegister(.o(reg)).unwrapBool!
+    }
+    
+    public func getRegister(_ reg: Register) throws -> RegisterValue {
         switch reg {
         case .sp, .fp:
             // We should have set fp and sp in init() so this ought never fail.
@@ -154,7 +219,19 @@ public class TackVirtualMachine: NSObject {
         }
     }
     
-    public func setRegister(_ reg: Register, _ value: Word) {
+    public func setRegister(_ reg: Register16, w value: UInt16) {
+        setRegister(.w(reg), .w(value))
+    }
+    
+    public func setRegister(_ reg: Register8, b value: UInt8) {
+        setRegister(.b(reg), .b(value))
+    }
+    
+    public func setRegister(_ reg: RegisterBoolean, o value: Bool) {
+        setRegister(.o(reg), .o(value))
+    }
+    
+    public func setRegister(_ reg: Register, _ value: RegisterValue) {
         switch reg {
         case .sp, .fp:
             globalRegisters[reg] = value
@@ -415,13 +492,13 @@ public class TackVirtualMachine: NSObject {
         guard let destination = program.labels[target] else {
             throw TackVirtualMachineError.undefinedLabel(target)
         }
-        setRegister(.ra, nextPc)
+        setRegister(.ra, w: nextPc)
         nextPc = Word(destination)
     }
     
     private func callptr(_ target: RegisterPointer) throws {
-        let destination = try getRegister(.w(target))
-        setRegister(.ra, nextPc)
+        let destination = try getRegister(w: target)
+        setRegister(.ra, w: nextPc)
         nextPc = destination
     }
     
@@ -433,26 +510,26 @@ public class TackVirtualMachine: NSObject {
         }
         
         try pushRegisters()
-        let fp = try getRegister(.fp)
-        var sp = try getRegister(.sp)
+        let fp = try getRegister(w: .fp)
+        var sp = try getRegister(w: .sp)
         sp = sp &- kSizeOfSavedRegisters
         store(value: fp, address: sp)
-        setRegister(.fp, sp)
+        setRegister(.fp, w: sp)
         sp = sp &- Word(numberOfWords)
-        setRegister(.sp, sp)
+        setRegister(.sp, w: sp)
     }
     
     private func leave() throws {
-        let fp = try getRegister(.fp)
+        let fp = try getRegister(w: .fp)
         var sp = fp
-        setRegister(.fp, load(address: sp))
+        setRegister(.fp, w: load(address: sp))
         sp = sp &+ kSizeOfSavedRegisters
-        setRegister(.sp, sp)
+        setRegister(.sp, w: sp)
         try popRegisters()
     }
     
     private func ret() throws {
-        nextPc = try getRegister(.ra)
+        nextPc = try getRegister(w: .ra)
     }
     
     private func jmp(_ target: String) throws {
@@ -466,14 +543,14 @@ public class TackVirtualMachine: NSObject {
         guard let value = program.labels[label] else {
             throw TackVirtualMachineError.undefinedLabel(label)
         }
-        setRegister(.w(dst), Word(value))
+        setRegister(dst, w: Word(value))
     }
     
     private func bz(_ test: RegisterBoolean, _ target: String) throws {
         guard let destination = program.labels[target] else {
             throw TackVirtualMachineError.undefinedLabel(target)
         }
-        if try getRegister(.o(test)) == 0 {
+        if try getRegister(o: test) == false {
             nextPc = Word(destination)
         }
     }
@@ -482,7 +559,7 @@ public class TackVirtualMachine: NSObject {
         guard let destination = program.labels[target] else {
             throw TackVirtualMachineError.undefinedLabel(target)
         }
-        if try getRegister(.w(test)) == 0 {
+        if try getRegister(w: test) == 0 {
             nextPc = Word(destination)
         }
     }
@@ -491,55 +568,55 @@ public class TackVirtualMachine: NSObject {
         guard let destination = program.labels[target] else {
             throw TackVirtualMachineError.undefinedLabel(target)
         }
-        if try getRegister(.o(test)) != 0 {
+        if try getRegister(o: test) == true {
             nextPc = Word(destination)
         }
     }
     
     private func lw(_ dst: Register16, _ address: RegisterPointer, _ signedOffset: Int) throws {
         let offset = intToWord(signedOffset)
-        let addressToAccess = try getRegister(.w(address)) &+ offset
+        let addressToAccess = try getRegister(w: address) &+ offset
         let value = load(address: addressToAccess)
-        setRegister(.w(dst), value)
+        setRegister(dst, w: value)
     }
     
     private func lb(_ dst: Register8, _ address: RegisterPointer, _ signedOffset: Int) throws {
         let offset = intToWord(signedOffset)
-        let addressToAccess = try getRegister(.w(address)) &+ offset
-        let value = load(address: addressToAccess)
-        setRegister(.b(dst), value)
+        let addressToAccess = try getRegister(w: address) &+ offset
+        let value = UInt8(load(address: addressToAccess) & 0xff)
+        setRegister(dst, b: value)
     }
     
     private func lo(_ dst: RegisterBoolean, _ address: RegisterPointer, _ signedOffset: Int) throws {
         let offset = intToWord(signedOffset)
-        let addressToAccess = try getRegister(.w(address)) &+ offset
-        let value = load(address: addressToAccess)
-        setRegister(.o(dst), value)
+        let addressToAccess = try getRegister(w: address) &+ offset
+        let value = load(address: addressToAccess) == 0 ? false : true
+        setRegister(dst, o: value)
     }
     
     private func sw(_ src: Register16, _ address: RegisterPointer, _ signedOffset: Int) throws {
         let offset = intToWord(signedOffset)
-        let addressToAccess = try getRegister(.w(address)) &+ offset
-        let value = try getRegister(.w(src))
+        let addressToAccess = try getRegister(w: address) &+ offset
+        let value = try getRegister(w: src)
         store(value: value, address: addressToAccess)
     }
     
     private func sb(_ src: Register8, _ address: RegisterPointer, _ signedOffset: Int) throws {
         let offset = intToWord(signedOffset)
-        let addressToAccess = try getRegister(.w(address)) &+ offset
-        let value = try getRegister(.b(src))
+        let addressToAccess = try getRegister(w: address) &+ offset
+        let value = UInt16(try getRegister(b: src))
         store(value: value, address: addressToAccess)
     }
     
     private func so(_ src: RegisterBoolean, _ address: RegisterPointer, _ signedOffset: Int) throws {
         let offset = intToWord(signedOffset)
-        let addressToAccess = try getRegister(.w(address)) &+ offset
-        let value = try getRegister(.o(src))
+        let addressToAccess = try getRegister(w: address) &+ offset
+        let value = UInt16(try getRegister(o: src) ? 1 : 0)
         store(value: value, address: addressToAccess)
     }
     
     private func ststr(_ addressRegister: RegisterPointer, _ str: String) throws {
-        var address = try getRegister(.w(addressRegister))
+        var address = try getRegister(w: addressRegister)
         for character in str.utf8 {
             store(value: Word(character), address: address)
             address = address &+ 1
@@ -551,8 +628,8 @@ public class TackVirtualMachine: NSObject {
             throw TackVirtualMachineError.invalidArgument
         }
         
-        var dst = try getRegister(.w(dstRegister))
-        var src = try getRegister(.w(srcRegister))
+        var dst = try getRegister(w: dstRegister)
+        var src = try getRegister(w: srcRegister)
         for _ in 0..<count {
             let word = load(address: src)
             store(value: word, address: dst)
@@ -566,10 +643,10 @@ public class TackVirtualMachine: NSObject {
             throw TackVirtualMachineError.invalidArgument
         }
         
-        var sp = try getRegister(.sp)
+        var sp = try getRegister(w: .sp)
         sp = sp &- Word(count)
-        setRegister(.sp, sp)
-        setRegister(.w(dst), sp)
+        setRegister(.sp, w: sp)
+        setRegister(dst, w: sp)
     }
     
     private func free(_ count: Int) throws {
@@ -577,49 +654,49 @@ public class TackVirtualMachine: NSObject {
             throw TackVirtualMachineError.invalidArgument
         }
         
-        var sp = try getRegister(.sp)
+        var sp = try getRegister(w: .sp)
         sp = sp &+ Word(count)
-        setRegister(.sp, sp)
+        setRegister(.sp, w: sp)
     }
     
     private func not(_ dst: RegisterBoolean, _ src: RegisterBoolean) throws {
-        var r = try getRegister(.o(src))
-        r = ~r & 1
-        setRegister(.o(dst), r)
+        var r = try getRegister(o: src)
+        r = !r
+        setRegister(dst, o: r)
     }
     
     private func andiw(_ dst: Register16, _ left: Register16, _ right: Int) throws {
         guard right >= 0 else {
             throw TackVirtualMachineError.invalidArgument
         }
-        var r = try getRegister(.w(left))
+        var r = try getRegister(w: left)
         r = r & Word(right)
-        setRegister(.w(dst), r)
+        setRegister(dst, w: r)
     }
     
     private func addiw(_ dst: Register16, _ left: Register16, _ right_: Int) throws {
         let right = signExtend16(intToWord(right_))
-        var r = try getRegister(.w(left))
+        var r = try getRegister(w: left)
         r = signExtend16(r &+ right)
-        setRegister(.w(dst), r)
+        setRegister(dst, w: r)
     }
     
     private func subiw(_ dst: Register16, _ left: Register16, _ right_: Int) throws {
         let right = signExtend16(intToWord(right_))
-        var r = try getRegister(.w(left))
+        var r = try getRegister(w: left)
         r = signExtend16(r &- right)
-        setRegister(.w(dst), r)
+        setRegister(dst, w: r)
     }
     
     private func muliw(_ dst: Register16, _ left: Register16, _ right_: Int) throws {
         let right = signExtend16(intToWord(right_))
-        var r = try getRegister(.w(left))
+        var r = try getRegister(w: left)
         r = signExtend16(r &* right)
-        setRegister(.w(dst), r)
+        setRegister(dst, w: r)
     }
     
     private func lio(_ dst: RegisterBoolean, _ imm: Bool) throws {
-        setRegister(.o(dst), imm ? 1 : 0)
+        setRegister(dst, o: imm)
     }
     
     private func liw(_ dst: Register16, _ imm_: Int) throws {
@@ -627,371 +704,371 @@ public class TackVirtualMachine: NSObject {
             throw TackVirtualMachineError.invalidArgument
         }
         let imm = intToWord(imm_)
-        setRegister(.w(dst), imm)
+        setRegister(dst, w: imm)
     }
     
     private func liuw(_ dst: Register16, _ imm: Int) throws {
         guard imm >= 0 && imm <= UInt16.max else {
             throw TackVirtualMachineError.invalidArgument
         }
-        setRegister(.w(dst), Word(imm))
+        setRegister(dst, w: Word(imm))
     }
     
     private func andw(_ dst: Register16, _ leftRegister: Register16, _ rightRegister: Register16) throws {
-        let left = try getRegister(.w(leftRegister))
-        let right = try getRegister(.w(rightRegister))
+        let left = try getRegister(w: leftRegister)
+        let right = try getRegister(w: rightRegister)
         let result = left & right
-        setRegister(.w(dst), result)
+        setRegister(dst, w: result)
     }
     
     private func orw(_ dst: Register16, _ leftRegister: Register16, _ rightRegister: Register16) throws {
-        let left = try getRegister(.w(leftRegister))
-        let right = try getRegister(.w(rightRegister))
+        let left = try getRegister(w: leftRegister)
+        let right = try getRegister(w: rightRegister)
         let result = left | right
-        setRegister(.w(dst), result)
+        setRegister(dst, w: result)
     }
     
     private func xorw(_ dst: Register16, _ leftRegister: Register16, _ rightRegister: Register16) throws {
-        let left = try getRegister(.w(leftRegister))
-        let right = try getRegister(.w(rightRegister))
+        let left = try getRegister(w: leftRegister)
+        let right = try getRegister(w: rightRegister)
         let result = left ^ right
-        setRegister(.w(dst), result)
+        setRegister(dst, w: result)
     }
     
     private func negw(_ dst: Register16, _ srcRegister: Register16) throws {
-        let src = try getRegister(.w(srcRegister))
-        let result = (~src) & 0xffff
-        setRegister(.w(dst), result)
+        let src = try getRegister(w: srcRegister)
+        let result = ~src
+        setRegister(dst, w: result)
     }
     
     private func addw(_ dst: Register16, _ leftRegister: Register16, _ rightRegister: Register16) throws {
-        let left = try getRegister(.w(leftRegister))
-        let right = try getRegister(.w(rightRegister))
+        let left = try getRegister(w: leftRegister)
+        let right = try getRegister(w: rightRegister)
         let result = signExtend16(left &+ right)
-        setRegister(.w(dst), result)
+        setRegister(dst, w: result)
     }
     
     private func subw(_ dst: Register16, _ leftRegister: Register16, _ rightRegister: Register16) throws {
-        let left = try getRegister(.w(leftRegister))
-        let right = try getRegister(.w(rightRegister))
+        let left = try getRegister(w: leftRegister)
+        let right = try getRegister(w: rightRegister)
         let result = signExtend16(left &- right)
-        setRegister(.w(dst), result)
+        setRegister(dst, w: result)
     }
     
     private func mulw(_ dst: Register16, _ leftRegister: Register16, _ rightRegister: Register16) throws {
-        let left = try getRegister(.w(leftRegister))
-        let right = try getRegister(.w(rightRegister))
+        let left = try getRegister(w: leftRegister)
+        let right = try getRegister(w: rightRegister)
         let result = signExtend16(left &* right)
-        setRegister(.w(dst), result)
+        setRegister(dst, w: result)
     }
     
     private func divw(_ dst: Register16, _ leftRegister: Register16, _ rightRegister: Register16) throws {
-        let left = try getRegister(.w(leftRegister))
-        let right = try getRegister(.w(rightRegister))
+        let left = try getRegister(w: leftRegister)
+        let right = try getRegister(w: rightRegister)
         guard right != 0 else {
             throw TackVirtualMachineError.divideByZero
         }
         let result = signExtend16(left / right)
-        setRegister(.w(dst), result)
+        setRegister(dst, w: result)
     }
     
     private func mod16(_ dst: Register16, _ leftRegister: Register16, _ rightRegister: Register16) throws {
-        let left = try getRegister(.w(leftRegister))
-        let right = try getRegister(.w(rightRegister))
+        let left = try getRegister(w: leftRegister)
+        let right = try getRegister(w: rightRegister)
         guard right != 0 else {
             throw TackVirtualMachineError.divideByZero
         }
         let result = signExtend16(left % right)
-        setRegister(.w(dst), result)
+        setRegister(dst, w: result)
     }
     
     private func lslw(_ dst: Register16, _ leftRegister: Register16, _ rightRegister: Register16) throws {
-        let left = try getRegister(.w(leftRegister))
-        let right = try getRegister(.w(rightRegister))
-        let result = (left << right) & 0xffff
-        setRegister(.w(dst), result)
+        let left = try getRegister(w: leftRegister)
+        let right = try getRegister(w: rightRegister)
+        let result = (left << right)
+        setRegister(dst, w: result)
     }
     
     private func lsrw(_ dst: Register16, _ leftRegister: Register16, _ rightRegister: Register16) throws {
-        let left = try getRegister(.w(leftRegister))
-        let right = try getRegister(.w(rightRegister))
-        let result = (left >> right) & 0xffff
-        setRegister(.w(dst), result)
+        let left = try getRegister(w: leftRegister)
+        let right = try getRegister(w: rightRegister)
+        let result = (left >> right)
+        setRegister(dst, w: result)
     }
     
     private func eqo(_ dst: RegisterBoolean, _ leftRegister: RegisterBoolean, _ rightRegister: RegisterBoolean) throws {
-        let left = signExtend16(try getRegister(.o(leftRegister)))
-        let right = signExtend16(try getRegister(.o(rightRegister)))
-        let result = (left == right) ? Word(1) : Word(0)
-        setRegister(.o(dst), result)
+        let left = try getRegister(o: leftRegister)
+        let right = try getRegister(o: rightRegister)
+        let result = (left == right)
+        setRegister(dst, o: result)
     }
     
     private func neo(_ dst: RegisterBoolean, _ leftRegister: RegisterBoolean, _ rightRegister: RegisterBoolean) throws {
-        let left = signExtend16(try getRegister(.o(leftRegister)))
-        let right = signExtend16(try getRegister(.o(rightRegister)))
-        let result = (left != right) ? Word(1) : Word(0)
-        setRegister(.o(dst), result)
+        let left = try getRegister(o: leftRegister)
+        let right = try getRegister(o: rightRegister)
+        let result = (left != right)
+        setRegister(dst, o: result)
     }
     
     private func eqw(_ dst: RegisterBoolean, _ leftRegister: Register16, _ rightRegister: Register16) throws {
-        let left = signExtend16(try getRegister(.w(leftRegister)))
-        let right = signExtend16(try getRegister(.w(rightRegister)))
-        let result = (left == right) ? Word(1) : Word(0)
-        setRegister(.o(dst), result)
+        let left = try getRegister(w: leftRegister)
+        let right = try getRegister(w: rightRegister)
+        let result = (left == right)
+        setRegister(dst, o: result)
     }
     
     private func new(_ dst: RegisterBoolean, _ leftRegister: Register16, _ rightRegister: Register16) throws {
-        let left = signExtend16(try getRegister(.w(leftRegister)))
-        let right = signExtend16(try getRegister(.w(rightRegister)))
-        let result = (left != right) ? Word(1) : Word(0)
-        setRegister(.o(dst), result)
+        let left = try getRegister(w: leftRegister)
+        let right = try getRegister(w: rightRegister)
+        let result = (left != right)
+        setRegister(dst, o: result)
     }
     
     private func ltw(_ dst: RegisterBoolean, _ leftRegister: Register16, _ rightRegister: Register16) throws {
-        let left = wordToInt(signExtend16(try getRegister(.w(leftRegister))))
-        let right = wordToInt(signExtend16(try getRegister(.w(rightRegister))))
-        let result = (left < right) ? Word(1) : Word(0)
-        setRegister(.o(dst), result)
+        let left = wordToInt(signExtend16(try getRegister(w: leftRegister)))
+        let right = wordToInt(signExtend16(try getRegister(w: rightRegister)))
+        let result = (left < right)
+        setRegister(dst, o: result)
     }
     
     private func gew(_ dst: RegisterBoolean, _ leftRegister: Register16, _ rightRegister: Register16) throws {
-        let left = wordToInt(signExtend16(try getRegister(.w(leftRegister))))
-        let right = wordToInt(signExtend16(try getRegister(.w(rightRegister))))
-        let result = (left >= right) ? Word(1) : Word(0)
-        setRegister(.o(dst), result)
+        let left = wordToInt(signExtend16(try getRegister(w: leftRegister)))
+        let right = wordToInt(signExtend16(try getRegister(w: rightRegister)))
+        let result = (left >= right)
+        setRegister(dst, o: result)
     }
     
     private func lew(_ dst: RegisterBoolean, _ leftRegister: Register16, _ rightRegister: Register16) throws {
-        let left = wordToInt(signExtend16(try getRegister(.w(leftRegister))))
-        let right = wordToInt(signExtend16(try getRegister(.w(rightRegister))))
-        let result = (left <= right) ? Word(1) : Word(0)
-        setRegister(.o(dst), result)
+        let left = wordToInt(signExtend16(try getRegister(w: leftRegister)))
+        let right = wordToInt(signExtend16(try getRegister(w: rightRegister)))
+        let result = (left <= right)
+        setRegister(dst, o: result)
     }
     
     private func gtw(_ dst: RegisterBoolean, _ leftRegister: Register16, _ rightRegister: Register16) throws {
-        let left = wordToInt(signExtend16(try getRegister(.w(leftRegister))))
-        let right = wordToInt(signExtend16(try getRegister(.w(rightRegister))))
-        let result = (left > right) ? Word(1) : Word(0)
-        setRegister(.o(dst), result)
+        let left = wordToInt(signExtend16(try getRegister(w: leftRegister)))
+        let right = wordToInt(signExtend16(try getRegister(w: rightRegister)))
+        let result = (left > right)
+        setRegister(dst, o: result)
     }
     
     private func ltuw(_ dst: RegisterBoolean, _ leftRegister: Register16, _ rightRegister: Register16) throws {
-        let left = try getRegister(.w(leftRegister)) & 0xffff
-        let right = try getRegister(.w(rightRegister)) & 0xffff
-        let result = (left < right) ? Word(1) : Word(0)
-        setRegister(.o(dst), result)
+        let left = try getRegister(w: leftRegister)
+        let right = try getRegister(w: rightRegister)
+        let result = (left < right)
+        setRegister(dst, o: result)
     }
     
     private func geuw(_ dst: RegisterBoolean, _ leftRegister: Register16, _ rightRegister: Register16) throws {
-        let left = try getRegister(.w(leftRegister)) & 0xffff
-        let right = try getRegister(.w(rightRegister)) & 0xffff
-        let result = (left >= right) ? Word(1) : Word(0)
-        setRegister(.o(dst), result)
+        let left = try getRegister(w: leftRegister)
+        let right = try getRegister(w: rightRegister)
+        let result = (left >= right)
+        setRegister(dst, o: result)
     }
     
     private func leuw(_ dst: RegisterBoolean, _ leftRegister: Register16, _ rightRegister: Register16) throws {
-        let left = try getRegister(.w(leftRegister)) & 0xffff
-        let right = try getRegister(.w(rightRegister)) & 0xffff
-        let result = (left <= right) ? Word(1) : Word(0)
-        setRegister(.o(dst), result)
+        let left = try getRegister(w: leftRegister)
+        let right = try getRegister(w: rightRegister)
+        let result = (left <= right)
+        setRegister(dst, o: result)
     }
     
     private func gtuw(_ dst: RegisterBoolean, _ leftRegister: Register16, _ rightRegister: Register16) throws {
-        let left = try getRegister(.w(leftRegister)) & 0xffff
-        let right = try getRegister(.w(rightRegister)) & 0xffff
-        let result = (left > right) ? Word(1) : Word(0)
-        setRegister(.o(dst), result)
+        let left = try getRegister(w: leftRegister)
+        let right = try getRegister(w: rightRegister)
+        let result = (left > right)
+        setRegister(dst, o: result)
     }
     
     private func li8(_ dst: Register8, _ imm_: Int) throws {
         guard imm_ >= Int8.min && imm_ <= Int8.max else {
             throw TackVirtualMachineError.invalidArgument
         }
-        let imm = intToWord(imm_)
-        setRegister(.b(dst), imm)
+        let imm = intToUInt8(imm_)
+        setRegister(dst, b: imm)
     }
     
     private func liu8(_ dst: Register8, _ imm: Int) throws {
         guard imm >= 0 && imm <= UInt8.max else {
             throw TackVirtualMachineError.invalidArgument
         }
-        setRegister(.b(dst), Word(imm))
+        setRegister(dst, b: UInt8(imm))
     }
     
     private func and8(_ dst: Register8, _ leftRegister: Register8, _ rightRegister: Register8) throws {
-        let left = try getRegister(.b(leftRegister))
-        let right = try getRegister(.b(rightRegister))
-        let result = (left & right) & 0xff
-        setRegister(.b(dst), result)
+        let left = try getRegister(b: leftRegister)
+        let right = try getRegister(b: rightRegister)
+        let result = UInt8((left & right) & 0xff)
+        setRegister(dst, b: result)
     }
     
     private func or8(_ dst: Register8, _ leftRegister: Register8, _ rightRegister: Register8) throws {
-        let left = try getRegister(.b(leftRegister))
-        let right = try getRegister(.b(rightRegister))
-        let result = (left | right) & 0xff
-        setRegister(.b(dst), result)
+        let left = try getRegister(b: leftRegister)
+        let right = try getRegister(b: rightRegister)
+        let result = UInt8((left | right) & 0xff)
+        setRegister(dst, b: result)
     }
     
     private func xor8(_ dst: Register8, _ leftRegister: Register8, _ rightRegister: Register8) throws {
-        let left = try getRegister(.b(leftRegister))
-        let right = try getRegister(.b(rightRegister))
-        let result = (left ^ right) & 0xff
-        setRegister(.b(dst), result)
+        let left = try getRegister(b: leftRegister)
+        let right = try getRegister(b: rightRegister)
+        let result = UInt8((left ^ right) & 0xff)
+        setRegister(dst, b: result)
     }
     
     private func neg8(_ dst: Register8, _ srcRegister: Register8) throws {
-        let src = try getRegister(.b(srcRegister))
-        let result = (~src) & 0xff
-        setRegister(.b(dst), result)
+        let src = try getRegister(b: srcRegister)
+        let result = UInt8((~src) & 0xff)
+        setRegister(dst, b: result)
     }
     
     private func add8(_ dst: Register8, _ leftRegister: Register8, _ rightRegister: Register8) throws {
-        let left = try getRegister(.b(leftRegister))
-        let right = try getRegister(.b(rightRegister))
-        let result = signExtend8(left &+ right)
-        setRegister(.b(dst), result)
+        let left = try getRegister(b: leftRegister)
+        let right = try getRegister(b: rightRegister)
+        let result = (left &+ right)
+        setRegister(dst, b: result)
     }
     
     private func sub8(_ dst: Register8, _ leftRegister: Register8, _ rightRegister: Register8) throws {
-        let left = try getRegister(.b(leftRegister))
-        let right = try getRegister(.b(rightRegister))
-        let result = signExtend8(left &- right)
-        setRegister(.b(dst), result)
+        let left = try getRegister(b: leftRegister)
+        let right = try getRegister(b: rightRegister)
+        let result = (left &- right)
+        setRegister(dst, b: result)
     }
     
     private func mul8(_ dst: Register8, _ leftRegister: Register8, _ rightRegister: Register8) throws {
-        let left = try getRegister(.b(leftRegister))
-        let right = try getRegister(.b(rightRegister))
-        let result = signExtend8(left &* right)
-        setRegister(.b(dst), result)
+        let left = try getRegister(b: leftRegister)
+        let right = try getRegister(b: rightRegister)
+        let result = (left &* right)
+        setRegister(dst, b: result)
     }
     
     private func div8(_ dst: Register8, _ leftRegister: Register8, _ rightRegister: Register8) throws {
-        let left = try getRegister(.b(leftRegister))
-        let right = try getRegister(.b(rightRegister))
+        let left = try getRegister(b: leftRegister)
+        let right = try getRegister(b: rightRegister)
         guard right != 0 else {
             throw TackVirtualMachineError.divideByZero
         }
-        let result = signExtend8(left / right)
-        setRegister(.b(dst), result)
+        let result = (left / right)
+        setRegister(dst, b: result)
     }
     
     private func mod8(_ dst: Register8, _ leftRegister: Register8, _ rightRegister: Register8) throws {
-        let left = try getRegister(.b(leftRegister))
-        let right = try getRegister(.b(rightRegister))
+        let left = try getRegister(b: leftRegister)
+        let right = try getRegister(b: rightRegister)
         guard right != 0 else {
             throw TackVirtualMachineError.divideByZero
         }
-        let result = signExtend8(left % right)
-        setRegister(.b(dst), result)
+        let result = (left % right)
+        setRegister(dst, b: result)
     }
     
     private func lsl8(_ dst: Register8, _ leftRegister: Register8, _ rightRegister: Register8) throws {
-        let left = try getRegister(.b(leftRegister)) & 0xff
-        let right = try getRegister(.b(rightRegister)) & 0xff
+        let left = try getRegister(b: leftRegister) & 0xff
+        let right = try getRegister(b: rightRegister) & 0xff
         let result = (left << right) & 0xff
-        setRegister(.b(dst), result)
+        setRegister(dst, b: result)
     }
     
     private func lsr8(_ dst: Register8, _ leftRegister: Register8, _ rightRegister: Register8) throws {
-        let left = try getRegister(.b(leftRegister)) & 0xff
-        let right = try getRegister(.b(rightRegister)) & 0xff
+        let left = try getRegister(b: leftRegister) & 0xff
+        let right = try getRegister(b: rightRegister) & 0xff
         let result = (left >> right) & 0xff
-        setRegister(.b(dst), result)
+        setRegister(dst, b: result)
     }
     
     private func eq8(_ dst: RegisterBoolean, _ leftRegister: Register8, _ rightRegister: Register8) throws {
-        let left = wordToInt(signExtend8(try getRegister(.b(leftRegister))))
-        let right = wordToInt(signExtend8(try getRegister(.b(rightRegister))))
-        let result = (left == right) ? Word(1) : Word(0)
-        setRegister(.o(dst), result)
+        let left = try getRegister(b: leftRegister)
+        let right = try getRegister(b: rightRegister)
+        let result = (left == right)
+        setRegister(dst, o: result)
     }
     
     private func ne8(_ dst: RegisterBoolean, _ leftRegister: Register8, _ rightRegister: Register8) throws {
-        let left = wordToInt(signExtend8(try getRegister(.b(leftRegister))))
-        let right = wordToInt(signExtend8(try getRegister(.b(rightRegister))))
-        let result = (left != right) ? Word(1) : Word(0)
-        setRegister(.o(dst), result)
+        let left = try getRegister(b: leftRegister)
+        let right = try getRegister(b: rightRegister)
+        let result = (left != right)
+        setRegister(dst, o: result)
     }
     
     private func lt8(_ dst: RegisterBoolean, _ leftRegister: Register8, _ rightRegister: Register8) throws {
-        let left = wordToInt(signExtend8(try getRegister(.b(leftRegister))))
-        let right = wordToInt(signExtend8(try getRegister(.b(rightRegister))))
-        let result = (left < right) ? Word(1) : Word(0)
-        setRegister(.o(dst), result)
+        let left = wordToInt(signExtend8(Word(try getRegister(b: leftRegister))))
+        let right = wordToInt(signExtend8(Word(try getRegister(b: rightRegister))))
+        let result = (left < right)
+        setRegister(dst, o: result)
     }
     
     private func ge8(_ dst: RegisterBoolean, _ leftRegister: Register8, _ rightRegister: Register8) throws {
-        let left = wordToInt(signExtend8(try getRegister(.b(leftRegister))))
-        let right = wordToInt(signExtend8(try getRegister(.b(rightRegister))))
-        let result = (left >= right) ? Word(1) : Word(0)
-        setRegister(.o(dst), result)
+        let left = wordToInt(signExtend8(Word(try getRegister(b: leftRegister))))
+        let right = wordToInt(signExtend8(Word(try getRegister(b: rightRegister))))
+        let result = (left >= right)
+        setRegister(dst, o: result)
     }
     
     private func le8(_ dst: RegisterBoolean, _ leftRegister: Register8, _ rightRegister: Register8) throws {
-        let left = wordToInt(signExtend8(try getRegister(.b(leftRegister))))
-        let right = wordToInt(signExtend8(try getRegister(.b(rightRegister))))
-        let result = (left <= right) ? Word(1) : Word(0)
-        setRegister(.o(dst), result)
+        let left = wordToInt(signExtend8(Word(try getRegister(b: leftRegister))))
+        let right = wordToInt(signExtend8(Word(try getRegister(b: rightRegister))))
+        let result = (left <= right)
+        setRegister(dst, o: result)
     }
     
     private func gt8(_ dst: RegisterBoolean, _ leftRegister: Register8, _ rightRegister: Register8) throws {
-        let left = wordToInt(signExtend8(try getRegister(.b(leftRegister))))
-        let right = wordToInt(signExtend8(try getRegister(.b(rightRegister))))
-        let result = (left > right) ? Word(1) : Word(0)
-        setRegister(.o(dst), result)
+        let left = wordToInt(signExtend8(Word(try getRegister(b: leftRegister))))
+        let right = wordToInt(signExtend8(Word(try getRegister(b: rightRegister))))
+        let result = (left > right)
+        setRegister(dst, o: result)
     }
     
     private func ltu8(_ dst: RegisterBoolean, _ leftRegister: Register8, _ rightRegister: Register8) throws {
-        let left = signExtend8(try getRegister(.b(leftRegister)))
-        let right = signExtend8(try getRegister(.b(rightRegister)))
-        let result = (left < right) ? Word(1) : Word(0)
-        setRegister(.o(dst), result)
+        let left = try getRegister(b: leftRegister)
+        let right = try getRegister(b: rightRegister)
+        let result = (left < right)
+        setRegister(dst, o: result)
     }
     
     private func geu8(_ dst: RegisterBoolean, _ leftRegister: Register8, _ rightRegister: Register8) throws {
-        let left = signExtend8(try getRegister(.b(leftRegister)))
-        let right = signExtend8(try getRegister(.b(rightRegister)))
-        let result = (left >= right) ? Word(1) : Word(0)
-        setRegister(.o(dst), result)
+        let left = try getRegister(b: leftRegister)
+        let right = try getRegister(b: rightRegister)
+        let result = (left >= right)
+        setRegister(dst, o: result)
     }
     
     private func leu8(_ dst: RegisterBoolean, _ leftRegister: Register8, _ rightRegister: Register8) throws {
-        let left = signExtend8(try getRegister(.b(leftRegister)))
-        let right = signExtend8(try getRegister(.b(rightRegister)))
-        let result = (left <= right) ? Word(1) : Word(0)
-        setRegister(.o(dst), result)
+        let left = try getRegister(b: leftRegister)
+        let right = try getRegister(b: rightRegister)
+        let result = (left <= right)
+        setRegister(dst, o: result)
     }
     
     private func gtu8(_ dst: RegisterBoolean, _ leftRegister: Register8, _ rightRegister: Register8) throws {
-        let left = signExtend8(try getRegister(.b(leftRegister)))
-        let right = signExtend8(try getRegister(.b(rightRegister)))
-        let result = (left > right) ? Word(1) : Word(0)
-        setRegister(.o(dst), result)
+        let left = try getRegister(b: leftRegister)
+        let right = try getRegister(b: rightRegister)
+        let result = (left > right)
+        setRegister(dst, o: result)
     }
     
     private func movsbw(_ dst: Register8, _ srcRegister: Register16) throws {
-        let src = try getRegister(.w(srcRegister))
-        let result = signExtend8(src)
-        setRegister(.b(dst), result)
+        let src = try getRegister(w: srcRegister)
+        let result = UInt8(src & 0xff)
+        setRegister(dst, b: result)
     }
     
     private func movswb(_ dst: Register16, _ srcRegister: Register8) throws {
-        let src = try getRegister(.b(srcRegister))
-        let result = signExtend8(src)
-        setRegister(.w(dst), result)
+        let src = try getRegister(b: srcRegister)
+        let result = signExtend8(UInt16(src))
+        setRegister(dst, w: result)
     }
     
     private func movzwb(_ dst: Register16, _ srcRegister: Register8) throws {
-        let src = try getRegister(.b(srcRegister))
-        let result = src & 0x00ff
-        setRegister(.w(dst), result)
+        let src = try getRegister(b: srcRegister)
+        let result = UInt16(src)
+        setRegister(dst, w: result)
     }
     
     private func movzbw(_ dst: Register8, _ srcRegister: Register16) throws {
-        let src = try getRegister(.w(srcRegister))
-        let result = src & 0x00ff
-        setRegister(.b(dst), result)
+        let src = try getRegister(w: srcRegister)
+        let result = UInt8(src & 0x00ff)
+        setRegister(dst, b: result)
     }
     
     private func inlineAssembly(_ asm: String) throws {
@@ -1010,8 +1087,8 @@ public class TackVirtualMachine: NSObject {
     }
     
     private func syscall(_ n_: Register16, _ ptr_: RegisterPointer) throws {
-        let n = Int(load(address: try getRegister(.w(n_))))
-        let ptr = load(address: try getRegister(.w(ptr_)))
+        let n = Int(load(address: try getRegister(w: n_)))
+        let ptr = load(address: try getRegister(w: ptr_))
         
         switch Syscall(rawValue: n) {
         case .invalid, .none:

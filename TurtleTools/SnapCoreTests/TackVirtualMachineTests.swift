@@ -16,7 +16,7 @@ final class TackVirtualMachineTests: XCTestCase {
     func testGetRegister_InvalidRegister_LocalRegister() throws {
         let program = TackProgram(instructions: [])
         let vm = TackVirtualMachine(program)
-        XCTAssertThrowsError(try vm.getRegister(.w(.w(0)))) { error in
+        XCTAssertThrowsError(try vm.getRegister(w: .w(0))) { error in
             XCTAssertEqual(error as? TackVirtualMachineError,
                            TackVirtualMachineError.undefinedRegister(.w(.w(0))))
         }
@@ -102,7 +102,7 @@ final class TackVirtualMachineTests: XCTestCase {
         ], labels: ["foo" : 0xabcd])
         let vm = TackVirtualMachine(program)
         try vm.step()
-        XCTAssertEqual(try vm.getRegister(.w(.w(0))), 0xabcd)
+        XCTAssertEqual(try vm.getRegister(w: .w(0)), 0xabcd)
     }
     
     func testBZ_WithUndefinedLabel() throws {
@@ -130,7 +130,7 @@ final class TackVirtualMachineTests: XCTestCase {
             .bz(.o(0), "foo")
         ], labels: ["foo":0])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.o(.o(0)), 1)
+        vm.setRegister(.o(0), o: true)
         try vm.step()
         try vm.step()
         XCTAssertEqual(vm.pc, 2)
@@ -143,7 +143,7 @@ final class TackVirtualMachineTests: XCTestCase {
             .bz(.o(0), "foo")
         ], labels: ["foo":0])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.o(.o(0)), 0)
+        vm.setRegister(.o(0), o: false)
         try vm.step()
         try vm.step()
         XCTAssertEqual(vm.pc, 0)
@@ -175,7 +175,7 @@ final class TackVirtualMachineTests: XCTestCase {
             .bnz(.o(0), "foo")
         ], labels: ["foo":0])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.o(.o(0)), 0)
+        vm.setRegister(.o(0), o: false)
         try vm.step()
         try vm.step()
         XCTAssertEqual(vm.pc, 2)
@@ -188,7 +188,7 @@ final class TackVirtualMachineTests: XCTestCase {
             .bnz(.o(0), "foo")
         ], labels: ["foo":0])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.o(.o(0)), 1)
+        vm.setRegister(.o(0), o: true)
         try vm.step()
         try vm.step()
         XCTAssertEqual(vm.pc, 0)
@@ -223,7 +223,7 @@ final class TackVirtualMachineTests: XCTestCase {
         let vm = TackVirtualMachine(program)
         try vm.step()
         XCTAssertEqual(vm.pc, 2)
-        XCTAssertEqual(try vm.getRegister(.ra), 1)
+        XCTAssertEqual(try vm.getRegister(w: .ra), 1)
     }
     
     func testRET_WithUndefinedReturnAddress() throws {
@@ -262,7 +262,7 @@ final class TackVirtualMachineTests: XCTestCase {
             .callptr(.w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 1000)
+        vm.setRegister(.w(0), w: 1000)
         try vm.step()
         XCTAssertEqual(vm.pc, 1000)
         XCTAssertTrue(vm.isHalted)
@@ -275,10 +275,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .ret
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 2)
+        vm.setRegister(.w(0), w: 2)
         try vm.step()
         XCTAssertEqual(vm.pc, 2)
-        XCTAssertEqual(try vm.getRegister(.ra), 1)
+        XCTAssertEqual(try vm.getRegister(w: .ra), 1)
     }
     
     func testENTER_InvalidArgument() throws {
@@ -305,9 +305,9 @@ final class TackVirtualMachineTests: XCTestCase {
             .enter(0)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 1)
+        vm.setRegister(.w(0), w: 1)
         try vm.step()
-        XCTAssertThrowsError(try vm.getRegister(.w(.w(0)))) {
+        XCTAssertThrowsError(try vm.getRegister(w: .w(0))) {
             guard let error = $0 as? TackVirtualMachineError else {
                 XCTFail()
                 return
@@ -326,9 +326,9 @@ final class TackVirtualMachineTests: XCTestCase {
             .enter(0)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.ra, 1)
+        vm.setRegister(.ra, w: 1)
         try vm.step()
-        XCTAssertThrowsError(try vm.getRegister(.ra)) {
+        XCTAssertThrowsError(try vm.getRegister(w: .ra)) {
             guard let error = $0 as? TackVirtualMachineError else {
                 XCTFail()
                 return
@@ -351,7 +351,7 @@ final class TackVirtualMachineTests: XCTestCase {
         let a = vm.load(address: Word(0) &- kSizeOfSavedRegisters)
         XCTAssertEqual(a, 0)
         let expectedSp = Word(0) &- kSizeOfSavedRegisters
-        XCTAssertEqual(expectedSp, try vm.getRegister(.sp))
+        XCTAssertEqual(expectedSp, try vm.getRegister(w: .sp))
     }
     
     func testENTER_AllocateStorageWithinStackFrame() throws {
@@ -364,7 +364,7 @@ final class TackVirtualMachineTests: XCTestCase {
         let a = vm.load(address: Word(0) &- kSizeOfSavedRegisters)
         XCTAssertEqual(a, 0)
         let expectedSp = Word(0) &- kSizeOfSavedRegisters &- Word(size)
-        XCTAssertEqual(expectedSp, try vm.getRegister(.sp))
+        XCTAssertEqual(expectedSp, try vm.getRegister(w: .sp))
     }
     
     func testLEAVE_UnderflowRegisterStack() throws {
@@ -396,8 +396,8 @@ final class TackVirtualMachineTests: XCTestCase {
         let vm = TackVirtualMachine(program)
         try vm.step()
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.fp))
-        XCTAssertEqual(0, try vm.getRegister(.sp))
+        XCTAssertEqual(0, try vm.getRegister(w: .fp))
+        XCTAssertEqual(0, try vm.getRegister(w: .sp))
     }
     
     func testLOAD16_ZeroOffset() throws {
@@ -405,10 +405,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .lw(.w(1), .w(0), 0)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 0xbeef)
+        vm.setRegister(.w(0), w: 0xbeef)
         vm.store(value: 0xcafe, address: 0xbeef)
         try vm.step()
-        XCTAssertEqual(0xcafe, try vm.getRegister(.w(.w(1))))
+        XCTAssertEqual(0xcafe, try vm.getRegister(w: .w(1)))
     }
     
     func testLOAD16_NegativeOffset() throws {
@@ -416,10 +416,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .lw(.w(1), .w(0), -1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 0xbeef)
+        vm.setRegister(.w(0), w: 0xbeef)
         vm.store(value: 0xcafe, address: 0xbeee)
         try vm.step()
-        XCTAssertEqual(0xcafe, try vm.getRegister(.w(.w(1))))
+        XCTAssertEqual(0xcafe, try vm.getRegister(w: .w(1)))
     }
     
     func testLOAD16_PositiveOffset() throws {
@@ -427,10 +427,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .lw(.w(1), .w(0), 1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 0xbeef)
+        vm.setRegister(.w(0), w: 0xbeef)
         vm.store(value: 0xcafe, address: 0xbef0)
         try vm.step()
-        XCTAssertEqual(0xcafe, try vm.getRegister(.w(.w(1))))
+        XCTAssertEqual(0xcafe, try vm.getRegister(w: .w(1)))
     }
     
     func testSTORE16_ZeroOffset() throws {
@@ -438,8 +438,8 @@ final class TackVirtualMachineTests: XCTestCase {
             .sw(.w(1), .w(0), 0)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(1)), 0xcafe)
-        vm.setRegister(.w(.w(0)), 0xbeef)
+        vm.setRegister(.w(1), w: 0xcafe)
+        vm.setRegister(.w(0), w: 0xbeef)
         try vm.step()
         XCTAssertEqual(0xcafe, vm.load(address: 0xbeef))
     }
@@ -449,8 +449,8 @@ final class TackVirtualMachineTests: XCTestCase {
             .sw(.w(1), .w(0), -1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(1)), 0xcafe)
-        vm.setRegister(.w(.w(0)), 0xbeef)
+        vm.setRegister(.w(1), w: 0xcafe)
+        vm.setRegister(.w(0), w: 0xbeef)
         try vm.step()
         XCTAssertEqual(0xcafe, vm.load(address: 0xbeee))
     }
@@ -460,8 +460,8 @@ final class TackVirtualMachineTests: XCTestCase {
             .sw(.w(1), .w(0), 1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(1)), 0xcafe)
-        vm.setRegister(.w(.w(0)), 0xbeef)
+        vm.setRegister(.w(1), w: 0xcafe)
+        vm.setRegister(.w(0), w: 0xbeef)
         try vm.step()
         XCTAssertEqual(0xcafe, vm.load(address: 0xbef0))
     }
@@ -471,10 +471,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .lb(.b(1), .w(0), 0)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 0xbeef)
+        vm.setRegister(.w(0), w: 0xbeef)
         vm.store(value: 0xcafe, address: 0xbeef)
         try vm.step()
-        XCTAssertEqual(0xcafe, try vm.getRegister(.b(.b(1))))
+        XCTAssertEqual(0xfe, try vm.getRegister(b: .b(1)))
     }
     
     func testLOAD8_NegativeOffset() throws {
@@ -482,10 +482,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .lb(.b(1), .w(0), -1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 0xbeef)
+        vm.setRegister(.w(0), w: 0xbeef)
         vm.store(value: 0xcafe, address: 0xbeee)
         try vm.step()
-        XCTAssertEqual(0xcafe, try vm.getRegister(.b(.b(1))))
+        XCTAssertEqual(0xfe, try vm.getRegister(b: .b(1)))
     }
     
     func testLOAD8_PositiveOffset() throws {
@@ -493,10 +493,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .lb(.b(1), .w(0), 1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 0xbeef)
+        vm.setRegister(.w(0), w: 0xbeef)
         vm.store(value: 0xcafe, address: 0xbef0)
         try vm.step()
-        XCTAssertEqual(0xcafe, try vm.getRegister(.b(.b(1))))
+        XCTAssertEqual(0xfe, try vm.getRegister(b: .b(1)))
     }
     
     func testSTORE8_ZeroOffset() throws {
@@ -504,10 +504,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .sb(.b(1), .w(0), 0)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(1)), 0xcafe)
-        vm.setRegister(.w(.w(0)), 0xbeef)
+        vm.setRegister(.b(1), b: 0xfe)
+        vm.setRegister(.w(0), w: 0xbeef)
         try vm.step()
-        XCTAssertEqual(0xcafe, vm.load(address: 0xbeef))
+        XCTAssertEqual(0xfe, vm.load(address: 0xbeef))
     }
     
     func testSTORE8_NegativeOffset() throws {
@@ -515,10 +515,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .sb(.b(1), .w(0), -1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(1)), 0xcafe)
-        vm.setRegister(.w(.w(0)), 0xbeef)
+        vm.setRegister(.b(1), b: 0xfe)
+        vm.setRegister(.w(0), w: 0xbeef)
         try vm.step()
-        XCTAssertEqual(0xcafe, vm.load(address: 0xbeee))
+        XCTAssertEqual(0xfe, vm.load(address: 0xbeee))
     }
     
     func testSTORE8_PositiveOffset() throws {
@@ -526,10 +526,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .sb(.b(1), .w(0), 1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(1)), 0xcafe)
-        vm.setRegister(.w(.w(0)), 0xbeef)
+        vm.setRegister(.b(1), b: 0xfe)
+        vm.setRegister(.w(0), w: 0xbeef)
         try vm.step()
-        XCTAssertEqual(0xcafe, vm.load(address: 0xbef0))
+        XCTAssertEqual(0xfe, vm.load(address: 0xbef0))
     }
     
     func testSTSTR() throws {
@@ -537,7 +537,7 @@ final class TackVirtualMachineTests: XCTestCase {
             .ststr(.w(0), "abc")
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 0xbeef)
+        vm.setRegister(.w(0), w: 0xbeef)
         try vm.step()
         XCTAssertEqual(Int("a".utf8.first!), Int(vm.load(address: 0xbeef+0)))
         XCTAssertEqual(Int("b".utf8.first!), Int(vm.load(address: 0xbeef+1)))
@@ -568,8 +568,8 @@ final class TackVirtualMachineTests: XCTestCase {
             .memcpy(.w(1), .w(0), 2)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(1)), 0x1000)
-        vm.setRegister(.w(.w(0)), 0x2000)
+        vm.setRegister(.w(1), w: 0x1000)
+        vm.setRegister(.w(0), w: 0x2000)
         vm.store(value: 0xaabb, address: 0x2000)
         vm.store(value: 0xccdd, address: 0x2001)
         try vm.step()
@@ -602,8 +602,8 @@ final class TackVirtualMachineTests: XCTestCase {
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         try vm.step()
-        let sp = try vm.getRegister(.sp)
-        XCTAssertEqual(sp, try vm.getRegister(.w(.w(0))))
+        let sp = try vm.getRegister(w: .sp)
+        XCTAssertEqual(sp, try vm.getRegister(w: .w(0)))
     }
     
     func testALLOCA_NonZero() throws {
@@ -612,10 +612,10 @@ final class TackVirtualMachineTests: XCTestCase {
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         try vm.step()
-        let sp = try vm.getRegister(.sp)
+        let sp = try vm.getRegister(w: .sp)
         let expectedSp = Word(0) &- 10
         XCTAssertEqual(sp, expectedSp)
-        XCTAssertEqual(sp, try vm.getRegister(.w(.w(0))))
+        XCTAssertEqual(sp, try vm.getRegister(w: .w(0)))
     }
     
     func testFREE_BadCount() throws {
@@ -644,32 +644,22 @@ final class TackVirtualMachineTests: XCTestCase {
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         
-        var sp = try vm.getRegister(.sp)
+        var sp = try vm.getRegister(w: .sp)
         sp = sp &- Word(count)
-        vm.setRegister(.sp, sp)
+        vm.setRegister(.sp, w: sp)
         
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.sp))
+        XCTAssertEqual(0, try vm.getRegister(w: .sp))
     }
     
-    func testNOT_0() throws {
+    func testNOT_false() throws {
         let program = TackProgram(instructions: [
             .not(.o(1), .o(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.o(.o(0)), 0)
+        vm.setRegister(.o(0), o: false)
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.o(.o(1))))
-    }
-    
-    func testNOT_ffff() throws {
-        let program = TackProgram(instructions: [
-            .not(.o(1), .o(0))
-        ], labels: [:])
-        let vm = TackVirtualMachine(program)
-        vm.setRegister(.o(.o(0)), 0xffff)
-        try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.o(.o(1))))
+        XCTAssertEqual(true, try vm.getRegister(o: .o(1)))
     }
     
     func testANDI16_bad_imm() throws {
@@ -696,9 +686,9 @@ final class TackVirtualMachineTests: XCTestCase {
             .andiw(.w(1), .w(0), 0b1010101010101010)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 0xffff)
+        vm.setRegister(.w(0), w: 0xffff)
         try vm.step()
-        XCTAssertEqual(0b1010101010101010, try vm.getRegister(.w(.w(1))))
+        XCTAssertEqual(0b1010101010101010, try vm.getRegister(w: .w(1)))
     }
     
     func testADDI16_pos() throws {
@@ -706,9 +696,9 @@ final class TackVirtualMachineTests: XCTestCase {
             .addiw(.w(1), .w(0), 1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 0xffff)
+        vm.setRegister(.w(0), w: 0xffff)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.w(.w(1))))
+        XCTAssertEqual(0, try vm.getRegister(w: .w(1)))
     }
     
     func testADDI16_neg() throws {
@@ -716,9 +706,9 @@ final class TackVirtualMachineTests: XCTestCase {
             .addiw(.w(1), .w(0), -1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 0)
+        vm.setRegister(.w(0), w: 0)
         try vm.step()
-        XCTAssertEqual(Word(0) &- 1, try vm.getRegister(.w(.w(1))))
+        XCTAssertEqual(Word(0) &- 1, try vm.getRegister(w: .w(1)))
     }
     
     func testSUBI16_pos() throws {
@@ -726,9 +716,9 @@ final class TackVirtualMachineTests: XCTestCase {
             .subiw(.w(1), .w(0), 1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 0)
+        vm.setRegister(.w(0), w: 0)
         try vm.step()
-        XCTAssertEqual(Word(0) &- 1, try vm.getRegister(.w(.w(1))))
+        XCTAssertEqual(Word(0) &- 1, try vm.getRegister(w: .w(1)))
     }
     
     func testSUBI16_neg() throws {
@@ -736,9 +726,9 @@ final class TackVirtualMachineTests: XCTestCase {
             .subiw(.w(1), .w(0), -1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 0xffff)
+        vm.setRegister(.w(0), w: 0xffff)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.w(.w(1))))
+        XCTAssertEqual(0, try vm.getRegister(w: .w(1)))
     }
     
     func testMULI16_pos() throws {
@@ -746,9 +736,9 @@ final class TackVirtualMachineTests: XCTestCase {
             .mulib(.w(1), .w(0), 2)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 2)
+        vm.setRegister(.w(0), w: 2)
         try vm.step()
-        XCTAssertEqual(4, try vm.getRegister(.w(.w(1))))
+        XCTAssertEqual(4, try vm.getRegister(w: .w(1)))
     }
     
     func testMULI16_neg() throws {
@@ -756,9 +746,9 @@ final class TackVirtualMachineTests: XCTestCase {
             .mulib(.w(1), .w(0), -2)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 2)
+        vm.setRegister(.w(0), w: 2)
         try vm.step()
-        XCTAssertEqual(Word(0) &- 4, try vm.getRegister(.w(.w(1))))
+        XCTAssertEqual(Word(0) &- 4, try vm.getRegister(w: .w(1)))
     }
     
     func testLI16_pos() throws {
@@ -767,7 +757,7 @@ final class TackVirtualMachineTests: XCTestCase {
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.w(.w(0))))
+        XCTAssertEqual(1, try vm.getRegister(w: .w(0)))
     }
     
     func testLI16_neg() throws {
@@ -776,7 +766,7 @@ final class TackVirtualMachineTests: XCTestCase {
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         try vm.step()
-        XCTAssertEqual(Word(0) &- 1, try vm.getRegister(.w(.w(0))))
+        XCTAssertEqual(Word(0) &- 1, try vm.getRegister(w: .w(0)))
     }
     
     func testLI16_TooBigPos() throws {
@@ -861,7 +851,7 @@ final class TackVirtualMachineTests: XCTestCase {
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.w(.w(0))))
+        XCTAssertEqual(1, try vm.getRegister(w: .w(0)))
     }
     
     func testAND16() throws {
@@ -869,10 +859,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .andw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 0xf0f0)
-        vm.setRegister(.w(.w(1)), 0xffff)
+        vm.setRegister(.w(0), w: 0xf0f0)
+        vm.setRegister(.w(1), w: 0xffff)
         try vm.step()
-        XCTAssertEqual(0xf0f0, try vm.getRegister(.w(.w(2))))
+        XCTAssertEqual(0xf0f0, try vm.getRegister(w: .w(2)))
     }
     
     func testOR16() throws {
@@ -880,10 +870,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .orw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 0xf0f0)
-        vm.setRegister(.w(.w(1)), 0x0f0f)
+        vm.setRegister(.w(0), w: 0xf0f0)
+        vm.setRegister(.w(1), w: 0x0f0f)
         try vm.step()
-        XCTAssertEqual(0xffff, try vm.getRegister(.w(.w(2))))
+        XCTAssertEqual(0xffff, try vm.getRegister(w: .w(2)))
     }
     
     func testXOR16() throws {
@@ -891,10 +881,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .xorw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 0xf0ff)
-        vm.setRegister(.w(.w(1)), 0x0f0f)
+        vm.setRegister(.w(0), w: 0xf0ff)
+        vm.setRegister(.w(1), w: 0x0f0f)
         try vm.step()
-        XCTAssertEqual(0xfff0, try vm.getRegister(.w(.w(2))))
+        XCTAssertEqual(0xfff0, try vm.getRegister(w: .w(2)))
     }
     
     func testNEG16() throws {
@@ -902,9 +892,9 @@ final class TackVirtualMachineTests: XCTestCase {
             .negw(.w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 0xf0f0)
+        vm.setRegister(.w(0), w: 0xf0f0)
         try vm.step()
-        XCTAssertEqual(0x0f0f, try vm.getRegister(.w(.w(1))))
+        XCTAssertEqual(0x0f0f, try vm.getRegister(w: .w(1)))
     }
     
     func testADD16() throws {
@@ -912,10 +902,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .addw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 1)
-        vm.setRegister(.w(.w(1)), 1)
+        vm.setRegister(.w(0), w: 1)
+        vm.setRegister(.w(1), w: 1)
         try vm.step()
-        XCTAssertEqual(2, try vm.getRegister(.w(.w(2))))
+        XCTAssertEqual(2, try vm.getRegister(w: .w(2)))
     }
     
     func testSUB16() throws {
@@ -923,10 +913,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .subw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 2)
-        vm.setRegister(.w(.w(1)), 1)
+        vm.setRegister(.w(0), w: 2)
+        vm.setRegister(.w(1), w: 1)
         try vm.step()
-        XCTAssertEqual(Word(0) &- 1, try vm.getRegister(.w(.w(2))))
+        XCTAssertEqual(Word(0) &- 1, try vm.getRegister(w: .w(2)))
     }
     
     func testMUL16() throws {
@@ -934,10 +924,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .mulw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 2)
-        vm.setRegister(.w(.w(1)), 2)
+        vm.setRegister(.w(0), w: 2)
+        vm.setRegister(.w(1), w: 2)
         try vm.step()
-        XCTAssertEqual(4, try vm.getRegister(.w(.w(2))))
+        XCTAssertEqual(4, try vm.getRegister(w: .w(2)))
     }
     
     func testDIV16() throws {
@@ -945,10 +935,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .divw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 2)
-        vm.setRegister(.w(.w(1)), 4)
+        vm.setRegister(.w(0), w: 2)
+        vm.setRegister(.w(1), w: 4)
         try vm.step()
-        XCTAssertEqual(2, try vm.getRegister(.w(.w(2))))
+        XCTAssertEqual(2, try vm.getRegister(w: .w(2)))
     }
     
     func testDIV16_DivideByZero() throws {
@@ -956,8 +946,8 @@ final class TackVirtualMachineTests: XCTestCase {
             .divw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 0)
-        vm.setRegister(.w(.w(1)), 1)
+        vm.setRegister(.w(0), w: 0)
+        vm.setRegister(.w(1), w: 1)
         XCTAssertThrowsError(try vm.step()) {
             guard let error = $0 as? TackVirtualMachineError else {
                 XCTFail()
@@ -977,10 +967,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .modw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 2)
-        vm.setRegister(.w(.w(1)), 3)
+        vm.setRegister(.w(0), w: 2)
+        vm.setRegister(.w(1), w: 3)
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.w(.w(2))))
+        XCTAssertEqual(1, try vm.getRegister(w: .w(2)))
     }
     
     func testMOD16_DivideByZero() throws {
@@ -988,8 +978,8 @@ final class TackVirtualMachineTests: XCTestCase {
             .modw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 0)
-        vm.setRegister(.w(.w(1)), 1)
+        vm.setRegister(.w(0), w: 0)
+        vm.setRegister(.w(1), w: 1)
         XCTAssertThrowsError(try vm.step()) {
             guard let error = $0 as? TackVirtualMachineError else {
                 XCTFail()
@@ -1009,10 +999,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .lslw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 1)
-        vm.setRegister(.w(.w(1)), 1)
+        vm.setRegister(.w(0), w: 1)
+        vm.setRegister(.w(1), w: 1)
         try vm.step()
-        XCTAssertEqual(2, try vm.getRegister(.w(.w(2))))
+        XCTAssertEqual(2, try vm.getRegister(w: .w(2)))
     }
     
     func testLSL16_overflow() throws {
@@ -1020,10 +1010,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .lslw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 1)
-        vm.setRegister(.w(.w(1)), 0x8000)
+        vm.setRegister(.w(0), w: 1)
+        vm.setRegister(.w(1), w: 0x8000)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.w(.w(2))))
+        XCTAssertEqual(0, try vm.getRegister(w: .w(2)))
     }
     
     func testLSR16() throws {
@@ -1031,10 +1021,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .lsrw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 1)
-        vm.setRegister(.w(.w(1)), 4)
+        vm.setRegister(.w(0), w: 1)
+        vm.setRegister(.w(1), w: 4)
         try vm.step()
-        XCTAssertEqual(2, try vm.getRegister(.w(.w(2))))
+        XCTAssertEqual(2, try vm.getRegister(w: .w(2)))
     }
     
     func testLSR16_underflow() throws {
@@ -1042,10 +1032,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .lsrw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 1)
-        vm.setRegister(.w(.w(1)), 0)
+        vm.setRegister(.w(0), w: 1)
+        vm.setRegister(.w(1), w: 0)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.w(.w(2))))
+        XCTAssertEqual(0, try vm.getRegister(w: .w(2)))
     }
     
     func testEQ16_Equal() throws {
@@ -1053,10 +1043,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .eqw(.o(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 1000)
-        vm.setRegister(.w(.w(1)), 1000)
+        vm.setRegister(.w(0), w: 1000)
+        vm.setRegister(.w(1), w: 1000)
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(true, try vm.getRegister(o: .o(2)))
     }
     
     func testEQ16_NotEqual() throws {
@@ -1064,10 +1054,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .eqw(.o(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 1000)
-        vm.setRegister(.w(.w(1)), 1001)
+        vm.setRegister(.w(0), w: 1000)
+        vm.setRegister(.w(1), w: 1001)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(false, try vm.getRegister(o: .o(2)))
     }
     
     func testNE16_Equal() throws {
@@ -1075,10 +1065,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .new(.o(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 1000)
-        vm.setRegister(.w(.w(1)), 1000)
+        vm.setRegister(.w(0), w: 1000)
+        vm.setRegister(.w(1), w: 1000)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(false, try vm.getRegister(o: .o(2)))
     }
     
     func testNE16_NotEqual() throws {
@@ -1086,10 +1076,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .new(.o(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 1000)
-        vm.setRegister(.w(.w(1)), 1001)
+        vm.setRegister(.w(0), w: 1000)
+        vm.setRegister(.w(1), w: 1001)
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(true, try vm.getRegister(o: .o(2)))
     }
     
     func testLT16_True() throws {
@@ -1097,10 +1087,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .ltw(.o(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 1000)
-        vm.setRegister(.w(.w(1)), Word(0) &- Word(1000))
+        vm.setRegister(.w(0), w: 1000)
+        vm.setRegister(.w(1), w: Word(0) &- Word(1000))
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(true, try vm.getRegister(o: .o(2)))
     }
     
     func testLT16_False() throws {
@@ -1108,10 +1098,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .ltw(.o(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), Word(0) &- Word(1000))
-        vm.setRegister(.w(.w(1)), 1000)
+        vm.setRegister(.w(0), w: Word(0) &- Word(1000))
+        vm.setRegister(.w(1), w: 1000)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(false, try vm.getRegister(o: .o(2)))
     }
     
     func testGE16_True() throws {
@@ -1119,10 +1109,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .gew(.o(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(1)), 1000)
-        vm.setRegister(.w(.w(0)), Word(0) &- Word(1000))
+        vm.setRegister(.w(1), w: 1000)
+        vm.setRegister(.w(0), w: Word(0) &- Word(1000))
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(true, try vm.getRegister(o: .o(2)))
     }
     
     func testGE16_False() throws {
@@ -1130,10 +1120,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .gew(.o(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(1)), Word(0) &- Word(1000))
-        vm.setRegister(.w(.w(0)), 1000)
+        vm.setRegister(.w(1), w: Word(0) &- Word(1000))
+        vm.setRegister(.w(0), w: 1000)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(false, try vm.getRegister(o: .o(2)))
     }
     
     func testLE16_True() throws {
@@ -1141,10 +1131,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .lew(.o(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(1)), Word(0) &- Word(1000))
-        vm.setRegister(.w(.w(0)), 1000)
+        vm.setRegister(.w(1), w: Word(0) &- Word(1000))
+        vm.setRegister(.w(0), w: 1000)
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(true, try vm.getRegister(o: .o(2)))
     }
     
     func testLE16_False() throws {
@@ -1152,10 +1142,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .lew(.o(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(1)), 1000)
-        vm.setRegister(.w(.w(0)), Word(0) &- Word(1000))
+        vm.setRegister(.w(1), w: 1000)
+        vm.setRegister(.w(0), w: Word(0) &- Word(1000))
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(false, try vm.getRegister(o: .o(2)))
     }
     
     func testGT16_True() throws {
@@ -1163,10 +1153,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .gtw(.o(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(1)), 1000)
-        vm.setRegister(.w(.w(0)), Word(0) &- Word(1000))
+        vm.setRegister(.w(1), w: 1000)
+        vm.setRegister(.w(0), w: Word(0) &- Word(1000))
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(true, try vm.getRegister(o: .o(2)))
     }
     
     func testGT16_False() throws {
@@ -1174,10 +1164,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .gtw(.o(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(1)), Word(0) &- Word(1000))
-        vm.setRegister(.w(.w(0)), 1000)
+        vm.setRegister(.w(1), w: Word(0) &- Word(1000))
+        vm.setRegister(.w(0), w: 1000)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(false, try vm.getRegister(o: .o(2)))
     }
     
     func testLTU16_True() throws {
@@ -1185,10 +1175,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .ltuw(.o(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(1)), 0)
-        vm.setRegister(.w(.w(0)), 0xffff)
+        vm.setRegister(.w(1), w: 0)
+        vm.setRegister(.w(0), w: 0xffff)
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(true, try vm.getRegister(o: .o(2)))
     }
     
     func testLTU16_False() throws {
@@ -1196,10 +1186,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .ltuw(.o(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(1)), 0xffff)
-        vm.setRegister(.w(.w(0)), 0)
+        vm.setRegister(.w(1), w: 0xffff)
+        vm.setRegister(.w(0), w: 0)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(false, try vm.getRegister(o: .o(2)))
     }
     
     func testGEU16_True() throws {
@@ -1207,10 +1197,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .geuw(.o(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(1)), 0xffff)
-        vm.setRegister(.w(.w(0)), 0)
+        vm.setRegister(.w(1), w: 0xffff)
+        vm.setRegister(.w(0), w: 0)
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(true, try vm.getRegister(o: .o(2)))
     }
     
     func testGEU16_False() throws {
@@ -1218,10 +1208,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .geuw(.o(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(1)), 0)
-        vm.setRegister(.w(.w(0)), 0xffff)
+        vm.setRegister(.w(1), w: 0)
+        vm.setRegister(.w(0), w: 0xffff)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(false, try vm.getRegister(o: .o(2)))
     }
     
     func testLEU16_True() throws {
@@ -1229,10 +1219,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .leuw(.o(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(1)), 0)
-        vm.setRegister(.w(.w(0)), 0xffff)
+        vm.setRegister(.w(1), w: 0)
+        vm.setRegister(.w(0), w: 0xffff)
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(true, try vm.getRegister(o: .o(2)))
     }
     
     func testLEU16_False() throws {
@@ -1240,10 +1230,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .leuw(.o(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(1)), 0xffff)
-        vm.setRegister(.w(.w(0)), 0)
+        vm.setRegister(.w(1), w: 0xffff)
+        vm.setRegister(.w(0), w: 0)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(false, try vm.getRegister(o: .o(2)))
     }
     
     func testGTU16_True() throws {
@@ -1251,10 +1241,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .gtuw(.o(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(1)), 0xffff)
-        vm.setRegister(.w(.w(0)), 0)
+        vm.setRegister(.w(1), w: 0xffff)
+        vm.setRegister(.w(0), w: 0)
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(true, try vm.getRegister(o: .o(2)))
     }
     
     func testGTU16_False() throws {
@@ -1262,10 +1252,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .gtuw(.o(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(1)), 0)
-        vm.setRegister(.w(.w(0)), 0xffff)
+        vm.setRegister(.w(1), w: 0)
+        vm.setRegister(.w(0), w: 0xffff)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(false, try vm.getRegister(o: .o(2)))
     }
     
     func testLI8_pos() throws {
@@ -1274,7 +1264,7 @@ final class TackVirtualMachineTests: XCTestCase {
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.b(.b(0))))
+        XCTAssertEqual(1, try vm.getRegister(b: .b(0)))
     }
     
     func testLI8_neg() throws {
@@ -1283,7 +1273,7 @@ final class TackVirtualMachineTests: XCTestCase {
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         try vm.step()
-        XCTAssertEqual(Word(0) &- 1, try vm.getRegister(.b(.b(0))))
+        XCTAssertEqual(UInt8(0) &- 1, try vm.getRegister(b: .b(0)))
     }
     
     func testLI8_TooBigPos() throws {
@@ -1368,7 +1358,7 @@ final class TackVirtualMachineTests: XCTestCase {
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.b(.b(0))))
+        XCTAssertEqual(1, try vm.getRegister(b: .b(0)))
     }
     
     func testAND8() throws {
@@ -1376,10 +1366,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .andb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(0)), 0xf0f0)
-        vm.setRegister(.b(.b(1)), 0xffff)
+        vm.setRegister(.b(0), b: 0xf0)
+        vm.setRegister(.b(1), b: 0xff)
         try vm.step()
-        XCTAssertEqual(0x00f0, try vm.getRegister(.b(.b(2))))
+        XCTAssertEqual(0xf0, try vm.getRegister(b: .b(2)))
     }
     
     func testOR8() throws {
@@ -1387,10 +1377,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .orb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(0)), 0xf0f0)
-        vm.setRegister(.b(.b(1)), 0x0f0f)
+        vm.setRegister(.b(0), b: 0xf0)
+        vm.setRegister(.b(1), b: 0x0f)
         try vm.step()
-        XCTAssertEqual(0x00ff, try vm.getRegister(.b(.b(2))))
+        XCTAssertEqual(0xff, try vm.getRegister(b: .b(2)))
     }
     
     func testXOR8() throws {
@@ -1398,10 +1388,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .xorb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(0)), 0xf0ff)
-        vm.setRegister(.b(.b(1)), 0x0f0f)
+        vm.setRegister(.b(0), b: 0xff)
+        vm.setRegister(.b(1), b: 0x0f)
         try vm.step()
-        XCTAssertEqual(0x00f0, try vm.getRegister(.b(.b(2))))
+        XCTAssertEqual(0xf0, try vm.getRegister(b: .b(2)))
     }
     
     func testNEG8() throws {
@@ -1409,9 +1399,9 @@ final class TackVirtualMachineTests: XCTestCase {
             .negb(.b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(0)), 0xf0f0)
+        vm.setRegister(.b(0), b: 0xf0)
         try vm.step()
-        XCTAssertEqual(0x000f, try vm.getRegister(.b(.b(1))))
+        XCTAssertEqual(0x0f, try vm.getRegister(b: .b(1)))
     }
     
     func testADD8() throws {
@@ -1419,10 +1409,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .addb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(0)), 0xff01)
-        vm.setRegister(.b(.b(1)), 0xff01)
+        vm.setRegister(.b(0), b: 0x01)
+        vm.setRegister(.b(1), b: 0x01)
         try vm.step()
-        XCTAssertEqual(2, try vm.getRegister(.b(.b(2))))
+        XCTAssertEqual(2, try vm.getRegister(b: .b(2)))
     }
     
     func testSUB8() throws {
@@ -1430,10 +1420,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .subb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(0)), 0xff02)
-        vm.setRegister(.b(.b(1)), 0xff01)
+        vm.setRegister(.b(0), b: 0x02)
+        vm.setRegister(.b(1), b: 0x01)
         try vm.step()
-        XCTAssertEqual(Word(0) &- 1, try vm.getRegister(.b(.b(2))))
+        XCTAssertEqual(UInt8(0) &- 1, try vm.getRegister(b: .b(2)))
     }
     
     func testMUL8() throws {
@@ -1441,10 +1431,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .mulb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(0)), 0xff02)
-        vm.setRegister(.b(.b(1)), 2)
+        vm.setRegister(.b(0), b: 2)
+        vm.setRegister(.b(1), b: 2)
         try vm.step()
-        XCTAssertEqual(4, try vm.getRegister(.b(.b(2))))
+        XCTAssertEqual(4, try vm.getRegister(b: .b(2)))
     }
     
     func testDIV8() throws {
@@ -1452,10 +1442,22 @@ final class TackVirtualMachineTests: XCTestCase {
             .divb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(0)), 2)
-        vm.setRegister(.b(.b(1)), 4)
+        vm.setRegister(.b(0), b: 2)
+        vm.setRegister(.b(1), b: 4)
         try vm.step()
-        XCTAssertEqual(2, try vm.getRegister(.b(.b(2))))
+        XCTAssertEqual(2, try vm.getRegister(b: .b(2)))
+    }
+    
+    func testDIV8_negative_divisor() throws {
+        let program = TackProgram(instructions: [
+            .divb(.b(2), .b(1), .b(0))
+        ], labels: [:])
+        let vm = TackVirtualMachine(program)
+        vm.setRegister(.b(1), b: 2)
+        vm.setRegister(.b(0), b: UInt8(0) &- UInt8(1))
+        try vm.step()
+        // TODO: I need a DIV{B,W} and a DIVU{B,W} instruction for signed and unsigned division, respectively.
+        XCTAssertEqual(UInt8(0) &- UInt8(2), try vm.getRegister(b: .b(2)))
     }
     
     func testDIV8_DivideByZero() throws {
@@ -1463,8 +1465,8 @@ final class TackVirtualMachineTests: XCTestCase {
             .divb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(0)), 0)
-        vm.setRegister(.b(.b(1)), 1)
+        vm.setRegister(.b(0), b: 0)
+        vm.setRegister(.b(1), b: 1)
         XCTAssertThrowsError(try vm.step()) {
             guard let error = $0 as? TackVirtualMachineError else {
                 XCTFail()
@@ -1484,10 +1486,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .modb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(0)), 0xff02)
-        vm.setRegister(.b(.b(1)), 0xff03)
+        vm.setRegister(.b(0), b: 2)
+        vm.setRegister(.b(1), b: 3)
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.b(.b(2))))
+        XCTAssertEqual(1, try vm.getRegister(b: .b(2)))
     }
     
     func testMOD8_DivideByZero() throws {
@@ -1495,8 +1497,8 @@ final class TackVirtualMachineTests: XCTestCase {
             .modb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(0)), 0)
-        vm.setRegister(.b(.b(1)), 1)
+        vm.setRegister(.b(0), b: 0)
+        vm.setRegister(.b(1), b: 1)
         XCTAssertThrowsError(try vm.step()) {
             guard let error = $0 as? TackVirtualMachineError else {
                 XCTFail()
@@ -1516,10 +1518,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .lslb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(0)), 0xff01)
-        vm.setRegister(.b(.b(1)), 0xff01)
+        vm.setRegister(.b(0), b: 1)
+        vm.setRegister(.b(1), b: 1)
         try vm.step()
-        XCTAssertEqual(2, try vm.getRegister(.b(.b(2))))
+        XCTAssertEqual(2, try vm.getRegister(b: .b(2)))
     }
     
     func testLSL8_overflow() throws {
@@ -1527,10 +1529,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .lslb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(0)), 0xff01)
-        vm.setRegister(.b(.b(1)), 0xff80)
+        vm.setRegister(.b(0), b: 0x01)
+        vm.setRegister(.b(1), b: 0x80)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.b(.b(2))))
+        XCTAssertEqual(0, try vm.getRegister(b: .b(2)))
     }
     
     func testLSR8() throws {
@@ -1538,10 +1540,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .lsrb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(0)), 0xff01)
-        vm.setRegister(.b(.b(1)), 0xff04)
+        vm.setRegister(.b(0), b: 0x01)
+        vm.setRegister(.b(1), b: 0x04)
         try vm.step()
-        XCTAssertEqual(2, try vm.getRegister(.b(.b(2))))
+        XCTAssertEqual(2, try vm.getRegister(b: .b(2)))
     }
     
     func testLSR8_underflow() throws {
@@ -1549,10 +1551,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .lsrb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(0)), 0xff01)
-        vm.setRegister(.b(.b(1)), 0xff00)
+        vm.setRegister(.b(0), b: 0x01)
+        vm.setRegister(.b(1), b: 0x00)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.b(.b(2))))
+        XCTAssertEqual(0, try vm.getRegister(b: .b(2)))
     }
     
     func testEQ8_Equal() throws {
@@ -1560,10 +1562,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .eqb(.o(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(0)), 0xffff)
-        vm.setRegister(.b(.b(1)), 0xf0ff)
+        vm.setRegister(.b(0), b: 0xff)
+        vm.setRegister(.b(1), b: 0xff)
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(true, try vm.getRegister(o: .o(2)))
     }
     
     func testEQ8_NotEqual() throws {
@@ -1571,10 +1573,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .eqb(.o(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(0)), 0xffff)
-        vm.setRegister(.b(.b(1)), 0xf0f0)
+        vm.setRegister(.b(0), b: 0xff)
+        vm.setRegister(.b(1), b: 0xf0)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(false, try vm.getRegister(o: .o(2)))
     }
     
     func testNE8_Equal() throws {
@@ -1582,10 +1584,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .neb(.o(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(0)), 0xff01)
-        vm.setRegister(.b(.b(1)), 0xf001)
+        vm.setRegister(.b(0), b: 0x01)
+        vm.setRegister(.b(1), b: 0x01)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(false, try vm.getRegister(o: .o(2)))
     }
     
     func testNE8_NotEqual() throws {
@@ -1593,10 +1595,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .neb(.o(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(0)), 0xff01)
-        vm.setRegister(.b(.b(1)), 0xff00)
+        vm.setRegister(.b(0), b: 0x01)
+        vm.setRegister(.b(1), b: 0x00)
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(true, try vm.getRegister(o: .o(2)))
     }
     
     func testLT8_True() throws {
@@ -1604,10 +1606,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .ltb(.o(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(0)), 127)
-        vm.setRegister(.b(.b(1)), Word(0) &- Word(127))
+        vm.setRegister(.b(0), b: 127)
+        vm.setRegister(.b(1), b: UInt8(0) &- UInt8(127))
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(true, try vm.getRegister(o: .o(2)))
     }
     
     func testLT8_False() throws {
@@ -1615,10 +1617,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .ltb(.o(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(0)), Word(0) &- Word(127))
-        vm.setRegister(.b(.b(1)), 127)
+        vm.setRegister(.b(0), b: UInt8(0) &- UInt8(127))
+        vm.setRegister(.b(1), b: 127)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(false, try vm.getRegister(o: .o(2)))
     }
     
     func testGE8_True() throws {
@@ -1626,10 +1628,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .geb(.o(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(1)), 127)
-        vm.setRegister(.b(.b(0)), Word(0) &- Word(127))
+        vm.setRegister(.b(1), b: 127)
+        vm.setRegister(.b(0), b: UInt8(0) &- UInt8(127))
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(true, try vm.getRegister(o: .o(2)))
     }
     
     func testGE8_False() throws {
@@ -1637,10 +1639,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .geb(.o(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(1)), Word(0) &- Word(127))
-        vm.setRegister(.b(.b(0)), 127)
+        vm.setRegister(.b(1), b: UInt8(0) &- UInt8(127))
+        vm.setRegister(.b(0), b: 127)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(false, try vm.getRegister(o: .o(2)))
     }
     
     func testLE8_True() throws {
@@ -1648,10 +1650,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .leb(.o(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(1)), Word(0) &- Word(127))
-        vm.setRegister(.b(.b(0)), 127)
+        vm.setRegister(.b(1), b: UInt8(0) &- UInt8(127))
+        vm.setRegister(.b(0), b: 127)
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(true, try vm.getRegister(o: .o(2)))
     }
     
     func testLE8_False() throws {
@@ -1659,10 +1661,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .leb(.o(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(1)), 127)
-        vm.setRegister(.b(.b(0)), Word(0) &- Word(127))
+        vm.setRegister(.b(1), b: 127)
+        vm.setRegister(.b(0), b: UInt8(0) &- UInt8(127))
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(false, try vm.getRegister(o: .o(2)))
     }
     
     func testGT8_True() throws {
@@ -1670,10 +1672,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .gtb(.o(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(1)), 127)
-        vm.setRegister(.b(.b(0)), Word(0) &- Word(127))
+        vm.setRegister(.b(1), b: 127)
+        vm.setRegister(.b(0), b: UInt8(0) &- UInt8(127))
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(true, try vm.getRegister(o: .o(2)))
     }
     
     func testGT8_False() throws {
@@ -1681,10 +1683,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .gtb(.o(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(1)), Word(0) &- Word(127))
-        vm.setRegister(.b(.b(0)), 127)
+        vm.setRegister(.b(1), b: UInt8(0) &- UInt8(127))
+        vm.setRegister(.b(0), b: 127)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(false, try vm.getRegister(o: .o(2)))
     }
     
     func testLTU8_True() throws {
@@ -1692,10 +1694,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .ltub(.o(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(1)), 0)
-        vm.setRegister(.b(.b(0)), 0xff)
+        vm.setRegister(.b(1), b: 0)
+        vm.setRegister(.b(0), b: 0xff)
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(true, try vm.getRegister(o: .o(2)))
     }
     
     func testLTU8_False() throws {
@@ -1703,10 +1705,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .ltub(.o(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(1)), 0xff)
-        vm.setRegister(.b(.b(0)), 0)
+        vm.setRegister(.b(1), b: 0xff)
+        vm.setRegister(.b(0), b: 0)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(false, try vm.getRegister(o: .o(2)))
     }
     
     func testGEU8_True() throws {
@@ -1714,10 +1716,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .geub(.o(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(1)), 0xff)
-        vm.setRegister(.b(.b(0)), 0)
+        vm.setRegister(.b(1), b: 0xff)
+        vm.setRegister(.b(0), b: 0)
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(true, try vm.getRegister(o: .o(2)))
     }
     
     func testGEU8_False() throws {
@@ -1725,10 +1727,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .geub(.o(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(1)), 0)
-        vm.setRegister(.b(.b(0)), 0xff)
+        vm.setRegister(.b(1), b: 0)
+        vm.setRegister(.b(0), b: 0xff)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(false, try vm.getRegister(o: .o(2)))
     }
     
     func testLEU8_True() throws {
@@ -1736,10 +1738,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .leub(.o(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(1)), 0)
-        vm.setRegister(.b(.b(0)), 0xff)
+        vm.setRegister(.b(1), b: 0)
+        vm.setRegister(.b(0), b: 0xff)
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(true, try vm.getRegister(o: .o(2)))
     }
     
     func testLEU8_False() throws {
@@ -1747,10 +1749,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .leub(.o(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(1)), 0xff)
-        vm.setRegister(.b(.b(0)), 0)
+        vm.setRegister(.b(1), b: 0xff)
+        vm.setRegister(.b(0), b: 0)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(false, try vm.getRegister(o: .o(2)))
     }
     
     func testGTU8_True() throws {
@@ -1758,10 +1760,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .gtub(.o(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(1)), 0xff)
-        vm.setRegister(.b(.b(0)), 0)
+        vm.setRegister(.b(1), b: 0xff)
+        vm.setRegister(.b(0), b: 0)
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(true, try vm.getRegister(o: .o(2)))
     }
     
     func testGTU8_False() throws {
@@ -1769,10 +1771,10 @@ final class TackVirtualMachineTests: XCTestCase {
             .gtub(.o(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(1)), 0)
-        vm.setRegister(.b(.b(0)), 0xff)
+        vm.setRegister(.b(1), b: 0)
+        vm.setRegister(.b(0), b: 0xff)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.o(.o(2))))
+        XCTAssertEqual(false, try vm.getRegister(o: .o(2)))
     }
     
     func testMOVSWB_Zero() throws {
@@ -1780,9 +1782,9 @@ final class TackVirtualMachineTests: XCTestCase {
             .movswb(.w(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(0)), 0)
+        vm.setRegister(.b(0), b: 0)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.w(.w(1))))
+        XCTAssertEqual(0, try vm.getRegister(w: .w(1)))
     }
     
     func testMOVSWB_One() throws {
@@ -1790,9 +1792,9 @@ final class TackVirtualMachineTests: XCTestCase {
             .movswb(.w(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(0)), 1)
+        vm.setRegister(.b(0), b: 1)
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.w(.w(1))))
+        XCTAssertEqual(1, try vm.getRegister(w: .w(1)))
     }
     
     func testMOVSWB_NegOne() throws {
@@ -1800,9 +1802,9 @@ final class TackVirtualMachineTests: XCTestCase {
             .movswb(.w(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.b(.b(0)), 0x80)
+        vm.setRegister(.b(0), b: 0x80)
         try vm.step()
-        XCTAssertEqual(Word(0) &- 0x80, try vm.getRegister(.w(.w(1))))
+        XCTAssertEqual(Word(0) &- 0x80, try vm.getRegister(w: .w(1)))
     }
     
     func testMOVSBW_Zero() throws {
@@ -1810,9 +1812,9 @@ final class TackVirtualMachineTests: XCTestCase {
             .movsbw(.b(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 0)
+        vm.setRegister(.w(0), w: 0)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.b(.b(1))))
+        XCTAssertEqual(0, try vm.getRegister(b: .b(1)))
     }
     
     func testMOVSBW_One() throws {
@@ -1820,9 +1822,9 @@ final class TackVirtualMachineTests: XCTestCase {
             .movsbw(.b(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 1)
+        vm.setRegister(.w(0), w: 1)
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.b(.b(1))))
+        XCTAssertEqual(1, try vm.getRegister(b: .b(1)))
     }
     
     func testMOVSBW_NegOne() throws {
@@ -1830,9 +1832,9 @@ final class TackVirtualMachineTests: XCTestCase {
             .movsbw(.b(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), 0x80)
+        vm.setRegister(.w(0), w: 0x80)
         try vm.step()
-        XCTAssertEqual(Word(0) &- 0x80, try vm.getRegister(.b(.b(1))))
+        XCTAssertEqual(UInt8(0) &- 0x80, try vm.getRegister(b: .b(1)))
     }
     
     func testSerialOutput() throws {
@@ -1840,8 +1842,8 @@ final class TackVirtualMachineTests: XCTestCase {
             .sw(.w(1), .w(0), 0)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(.w(0)), vm.kMemoryMappedSerialOutputPort)
-        vm.setRegister(.w(.w(1)), 65)
+        vm.setRegister(.w(0), w: vm.kMemoryMappedSerialOutputPort)
+        vm.setRegister(.w(1), w: 65)
         var output: Word? = nil
         vm.onSerialOutput = { output = $0 }
         try vm.step()
@@ -1998,7 +2000,7 @@ final class TackVirtualMachineTests: XCTestCase {
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         try vm.step()
-        XCTAssertEqual(1, try vm.getRegister(.o(.o(0))))
+        XCTAssertEqual(true, try vm.getRegister(o: .o(0)))
     }
     
     func testLIO_false() throws {
@@ -2007,6 +2009,6 @@ final class TackVirtualMachineTests: XCTestCase {
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         try vm.step()
-        XCTAssertEqual(0, try vm.getRegister(.o(.o(0))))
+        XCTAssertEqual(false, try vm.getRegister(o: .o(0)))
     }
 }

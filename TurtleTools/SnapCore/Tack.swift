@@ -16,8 +16,66 @@ public enum TackInstruction: Equatable, Hashable {
     public typealias Offset = Int
     public typealias Imm = Int
     
+    public enum RegisterType: Equatable, Hashable {
+        case w, b
+        
+        public var description: String {
+            switch self {
+            case .w: return "w"
+            case .b: return "b"
+            }
+        }
+    }
+    
     public enum Register: Equatable, Hashable {
-        case sp, fp, ra, vr(Int)
+        case w(Register16), b(Register8)
+        
+        public static let sp: Register = .w(.sp)
+        public static let fp: Register = .w(.fp)
+        public static let ra: Register = .w(.ra)
+        
+        public var type: RegisterType {
+            switch self {
+            case .w: return .w
+            case .b: return .b
+            }
+        }
+        
+        public var unwrap16: Register16? {
+            switch self {
+            case .w(let w): return w
+            default:        return nil
+            }
+        }
+        
+        public var unwrap8: Register8? {
+            switch self {
+            case .b(let b): return b
+            default:        return nil
+            }
+        }
+
+        public var description: String {
+            switch self {
+            case .w(let r): return r.description
+            case .b(let r): return r.description
+            }
+        }
+    }
+    
+    public enum RegisterValue: Equatable, Hashable {
+        case w(UInt16), b(UInt8)
+        
+        public var description: String {
+            switch self {
+            case .w(let v): return "\(v)"
+            case .b(let v): return "\(v)"
+            }
+        }
+    }
+    
+    public enum Register16: Equatable, Hashable {
+        case sp, fp, ra, w(Int)
         
         public var description: String {
             switch self {
@@ -27,8 +85,21 @@ public enum TackInstruction: Equatable, Hashable {
                 return "fp"
             case .ra:
                 return "ra"
-            case .vr(let i):
-                return "vr\(i)"
+            case .w(let i):
+                return "w\(i)"
+            }
+        }
+    }
+    
+    public typealias RegisterPointer = Register16 // TODO: RegisterPointer should be a distinct type from Register16
+    public typealias RegisterBoolean = Register16 // TODO: RegisterBoolean should be a distinct type from Register16
+    
+    public enum Register8: Equatable, Hashable {
+        case b(Int)
+        
+        public var description: String {
+            switch self {
+            case .b(let i): return "b\(i)"
             }
         }
     }
@@ -36,74 +107,84 @@ public enum TackInstruction: Equatable, Hashable {
     case nop
     case hlt
     case call(Label)
-    case callptr(Register)
+    case callptr(RegisterPointer)
     case enter(Count)
     case leave
     case ret
     case jmp(Label)
-    case not(Register, Register)
-    case la(Register, Label)
-    case bz(Register, Label)
-    case bnz(Register, Label)
-    case load(Register, Register, Offset)
-    case store(Register, Register, Offset)
-    case ststr(Register, String)
-    case memcpy(Register, Register, Count)
-    case alloca(Register, Count)
+    case la(RegisterPointer, Label)
+    case ststr(RegisterPointer, String)
+    case memcpy(RegisterPointer, RegisterPointer, Count)
+    case alloca(RegisterPointer, Count)
     case free(Count)
-    case andi16(Register, Register, Imm)
-    case addi16(Register, Register, Imm)
-    case subi16(Register, Register, Imm)
-    case muli16(Register, Register, Imm)
-    case li16(Register, Int)
-    case liu16(Register, Int)
-    case and16(Register, Register, Register)
-    case or16(Register, Register, Register)
-    case xor16(Register, Register, Register)
-    case neg16(Register, Register)
-    case add16(Register, Register, Register)
-    case sub16(Register, Register, Register)
-    case mul16(Register, Register, Register)
-    case div16(Register, Register, Register)
-    case mod16(Register, Register, Register)
-    case lsl16(Register, Register, Register)
-    case lsr16(Register, Register, Register)
-    case eq16(Register, Register, Register)
-    case ne16(Register, Register, Register)
-    case lt16(Register, Register, Register)
-    case ge16(Register, Register, Register)
-    case le16(Register, Register, Register)
-    case gt16(Register, Register, Register)
-    case ltu16(Register, Register, Register)
-    case geu16(Register, Register, Register)
-    case leu16(Register, Register, Register)
-    case gtu16(Register, Register, Register)
-    case li8(Register, Int)
-    case liu8(Register, Int)
-    case and8(Register, Register, Register)
-    case or8(Register, Register, Register)
-    case xor8(Register, Register, Register)
-    case neg8(Register, Register)
-    case add8(Register, Register, Register)
-    case sub8(Register, Register, Register)
-    case mul8(Register, Register, Register)
-    case div8(Register, Register, Register)
-    case mod8(Register, Register, Register)
-    case lsl8(Register, Register, Register)
-    case lsr8(Register, Register, Register)
-    case eq8(Register, Register, Register)
-    case ne8(Register, Register, Register)
-    case lt8(Register, Register, Register)
-    case ge8(Register, Register, Register)
-    case le8(Register, Register, Register)
-    case gt8(Register, Register, Register)
-    case ltu8(Register, Register, Register)
-    case geu8(Register, Register, Register)
-    case leu8(Register, Register, Register)
-    case gtu8(Register, Register, Register)
-    case sxt8(Register, Register)
     case inlineAssembly(String)
-    case syscall(Register, Register) // first register is the syscall number, second is a pointer to the arguments structure
+    case syscall(Register16, RegisterPointer) // first register is the syscall number, second is a pointer to the arguments structure
+    
+    case bz(RegisterBoolean, Label)
+    case bnz(RegisterBoolean, Label)
+    
+    case load16(Register16, RegisterPointer, Offset)
+    case store16(Register16, RegisterPointer, Offset)
+    case andi16(Register16, Register16, Imm)
+    case addi16(Register16, Register16, Imm)
+    case subi16(Register16, Register16, Imm)
+    case muli16(Register16, Register16, Imm)
+    case li16(Register16, Int)
+    case liu16(Register16, Int)
+    case and16(Register16, Register16, Register16)
+    case or16(Register16, Register16, Register16)
+    case xor16(Register16, Register16, Register16)
+    case neg16(Register16, Register16)
+    case not16(Register16, Register16)
+    case add16(Register16, Register16, Register16)
+    case sub16(Register16, Register16, Register16)
+    case mul16(Register16, Register16, Register16)
+    case div16(Register16, Register16, Register16)
+    case mod16(Register16, Register16, Register16)
+    case lsl16(Register16, Register16, Register16)
+    case lsr16(Register16, Register16, Register16)
+    case eq16(RegisterBoolean, Register16, Register16)
+    case ne16(RegisterBoolean, Register16, Register16)
+    case lt16(RegisterBoolean, Register16, Register16)
+    case ge16(RegisterBoolean, Register16, Register16)
+    case le16(RegisterBoolean, Register16, Register16)
+    case gt16(RegisterBoolean, Register16, Register16)
+    case ltu16(RegisterBoolean, Register16, Register16)
+    case geu16(RegisterBoolean, Register16, Register16)
+    case leu16(RegisterBoolean, Register16, Register16)
+    case gtu16(RegisterBoolean, Register16, Register16)
+    
+    case load8(Register8, RegisterPointer, Offset)
+    case store8(Register8, RegisterPointer, Offset)
+    case li8(Register8, Int)
+    case liu8(Register8, Int)
+    case and8(Register8, Register8, Register8)
+    case or8(Register8, Register8, Register8)
+    case xor8(Register8, Register8, Register8)
+    case neg8(Register8, Register8)
+    case not8(Register8, Register8)
+    case add8(Register8, Register8, Register8)
+    case sub8(Register8, Register8, Register8)
+    case mul8(Register8, Register8, Register8)
+    case div8(Register8, Register8, Register8)
+    case mod8(Register8, Register8, Register8)
+    case lsl8(Register8, Register8, Register8)
+    case lsr8(Register8, Register8, Register8)
+    case eq8(RegisterBoolean, Register8, Register8)
+    case ne8(RegisterBoolean, Register8, Register8)
+    case lt8(RegisterBoolean, Register8, Register8)
+    case ge8(RegisterBoolean, Register8, Register8)
+    case le8(RegisterBoolean, Register8, Register8)
+    case gt8(RegisterBoolean, Register8, Register8)
+    case ltu8(RegisterBoolean, Register8, Register8)
+    case geu8(RegisterBoolean, Register8, Register8)
+    case leu8(RegisterBoolean, Register8, Register8)
+    case gtu8(RegisterBoolean, Register8, Register8)
+    
+    case movsbw(Register8, Register16) // Move a signed sixteen-bit register to a signed eight-bit register
+    case movswb(Register16, Register8) // Move an eight-bit register to a sixteen-bit register, sign-extending to fill the upper bits.
+    case movzwb(Register16, Register8) // Move an eight-bit register to a sixteen-bit register, zero-extending to fill the upper bits.
+    case movzbw(Register8, Register16) // Move an unsigned sixteen-bit register to an unsigned eight-bit register
     
     public var description: String {
         switch self {
@@ -115,16 +196,19 @@ public enum TackInstruction: Equatable, Hashable {
         case .leave: return "LEAVE"
         case .ret: return "RET"
         case .jmp(let target): return "JMP \(target)"
-        case .not(let dst, let src): return "NOT \(dst.description), \(src.description)"
         case .la(let dst, let label): return "LA \(dst.description), \(label)"
-        case .bz(let test, let target): return "BZ \(test) \(target)"
-        case .bnz(let test, let target): return "BNZ \(test) \(target)"
-        case .load(let dst, let addr, let offset): return "LOAD \(dst.description), \(addr.description), \(offset)"
-        case .store(let src, let addr, let offset): return "STORE \(src.description), \(addr.description), \(offset)"
         case .ststr(let dst, let str): return "STSTR \(dst.description), \"\(str)\""
         case .memcpy(let dst, let src, let count): return "MEMCPY \(dst.description), \(src.description), \(count)"
         case .alloca(let dst, let count): return "ALLOCA \(dst.description), \(count)"
         case .free(let count): return "FREE \(count)"
+        case .inlineAssembly(let asm): return "ASM \(makeInlineAssemblyDescription(asm))"
+        case .syscall(let n, let ptr): return "SYSCALL \(n.description), \(ptr.description)"
+        
+        case .bz(let test, let target): return "BZ \(test) \(target)"
+        case .bnz(let test, let target): return "BNZ \(test) \(target)"
+            
+        case .load16(let dst, let addr, let offset): return "LOAD16 \(dst.description), \(addr.description), \(offset)"
+        case .store16(let src, let addr, let offset): return "STORE16 \(src.description), \(addr.description), \(offset)"
         case .andi16(let c, let a, let b): return "ANDI16 \(c.description), \(a.description), \(b.description)"
         case .addi16(let c, let a, let b): return "ADDI16 \(c.description), \(a.description), \(b.description)"
         case .subi16(let c, let a, let b): return "SUBI16 \(c.description), \(a.description), \(b.description)"
@@ -135,6 +219,7 @@ public enum TackInstruction: Equatable, Hashable {
         case .or16(let c, let a, let b): return "OR16 \(c.description), \(a.description), \(b.description)"
         case .xor16(let c, let a, let b): return "XOR16 \(c.description), \(a.description), \(b.description)"
         case .neg16(let c, let a): return "NEG16 \(c.description), \(a.description)"
+        case .not16(let dst, let src): return "NOT16 \(dst.description), \(src.description)"
         case .add16(let c, let a, let b): return "ADD16 \(c.description), \(a.description), \(b.description)"
         case .sub16(let c, let a, let b): return "SUB16 \(c.description), \(a.description), \(b.description)"
         case .mul16(let c, let a, let b): return "MUL16 \(c.description), \(a.description), \(b.description)"
@@ -152,12 +237,16 @@ public enum TackInstruction: Equatable, Hashable {
         case .geu16(let c, let a, let b): return "GEU16 \(c.description), \(a.description), \(b.description)"
         case .leu16(let c, let a, let b): return "LEU16 \(c.description), \(a.description), \(b.description)"
         case .gtu16(let c, let a, let b): return "GTU16 \(c.description), \(a.description), \(b.description)"
+        
+        case .load8(let dst, let addr, let offset): return "LOAD8 \(dst.description), \(addr.description), \(offset)"
+        case .store8(let src, let addr, let offset): return "STORE8 \(src.description), \(addr.description), \(offset)"
         case .li8(let dst, let imm): return "LI8 \(dst.description), \(imm)"
         case .liu8(let dst, let imm): return "LIU8 \(dst.description), \(imm)"
         case .and8(let c, let a, let b): return "AND8 \(c.description), \(a.description), \(b.description)"
         case .or8(let c, let a, let b): return "OR8 \(c.description), \(a.description), \(b.description)"
         case .xor8(let c, let a, let b): return "XOR8 \(c.description), \(a.description), \(b.description)"
         case .neg8(let c, let a): return "NEG8 \(c.description), \(a.description)"
+        case .not8(let dst, let src): return "NOT8 \(dst.description), \(src.description)"
         case .add8(let c, let a, let b): return "ADD8 \(c.description), \(a.description), \(b.description)"
         case .sub8(let c, let a, let b): return "SUB8 \(c.description), \(a.description), \(b.description)"
         case .mul8(let c, let a, let b): return "MUL8 \(c.description), \(a.description), \(b.description)"
@@ -175,9 +264,10 @@ public enum TackInstruction: Equatable, Hashable {
         case .geu8(let c, let a, let b): return "GEU8 \(c.description), \(a.description), \(b.description)"
         case .leu8(let c, let a, let b): return "LEU8 \(c.description), \(a.description), \(b.description)"
         case .gtu8(let c, let a, let b): return "GTU8 \(c.description), \(a.description), \(b.description)"
-        case .sxt8(let dst, let src): return "SXT8 \(dst.description), \(src.description)"
-        case .inlineAssembly(let asm): return "ASM \(makeInlineAssemblyDescription(asm))"
-        case .syscall(let n, let ptr): return "SYSCALL \(n.description), \(ptr.description)"
+        case .movsbw(let dst, let src): return "MOVSBW \(dst.description), \(src.description)"
+        case .movswb(let dst, let src): return "MOVSWB \(dst.description), \(src.description)"
+        case .movzwb(let dst, let src): return "MOVZWB \(dst.description), \(src.description)"
+        case .movzbw(let dst, let src): return "MOVZBW \(dst.description), \(src.description)"
         }
     }
     
@@ -351,5 +441,35 @@ public struct TackProgram: Equatable {
         }
         let result = lines.joined(separator: "\n")
         return result
+    }
+}
+
+extension SymbolType {
+    public var primitiveType: TackInstruction.RegisterType? {
+        switch self {
+        case .void, .bool:
+            return .w
+            
+        case .pointer, .constPointer:
+            return .w
+            
+        case .arithmeticType(.mutableInt(let intClass)),
+             .arithmeticType(.immutableInt(let intClass)):
+            switch intClass {
+            case .u16, .i16: return .w
+            case .u8, .i8:   return .b
+            }
+            
+        case .arithmeticType(.compTimeInt(let v)):
+            let intClass = IntClass.smallestClassContaining(value: v)
+            switch intClass {
+            case .u16, .i16: return .w
+            case .u8, .i8:   return .b
+            case .none:      return nil
+            }
+        
+        default:
+            return nil
+        }
     }
 }

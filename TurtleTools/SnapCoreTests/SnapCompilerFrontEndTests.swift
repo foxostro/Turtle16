@@ -77,9 +77,9 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             """)
         let tackProgram = try result.get()
         XCTAssertEqual(tackProgram.listing, """
-            0000  LIU16 vr0, 272
-            0001  LIU8 vr1, 1
-            0002  STORE vr1, vr0, 0
+            0000  LIU16 w0, 272
+            0001  LIU8 b1, 1
+            0002  STORE8 b1, w0, 0
             """)
     }
 
@@ -94,9 +94,9 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         XCTAssertEqual(tackProgram.listing, """
             0000       HLT
             0001  foo: ENTER 1
-            0002       SUBI16 vr0, fp, 1
-            0003       LIU8 vr1, 1
-            0004       STORE vr1, vr0, 0
+            0002       SUBI16 w0, fp, 1
+            0003       LIU8 b1, 1
+            0004       STORE8 b1, w0, 0
             0005       LEAVE
             0006       RET
             """)

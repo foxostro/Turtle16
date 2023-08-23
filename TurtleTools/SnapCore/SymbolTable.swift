@@ -431,20 +431,10 @@ public enum ArithmeticType: Equatable, Hashable, CustomStringConvertible {
         let srcIntClass = intClass!
         let dstIntClass = dst.intClass!
         
-        if srcIntClass == dstIntClass {
-            return true
-        }
-        
-        switch (srcIntClass, dstIntClass) {
-        case (.u8, .u16),
-             (.u8, .i16),
-             (.i8, .u16),
-             (.i8, .i16):
-            return true
-            
-        default:
-            return false
-        }
+        // In previous versions of the language, we could trivially reinterpret
+        // i8 as i16 and u8 as u16, but this is no longer allowed since the
+        // introduction of typed registers in the Tack intermediate language.
+        return srcIntClass == dstIntClass
     }
     
     public var isCompTime: Bool {

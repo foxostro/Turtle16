@@ -73,36 +73,36 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         case .bz(let test, let target): return bz(anc, test, target)
         case .bnz(let test, let target): return bnz(anc, test, target)
             
-        case .lw(let dst, let addr, let offset): return load16(anc, dst, addr, offset)
-        case .sw(let src, let addr, let offset): return store16(anc, src, addr, offset)
-        case .andiw(let dst, let left, let imm): return andi16(anc, dst, left, imm)
-        case .addiw(let dst, let left, let imm): return addi16(anc, dst, left, imm)
-        case .subiw(let dst, let left, let imm): return subi16(anc, dst, left, imm)
-        case .mulib(let dst, let left, let imm): return muli16(anc, dst, left, imm)
-        case .liw(let dst, let imm): return li16(anc, dst, imm)
-        case .liuw(let dst, let imm): return liu16(anc, dst, imm)
-        case .andw(let c, let a, let b): return and16(anc, c, a, b)
-        case .orw(let c, let a, let b): return or16(anc, c, a, b)
-        case .xorw(let c, let a, let b): return xor16(anc, c, a, b)
-        case .negw(let dst, let src): return neg16(anc, dst, src)
-        case .notw(let dst, let src): return not16(anc, dst, src)
-        case .addw(let c, let a, let b): return add16(anc, c, a, b)
-        case .subw(let c, let a, let b): return sub16(anc, c, a, b)
-        case .mulw(let c, let a, let b): return mul16(anc, c, a, b)
-        case .divw(let c, let a, let b): return div16(anc, c, a, b)
+        case .lw(let dst, let addr, let offset): return lw(anc, dst, addr, offset)
+        case .sw(let src, let addr, let offset): return sw(anc, src, addr, offset)
+        case .andiw(let dst, let left, let imm): return andiw(anc, dst, left, imm)
+        case .addiw(let dst, let left, let imm): return addiw(anc, dst, left, imm)
+        case .subiw(let dst, let left, let imm): return subiw(anc, dst, left, imm)
+        case .mulib(let dst, let left, let imm): return muliw(anc, dst, left, imm)
+        case .liw(let dst, let imm): return liw(anc, dst, imm)
+        case .liuw(let dst, let imm): return liuw(anc, dst, imm)
+        case .andw(let c, let a, let b): return andw(anc, c, a, b)
+        case .orw(let c, let a, let b): return orw(anc, c, a, b)
+        case .xorw(let c, let a, let b): return xorw(anc, c, a, b)
+        case .negw(let dst, let src): return negw(anc, dst, src)
+        case .notw(let dst, let src): return notw(anc, dst, src)
+        case .addw(let c, let a, let b): return addw(anc, c, a, b)
+        case .subw(let c, let a, let b): return subw(anc, c, a, b)
+        case .mulw(let c, let a, let b): return mulw(anc, c, a, b)
+        case .divw(let c, let a, let b): return divw(anc, c, a, b)
         case .modw(let c, let a, let b): return mod16(anc, c, a, b)
-        case .lslw(let c, let a, let b): return lsl16(anc, c, a, b)
-        case .lsrw(let c, let a, let b): return lsr16(anc, c, a, b)
-        case .eqw(let c, let a, let b): return eq16(anc, c, a, b)
-        case .new(let c, let a, let b): return ne16(anc, c, a, b)
-        case .ltw(let c, let a, let b): return lt16(anc, c, a, b)
-        case .gew(let c, let a, let b): return ge16(anc, c, a, b)
-        case .lew(let c, let a, let b): return le16(anc, c, a, b)
-        case .gtw(let c, let a, let b): return gt16(anc, c, a, b)
-        case .ltuw(let c, let a, let b): return ltu16(anc, c, a, b)
-        case .geuw(let c, let a, let b): return geu16(anc, c, a, b)
-        case .leuw(let c, let a, let b): return leu16(anc, c, a, b)
-        case .gtuw(let c, let a, let b): return gtu16(anc, c, a, b)
+        case .lslw(let c, let a, let b): return lslw(anc, c, a, b)
+        case .lsrw(let c, let a, let b): return lsrw(anc, c, a, b)
+        case .eqw(let c, let a, let b): return eqw(anc, c, a, b)
+        case .new(let c, let a, let b): return new(anc, c, a, b)
+        case .ltw(let c, let a, let b): return ltw(anc, c, a, b)
+        case .gew(let c, let a, let b): return gew(anc, c, a, b)
+        case .lew(let c, let a, let b): return lew(anc, c, a, b)
+        case .gtw(let c, let a, let b): return gtw(anc, c, a, b)
+        case .ltuw(let c, let a, let b): return ltuw(anc, c, a, b)
+        case .geuw(let c, let a, let b): return geuw(anc, c, a, b)
+        case .leuw(let c, let a, let b): return leuw(anc, c, a, b)
+        case .gtuw(let c, let a, let b): return gtuw(anc, c, a, b)
         
         case .lb(let dst, let addr, let offset): return load8(anc, dst, addr, offset)
         case .sb(let src, let addr, let offset): return store8(anc, src, addr, offset)
@@ -178,7 +178,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         return InstructionNode(sourceAnchor: sourceAnchor, instruction: kJMP, parameter: ParameterIdentifier(target))
     }
     
-    func not16(_ sourceAnchor: SourceAnchor?, _ dst_: TackInstruction.Register16, _ src_: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
+    func notw(_ sourceAnchor: SourceAnchor?, _ dst_: TackInstruction.Register16, _ src_: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
         let src = corresponding(.w(src_))
         let tmp = ParameterIdentifier(nextRegister())
         let dst = corresponding(.w(dst_))
@@ -235,7 +235,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func load16(_ sourceAnchor: SourceAnchor?,
+    func lw(_ sourceAnchor: SourceAnchor?,
                 _ dst_: TackInstruction.Register16,
                 _ addr_: TackInstruction.RegisterPointer,
                 _ imm: Int) -> AbstractSyntaxTreeNode? {
@@ -319,7 +319,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         }
     }
     
-    func store16(_ sourceAnchor: SourceAnchor?,
+    func sw(_ sourceAnchor: SourceAnchor?,
                  _ src_: TackInstruction.Register16,
                  _ addr_: TackInstruction.RegisterPointer,
                  _ imm: Int) -> AbstractSyntaxTreeNode? {
@@ -479,7 +479,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
                 _ dst_: TackInstruction.RegisterPointer,
                 _ size: Int) -> AbstractSyntaxTreeNode? {
         return Seq(sourceAnchor: sourceAnchor, children: [
-            subi16(sourceAnchor, .sp, .sp, size)!,
+            subiw(sourceAnchor, .sp, .sp, size)!,
             InstructionNode(sourceAnchor: sourceAnchor, instruction: kADDI, parameters:[
                 corresponding(.w(dst_)),
                 ParameterIdentifier("sp"),
@@ -489,7 +489,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
     }
     
     func free(_ sourceAnchor: SourceAnchor?, _ size: Int) -> AbstractSyntaxTreeNode? {
-        return addi16(sourceAnchor, .sp, .sp, size)
+        return addiw(sourceAnchor, .sp, .sp, size)
     }
     
     fileprivate func opWithImm16(_ sourceAnchor: SourceAnchor?,
@@ -531,28 +531,28 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         }
     }
     
-    func andi16(_ sourceAnchor: SourceAnchor?,
+    func andiw(_ sourceAnchor: SourceAnchor?,
                 _ dst_: TackInstruction.Register16,
                 _ left_: TackInstruction.Register16,
                 _ imm: Int) -> AbstractSyntaxTreeNode? {
         return opWithImm16(sourceAnchor, kAND, kANDI, dst_, left_, imm)
     }
     
-    func addi16(_ sourceAnchor: SourceAnchor?,
+    func addiw(_ sourceAnchor: SourceAnchor?,
                 _ dst_: TackInstruction.Register16,
                 _ left_: TackInstruction.Register16,
                 _ imm: Int) -> AbstractSyntaxTreeNode? {
         return opWithImm16(sourceAnchor, kADD, kADDI, dst_, left_, imm)
     }
     
-    func subi16(_ sourceAnchor: SourceAnchor?,
+    func subiw(_ sourceAnchor: SourceAnchor?,
                 _ dst_: TackInstruction.Register16,
                 _ left_: TackInstruction.Register16,
                 _ imm: Int) -> AbstractSyntaxTreeNode? {
         return opWithImm16(sourceAnchor, kSUB, kSUBI, dst_, left_, imm)
     }
     
-    func muli16(_ sourceAnchor: SourceAnchor?,
+    func muliw(_ sourceAnchor: SourceAnchor?,
                 _ dst_: TackInstruction.Register16,
                 _ left_: TackInstruction.Register16,
                 _ imm: Int) -> AbstractSyntaxTreeNode? {
@@ -596,10 +596,10 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
             ])
         }
         
-        return muli16_pow2(sourceAnchor, dst_, left_, imm)
+        return muliw_pow2(sourceAnchor, dst_, left_, imm)
     }
     
-    fileprivate func muli16_pow2(_ sourceAnchor: SourceAnchor?,
+    fileprivate func muliw_pow2(_ sourceAnchor: SourceAnchor?,
                                  _ dst_: TackInstruction.Register16,
                                  _ left_: TackInstruction.Register16,
                                  _ imm: Int) -> AbstractSyntaxTreeNode? {
@@ -695,7 +695,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         return Seq(children: children)
     }
     
-    func li16(_ sourceAnchor: SourceAnchor?,
+    func liw(_ sourceAnchor: SourceAnchor?,
               _ dst_: TackInstruction.Register16,
               _ imm: Int) -> AbstractSyntaxTreeNode? {
         if imm >= Int8.min && imm <= Int8.max {
@@ -724,7 +724,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         }
     }
     
-    func liu16(_ sourceAnchor: SourceAnchor?,
+    func liuw(_ sourceAnchor: SourceAnchor?,
                _ dst_: TackInstruction.Register16,
                _ imm: Int) -> AbstractSyntaxTreeNode? {
         if imm > 127 {
@@ -753,7 +753,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         }
     }
     
-    func and16(_ sourceAnchor: SourceAnchor?,
+    func andw(_ sourceAnchor: SourceAnchor?,
                _ c_: TackInstruction.Register16,
                _ a_: TackInstruction.Register16,
                _ b_: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
@@ -765,7 +765,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func or16(_ sourceAnchor: SourceAnchor?,
+    func orw(_ sourceAnchor: SourceAnchor?,
               _ c_: TackInstruction.Register16,
               _ a_: TackInstruction.Register16,
               _ b_: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
@@ -777,7 +777,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func xor16(_ sourceAnchor: SourceAnchor?,
+    func xorw(_ sourceAnchor: SourceAnchor?,
                _ c_: TackInstruction.Register16,
                _ a_: TackInstruction.Register16,
                _ b_: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
@@ -789,7 +789,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func neg16(_ sourceAnchor: SourceAnchor?,
+    func negw(_ sourceAnchor: SourceAnchor?,
                _ dst_: TackInstruction.Register16,
                _ src_: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
         let src = corresponding(.w(src_))
@@ -799,7 +799,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func add16(_ sourceAnchor: SourceAnchor?,
+    func addw(_ sourceAnchor: SourceAnchor?,
                _ c_: TackInstruction.Register16,
                _ a_: TackInstruction.Register16,
                _ b_: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
@@ -811,7 +811,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func sub16(_ sourceAnchor: SourceAnchor?,
+    func subw(_ sourceAnchor: SourceAnchor?,
                _ c_: TackInstruction.Register16,
                _ a_: TackInstruction.Register16,
                _ b_: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
@@ -825,7 +825,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
     
     fileprivate let labelMaker = LabelMaker(prefix: ".LL")
     
-    func mul16(_ sourceAnchor: SourceAnchor?,
+    func mulw(_ sourceAnchor: SourceAnchor?,
                _ c_: TackInstruction.Register16,
                _ a_: TackInstruction.Register16,
                _ b_: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
@@ -870,7 +870,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func div16(_ sourceAnchor: SourceAnchor?,
+    func divw(_ sourceAnchor: SourceAnchor?,
                _ c_: TackInstruction.Register16,
                _ a_: TackInstruction.Register16,
                _ b_: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
@@ -964,7 +964,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func lsl16(_ sourceAnchor: SourceAnchor?,
+    func lslw(_ sourceAnchor: SourceAnchor?,
                _ c_: TackInstruction.Register16,
                _ a_: TackInstruction.Register16,
                _ b_: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
@@ -1013,7 +1013,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func lsr16(_ sourceAnchor: SourceAnchor?,
+    func lsrw(_ sourceAnchor: SourceAnchor?,
                _ c_: TackInstruction.Register16,
                _ a_: TackInstruction.Register16,
                _ b_: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
@@ -1062,7 +1062,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func eq16(_ sourceAnchor: SourceAnchor?,
+    func eqw(_ sourceAnchor: SourceAnchor?,
               _ c_: TackInstruction.Register16,
               _ a_: TackInstruction.Register16,
               _ b_: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
@@ -1079,7 +1079,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func ne16(_ sourceAnchor: SourceAnchor?,
+    func new(_ sourceAnchor: SourceAnchor?,
               _ c_: TackInstruction.Register16,
               _ a_: TackInstruction.Register16,
               _ b_: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
@@ -1096,7 +1096,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func lt16(_ sourceAnchor: SourceAnchor?,
+    func ltw(_ sourceAnchor: SourceAnchor?,
               _ c_: TackInstruction.Register16,
               _ a_: TackInstruction.Register16,
               _ b_: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
@@ -1113,7 +1113,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func ge16(_ sourceAnchor: SourceAnchor?,
+    func gew(_ sourceAnchor: SourceAnchor?,
               _ c_: TackInstruction.Register16,
               _ a_: TackInstruction.Register16,
               _ b_: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
@@ -1130,7 +1130,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func le16(_ sourceAnchor: SourceAnchor?,
+    func lew(_ sourceAnchor: SourceAnchor?,
               _ c_: TackInstruction.Register16,
               _ a_: TackInstruction.Register16,
               _ b_: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
@@ -1147,7 +1147,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func gt16(_ sourceAnchor: SourceAnchor?,
+    func gtw(_ sourceAnchor: SourceAnchor?,
               _ c_: TackInstruction.Register16,
               _ a_: TackInstruction.Register16,
               _ b_: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
@@ -1164,7 +1164,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func ltu16(_ sourceAnchor: SourceAnchor?,
+    func ltuw(_ sourceAnchor: SourceAnchor?,
                _ c_: TackInstruction.Register16,
                _ a_: TackInstruction.Register16,
                _ b_: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
@@ -1181,7 +1181,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func geu16(_ sourceAnchor: SourceAnchor?,
+    func geuw(_ sourceAnchor: SourceAnchor?,
                _ c_: TackInstruction.Register16,
                _ a_: TackInstruction.Register16,
                _ b_: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
@@ -1198,7 +1198,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func leu16(_ sourceAnchor: SourceAnchor?,
+    func leuw(_ sourceAnchor: SourceAnchor?,
                _ c_: TackInstruction.Register16,
                _ a_: TackInstruction.Register16,
                _ b_: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
@@ -1215,7 +1215,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         ])
     }
     
-    func gtu16(_ sourceAnchor: SourceAnchor?,
+    func gtuw(_ sourceAnchor: SourceAnchor?,
                _ c_: TackInstruction.Register16,
                _ a_: TackInstruction.Register16,
                _ b_: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
@@ -1393,7 +1393,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
               _ c_: TackInstruction.Register8,
               _ a_: TackInstruction.Register8,
               _ b_: TackInstruction.Register8) -> AbstractSyntaxTreeNode? {
-        // TODO: Consolidate implementation with the very similar mul16()
+        // TODO: Consolidate implementation with the very similar mulw()
         let right = corresponding(.b(b_))
         let left = corresponding(.b(a_))
         let counter = ParameterIdentifier(nextRegister())
@@ -1440,7 +1440,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
               _ c_: TackInstruction.Register8,
               _ a_: TackInstruction.Register8,
               _ b_: TackInstruction.Register8) -> AbstractSyntaxTreeNode? {
-        // TODO: Consolidate implementation with the very similar div16()
+        // TODO: Consolidate implementation with the very similar divw()
         let right = corresponding(.b(b_))
         let left = corresponding(.b(a_))
         let tempLeft = ParameterIdentifier(nextRegister())
@@ -1538,7 +1538,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
               _ c_: TackInstruction.Register8,
               _ a_: TackInstruction.Register8,
               _ b_: TackInstruction.Register8) -> AbstractSyntaxTreeNode? {
-        // TODO: Consolidate implementation with the very similar lsl16()
+        // TODO: Consolidate implementation with the very similar lslw()
         let N = 16
         let b = corresponding(.b(c_)) // TODO: Terrible naming conventions for the local vars here
         let a = corresponding(.b(a_))
@@ -1592,7 +1592,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
               _ c_: TackInstruction.Register8,
               _ a_: TackInstruction.Register8,
               _ b_: TackInstruction.Register8) -> AbstractSyntaxTreeNode? {
-        // TODO: Consolidate implementation with the very similar lsr16()
+        // TODO: Consolidate implementation with the very similar lsrw()
         let N = 16
         let b = corresponding(.b(c_)) // TODO: Terrible naming conventions for the local vars here
         let a = corresponding(.b(a_))

@@ -863,7 +863,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
     }
 
-    func testRvalue_Binary_add16() throws {
+    func testRvalue_Binary_addw() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
@@ -881,7 +881,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
     }
 
-    func testRvalue_Binary_sub16() throws {
+    func testRvalue_Binary_subw() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
@@ -899,7 +899,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
     }
 
-    func testRvalue_Binary_mul16() throws {
+    func testRvalue_Binary_mulw() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
@@ -917,7 +917,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
     }
 
-    func testRvalue_Binary_div16() throws {
+    func testRvalue_Binary_divw() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
@@ -953,7 +953,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
     }
 
-    func testRvalue_Binary_lsl16() throws {
+    func testRvalue_Binary_lslw() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
@@ -971,7 +971,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
     }
 
-    func testRvalue_Binary_lsr16() throws {
+    func testRvalue_Binary_lsrw() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
@@ -989,7 +989,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
     }
 
-    func testRvalue_Binary_and16() throws {
+    func testRvalue_Binary_andw() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
@@ -1007,7 +1007,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
     }
 
-    func testRvalue_Binary_or16() throws {
+    func testRvalue_Binary_orw() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
@@ -1025,7 +1025,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
     }
 
-    func testRvalue_Binary_xor16() throws {
+    func testRvalue_Binary_xorw() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
@@ -1043,7 +1043,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
     }
 
-    func testRvalue_Binary_eq16() throws {
+    func testRvalue_Binary_eqw() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
@@ -1061,7 +1061,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
     }
 
-    func testRvalue_Binary_ne16() throws {
+    func testRvalue_Binary_new() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
@@ -1079,7 +1079,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
     }
 
-    func testRvalue_Binary_lt16() throws {
+    func testRvalue_Binary_ltw() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 200, storage: .staticStorage))
@@ -1097,7 +1097,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
     }
 
-    func testRvalue_Binary_ge16() throws {
+    func testRvalue_Binary_gew() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 200, storage: .staticStorage))
@@ -1115,7 +1115,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
     }
 
-    func testRvalue_Binary_le16() throws {
+    func testRvalue_Binary_lew() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 200, storage: .staticStorage))
@@ -1133,7 +1133,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
     }
 
-    func testRvalue_Binary_gt16() throws {
+    func testRvalue_Binary_gtw() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 200, storage: .staticStorage))
@@ -1151,7 +1151,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
     }
 
-    func testRvalue_Binary_ltu16() throws {
+    func testRvalue_Binary_ltuw() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
@@ -1169,7 +1169,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
     }
 
-    func testRvalue_Binary_geu16() throws {
+    func testRvalue_Binary_geuw() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
@@ -1187,7 +1187,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
     }
 
-    func testRvalue_Binary_leu16() throws {
+    func testRvalue_Binary_leuw() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
@@ -1205,7 +1205,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
     }
 
-    func testRvalue_Binary_gtu16() throws {
+    func testRvalue_Binary_gtuw() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))

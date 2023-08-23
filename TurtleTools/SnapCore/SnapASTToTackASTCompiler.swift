@@ -1825,7 +1825,7 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 pushRegister(c)
                 instructions += [
                     TackInstructionNode(
-                        instruction: .notw(c.unwrap16!, b.unwrap16!),
+                        instruction: .not(c.unwrap16!, b.unwrap16!),
                         sourceAnchor: expr.sourceAnchor,
                         symbols: symbols)
                 ]

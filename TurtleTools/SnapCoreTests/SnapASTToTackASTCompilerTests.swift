@@ -775,7 +775,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let expected = Seq(children: [
             TackInstructionNode(.liuw(.w(0), 100)),
             TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.notw(.w(2), .w(1)))
+            TackInstructionNode(.not(.w(2), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(2)))

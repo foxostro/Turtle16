@@ -122,6 +122,7 @@ public enum TackInstruction: Equatable, Hashable {
     
     case bz(RegisterBoolean, Label)
     case bnz(RegisterBoolean, Label)
+    case not(Register16, Register16)
     
     case lw(Register16, RegisterPointer, Offset)
     case sw(Register16, RegisterPointer, Offset)
@@ -135,7 +136,6 @@ public enum TackInstruction: Equatable, Hashable {
     case orw(Register16, Register16, Register16)
     case xorw(Register16, Register16, Register16)
     case negw(Register16, Register16)
-    case notw(Register16, Register16)
     case addw(Register16, Register16, Register16)
     case subw(Register16, Register16, Register16)
     case mulw(Register16, Register16, Register16)
@@ -162,7 +162,6 @@ public enum TackInstruction: Equatable, Hashable {
     case orb(Register8, Register8, Register8)
     case xorb(Register8, Register8, Register8)
     case negb(Register8, Register8)
-    case notb(Register8, Register8)
     case addb(Register8, Register8, Register8)
     case subb(Register8, Register8, Register8)
     case mulb(Register8, Register8, Register8)
@@ -206,6 +205,7 @@ public enum TackInstruction: Equatable, Hashable {
         
         case .bz(let test, let target): return "BZ \(test) \(target)"
         case .bnz(let test, let target): return "BNZ \(test) \(target)"
+        case .not(let dst, let src): return "NOT \(dst.description), \(src.description)"
             
         case .lw(let dst, let addr, let offset): return "LW \(dst.description), \(addr.description), \(offset)"
         case .sw(let src, let addr, let offset): return "SW \(src.description), \(addr.description), \(offset)"
@@ -219,7 +219,6 @@ public enum TackInstruction: Equatable, Hashable {
         case .orw(let c, let a, let b): return "ORW \(c.description), \(a.description), \(b.description)"
         case .xorw(let c, let a, let b): return "XORW \(c.description), \(a.description), \(b.description)"
         case .negw(let c, let a): return "NEGW \(c.description), \(a.description)"
-        case .notw(let dst, let src): return "NOTW \(dst.description), \(src.description)"
         case .addw(let c, let a, let b): return "ADDW \(c.description), \(a.description), \(b.description)"
         case .subw(let c, let a, let b): return "SUBW \(c.description), \(a.description), \(b.description)"
         case .mulw(let c, let a, let b): return "MULW \(c.description), \(a.description), \(b.description)"
@@ -246,7 +245,6 @@ public enum TackInstruction: Equatable, Hashable {
         case .orb(let c, let a, let b): return "ORB \(c.description), \(a.description), \(b.description)"
         case .xorb(let c, let a, let b): return "XORB \(c.description), \(a.description), \(b.description)"
         case .negb(let c, let a): return "NEGB \(c.description), \(a.description)"
-        case .notb(let dst, let src): return "NOTB \(dst.description), \(src.description)"
         case .addb(let c, let a, let b): return "ADDB \(c.description), \(a.description), \(b.description)"
         case .subb(let c, let a, let b): return "SUBB \(c.description), \(a.description), \(b.description)"
         case .mulb(let c, let a, let b): return "MULB \(c.description), \(a.description), \(b.description)"

@@ -72,6 +72,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         
         case .bz(let test, let target): return bz(anc, test, target)
         case .bnz(let test, let target): return bnz(anc, test, target)
+        case .not(let dst, let src): return not(anc, dst, src)
             
         case .lw(let dst, let addr, let offset): return lw(anc, dst, addr, offset)
         case .sw(let src, let addr, let offset): return sw(anc, src, addr, offset)
@@ -85,7 +86,6 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         case .orw(let c, let a, let b): return orw(anc, c, a, b)
         case .xorw(let c, let a, let b): return xorw(anc, c, a, b)
         case .negw(let dst, let src): return negw(anc, dst, src)
-        case .notw(let dst, let src): return notw(anc, dst, src)
         case .addw(let c, let a, let b): return addw(anc, c, a, b)
         case .subw(let c, let a, let b): return subw(anc, c, a, b)
         case .mulw(let c, let a, let b): return mulw(anc, c, a, b)
@@ -112,7 +112,6 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         case .orb(let c, let a, let b): return or8(anc, c, a, b)
         case .xorb(let c, let a, let b): return xor8(anc, c, a, b)
         case .negb(let dst, let src): return neg8(anc, dst, src)
-        case .notb(let dst, let src): return not8(anc, dst, src)
         case .addb(let c, let a, let b): return add8(anc, c, a, b)
         case .subb(let c, let a, let b): return sub8(anc, c, a, b)
         case .mulb(let c, let a, let b): return mul8(anc, c, a, b)
@@ -178,21 +177,10 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         return InstructionNode(sourceAnchor: sourceAnchor, instruction: kJMP, parameter: ParameterIdentifier(target))
     }
     
-    func notw(_ sourceAnchor: SourceAnchor?, _ dst_: TackInstruction.Register16, _ src_: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
+    func not(_ sourceAnchor: SourceAnchor?, _ dst_: TackInstruction.Register16, _ src_: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
         let src = corresponding(.w(src_))
         let tmp = ParameterIdentifier(nextRegister())
         let dst = corresponding(.w(dst_))
-        
-        return Seq(sourceAnchor: sourceAnchor, children: [
-            InstructionNode(sourceAnchor: sourceAnchor, instruction: kNOT, parameters: [tmp, src ]),
-            InstructionNode(sourceAnchor: sourceAnchor, instruction: kANDI, parameters: [dst, tmp, ParameterNumber(1)])
-        ])
-    }
-    
-    func not8(_ sourceAnchor: SourceAnchor?, _ dst_: TackInstruction.Register8, _ src_: TackInstruction.Register8) -> AbstractSyntaxTreeNode? {
-        let src = corresponding(.b(src_))
-        let tmp = ParameterIdentifier(nextRegister())
-        let dst = corresponding(.b(dst_))
         
         return Seq(sourceAnchor: sourceAnchor, children: [
             InstructionNode(sourceAnchor: sourceAnchor, instruction: kNOT, parameters: [tmp, src ]),

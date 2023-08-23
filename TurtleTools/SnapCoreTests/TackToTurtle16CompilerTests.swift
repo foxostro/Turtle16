@@ -179,7 +179,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testNOT16() throws {
-        let input = TackInstructionNode(.notw(.w(1), .w(0)))
+        let input = TackInstructionNode(.not(.w(1), .w(0)))
         let expected = Seq(children: [
             InstructionNode(instruction: kNOT, parameters:[
                 ParameterIdentifier("vr1"),
@@ -198,7 +198,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
 
     func testNOT_subsequent_use_of_registers_map_correctly() throws {
         let input = Seq(children: [
-            TackInstructionNode(.notw(.w(1), .w(0))),
+            TackInstructionNode(.not(.w(1), .w(0))),
             TackInstructionNode(.callptr(.w(1)))
         ])
         let expected = Seq(children: [
@@ -213,24 +213,6 @@ class TackToTurtle16CompilerTests: XCTestCase {
             ]),
             InstructionNode(instruction: kCALLPTR, parameters:[
                 ParameterIdentifier("vr2")
-            ])
-        ])
-        let compiler = TackToTurtle16Compiler()
-        let actual = try compiler.compile(input)
-        XCTAssertEqual(actual, expected)
-    }
-    
-    func testNOT8() throws {
-        let input = TackInstructionNode(.notb(.b(1), .b(0)))
-        let expected = Seq(children: [
-            InstructionNode(instruction: kNOT, parameters:[
-                ParameterIdentifier("vr1"),
-                ParameterIdentifier("vr0")
-            ]),
-            InstructionNode(instruction: kANDI, parameters:[
-                ParameterIdentifier("vr2"),
-                ParameterIdentifier("vr1"),
-                ParameterNumber(1)
             ])
         ])
         let compiler = TackToTurtle16Compiler()

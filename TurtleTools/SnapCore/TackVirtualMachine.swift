@@ -260,6 +260,8 @@ public class TackVirtualMachine: NSObject {
             try bz(test, target)
         case .bnz(let test, let target):
             try bnz(test, target)
+        case .not(let dst, let src):
+            try not(dst, src)
             
         case .lw(let dst, let address, let offset):
             try lw(dst, address, offset)
@@ -285,8 +287,6 @@ public class TackVirtualMachine: NSObject {
             try xorw(dst, left, right)
         case .negw(let dst, let src):
             try negw(dst, src)
-        case .notw(let dst, let src):
-            try notw(dst, src)
         case .addw(let dst, let left, let right):
             try addw(dst, left, right)
         case .subw(let dst, let left, let right):
@@ -338,8 +338,6 @@ public class TackVirtualMachine: NSObject {
             try xor8(dst, left, right)
         case .negb(let dst, let src):
             try neg8(dst, src)
-        case .notb(let dst, let src):
-            try not8(dst, src)
         case .addb(let dst, let left, let right):
             try add8(dst, left, right)
         case .subb(let dst, let left, let right):
@@ -549,16 +547,10 @@ public class TackVirtualMachine: NSObject {
         setRegister(.sp, sp)
     }
     
-    private func notw(_ dst: Register16, _ src: Register16) throws {
+    private func not(_ dst: Register16, _ src: Register16) throws {
         var r = try getRegister(.w(src))
         r = ~r & 1
         setRegister(.w(dst), r)
-    }
-    
-    private func not8(_ dst: Register8, _ src: Register8) throws {
-        var r = try getRegister(.b(src))
-        r = ~r & 1
-        setRegister(.b(dst), r)
     }
     
     private func andiw(_ dst: Register16, _ left: Register16, _ right: Int) throws {

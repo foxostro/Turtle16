@@ -17,18 +17,19 @@ public enum TackInstruction: Equatable, Hashable {
     public typealias Imm = Int
     
     public enum RegisterType: Equatable, Hashable {
-        case w, b
+        case w, b, o
         
         public var description: String {
             switch self {
             case .w: return "w"
             case .b: return "b"
+            case .o: return "o"
             }
         }
     }
     
     public enum Register: Equatable, Hashable {
-        case w(Register16), b(Register8)
+        case w(Register16), b(Register8), o(RegisterBoolean)
         
         public static let sp: Register = .w(.sp)
         public static let fp: Register = .w(.fp)
@@ -38,6 +39,7 @@ public enum TackInstruction: Equatable, Hashable {
             switch self {
             case .w: return .w
             case .b: return .b
+            case .o: return .o
             }
         }
         
@@ -54,22 +56,31 @@ public enum TackInstruction: Equatable, Hashable {
             default:        return nil
             }
         }
+        
+        public var unwrapBool: RegisterBoolean? {
+            switch self {
+            case .o(let o): return o
+            default:        return nil
+            }
+        }
 
         public var description: String {
             switch self {
-            case .w(let r): return r.description
-            case .b(let r): return r.description
+            case .w(let register): return register.description
+            case .b(let register): return register.description
+            case .o(let register): return register.description
             }
         }
     }
     
     public enum RegisterValue: Equatable, Hashable {
-        case w(UInt16), b(UInt8)
+        case w(UInt16), b(UInt8), o(Bool)
         
         public var description: String {
             switch self {
             case .w(let v): return "\(v)"
             case .b(let v): return "\(v)"
+            case .o(let v): return "\(v)"
             }
         }
     }
@@ -91,8 +102,18 @@ public enum TackInstruction: Equatable, Hashable {
         }
     }
     
+    public enum RegisterBoolean: Equatable, Hashable {
+        case o(Int)
+        
+        public var description: String {
+            switch self {
+            case .o(let i):
+                return "o\(i)"
+            }
+        }
+    }
+    
     public typealias RegisterPointer = Register16 // TODO: RegisterPointer should be a distinct type from Register16
-    public typealias RegisterBoolean = Register16 // TODO: RegisterBoolean should be a distinct type from Register16
     
     public enum Register8: Equatable, Hashable {
         case b(Int)
@@ -122,10 +143,16 @@ public enum TackInstruction: Equatable, Hashable {
     
     case bz(RegisterBoolean, Label)
     case bnz(RegisterBoolean, Label)
-    case not(Register16, Register16)
+    case not(RegisterBoolean, RegisterBoolean)
+    case eqo(RegisterBoolean, RegisterBoolean, RegisterBoolean)
+    case neo(RegisterBoolean, RegisterBoolean, RegisterBoolean)
+    case lio(RegisterBoolean, Bool)
+    case lo(RegisterBoolean, RegisterPointer, Offset)
+    case so(RegisterBoolean, RegisterPointer, Offset)
     
     case lw(Register16, RegisterPointer, Offset)
     case sw(Register16, RegisterPointer, Offset)
+    case bzw(Register16, Label)
     case andiw(Register16, Register16, Imm)
     case addiw(Register16, Register16, Imm)
     case subiw(Register16, Register16, Imm)
@@ -206,9 +233,15 @@ public enum TackInstruction: Equatable, Hashable {
         case .bz(let test, let target): return "BZ \(test) \(target)"
         case .bnz(let test, let target): return "BNZ \(test) \(target)"
         case .not(let dst, let src): return "NOT \(dst.description), \(src.description)"
-            
+        case .eqo(let c, let a, let b): return "EQO \(c.description), \(a.description), \(b.description)"
+        case .neo(let c, let a, let b): return "NEO \(c.description), \(a.description), \(b.description)"
+        case .lio(let dst, let imm): return "LIO \(dst.description), \(imm)"
+        case .lo(let dst, let addr, let offset): return "LO \(dst.description), \(addr.description), \(offset)"
+        case .so(let src, let addr, let offset): return "SO \(src.description), \(addr.description), \(offset)"
+        
         case .lw(let dst, let addr, let offset): return "LW \(dst.description), \(addr.description), \(offset)"
         case .sw(let src, let addr, let offset): return "SW \(src.description), \(addr.description), \(offset)"
+        case .bzw(let test, let target): return "BZW \(test) \(target)"
         case .andiw(let c, let a, let b): return "ANDIW \(c.description), \(a.description), \(b.description)"
         case .addiw(let c, let a, let b): return "ADDIW \(c.description), \(a.description), \(b.description)"
         case .subiw(let c, let a, let b): return "SUBIW \(c.description), \(a.description), \(b.description)"
@@ -445,7 +478,10 @@ public struct TackProgram: Equatable {
 extension SymbolType {
     public var primitiveType: TackInstruction.RegisterType? {
         switch self {
-        case .void, .bool:
+        case .bool:
+            return .o
+            
+        case .void:
             return .w
             
         case .pointer, .constPointer:

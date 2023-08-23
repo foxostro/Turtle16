@@ -123,63 +123,63 @@ public enum TackInstruction: Equatable, Hashable {
     case bz(RegisterBoolean, Label)
     case bnz(RegisterBoolean, Label)
     
-    case load16(Register16, RegisterPointer, Offset)
-    case store16(Register16, RegisterPointer, Offset)
-    case andi16(Register16, Register16, Imm)
-    case addi16(Register16, Register16, Imm)
-    case subi16(Register16, Register16, Imm)
-    case muli16(Register16, Register16, Imm)
-    case li16(Register16, Int)
-    case liu16(Register16, Int)
-    case and16(Register16, Register16, Register16)
-    case or16(Register16, Register16, Register16)
-    case xor16(Register16, Register16, Register16)
-    case neg16(Register16, Register16)
-    case not16(Register16, Register16)
-    case add16(Register16, Register16, Register16)
-    case sub16(Register16, Register16, Register16)
-    case mul16(Register16, Register16, Register16)
-    case div16(Register16, Register16, Register16)
-    case mod16(Register16, Register16, Register16)
-    case lsl16(Register16, Register16, Register16)
-    case lsr16(Register16, Register16, Register16)
-    case eq16(RegisterBoolean, Register16, Register16)
-    case ne16(RegisterBoolean, Register16, Register16)
-    case lt16(RegisterBoolean, Register16, Register16)
-    case ge16(RegisterBoolean, Register16, Register16)
-    case le16(RegisterBoolean, Register16, Register16)
-    case gt16(RegisterBoolean, Register16, Register16)
-    case ltu16(RegisterBoolean, Register16, Register16)
-    case geu16(RegisterBoolean, Register16, Register16)
-    case leu16(RegisterBoolean, Register16, Register16)
-    case gtu16(RegisterBoolean, Register16, Register16)
+    case lw(Register16, RegisterPointer, Offset)
+    case sw(Register16, RegisterPointer, Offset)
+    case andiw(Register16, Register16, Imm)
+    case addiw(Register16, Register16, Imm)
+    case subiw(Register16, Register16, Imm)
+    case mulib(Register16, Register16, Imm)
+    case liw(Register16, Int)
+    case liuw(Register16, Int)
+    case andw(Register16, Register16, Register16)
+    case orw(Register16, Register16, Register16)
+    case xorw(Register16, Register16, Register16)
+    case negw(Register16, Register16)
+    case notw(Register16, Register16)
+    case addw(Register16, Register16, Register16)
+    case subw(Register16, Register16, Register16)
+    case mulw(Register16, Register16, Register16)
+    case divw(Register16, Register16, Register16)
+    case modw(Register16, Register16, Register16)
+    case lslw(Register16, Register16, Register16)
+    case lsrw(Register16, Register16, Register16)
+    case eqw(RegisterBoolean, Register16, Register16)
+    case new(RegisterBoolean, Register16, Register16)
+    case ltw(RegisterBoolean, Register16, Register16)
+    case gew(RegisterBoolean, Register16, Register16)
+    case lew(RegisterBoolean, Register16, Register16)
+    case gtw(RegisterBoolean, Register16, Register16)
+    case ltuw(RegisterBoolean, Register16, Register16)
+    case geuw(RegisterBoolean, Register16, Register16)
+    case leuw(RegisterBoolean, Register16, Register16)
+    case gtuw(RegisterBoolean, Register16, Register16)
     
-    case load8(Register8, RegisterPointer, Offset)
-    case store8(Register8, RegisterPointer, Offset)
-    case li8(Register8, Int)
-    case liu8(Register8, Int)
-    case and8(Register8, Register8, Register8)
-    case or8(Register8, Register8, Register8)
-    case xor8(Register8, Register8, Register8)
-    case neg8(Register8, Register8)
-    case not8(Register8, Register8)
-    case add8(Register8, Register8, Register8)
-    case sub8(Register8, Register8, Register8)
-    case mul8(Register8, Register8, Register8)
-    case div8(Register8, Register8, Register8)
-    case mod8(Register8, Register8, Register8)
-    case lsl8(Register8, Register8, Register8)
-    case lsr8(Register8, Register8, Register8)
-    case eq8(RegisterBoolean, Register8, Register8)
-    case ne8(RegisterBoolean, Register8, Register8)
-    case lt8(RegisterBoolean, Register8, Register8)
-    case ge8(RegisterBoolean, Register8, Register8)
-    case le8(RegisterBoolean, Register8, Register8)
-    case gt8(RegisterBoolean, Register8, Register8)
-    case ltu8(RegisterBoolean, Register8, Register8)
-    case geu8(RegisterBoolean, Register8, Register8)
-    case leu8(RegisterBoolean, Register8, Register8)
-    case gtu8(RegisterBoolean, Register8, Register8)
+    case lb(Register8, RegisterPointer, Offset)
+    case sb(Register8, RegisterPointer, Offset)
+    case lib(Register8, Int)
+    case liub(Register8, Int)
+    case andb(Register8, Register8, Register8)
+    case orb(Register8, Register8, Register8)
+    case xorb(Register8, Register8, Register8)
+    case negb(Register8, Register8)
+    case notb(Register8, Register8)
+    case addb(Register8, Register8, Register8)
+    case subb(Register8, Register8, Register8)
+    case mulb(Register8, Register8, Register8)
+    case divb(Register8, Register8, Register8)
+    case modb(Register8, Register8, Register8)
+    case lslb(Register8, Register8, Register8)
+    case lsrb(Register8, Register8, Register8)
+    case eqb(RegisterBoolean, Register8, Register8)
+    case neb(RegisterBoolean, Register8, Register8)
+    case ltb(RegisterBoolean, Register8, Register8)
+    case geb(RegisterBoolean, Register8, Register8)
+    case leb(RegisterBoolean, Register8, Register8)
+    case gtb(RegisterBoolean, Register8, Register8)
+    case ltub(RegisterBoolean, Register8, Register8)
+    case geub(RegisterBoolean, Register8, Register8)
+    case leub(RegisterBoolean, Register8, Register8)
+    case gtub(RegisterBoolean, Register8, Register8)
     
     case movsbw(Register8, Register16) // Move a signed sixteen-bit register to a signed eight-bit register
     case movswb(Register16, Register8) // Move an eight-bit register to a sixteen-bit register, sign-extending to fill the upper bits.
@@ -207,63 +207,63 @@ public enum TackInstruction: Equatable, Hashable {
         case .bz(let test, let target): return "BZ \(test) \(target)"
         case .bnz(let test, let target): return "BNZ \(test) \(target)"
             
-        case .load16(let dst, let addr, let offset): return "LOAD16 \(dst.description), \(addr.description), \(offset)"
-        case .store16(let src, let addr, let offset): return "STORE16 \(src.description), \(addr.description), \(offset)"
-        case .andi16(let c, let a, let b): return "ANDI16 \(c.description), \(a.description), \(b.description)"
-        case .addi16(let c, let a, let b): return "ADDI16 \(c.description), \(a.description), \(b.description)"
-        case .subi16(let c, let a, let b): return "SUBI16 \(c.description), \(a.description), \(b.description)"
-        case .muli16(let c, let a, let b): return "MULII16 \(c.description), \(a.description), \(b.description)"
-        case .li16(let dst, let imm): return "LI16 \(dst.description), \(imm)"
-        case .liu16(let dst, let imm): return "LIU16 \(dst.description), \(imm)"
-        case .and16(let c, let a, let b): return "AND16 \(c.description), \(a.description), \(b.description)"
-        case .or16(let c, let a, let b): return "OR16 \(c.description), \(a.description), \(b.description)"
-        case .xor16(let c, let a, let b): return "XOR16 \(c.description), \(a.description), \(b.description)"
-        case .neg16(let c, let a): return "NEG16 \(c.description), \(a.description)"
-        case .not16(let dst, let src): return "NOT16 \(dst.description), \(src.description)"
-        case .add16(let c, let a, let b): return "ADD16 \(c.description), \(a.description), \(b.description)"
-        case .sub16(let c, let a, let b): return "SUB16 \(c.description), \(a.description), \(b.description)"
-        case .mul16(let c, let a, let b): return "MUL16 \(c.description), \(a.description), \(b.description)"
-        case .div16(let c, let a, let b): return "DIV16 \(c.description), \(a.description), \(b.description)"
-        case .mod16(let c, let a, let b): return "MOD16 \(c.description), \(a.description), \(b.description)"
-        case .lsl16(let c, let a, let b): return "LSL16 \(c.description), \(a.description), \(b.description)"
-        case .lsr16(let c, let a, let b): return "LSR16 \(c.description), \(a.description), \(b.description)"
-        case .eq16(let c, let a, let b): return "EQ16 \(c.description), \(a.description), \(b.description)"
-        case .ne16(let c, let a, let b): return "NE16 \(c.description), \(a.description), \(b.description)"
-        case .lt16(let c, let a, let b): return "LT16 \(c.description), \(a.description), \(b.description)"
-        case .ge16(let c, let a, let b): return "GE16 \(c.description), \(a.description), \(b.description)"
-        case .le16(let c, let a, let b): return "LE16 \(c.description), \(a.description), \(b.description)"
-        case .gt16(let c, let a, let b): return "GT16 \(c.description), \(a.description), \(b.description)"
-        case .ltu16(let c, let a, let b): return "LTU16 \(c.description), \(a.description), \(b.description)"
-        case .geu16(let c, let a, let b): return "GEU16 \(c.description), \(a.description), \(b.description)"
-        case .leu16(let c, let a, let b): return "LEU16 \(c.description), \(a.description), \(b.description)"
-        case .gtu16(let c, let a, let b): return "GTU16 \(c.description), \(a.description), \(b.description)"
+        case .lw(let dst, let addr, let offset): return "LW \(dst.description), \(addr.description), \(offset)"
+        case .sw(let src, let addr, let offset): return "SW \(src.description), \(addr.description), \(offset)"
+        case .andiw(let c, let a, let b): return "ANDIW \(c.description), \(a.description), \(b.description)"
+        case .addiw(let c, let a, let b): return "ADDIW \(c.description), \(a.description), \(b.description)"
+        case .subiw(let c, let a, let b): return "SUBIW \(c.description), \(a.description), \(b.description)"
+        case .mulib(let c, let a, let b): return "MULIIW \(c.description), \(a.description), \(b.description)"
+        case .liw(let dst, let imm): return "LIW \(dst.description), \(imm)"
+        case .liuw(let dst, let imm): return "LIUW \(dst.description), \(imm)"
+        case .andw(let c, let a, let b): return "ANDW \(c.description), \(a.description), \(b.description)"
+        case .orw(let c, let a, let b): return "ORW \(c.description), \(a.description), \(b.description)"
+        case .xorw(let c, let a, let b): return "XORW \(c.description), \(a.description), \(b.description)"
+        case .negw(let c, let a): return "NEGW \(c.description), \(a.description)"
+        case .notw(let dst, let src): return "NOTW \(dst.description), \(src.description)"
+        case .addw(let c, let a, let b): return "ADDW \(c.description), \(a.description), \(b.description)"
+        case .subw(let c, let a, let b): return "SUBW \(c.description), \(a.description), \(b.description)"
+        case .mulw(let c, let a, let b): return "MULW \(c.description), \(a.description), \(b.description)"
+        case .divw(let c, let a, let b): return "DIVW \(c.description), \(a.description), \(b.description)"
+        case .modw(let c, let a, let b): return "MODW \(c.description), \(a.description), \(b.description)"
+        case .lslw(let c, let a, let b): return "LSLW \(c.description), \(a.description), \(b.description)"
+        case .lsrw(let c, let a, let b): return "LSRW \(c.description), \(a.description), \(b.description)"
+        case .eqw(let c, let a, let b): return "EQW \(c.description), \(a.description), \(b.description)"
+        case .new(let c, let a, let b): return "NEW \(c.description), \(a.description), \(b.description)"
+        case .ltw(let c, let a, let b): return "LTW \(c.description), \(a.description), \(b.description)"
+        case .gew(let c, let a, let b): return "GEW \(c.description), \(a.description), \(b.description)"
+        case .lew(let c, let a, let b): return "LEW \(c.description), \(a.description), \(b.description)"
+        case .gtw(let c, let a, let b): return "GTW \(c.description), \(a.description), \(b.description)"
+        case .ltuw(let c, let a, let b): return "LTUW \(c.description), \(a.description), \(b.description)"
+        case .geuw(let c, let a, let b): return "GEUW \(c.description), \(a.description), \(b.description)"
+        case .leuw(let c, let a, let b): return "LEUW \(c.description), \(a.description), \(b.description)"
+        case .gtuw(let c, let a, let b): return "GTUW \(c.description), \(a.description), \(b.description)"
         
-        case .load8(let dst, let addr, let offset): return "LOAD8 \(dst.description), \(addr.description), \(offset)"
-        case .store8(let src, let addr, let offset): return "STORE8 \(src.description), \(addr.description), \(offset)"
-        case .li8(let dst, let imm): return "LI8 \(dst.description), \(imm)"
-        case .liu8(let dst, let imm): return "LIU8 \(dst.description), \(imm)"
-        case .and8(let c, let a, let b): return "AND8 \(c.description), \(a.description), \(b.description)"
-        case .or8(let c, let a, let b): return "OR8 \(c.description), \(a.description), \(b.description)"
-        case .xor8(let c, let a, let b): return "XOR8 \(c.description), \(a.description), \(b.description)"
-        case .neg8(let c, let a): return "NEG8 \(c.description), \(a.description)"
-        case .not8(let dst, let src): return "NOT8 \(dst.description), \(src.description)"
-        case .add8(let c, let a, let b): return "ADD8 \(c.description), \(a.description), \(b.description)"
-        case .sub8(let c, let a, let b): return "SUB8 \(c.description), \(a.description), \(b.description)"
-        case .mul8(let c, let a, let b): return "MUL8 \(c.description), \(a.description), \(b.description)"
-        case .div8(let c, let a, let b): return "DIV8 \(c.description), \(a.description), \(b.description)"
-        case .mod8(let c, let a, let b): return "MOD8 \(c.description), \(a.description), \(b.description)"
-        case .lsl8(let c, let a, let b): return "LSL8 \(c.description), \(a.description), \(b.description)"
-        case .lsr8(let c, let a, let b): return "LSR8 \(c.description), \(a.description), \(b.description)"
-        case .eq8(let c, let a, let b): return "EQ8 \(c.description), \(a.description), \(b.description)"
-        case .ne8(let c, let a, let b): return "NE8 \(c.description), \(a.description), \(b.description)"
-        case .lt8(let c, let a, let b): return "LT8 \(c.description), \(a.description), \(b.description)"
-        case .ge8(let c, let a, let b): return "GE8 \(c.description), \(a.description), \(b.description)"
-        case .le8(let c, let a, let b): return "LE8 \(c.description), \(a.description), \(b.description)"
-        case .gt8(let c, let a, let b): return "GT8 \(c.description), \(a.description), \(b.description)"
-        case .ltu8(let c, let a, let b): return "LTU8 \(c.description), \(a.description), \(b.description)"
-        case .geu8(let c, let a, let b): return "GEU8 \(c.description), \(a.description), \(b.description)"
-        case .leu8(let c, let a, let b): return "LEU8 \(c.description), \(a.description), \(b.description)"
-        case .gtu8(let c, let a, let b): return "GTU8 \(c.description), \(a.description), \(b.description)"
+        case .lb(let dst, let addr, let offset): return "LB \(dst.description), \(addr.description), \(offset)"
+        case .sb(let src, let addr, let offset): return "SB \(src.description), \(addr.description), \(offset)"
+        case .lib(let dst, let imm): return "LIB \(dst.description), \(imm)"
+        case .liub(let dst, let imm): return "LIUB \(dst.description), \(imm)"
+        case .andb(let c, let a, let b): return "ANDB \(c.description), \(a.description), \(b.description)"
+        case .orb(let c, let a, let b): return "ORB \(c.description), \(a.description), \(b.description)"
+        case .xorb(let c, let a, let b): return "XORB \(c.description), \(a.description), \(b.description)"
+        case .negb(let c, let a): return "NEGB \(c.description), \(a.description)"
+        case .notb(let dst, let src): return "NOTB \(dst.description), \(src.description)"
+        case .addb(let c, let a, let b): return "ADDB \(c.description), \(a.description), \(b.description)"
+        case .subb(let c, let a, let b): return "SUBB \(c.description), \(a.description), \(b.description)"
+        case .mulb(let c, let a, let b): return "MULB \(c.description), \(a.description), \(b.description)"
+        case .divb(let c, let a, let b): return "DIVB \(c.description), \(a.description), \(b.description)"
+        case .modb(let c, let a, let b): return "MODB \(c.description), \(a.description), \(b.description)"
+        case .lslb(let c, let a, let b): return "LSLB \(c.description), \(a.description), \(b.description)"
+        case .lsrb(let c, let a, let b): return "LSRB \(c.description), \(a.description), \(b.description)"
+        case .eqb(let c, let a, let b): return "EQB \(c.description), \(a.description), \(b.description)"
+        case .neb(let c, let a, let b): return "NEB \(c.description), \(a.description), \(b.description)"
+        case .ltb(let c, let a, let b): return "LTB \(c.description), \(a.description), \(b.description)"
+        case .geb(let c, let a, let b): return "GEB \(c.description), \(a.description), \(b.description)"
+        case .leb(let c, let a, let b): return "LEB \(c.description), \(a.description), \(b.description)"
+        case .gtb(let c, let a, let b): return "GTB \(c.description), \(a.description), \(b.description)"
+        case .ltub(let c, let a, let b): return "LTUB \(c.description), \(a.description), \(b.description)"
+        case .geub(let c, let a, let b): return "GEUB \(c.description), \(a.description), \(b.description)"
+        case .leub(let c, let a, let b): return "LEUB \(c.description), \(a.description), \(b.description)"
+        case .gtub(let c, let a, let b): return "GTUB \(c.description), \(a.description), \(b.description)"
         case .movsbw(let dst, let src): return "MOVSBW \(dst.description), \(src.description)"
         case .movswb(let dst, let src): return "MOVSWB \(dst.description), \(src.description)"
         case .movzwb(let dst, let src): return "MOVZWB \(dst.description), \(src.description)"

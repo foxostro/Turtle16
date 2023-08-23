@@ -261,118 +261,118 @@ public class TackVirtualMachine: NSObject {
         case .bnz(let test, let target):
             try bnz(test, target)
             
-        case .load16(let dst, let address, let offset):
+        case .lw(let dst, let address, let offset):
             try load16(dst, address, offset)
-        case .store16(let src, let address, let offset):
+        case .sw(let src, let address, let offset):
             try store16(src, address, offset)
-        case .andi16(let dst, let left, let right):
+        case .andiw(let dst, let left, let right):
             try andi16(dst, left, right)
-        case .addi16(let dst, let left, let right):
+        case .addiw(let dst, let left, let right):
             try addi16(dst, left, right)
-        case .subi16(let dst, let left, let right):
+        case .subiw(let dst, let left, let right):
             try subi16(dst, left, right)
-        case .muli16(let dst, let left, let right):
+        case .mulib(let dst, let left, let right):
             try muli16(dst, left, right)
-        case .li16(let dst, let imm):
+        case .liw(let dst, let imm):
             try li16(dst, imm)
-        case .liu16(let dst, let imm):
+        case .liuw(let dst, let imm):
             try liu16(dst, imm)
-        case .and16(let dst, let left, let right):
+        case .andw(let dst, let left, let right):
             try and16(dst, left, right)
-        case .or16(let dst, let left, let right):
+        case .orw(let dst, let left, let right):
             try or16(dst, left, right)
-        case .xor16(let dst, let left, let right):
+        case .xorw(let dst, let left, let right):
             try xor16(dst, left, right)
-        case .neg16(let dst, let src):
+        case .negw(let dst, let src):
             try neg16(dst, src)
-        case .not16(let dst, let src):
+        case .notw(let dst, let src):
             try not16(dst, src)
-        case .add16(let dst, let left, let right):
+        case .addw(let dst, let left, let right):
             try add16(dst, left, right)
-        case .sub16(let dst, let left, let right):
+        case .subw(let dst, let left, let right):
             try sub16(dst, left, right)
-        case .mul16(let dst, let left, let right):
+        case .mulw(let dst, let left, let right):
             try mul16(dst, left, right)
-        case .div16(let dst, let left, let right):
+        case .divw(let dst, let left, let right):
             try div16(dst, left, right)
-        case .mod16(let dst, let left, let right):
+        case .modw(let dst, let left, let right):
             try mod16(dst, left, right)
-        case .lsl16(let dst, let left, let right):
+        case .lslw(let dst, let left, let right):
             try lsl16(dst, left, right)
-        case .lsr16(let dst, let left, let right):
+        case .lsrw(let dst, let left, let right):
             try lsr16(dst, left, right)
-        case .eq16(let dst, let left, let right):
+        case .eqw(let dst, let left, let right):
             try eq16(dst, left, right)
-        case .ne16(let dst, let left, let right):
+        case .new(let dst, let left, let right):
             try ne16(dst, left, right)
-        case .lt16(let dst, let left, let right):
+        case .ltw(let dst, let left, let right):
             try lt16(dst, left, right)
-        case .ge16(let dst, let left, let right):
+        case .gew(let dst, let left, let right):
             try ge16(dst, left, right)
-        case .le16(let dst, let left, let right):
+        case .lew(let dst, let left, let right):
             try le16(dst, left, right)
-        case .gt16(let dst, let left, let right):
+        case .gtw(let dst, let left, let right):
             try gt16(dst, left, right)
-        case .ltu16(let dst, let left, let right):
+        case .ltuw(let dst, let left, let right):
             try ltu16(dst, left, right)
-        case .geu16(let dst, let left, let right):
+        case .geuw(let dst, let left, let right):
             try geu16(dst, left, right)
-        case .leu16(let dst, let left, let right):
+        case .leuw(let dst, let left, let right):
             try leu16(dst, left, right)
-        case .gtu16(let dst, let left, let right):
+        case .gtuw(let dst, let left, let right):
             try gtu16(dst, left, right)
         
-        case .load8(let dst, let address, let offset):
+        case .lb(let dst, let address, let offset):
             try load8(dst, address, offset)
-        case .store8(let src, let address, let offset):
+        case .sb(let src, let address, let offset):
             try store8(src, address, offset)
-        case .li8(let dst, let imm):
+        case .lib(let dst, let imm):
             try li8(dst, imm)
-        case .liu8(let dst, let imm):
+        case .liub(let dst, let imm):
             try liu8(dst, imm)
-        case .and8(let dst, let left, let right):
+        case .andb(let dst, let left, let right):
             try and8(dst, left, right)
-        case .or8(let dst, let left, let right):
+        case .orb(let dst, let left, let right):
             try or8(dst, left, right)
-        case .xor8(let dst, let left, let right):
+        case .xorb(let dst, let left, let right):
             try xor8(dst, left, right)
-        case .neg8(let dst, let src):
+        case .negb(let dst, let src):
             try neg8(dst, src)
-        case .not8(let dst, let src):
+        case .notb(let dst, let src):
             try not8(dst, src)
-        case .add8(let dst, let left, let right):
+        case .addb(let dst, let left, let right):
             try add8(dst, left, right)
-        case .sub8(let dst, let left, let right):
+        case .subb(let dst, let left, let right):
             try sub8(dst, left, right)
-        case .mul8(let dst, let left, let right):
+        case .mulb(let dst, let left, let right):
             try mul8(dst, left, right)
-        case .div8(let dst, let left, let right):
+        case .divb(let dst, let left, let right):
             try div8(dst, left, right)
-        case .mod8(let dst, let left, let right):
+        case .modb(let dst, let left, let right):
             try mod8(dst, left, right)
-        case .lsl8(let dst, let left, let right):
+        case .lslb(let dst, let left, let right):
             try lsl8(dst, left, right)
-        case .lsr8(let dst, let left, let right):
+        case .lsrb(let dst, let left, let right):
             try lsr8(dst, left, right)
-        case .eq8(let dst, let left, let right):
+        case .eqb(let dst, let left, let right):
             try eq8(dst, left, right)
-        case .ne8(let dst, let left, let right):
+        case .neb(let dst, let left, let right):
             try ne8(dst, left, right)
-        case .lt8(let dst, let left, let right):
+        case .ltb(let dst, let left, let right):
             try lt8(dst, left, right)
-        case .ge8(let dst, let left, let right):
+        case .geb(let dst, let left, let right):
             try ge8(dst, left, right)
-        case .le8(let dst, let left, let right):
+        case .leb(let dst, let left, let right):
             try le8(dst, left, right)
-        case .gt8(let dst, let left, let right):
+        case .gtb(let dst, let left, let right):
             try gt8(dst, left, right)
-        case .ltu8(let dst, let left, let right):
+        case .ltub(let dst, let left, let right):
             try ltu8(dst, left, right)
-        case .geu8(let dst, let left, let right):
+        case .geub(let dst, let left, let right):
             try geu8(dst, left, right)
-        case .leu8(let dst, let left, let right):
+        case .leub(let dst, let left, let right):
             try leu8(dst, left, right)
-        case .gtu8(let dst, let left, let right):
+        case .gtub(let dst, let left, let right):
             try gtu8(dst, left, right)
         case .movsbw(let dst, let src):
             try movsbw(dst, src)

@@ -72,7 +72,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testADD16() throws {
-        let input = TackInstructionNode(.add16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.addw(.w(2), .w(1), .w(0)))
         let expected = InstructionNode(instruction: kADD, parameters:[
             ParameterIdentifier("r2"),
             ParameterIdentifier("r1"),
@@ -83,7 +83,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testADD16_sp_and_fp_and_ra() throws {
-        let input = TackInstructionNode(.add16(.sp, .fp, .ra))
+        let input = TackInstructionNode(.addw(.sp, .fp, .ra))
         let expected = InstructionNode(instruction: kADD, parameters:[
             ParameterIdentifier("sp"),
             ParameterIdentifier("fp"),
@@ -95,7 +95,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testSUB16() throws {
-        let input = TackInstructionNode(.sub16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.subw(.w(2), .w(1), .w(0)))
         let expected = InstructionNode(instruction: kSUB, parameters:[
             ParameterIdentifier("r2"),
             ParameterIdentifier("r1"),
@@ -106,7 +106,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testNEG16() throws {
-        let input = TackInstructionNode(.neg16(.w(1), .w(0)))
+        let input = TackInstructionNode(.negw(.w(1), .w(0)))
         let expected = InstructionNode(instruction: kNOT, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0")
@@ -116,7 +116,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testXOR16() throws {
-        let input = TackInstructionNode(.xor16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.xorw(.w(2), .w(1), .w(0)))
         let expected = InstructionNode(instruction: kXOR, parameters:[
             ParameterIdentifier("r2"),
             ParameterIdentifier("r1"),
@@ -127,7 +127,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testOR16() throws {
-        let input = TackInstructionNode(.or16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.orw(.w(2), .w(1), .w(0)))
         let expected = InstructionNode(instruction: kOR, parameters:[
             ParameterIdentifier("r2"),
             ParameterIdentifier("r1"),
@@ -138,7 +138,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testAND16() throws {
-        let input = TackInstructionNode(.and16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.andw(.w(2), .w(1), .w(0)))
         let expected = InstructionNode(instruction: kAND, parameters:[
             ParameterIdentifier("r2"),
             ParameterIdentifier("r1"),
@@ -179,7 +179,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testNOT16() throws {
-        let input = TackInstructionNode(.not16(.w(1), .w(0)))
+        let input = TackInstructionNode(.notw(.w(1), .w(0)))
         let expected = Seq(children: [
             InstructionNode(instruction: kNOT, parameters:[
                 ParameterIdentifier("vr1"),
@@ -198,7 +198,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
 
     func testNOT_subsequent_use_of_registers_map_correctly() throws {
         let input = Seq(children: [
-            TackInstructionNode(.not16(.w(1), .w(0))),
+            TackInstructionNode(.notw(.w(1), .w(0))),
             TackInstructionNode(.callptr(.w(1)))
         ])
         let expected = Seq(children: [
@@ -221,7 +221,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testNOT8() throws {
-        let input = TackInstructionNode(.not8(.b(1), .b(0)))
+        let input = TackInstructionNode(.notb(.b(1), .b(0)))
         let expected = Seq(children: [
             InstructionNode(instruction: kNOT, parameters:[
                 ParameterIdentifier("vr1"),
@@ -297,7 +297,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testLOAD16_small_offset_pos() throws {
-        let input = TackInstructionNode(.load16(.w(1), .w(0), 15))
+        let input = TackInstructionNode(.lw(.w(1), .w(0), 15))
         let expected = InstructionNode(instruction: kLOAD, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -308,7 +308,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLOAD16_small_offset_neg() throws {
-        let input = TackInstructionNode(.load16(.w(1), .w(0), -16))
+        let input = TackInstructionNode(.lw(.w(1), .w(0), -16))
         let expected = InstructionNode(instruction: kLOAD, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -319,7 +319,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLOAD16_large_offset_pos() throws {
-        let input = TackInstructionNode(.load16(.w(1), .w(0), 16))
+        let input = TackInstructionNode(.lw(.w(1), .w(0), 16))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr1"),
@@ -344,7 +344,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLOAD16_large_offset_neg() throws {
-        let input = TackInstructionNode(.load16(.w(1), .w(0), -17))
+        let input = TackInstructionNode(.lw(.w(1), .w(0), -17))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr1"),
@@ -369,7 +369,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testSTORE16_small_offset_pos() throws {
-        let input = TackInstructionNode(.store16(.w(1), .w(0), 15))
+        let input = TackInstructionNode(.sw(.w(1), .w(0), 15))
         let expected = InstructionNode(instruction: kSTORE, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -380,7 +380,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testSTORE16_small_offset_neg() throws {
-        let input = TackInstructionNode(.store16(.w(1), .w(0), -16))
+        let input = TackInstructionNode(.sw(.w(1), .w(0), -16))
         let expected = InstructionNode(instruction: kSTORE, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -391,7 +391,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testSTORE16_large_offset_pos() throws {
-        let input = TackInstructionNode(.store16(.w(1), .w(0), 16))
+        let input = TackInstructionNode(.sw(.w(1), .w(0), 16))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr1"),
@@ -416,7 +416,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testSTORE16_large_offset_neg() throws {
-        let input = TackInstructionNode(.store16(.w(1), .w(0), -17))
+        let input = TackInstructionNode(.sw(.w(1), .w(0), -17))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr1"),
@@ -441,7 +441,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLOAD8_small_offset_pos() throws {
-        let input = TackInstructionNode(.load8(.b(1), .w(0), 15))
+        let input = TackInstructionNode(.lb(.b(1), .w(0), 15))
         let expected = InstructionNode(instruction: kLOAD, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -452,7 +452,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLOAD8_small_offset_neg() throws {
-        let input = TackInstructionNode(.load8(.b(1), .w(0), -16))
+        let input = TackInstructionNode(.lb(.b(1), .w(0), -16))
         let expected = InstructionNode(instruction: kLOAD, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -463,7 +463,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLOAD8_large_offset_pos() throws {
-        let input = TackInstructionNode(.load8(.b(1), .w(0), 16))
+        let input = TackInstructionNode(.lb(.b(1), .w(0), 16))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr1"),
@@ -488,7 +488,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLOAD8_large_offset_neg() throws {
-        let input = TackInstructionNode(.load8(.b(1), .w(0), -17))
+        let input = TackInstructionNode(.lb(.b(1), .w(0), -17))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr1"),
@@ -513,7 +513,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testSTORE8_small_offset_pos() throws {
-        let input = TackInstructionNode(.store8(.b(1), .w(0), 15))
+        let input = TackInstructionNode(.sb(.b(1), .w(0), 15))
         let expected = InstructionNode(instruction: kSTORE, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -524,7 +524,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testSTORE8_small_offset_neg() throws {
-        let input = TackInstructionNode(.store8(.b(1), .w(0), -16))
+        let input = TackInstructionNode(.sb(.b(1), .w(0), -16))
         let expected = InstructionNode(instruction: kSTORE, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -535,7 +535,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testSTORE8_large_offset_pos() throws {
-        let input = TackInstructionNode(.store8(.b(1), .w(0), 16))
+        let input = TackInstructionNode(.sb(.b(1), .w(0), 16))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr1"),
@@ -560,7 +560,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testSTORE8_large_offset_neg() throws {
-        let input = TackInstructionNode(.store8(.b(1), .w(0), -17))
+        let input = TackInstructionNode(.sb(.b(1), .w(0), -17))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr1"),
@@ -717,7 +717,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testADDI16_small_imm_pos() throws {
-        let input = TackInstructionNode(.addi16(.w(1), .w(0), 15))
+        let input = TackInstructionNode(.addiw(.w(1), .w(0), 15))
         let expected = InstructionNode(instruction: kADDI, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -728,7 +728,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testADDI16_small_imm_neg() throws {
-        let input = TackInstructionNode(.addi16(.w(1), .w(0), -16))
+        let input = TackInstructionNode(.addiw(.w(1), .w(0), -16))
         let expected = InstructionNode(instruction: kADDI, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -739,7 +739,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testADDI16_large_imm_pos() throws {
-        let input = TackInstructionNode(.addi16(.w(1), .w(0), 16))
+        let input = TackInstructionNode(.addiw(.w(1), .w(0), 16))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("r1"),
@@ -760,7 +760,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testADDI16_large_imm_neg() throws {
-        let input = TackInstructionNode(.addi16(.w(1), .w(0), -17))
+        let input = TackInstructionNode(.addiw(.w(1), .w(0), -17))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("r1"),
@@ -781,7 +781,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testSUBI16() throws {
-        let input = TackInstructionNode(.subi16(.w(1), .w(0), 15))
+        let input = TackInstructionNode(.subiw(.w(1), .w(0), 15))
         let expected = InstructionNode(instruction: kSUBI, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -792,7 +792,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testANDI16() throws {
-        let input = TackInstructionNode(.andi16(.w(1), .w(0), 15))
+        let input = TackInstructionNode(.andiw(.w(1), .w(0), 15))
         let expected = InstructionNode(instruction: kANDI, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -803,7 +803,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMULI16_zero() throws {
-        let input = TackInstructionNode(.muli16(.w(1), .w(0), 0))
+        let input = TackInstructionNode(.mulib(.w(1), .w(0), 0))
         let expected = InstructionNode(instruction: kLI, parameters:[
             ParameterIdentifier("r1"),
             ParameterNumber(0)
@@ -813,7 +813,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMULI16_pos_one() throws {
-        let input = TackInstructionNode(.muli16(.w(1), .w(0), 1))
+        let input = TackInstructionNode(.mulib(.w(1), .w(0), 1))
         let expected = InstructionNode(instruction: kADDI, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -824,7 +824,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMULI16_pos_two() throws {
-        let input = TackInstructionNode(.muli16(.w(1), .w(0), 2))
+        let input = TackInstructionNode(.mulib(.w(1), .w(0), 2))
         let expected = InstructionNode(instruction: kADD, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -835,7 +835,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMULI16_pos_three() throws {
-        let input = TackInstructionNode(.muli16(.w(1), .w(0), 3))
+        let input = TackInstructionNode(.mulib(.w(1), .w(0), 3))
         let expected = Seq(children: [
             InstructionNode(instruction: kADD, parameters:[
                 ParameterIdentifier("r1"),
@@ -853,7 +853,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMULI16_pos_four() throws {
-        let input = TackInstructionNode(.muli16(.w(1), .w(0), 4))
+        let input = TackInstructionNode(.mulib(.w(1), .w(0), 4))
         let expected = Seq(children: [
             InstructionNode(instruction: kADD, parameters:[
                 ParameterIdentifier("r1"),
@@ -871,7 +871,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMULI16_pos_five() throws {
-        let input = TackInstructionNode(.muli16(.w(1), .w(0), 5))
+        let input = TackInstructionNode(.mulib(.w(1), .w(0), 5))
         let expected = Seq(children: [
             InstructionNode(instruction: kADD, parameters:[
                 ParameterIdentifier("r1"),
@@ -894,7 +894,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMULI16_pos_six() throws {
-        let input = TackInstructionNode(.muli16(.w(1), .w(0), 6))
+        let input = TackInstructionNode(.mulib(.w(1), .w(0), 6))
         let expected = Seq(children: [
             InstructionNode(instruction: kADD, parameters:[
                 ParameterIdentifier("r1"),
@@ -922,7 +922,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMULI16_pos_seven() throws {
-        let input = TackInstructionNode(.muli16(.w(1), .w(0), 7))
+        let input = TackInstructionNode(.mulib(.w(1), .w(0), 7))
         let expected = Seq(children: [
             InstructionNode(instruction: kADD, parameters:[
                 ParameterIdentifier("r1"),
@@ -955,7 +955,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMULI16_pos_eight() throws {
-        let input = TackInstructionNode(.muli16(.w(1), .w(0), 8))
+        let input = TackInstructionNode(.mulib(.w(1), .w(0), 8))
         let expected = Seq(children: [
             InstructionNode(instruction: kADD, parameters:[
                 ParameterIdentifier("r1"),
@@ -978,7 +978,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMULI16_neg_one() throws {
-        let input = TackInstructionNode(.muli16(.w(1), .w(0), -1))
+        let input = TackInstructionNode(.mulib(.w(1), .w(0), -1))
         let expected = Seq(children: [
             InstructionNode(instruction: kNOT, parameters:[
                 ParameterIdentifier("r1"),
@@ -995,7 +995,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMULI16_neg_two() throws {
-        let input = TackInstructionNode(.muli16(.w(1), .w(0), -2))
+        let input = TackInstructionNode(.mulib(.w(1), .w(0), -2))
         let expected = Seq(children: [
             InstructionNode(instruction: kADD, parameters:[
                 ParameterIdentifier("r1"),
@@ -1017,7 +1017,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMULI16_three_element_sum() throws {
-        let input = TackInstructionNode(.muli16(.w(1), .w(0), 14))
+        let input = TackInstructionNode(.mulib(.w(1), .w(0), 14))
         let expected = Seq(children: [
             InstructionNode(instruction: kADD, parameters:[
                 ParameterIdentifier("r1"),
@@ -1065,7 +1065,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLI16_small_pos() throws {
-        let input = TackInstructionNode(.li16(.w(0), 127))
+        let input = TackInstructionNode(.liw(.w(0), 127))
         let expected = InstructionNode(instruction: kLI, parameters:[
             ParameterIdentifier("r0"),
             ParameterNumber(127)
@@ -1075,7 +1075,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLI16_small_neg() throws {
-        let input = TackInstructionNode(.li16(.w(0), -128))
+        let input = TackInstructionNode(.liw(.w(0), -128))
         let expected = InstructionNode(instruction: kLI, parameters:[
             ParameterIdentifier("r0"),
             ParameterNumber(-128)
@@ -1085,7 +1085,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLI16_med_pos() throws {
-        let input = TackInstructionNode(.li16(.w(0), 127))
+        let input = TackInstructionNode(.liw(.w(0), 127))
         let expected = InstructionNode(instruction: kLI, parameters:[
             ParameterIdentifier("r0"),
             ParameterNumber(127)
@@ -1095,7 +1095,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLI16_large_pos_1() throws {
-        let input = TackInstructionNode(.li16(.w(0), 255))
+        let input = TackInstructionNode(.liw(.w(0), 255))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("r0"),
@@ -1111,7 +1111,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLI16_large_pos_2() throws {
-        let input = TackInstructionNode(.li16(.w(0), 0x7fff))
+        let input = TackInstructionNode(.liw(.w(0), 0x7fff))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("r0"),
@@ -1127,7 +1127,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLIU16_small_pos() throws {
-        let input = TackInstructionNode(.liu16(.w(0), 255))
+        let input = TackInstructionNode(.liuw(.w(0), 255))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("r0"),
@@ -1143,7 +1143,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLIU16_large_pos() throws {
-        let input = TackInstructionNode(.liu16(.w(0), 0x8000))
+        let input = TackInstructionNode(.liuw(.w(0), 0x8000))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("r0"),
@@ -1159,7 +1159,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMUL16_0_x_0() throws {
-        let input = TackInstructionNode(.mul16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.mulw(.w(2), .w(1), .w(0)))
         let computer = makeDebugger(assembly: try compile(input)).computer
         computer.setRegister(0, 0)
         computer.setRegister(1, 0)
@@ -1169,7 +1169,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMUL16_1_x_1() throws {
-        let input = TackInstructionNode(.mul16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.mulw(.w(2), .w(1), .w(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 1)
@@ -1180,7 +1180,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMUL16_2_x_2() throws {
-        let input = TackInstructionNode(.mul16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.mulw(.w(2), .w(1), .w(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 2)
@@ -1191,7 +1191,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testDIV16_0_div_0() throws {
-        let input = TackInstructionNode(.div16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.divw(.w(2), .w(1), .w(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 0)
@@ -1209,7 +1209,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testDIV16_1_div_1() throws {
-        let input = TackInstructionNode(.div16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.divw(.w(2), .w(1), .w(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 1)
@@ -1221,7 +1221,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testDIV16_12_div_4() throws {
-        let input = TackInstructionNode(.div16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.divw(.w(2), .w(1), .w(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 4)
@@ -1233,7 +1233,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testDIV16_0xabcd_div_16() throws {
-        let input = TackInstructionNode(.div16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.divw(.w(2), .w(1), .w(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 16)
@@ -1243,7 +1243,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMOD16_0_mod_0() throws {
-        let input = TackInstructionNode(.mod16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.modw(.w(2), .w(1), .w(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 0)
@@ -1254,7 +1254,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMOD16_3_mod_2() throws {
-        let input = TackInstructionNode(.mod16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.modw(.w(2), .w(1), .w(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 2)
@@ -1265,7 +1265,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMOD16_0xabcd_mod_16() throws {
-        let input = TackInstructionNode(.mod16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.modw(.w(2), .w(1), .w(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 16)
@@ -1275,7 +1275,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLSL16_0_shift_0() throws {
-        let input = TackInstructionNode(.lsl16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.lslw(.w(2), .w(1), .w(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 0)
@@ -1305,7 +1305,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLSL16_2_shift_1() throws {
-        let input = TackInstructionNode(.lsl16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.lslw(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1349,7 +1349,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLSR16_2_shift_1() throws {
-        let input = TackInstructionNode(.lsr16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.lsrw(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1374,7 +1374,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testEQ16_equal() throws {
-        let input = TackInstructionNode(.eq16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.eqw(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1386,7 +1386,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testEQ16_not_equal() throws {
-        let input = TackInstructionNode(.eq16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.eqw(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1398,7 +1398,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testNE16_equal() throws {
-        let input = TackInstructionNode(.ne16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.new(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1410,7 +1410,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testNE16_not_equal() throws {
-        let input = TackInstructionNode(.ne16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.new(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1422,7 +1422,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLT16_less_than() throws {
-        let input = TackInstructionNode(.lt16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.ltw(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1434,7 +1434,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLT16_equal() throws {
-        let input = TackInstructionNode(.lt16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.ltw(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1446,7 +1446,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLT16_greater_than() throws {
-        let input = TackInstructionNode(.lt16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.ltw(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1458,7 +1458,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testGE16_less_than() throws {
-        let input = TackInstructionNode(.ge16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.gew(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1470,7 +1470,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testGE16_equal() throws {
-        let input = TackInstructionNode(.ge16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.gew(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1482,7 +1482,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testGE16_greater_than() throws {
-        let input = TackInstructionNode(.ge16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.gew(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1494,7 +1494,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLE16_less_than() throws {
-        let input = TackInstructionNode(.le16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.lew(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1506,7 +1506,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLE16_equal() throws {
-        let input = TackInstructionNode(.le16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.lew(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1518,7 +1518,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLE16_greater_than() throws {
-        let input = TackInstructionNode(.le16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.lew(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1530,7 +1530,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testGT16_less_than() throws {
-        let input = TackInstructionNode(.gt16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.gtw(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1542,7 +1542,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testGT16_equal() throws {
-        let input = TackInstructionNode(.gt16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.gtw(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1554,7 +1554,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testGT16_greater_than() throws {
-        let input = TackInstructionNode(.gt16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.gtw(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1566,7 +1566,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLTU16_less_than() throws {
-        let input = TackInstructionNode(.ltu16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.ltuw(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1578,7 +1578,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLTU16_equal() throws {
-        let input = TackInstructionNode(.ltu16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.ltuw(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1590,7 +1590,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLTU16_greater_than() throws {
-        let input = TackInstructionNode(.ltu16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.ltuw(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1602,7 +1602,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testGEU16_less_than() throws {
-        let input = TackInstructionNode(.geu16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.geuw(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1614,7 +1614,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testGEU16_equal() throws {
-        let input = TackInstructionNode(.geu16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.geuw(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1626,7 +1626,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testGEU16_greater_than() throws {
-        let input = TackInstructionNode(.geu16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.geuw(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1638,7 +1638,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLEU16_less_than() throws {
-        let input = TackInstructionNode(.leu16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.leuw(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1650,7 +1650,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLEU16_equal() throws {
-        let input = TackInstructionNode(.leu16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.leuw(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1662,7 +1662,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLEU16_greater_than() throws {
-        let input = TackInstructionNode(.leu16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.leuw(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1674,7 +1674,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testGTU16_less_than() throws {
-        let input = TackInstructionNode(.gtu16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.gtuw(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1686,7 +1686,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testGTU16_equal() throws {
-        let input = TackInstructionNode(.gtu16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.gtuw(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1698,7 +1698,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testGTU16_greater_than() throws {
-        let input = TackInstructionNode(.gtu16(.w(2), .w(1), .w(0)))
+        let input = TackInstructionNode(.gtuw(.w(2), .w(1), .w(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1710,7 +1710,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     fileprivate func doTestLI8(_ value: Int) throws {
-        let input = TackInstructionNode(.li16(.w(0), value))
+        let input = TackInstructionNode(.liw(.w(0), value))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1746,7 +1746,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     fileprivate func doTestLIU8(_ value: Int) throws {
-        let input = TackInstructionNode(.liu8(.b(0), value))
+        let input = TackInstructionNode(.liub(.b(0), value))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1766,7 +1766,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testAND8() throws {
-        let input = TackInstructionNode(.and8(.b(2), .b(1), .b(0)))
+        let input = TackInstructionNode(.andb(.b(2), .b(1), .b(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1778,7 +1778,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testOR8() throws {
-        let input = TackInstructionNode(.or8(.b(2), .b(1), .b(0)))
+        let input = TackInstructionNode(.orb(.b(2), .b(1), .b(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1790,7 +1790,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testXOR8() throws {
-        let input = TackInstructionNode(.xor8(.b(2), .b(1), .b(0)))
+        let input = TackInstructionNode(.xorb(.b(2), .b(1), .b(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1802,7 +1802,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testNEG8() throws {
-        let input = TackInstructionNode(.neg8(.b(1), .b(0)))
+        let input = TackInstructionNode(.negb(.b(1), .b(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1814,7 +1814,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testADD8_positive_result() throws {
-        let input = TackInstructionNode(.add8(.b(2), .b(1), .b(0)))
+        let input = TackInstructionNode(.addb(.b(2), .b(1), .b(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1828,7 +1828,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testADD8_negative_result() throws {
-        let input = TackInstructionNode(.add8(.b(2), .b(1), .b(0)))
+        let input = TackInstructionNode(.addb(.b(2), .b(1), .b(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1842,7 +1842,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testSUB8_positive_result() throws {
-        let input = TackInstructionNode(.sub8(.b(2), .b(1), .b(0)))
+        let input = TackInstructionNode(.subb(.b(2), .b(1), .b(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1856,7 +1856,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testSUB8_negative_result() throws {
-        let input = TackInstructionNode(.sub8(.b(2), .b(1), .b(0)))
+        let input = TackInstructionNode(.subb(.b(2), .b(1), .b(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1870,7 +1870,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMUL8() throws {
-        let input = TackInstructionNode(.mul8(.b(2), .b(1), .b(0)))
+        let input = TackInstructionNode(.mulb(.b(2), .b(1), .b(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1883,7 +1883,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testDIV8() throws {
-        let input = TackInstructionNode(.div8(.b(2), .b(1), .b(0)))
+        let input = TackInstructionNode(.divb(.b(2), .b(1), .b(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 4)
@@ -1895,7 +1895,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMOD8() throws {
-        let input = TackInstructionNode(.mod8(.b(2), .b(1), .b(0)))
+        let input = TackInstructionNode(.modb(.b(2), .b(1), .b(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 2)
@@ -1906,7 +1906,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLSL8_2_shift_1() throws {
-        let input = TackInstructionNode(.lsl8(.b(2), .b(1), .b(0)))
+        let input = TackInstructionNode(.lslb(.b(2), .b(1), .b(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1931,7 +1931,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLSR8_2_shift_1() throws {
-        let input = TackInstructionNode(.lsr8(.b(2), .b(1), .b(0)))
+        let input = TackInstructionNode(.lsrb(.b(2), .b(1), .b(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1956,7 +1956,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testEQ8_equal() throws {
-        let input = TackInstructionNode(.eq8(.w(2), .b(1), .b(0)))
+        let input = TackInstructionNode(.eqb(.w(2), .b(1), .b(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1968,7 +1968,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testEQ8_not_equal() throws {
-        let input = TackInstructionNode(.eq8(.w(2), .b(1), .b(0)))
+        let input = TackInstructionNode(.eqb(.w(2), .b(1), .b(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1980,7 +1980,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testNE8_equal() throws {
-        let input = TackInstructionNode(.ne8(.w(2), .b(1), .b(0)))
+        let input = TackInstructionNode(.neb(.w(2), .b(1), .b(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -1992,7 +1992,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testNE8_not_equal() throws {
-        let input = TackInstructionNode(.ne8(.w(2), .b(1), .b(0)))
+        let input = TackInstructionNode(.neb(.w(2), .b(1), .b(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -2004,7 +2004,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLT8() throws {
-        let input = TackInstructionNode(.lt8(.w(2), .b(1), .b(0)))
+        let input = TackInstructionNode(.ltb(.w(2), .b(1), .b(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -2016,7 +2016,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLE8() throws {
-        let input = TackInstructionNode(.le8(.w(2), .b(1), .b(0)))
+        let input = TackInstructionNode(.leb(.w(2), .b(1), .b(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -2028,7 +2028,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testGT8() throws {
-        let input = TackInstructionNode(.gt8(.w(2), .b(1), .b(0)))
+        let input = TackInstructionNode(.gtb(.w(2), .b(1), .b(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -2040,7 +2040,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testGE8() throws {
-        let input = TackInstructionNode(.ge8(.w(2), .b(1), .b(0)))
+        let input = TackInstructionNode(.geb(.w(2), .b(1), .b(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -2052,7 +2052,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLTU8() throws {
-        let input = TackInstructionNode(.ltu8(.w(2), .b(1), .b(0)))
+        let input = TackInstructionNode(.ltub(.w(2), .b(1), .b(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -2064,7 +2064,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLEU8() throws {
-        let input = TackInstructionNode(.leu8(.w(2), .b(1), .b(0)))
+        let input = TackInstructionNode(.leub(.w(2), .b(1), .b(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -2076,7 +2076,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testGTU8() throws {
-        let input = TackInstructionNode(.gtu8(.w(2), .b(1), .b(0)))
+        let input = TackInstructionNode(.gtub(.w(2), .b(1), .b(0)))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()

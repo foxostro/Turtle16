@@ -402,7 +402,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLOAD16_ZeroOffset() throws {
         let program = TackProgram(instructions: [
-            .load16(.w(1), .w(0), 0)
+            .lw(.w(1), .w(0), 0)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 0xbeef)
@@ -413,7 +413,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLOAD16_NegativeOffset() throws {
         let program = TackProgram(instructions: [
-            .load16(.w(1), .w(0), -1)
+            .lw(.w(1), .w(0), -1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 0xbeef)
@@ -424,7 +424,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLOAD16_PositiveOffset() throws {
         let program = TackProgram(instructions: [
-            .load16(.w(1), .w(0), 1)
+            .lw(.w(1), .w(0), 1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 0xbeef)
@@ -435,7 +435,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testSTORE16_ZeroOffset() throws {
         let program = TackProgram(instructions: [
-            .store16(.w(1), .w(0), 0)
+            .sw(.w(1), .w(0), 0)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(1)), 0xcafe)
@@ -446,7 +446,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testSTORE16_NegativeOffset() throws {
         let program = TackProgram(instructions: [
-            .store16(.w(1), .w(0), -1)
+            .sw(.w(1), .w(0), -1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(1)), 0xcafe)
@@ -457,7 +457,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testSTORE16_PositiveOffset() throws {
         let program = TackProgram(instructions: [
-            .store16(.w(1), .w(0), 1)
+            .sw(.w(1), .w(0), 1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(1)), 0xcafe)
@@ -468,7 +468,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLOAD8_ZeroOffset() throws {
         let program = TackProgram(instructions: [
-            .load8(.b(1), .w(0), 0)
+            .lb(.b(1), .w(0), 0)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 0xbeef)
@@ -479,7 +479,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLOAD8_NegativeOffset() throws {
         let program = TackProgram(instructions: [
-            .load8(.b(1), .w(0), -1)
+            .lb(.b(1), .w(0), -1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 0xbeef)
@@ -490,7 +490,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLOAD8_PositiveOffset() throws {
         let program = TackProgram(instructions: [
-            .load8(.b(1), .w(0), 1)
+            .lb(.b(1), .w(0), 1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 0xbeef)
@@ -501,7 +501,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testSTORE8_ZeroOffset() throws {
         let program = TackProgram(instructions: [
-            .store8(.b(1), .w(0), 0)
+            .sb(.b(1), .w(0), 0)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(1)), 0xcafe)
@@ -512,7 +512,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testSTORE8_NegativeOffset() throws {
         let program = TackProgram(instructions: [
-            .store8(.b(1), .w(0), -1)
+            .sb(.b(1), .w(0), -1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(1)), 0xcafe)
@@ -523,7 +523,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testSTORE8_PositiveOffset() throws {
         let program = TackProgram(instructions: [
-            .store8(.b(1), .w(0), 1)
+            .sb(.b(1), .w(0), 1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(1)), 0xcafe)
@@ -654,7 +654,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testNOT16_0() throws {
         let program = TackProgram(instructions: [
-            .not16(.w(1), .w(0))
+            .notw(.w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 0)
@@ -664,7 +664,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testNOT16_ffff() throws {
         let program = TackProgram(instructions: [
-            .not16(.w(1), .w(0))
+            .notw(.w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 0xffff)
@@ -674,7 +674,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testNOT8_0() throws {
         let program = TackProgram(instructions: [
-            .not8(.b(1), .b(0))
+            .notb(.b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(0)), 0)
@@ -684,7 +684,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testNOT8_ffff() throws {
         let program = TackProgram(instructions: [
-            .not8(.b(1), .b(0))
+            .notb(.b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(0)), 0xffff)
@@ -694,7 +694,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testANDI16_bad_imm() throws {
         let program = TackProgram(instructions: [
-            .andi16(.w(1), .w(0), -1)
+            .andiw(.w(1), .w(0), -1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         XCTAssertThrowsError(try vm.step()) {
@@ -713,7 +713,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testANDI16() throws {
         let program = TackProgram(instructions: [
-            .andi16(.w(1), .w(0), 0b1010101010101010)
+            .andiw(.w(1), .w(0), 0b1010101010101010)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 0xffff)
@@ -723,7 +723,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testADDI16_pos() throws {
         let program = TackProgram(instructions: [
-            .addi16(.w(1), .w(0), 1)
+            .addiw(.w(1), .w(0), 1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 0xffff)
@@ -733,7 +733,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testADDI16_neg() throws {
         let program = TackProgram(instructions: [
-            .addi16(.w(1), .w(0), -1)
+            .addiw(.w(1), .w(0), -1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 0)
@@ -743,7 +743,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testSUBI16_pos() throws {
         let program = TackProgram(instructions: [
-            .subi16(.w(1), .w(0), 1)
+            .subiw(.w(1), .w(0), 1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 0)
@@ -753,7 +753,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testSUBI16_neg() throws {
         let program = TackProgram(instructions: [
-            .subi16(.w(1), .w(0), -1)
+            .subiw(.w(1), .w(0), -1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 0xffff)
@@ -763,7 +763,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testMULI16_pos() throws {
         let program = TackProgram(instructions: [
-            .muli16(.w(1), .w(0), 2)
+            .mulib(.w(1), .w(0), 2)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 2)
@@ -773,7 +773,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testMULI16_neg() throws {
         let program = TackProgram(instructions: [
-            .muli16(.w(1), .w(0), -2)
+            .mulib(.w(1), .w(0), -2)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 2)
@@ -783,7 +783,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLI16_pos() throws {
         let program = TackProgram(instructions: [
-            .li16(.w(0), 1)
+            .liw(.w(0), 1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         try vm.step()
@@ -792,7 +792,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLI16_neg() throws {
         let program = TackProgram(instructions: [
-            .li16(.w(0), -1)
+            .liw(.w(0), -1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         try vm.step()
@@ -801,7 +801,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLI16_TooBigPos() throws {
         let program = TackProgram(instructions: [
-            .li16(.w(0), 32768)
+            .liw(.w(0), 32768)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         XCTAssertThrowsError(try vm.step()) {
@@ -820,7 +820,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLI16_TooBigNeg() throws {
         let program = TackProgram(instructions: [
-            .li16(.w(0), -32769)
+            .liw(.w(0), -32769)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         XCTAssertThrowsError(try vm.step()) {
@@ -839,7 +839,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLIU16_CannotAcceptNegativeValues() throws {
         let program = TackProgram(instructions: [
-            .liu16(.w(0), -1)
+            .liuw(.w(0), -1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         XCTAssertThrowsError(try vm.step()) {
@@ -858,7 +858,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLIU16_TooBigPos() throws {
         let program = TackProgram(instructions: [
-            .liu16(.w(0), 65536)
+            .liuw(.w(0), 65536)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         XCTAssertThrowsError(try vm.step()) {
@@ -877,7 +877,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLIU16() throws {
         let program = TackProgram(instructions: [
-            .liu16(.w(0), 1)
+            .liuw(.w(0), 1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         try vm.step()
@@ -886,7 +886,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testAND16() throws {
         let program = TackProgram(instructions: [
-            .and16(.w(2), .w(1), .w(0))
+            .andw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 0xf0f0)
@@ -897,7 +897,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testOR16() throws {
         let program = TackProgram(instructions: [
-            .or16(.w(2), .w(1), .w(0))
+            .orw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 0xf0f0)
@@ -908,7 +908,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testXOR16() throws {
         let program = TackProgram(instructions: [
-            .xor16(.w(2), .w(1), .w(0))
+            .xorw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 0xf0ff)
@@ -919,7 +919,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testNEG16() throws {
         let program = TackProgram(instructions: [
-            .neg16(.w(1), .w(0))
+            .negw(.w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 0xf0f0)
@@ -929,7 +929,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testADD16() throws {
         let program = TackProgram(instructions: [
-            .add16(.w(2), .w(1), .w(0))
+            .addw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 1)
@@ -940,7 +940,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testSUB16() throws {
         let program = TackProgram(instructions: [
-            .sub16(.w(2), .w(1), .w(0))
+            .subw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 2)
@@ -951,7 +951,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testMUL16() throws {
         let program = TackProgram(instructions: [
-            .mul16(.w(2), .w(1), .w(0))
+            .mulw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 2)
@@ -962,7 +962,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testDIV16() throws {
         let program = TackProgram(instructions: [
-            .div16(.w(2), .w(1), .w(0))
+            .divw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 2)
@@ -973,7 +973,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testDIV16_DivideByZero() throws {
         let program = TackProgram(instructions: [
-            .div16(.w(2), .w(1), .w(0))
+            .divw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 0)
@@ -994,7 +994,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testMOD16() throws {
         let program = TackProgram(instructions: [
-            .mod16(.w(2), .w(1), .w(0))
+            .modw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 2)
@@ -1005,7 +1005,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testMOD16_DivideByZero() throws {
         let program = TackProgram(instructions: [
-            .mod16(.w(2), .w(1), .w(0))
+            .modw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 0)
@@ -1026,7 +1026,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLSL16() throws {
         let program = TackProgram(instructions: [
-            .lsl16(.w(2), .w(1), .w(0))
+            .lslw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 1)
@@ -1037,7 +1037,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLSL16_overflow() throws {
         let program = TackProgram(instructions: [
-            .lsl16(.w(2), .w(1), .w(0))
+            .lslw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 1)
@@ -1048,7 +1048,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLSR16() throws {
         let program = TackProgram(instructions: [
-            .lsr16(.w(2), .w(1), .w(0))
+            .lsrw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 1)
@@ -1059,7 +1059,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLSR16_underflow() throws {
         let program = TackProgram(instructions: [
-            .lsr16(.w(2), .w(1), .w(0))
+            .lsrw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 1)
@@ -1070,7 +1070,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testEQ16_Equal() throws {
         let program = TackProgram(instructions: [
-            .eq16(.w(2), .w(1), .w(0))
+            .eqw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 1000)
@@ -1081,7 +1081,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testEQ16_NotEqual() throws {
         let program = TackProgram(instructions: [
-            .eq16(.w(2), .w(1), .w(0))
+            .eqw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 1000)
@@ -1092,7 +1092,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testNE16_Equal() throws {
         let program = TackProgram(instructions: [
-            .ne16(.w(2), .w(1), .w(0))
+            .new(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 1000)
@@ -1103,7 +1103,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testNE16_NotEqual() throws {
         let program = TackProgram(instructions: [
-            .ne16(.w(2), .w(1), .w(0))
+            .new(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 1000)
@@ -1114,7 +1114,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLT16_True() throws {
         let program = TackProgram(instructions: [
-            .lt16(.w(2), .w(1), .w(0))
+            .ltw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), 1000)
@@ -1125,7 +1125,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLT16_False() throws {
         let program = TackProgram(instructions: [
-            .lt16(.w(2), .w(1), .w(0))
+            .ltw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), Word(0) &- Word(1000))
@@ -1136,7 +1136,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testGE16_True() throws {
         let program = TackProgram(instructions: [
-            .ge16(.w(2), .w(1), .w(0))
+            .gew(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(1)), 1000)
@@ -1147,7 +1147,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testGE16_False() throws {
         let program = TackProgram(instructions: [
-            .ge16(.w(2), .w(1), .w(0))
+            .gew(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(1)), Word(0) &- Word(1000))
@@ -1158,7 +1158,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLE16_True() throws {
         let program = TackProgram(instructions: [
-            .le16(.w(2), .w(1), .w(0))
+            .lew(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(1)), Word(0) &- Word(1000))
@@ -1169,7 +1169,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLE16_False() throws {
         let program = TackProgram(instructions: [
-            .le16(.w(2), .w(1), .w(0))
+            .lew(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(1)), 1000)
@@ -1180,7 +1180,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testGT16_True() throws {
         let program = TackProgram(instructions: [
-            .gt16(.w(2), .w(1), .w(0))
+            .gtw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(1)), 1000)
@@ -1191,7 +1191,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testGT16_False() throws {
         let program = TackProgram(instructions: [
-            .gt16(.w(2), .w(1), .w(0))
+            .gtw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(1)), Word(0) &- Word(1000))
@@ -1202,7 +1202,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLTU16_True() throws {
         let program = TackProgram(instructions: [
-            .ltu16(.w(2), .w(1), .w(0))
+            .ltuw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(1)), 0)
@@ -1213,7 +1213,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLTU16_False() throws {
         let program = TackProgram(instructions: [
-            .ltu16(.w(2), .w(1), .w(0))
+            .ltuw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(1)), 0xffff)
@@ -1224,7 +1224,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testGEU16_True() throws {
         let program = TackProgram(instructions: [
-            .geu16(.w(2), .w(1), .w(0))
+            .geuw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(1)), 0xffff)
@@ -1235,7 +1235,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testGEU16_False() throws {
         let program = TackProgram(instructions: [
-            .geu16(.w(2), .w(1), .w(0))
+            .geuw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(1)), 0)
@@ -1246,7 +1246,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLEU16_True() throws {
         let program = TackProgram(instructions: [
-            .leu16(.w(2), .w(1), .w(0))
+            .leuw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(1)), 0)
@@ -1257,7 +1257,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLEU16_False() throws {
         let program = TackProgram(instructions: [
-            .leu16(.w(2), .w(1), .w(0))
+            .leuw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(1)), 0xffff)
@@ -1268,7 +1268,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testGTU16_True() throws {
         let program = TackProgram(instructions: [
-            .gtu16(.w(2), .w(1), .w(0))
+            .gtuw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(1)), 0xffff)
@@ -1279,7 +1279,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testGTU16_False() throws {
         let program = TackProgram(instructions: [
-            .gtu16(.w(2), .w(1), .w(0))
+            .gtuw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(1)), 0)
@@ -1290,7 +1290,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLI8_pos() throws {
         let program = TackProgram(instructions: [
-            .li8(.b(0), 1)
+            .lib(.b(0), 1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         try vm.step()
@@ -1299,7 +1299,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLI8_neg() throws {
         let program = TackProgram(instructions: [
-            .li8(.b(0), -1)
+            .lib(.b(0), -1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         try vm.step()
@@ -1308,7 +1308,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLI8_TooBigPos() throws {
         let program = TackProgram(instructions: [
-            .li8(.b(0), 128)
+            .lib(.b(0), 128)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         XCTAssertThrowsError(try vm.step()) {
@@ -1327,7 +1327,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLI8_TooBigNeg() throws {
         let program = TackProgram(instructions: [
-            .li8(.b(0), -129)
+            .lib(.b(0), -129)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         XCTAssertThrowsError(try vm.step()) {
@@ -1346,7 +1346,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLIU8_CannotAcceptNegativeValues() throws {
         let program = TackProgram(instructions: [
-            .liu8(.b(0), -1)
+            .liub(.b(0), -1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         XCTAssertThrowsError(try vm.step()) {
@@ -1365,7 +1365,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLIU8_TooBigPos() throws {
         let program = TackProgram(instructions: [
-            .liu8(.b(0), 256)
+            .liub(.b(0), 256)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         XCTAssertThrowsError(try vm.step()) {
@@ -1384,7 +1384,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLIU8() throws {
         let program = TackProgram(instructions: [
-            .liu8(.b(0), 1)
+            .liub(.b(0), 1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         try vm.step()
@@ -1393,7 +1393,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testAND8() throws {
         let program = TackProgram(instructions: [
-            .and8(.b(2), .b(1), .b(0))
+            .andb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(0)), 0xf0f0)
@@ -1404,7 +1404,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testOR8() throws {
         let program = TackProgram(instructions: [
-            .or8(.b(2), .b(1), .b(0))
+            .orb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(0)), 0xf0f0)
@@ -1415,7 +1415,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testXOR8() throws {
         let program = TackProgram(instructions: [
-            .xor8(.b(2), .b(1), .b(0))
+            .xorb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(0)), 0xf0ff)
@@ -1426,7 +1426,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testNEG8() throws {
         let program = TackProgram(instructions: [
-            .neg8(.b(1), .b(0))
+            .negb(.b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(0)), 0xf0f0)
@@ -1436,7 +1436,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testADD8() throws {
         let program = TackProgram(instructions: [
-            .add8(.b(2), .b(1), .b(0))
+            .addb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(0)), 0xff01)
@@ -1447,7 +1447,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testSUB8() throws {
         let program = TackProgram(instructions: [
-            .sub8(.b(2), .b(1), .b(0))
+            .subb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(0)), 0xff02)
@@ -1458,7 +1458,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testMUL8() throws {
         let program = TackProgram(instructions: [
-            .mul8(.b(2), .b(1), .b(0))
+            .mulb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(0)), 0xff02)
@@ -1469,7 +1469,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testDIV8() throws {
         let program = TackProgram(instructions: [
-            .div8(.b(2), .b(1), .b(0))
+            .divb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(0)), 2)
@@ -1480,7 +1480,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testDIV8_DivideByZero() throws {
         let program = TackProgram(instructions: [
-            .div8(.b(2), .b(1), .b(0))
+            .divb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(0)), 0)
@@ -1501,7 +1501,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testMOD8() throws {
         let program = TackProgram(instructions: [
-            .mod8(.b(2), .b(1), .b(0))
+            .modb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(0)), 0xff02)
@@ -1512,7 +1512,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testMOD8_DivideByZero() throws {
         let program = TackProgram(instructions: [
-            .mod8(.b(2), .b(1), .b(0))
+            .modb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(0)), 0)
@@ -1533,7 +1533,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLSL8() throws {
         let program = TackProgram(instructions: [
-            .lsl8(.b(2), .b(1), .b(0))
+            .lslb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(0)), 0xff01)
@@ -1544,7 +1544,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLSL8_overflow() throws {
         let program = TackProgram(instructions: [
-            .lsl8(.b(2), .b(1), .b(0))
+            .lslb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(0)), 0xff01)
@@ -1555,7 +1555,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLSR8() throws {
         let program = TackProgram(instructions: [
-            .lsr8(.b(2), .b(1), .b(0))
+            .lsrb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(0)), 0xff01)
@@ -1566,7 +1566,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLSR8_underflow() throws {
         let program = TackProgram(instructions: [
-            .lsr8(.b(2), .b(1), .b(0))
+            .lsrb(.b(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(0)), 0xff01)
@@ -1577,7 +1577,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testEQ8_Equal() throws {
         let program = TackProgram(instructions: [
-            .eq8(.w(2), .b(1), .b(0))
+            .eqb(.w(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(0)), 0xffff)
@@ -1588,7 +1588,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testEQ8_NotEqual() throws {
         let program = TackProgram(instructions: [
-            .eq8(.w(2), .b(1), .b(0))
+            .eqb(.w(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(0)), 0xffff)
@@ -1599,7 +1599,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testNE8_Equal() throws {
         let program = TackProgram(instructions: [
-            .ne8(.w(2), .b(1), .b(0))
+            .neb(.w(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(0)), 0xff01)
@@ -1610,7 +1610,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testNE8_NotEqual() throws {
         let program = TackProgram(instructions: [
-            .ne8(.w(2), .b(1), .b(0))
+            .neb(.w(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(0)), 0xff01)
@@ -1621,7 +1621,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLT8_True() throws {
         let program = TackProgram(instructions: [
-            .lt8(.w(2), .b(1), .b(0))
+            .ltb(.w(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(0)), 127)
@@ -1632,7 +1632,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLT8_False() throws {
         let program = TackProgram(instructions: [
-            .lt8(.w(2), .b(1), .b(0))
+            .ltb(.w(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(0)), Word(0) &- Word(127))
@@ -1643,7 +1643,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testGE8_True() throws {
         let program = TackProgram(instructions: [
-            .ge8(.w(2), .b(1), .b(0))
+            .geb(.w(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(1)), 127)
@@ -1654,7 +1654,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testGE8_False() throws {
         let program = TackProgram(instructions: [
-            .ge8(.w(2), .b(1), .b(0))
+            .geb(.w(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(1)), Word(0) &- Word(127))
@@ -1665,7 +1665,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLE8_True() throws {
         let program = TackProgram(instructions: [
-            .le8(.w(2), .b(1), .b(0))
+            .leb(.w(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(1)), Word(0) &- Word(127))
@@ -1676,7 +1676,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLE8_False() throws {
         let program = TackProgram(instructions: [
-            .le8(.w(2), .b(1), .b(0))
+            .leb(.w(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(1)), 127)
@@ -1687,7 +1687,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testGT8_True() throws {
         let program = TackProgram(instructions: [
-            .gt8(.w(2), .b(1), .b(0))
+            .gtb(.w(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(1)), 127)
@@ -1698,7 +1698,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testGT8_False() throws {
         let program = TackProgram(instructions: [
-            .gt8(.w(2), .b(1), .b(0))
+            .gtb(.w(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(1)), Word(0) &- Word(127))
@@ -1709,7 +1709,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLTU8_True() throws {
         let program = TackProgram(instructions: [
-            .ltu8(.w(2), .b(1), .b(0))
+            .ltub(.w(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(1)), 0)
@@ -1720,7 +1720,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLTU8_False() throws {
         let program = TackProgram(instructions: [
-            .ltu8(.w(2), .b(1), .b(0))
+            .ltub(.w(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(1)), 0xff)
@@ -1731,7 +1731,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testGEU8_True() throws {
         let program = TackProgram(instructions: [
-            .geu8(.w(2), .b(1), .b(0))
+            .geub(.w(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(1)), 0xff)
@@ -1742,7 +1742,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testGEU8_False() throws {
         let program = TackProgram(instructions: [
-            .geu8(.w(2), .b(1), .b(0))
+            .geub(.w(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(1)), 0)
@@ -1753,7 +1753,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLEU8_True() throws {
         let program = TackProgram(instructions: [
-            .leu8(.w(2), .b(1), .b(0))
+            .leub(.w(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(1)), 0)
@@ -1764,7 +1764,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testLEU8_False() throws {
         let program = TackProgram(instructions: [
-            .leu8(.w(2), .b(1), .b(0))
+            .leub(.w(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(1)), 0xff)
@@ -1775,7 +1775,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testGTU8_True() throws {
         let program = TackProgram(instructions: [
-            .gtu8(.w(2), .b(1), .b(0))
+            .gtub(.w(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(1)), 0xff)
@@ -1786,7 +1786,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testGTU8_False() throws {
         let program = TackProgram(instructions: [
-            .gtu8(.w(2), .b(1), .b(0))
+            .gtub(.w(2), .b(1), .b(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(.b(1)), 0)
@@ -1857,7 +1857,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testSerialOutput() throws {
         let program = TackProgram(instructions: [
-            .store16(.w(1), .w(0), 0)
+            .sw(.w(1), .w(0), 0)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(.w(0)), vm.kMemoryMappedSerialOutputPort)
@@ -1927,14 +1927,14 @@ final class TackVirtualMachineTests: XCTestCase {
         let addressOfArgumentStructure = 0
         let program = TackProgram(instructions: [
             // Write the syscall number to memory at 272, keep address in vr0.
-            .liu16(.w(0), 272),
-            .liu16(.w(2), syscallNumber),
-            .store16(.w(2), .w(0), 0),
+            .liuw(.w(0), 272),
+            .liuw(.w(2), syscallNumber),
+            .sw(.w(2), .w(0), 0),
             
             // Write the argument pointer to memory at 273, keep address in vr1.
-            .liu16(.w(1), 273),
-            .liu16(.w(2), addressOfArgumentStructure),
-            .store16(.w(2), .w(1), 0),
+            .liuw(.w(1), 273),
+            .liuw(.w(2), addressOfArgumentStructure),
+            .sw(.w(2), .w(1), 0),
             
             // Call the virtual machine
             .syscall(.w(0), // syscall number
@@ -1957,15 +1957,15 @@ final class TackVirtualMachineTests: XCTestCase {
         let addressOfArgumentStructure = UInt16(274)
         let program = TackProgram(instructions: [
             // Write the syscall number to memory at 272, keep address in vr0.
-            .liu16(.w(0), 272),
-            .liu16(.w(2), syscallNumber),
-            .store16(.w(2), .w(0), 0),
+            .liuw(.w(0), 272),
+            .liuw(.w(2), syscallNumber),
+            .sw(.w(2), .w(0), 0),
             
             // Write the argument pointer to memory at 273, keep address in vr1.
             // The syscall writes the return value to memory at this address.
-            .liu16(.w(1), 273),
-            .liu16(.w(2), Int(addressOfArgumentStructure)),
-            .store16(.w(2), .w(1), 0),
+            .liuw(.w(1), 273),
+            .liuw(.w(2), Int(addressOfArgumentStructure)),
+            .sw(.w(2), .w(1), 0),
             
             // Call the virtual machine
             .syscall(.w(0), // syscall number
@@ -1984,20 +1984,20 @@ final class TackVirtualMachineTests: XCTestCase {
         let argument = 65
         let program = TackProgram(instructions: [
             // Write the syscall number to memory at 272, keep address in vr0.
-            .liu16(.w(0), 272),
-            .liu16(.w(2), syscallNumber),
-            .store16(.w(2), .w(0), 0),
+            .liuw(.w(0), 272),
+            .liuw(.w(2), syscallNumber),
+            .sw(.w(2), .w(0), 0),
             
             // Write the argument to memory at 274.
-            .liu16(.w(1), Int(addressOfArgumentStructure)),
-            .liu16(.w(2), argument),
-            .store16(.w(2), .w(1), 0),
+            .liuw(.w(1), Int(addressOfArgumentStructure)),
+            .liuw(.w(2), argument),
+            .sw(.w(2), .w(1), 0),
             
             // Write the argument pointer to memory at 273, keep address in vr1.
             // The syscall writes the return value to memory at this address.
-            .liu16(.w(1), 273),
-            .liu16(.w(2), Int(addressOfArgumentStructure)),
-            .store16(.w(2), .w(1), 0),
+            .liuw(.w(1), 273),
+            .liuw(.w(2), Int(addressOfArgumentStructure)),
+            .sw(.w(2), .w(1), 0),
             
             // Call the virtual machine
             .syscall(.w(0), // syscall number

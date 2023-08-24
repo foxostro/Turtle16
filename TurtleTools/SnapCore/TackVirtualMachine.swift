@@ -25,7 +25,7 @@ public class TackVirtualMachine: NSObject {
     public typealias RegisterBoolean = TackInstruction.RegisterBoolean
     public typealias Register16 = TackInstruction.Register16
     public typealias Register8 = TackInstruction.Register8
-    public typealias RegisterType = TackInstruction.RegisterType
+    public typealias TackValueType = TackInstruction.RegisterType
     public typealias Word = UInt16
     
     public let kMemoryMappedSerialOutputPort: Word = 0x0001
@@ -35,17 +35,17 @@ public class TackVirtualMachine: NSObject {
     public var pc: Word = 0
     public var nextPc: Word = 0
     public var isHalted = false
-    private var globalRegisters: [Register : RegisterValue] = [:]
-    public var registers: [[Register : RegisterValue]] = [[:]]
-    private var memoryPages: [Int : [RegisterValue]] = [:]
+    private var globalRegisters: [Register : TackValue] = [:]
+    public var registers: [[Register : TackValue]] = [[:]]
+    private var memoryPages: [Int : [TackValue]] = [:]
     private var breakPoints: [Bool]
     public var onSerialOutput: (UInt8) -> Void = {_ in}
     public var onSerialInput: () -> UInt8 = { 0 }
     
-    public enum RegisterValue: Equatable, Hashable {
+    public enum TackValue: Equatable, Hashable {
         case w(UInt16), b(UInt8), o(Bool)
         
-        public var type: RegisterType {
+        public var type: TackValueType {
             switch self {
             case .w: return .w
             case .b: return .b
@@ -219,7 +219,7 @@ public class TackVirtualMachine: NSObject {
         try getRegister(.o(reg)).unwrapBool!
     }
     
-    public func getRegister(_ reg: Register) throws -> RegisterValue {
+    public func getRegister(_ reg: Register) throws -> TackValue {
         switch reg {
         case .sp, .fp:
             // We should have set fp and sp in init() so this ought never fail.
@@ -245,7 +245,7 @@ public class TackVirtualMachine: NSObject {
         setRegister(.o(reg), .o(value))
     }
     
-    public func setRegister(_ reg: Register, _ value: RegisterValue) {
+    public func setRegister(_ reg: Register, _ value: TackValue) {
         switch reg {
         case .sp, .fp:
             globalRegisters[reg] = value
@@ -278,13 +278,13 @@ public class TackVirtualMachine: NSObject {
         return load(address: address).unwrapBool!
     }
     
-    public func load(address address_: Word) -> RegisterValue {
+    public func load(address address_: Word) -> TackValue {
         let address = Int(address_)
         let pageMask = kPageSize-1
         let pageIndex = address & ~pageMask
         let pageOffset = address & pageMask
         if memoryPages[pageIndex] == nil {
-            memoryPages[pageIndex] = Array<RegisterValue>(repeating: .w(0), count: kPageSize)
+            memoryPages[pageIndex] = Array<TackValue>(repeating: .w(0), count: kPageSize)
         }
         let result = memoryPages[pageIndex]![pageOffset]
         return result
@@ -302,7 +302,7 @@ public class TackVirtualMachine: NSObject {
         store(value: .o(o), address: address)
     }
     
-    public func store(value: RegisterValue, address address_: Word) {
+    public func store(value: TackValue, address address_: Word) {
         let address = Int(address_)
         if address == kMemoryMappedSerialOutputPort {
             if let octet = value.unwrap8 {
@@ -314,7 +314,7 @@ public class TackVirtualMachine: NSObject {
             let pageIndex = address & ~pageMask
             let pageOffset = address & pageMask
             if memoryPages[pageIndex] == nil {
-                memoryPages[pageIndex] = Array<RegisterValue>(repeating: .w(0), count: kPageSize)
+                memoryPages[pageIndex] = Array<TackValue>(repeating: .w(0), count: kPageSize)
             }
             memoryPages[pageIndex]![pageOffset] = value
         }

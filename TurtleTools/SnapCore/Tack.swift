@@ -155,6 +155,7 @@ public enum TackInstruction: Equatable, Hashable {
     case subw(Register16, Register16, Register16)
     case mulw(Register16, Register16, Register16)
     case divw(Register16, Register16, Register16)
+    case divuw(Register16, Register16, Register16)
     case modw(Register16, Register16, Register16)
     case lslw(Register16, Register16, Register16)
     case lsrw(Register16, Register16, Register16)
@@ -181,6 +182,7 @@ public enum TackInstruction: Equatable, Hashable {
     case subb(Register8, Register8, Register8)
     case mulb(Register8, Register8, Register8)
     case divb(Register8, Register8, Register8)
+    case divub(Register8, Register8, Register8)
     case modb(Register8, Register8, Register8)
     case lslb(Register8, Register8, Register8)
     case lsrb(Register8, Register8, Register8)
@@ -244,6 +246,7 @@ public enum TackInstruction: Equatable, Hashable {
         case .subw(let c, let a, let b): return "SUBW \(c.description), \(a.description), \(b.description)"
         case .mulw(let c, let a, let b): return "MULW \(c.description), \(a.description), \(b.description)"
         case .divw(let c, let a, let b): return "DIVW \(c.description), \(a.description), \(b.description)"
+        case .divuw(let c, let a, let b): return "DIVUW \(c.description), \(a.description), \(b.description)"
         case .modw(let c, let a, let b): return "MODW \(c.description), \(a.description), \(b.description)"
         case .lslw(let c, let a, let b): return "LSLW \(c.description), \(a.description), \(b.description)"
         case .lsrw(let c, let a, let b): return "LSRW \(c.description), \(a.description), \(b.description)"
@@ -270,6 +273,7 @@ public enum TackInstruction: Equatable, Hashable {
         case .subb(let c, let a, let b): return "SUBB \(c.description), \(a.description), \(b.description)"
         case .mulb(let c, let a, let b): return "MULB \(c.description), \(a.description), \(b.description)"
         case .divb(let c, let a, let b): return "DIVB \(c.description), \(a.description), \(b.description)"
+        case .divub(let c, let a, let b): return "DIVU \(c.description), \(a.description), \(b.description)"
         case .modb(let c, let a, let b): return "MODB \(c.description), \(a.description), \(b.description)"
         case .lslb(let c, let a, let b): return "LSLB \(c.description), \(a.description), \(b.description)"
         case .lsrb(let c, let a, let b): return "LSRB \(c.description), \(a.description), \(b.description)"

@@ -930,7 +930,7 @@ final class TackVirtualMachineTests: XCTestCase {
         XCTAssertEqual(4, try vm.getRegister(w: .w(2)))
     }
     
-    func testDIV16() throws {
+    func testDIVW() throws {
         let program = TackProgram(instructions: [
             .divw(.w(2), .w(1), .w(0))
         ], labels: [:])
@@ -941,9 +941,52 @@ final class TackVirtualMachineTests: XCTestCase {
         XCTAssertEqual(2, try vm.getRegister(w: .w(2)))
     }
     
-    func testDIV16_DivideByZero() throws {
+    func testDIVW_negative_divisor() throws {
         let program = TackProgram(instructions: [
             .divw(.w(2), .w(1), .w(0))
+        ], labels: [:])
+        let vm = TackVirtualMachine(program)
+        vm.setRegister(.w(1), w: 0x0002)
+        vm.setRegister(.w(0), w: 0xffff)
+        try vm.step()
+        XCTAssertEqual(0xfffe, try vm.getRegister(w: .w(2)))
+    }
+    
+    func testDIVW_DivideByZero() throws {
+        let program = TackProgram(instructions: [
+            .divw(.w(2), .w(1), .w(0))
+        ], labels: [:])
+        let vm = TackVirtualMachine(program)
+        vm.setRegister(.w(0), w: 0)
+        vm.setRegister(.w(1), w: 1)
+        XCTAssertThrowsError(try vm.step()) {
+            guard let error = $0 as? TackVirtualMachineError else {
+                XCTFail()
+                return
+            }
+            if case .divideByZero = error {
+                // nothing to do
+            }
+            else {
+                XCTFail("unexpected error: \($0)")
+            }
+        }
+    }
+    
+    func testDIVUW() throws {
+        let program = TackProgram(instructions: [
+            .divuw(.w(2), .w(1), .w(0))
+        ], labels: [:])
+        let vm = TackVirtualMachine(program)
+        vm.setRegister(.w(0), w: 2)
+        vm.setRegister(.w(1), w: 4)
+        try vm.step()
+        XCTAssertEqual(2, try vm.getRegister(w: .w(2)))
+    }
+    
+    func testDIVUW_DivideByZero() throws {
+        let program = TackProgram(instructions: [
+            .divuw(.w(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(0), w: 0)

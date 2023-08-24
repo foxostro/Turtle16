@@ -919,6 +919,24 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
 
     func testRvalue_Binary_divw() throws {
         let symbols = SymbolTable(tuples: [
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 200, storage: .staticStorage))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let expected = Seq(children: [
+            TackInstructionNode(.liuw(.w(0), 200)),
+            TackInstructionNode(.lw(.w(1), .w(0), 0)),
+            TackInstructionNode(.liuw(.w(2), 100)),
+            TackInstructionNode(.lw(.w(3), .w(2), 0)),
+            TackInstructionNode(.divw(.w(4), .w(3), .w(1)))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
+    }
+    
+    func testRvalue_Binary_divuw() throws {
+        let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 200, storage: .staticStorage))
         ])
@@ -929,7 +947,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
             TackInstructionNode(.lw(.w(1), .w(0), 0)),
             TackInstructionNode(.liuw(.w(2), 100)),
             TackInstructionNode(.lw(.w(3), .w(2), 0)),
-            TackInstructionNode(.divw(.w(4), .w(3), .w(1)))
+            TackInstructionNode(.divuw(.w(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(4)))
@@ -1277,7 +1295,25 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, .b(.b(4)))
     }
 
-    func testRvalue_Binary_div8() throws {
+    func testRvalue_Binary_divb() throws {
+        let symbols = SymbolTable(tuples: [
+            ("left", Symbol(type: .arithmeticType(.mutableInt(.i8)), offset: 100, storage: .staticStorage)),
+            ("right", Symbol(type: .arithmeticType(.mutableInt(.i8)), offset: 200, storage: .staticStorage))
+        ])
+        let compiler = makeCompiler(symbols: symbols)
+        let actual = try compiler.rvalue(expr: Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let expected = Seq(children: [
+            TackInstructionNode(.liuw(.w(0), 200)),
+            TackInstructionNode(.lb(.b(1), .w(0), 0)),
+            TackInstructionNode(.liuw(.w(2), 100)),
+            TackInstructionNode(.lb(.b(3), .w(2), 0)),
+            TackInstructionNode(.divb(.b(4), .b(3), .b(1)))
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, .b(.b(4)))
+    }
+    
+    func testRvalue_Binary_divub() throws {
         let symbols = SymbolTable(tuples: [
             ("left", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 100, storage: .staticStorage)),
             ("right", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 200, storage: .staticStorage))
@@ -1289,7 +1325,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
             TackInstructionNode(.lb(.b(1), .w(0), 0)),
             TackInstructionNode(.liuw(.w(2), 100)),
             TackInstructionNode(.lb(.b(3), .w(2), 0)),
-            TackInstructionNode(.divb(.b(4), .b(3), .b(1)))
+            TackInstructionNode(.divub(.b(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(4)))

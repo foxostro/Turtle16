@@ -2058,10 +2058,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             }
         case .divide:
             switch intClass {
-            case .i8, .u8:
-                ins = .divb(c.unwrap8!, a.unwrap8!, b.unwrap8!)
-            case .i16, .u16:
-                ins = .divw(c.unwrap16!, a.unwrap16!, b.unwrap16!)
+            case .i8:  ins = .divb( c.unwrap8!, a.unwrap8!, b.unwrap8!)
+            case .u8:  ins = .divub(c.unwrap8!, a.unwrap8!, b.unwrap8!)
+            case .i16: ins = .divw( c.unwrap16!, a.unwrap16!, b.unwrap16!)
+            case .u16: ins = .divuw(c.unwrap16!, a.unwrap16!, b.unwrap16!)
             }
         case .modulus:
             switch intClass {

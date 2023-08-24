@@ -96,6 +96,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         case .subw(let c, let a, let b): return subw(anc, c, a, b)
         case .mulw(let c, let a, let b): return mulw(anc, c, a, b)
         case .divw(let c, let a, let b): return divw(anc, c, a, b)
+        case .divuw(let c, let a, let b): return divuw(anc, c, a, b)
         case .modw(let c, let a, let b): return mod16(anc, c, a, b)
         case .lslw(let c, let a, let b): return lslw(anc, c, a, b)
         case .lsrw(let c, let a, let b): return lsrw(anc, c, a, b)
@@ -121,7 +122,8 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         case .addb(let c, let a, let b): return add8(anc, c, a, b)
         case .subb(let c, let a, let b): return sub8(anc, c, a, b)
         case .mulb(let c, let a, let b): return mul8(anc, c, a, b)
-        case .divb(let c, let a, let b): return div8(anc, c, a, b)
+        case .divub(let c, let a, let b): return divub(anc, c, a, b)
+        case .divb(let c, let a, let b): return divb(anc, c, a, b)
         case .modb(let c, let a, let b): return mod8(anc, c, a, b)
         case .lslb(let c, let a, let b): return lsl8(anc, c, a, b)
         case .lsrb(let c, let a, let b): return lsr8(anc, c, a, b)
@@ -1009,13 +1011,170 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
     }
     
     func divw(_ sourceAnchor: SourceAnchor?,
-               _ c_: TackInstruction.Register16,
-               _ a_: TackInstruction.Register16,
-               _ b_: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
-        let right = corresponding(.w(b_))
-        let left = corresponding(.w(a_))
+              _ c: TackInstruction.Register16,
+              _ a: TackInstruction.Register16,
+              _ b: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
+        divx(sourceAnchor, .w(c), .w(a), .w(b))
+    }
+    
+    func divb(_ sourceAnchor: SourceAnchor?,
+              _ c: TackInstruction.Register8,
+              _ a: TackInstruction.Register8,
+              _ b: TackInstruction.Register8) -> AbstractSyntaxTreeNode? {
+        Seq(children: [
+            divx(sourceAnchor, .b(c), .b(a), .b(b)),
+            signExtend8(corresponding(.b(c)))
+        ])
+    }
+    
+    func divx(_ sourceAnchor: SourceAnchor?,
+              _ c_: TackInstruction.Register,
+              _ a_: TackInstruction.Register,
+              _ b_: TackInstruction.Register) -> AbstractSyntaxTreeNode {
+        // TODO: Maybe division should be a library function instead of always inlining it like this?
+        
+        let originalB = corresponding(b_)
+        let originalA = corresponding(a_)
+        let c = corresponding(c_)
+        let b = ParameterIdentifier(nextRegister())
+        let a = ParameterIdentifier(nextRegister())
+        let negativeNumerator = ParameterIdentifier(sourceAnchor: sourceAnchor, value: labelMaker.next())
+        let negativeDenominator = ParameterIdentifier(sourceAnchor: sourceAnchor, value: labelMaker.next())
+        let negativeBoth = ParameterIdentifier(sourceAnchor: sourceAnchor, value: labelMaker.next())
+        let positiveBoth = ParameterIdentifier(sourceAnchor: sourceAnchor, value: labelMaker.next())
+        let tail = ParameterIdentifier(sourceAnchor: sourceAnchor, value: labelMaker.next())
+        let zero = ParameterNumber(0)
+        let one = ParameterNumber(1)
+        return Seq(sourceAnchor: sourceAnchor, children: [
+            // First, copy the operands to some temporaries so the originals are
+            // not modified while we do this.
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kADDI, parameters: [
+                a,
+                originalA,
+                zero
+            ]),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kADDI, parameters: [
+                b,
+                originalB,
+                zero
+            ]),
+            
+            // We have branches for each combination of the operands' signs.
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kCMPI, parameters: [a, zero]),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kBLT, parameter: negativeNumerator),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kCMPI, parameters: [b, zero]),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kBLT, parameter: negativeDenominator),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kJMP, parameters: [positiveBoth]),
+            
+            // If the numerator is negative then negate it to make it positive.
+            // Check to see if this is the case where both numerator and
+            // denominator are negative and jump to that branch if appropriate.
+            // Else, Perform the core unsigned division algorithm.
+            // Finally, negate the result and jump to the end.
+            LabelDeclaration(negativeNumerator),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kNOT, parameters: [a, a]),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kADDI, parameters: [a, a, one]),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kCMPI, parameters: [b, zero]),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kBLT, parameter: negativeBoth),
+            divux_core(sourceAnchor, c, a, b),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kNOT, parameters: [c, c]),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kADDI, parameters: [c, c, one]),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kJMP, parameters: [tail]),
+            
+            // If the denominator is negative then negate to make it positive.
+            // Perform the core unsigned division algorithm.
+            // Finally, negate the result and jump to the end.
+            LabelDeclaration(negativeDenominator),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kNOT, parameters: [b, b]),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kADDI, parameters: [b, b, one]),
+            divux_core(sourceAnchor, c, a, b),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kNOT, parameters: [c, c]),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kADDI, parameters: [c, c, one]),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kJMP, parameters: [tail]),
+            
+            // We've determined that both the nominator and denominator are
+            // negative. The numerator has already been negated and we need to
+            // negate the denominator too.
+            // Perform the core unsigned division algorithm.
+            // Unlike the other branches, we do not need to negate the result.
+            LabelDeclaration(negativeBoth),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kNOT, parameters: [b, b]),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kADDI, parameters: [b, b, one]),
+            LabelDeclaration(positiveBoth),
+            divux_core(sourceAnchor, c, a, b),
+            
+            LabelDeclaration(tail)
+        ])
+    }
+    
+    func divux_core(_ sourceAnchor: SourceAnchor?,
+                    _ c: ParameterIdentifier,
+                    _ a: ParameterIdentifier,
+                    _ b: ParameterIdentifier) -> AbstractSyntaxTreeNode {
+        let head = labelMaker.next()
+        let tail = labelMaker.next()
+        return Seq(sourceAnchor: sourceAnchor, children: [
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kLI, parameters: [
+                c,
+                ParameterNumber(0)
+            ]),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kCMPI, parameters: [
+                b,
+                ParameterNumber(0)
+            ]),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kBEQ, parameters: [
+                ParameterIdentifier(tail)
+            ]),
+            LabelDeclaration(identifier: head),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kCMP, parameters: [
+                a,
+                b
+            ]),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kBLTU, parameters: [
+                ParameterIdentifier(tail)
+            ]),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kSUB, parameters: [
+                a,
+                a,
+                b
+            ]),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kADDI, parameters: [
+                c,
+                c,
+                ParameterNumber(1)
+            ]),
+            InstructionNode(sourceAnchor: sourceAnchor, instruction: kJMP, parameters: [
+                ParameterIdentifier(head)
+            ]),
+            LabelDeclaration(identifier: tail)
+        ])
+    }
+    
+    func divuw(_ sourceAnchor: SourceAnchor?,
+               _ c: TackInstruction.Register16,
+               _ a: TackInstruction.Register16,
+               _ b: TackInstruction.Register16) -> AbstractSyntaxTreeNode? {
+        divux(sourceAnchor, .w(c), .w(a), .w(b))
+    }
+    
+    func divub(_ sourceAnchor: SourceAnchor?,
+               _ c_: TackInstruction.Register8,
+               _ a_: TackInstruction.Register8,
+               _ b_: TackInstruction.Register8) -> AbstractSyntaxTreeNode? {
+        Seq(children: [
+            divux(sourceAnchor, .b(c_), .b(a_), .b(b_)),
+            signExtend8(corresponding(.b(c_)))
+        ])
+    }
+    
+    func divux(_ sourceAnchor: SourceAnchor?,
+               _ c: TackInstruction.Register,
+               _ a: TackInstruction.Register,
+               _ b: TackInstruction.Register) -> AbstractSyntaxTreeNode {
+        let right = corresponding(b)
+        let left = corresponding(a)
         let tempLeft = ParameterIdentifier(nextRegister())
-        let result = corresponding(.w(c_))
+        let result = corresponding(c)
         let head = labelMaker.next()
         let tail = labelMaker.next()
         return Seq(sourceAnchor: sourceAnchor, children: [
@@ -1564,60 +1723,6 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
             InstructionNode(sourceAnchor: sourceAnchor, instruction: kSUBI, parameters: [
                 counter,
                 counter,
-                ParameterNumber(1)
-            ]),
-            InstructionNode(sourceAnchor: sourceAnchor, instruction: kJMP, parameters: [
-                ParameterIdentifier(head)
-            ]),
-            LabelDeclaration(identifier: tail),
-            signExtend8(corresponding(.b(c_)))
-        ])
-    }
-    
-    func div8(_ sourceAnchor: SourceAnchor?,
-              _ c_: TackInstruction.Register8,
-              _ a_: TackInstruction.Register8,
-              _ b_: TackInstruction.Register8) -> AbstractSyntaxTreeNode? {
-        // TODO: Consolidate implementation with the very similar divw()
-        let right = corresponding(.b(b_))
-        let left = corresponding(.b(a_))
-        let tempLeft = ParameterIdentifier(nextRegister())
-        let result = corresponding(.b(c_))
-        let head = labelMaker.next()
-        let tail = labelMaker.next()
-        return Seq(sourceAnchor: sourceAnchor, children: [
-            InstructionNode(sourceAnchor: sourceAnchor, instruction: kLI, parameters: [
-                result,
-                ParameterNumber(0)
-            ]),
-            InstructionNode(sourceAnchor: sourceAnchor, instruction: kCMPI, parameters: [
-                right,
-                ParameterNumber(0)
-            ]),
-            InstructionNode(sourceAnchor: sourceAnchor, instruction: kBEQ, parameters: [
-                ParameterIdentifier(tail)
-            ]),
-            InstructionNode(sourceAnchor: sourceAnchor, instruction: kADDI, parameters: [
-                tempLeft,
-                left,
-                ParameterNumber(0)
-            ]),
-            LabelDeclaration(identifier: head),
-            InstructionNode(sourceAnchor: sourceAnchor, instruction: kCMP, parameters: [
-                tempLeft,
-                right
-            ]),
-            InstructionNode(sourceAnchor: sourceAnchor, instruction: kBLTU, parameters: [
-                ParameterIdentifier(tail)
-            ]),
-            InstructionNode(sourceAnchor: sourceAnchor, instruction: kSUB, parameters: [
-                tempLeft,
-                tempLeft,
-                right
-            ]),
-            InstructionNode(sourceAnchor: sourceAnchor, instruction: kADDI, parameters: [
-                result,
-                result,
                 ParameterNumber(1)
             ]),
             InstructionNode(sourceAnchor: sourceAnchor, instruction: kJMP, parameters: [

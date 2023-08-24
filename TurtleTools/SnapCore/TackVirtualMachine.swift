@@ -148,7 +148,7 @@ public class TackVirtualMachine: NSObject {
     public func wordToInt(_ word: Word) -> Int {
         let result: Int
         if word > (Word.max>>1) {
-            result = -(Int(Word.max) - Int(word))
+            result = -Int(~word + 1)
         }
         else {
             result = Int(word)
@@ -157,6 +157,7 @@ public class TackVirtualMachine: NSObject {
     }
     
     public func intToWord(_ value: Int) -> Word {
+        assert(value >= Int16.min && value <= Int16.max)
         let result: Word
         if value < 0 {
             result = Word(0) &- Word(-value)
@@ -167,7 +168,19 @@ public class TackVirtualMachine: NSObject {
         return result
     }
     
+    public func uint8ToInt(_ u8: UInt8) -> Int {
+        let result: Int
+        if u8 > (UInt8.max>>1) {
+            result = -Int(~u8 + 1)
+        }
+        else {
+            result = Int(u8)
+        }
+        return result
+    }
+    
     public func intToUInt8(_ value: Int) -> UInt8 {
+        assert(value >= Int8.min && value <= Int8.max)
         let result: UInt8
         if value < 0 {
             result = UInt8(0) &- UInt8(-value)
@@ -411,6 +424,8 @@ public class TackVirtualMachine: NSObject {
             try mulw(dst, left, right)
         case .divw(let dst, let left, let right):
             try divw(dst, left, right)
+        case .divuw(let dst, let left, let right):
+            try divuw(dst, left, right)
         case .modw(let dst, let left, let right):
             try mod16(dst, left, right)
         case .lslw(let dst, let left, let right):
@@ -461,7 +476,9 @@ public class TackVirtualMachine: NSObject {
         case .mulb(let dst, let left, let right):
             try mul8(dst, left, right)
         case .divb(let dst, let left, let right):
-            try div8(dst, left, right)
+            try divb(dst, left, right)
+        case .divub(let dst, let left, let right):
+            try divub(dst, left, right)
         case .modb(let dst, let left, let right):
             try mod8(dst, left, right)
         case .lslb(let dst, let left, let right):
@@ -799,7 +816,17 @@ public class TackVirtualMachine: NSObject {
         setRegister(dst, w: result)
     }
     
-    private func divw(_ dst: Register16, _ leftRegister: Register16, _ rightRegister: Register16) throws {
+    private func divw(_ result_: Register16, _ numerator_: Register16, _ denominator_: Register16) throws {
+        let numerator = wordToInt(try getRegister(w: numerator_))
+        let denominator = wordToInt(try getRegister(w: denominator_))
+        guard denominator != 0 else {
+            throw TackVirtualMachineError.divideByZero
+        }
+        let result = intToWord(numerator / denominator)
+        setRegister(result_, w: result)
+    }
+    
+    private func divuw(_ dst: Register16, _ leftRegister: Register16, _ rightRegister: Register16) throws {
         let left = try getRegister(w: leftRegister)
         let right = try getRegister(w: rightRegister)
         guard right != 0 else {
@@ -980,7 +1007,17 @@ public class TackVirtualMachine: NSObject {
         setRegister(dst, b: result)
     }
     
-    private func div8(_ dst: Register8, _ leftRegister: Register8, _ rightRegister: Register8) throws {
+    private func divb(_ dst: Register8, _ leftRegister: Register8, _ rightRegister: Register8) throws {
+        let numerator = uint8ToInt(try getRegister(b: leftRegister))
+        let denominator = uint8ToInt(try getRegister(b: rightRegister))
+        guard denominator != 0 else {
+            throw TackVirtualMachineError.divideByZero
+        }
+        let result = intToUInt8(numerator / denominator)
+        setRegister(dst, b: result)
+    }
+    
+    private func divub(_ dst: Register8, _ leftRegister: Register8, _ rightRegister: Register8) throws {
         let left = try getRegister(b: leftRegister)
         let right = try getRegister(b: rightRegister)
         guard right != 0 else {

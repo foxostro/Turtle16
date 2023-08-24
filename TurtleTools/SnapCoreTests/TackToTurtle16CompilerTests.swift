@@ -1148,8 +1148,82 @@ class TackToTurtle16CompilerTests: XCTestCase {
         XCTAssertEqual(debugger.computer.getRegister(3), 4)
     }
 
-    func testDIV16_0_div_0() throws {
+    func testDIVW_0_div_0() throws {
         let input = TackInstructionNode(.divw(.w(2), .w(1), .w(0)))
+        let debugger = makeDebugger(assembly: try compile(input))
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, 0)
+        debugger.computer.setRegister(1, 0)
+        debugger.computer.setRegister(2, 0xabcd)
+        debugger.computer.run()
+//        while !debugger.computer.isHalted {
+//            print("---")
+//            debugger.computer.step()
+//            debugger.interpreter.runOne(instruction: .disassemble(.baseCount(debugger.computer.cpu.getPipelineStageInfo(2).pc ?? 0, 1)))
+//            debugger.interpreter.runOne(instruction: .reg)
+//        }
+        XCTAssertEqual(debugger.computer.getRegister(2), 0)
+    }
+
+    func testDIVW_1_div_1() throws {
+        let input = TackInstructionNode(.divw(.w(2), .w(1), .w(0)))
+        let debugger = makeDebugger(assembly: try compile(input))
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, 1)
+        debugger.computer.setRegister(1, 1)
+        debugger.computer.setRegister(2, 0xabcd)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(2), 1)
+    }
+    
+    fileprivate let minusOne = UInt16(0) &- UInt16(1)
+    
+    func testDIVW_minus1_div_1() throws {
+        let input = TackInstructionNode(.divw(.w(2), .w(1), .w(0)))
+        let debugger = makeDebugger(assembly: try compile(input))
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, 1)
+        debugger.computer.setRegister(1, minusOne)
+        debugger.computer.setRegister(2, 0xabcd)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(2), minusOne)
+    }
+    
+    func testDIVW_1_div_minus1() throws {
+        let input = TackInstructionNode(.divw(.w(2), .w(1), .w(0)))
+        let debugger = makeDebugger(assembly: try compile(input))
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, minusOne)
+        debugger.computer.setRegister(1, 1)
+        debugger.computer.setRegister(2, 0xabcd)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(2), minusOne)
+    }
+    
+    func testDIVW_minus1_div_minus1() throws {
+        let input = TackInstructionNode(.divw(.w(2), .w(1), .w(0)))
+        let debugger = makeDebugger(assembly: try compile(input))
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, minusOne)
+        debugger.computer.setRegister(1, minusOne)
+        debugger.computer.setRegister(2, 0xabcd)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(2), 1)
+    }
+
+    func testDIVW_12_div_4() throws {
+        let input = TackInstructionNode(.divw(.w(2), .w(1), .w(0)))
+        let debugger = makeDebugger(assembly: try compile(input))
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, 4)
+        debugger.computer.setRegister(1, 12)
+        debugger.computer.setRegister(2, 0xabcd)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(2), 3)
+    }
+    
+    func testDIVUW_0_div_0() throws {
+        let input = TackInstructionNode(.divuw(.w(2), .w(1), .w(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 0)
@@ -1166,8 +1240,8 @@ class TackToTurtle16CompilerTests: XCTestCase {
         XCTAssertEqual(debugger.computer.getRegister(3), 0)
     }
 
-    func testDIV16_1_div_1() throws {
-        let input = TackInstructionNode(.divw(.w(2), .w(1), .w(0)))
+    func testDIVUW_1_div_1() throws {
+        let input = TackInstructionNode(.divuw(.w(2), .w(1), .w(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 1)
@@ -1178,8 +1252,8 @@ class TackToTurtle16CompilerTests: XCTestCase {
         XCTAssertEqual(debugger.computer.getRegister(3), 1)
     }
 
-    func testDIV16_12_div_4() throws {
-        let input = TackInstructionNode(.divw(.w(2), .w(1), .w(0)))
+    func testDIVUW_12_div_4() throws {
+        let input = TackInstructionNode(.divuw(.w(2), .w(1), .w(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 4)
@@ -1190,8 +1264,8 @@ class TackToTurtle16CompilerTests: XCTestCase {
         XCTAssertEqual(debugger.computer.getRegister(3), 3)
     }
 
-    func testDIV16_0xabcd_div_16() throws {
-        let input = TackInstructionNode(.divw(.w(2), .w(1), .w(0)))
+    func testDIVUW_0xabcd_div_16() throws {
+        let input = TackInstructionNode(.divuw(.w(2), .w(1), .w(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 16)
@@ -1840,8 +1914,19 @@ class TackToTurtle16CompilerTests: XCTestCase {
         XCTAssertEqual(debugger.computer.getRegister(3), 4)
     }
 
-    func testDIV8() throws {
+    func testDIVB() throws {
         let input = TackInstructionNode(.divb(.b(2), .b(1), .b(0)))
+        let debugger = makeDebugger(assembly: try compile(input))
+        debugger.logger = PrintLogger()
+        debugger.computer.setRegister(0, UInt16(0) &- UInt16(4))
+        debugger.computer.setRegister(1, 12)
+        debugger.computer.setRegister(2, 0xabcd)
+        debugger.computer.run()
+        XCTAssertEqual(debugger.computer.getRegister(2), UInt16(0) &- UInt16(3))
+    }
+    
+    func testDIVUB() throws {
+        let input = TackInstructionNode(.divub(.b(2), .b(1), .b(0)))
         let debugger = makeDebugger(assembly: try compile(input))
         debugger.logger = PrintLogger()
         debugger.computer.setRegister(0, 4)

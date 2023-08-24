@@ -18,7 +18,7 @@ final class TackDebuggerTests: XCTestCase {
         public let isUsingStandardLibrary: Bool
         public let runtimeSupport: String?
         public let shouldRunSpecificTest: String?
-        public let onSerialOutput: (TackVirtualMachine.Word) -> Void
+        public let onSerialOutput: (UInt8) -> Void
         public let injectModules: [String:String]
         
         public init(isVerboseLogging: Bool = false,
@@ -27,7 +27,7 @@ final class TackDebuggerTests: XCTestCase {
                     isUsingStandardLibrary: Bool = false,
                     runtimeSupport: String? = nil,
                     shouldRunSpecificTest: String? = nil,
-                    onSerialOutput: @escaping (TackVirtualMachine.Word) -> Void = {_ in},
+                    onSerialOutput: @escaping (UInt8) -> Void = {_ in},
                     injectModules: [String:String] = [:]) {
             self.isVerboseLogging = isVerboseLogging
             self.isBoundsCheckEnabled = isBoundsCheckEnabled
@@ -113,7 +113,7 @@ final class TackDebuggerTests: XCTestCase {
                            storage: .staticStorage,
                            visibility: .publicVisibility))
         ])
-        debugger.vm.store(value: 0xabcd, address: 100)
+        debugger.vm.sb(b: 0xcd, address: 100)
         XCTAssertEqual(0xcd, debugger.loadSymbolU8("foo"))
     }
     
@@ -147,7 +147,7 @@ final class TackDebuggerTests: XCTestCase {
                            storage: .staticStorage,
                            visibility: .publicVisibility))
         ])
-        debugger.vm.store(value: 0xabcd, address: 100)
+        debugger.vm.sw(w: 0xabcd, address: 100)
         XCTAssertEqual(0xabcd, debugger.loadSymbolU16("foo"))
     }
     
@@ -181,7 +181,7 @@ final class TackDebuggerTests: XCTestCase {
                            storage: .staticStorage,
                            visibility: .publicVisibility))
         ])
-        debugger.vm.store(value: 0xffff, address: 100)
+        debugger.vm.sb(b: 0xff, address: 100)
         XCTAssertEqual(-1, debugger.loadSymbolI8("foo"))
     }
     
@@ -215,7 +215,7 @@ final class TackDebuggerTests: XCTestCase {
                            storage: .staticStorage,
                            visibility: .publicVisibility))
         ])
-        debugger.vm.store(value: 0xffff, address: 100)
+        debugger.vm.sw(w: 0xffff, address: 100)
         XCTAssertEqual(-1, debugger.loadSymbolI16("foo"))
     }
     
@@ -249,7 +249,7 @@ final class TackDebuggerTests: XCTestCase {
                            storage: .staticStorage,
                            visibility: .publicVisibility))
         ])
-        debugger.vm.store(value: 1, address: 100)
+        debugger.vm.so(o: true, address: 100)
         XCTAssertEqual(true, debugger.loadSymbolBool("foo"))
     }
     
@@ -283,7 +283,7 @@ final class TackDebuggerTests: XCTestCase {
                            storage: .staticStorage,
                            visibility: .publicVisibility))
         ])
-        debugger.vm.store(value: 0xabcd, address: 100)
+        debugger.vm.sw(w: 0xabcd, address: 100)
         XCTAssertEqual(0xabcd, debugger.loadSymbolPointer("foo"))
     }
     
@@ -317,9 +317,9 @@ final class TackDebuggerTests: XCTestCase {
                            storage: .staticStorage,
                            visibility: .publicVisibility))
         ])
-        debugger.vm.store(value: 0xaaaa, address: 100)
-        debugger.vm.store(value: 0xbbbb, address: 101)
-        debugger.vm.store(value: 0xcccc, address: 102)
+        debugger.vm.sb(b: 0xaa, address: 100)
+        debugger.vm.sb(b: 0xbb, address: 101)
+        debugger.vm.sb(b: 0xcc, address: 102)
         XCTAssertEqual([0xaa, 0xbb, 0xcc], debugger.loadSymbolArrayOfU8(3, "foo"))
     }
     
@@ -353,9 +353,9 @@ final class TackDebuggerTests: XCTestCase {
                            storage: .staticStorage,
                            visibility: .publicVisibility))
         ])
-        debugger.vm.store(value: 0xaaaa, address: 100)
-        debugger.vm.store(value: 0xbbbb, address: 101)
-        debugger.vm.store(value: 0xcccc, address: 102)
+        debugger.vm.sw(w: 0xaaaa, address: 100)
+        debugger.vm.sw(w: 0xbbbb, address: 101)
+        debugger.vm.sw(w: 0xcccc, address: 102)
         XCTAssertEqual([0xaaaa, 0xbbbb, 0xcccc], debugger.loadSymbolArrayOfU16(3, "foo"))
     }
     
@@ -389,9 +389,9 @@ final class TackDebuggerTests: XCTestCase {
                            storage: .staticStorage,
                            visibility: .publicVisibility))
         ])
-        debugger.vm.store(value: 65, address: 100)
-        debugger.vm.store(value: 66, address: 101)
-        debugger.vm.store(value: 67, address: 102)
+        debugger.vm.sb(b: 65, address: 100)
+        debugger.vm.sb(b: 66, address: 101)
+        debugger.vm.sb(b: 67, address: 102)
         XCTAssertEqual("ABC", debugger.loadSymbolString("foo"))
     }
     
@@ -425,11 +425,11 @@ final class TackDebuggerTests: XCTestCase {
                            storage: .staticStorage,
                            visibility: .publicVisibility))
         ])
-        debugger.vm.store(value: 200, address: 100)
-        debugger.vm.store(value: 3, address: 101)
-        debugger.vm.store(value: 65, address: 200)
-        debugger.vm.store(value: 66, address: 201)
-        debugger.vm.store(value: 67, address: 202)
+        debugger.vm.sw(w: 200, address: 100)
+        debugger.vm.sw(w:   3, address: 101)
+        debugger.vm.sb(b:  65, address: 200)
+        debugger.vm.sb(b:  66, address: 201)
+        debugger.vm.sb(b:  67, address: 202)
         XCTAssertEqual("ABC", debugger.loadSymbolStringSlice("foo"))
     }
     

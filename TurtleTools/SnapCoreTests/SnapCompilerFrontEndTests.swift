@@ -2849,7 +2849,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     }
 
     func test_EndToEndIntegration_GenericStruct_Impl() throws {
-        #warning("TODO: This test fails beause generic struct methods do not generate correctly typed Tack code. The __Foo_u8_baz function should use eight-bit registers and instructions.")
         let opts = Options(isVerboseLogging: true)
         let debugger = try run(options: opts, program: """
             struct Foo[T] {

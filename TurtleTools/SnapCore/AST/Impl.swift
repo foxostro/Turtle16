@@ -27,6 +27,13 @@ public class Impl: AbstractSyntaxTreeNode {
         super.init(sourceAnchor: sourceAnchor)
     }
     
+    public func clone() -> Impl {
+        Impl(sourceAnchor: sourceAnchor,
+             typeArguments: typeArguments,
+             structTypeExpr: structTypeExpr,
+             children: children.map{ $0.clone() })
+    }
+    
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Impl {
         if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
             return self

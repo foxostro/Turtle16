@@ -82,18 +82,6 @@ class TackToTurtle16CompilerTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
 
-    func testADD16_sp_and_fp_and_ra() throws {
-        let input = TackInstructionNode(.addw(.sp, .fp, .ra))
-        let expected = InstructionNode(instruction: kADD, parameters:[
-            ParameterIdentifier("sp"),
-            ParameterIdentifier("fp"),
-            ParameterIdentifier("ra")
-        ])
-        let compiler = TackToTurtle16Compiler()
-        let actual = try compiler.compile(input)
-        XCTAssertEqual(actual, expected)
-    }
-
     func testSUB16() throws {
         let input = TackInstructionNode(.subw(.w(2), .w(1), .w(0)))
         let expected = InstructionNode(instruction: kSUB, parameters:[
@@ -197,7 +185,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLA() throws {
-        let input = TackInstructionNode(.la(.w(1), "foo"))
+        let input = TackInstructionNode(.la(.p(1), "foo"))
         let expected = InstructionNode(instruction: kLA, parameters:[
             ParameterIdentifier("r0"),
             ParameterIdentifier("foo")
@@ -216,7 +204,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testCALLPTR() throws {
-        let input = TackInstructionNode(.callptr(.w(0)))
+        let input = TackInstructionNode(.callptr(.p(0)))
         let expected = InstructionNode(instruction: kCALLPTR, parameters:[
             ParameterIdentifier("r0")
         ])
@@ -255,7 +243,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
     
     func testLOAD16_small_offset_pos() throws {
-        let input = TackInstructionNode(.lw(.w(1), .w(0), 15))
+        let input = TackInstructionNode(.lw(.w(1), .p(0), 15))
         let expected = InstructionNode(instruction: kLOAD, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -266,7 +254,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLOAD16_small_offset_neg() throws {
-        let input = TackInstructionNode(.lw(.w(1), .w(0), -16))
+        let input = TackInstructionNode(.lw(.w(1), .p(0), -16))
         let expected = InstructionNode(instruction: kLOAD, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -277,7 +265,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLOAD16_large_offset_pos() throws {
-        let input = TackInstructionNode(.lw(.w(1), .w(0), 16))
+        let input = TackInstructionNode(.lw(.w(1), .p(0), 16))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr1"),
@@ -302,7 +290,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLOAD16_large_offset_neg() throws {
-        let input = TackInstructionNode(.lw(.w(1), .w(0), -17))
+        let input = TackInstructionNode(.lw(.w(1), .p(0), -17))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr1"),
@@ -327,7 +315,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testSTORE16_small_offset_pos() throws {
-        let input = TackInstructionNode(.sw(.w(1), .w(0), 15))
+        let input = TackInstructionNode(.sw(.w(1), .p(0), 15))
         let expected = InstructionNode(instruction: kSTORE, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -338,7 +326,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testSTORE16_small_offset_neg() throws {
-        let input = TackInstructionNode(.sw(.w(1), .w(0), -16))
+        let input = TackInstructionNode(.sw(.w(1), .p(0), -16))
         let expected = InstructionNode(instruction: kSTORE, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -349,7 +337,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testSTORE16_large_offset_pos() throws {
-        let input = TackInstructionNode(.sw(.w(1), .w(0), 16))
+        let input = TackInstructionNode(.sw(.w(1), .p(0), 16))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr1"),
@@ -374,7 +362,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testSTORE16_large_offset_neg() throws {
-        let input = TackInstructionNode(.sw(.w(1), .w(0), -17))
+        let input = TackInstructionNode(.sw(.w(1), .p(0), -17))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr1"),
@@ -399,7 +387,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLOAD8_small_offset_pos() throws {
-        let input = TackInstructionNode(.lb(.b(1), .w(0), 15))
+        let input = TackInstructionNode(.lb(.b(1), .p(0), 15))
         let expected = InstructionNode(instruction: kLOAD, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -410,7 +398,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLOAD8_small_offset_neg() throws {
-        let input = TackInstructionNode(.lb(.b(1), .w(0), -16))
+        let input = TackInstructionNode(.lb(.b(1), .p(0), -16))
         let expected = InstructionNode(instruction: kLOAD, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -421,7 +409,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLOAD8_large_offset_pos() throws {
-        let input = TackInstructionNode(.lb(.b(1), .w(0), 16))
+        let input = TackInstructionNode(.lb(.b(1), .p(0), 16))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr1"),
@@ -446,7 +434,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testLOAD8_large_offset_neg() throws {
-        let input = TackInstructionNode(.lb(.b(1), .w(0), -17))
+        let input = TackInstructionNode(.lb(.b(1), .p(0), -17))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr1"),
@@ -471,7 +459,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testSTORE8_small_offset_pos() throws {
-        let input = TackInstructionNode(.sb(.b(1), .w(0), 15))
+        let input = TackInstructionNode(.sb(.b(1), .p(0), 15))
         let expected = InstructionNode(instruction: kSTORE, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -482,7 +470,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testSTORE8_small_offset_neg() throws {
-        let input = TackInstructionNode(.sb(.b(1), .w(0), -16))
+        let input = TackInstructionNode(.sb(.b(1), .p(0), -16))
         let expected = InstructionNode(instruction: kSTORE, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -493,7 +481,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testSTORE8_large_offset_pos() throws {
-        let input = TackInstructionNode(.sb(.b(1), .w(0), 16))
+        let input = TackInstructionNode(.sb(.b(1), .p(0), 16))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr1"),
@@ -518,7 +506,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testSTORE8_large_offset_neg() throws {
-        let input = TackInstructionNode(.sb(.b(1), .w(0), -17))
+        let input = TackInstructionNode(.sb(.b(1), .p(0), -17))
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[
                 ParameterIdentifier("vr1"),
@@ -543,7 +531,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testSTSTR() throws {
-        let input = TackInstructionNode(.ststr(.w(0), "ABC"))
+        let input = TackInstructionNode(.ststr(.p(0), "ABC"))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -555,19 +543,19 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testSTSTR_empty_string() throws {
-        let input = TackInstructionNode(.ststr(.w(0), ""))
+        let input = TackInstructionNode(.ststr(.p(0), ""))
         let actual = try compile(input)
         XCTAssertEqual(actual, Seq())
     }
 
     func testMEMCPY_zero_words() throws {
-        let input = TackInstructionNode(.memcpy(.w(1), .w(0), 0))
+        let input = TackInstructionNode(.memcpy(.p(1), .p(0), 0))
         let actual = try compile(input)
         XCTAssertEqual(actual, Seq())
     }
 
     func testMEMCPY_one_word() throws {
-        let input = TackInstructionNode(.memcpy(.w(1), .w(0), 1))
+        let input = TackInstructionNode(.memcpy(.p(1), .p(0), 1))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -579,7 +567,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMEMCPY_multiple_words() throws {
-        let input = TackInstructionNode(.memcpy(.w(1), .w(0), 3))
+        let input = TackInstructionNode(.memcpy(.p(1), .p(0), 3))
         let assembly = try compile(input)
         let debugger = makeDebugger(assembly: assembly)
         debugger.logger = PrintLogger()
@@ -595,7 +583,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testALLOCA() throws {
-        let input = TackInstructionNode(.alloca(.w(0), 2))
+        let input = TackInstructionNode(.alloca(.p(0), 2))
         let sp = "r6"
         let expected = Seq(children: [
             InstructionNode(instruction: kSUBI, parameters:[
@@ -614,7 +602,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testALLOCA_large() throws {
-        let input = TackInstructionNode(.alloca(.w(0), 0xabcd))
+        let input = TackInstructionNode(.alloca(.p(0), 0xabcd))
         let sp = "r6"
         let expected = Seq(children: [
             InstructionNode(instruction: kLI, parameters:[

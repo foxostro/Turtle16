@@ -17,10 +17,11 @@ public enum TackInstruction: Equatable, Hashable {
     public typealias Imm = Int
     
     public enum RegisterType: Equatable, Hashable {
-        case w, b, o
+        case p, w, b, o
         
         public var description: String {
             switch self {
+            case .p: return "p"
             case .w: return "w"
             case .b: return "b"
             case .o: return "o"
@@ -29,17 +30,25 @@ public enum TackInstruction: Equatable, Hashable {
     }
     
     public enum Register: Equatable, Hashable {
-        case w(Register16), b(Register8), o(RegisterBoolean)
+        case p(RegisterPointer), w(Register16), b(Register8), o(RegisterBoolean)
         
-        public static let sp: Register = .w(.sp)
-        public static let fp: Register = .w(.fp)
-        public static let ra: Register = .w(.ra)
+        public static let sp: Register = .p(.sp)
+        public static let fp: Register = .p(.fp)
+        public static let ra: Register = .p(.ra)
         
         public var type: RegisterType {
             switch self {
+            case .p: return .p
             case .w: return .w
             case .b: return .b
             case .o: return .o
+            }
+        }
+        
+        public var unwrapPointer: RegisterPointer? {
+            switch self {
+            case .p(let p): return p
+            default:        return nil
             }
         }
         
@@ -66,6 +75,7 @@ public enum TackInstruction: Equatable, Hashable {
 
         public var description: String {
             switch self {
+            case .p(let register): return register.description
             case .w(let register): return register.description
             case .b(let register): return register.description
             case .o(let register): return register.description
@@ -73,8 +83,8 @@ public enum TackInstruction: Equatable, Hashable {
         }
     }
     
-    public enum Register16: Equatable, Hashable {
-        case sp, fp, ra, w(Int)
+    public enum RegisterPointer: Equatable, Hashable {
+        case sp, fp, ra, p(Int)
         
         public var description: String {
             switch self {
@@ -84,6 +94,17 @@ public enum TackInstruction: Equatable, Hashable {
                 return "fp"
             case .ra:
                 return "ra"
+            case .p(let i):
+                return "p\(i)"
+            }
+        }
+    }
+    
+    public enum Register16: Equatable, Hashable {
+        case w(Int)
+        
+        public var description: String {
+            switch self {
             case .w(let i):
                 return "w\(i)"
             }
@@ -100,8 +121,6 @@ public enum TackInstruction: Equatable, Hashable {
             }
         }
     }
-    
-    public typealias RegisterPointer = Register16 // TODO: RegisterPointer should be a distinct type from Register16
     
     public enum Register8: Equatable, Hashable {
         case b(Int)
@@ -127,7 +146,7 @@ public enum TackInstruction: Equatable, Hashable {
     case alloca(RegisterPointer, Count)
     case free(Count)
     case inlineAssembly(String)
-    case syscall(Register16, RegisterPointer) // first register is the syscall number, second is a pointer to the arguments structure
+    case syscall(RegisterPointer, RegisterPointer) // first register is the address in memory where the syscall number is stored, second is a pointer to the arguments structure
     
     case bz(RegisterBoolean, Label)
     case bnz(RegisterBoolean, Label)
@@ -138,10 +157,19 @@ public enum TackInstruction: Equatable, Hashable {
     case lo(RegisterBoolean, RegisterPointer, Offset)
     case so(RegisterBoolean, RegisterPointer, Offset)
     
+    case eqp(RegisterBoolean, RegisterPointer, RegisterPointer)
+    case nep(RegisterBoolean, RegisterPointer, RegisterPointer)
+    case lip(RegisterPointer, Int)
+    case addip(RegisterPointer, RegisterPointer, Imm)
+    case subip(RegisterPointer, RegisterPointer, Imm)
+    case addpw(RegisterPointer, RegisterPointer, Register16)
+    case lp(RegisterPointer, RegisterPointer, Offset)
+    case sp(RegisterPointer, RegisterPointer, Offset)
+    
     case lw(Register16, RegisterPointer, Offset)
     case sw(Register16, RegisterPointer, Offset)
     case bzw(Register16, Label)
-    case andiw(Register16, Register16, Imm)
+    case andiw(Register16, Register16, Imm) // TODO: consider changing imm instruction mnemonic to andwi because the w operand is to the left of the i operand. This applies generally to many other Tack instructions too.
     case addiw(Register16, Register16, Imm)
     case subiw(Register16, Register16, Imm)
     case mulib(Register16, Register16, Imm)
@@ -201,6 +229,7 @@ public enum TackInstruction: Equatable, Hashable {
     case movswb(Register16, Register8) // Move an eight-bit register to a sixteen-bit register, sign-extending to fill the upper bits.
     case movzwb(Register16, Register8) // Move an eight-bit register to a sixteen-bit register, zero-extending to fill the upper bits.
     case movzbw(Register8, Register16) // Move an unsigned sixteen-bit register to an unsigned eight-bit register
+    case bitcast(Register, Register) // Reinterpret the bit pattern of the source register as a new value in a desitnation register of a different type, with architecture-specific results.
     
     public var description: String {
         switch self {
@@ -228,6 +257,15 @@ public enum TackInstruction: Equatable, Hashable {
         case .lio(let dst, let imm): return "LIO \(dst.description), \(imm)"
         case .lo(let dst, let addr, let offset): return "LO \(dst.description), \(addr.description), \(offset)"
         case .so(let src, let addr, let offset): return "SO \(src.description), \(addr.description), \(offset)"
+            
+        case .eqp(let c, let a, let b): return "EQP \(c.description), \(a.description), \(b.description)"
+        case .nep(let c, let a, let b): return "NEP \(c.description), \(a.description), \(b.description)"
+        case .lip(let dst, let imm): return "LIP \(dst.description), \(imm)"
+        case .addip(let c, let a, let b): return "ADDIP \(c.description), \(a.description), \(b.description)"
+        case .subip(let c, let a, let b): return "SUBIP \(c.description), \(a.description), \(b.description)"
+        case .addpw(let c, let a, let b): return "ADDPW \(c.description), \(a.description), \(b.description)"
+        case .lp(let dst, let addr, let offset): return "LP \(dst.description), \(addr.description), \(offset)"
+        case .sp(let src, let addr, let offset): return "SP \(src.description), \(addr.description), \(offset)"
         
         case .lw(let dst, let addr, let offset): return "LW \(dst.description), \(addr.description), \(offset)"
         case .sw(let src, let addr, let offset): return "SW \(src.description), \(addr.description), \(offset)"
@@ -291,6 +329,7 @@ public enum TackInstruction: Equatable, Hashable {
         case .movswb(let dst, let src): return "MOVSWB \(dst.description), \(src.description)"
         case .movzwb(let dst, let src): return "MOVZWB \(dst.description), \(src.description)"
         case .movzbw(let dst, let src): return "MOVZBW \(dst.description), \(src.description)"
+        case .bitcast(let dst, let src): return "BITCAST \(dst.description), \(src.description)"
         }
     }
     
@@ -477,7 +516,7 @@ extension SymbolType {
             return .w
             
         case .pointer, .constPointer:
-            return .w
+            return .p
             
         case .arithmeticType(.mutableInt(let intClass)),
              .arithmeticType(.immutableInt(let intClass)):

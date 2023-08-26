@@ -56,6 +56,7 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
     func nextRegister(type: RegisterType) -> Register {
         let result: Register = {
             switch type {
+            case .p: return .p(.p(nextRegisterIndex))
             case .w: return .w(.w(nextRegisterIndex))
             case .b: return .b(.b(nextRegisterIndex))
             case .o: return .o(.o(nextRegisterIndex))
@@ -128,9 +129,9 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             ]))
             result.append(Subroutine(identifier: kSyscall, children: [
                 TackInstructionNode(.enter(0)),
-                TackInstructionNode(.addiw(.w(0), .fp, 8)), // syscall number
-                TackInstructionNode(.addiw(.w(1), .fp, 7)), // pointer to argument struct
-                TackInstructionNode(.syscall(.w(0), .w(1))),
+                TackInstructionNode(.addip(.p(0), .fp, 8)), // syscall number
+                TackInstructionNode(.addip(.p(1), .fp, 7)), // pointer to argument struct
+                TackInstructionNode(.syscall(.p(0), .p(1))),
                 TackInstructionNode(.leave),
                 TackInstructionNode(.ret)
             ]))
@@ -301,10 +302,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 throw CompilerError(sourceAnchor: node.sourceAnchor, message: "internal compiler error: function has no mangled name: `\(lvalueType!.description)'")
             }
             
-            let dst = nextRegister(type: .w)
+            let dst = nextRegister(type: .p)
             pushRegister(dst)
             let result = TackInstructionNode(
-                instruction: .la(dst.unwrap16!, mangledName),
+                instruction: .la(dst.unwrapPointer!, mangledName),
                 sourceAnchor: node.sourceAnchor,
                 symbols: symbols)
             return result
@@ -376,11 +377,11 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         switch subscriptableType {
         case .dynamicArray, .constDynamicArray:
             sliceAddr = popRegister()
-            let baseAddr = nextRegister(type: .w)
+            let baseAddr = nextRegister(type: .p)
             pushRegister(baseAddr)
             children += [
                 TackInstructionNode(
-                    instruction: .lw(baseAddr.unwrap16!, sliceAddr.unwrap16!, kSliceBaseAddressOffset),
+                    instruction: .lp(baseAddr.unwrapPointer!, sliceAddr.unwrapPointer!, kSliceBaseAddressOffset),
                     sourceAnchor: expr.sourceAnchor,
                     symbols: symbols)
             ]
@@ -441,7 +442,7 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                     // The upper bound is embedded in the slice object
                     children += [
                         TackInstructionNode(
-                            instruction: .lw(tempUpperBound.unwrap16!, sliceAddr.unwrap16!, kSliceCountOffset),
+                            instruction: .lw(tempUpperBound.unwrap16!, sliceAddr.unwrapPointer!, kSliceCountOffset),
                             sourceAnchor: expr.sourceAnchor,
                             symbols: symbols)
                     ]
@@ -472,17 +473,17 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             }
             
             if elementSize == 1 {
-                let accessAddr = nextRegister(type: .w)
+                let accessAddr = nextRegister(type: .p)
                 pushRegister(accessAddr)
                 children += [
                     TackInstructionNode(
-                        instruction: .addw(accessAddr.unwrap16!, index.unwrap16!, baseAddr.unwrap16!),
+                        instruction: .addpw(accessAddr.unwrapPointer!, baseAddr.unwrapPointer!, index.unwrap16!),
                         sourceAnchor: expr.sourceAnchor,
                         symbols: symbols)
                 ]
             } else {
                 let offset = nextRegister(type: .w)
-                let accessAddr = nextRegister(type: .w)
+                let accessAddr = nextRegister(type: .p)
                 pushRegister(accessAddr)
                 children += [
                     TackInstructionNode(
@@ -490,7 +491,7 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                         sourceAnchor: expr.sourceAnchor,
                         symbols: symbols),
                     TackInstructionNode(
-                        instruction: .addw(accessAddr.unwrap16!, offset.unwrap16!, baseAddr.unwrap16!),
+                        instruction: .addpw(accessAddr.unwrapPointer!, baseAddr.unwrapPointer!, offset.unwrap16!),
                         sourceAnchor: expr.sourceAnchor,
                         symbols: symbols)
                 ]
@@ -884,11 +885,11 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         var children: [AbstractSyntaxTreeNode] = []
         switch symbol.storage {
         case .staticStorage:
-            let temp = nextRegister(type: .w)
+            let temp = nextRegister(type: .p)
             pushRegister(temp)
             children += [
                 TackInstructionNode(
-                    instruction: .liuw(temp.unwrap16!, symbol.offset),
+                    instruction: .lip(temp.unwrapPointer!, symbol.offset),
                     sourceAnchor: sourceAnchor,
                     symbols: symbols
                 )
@@ -914,11 +915,11 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         if depth == 0 {
             temp_framePointer = .fp
         } else {
-            temp_framePointer = nextRegister(type: .w).unwrap16!
+            temp_framePointer = nextRegister(type: .p).unwrapPointer!
             
             children += [
                 TackInstructionNode(
-                    instruction: .lw(temp_framePointer, .fp, 0),
+                    instruction: .lp(temp_framePointer, .fp, 0),
                     sourceAnchor: sourceAnchor,
                     symbols: symbols)
             ]
@@ -927,26 +928,26 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             for _ in 1..<depth {
                 children += [
                     TackInstructionNode(
-                        instruction: .lw(temp_framePointer, temp_framePointer, 0),
+                        instruction: .lp(temp_framePointer, temp_framePointer, 0),
                         sourceAnchor: sourceAnchor,
                         symbols: symbols)
                 ]
             }
         }
         
-        let temp_result = nextRegister(type: .w)
+        let temp_result = nextRegister(type: .p)
         
         if offset >= 0 {
             children += [
                 TackInstructionNode(
-                    instruction: .subiw(temp_result.unwrap16!, temp_framePointer, offset),
+                    instruction: .subip(temp_result.unwrapPointer!, temp_framePointer, offset),
                     sourceAnchor: sourceAnchor,
                     symbols: symbols)
             ]
         } else {
             children += [
                 TackInstructionNode(
-                    instruction: .addiw(temp_result.unwrap16!, temp_framePointer, -offset),
+                    instruction: .addip(temp_result.unwrapPointer!, temp_framePointer, -offset),
                     sourceAnchor: sourceAnchor,
                     symbols: symbols)
             ]
@@ -979,12 +980,12 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             children += [
                 try lvalue(expr: expr.expr)
             ]
-            let tempStructAddress = popRegister().unwrap16!
-            let dst = nextRegister(type: .w)
+            let tempStructAddress = popRegister().unwrapPointer!
+            let dst = nextRegister(type: .p)
             pushRegister(dst)
             children += [
                 TackInstructionNode(
-                    instruction: .addiw(dst.unwrap16!, tempStructAddress, symbol.offset),
+                    instruction: .addip(dst.unwrapPointer!, tempStructAddress, symbol.offset),
                     sourceAnchor: expr.sourceAnchor,
                     symbols: symbols)
             ]
@@ -1002,12 +1003,12 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                     children += [
                         try rvalue(expr: expr.expr)
                     ]
-                    let tempStructAddress = popRegister().unwrap16!
-                    let dst = nextRegister(type: .w)
+                    let tempStructAddress = popRegister().unwrapPointer!
+                    let dst = nextRegister(type: .p)
                     pushRegister(dst)
                     children += [
                         TackInstructionNode(
-                            instruction: .addiw(dst.unwrap16!, tempStructAddress, symbol.offset),
+                            instruction: .addip(dst.unwrapPointer!, tempStructAddress, symbol.offset),
                             sourceAnchor: expr.sourceAnchor,
                             symbols: symbols)
                     ]
@@ -1148,12 +1149,14 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 ]
                 
                 let resultRegister = popRegister()
-                let ins: TackInstruction
-                switch resultRegister {
-                case .w(let src): ins = .sw(src, tempArrayAddr.unwrap16!, i)
-                case .b(let src): ins = .sb( src, tempArrayAddr.unwrap16!, i)
-                case .o(let src): ins = .so( src, tempArrayAddr.unwrap16!, i)
-                }
+                let ins: TackInstruction = {
+                    switch resultRegister {
+                    case .p(let src): return .sp(src, tempArrayAddr.unwrapPointer!, i)
+                    case .w(let src): return .sw(src, tempArrayAddr.unwrapPointer!, i)
+                    case .b(let src): return .sb( src, tempArrayAddr.unwrapPointer!, i)
+                    case .o(let src): return .so( src, tempArrayAddr.unwrapPointer!, i)
+                    }
+                }()
                 
                 children += [
                     TackInstructionNode(
@@ -1219,7 +1222,7 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         return Seq(sourceAnchor: expr.sourceAnchor, children: [
             try lvalue(identifier: tempArrayId),
             TackInstructionNode(
-                instruction: .ststr(peekRegister().unwrap16!, expr.value),
+                instruction: .ststr(peekRegister().unwrapPointer!, expr.value),
                 sourceAnchor: expr.sourceAnchor,
                 symbols: symbols)
         ])
@@ -1233,11 +1236,12 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         ]
         
         if let primitiveType = symbol.type.primitiveType {
-            let addr = popRegister().unwrap16!
+            let addr = popRegister().unwrapPointer!
             let dest = nextRegister(type: primitiveType)
             
             let ins: TackInstruction = {
                 switch primitiveType {
+                case .p: return .lp(dest.unwrapPointer!, addr, 0)
                 case .w: return .lw(dest.unwrap16!, addr, 0)
                 case .b: return .lb(dest.unwrap8!, addr, 0)
                 case .o: return .lo(dest.unwrapBool!, addr, 0)
@@ -1283,7 +1287,24 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
     }
     
     func rvalue(bitcast expr: Expression.Bitcast) throws -> AbstractSyntaxTreeNode {
-        return try rvalue(expr: expr.expr)
+        var children: [AbstractSyntaxTreeNode] = [
+            try rvalue(expr: expr.expr)
+        ]
+        let targetType = try typeCheck(rexpr: expr)
+        let registerType = targetType.primitiveType ?? .p
+        if peekRegister().type != registerType {
+            let a = popRegister()
+            let b = nextRegister(type: registerType)
+            pushRegister(b)
+            children += [
+                TackInstructionNode(
+                    instruction: .bitcast(b, a),
+                    sourceAnchor: expr.sourceAnchor,
+                    symbols: symbols)
+            ]
+        }
+        let seq = Seq(sourceAnchor: expr.sourceAnchor, children: children)
+        return seq
     }
     
     func compileAndConvertExpression(rexpr: Expression, ltype: SymbolType, isExplicitCast: Bool) throws -> AbstractSyntaxTreeNode {
@@ -1501,9 +1522,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 TackInstructionNode(
                     instruction: { resultRegister in
                         switch resultRegister {
-                        case .w(let w): return .sw(w, dst.unwrap16!, kSliceBaseAddressOffset)
-                        case .b(let b): return .sb(b, dst.unwrap16!, kSliceBaseAddressOffset)
-                        case .o(let o): return .so(o, dst.unwrap16!, kSliceBaseAddressOffset)
+                        case .p(let p): return .sp(p, dst.unwrapPointer!, kSliceBaseAddressOffset)
+                        case .w(let w): return .sw(w, dst.unwrapPointer!, kSliceBaseAddressOffset)
+                        case .b(let b): return .sb(b, dst.unwrapPointer!, kSliceBaseAddressOffset)
+                        case .o(let o): return .so(o, dst.unwrapPointer!, kSliceBaseAddressOffset)
                         }
                     }(popRegister()),
                     sourceAnchor: rexpr.sourceAnchor,
@@ -1516,7 +1538,7 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                     sourceAnchor: rexpr.sourceAnchor,
                     symbols: symbols),
                 TackInstructionNode(
-                    instruction: .sw(countReg, dst.unwrap16!, kSliceCountOffset),
+                    instruction: .sw(countReg, dst.unwrapPointer!, kSliceCountOffset),
                     sourceAnchor: rexpr.sourceAnchor,
                     symbols: symbols)
             ]
@@ -1540,7 +1562,7 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                     sourceAnchor: rexpr.sourceAnchor,
                     symbols: symbols),
                 TackInstructionNode(
-                    instruction: .sw(tempUnionTypeTag, tempUnionAddr.unwrap16!, kUnionTypeTagOffset),
+                    instruction: .sw(tempUnionTypeTag, tempUnionAddr.unwrapPointer!, kUnionTypeTagOffset),
                     sourceAnchor: rexpr.sourceAnchor,
                     symbols: symbols)
             ]
@@ -1555,9 +1577,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                     TackInstructionNode(
                         instruction: { resultRegister in
                             switch resultRegister {
-                            case .w(let w): return .sw(w, tempUnionAddr.unwrap16!, kUnionPayloadOffset)
-                            case .b(let b): return .sb(b, tempUnionAddr.unwrap16!, kUnionPayloadOffset)
-                            case .o(let o): return .so(o, tempUnionAddr.unwrap16!, kUnionPayloadOffset)
+                            case .p(let p): return .sp(p, tempUnionAddr.unwrapPointer!, kUnionPayloadOffset)
+                            case .w(let w): return .sw(w, tempUnionAddr.unwrapPointer!, kUnionPayloadOffset)
+                            case .b(let b): return .sb(b, tempUnionAddr.unwrapPointer!, kUnionPayloadOffset)
+                            case .o(let o): return .so(o, tempUnionAddr.unwrapPointer!, kUnionPayloadOffset)
                             }
                         }(popRegister()),
                         sourceAnchor: rexpr.sourceAnchor,
@@ -1565,10 +1588,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 ]
             } else {
                 let size = globalEnvironment.memoryLayoutStrategy.sizeof(type: rtype)
-                let tempUnionPayloadAddress = nextRegister(type: .w).unwrap16!
+                let tempUnionPayloadAddress = nextRegister(type: .p).unwrapPointer!
                 children += [
                     TackInstructionNode(
-                        instruction: .addiw(tempUnionPayloadAddress, tempUnionAddr.unwrap16!, kUnionPayloadOffset),
+                        instruction: .addip(tempUnionPayloadAddress, tempUnionAddr.unwrapPointer!, kUnionPayloadOffset),
                         sourceAnchor: rexpr.sourceAnchor,
                         symbols: symbols),
                     try rvalue(as: Expression.As(
@@ -1578,7 +1601,7 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                             sourceAnchor: rexpr.sourceAnchor,
                             typ: targetType))),
                     TackInstructionNode(
-                        instruction: .memcpy(tempUnionPayloadAddress, popRegister().unwrap16!, size),
+                        instruction: .memcpy(tempUnionPayloadAddress, popRegister().unwrapPointer!, size),
                         sourceAnchor: rexpr.sourceAnchor,
                         symbols: symbols)
                 ]
@@ -1602,7 +1625,7 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 let labelSkipPanic = globalEnvironment.labelMaker.next()
                 children += [
                     TackInstructionNode(
-                        instruction: .lw(tempUnionTag.unwrap16!, tempUnionAddr.unwrap16!, kUnionTypeTagOffset),
+                        instruction: .lw(tempUnionTag.unwrap16!, tempUnionAddr.unwrapPointer!, kUnionTypeTagOffset),
                         sourceAnchor: rexpr.sourceAnchor,
                         symbols: symbols),
                     TackInstructionNode(
@@ -1630,20 +1653,21 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                     TackInstructionNode(
                         instruction: {
                             switch dst {
-                            case .w(let w): return .lw(w, tempUnionAddr.unwrap16!, kUnionPayloadOffset)
-                            case .b(let b): return .lb(b, tempUnionAddr.unwrap16!, kUnionPayloadOffset)
-                            case .o(let o): return .lo(o, tempUnionAddr.unwrap16!, kUnionPayloadOffset)
+                            case .p(let p): return .lp(p, tempUnionAddr.unwrapPointer!, kUnionPayloadOffset)
+                            case .w(let w): return .lw(w, tempUnionAddr.unwrapPointer!, kUnionPayloadOffset)
+                            case .b(let b): return .lb(b, tempUnionAddr.unwrapPointer!, kUnionPayloadOffset)
+                            case .o(let o): return .lo(o, tempUnionAddr.unwrapPointer!, kUnionPayloadOffset)
                             }
                         }(),
                         sourceAnchor: rexpr.sourceAnchor,
                         symbols: symbols)
                 ]
             } else {
-                let dst = nextRegister(type: .w)
+                let dst = nextRegister(type: .p)
                 pushRegister(dst)
                 children += [
                     TackInstructionNode(
-                        instruction: .addiw(dst.unwrap16!, tempUnionAddr.unwrap16!, kUnionPayloadOffset),
+                        instruction: .addip(dst.unwrapPointer!, tempUnionAddr.unwrapPointer!, kUnionPayloadOffset),
                         sourceAnchor: rexpr.sourceAnchor,
                         symbols: symbols)
                 ]
@@ -1810,9 +1834,9 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             switch childType {
             case .function(let typ):
                 let label = typ.mangledName ?? typ.name!
-                let dst = nextRegister(type: .w)
+                let dst = nextRegister(type: .p)
                 result = TackInstructionNode(
-                    instruction: .la(dst.unwrap16!, label),
+                    instruction: .la(dst.unwrapPointer!, label),
                     sourceAnchor: expr.sourceAnchor,
                     symbols: symbols)
                 pushRegister(dst)
@@ -2225,6 +2249,7 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 instruction: {
                     assert(a.type == b.type)
                     switch a.type {
+                    case .p: return .eqp(c.unwrapBool!, a.unwrapPointer!, b.unwrapPointer!)
                     case .w: return .eqw(c.unwrapBool!, a.unwrap16!, b.unwrap16!)
                     case .b: return .eqb(c.unwrapBool!, a.unwrap8!, b.unwrap8!)
                     case .o: return .eqo(c.unwrapBool!, a.unwrapBool!, b.unwrapBool!)
@@ -2245,6 +2270,7 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 instruction: {
                     assert(a.type == b.type)
                     switch a.type {
+                    case .p: return .nep(c.unwrapBool!, a.unwrapPointer!, b.unwrapPointer!)
                     case .w: return .new(c.unwrapBool!, a.unwrap16!, b.unwrap16!)
                     case .b: return .neb(c.unwrapBool!, a.unwrap8!, b.unwrap8!)
                     case .o: return .neo(c.unwrapBool!, a.unwrapBool!, b.unwrapBool!)
@@ -2438,7 +2464,7 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         let tempActualTag = nextRegister(type: .w)
         children += [
             TackInstructionNode(
-                instruction: .lw(tempActualTag.unwrap16!, tempUnionAddr.unwrap16!, 0),
+                instruction: .lw(tempActualTag.unwrap16!, tempUnionAddr.unwrapPointer!, 0),
                 sourceAnchor: expr.sourceAnchor,
                 symbols: symbols)
         ]
@@ -2534,9 +2560,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 TackInstructionNode(
                     instruction: {
                         switch src {
-                        case .w(let w): return .sw(w, dst.unwrap16!, 0)
-                        case .b(let b): return .sb(b, dst.unwrap16!, 0)
-                        case .o(let o): return .so(o, dst.unwrap16!, 0)
+                        case .p(let p): return .sp(p, dst.unwrapPointer!, 0)
+                        case .w(let w): return .sw(w, dst.unwrapPointer!, 0)
+                        case .b(let b): return .sb(b, dst.unwrapPointer!, 0)
+                        case .o(let o): return .so(o, dst.unwrapPointer!, 0)
                         }
                     }(),
                     sourceAnchor: expr.sourceAnchor,
@@ -2580,7 +2607,7 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 lvalueProc,
                 rvalueProc,
                 TackInstructionNode(
-                    instruction: .memcpy(dst.unwrap16!, src.unwrap16!, size),
+                    instruction: .memcpy(dst.unwrapPointer!, src.unwrapPointer!, size),
                     sourceAnchor: expr.sourceAnchor,
                     symbols: symbols)
             ])
@@ -2597,13 +2624,14 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         let elementType = try typeCheck(rexpr: expr)
         
         if let primitiveType = elementType.primitiveType {
-            let addr = popRegister().unwrap16!
+            let addr = popRegister().unwrapPointer!
             let dest = nextRegister(type: primitiveType)
             pushRegister(dest)
             children += [
                 TackInstructionNode(
                     instruction: {
                         switch dest {
+                        case .p(let p): return .lp(p, addr, 0)
                         case .w(let w): return .lw(w, addr, 0)
                         case .b(let b): return .lb(b, addr, 0)
                         case .o(let o): return .lo(o, addr, 0)
@@ -2652,7 +2680,7 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             children += [
                 try rvalue(expr: expr.expr)
             ]
-            let sliceAddr = popRegister().unwrap16!
+            let sliceAddr = popRegister().unwrapPointer!
             let countReg = nextRegister(type: .w)
             pushRegister(countReg)
             children += [
@@ -2670,13 +2698,14 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 children += [
                     try lvalue(expr: expr.expr)
                 ]
-                let tempStructAddress = popRegister().unwrap16!
+                let tempStructAddress = popRegister().unwrapPointer!
                 let dst = nextRegister(type: primitiveType)
                 pushRegister(dst)
                 children += [
                     TackInstructionNode(
                         instruction: {
                             switch dst {
+                            case .p(let p): return .lp(p, tempStructAddress, symbol.offset)
                             case .w(let w): return .lw(w, tempStructAddress, symbol.offset)
                             case .b(let b): return .lb(b, tempStructAddress, symbol.offset)
                             case .o(let o): return .lo(o, tempStructAddress, symbol.offset)
@@ -2701,13 +2730,14 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 // Else, the expression value is the value of the pointer, which
                 // is the same as the pointee's lvalue.
                 if let primitiveType = typ.primitiveType {
-                    let pointerValue = popRegister().unwrap16!
+                    let pointerValue = popRegister().unwrapPointer!
                     let pointeeValue = nextRegister(type: primitiveType)
                     pushRegister(pointeeValue)
                     children += [
                         TackInstructionNode(
                             instruction: {
                                 switch pointeeValue {
+                                case .p(let p): return .lp(p, pointerValue, 0)
                                 case .w(let w): return .lw(w, pointerValue, 0)
                                 case .b(let b): return .lb(b, pointerValue, 0)
                                 case .o(let o): return .lo(o, pointerValue, 0)
@@ -2735,7 +2765,7 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                     children += [
                         try rvalue(expr: expr.expr)
                     ]
-                    let sliceAddr = popRegister().unwrap16!
+                    let sliceAddr = popRegister().unwrapPointer!
                     let countReg = nextRegister(type: .w)
                     pushRegister(countReg)
                     children += [
@@ -2753,13 +2783,14 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                         children += [
                             try rvalue(expr: expr.expr)
                         ]
-                        let structAddr = popRegister().unwrap16!
+                        let structAddr = popRegister().unwrapPointer!
                         let dst = nextRegister(type: primitiveType)
                         pushRegister(dst)
                         children += [
                             TackInstructionNode(
                                 instruction: {
                                     switch dst {
+                                    case .p(let p): return .lp(p, structAddr, symbol.offset)
                                     case .w(let w): return .lw(w, structAddr, symbol.offset)
                                     case .b(let b): return .lb(b, structAddr, symbol.offset)
                                     case .o(let o): return .lo(o, structAddr, symbol.offset)
@@ -2899,10 +2930,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         let returnTypeSize = globalEnvironment.memoryLayoutStrategy.sizeof(type: typ.returnType)
         var tempReturnValueAddr: Register!
         if returnTypeSize > 0 {
-            tempReturnValueAddr = nextRegister(type: .w)
+            tempReturnValueAddr = nextRegister(type: .p)
             children += [
                 TackInstructionNode(
-                    instruction: .alloca(tempReturnValueAddr.unwrap16!, returnTypeSize),
+                    instruction: .alloca(tempReturnValueAddr.unwrapPointer!, returnTypeSize),
                     sourceAnchor: expr.sourceAnchor,
                     symbols: symbols)
             ]
@@ -2913,7 +2944,7 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             let tempArg = tempArgs[i]
             let argType = typ.arguments[i]
             let argTypeSize = globalEnvironment.memoryLayoutStrategy.sizeof(type: argType)
-            let dst = nextRegister(type: .w).unwrap16!
+            let dst = nextRegister(type: .p).unwrapPointer!
             if argTypeSize > 0 {
                 children += [
                     TackInstructionNode(
@@ -2926,6 +2957,7 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                         TackInstructionNode(
                             instruction: {
                                 switch tempArg {
+                                case .p(let p): return .sp(p, dst, 0)
                                 case .w(let w): return .sw(w, dst, 0)
                                 case .b(let b): return .sb(b, dst, 0)
                                 case .o(let o): return .so(o, dst, 0)
@@ -2937,7 +2969,7 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 } else {
                     children += [
                         TackInstructionNode(
-                            instruction: .memcpy(dst, tempArg.unwrap16!, argTypeSize),
+                            instruction: .memcpy(dst, tempArg.unwrapPointer!, argTypeSize),
                             sourceAnchor: expr.sourceAnchor,
                             symbols: symbols)
                     ]
@@ -2959,7 +2991,7 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             children += [
                 try rvalue(expr: expr.callee),
                 TackInstructionNode(
-                    instruction: .callptr(popRegister().unwrap16!),
+                    instruction: .callptr(popRegister().unwrapPointer!),
                     sourceAnchor: expr.sourceAnchor,
                     symbols: symbols)
             ]
@@ -2974,7 +3006,7 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             children += [
                 try lvalue(identifier: tempRetId!),
                 TackInstructionNode(
-                    instruction: .memcpy(popRegister().unwrap16!, tempReturnValueAddr.unwrap16!, returnTypeSize),
+                    instruction: .memcpy(popRegister().unwrapPointer!, tempReturnValueAddr.unwrapPointer!, returnTypeSize),
                     sourceAnchor: expr.sourceAnchor,
                     symbols: symbols)
             ]
@@ -3073,10 +3105,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "internal compiler error: concrete instance of generic function has no mangled name: `\(functionType)'")
         }
         
-        let dst = nextRegister(type: .w)
+        let dst = nextRegister(type: .p)
         pushRegister(dst)
         let result = TackInstructionNode(
-            instruction: .la(dst.unwrap16!, mangledName),
+            instruction: .la(dst.unwrapPointer!, mangledName),
             sourceAnchor: expr.sourceAnchor,
             symbols: symbols)
         return result

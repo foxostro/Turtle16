@@ -16,7 +16,6 @@ public enum TackVirtualMachineError: Error, Equatable {
     case underflowRegisterStack
     case divideByZero
     case inlineAssemblyNotSupported
-    case memoryTypeError
 }
 
 public class TackVirtualMachine: NSObject {
@@ -25,7 +24,6 @@ public class TackVirtualMachine: NSObject {
     public typealias RegisterBoolean = TackInstruction.RegisterBoolean
     public typealias Register16 = TackInstruction.Register16
     public typealias Register8 = TackInstruction.Register8
-    public typealias TackValueType = TackInstruction.RegisterType
     public typealias Word = UInt16
     
     public let kMemoryMappedSerialOutputPort: Word = 0x0001
@@ -35,53 +33,12 @@ public class TackVirtualMachine: NSObject {
     public var pc: Word = 0
     public var nextPc: Word = 0
     public var isHalted = false
-    private var globalRegisters: [Register : TackValue] = [:]
-    public var registers: [[Register : TackValue]] = [[:]]
-    private var memoryPages: [Int : [TackValue]] = [:]
+    private var globalRegisters: [Register : UInt] = [:]
+    public var registers: [[Register : UInt]] = [[:]]
+    private var memoryPages: [Int : [UInt]] = [:]
     private var breakPoints: [Bool]
     public var onSerialOutput: (UInt8) -> Void = {_ in}
     public var onSerialInput: () -> UInt8 = { 0 }
-    
-    public enum TackValue: Equatable, Hashable {
-        case w(UInt16), b(UInt8), o(Bool)
-        
-        public var type: TackValueType {
-            switch self {
-            case .w: return .w
-            case .b: return .b
-            case .o: return .o
-            }
-        }
-        
-        public var unwrap16: UInt16? {
-            switch self {
-            case .w(let w): return w
-            default:        return nil
-            }
-        }
-        
-        public var unwrap8: UInt8? {
-            switch self {
-            case .b(let b): return b
-            default:        return nil
-            }
-        }
-        
-        public var unwrapBool: Bool? {
-            switch self {
-            case .o(let o): return o
-            default:        return nil
-            }
-        }
-        
-        public var description: String {
-            switch self {
-            case .w(let v): return "\(v)"
-            case .b(let v): return "\(v)"
-            case .o(let v): return "\(v)"
-            }
-        }
-    }
     
     public enum Syscall: Int {
         case invalid
@@ -95,7 +52,7 @@ public class TackVirtualMachine: NSObject {
             guard let registerRA = currentRegisterSet[.ra] else {
                 break
             }
-            result.append(registerRA.unwrap16!)
+            result.append(Word(registerRA))
         }
         result.append(pc)
         return result
@@ -131,8 +88,8 @@ public class TackVirtualMachine: NSObject {
         self.program = program
         breakPoints = Array<Bool>(repeating: false, count: program.instructions.count)
         super.init()
-        setRegister(.sp, w: 0)
-        setRegister(.fp, w: 0)
+        setRegister(.sp, p: 0)
+        setRegister(.fp, p: 0)
     }
     
     public func setBreakPoint(pc: Word, value: Bool) {
@@ -207,25 +164,33 @@ public class TackVirtualMachine: NSObject {
         return result
     }
     
+    public func getRegister(p reg: RegisterPointer) throws -> UInt16 {
+        let val = try getRegister(.p(reg))
+        return UInt16(val & 0xffff)
+    }
+    
     public func getRegister(w reg: Register16) throws -> UInt16 {
-        try getRegister(.w(reg)).unwrap16!
+        let val = try getRegister(.w(reg))
+        return UInt16(val & 0xffff)
     }
     
     public func getRegister(b reg: Register8) throws -> UInt8 {
-        try getRegister(.b(reg)).unwrap8!
+        let val = try getRegister(.b(reg))
+        return UInt8(val & 0xff)
     }
     
     public func getRegister(o reg: RegisterBoolean) throws -> Bool {
-        try getRegister(.o(reg)).unwrapBool!
+        let val = try getRegister(.o(reg))
+        return val != 0
     }
     
-    public func getRegister(_ reg: Register) throws -> TackValue {
+    public func getRegister(_ reg: Register) throws -> UInt {
         switch reg {
         case .sp, .fp:
             // We should have set fp and sp in init() so this ought never fail.
             return globalRegisters[reg]!
             
-        case .ra, .w(_), .b(_), .o(_):
+        case .ra, .p(_), .w(_), .b(_), .o(_):
             guard let value = registers[registers.count-1][reg] else {
                 throw TackVirtualMachineError.undefinedRegister(reg)
             }
@@ -233,24 +198,28 @@ public class TackVirtualMachine: NSObject {
         }
     }
     
+    public func setRegister(_ reg: RegisterPointer, p value: UInt16) {
+        setRegister(.p(reg), UInt(value))
+    }
+    
     public func setRegister(_ reg: Register16, w value: UInt16) {
-        setRegister(.w(reg), .w(value))
+        setRegister(.w(reg), UInt(value))
     }
     
     public func setRegister(_ reg: Register8, b value: UInt8) {
-        setRegister(.b(reg), .b(value))
+        setRegister(.b(reg), UInt(value))
     }
     
     public func setRegister(_ reg: RegisterBoolean, o value: Bool) {
-        setRegister(.o(reg), .o(value))
+        setRegister(.o(reg), value ? 1 : 0)
     }
     
-    public func setRegister(_ reg: Register, _ value: TackValue) {
+    public func setRegister(_ reg: Register, _ value: UInt) {
         switch reg {
         case .sp, .fp:
             globalRegisters[reg] = value
             
-        case .ra, .w(_), .b(_), .o(_):
+        case .ra, .p(_), .w(_), .b(_), .o(_):
             registers[registers.count-1][reg] = value
         }
     }
@@ -266,55 +235,66 @@ public class TackVirtualMachine: NSObject {
         registers.removeLast()
     }
     
-    public func lw(address: Word) -> UInt16 {
-        return load(address: address).unwrap16!
+    public func loadp(address: Word) -> UInt16 {
+        let val = load(address: address)
+        return UInt16(val & 0xffff)
     }
     
-    public func lb(address: Word) -> UInt8 {
-        return load(address: address).unwrap8!
+    public func loadw(address: Word) -> UInt16 {
+        let val = load(address: address)
+        return UInt16(val & 0xffff)
     }
     
-    public func lo(address: Word) -> Bool {
-        return load(address: address).unwrapBool!
+    public func loadb(address: Word) -> UInt8 {
+        let val = load(address: address)
+        return UInt8(val & 0xff)
     }
     
-    public func load(address address_: Word) -> TackValue {
+    public func loado(address: Word) -> Bool {
+        let val = load(address: address)
+        return val != 0
+    }
+    
+    public func load(address address_: Word) -> UInt {
         let address = Int(address_)
         let pageMask = kPageSize-1
         let pageIndex = address & ~pageMask
         let pageOffset = address & pageMask
         if memoryPages[pageIndex] == nil {
-            memoryPages[pageIndex] = Array<TackValue>(repeating: .w(0), count: kPageSize)
+            memoryPages[pageIndex] = Array<UInt>(repeating: 0, count: kPageSize)
         }
         let result = memoryPages[pageIndex]![pageOffset]
         return result
     }
     
-    public func sw(w: UInt16, address: Word) {
-        store(value: .w(w), address: address)
+    public func store(p val: UInt16, address: Word) {
+        store(value: UInt(val), address: address)
     }
     
-    public func sb(b: UInt8, address: Word) {
-        store(value: .b(b), address: address)
+    public func store(w val: UInt16, address: Word) {
+        store(value: UInt(val), address: address)
     }
     
-    public func so(o: Bool, address: Word) {
-        store(value: .o(o), address: address)
+    public func store(b val: UInt8, address: Word) {
+        store(value: UInt(val), address: address)
     }
     
-    public func store(value: TackValue, address address_: Word) {
+    public func store(o val: Bool, address: Word) {
+        store(value: val ? 1 : 0, address: address)
+    }
+    
+    public func store(value: UInt, address address_: Word) {
         let address = Int(address_)
         if address == kMemoryMappedSerialOutputPort {
-            if let octet = value.unwrap8 {
-                onSerialOutput(octet)
-            }
+            let octet = UInt8(value & 0xff)
+            onSerialOutput(octet)
         }
         else {
             let pageMask = kPageSize-1
             let pageIndex = address & ~pageMask
             let pageOffset = address & pageMask
             if memoryPages[pageIndex] == nil {
-                memoryPages[pageIndex] = Array<TackValue>(repeating: .w(0), count: kPageSize)
+                memoryPages[pageIndex] = Array<UInt>(repeating: 0, count: kPageSize)
             }
             memoryPages[pageIndex]![pageOffset] = value
         }
@@ -389,6 +369,23 @@ public class TackVirtualMachine: NSObject {
             try lo(dst, address, offset)
         case .so(let src, let address, let offset):
             try so(src, address, offset)
+            
+        case .eqp(let dst, let left, let right):
+            try eqp(dst, left, right)
+        case .nep(let dst, let left, let right):
+            try nep(dst, left, right)
+        case .lip(let dst, let imm):
+            try lip(dst, imm)
+        case .addip(let dst, let left, let right):
+            try addip(dst, left, right)
+        case .subip(let dst, let left, let right):
+            try subip(dst, left, right)
+        case .addpw(let dst, let left, let right):
+            try addpw(dst, left, right)
+        case .lp(let dst, let address, let offset):
+            try lp(dst, address, offset)
+        case .sp(let src, let address, let offset):
+            try sp(src, address, offset)
             
         case .lw(let dst, let address, let offset):
             try lw(dst, address, offset)
@@ -513,6 +510,8 @@ public class TackVirtualMachine: NSObject {
             try movzwb(dst, src)
         case .movzbw(let dst, let src):
             try movzbw(dst, src)
+        case .bitcast(let dst, let src):
+            try bitcast(dst, src)
         }
         
         if !isHalted {
@@ -536,13 +535,13 @@ public class TackVirtualMachine: NSObject {
         guard let destination = program.labels[target] else {
             throw TackVirtualMachineError.undefinedLabel(target)
         }
-        setRegister(.ra, w: nextPc)
+        setRegister(.ra, p: nextPc)
         nextPc = Word(destination)
     }
     
     private func callptr(_ target: RegisterPointer) throws {
-        let destination = try getRegister(w: target)
-        setRegister(.ra, w: nextPc)
+        let destination = try getRegister(p: target)
+        setRegister(.ra, p: nextPc)
         nextPc = destination
     }
     
@@ -554,26 +553,26 @@ public class TackVirtualMachine: NSObject {
         }
         
         try pushRegisters()
-        let fp = try getRegister(w: .fp)
-        var sp = try getRegister(w: .sp)
+        let fp = try getRegister(p: .fp)
+        var sp = try getRegister(p: .sp)
         sp = sp &- kSizeOfSavedRegisters
-        sw(w: fp, address: sp)
-        setRegister(.fp, w: sp)
+        store(p: fp, address: sp)
+        setRegister(.fp, p: sp)
         sp = sp &- Word(numberOfWords)
-        setRegister(.sp, w: sp)
+        setRegister(.sp, p: sp)
     }
     
     private func leave() throws {
-        let fp = try getRegister(w: .fp)
+        let fp = try getRegister(p: .fp)
         var sp = fp
-        setRegister(.fp, w: lw(address: sp))
+        setRegister(.fp, p: loadp(address: sp))
         sp = sp &+ kSizeOfSavedRegisters
-        setRegister(.sp, w: sp)
+        setRegister(.sp, p: sp)
         try popRegisters()
     }
     
     private func ret() throws {
-        nextPc = try getRegister(w: .ra)
+        nextPc = try getRegister(p: .ra)
     }
     
     private func jmp(_ target: String) throws {
@@ -587,7 +586,7 @@ public class TackVirtualMachine: NSObject {
         guard let value = program.labels[label] else {
             throw TackVirtualMachineError.undefinedLabel(label)
         }
-        setRegister(dst, w: Word(value))
+        setRegister(dst, p: Word(value))
     }
     
     private func bz(_ test: RegisterBoolean, _ target: String) throws {
@@ -617,62 +616,66 @@ public class TackVirtualMachine: NSObject {
         }
     }
     
+    private func lp(_ dst: RegisterPointer, _ address: RegisterPointer, _ signedOffset: Int) throws {
+        let offset = intToWord(signedOffset)
+        let addressToAccess = try getRegister(p: address) &+ offset
+        let value = load(address: addressToAccess)
+        setRegister(.p(dst), value)
+    }
+    
     private func lw(_ dst: Register16, _ address: RegisterPointer, _ signedOffset: Int) throws {
         let offset = intToWord(signedOffset)
-        let addressToAccess = try getRegister(w: address) &+ offset
+        let addressToAccess = try getRegister(p: address) &+ offset
         let value = load(address: addressToAccess)
-        guard let word = value.unwrap16 else {
-            throw TackVirtualMachineError.memoryTypeError
-        }
-        setRegister(dst, w: word)
+        setRegister(.w(dst), value)
     }
     
     private func lb(_ dst: Register8, _ address: RegisterPointer, _ signedOffset: Int) throws {
         let offset = intToWord(signedOffset)
-        let addressToAccess = try getRegister(w: address) &+ offset
+        let addressToAccess = try getRegister(p: address) &+ offset
         let value = load(address: addressToAccess)
-        guard let octet = value.unwrap8 else {
-            throw TackVirtualMachineError.memoryTypeError
-        }
-        setRegister(dst, b: octet)
+        setRegister(.b(dst), value)
     }
     
     private func lo(_ dst: RegisterBoolean, _ address: RegisterPointer, _ signedOffset: Int) throws {
         let offset = intToWord(signedOffset)
-        let addressToAccess = try getRegister(w: address) &+ offset
+        let addressToAccess = try getRegister(p: address) &+ offset
         let value = load(address: addressToAccess)
-        guard let boolean = value.unwrapBool else {
-            throw TackVirtualMachineError.memoryTypeError
-        }
-
-        setRegister(dst, o: boolean)
+        setRegister(.o(dst), value)
+    }
+    
+    private func sp(_ src: RegisterPointer, _ address: RegisterPointer, _ signedOffset: Int) throws {
+        let offset = intToWord(signedOffset)
+        let addressToAccess = try getRegister(p: address) &+ offset
+        let value = try getRegister(p: src)
+        store(p: value, address: addressToAccess)
     }
     
     private func sw(_ src: Register16, _ address: RegisterPointer, _ signedOffset: Int) throws {
         let offset = intToWord(signedOffset)
-        let addressToAccess = try getRegister(w: address) &+ offset
+        let addressToAccess = try getRegister(p: address) &+ offset
         let value = try getRegister(w: src)
-        sw(w: value, address: addressToAccess)
+        store(w: value, address: addressToAccess)
     }
     
     private func sb(_ src: Register8, _ address: RegisterPointer, _ signedOffset: Int) throws {
         let offset = intToWord(signedOffset)
-        let addressToAccess = try getRegister(w: address) &+ offset
+        let addressToAccess = try getRegister(p: address) &+ offset
         let value = try getRegister(b: src)
-        sb(b: value, address: addressToAccess)
+        store(b: value, address: addressToAccess)
     }
     
     private func so(_ src: RegisterBoolean, _ address: RegisterPointer, _ signedOffset: Int) throws {
         let offset = intToWord(signedOffset)
-        let addressToAccess = try getRegister(w: address) &+ offset
+        let addressToAccess = try getRegister(p: address) &+ offset
         let value = try getRegister(o: src)
-        so(o: value, address: addressToAccess)
+        store(o: value, address: addressToAccess)
     }
     
     private func ststr(_ addressRegister: RegisterPointer, _ str: String) throws {
-        var address = try getRegister(w: addressRegister)
+        var address = try getRegister(p: addressRegister)
         for character in str.utf8 {
-            sb(b: character, address: address)
+            store(b: character, address: address)
             address = address &+ 1
         }
     }
@@ -682,8 +685,8 @@ public class TackVirtualMachine: NSObject {
             throw TackVirtualMachineError.invalidArgument
         }
         
-        var dst = try getRegister(w: dstRegister)
-        var src = try getRegister(w: srcRegister)
+        var dst = try getRegister(p: dstRegister)
+        var src = try getRegister(p: srcRegister)
         for _ in 0..<count {
             let word = load(address: src)
             store(value: word, address: dst)
@@ -697,10 +700,10 @@ public class TackVirtualMachine: NSObject {
             throw TackVirtualMachineError.invalidArgument
         }
         
-        var sp = try getRegister(w: .sp)
+        var sp = try getRegister(p: .sp)
         sp = sp &- Word(count)
-        setRegister(.sp, w: sp)
-        setRegister(dst, w: sp)
+        setRegister(.sp, p: sp)
+        setRegister(dst, p: sp)
     }
     
     private func free(_ count: Int) throws {
@@ -708,9 +711,9 @@ public class TackVirtualMachine: NSObject {
             throw TackVirtualMachineError.invalidArgument
         }
         
-        var sp = try getRegister(w: .sp)
+        var sp = try getRegister(p: .sp)
         sp = sp &+ Word(count)
-        setRegister(.sp, w: sp)
+        setRegister(.sp, p: sp)
     }
     
     private func not(_ dst: RegisterBoolean, _ src: RegisterBoolean) throws {
@@ -761,6 +764,13 @@ public class TackVirtualMachine: NSObject {
         setRegister(dst, w: imm)
     }
     
+    private func lip(_ dst: RegisterPointer, _ imm: Int) throws {
+        guard imm >= 0 && imm <= UInt16.max else {
+            throw TackVirtualMachineError.invalidArgument
+        }
+        setRegister(dst, p: Word(imm))
+    }
+    
     private func liuw(_ dst: Register16, _ imm: Int) throws {
         guard imm >= 0 && imm <= UInt16.max else {
             throw TackVirtualMachineError.invalidArgument
@@ -793,6 +803,13 @@ public class TackVirtualMachine: NSObject {
         let src = try getRegister(w: srcRegister)
         let result = ~src
         setRegister(dst, w: result)
+    }
+    
+    private func addpw(_ dst: RegisterPointer, _ leftRegister: RegisterPointer, _ rightRegister: Register16) throws {
+        let left = try getRegister(p: leftRegister)
+        let right = try getRegister(w: rightRegister)
+        let result = left &+ right
+        setRegister(dst, p: result)
     }
     
     private func addw(_ dst: Register16, _ leftRegister: Register16, _ rightRegister: Register16) throws {
@@ -858,6 +875,20 @@ public class TackVirtualMachine: NSObject {
         let right = try getRegister(w: rightRegister)
         let result = (left >> right)
         setRegister(dst, w: result)
+    }
+    
+    private func eqp(_ dst: RegisterBoolean, _ leftRegister: RegisterPointer, _ rightRegister: RegisterPointer) throws {
+        let left = try getRegister(p: leftRegister)
+        let right = try getRegister(p: rightRegister)
+        let result = (left == right)
+        setRegister(dst, o: result)
+    }
+    
+    private func nep(_ dst: RegisterBoolean, _ leftRegister: RegisterPointer, _ rightRegister: RegisterPointer) throws {
+        let left = try getRegister(p: leftRegister)
+        let right = try getRegister(p: rightRegister)
+        let result = (left != right)
+        setRegister(dst, o: result)
     }
     
     private func eqo(_ dst: RegisterBoolean, _ leftRegister: RegisterBoolean, _ rightRegister: RegisterBoolean) throws {
@@ -1145,6 +1176,10 @@ public class TackVirtualMachine: NSObject {
         setRegister(dst, b: result)
     }
     
+    private func bitcast(_ dst: Register, _ src: Register) throws {
+        setRegister(dst, try getRegister(src))
+    }
+    
     private func inlineAssembly(_ asm: String) throws {
         switch asm {
         case "HLT":
@@ -1160,11 +1195,11 @@ public class TackVirtualMachine: NSObject {
         }
     }
     
-    private func syscall(_ n_: Register16, _ ptr_: RegisterPointer) throws {
-        let n = Int(lw(address: try getRegister(w: n_)))
-        let ptr = lw(address: try getRegister(w: ptr_))
+    private func syscall(_ n_: RegisterPointer, _ ptr_: RegisterPointer) throws {
+        let n = loadp(address: try getRegister(p: n_))
+        let ptr = loadp(address: try getRegister(p: ptr_))
         
-        switch Syscall(rawValue: n) {
+        switch Syscall(rawValue: Int(n)) {
         case .invalid, .none:
             try breakPoint()
             
@@ -1182,11 +1217,25 @@ public class TackVirtualMachine: NSObject {
     
     private func getc(_ ptr: Word) {
         let octet = onSerialInput()
-        sb(b: octet, address: ptr)
+        store(b: octet, address: ptr)
     }
     
     private func putc(_ ptr: Word) {
-        let octet = lb(address: ptr)
+        let octet = loadb(address: ptr)
         onSerialOutput(octet)
+    }
+    
+    private func addip(_ dst: RegisterPointer, _ left: RegisterPointer, _ right_: Int) throws {
+        let right = signExtend16(intToWord(right_))
+        var r = try getRegister(p: left)
+        r = signExtend16(r &+ right)
+        setRegister(dst, p: r)
+    }
+    
+    private func subip(_ dst: RegisterPointer, _ left: RegisterPointer, _ right_: Int) throws {
+        let right = signExtend16(intToWord(right_))
+        var r = try getRegister(p: left)
+        r = signExtend16(r &- right)
+        setRegister(dst, p: r)
     }
 }

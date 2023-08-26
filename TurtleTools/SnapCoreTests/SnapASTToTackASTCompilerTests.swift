@@ -12,6 +12,9 @@ import TurtleCore
 import Turtle16SimulatorCore
 
 
+#warning("TODO: I'm in the middle of adding a new register type for pointers. This requires many changes to unit tests. These need to have an Int backing type in the virtual machine instead of UInt16. Also, add unit tests for all new Tack instructions I've had to add in support of this change.")
+
+
 let kSliceName = "Slice"
 let kSliceBase = "base"
 let kSliceBaseAddressOffset = 0
@@ -199,12 +202,12 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let arrType = Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))
         let actual = try compiler.rvalue(expr: Expression.LiteralArray(arrayType: arrType, elements: [Expression.LiteralInt(42)]))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 272)),
+            TackInstructionNode(.lip(.p(0), 272)),
             TackInstructionNode(.liuw(.w(1), 42)),
-            TackInstructionNode(.sw(.w(1), .w(0), 0))
+            TackInstructionNode(.sw(.w(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
     }
 
     func testRvalue_LiteralArray_non_primitive_type() throws {
@@ -215,28 +218,28 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
             Expression.LiteralArray(arrayType: inner, elements: [Expression.LiteralInt(42)])
         ]))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 272)),
+            TackInstructionNode(.lip(.p(0), 272)),
             TackInstructionNode(.liuw(.w(1), 0)),
-            TackInstructionNode(.addw(.w(2), .w(1), .w(0))),
-            TackInstructionNode(.liuw(.w(3), 273)),
+            TackInstructionNode(.addpw(.p(2), .p(0), .w(1))),
+            TackInstructionNode(.lip(.p(3), 273)),
             TackInstructionNode(.liuw(.w(4), 42)),
-            TackInstructionNode(.sw(.w(4), .w(3), 0)),
-            TackInstructionNode(.memcpy(.w(2), .w(3), 1)),
-            TackInstructionNode(.liuw(.w(5), 272))
+            TackInstructionNode(.sw(.w(4), .p(3), 0)),
+            TackInstructionNode(.memcpy(.p(2), .p(3), 1)),
+            TackInstructionNode(.lip(.p(5), 272))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(5)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(5)))
     }
 
     func testRvalue_LiteralString() throws {
         let compiler = makeCompiler()
         let actual = try compiler.rvalue(expr: Expression.LiteralString("a"))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 272)),
-            TackInstructionNode(.ststr(.w(0), "a"))
+            TackInstructionNode(.lip(.p(0), 272)),
+            TackInstructionNode(.ststr(.p(0), "a"))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
     }
 
     func testRvalue_StructInitializer() throws {
@@ -250,18 +253,18 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
                                                   expr: Expression.LiteralInt(0xffff))
         ]))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 272)),
-            TackInstructionNode(.addiw(.w(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 272)),
+            TackInstructionNode(.addip(.p(1), .p(0), 0)),
             TackInstructionNode(.liuw(.w(2), 0xabcd)),
-            TackInstructionNode(.sw(.w(2), .w(1), 0)),
-            TackInstructionNode(.liuw(.w(3), 272)),
-            TackInstructionNode(.addiw(.w(4), .w(3), 1)),
+            TackInstructionNode(.sw(.w(2), .p(1), 0)),
+            TackInstructionNode(.lip(.p(3), 272)),
+            TackInstructionNode(.addip(.p(4), .p(3), 1)),
             TackInstructionNode(.liuw(.w(5), 0xffff)),
-            TackInstructionNode(.sw(.w(5), .w(4), 0)),
-            TackInstructionNode(.liuw(.w(6), 272))
+            TackInstructionNode(.sw(.w(5), .p(4), 0)),
+            TackInstructionNode(.lip(.p(6), 272))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(6)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(6)))
     }
 
     func testRvalue_Identifier_Static_u16() throws {
@@ -271,8 +274,8 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         ]))
         let actual = try compiler.rvalue(expr: Expression.Identifier("foo"))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), offset)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0))
+            TackInstructionNode(.lip(.p(0), offset)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
@@ -287,8 +290,8 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Identifier("foo"))
         let expected = Seq(children: [
-            TackInstructionNode(.subiw(.w(0), .fp, offset)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0))
+            TackInstructionNode(.subip(.p(0), .fp, offset)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
@@ -300,9 +303,9 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
             ("foo", Symbol(type: kSliceType, offset: offset, storage: .staticStorage))
         ]))
         let actual = try compiler.rvalue(expr: Expression.Identifier("foo"))
-        let expected = TackInstructionNode(.liuw(.w(0), offset))
+        let expected = TackInstructionNode(.lip(.p(0), offset))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
     }
 
     func testRvalue_As_u8_to_u8() throws {
@@ -314,8 +317,8 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8)))))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.lb(.b(1), .w(0), 0))
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(1)))
@@ -330,8 +333,8 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.lb(.b(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.movzwb(.w(2), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -347,8 +350,8 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8)))))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.movzbw(.b(2), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -364,8 +367,8 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.i16)))))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.lb(.b(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.movzwb(.w(2), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -381,8 +384,8 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.i8)))))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.movsbw(.b(2), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -398,8 +401,8 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.i16)))))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.lb(.b(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.movswb(.w(2), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -413,9 +416,9 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))))
-        let expected = TackInstructionNode(.liuw(.w(0), 0xabcd))
+        let expected = TackInstructionNode(.lip(.p(0), 0xabcd))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
     }
 
     func testRvalue_As_array_to_array_with_different_type_that_can_be_trivially_reinterpreted() throws {
@@ -425,9 +428,9 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.ArrayType(count: Expression.LiteralInt(0), elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))))
-        let expected = TackInstructionNode(.liuw(.w(0), 0xabcd))
+        let expected = TackInstructionNode(.lip(.p(0), 0xabcd))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
     }
 
     func testRvalue_As_array_to_array_where_each_element_must_be_converted() throws {
@@ -438,19 +441,19 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 272)),
+            TackInstructionNode(.lip(.p(0), 272)),
             TackInstructionNode(.liuw(.w(1), 0)),
-            TackInstructionNode(.addw(.w(2), .w(1), .w(0))),
-            TackInstructionNode(.liuw(.w(3), 0x1000)),
+            TackInstructionNode(.addpw(.p(2), .p(0), .w(1))),
+            TackInstructionNode(.lip(.p(3), 0x1000)),
             TackInstructionNode(.liuw(.w(4), 0)),
-            TackInstructionNode(.addw(.w(5), .w(4), .w(3))),
-            TackInstructionNode(.lw(.w(6), .w(5), 0)),
+            TackInstructionNode(.addpw(.p(5), .p(3), .w(4))),
+            TackInstructionNode(.lw(.w(6), .p(5), 0)),
             TackInstructionNode(.movzbw(.b(7), .w(6))),
-            TackInstructionNode(.sb(.b(7), .w(2), 0)),
-            TackInstructionNode(.liuw(.w(8), 272))
+            TackInstructionNode(.sb(.b(7), .p(2), 0)),
+            TackInstructionNode(.lip(.p(8), 272))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(8)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(8)))
     }
 
     func testRvalue_As_array_to_dynamic_array() throws {
@@ -460,14 +463,14 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 272)),
-            TackInstructionNode(.liuw(.w(1), 0x1000)),
-            TackInstructionNode(.sw(.w(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 272)),
+            TackInstructionNode(.lip(.p(1), 0x1000)),
+            TackInstructionNode(.sp(.p(1), .p(0), 0)),
             TackInstructionNode(.liuw(.w(2), 1)),
-            TackInstructionNode(.sw(.w(2), .w(0), 1))
+            TackInstructionNode(.sw(.w(2), .p(0), 1))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
     }
 
     func testRvalue_As_literal_array_to_dynamic_array() throws {
@@ -475,16 +478,16 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let arr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))), elements: [Expression.LiteralInt(1)])
         let actual = try compiler.rvalue(expr: Expression.As(expr: arr, targetType: Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 272)),
-            TackInstructionNode(.liuw(.w(1), 274)),
+            TackInstructionNode(.lip(.p(0), 272)),
+            TackInstructionNode(.lip(.p(1), 274)),
             TackInstructionNode(.liuw(.w(2), 1)),
-            TackInstructionNode(.sw(.w(2), .w(1), 0)),
-            TackInstructionNode(.sw(.w(1), .w(0), 0)),
+            TackInstructionNode(.sw(.w(2), .p(1), 0)),
+            TackInstructionNode(.sp(.p(1), .p(0), 0)),
             TackInstructionNode(.liuw(.w(3), 1)),
-            TackInstructionNode(.sw(.w(3), .w(0), 1))
+            TackInstructionNode(.sw(.w(3), .p(0), 1))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
     }
 
     func testRvalue_As_compTimeInt_small() throws {
@@ -548,11 +551,11 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PointerType(Expression.PrimitiveType(.arithmeticType(.immutableInt(.u16))))))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0))
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.lp(.p(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(1)))
     }
 
     func testRvalue_As_union_to_union() throws {
@@ -563,9 +566,9 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.UnionType([Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))])))
-        let expected = TackInstructionNode(.liuw(.w(0), 0xabcd))
+        let expected = TackInstructionNode(.lip(.p(0), 0xabcd))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
     }
 
     func testRvalue_As_union_to_primitive() throws {
@@ -577,8 +580,8 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.lw(.w(1), .w(0), 1))
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.lw(.w(1), .p(0), 1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
@@ -593,11 +596,11 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.addiw(.w(1), .w(0), 1))
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.addip(.p(1), .p(0), 1))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(1)))
     }
 
     func testRvalue_As_convert_primitive_value_to_union() throws {
@@ -608,15 +611,15 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))])))
         let expected = Seq(children: [
-            TackInstructionNode(.subiw(.w(0), .fp, 2)),
+            TackInstructionNode(.subip(.p(0), .fp, 2)),
             TackInstructionNode(.liuw(.w(1), 0)),
-            TackInstructionNode(.sw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 0xabcd)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
-            TackInstructionNode(.sw(.w(3), .w(0), 1))
+            TackInstructionNode(.sw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 0xabcd)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
+            TackInstructionNode(.sw(.w(3), .p(0), 1))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
     }
 
     func testRvalue_As_determine_union_type_tag() throws {
@@ -627,15 +630,15 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.PrimitiveType(.bool(.mutableBool)), Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))])))
         let expected = Seq(children: [
-            TackInstructionNode(.subiw(.w(0), .fp, 2)),
+            TackInstructionNode(.subip(.p(0), .fp, 2)),
             TackInstructionNode(.liuw(.w(1), 1)),
-            TackInstructionNode(.sw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 0xabcd)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
-            TackInstructionNode(.sw(.w(3), .w(0), 1))
+            TackInstructionNode(.sw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 0xabcd)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
+            TackInstructionNode(.sw(.w(3), .p(0), 1))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
     }
 
     func testRvalue_As_convert_non_primitive_value_to_union() throws {
@@ -646,15 +649,15 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.ArrayType(count: Expression.LiteralInt(2), elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))])))
         let expected = Seq(children: [
-            TackInstructionNode(.subiw(.w(0), .fp, 3)),
+            TackInstructionNode(.subip(.p(0), .fp, 3)),
             TackInstructionNode(.liuw(.w(1), 0)),
-            TackInstructionNode(.sw(.w(1), .w(0), 0)),
-            TackInstructionNode(.addiw(.w(2), .w(0), 1)),
-            TackInstructionNode(.liuw(.w(3), 0xabcd)),
-            TackInstructionNode(.memcpy(.w(2), .w(3), 2))
+            TackInstructionNode(.sw(.w(1), .p(0), 0)),
+            TackInstructionNode(.addip(.p(2), .p(0), 1)),
+            TackInstructionNode(.lip(.p(3), 0xabcd)),
+            TackInstructionNode(.memcpy(.p(2), .p(3), 2))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
     }
 
     func testRvalue_As_union_to_primitive_with_dynamic_type_check() throws {
@@ -666,13 +669,13 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.subiw(.w(2), .w(1), 1)),
             TackInstructionNode(.bzw(.w(2), ".L0")),
             TackInstructionNode(.call("__oob")),
             LabelDeclaration(identifier: ".L0"),
-            TackInstructionNode(.lw(.w(3), .w(0), 1))
+            TackInstructionNode(.lw(.w(3), .p(0), 1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(3)))
@@ -687,11 +690,12 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Bitcast(expr: Expression.Identifier("foo"),
                                                                   targetType: Expression.PointerType(Expression.PrimitiveType(.arithmeticType(.immutableInt(.u16))))))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0))
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.bitcast(.p(.p(2)), .w(.w(1))))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(2)))
     }
 
     func testRvalue_Group() throws {
@@ -709,8 +713,8 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .minus, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 100)),
-            TackInstructionNode(.lb(.b(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 100)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.liub(.b(2), 0)),
             TackInstructionNode(.subb(.b(3), .b(2), .b(1)))
         ])
@@ -725,8 +729,8 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .minus, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 100)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 100)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.liuw(.w(2), 0)),
             TackInstructionNode(.subw(.w(3), .w(2), .w(1)))
         ])
@@ -741,8 +745,8 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .minus, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 100)),
-            TackInstructionNode(.lb(.b(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 100)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.liub(.b(2), 0)),
             TackInstructionNode(.subb(.b(3), .b(2), .b(1)))
         ])
@@ -757,8 +761,8 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .minus, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 100)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 100)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.liuw(.w(2), 0)),
             TackInstructionNode(.subw(.w(3), .w(2), .w(1)))
         ])
@@ -773,8 +777,8 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .bang, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 100)),
-            TackInstructionNode(.lo(.o(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 100)),
+            TackInstructionNode(.lo(.o(1), .p(0), 0)),
             TackInstructionNode(.not(.o(2), .o(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -788,8 +792,8 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .tilde, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 100)),
-            TackInstructionNode(.lb(.b(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 100)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.negb(.b(2), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -803,8 +807,8 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .tilde, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 100)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 100)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.negw(.w(2), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -818,8 +822,8 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .tilde, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 100)),
-            TackInstructionNode(.lb(.b(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 100)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0)),
             TackInstructionNode(.negb(.b(2), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -833,8 +837,8 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .tilde, expression: Expression.Identifier("foo")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 100)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 100)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
             TackInstructionNode(.negw(.w(2), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -847,9 +851,9 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .ampersand, expression: Expression.Identifier("foo")))
-        let expected = TackInstructionNode(.la(.w(0), "foo"))
+        let expected = TackInstructionNode(.la(.p(0), "foo"))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
     }
 
     func testRvalue_Unary_addressOf_Identifier() throws {
@@ -858,9 +862,9 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .ampersand, expression: Expression.Identifier("foo")))
-        let expected = TackInstructionNode(.liuw(.w(0), 100))
+        let expected = TackInstructionNode(.lip(.p(0), 100))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
     }
 
     func testRvalue_Binary_addw() throws {
@@ -871,10 +875,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .plus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
             TackInstructionNode(.addw(.w(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -889,10 +893,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .minus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
             TackInstructionNode(.subw(.w(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -907,10 +911,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .star, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
             TackInstructionNode(.mulw(.w(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -925,10 +929,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
             TackInstructionNode(.divw(.w(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -943,10 +947,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
             TackInstructionNode(.divuw(.w(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -961,10 +965,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .modulus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
             TackInstructionNode(.modw(.w(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -979,10 +983,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .leftDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
             TackInstructionNode(.lslw(.w(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -997,10 +1001,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .rightDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
             TackInstructionNode(.lsrw(.w(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1015,10 +1019,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ampersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
             TackInstructionNode(.andw(.w(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1033,10 +1037,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .pipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
             TackInstructionNode(.orw(.w(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1051,10 +1055,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .caret, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
             TackInstructionNode(.xorw(.w(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1069,10 +1073,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
             TackInstructionNode(.eqw(.o(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1087,10 +1091,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
             TackInstructionNode(.new(.o(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1105,10 +1109,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .lt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
             TackInstructionNode(.ltw(.o(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1123,10 +1127,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ge, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
             TackInstructionNode(.gew(.o(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1141,10 +1145,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .le, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
             TackInstructionNode(.lew(.o(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1159,10 +1163,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .gt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
             TackInstructionNode(.gtw(.o(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1177,10 +1181,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .lt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
             TackInstructionNode(.ltuw(.o(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1195,10 +1199,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ge, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
             TackInstructionNode(.geuw(.o(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1213,10 +1217,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .le, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
             TackInstructionNode(.leuw(.o(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1231,10 +1235,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .gt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
             TackInstructionNode(.gtuw(.o(4), .w(3), .w(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1249,10 +1253,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .plus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lb(.b(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lb(.b(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lb(.b(3), .p(2), 0)),
             TackInstructionNode(.addb(.b(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1267,10 +1271,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .minus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lb(.b(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lb(.b(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lb(.b(3), .p(2), 0)),
             TackInstructionNode(.subb(.b(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1285,10 +1289,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .star, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lb(.b(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lb(.b(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lb(.b(3), .p(2), 0)),
             TackInstructionNode(.mulb(.b(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1303,10 +1307,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lb(.b(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lb(.b(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lb(.b(3), .p(2), 0)),
             TackInstructionNode(.divb(.b(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1321,10 +1325,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lb(.b(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lb(.b(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lb(.b(3), .p(2), 0)),
             TackInstructionNode(.divub(.b(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1339,10 +1343,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .modulus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lb(.b(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lb(.b(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lb(.b(3), .p(2), 0)),
             TackInstructionNode(.modb(.b(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1357,10 +1361,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .leftDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lb(.b(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lb(.b(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lb(.b(3), .p(2), 0)),
             TackInstructionNode(.lslb(.b(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1375,10 +1379,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .rightDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lb(.b(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lb(.b(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lb(.b(3), .p(2), 0)),
             TackInstructionNode(.lsrb(.b(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1393,10 +1397,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ampersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lb(.b(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lb(.b(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lb(.b(3), .p(2), 0)),
             TackInstructionNode(.andb(.b(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1411,10 +1415,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .pipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lb(.b(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lb(.b(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lb(.b(3), .p(2), 0)),
             TackInstructionNode(.orb(.b(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1429,10 +1433,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .caret, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lb(.b(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lb(.b(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lb(.b(3), .p(2), 0)),
             TackInstructionNode(.xorb(.b(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1447,10 +1451,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lb(.b(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lb(.b(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lb(.b(3), .p(2), 0)),
             TackInstructionNode(.eqb(.o(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1465,10 +1469,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lb(.b(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lb(.b(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lb(.b(3), .p(2), 0)),
             TackInstructionNode(.neb(.o(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1483,10 +1487,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .lt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lb(.b(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lb(.b(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lb(.b(3), .p(2), 0)),
             TackInstructionNode(.ltub(.o(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1501,10 +1505,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ge, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lb(.b(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lb(.b(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lb(.b(3), .p(2), 0)),
             TackInstructionNode(.geub(.o(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1519,10 +1523,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .le, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lb(.b(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lb(.b(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lb(.b(3), .p(2), 0)),
             TackInstructionNode(.leub(.o(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1537,10 +1541,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .gt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lb(.b(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lb(.b(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lb(.b(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lb(.b(3), .p(2), 0)),
             TackInstructionNode(.gtub(.o(4), .b(3), .b(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1747,10 +1751,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lo(.o(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lo(.o(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lo(.o(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lo(.o(3), .p(2), 0)),
             TackInstructionNode(.eqo(.o(4), .o(3), .o(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1765,10 +1769,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 200)),
-            TackInstructionNode(.lo(.o(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 100)),
-            TackInstructionNode(.lo(.o(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(0), 200)),
+            TackInstructionNode(.lo(.o(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 100)),
+            TackInstructionNode(.lo(.o(3), .p(2), 0)),
             TackInstructionNode(.neo(.o(4), .o(3), .o(1)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1783,11 +1787,11 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .doubleAmpersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 100)),
-            TackInstructionNode(.lo(.o(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 100)),
+            TackInstructionNode(.lo(.o(1), .p(0), 0)),
             TackInstructionNode(.bz(.o(1), ".L0")),
-            TackInstructionNode(.liuw(.w(2), 200)),
-            TackInstructionNode(.lo(.o(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(2), 200)),
+            TackInstructionNode(.lo(.o(3), .p(2), 0)),
             TackInstructionNode(.bz(.o(3), ".L0")),
             TackInstructionNode(.lio(.o(4), true)),
             TackInstructionNode(.jmp(".L1")),
@@ -1807,11 +1811,11 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Binary(op: .doublePipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 100)),
-            TackInstructionNode(.lo(.o(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 100)),
+            TackInstructionNode(.lo(.o(1), .p(0), 0)),
             TackInstructionNode(.bnz(.o(1), ".L0")),
-            TackInstructionNode(.liuw(.w(2), 200)),
-            TackInstructionNode(.lo(.o(3), .w(2), 0)),
+            TackInstructionNode(.lip(.p(2), 200)),
+            TackInstructionNode(.lo(.o(3), .p(2), 0)),
             TackInstructionNode(.bnz(.o(3), ".L0")),
             TackInstructionNode(.lio(.o(4), false)),
             TackInstructionNode(.jmp(".L1")),
@@ -1890,8 +1894,8 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Is(expr: Expression.Identifier("foo"), testType: Expression.PrimitiveType(.bool(.mutableBool))))
         let expected = Seq(children: [
             TackInstructionNode(.liw(.w(0), 1)),
-            TackInstructionNode(.liuw(.w(1), 100)),
-            TackInstructionNode(.lw(.w(2), .w(1), 0)),
+            TackInstructionNode(.lip(.p(1), 100)),
+            TackInstructionNode(.lw(.w(2), .p(1), 0)),
             TackInstructionNode(.eqw(.o(3), .w(2), .w(0)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1906,8 +1910,8 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Is(expr: Expression.Identifier("foo"), testType: Expression.PrimitiveType(.bool(.mutableBool))))
         let expected = Seq(children: [
             TackInstructionNode(.liw(.w(0), 1)),
-            TackInstructionNode(.liuw(.w(1), 100)),
-            TackInstructionNode(.lw(.w(2), .w(1), 0)),
+            TackInstructionNode(.lip(.p(1), 100)),
+            TackInstructionNode(.lw(.w(2), .p(1), 0)),
             TackInstructionNode(.eqw(.o(3), .w(2), .w(0)))
         ])
         XCTAssertEqual(actual, expected)
@@ -1922,9 +1926,9 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
                                                                      rexpr: Expression.LiteralInt(42)))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0x1000)),
+            TackInstructionNode(.lip(.p(0), 0x1000)),
             TackInstructionNode(.liuw(.w(1), 42)),
-            TackInstructionNode(.sw(.w(1), .w(0), 0))
+            TackInstructionNode(.sw(.w(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
@@ -1938,9 +1942,9 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
                                                                      rexpr: Expression.Identifier("bar")))
-        let expected = TackInstructionNode(.liuw(.w(0), 0x1000))
+        let expected = TackInstructionNode(.lip(.p(0), 0x1000))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
     }
 
     func testRvalue_Assignment_ArrayToArray_Size_1() throws {
@@ -1952,12 +1956,12 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
                                                                      rexpr: Expression.Identifier("bar")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0x1000)),
-            TackInstructionNode(.liuw(.w(1), 0x2000)),
-            TackInstructionNode(.memcpy(.w(0), .w(1), 1))
+            TackInstructionNode(.lip(.p(0), 0x1000)),
+            TackInstructionNode(.lip(.p(1), 0x2000)),
+            TackInstructionNode(.memcpy(.p(0), .p(1), 1))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(1)))
     }
 
     func testRvalue_Assignment_ArrayToArray_Size_2() throws {
@@ -1969,12 +1973,12 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
                                                                      rexpr: Expression.Identifier("bar")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0x1000)),
-            TackInstructionNode(.liuw(.w(1), 0x2000)),
-            TackInstructionNode(.memcpy(.w(0), .w(1), 2))
+            TackInstructionNode(.lip(.p(0), 0x1000)),
+            TackInstructionNode(.lip(.p(1), 0x2000)),
+            TackInstructionNode(.memcpy(.p(0), .p(1), 2))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(1)))
     }
 
     func testRvalue_SubscriptRvalue_CompileTimeIndexAndPrimitiveElement() throws {
@@ -1985,10 +1989,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: Expression.LiteralInt(9)))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.liuw(.w(1), 9)),
-            TackInstructionNode(.addw(.w(2), .w(1), .w(0))),
-            TackInstructionNode(.lw(.w(3), .w(2), 0))
+            TackInstructionNode(.addpw(.p(2), .p(0), .w(1))),
+            TackInstructionNode(.lw(.w(3), .p(2), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(3)))
@@ -2002,7 +2006,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.liuw(.w(1), 9)),
             TackInstructionNode(.liw(.w(2), 0)),
             TackInstructionNode(.gew(.o(3), .w(1), .w(2))),
@@ -2014,8 +2018,8 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
             TackInstructionNode(.bnz(.o(5), ".L1")),
             TackInstructionNode(.call("__oob")),
             LabelDeclaration(identifier: ".L1"),
-            TackInstructionNode(.addw(.w(6), .w(1), .w(0))),
-            TackInstructionNode(.lw(.w(7), .w(6), 0))
+            TackInstructionNode(.addpw(.p(6), .p(0), .w(1))),
+            TackInstructionNode(.lw(.w(7), .p(6), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(7)))
@@ -2029,8 +2033,8 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0))
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
@@ -2044,7 +2048,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.liuw(.w(1), 9)),
             TackInstructionNode(.liw(.w(2), 0)),
             TackInstructionNode(.gew(.o(3), .w(1), .w(2))),
@@ -2057,10 +2061,10 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
             TackInstructionNode(.call("__oob")),
             LabelDeclaration(identifier: ".L1"),
             TackInstructionNode(.mulib(.w(6), .w(1), 2)),
-            TackInstructionNode(.addw(.w(7), .w(6), .w(0)))
+            TackInstructionNode(.addpw(.p(7), .p(0), .w(6)))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(7)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(7)))
     }
 
     func testRvalue_SubscriptRvalue_DynamicArray() throws {
@@ -2071,21 +2075,21 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.lp(.p(1), .p(0), 0)),
             TackInstructionNode(.liuw(.w(2), 9)),
             TackInstructionNode(.liw(.w(3), 0)),
             TackInstructionNode(.gew(.o(4), .w(2), .w(3))),
             TackInstructionNode(.bnz(.o(4), ".L0")),
             TackInstructionNode(.call("__oob")),
             LabelDeclaration(identifier: ".L0"),
-            TackInstructionNode(.lw(.w(5), .w(0), 1)),
+            TackInstructionNode(.lw(.w(5), .p(0), 1)),
             TackInstructionNode(.ltw(.o(6), .w(2), .w(5))),
             TackInstructionNode(.bnz(.o(6), ".L1")),
             TackInstructionNode(.call("__oob")),
             LabelDeclaration(identifier: ".L1"),
-            TackInstructionNode(.addw(.w(7), .w(2), .w(1))),
-            TackInstructionNode(.lw(.w(8), .w(7), 0))
+            TackInstructionNode(.addpw(.p(7), .p(1), .w(2))),
+            TackInstructionNode(.lw(.w(8), .p(7), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(8)))
@@ -2150,11 +2154,11 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
             rexpr: Expression.LiteralInt(42))
         )
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0x1000)),
+            TackInstructionNode(.lip(.p(0), 0x1000)),
             TackInstructionNode(.liuw(.w(1), 9)),
-            TackInstructionNode(.addw(.w(2), .w(1), .w(0))),
+            TackInstructionNode(.addpw(.p(2), .p(0), .w(1))),
             TackInstructionNode(.liuw(.w(3), 42)),
-            TackInstructionNode(.sw(.w(3), .w(2), 0))
+            TackInstructionNode(.sw(.w(3), .p(2), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(3)))
@@ -2169,12 +2173,12 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
                                                                      rexpr: Expression.Identifier("bar")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0x1000)),
-            TackInstructionNode(.liuw(.w(1), 0x2000)),
-            TackInstructionNode(.sw(.w(1), .w(0), 0))
+            TackInstructionNode(.lip(.p(0), 0x1000)),
+            TackInstructionNode(.lip(.p(1), 0x2000)),
+            TackInstructionNode(.sp(.p(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(1)))
     }
 
     func testRvalue_Assignment_automatic_conversion_from_object_to_pointer_requires_lvalue() throws {
@@ -2211,12 +2215,12 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
                                                                      rexpr: Expression.Identifier("bar")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0x1000)),
-            TackInstructionNode(.liuw(.w(1), 0x2000)),
-            TackInstructionNode(.sw(.w(1), .w(0), 0))
+            TackInstructionNode(.lip(.p(0), 0x1000)),
+            TackInstructionNode(.lip(.p(1), 0x2000)),
+            TackInstructionNode(.sp(.p(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(1)))
     }
 
     func testRvalue_Get_array_count() throws {
@@ -2241,8 +2245,8 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("count")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.lw(.w(1), .w(0), 1))
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.lw(.w(1), .p(0), 1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
@@ -2257,8 +2261,8 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("count")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.lw(.w(1), .w(0), 1))
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.lw(.w(1), .p(0), 1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
@@ -2277,11 +2281,11 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("baz")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.addiw(.w(1), .w(0), 1))
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.addip(.p(1), .p(0), 1))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(1)))
     }
 
     func testRvalue_Get_pointee_primitive() throws {
@@ -2293,9 +2297,9 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("pointee")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.lw(.w(2), .w(1), 0))
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.lp(.p(1), .p(0), 0)),
+            TackInstructionNode(.lw(.w(2), .p(1), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(2)))
@@ -2310,11 +2314,11 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.lvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("pointee")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0))
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.lp(.p(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(1)))
     }
 
     func testLvalue_Bitcast() throws {
@@ -2325,11 +2329,11 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.lvalue(expr: Expression.Bitcast(expr: Expression.Get(expr: Expression.Identifier("foo"), member: Expression.Identifier("pointee")), targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8)))))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0))
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.lp(.p(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(1)))
     }
 
     func testRvalue_Get_pointee_not_primitive() throws {
@@ -2341,11 +2345,11 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("pointee")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0))
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.lp(.p(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(1)))
     }
 
     func testRvalue_Get_array_count_via_pointer() throws {
@@ -2370,9 +2374,9 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("count")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.lw(.w(2), .w(1), 1))
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.lp(.p(1), .p(0), 0)),
+            TackInstructionNode(.lw(.w(2), .p(1), 1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(2)))
@@ -2387,9 +2391,9 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("count")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.lw(.w(2), .w(1), 1))
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.lp(.p(1), .p(0), 0)),
+            TackInstructionNode(.lw(.w(2), .p(1), 1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(2)))
@@ -2408,12 +2412,12 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("baz")))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.addiw(.w(2), .w(1), 1))
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.lp(.p(1), .p(0), 0)),
+            TackInstructionNode(.addip(.p(2), .p(1), 1))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(2)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(2)))
     }
 
     func testRvalue_Call_no_return_no_args() throws {
@@ -2434,13 +2438,13 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: []))
         let expected = Seq(children: [
-            TackInstructionNode(.alloca(.w(0), 1)),
+            TackInstructionNode(.alloca(.p(0), 1)),
             TackInstructionNode(.call("foo")),
-            TackInstructionNode(.subiw(.w(1), .fp, 1)),
-            TackInstructionNode(.memcpy(.w(1), .w(0), 1)),
+            TackInstructionNode(.subip(.p(1), .fp, 1)),
+            TackInstructionNode(.memcpy(.p(1), .p(0), 1)),
             TackInstructionNode(.free(1)),
-            TackInstructionNode(.subiw(.w(2), .fp, 1)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0))
+            TackInstructionNode(.subip(.p(2), .fp, 1)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(3)))
@@ -2454,15 +2458,15 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: []))
         let expected = Seq(children: [
-            TackInstructionNode(.alloca(.w(0), 2)),
+            TackInstructionNode(.alloca(.p(0), 2)),
             TackInstructionNode(.call("foo")),
-            TackInstructionNode(.subiw(.w(1), .fp, 2)),
-            TackInstructionNode(.memcpy(.w(1), .w(0), 2)),
+            TackInstructionNode(.subip(.p(1), .fp, 2)),
+            TackInstructionNode(.memcpy(.p(1), .p(0), 2)),
             TackInstructionNode(.free(2)),
-            TackInstructionNode(.subiw(.w(2), .fp, 2))
+            TackInstructionNode(.subip(.p(2), .fp, 2))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(2)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(2)))
     }
 
     func testRvalue_Call_one_primitive_arg() throws {
@@ -2478,14 +2482,16 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         ]))
         let expected = Seq(children: [
             TackInstructionNode(.liuw(.w(0), 0x1000)),
-            TackInstructionNode(.alloca(.w(1), 1)),
-            TackInstructionNode(.sw(.w(0), .w(1), 0)),
+            TackInstructionNode(.alloca(.p(1), 1)),
+            TackInstructionNode(.sw(.w(0), .p(1), 0)),
             TackInstructionNode(.call("foo")),
             TackInstructionNode(.free(1))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertNil(compiler.registerStack.last)
     }
+    
+    // TODO: Types like `.arithmeticType(.mutableInt(.u16))' are a lot to type. Consider making a `static let' constant for this value, i.e., `public static let u16 = .arithmeticType(.mutableInt(.u16))' on SymbolType.
 
     func testRvalue_Call_return_value_and_one_arg() throws {
         let symbols = SymbolTable(tuples: [
@@ -2496,15 +2502,15 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: [Expression.LiteralInt(0xabcd)]))
         let expected = Seq(children: [
             TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.alloca(.w(1), 1)),
-            TackInstructionNode(.alloca(.w(2), 1)),
-            TackInstructionNode(.sw(.w(0), .w(2), 0)),
+            TackInstructionNode(.alloca(.p(1), 1)),
+            TackInstructionNode(.alloca(.p(2), 1)),
+            TackInstructionNode(.sw(.w(0), .p(2), 0)),
             TackInstructionNode(.call("foo")),
-            TackInstructionNode(.subiw(.w(3), .fp, 1)),
-            TackInstructionNode(.memcpy(.w(3), .w(1), 1)),
+            TackInstructionNode(.subip(.p(3), .fp, 1)),
+            TackInstructionNode(.memcpy(.p(3), .p(1), 1)),
             TackInstructionNode(.free(2)),
-            TackInstructionNode(.subiw(.w(4), .fp, 1)),
-            TackInstructionNode(.lw(.w(5), .w(4), 0))
+            TackInstructionNode(.subip(.p(4), .fp, 1)),
+            TackInstructionNode(.lw(.w(5), .p(4), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(5)))
@@ -2521,20 +2527,20 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
             Expression.LiteralInt(1000)
         ]))
         let expected = Seq(children: [
-            TackInstructionNode(.subiw(.w(0), .fp, 3)),
+            TackInstructionNode(.subip(.p(0), .fp, 3)),
             TackInstructionNode(.liuw(.w(1), 0)),
-            TackInstructionNode(.sw(.w(1), .w(0), 0)),
+            TackInstructionNode(.sw(.w(1), .p(0), 0)),
             TackInstructionNode(.liuw(.w(2), 1000)),
-            TackInstructionNode(.sw(.w(2), .w(0), 1)),
-            TackInstructionNode(.alloca(.w(3), 1)),
-            TackInstructionNode(.alloca(.w(4), 2)),
-            TackInstructionNode(.memcpy(.w(4), .w(0), 2)),
+            TackInstructionNode(.sw(.w(2), .p(0), 1)),
+            TackInstructionNode(.alloca(.p(3), 1)),
+            TackInstructionNode(.alloca(.p(4), 2)),
+            TackInstructionNode(.memcpy(.p(4), .p(0), 2)),
             TackInstructionNode(.call("foo")),
-            TackInstructionNode(.subiw(.w(5), .fp, 1)),
-            TackInstructionNode(.memcpy(.w(5), .w(3), 1)),
+            TackInstructionNode(.subip(.p(5), .fp, 1)),
+            TackInstructionNode(.memcpy(.p(5), .p(3), 1)),
             TackInstructionNode(.free(3)),
-            TackInstructionNode(.subiw(.w(6), .fp, 1)),
-            TackInstructionNode(.lw(.w(7), .w(6), 0))
+            TackInstructionNode(.subip(.p(6), .fp, 1)),
+            TackInstructionNode(.lw(.w(7), .p(6), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(7)))
@@ -2547,9 +2553,9 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: []))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0)),
-            TackInstructionNode(.callptr(.w(1)))
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.lp(.p(1), .p(0), 0)),
+            TackInstructionNode(.callptr(.p(1)))
         ])
         XCTAssertEqual(actual, expected)
     }
@@ -2564,14 +2570,14 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
             Expression.LiteralString("panic")
         ]))
         let expected = Seq(children: [
-            TackInstructionNode(.subiw(.w(0), .fp, 2)),
-            TackInstructionNode(.subiw(.w(1), .fp, 7)),
-            TackInstructionNode(.ststr(.w(1), "panic")),
-            TackInstructionNode(.sw(.w(1), .w(0), 0)),
+            TackInstructionNode(.subip(.p(0), .fp, 2)),
+            TackInstructionNode(.subip(.p(1), .fp, 7)),
+            TackInstructionNode(.ststr(.p(1), "panic")),
+            TackInstructionNode(.sp(.p(1), .p(0), 0)),
             TackInstructionNode(.liuw(.w(2), 5)),
-            TackInstructionNode(.sw(.w(2), .w(0), 1)),
-            TackInstructionNode(.alloca(.w(3), 2)), // TODO: This ALLOCA and MEMCPY are not actually necessary since vr0 contains the address of the dynamic array in memory already.
-            TackInstructionNode(.memcpy(.w(3), .w(0), 2)),
+            TackInstructionNode(.sw(.w(2), .p(0), 1)),
+            TackInstructionNode(.alloca(.p(3), 2)), // TODO: This ALLOCA and MEMCPY are not actually necessary since vr0 contains the address of the dynamic array in memory already.
+            TackInstructionNode(.memcpy(.p(3), .p(0), 2)),
             TackInstructionNode(.call("panic")),
             TackInstructionNode(.free(2))
         ])
@@ -2602,13 +2608,13 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: globalSymbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Get(expr: Expression.Identifier("foo"), member: Expression.Identifier("bar")), arguments: []))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 272)),
-            TackInstructionNode(.liuw(.w(1), 0x1000)),
-            TackInstructionNode(.sw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 272)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
-            TackInstructionNode(.alloca(.w(4), 1)),
-            TackInstructionNode(.sw(.w(3), .w(4), 0)),
+            TackInstructionNode(.lip(.p(0), 272)),
+            TackInstructionNode(.lip(.p(1), 0x1000)),
+            TackInstructionNode(.sp(.p(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 272)),
+            TackInstructionNode(.lp(.p(3), .p(2), 0)),
+            TackInstructionNode(.alloca(.p(4), 1)),
+            TackInstructionNode(.sp(.p(3), .p(4), 0)),
             TackInstructionNode(.call("bar")),
             TackInstructionNode(.free(1))
         ])
@@ -2639,13 +2645,13 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: globalSymbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Get(expr: Expression.Identifier("foo"), member: Expression.Identifier("bar")), arguments: []))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 272)),
-            TackInstructionNode(.liuw(.w(1), 0x1000)),
-            TackInstructionNode(.sw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 272)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
-            TackInstructionNode(.alloca(.w(4), 1)),
-            TackInstructionNode(.sw(.w(3), .w(4), 0)),
+            TackInstructionNode(.lip(.p(0), 272)),
+            TackInstructionNode(.lip(.p(1), 0x1000)),
+            TackInstructionNode(.sp(.p(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 272)),
+            TackInstructionNode(.lp(.p(3), .p(2), 0)),
+            TackInstructionNode(.alloca(.p(4), 1)),
+            TackInstructionNode(.sp(.p(3), .p(4), 0)),
             TackInstructionNode(.call("bar")),
             TackInstructionNode(.free(1))
         ])
@@ -2676,13 +2682,13 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: globalSymbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Get(expr: Expression.Identifier("foo"), member: Expression.Identifier("bar")), arguments: []))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 272)),
-            TackInstructionNode(.liuw(.w(1), 0x1000)),
-            TackInstructionNode(.sw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 272)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
-            TackInstructionNode(.alloca(.w(4), 1)),
-            TackInstructionNode(.sw(.w(3), .w(4), 0)),
+            TackInstructionNode(.lip(.p(0), 272)),
+            TackInstructionNode(.lip(.p(1), 0x1000)),
+            TackInstructionNode(.sp(.p(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 272)),
+            TackInstructionNode(.lp(.p(3), .p(2), 0)),
+            TackInstructionNode(.alloca(.p(4), 1)),
+            TackInstructionNode(.sp(.p(3), .p(4), 0)),
             TackInstructionNode(.call("bar")),
             TackInstructionNode(.free(1))
         ])
@@ -2704,14 +2710,14 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         ])
         let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: lexpr, rexpr: rexpr))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0x1000)),
-            TackInstructionNode(.addiw(.w(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 0x1000)),
+            TackInstructionNode(.addip(.p(1), .p(0), 0)),
             TackInstructionNode(.liuw(.w(2), 0xabcd)),
-            TackInstructionNode(.sw(.w(2), .w(1), 0)),
-            TackInstructionNode(.liuw(.w(3), 0x1000)),
-            TackInstructionNode(.addiw(.w(4), .w(3), 1)),
+            TackInstructionNode(.sw(.w(2), .p(1), 0)),
+            TackInstructionNode(.lip(.p(3), 0x1000)),
+            TackInstructionNode(.addip(.p(4), .p(3), 1)),
             TackInstructionNode(.liuw(.w(5), 0xffff)),
-            TackInstructionNode(.sw(.w(5), .w(4), 0))
+            TackInstructionNode(.sw(.w(5), .p(4), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(5)))
@@ -2749,14 +2755,14 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         ])
         let actual = try compiler.rvalue(expr: Expression.InitialAssignment(lexpr: lexpr, rexpr: rexpr))
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0x1000)),
-            TackInstructionNode(.addiw(.w(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 0x1000)),
+            TackInstructionNode(.addip(.p(1), .p(0), 0)),
             TackInstructionNode(.liuw(.w(2), 0xabcd)),
-            TackInstructionNode(.sw(.w(2), .w(1), 0)),
-            TackInstructionNode(.liuw(.w(3), 0x1000)),
-            TackInstructionNode(.addiw(.w(4), .w(3), 1)),
+            TackInstructionNode(.sw(.w(2), .p(1), 0)),
+            TackInstructionNode(.lip(.p(3), 0x1000)),
+            TackInstructionNode(.addip(.p(4), .p(3), 1)),
             TackInstructionNode(.liuw(.w(5), 0xffff)),
-            TackInstructionNode(.sw(.w(5), .w(4), 0))
+            TackInstructionNode(.sw(.w(5), .p(4), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(5)))
@@ -2772,12 +2778,12 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let asExpr = Expression.As(expr: literalArray, targetType: targetType)
         let actual = try compiler.rvalue(expr: asExpr)
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0x0110)),
+            TackInstructionNode(.lip(.p(0), 0x0110)),
             TackInstructionNode(.liuw(.w(1), 42)),
-            TackInstructionNode(.sw(.w(1), .w(0), 0))
+            TackInstructionNode(.sw(.w(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
     }
 
     func testFixBugWithCompilerTemporaryOfArrayTypeWithNoExplicitCount() throws {
@@ -2812,17 +2818,17 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let expr = Expression.InitialAssignment(lexpr: Expression.Identifier("r"), rexpr: Expression.Identifier("none"))
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0x0111)),
-            TackInstructionNode(.liuw(.w(1), 0x0110)),
+            TackInstructionNode(.lip(.p(0), 0x0111)),
+            TackInstructionNode(.lip(.p(1), 0x0110)),
             TackInstructionNode(.liuw(.w(2), 1)),
-            TackInstructionNode(.sw(.w(2), .w(1), 0)),
-            TackInstructionNode(.addiw(.w(3), .w(1), 1)),
-            TackInstructionNode(.liuw(.w(4), 0x0110)),
-            TackInstructionNode(.memcpy(.w(3), .w(4), 0)),
-            TackInstructionNode(.memcpy(.w(0), .w(1), 2))
+            TackInstructionNode(.sw(.w(2), .p(1), 0)),
+            TackInstructionNode(.addip(.p(3), .p(1), 1)),
+            TackInstructionNode(.lip(.p(4), 0x0110)),
+            TackInstructionNode(.memcpy(.p(3), .p(4), 0)),
+            TackInstructionNode(.memcpy(.p(0), .p(1), 2))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(1)))
     }
 
     func testRvalue_ArraySlice_WithNonRangeArgument() throws {
@@ -2905,18 +2911,19 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0x0110)),
-            TackInstructionNode(.addiw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 0x1000)),
-            TackInstructionNode(.sw(.w(2), .w(1), 0)),
-            TackInstructionNode(.liuw(.w(3), 0x0110)),
-            TackInstructionNode(.addiw(.w(4), .w(3), 1)),
-            TackInstructionNode(.liuw(.w(5), 1)),
-            TackInstructionNode(.sw(.w(5), .w(4), 0)),
-            TackInstructionNode(.liuw(.w(6), 0x0110)),
+            TackInstructionNode(.lip(.p(0), 0x0110)),
+            TackInstructionNode(.addip(.p(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 0x1000)),
+            TackInstructionNode(.bitcast(.w(.w(3)), .p(.p(2)))),
+            TackInstructionNode(.sw(.w(3), .p(1), 0)),
+            TackInstructionNode(.lip(.p(4), 0x0110)),
+            TackInstructionNode(.addip(.p(5), .p(4), 1)),
+            TackInstructionNode(.liuw(.w(6), 1)),
+            TackInstructionNode(.sw(.w(6), .p(5), 0)),
+            TackInstructionNode(.lip(.p(7), 0x0110)),
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(6)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(7)))
     }
 
     func testRvalue_ArraySlice_1() throws {
@@ -2935,20 +2942,21 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0x0110)),
-            TackInstructionNode(.addiw(.w(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 0x0110)),
+            TackInstructionNode(.addip(.p(1), .p(0), 0)),
             TackInstructionNode(.liuw(.w(2), 1)),
-            TackInstructionNode(.liuw(.w(3), 0x1000)),
-            TackInstructionNode(.addw(.w(4), .w(3), .w(2))),
-            TackInstructionNode(.sw(.w(4), .w(1), 0)),
-            TackInstructionNode(.liuw(.w(5), 0x0110)),
-            TackInstructionNode(.addiw(.w(6), .w(5), 1)),
-            TackInstructionNode(.liuw(.w(7), 2)),
-            TackInstructionNode(.sw(.w(7), .w(6), 0)),
-            TackInstructionNode(.liuw(.w(8), 0x0110)),
+            TackInstructionNode(.lip(.p(3), 0x1000)),
+            TackInstructionNode(.bitcast(.w(.w(4)), .p(.p(3)))),
+            TackInstructionNode(.addw(.w(5), .w(4), .w(2))),
+            TackInstructionNode(.sw(.w(5), .p(1), 0)),
+            TackInstructionNode(.lip(.p(6), 0x0110)),
+            TackInstructionNode(.addip(.p(7), .p(6), 1)),
+            TackInstructionNode(.liuw(.w(8), 2)),
+            TackInstructionNode(.sw(.w(8), .p(7), 0)),
+            TackInstructionNode(.lip(.p(9), 0x0110)),
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(8)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(9)))
     }
 
     func testRvalue_ArraySlice_2() throws {
@@ -2969,25 +2977,26 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0x0110)),
-            TackInstructionNode(.addiw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 0x2000)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
-            TackInstructionNode(.liuw(.w(4), 0x1000)),
-            TackInstructionNode(.addw(.w(5), .w(4), .w(3))),
-            TackInstructionNode(.sw(.w(5), .w(1), 0)),
-            TackInstructionNode(.liuw(.w(6), 0x0110)),
-            TackInstructionNode(.addiw(.w(7), .w(6), 1)),
-            TackInstructionNode(.liuw(.w(8), 0x2000)),
-            TackInstructionNode(.lw(.w(9), .w(8), 0)),
-            TackInstructionNode(.liuw(.w(10), 0x2001)),
-            TackInstructionNode(.lw(.w(11), .w(10), 0)),
-            TackInstructionNode(.subw(.w(12), .w(11), .w(9))),
-            TackInstructionNode(.sw(.w(12), .w(7), 0)),
-            TackInstructionNode(.liuw(.w(13), 0x0110)),
+            TackInstructionNode(.lip(.p(0), 0x0110)),
+            TackInstructionNode(.addip(.p(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 0x2000)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
+            TackInstructionNode(.lip(.p(4), 0x1000)),
+            TackInstructionNode(.bitcast(.w(.w(5)), .p(.p(4)))),
+            TackInstructionNode(.addw(.w(6), .w(5), .w(3))),
+            TackInstructionNode(.sw(.w(6), .p(1), 0)),
+            TackInstructionNode(.lip(.p(7), 0x0110)),
+            TackInstructionNode(.addip(.p(8), .p(7), 1)),
+            TackInstructionNode(.lip(.p(9), 0x2000)),
+            TackInstructionNode(.lw(.w(10), .p(9), 0)),
+            TackInstructionNode(.lip(.p(11), 0x2001)),
+            TackInstructionNode(.lw(.w(12), .p(11), 0)),
+            TackInstructionNode(.subw(.w(13), .w(12), .w(10))),
+            TackInstructionNode(.sw(.w(13), .p(8), 0)),
+            TackInstructionNode(.lip(.p(14), 0x0110)),
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(13)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(14)))
     }
 
     func testRvalue_ArraySlice_ElementSizeGreaterThanOne_1() throws {
@@ -3005,20 +3014,21 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0x0110)),
-            TackInstructionNode(.addiw(.w(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 0x0110)),
+            TackInstructionNode(.addip(.p(1), .p(0), 0)),
             TackInstructionNode(.liuw(.w(2), 3)),
-            TackInstructionNode(.liuw(.w(3), 0x1000)),
-            TackInstructionNode(.addw(.w(4), .w(3), .w(2))),
-            TackInstructionNode(.sw(.w(4), .w(1), 0)),
-            TackInstructionNode(.liuw(.w(5), 0x0110)),
-            TackInstructionNode(.addiw(.w(6), .w(5), 1)),
-            TackInstructionNode(.liuw(.w(7), 2)),
-            TackInstructionNode(.sw(.w(7), .w(6), 0)),
-            TackInstructionNode(.liuw(.w(8), 0x0110)),
+            TackInstructionNode(.lip(.p(3), 0x1000)),
+            TackInstructionNode(.bitcast(.w(.w(4)), .p(.p(3)))),
+            TackInstructionNode(.addw(.w(5), .w(4), .w(2))),
+            TackInstructionNode(.sw(.w(5), .p(1), 0)),
+            TackInstructionNode(.lip(.p(6), 0x0110)),
+            TackInstructionNode(.addip(.p(7), .p(6), 1)),
+            TackInstructionNode(.liuw(.w(8), 2)),
+            TackInstructionNode(.sw(.w(8), .p(7), 0)),
+            TackInstructionNode(.lip(.p(9), 0x0110)),
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(8)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(9)))
     }
 
     func testRvalue_ArraySlice_Identifier() throws {
@@ -3035,25 +3045,26 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
                                         argument: Expression.Identifier("range"))
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0x0110)),
-            TackInstructionNode(.addiw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 0x2000)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
-            TackInstructionNode(.liuw(.w(4), 0x1000)),
-            TackInstructionNode(.addw(.w(5), .w(4), .w(3))),
-            TackInstructionNode(.sw(.w(5), .w(1), 0)),
-            TackInstructionNode(.liuw(.w(6), 0x0110)),
-            TackInstructionNode(.addiw(.w(7), .w(6), 1)),
-            TackInstructionNode(.liuw(.w(8), 0x2000)),
-            TackInstructionNode(.lw(.w(9), .w(8), 0)),
-            TackInstructionNode(.liuw(.w(10), 0x2000)),
-            TackInstructionNode(.lw(.w(11), .w(10), 1)),
-            TackInstructionNode(.subw(.w(12), .w(11), .w(9))),
-            TackInstructionNode(.sw(.w(12), .w(7), 0)),
-            TackInstructionNode(.liuw(.w(13), 0x0110))
+            TackInstructionNode(.lip(.p(0), 0x0110)),
+            TackInstructionNode(.addip(.p(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 0x2000)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
+            TackInstructionNode(.lip(.p(4), 0x1000)),
+            TackInstructionNode(.bitcast(.w(.w(5)), .p(.p(4)))),
+            TackInstructionNode(.addw(.w(6), .w(5), .w(3))),
+            TackInstructionNode(.sw(.w(6), .p(1), 0)),
+            TackInstructionNode(.lip(.p(7), 0x0110)),
+            TackInstructionNode(.addip(.p(8), .p(7), 1)),
+            TackInstructionNode(.lip(.p(9), 0x2000)),
+            TackInstructionNode(.lw(.w(10), .p(9), 0)),
+            TackInstructionNode(.lip(.p(11), 0x2000)),
+            TackInstructionNode(.lw(.w(12), .p(11), 1)),
+            TackInstructionNode(.subw(.w(13), .w(12), .w(10))),
+            TackInstructionNode(.sw(.w(13), .p(8), 0)),
+            TackInstructionNode(.lip(.p(14), 0x0110))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(13)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(14)))
     }
 
     func testRvalue_ArraySlice_ElementSizeGreaterThanOne_2() throws {
@@ -3074,27 +3085,28 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0x0110)),
-            TackInstructionNode(.addiw(.w(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 0x0110)),
+            TackInstructionNode(.addip(.p(1), .p(0), 0)),
             TackInstructionNode(.liuw(.w(2), 3)),
-            TackInstructionNode(.liuw(.w(3), 0x2000)),
-            TackInstructionNode(.lw(.w(4), .w(3), 0)),
+            TackInstructionNode(.lip(.p(3), 0x2000)),
+            TackInstructionNode(.lw(.w(4), .p(3), 0)),
             TackInstructionNode(.mulw(.w(5), .w(4), .w(2))),
-            TackInstructionNode(.liuw(.w(6), 0x1000)),
-            TackInstructionNode(.addw(.w(7), .w(6), .w(5))),
-            TackInstructionNode(.sw(.w(7), .w(1), 0)),
-            TackInstructionNode(.liuw(.w(8), 0x0110)),
-            TackInstructionNode(.addiw(.w(9), .w(8), 1)),
-            TackInstructionNode(.liuw(.w(10), 0x2000)),
-            TackInstructionNode(.lw(.w(11), .w(10), 0)),
-            TackInstructionNode(.liuw(.w(12), 0x2001)),
-            TackInstructionNode(.lw(.w(13), .w(12), 0)),
-            TackInstructionNode(.subw(.w(14), .w(13), .w(11))),
-            TackInstructionNode(.sw(.w(14), .w(9), 0)),
-            TackInstructionNode(.liuw(.w(15), 0x0110))
+            TackInstructionNode(.lip(.p(6), 0x1000)),
+            TackInstructionNode(.bitcast(.w(.w(7)), .p(.p(6)))),
+            TackInstructionNode(.addw(.w(8), .w(7), .w(5))),
+            TackInstructionNode(.sw(.w(8), .p(1), 0)),
+            TackInstructionNode(.lip(.p(9), 0x0110)),
+            TackInstructionNode(.addip(.p(10), .p(9), 1)),
+            TackInstructionNode(.lip(.p(11), 0x2000)),
+            TackInstructionNode(.lw(.w(12), .p(11), 0)),
+            TackInstructionNode(.lip(.p(13), 0x2001)),
+            TackInstructionNode(.lw(.w(14), .p(13), 0)),
+            TackInstructionNode(.subw(.w(15), .w(14), .w(12))),
+            TackInstructionNode(.sw(.w(15), .p(10), 0)),
+            TackInstructionNode(.lip(.p(16), 0x0110))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(15)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(16)))
     }
 
     func testRvalue_SubscriptDynamicArray_WithNonRangeArgument() throws {
@@ -3128,19 +3140,19 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0x0110)),
-            TackInstructionNode(.addiw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 0x1000)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
-            TackInstructionNode(.sw(.w(3), .w(1), 0)),
-            TackInstructionNode(.liuw(.w(4), 0x0110)),
-            TackInstructionNode(.addiw(.w(5), .w(4), 1)),
+            TackInstructionNode(.lip(.p(0), 0x0110)),
+            TackInstructionNode(.addip(.p(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 0x1000)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
+            TackInstructionNode(.sw(.w(3), .p(1), 0)),
+            TackInstructionNode(.lip(.p(4), 0x0110)),
+            TackInstructionNode(.addip(.p(5), .p(4), 1)),
             TackInstructionNode(.liuw(.w(6), 1)),
-            TackInstructionNode(.sw(.w(6), .w(5), 0)),
-            TackInstructionNode(.liuw(.w(7), 0x0110)),
+            TackInstructionNode(.sw(.w(6), .p(5), 0)),
+            TackInstructionNode(.lip(.p(7), 0x0110)),
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(7)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(7)))
     }
 
     func testRvalue_DynamicArraySlice_2() throws {
@@ -3161,26 +3173,26 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0x0110)),
-            TackInstructionNode(.addiw(.w(1), .w(0), 0)),
-            TackInstructionNode(.liuw(.w(2), 0x2000)),
-            TackInstructionNode(.lw(.w(3), .w(2), 0)),
-            TackInstructionNode(.liuw(.w(4), 0x1000)),
-            TackInstructionNode(.lw(.w(5), .w(4), 0)),
+            TackInstructionNode(.lip(.p(0), 0x0110)),
+            TackInstructionNode(.addip(.p(1), .p(0), 0)),
+            TackInstructionNode(.lip(.p(2), 0x2000)),
+            TackInstructionNode(.lw(.w(3), .p(2), 0)),
+            TackInstructionNode(.lip(.p(4), 0x1000)),
+            TackInstructionNode(.lw(.w(5), .p(4), 0)),
             TackInstructionNode(.addw(.w(6), .w(5), .w(3))),
-            TackInstructionNode(.sw(.w(6), .w(1), 0)),
-            TackInstructionNode(.liuw(.w(7), 0x0110)),
-            TackInstructionNode(.addiw(.w(8), .w(7), 1)),
-            TackInstructionNode(.liuw(.w(9), 0x2000)),
-            TackInstructionNode(.lw(.w(10), .w(9), 0)),
-            TackInstructionNode(.liuw(.w(11), 0x2001)),
-            TackInstructionNode(.lw(.w(12), .w(11), 0)),
+            TackInstructionNode(.sw(.w(6), .p(1), 0)),
+            TackInstructionNode(.lip(.p(7), 0x0110)),
+            TackInstructionNode(.addip(.p(8), .p(7), 1)),
+            TackInstructionNode(.lip(.p(9), 0x2000)),
+            TackInstructionNode(.lw(.w(10), .p(9), 0)),
+            TackInstructionNode(.lip(.p(11), 0x2001)),
+            TackInstructionNode(.lw(.w(12), .p(11), 0)),
             TackInstructionNode(.subw(.w(13), .w(12), .w(10))),
-            TackInstructionNode(.sw(.w(13), .w(8), 0)),
-            TackInstructionNode(.liuw(.w(14), 0x0110))
+            TackInstructionNode(.sw(.w(13), .p(8), 0)),
+            TackInstructionNode(.lip(.p(14), 0x0110))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(14)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(14)))
     }
 
     func testRvalue_DynamicArraySlice_ElementSizeGreaterThanOne_1() throws {
@@ -3198,21 +3210,21 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0x0110)),
-            TackInstructionNode(.addiw(.w(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 0x0110)),
+            TackInstructionNode(.addip(.p(1), .p(0), 0)),
             TackInstructionNode(.liuw(.w(2), 3)),
-            TackInstructionNode(.liuw(.w(3), 0x1000)),
-            TackInstructionNode(.lw(.w(4), .w(3), 0)),
+            TackInstructionNode(.lip(.p(3), 0x1000)),
+            TackInstructionNode(.lw(.w(4), .p(3), 0)),
             TackInstructionNode(.addw(.w(5), .w(4), .w(2))),
-            TackInstructionNode(.sw(.w(5), .w(1), 0)),
-            TackInstructionNode(.liuw(.w(6), 0x0110)),
-            TackInstructionNode(.addiw(.w(7), .w(6), 1)),
+            TackInstructionNode(.sw(.w(5), .p(1), 0)),
+            TackInstructionNode(.lip(.p(6), 0x0110)),
+            TackInstructionNode(.addip(.p(7), .p(6), 1)),
             TackInstructionNode(.liuw(.w(8), 2)),
-            TackInstructionNode(.sw(.w(8), .w(7), 0)),
-            TackInstructionNode(.liuw(.w(9), 0x0110))
+            TackInstructionNode(.sw(.w(8), .p(7), 0)),
+            TackInstructionNode(.lip(.p(9), 0x0110))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(9)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(9)))
     }
 
     func testRvalue_DynamicArraySlice_ElementSizeGreaterThanOne_2() throws {
@@ -3233,28 +3245,28 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0x0110)),
-            TackInstructionNode(.addiw(.w(1), .w(0), 0)),
+            TackInstructionNode(.lip(.p(0), 0x0110)),
+            TackInstructionNode(.addip(.p(1), .p(0), 0)),
             TackInstructionNode(.liuw(.w(2), 3)),
-            TackInstructionNode(.liuw(.w(3), 0x2000)),
-            TackInstructionNode(.lw(.w(4), .w(3), 0)),
+            TackInstructionNode(.lip(.p(3), 0x2000)),
+            TackInstructionNode(.lw(.w(4), .p(3), 0)),
             TackInstructionNode(.mulw(.w(5), .w(4), .w(2))),
-            TackInstructionNode(.liuw(.w(6), 0x1000)),
-            TackInstructionNode(.lw(.w(7), .w(6), 0)),
+            TackInstructionNode(.lip(.p(6), 0x1000)),
+            TackInstructionNode(.lw(.w(7), .p(6), 0)),
             TackInstructionNode(.addw(.w(8), .w(7), .w(5))),
-            TackInstructionNode(.sw(.w(8), .w(1), 0)),
-            TackInstructionNode(.liuw(.w(9), 0x0110)),
-            TackInstructionNode(.addiw(.w(10), .w(9), 1)),
-            TackInstructionNode(.liuw(.w(11), 0x2000)),
-            TackInstructionNode(.lw(.w(12), .w(11), 0)),
-            TackInstructionNode(.liuw(.w(13), 0x2001)),
-            TackInstructionNode(.lw(.w(14), .w(13), 0)),
+            TackInstructionNode(.sw(.w(8), .p(1), 0)),
+            TackInstructionNode(.lip(.p(9), 0x0110)),
+            TackInstructionNode(.addip(.p(10), .p(9), 1)),
+            TackInstructionNode(.lip(.p(11), 0x2000)),
+            TackInstructionNode(.lw(.w(12), .p(11), 0)),
+            TackInstructionNode(.lip(.p(13), 0x2001)),
+            TackInstructionNode(.lw(.w(14), .p(13), 0)),
             TackInstructionNode(.subw(.w(15), .w(14), .w(12))),
-            TackInstructionNode(.sw(.w(15), .w(10), 0)),
-            TackInstructionNode(.liuw(.w(16), 0x0110))
+            TackInstructionNode(.sw(.w(15), .p(10), 0)),
+            TackInstructionNode(.lip(.p(16), 0x0110))
         ])
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(16)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(16)))
     }
 
     func testRvalue_convert_pointer_to_trait() throws {
@@ -3291,18 +3303,18 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.compile(ast1)
 
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(8), 0x0110)), // TODO: make sure the optimizer can remove dead stores like this one
-            TackInstructionNode(.liuw(.w(0), 0x0110)),
-            TackInstructionNode(.liuw(.w(1), 0x0112)),
-            TackInstructionNode(.addiw(.w(2), .w(1), 0)),
-            TackInstructionNode(.liuw(.w(3), 0x0110)),
-            TackInstructionNode(.sw(.w(3), .w(2), 0)),
-            TackInstructionNode(.liuw(.w(4), 0x0112)),
-            TackInstructionNode(.addiw(.w(5), .w(4), 1)),
-            TackInstructionNode(.liuw(.w(6), 0x0110)),
-            TackInstructionNode(.sw(.w(6), .w(5), 0)),
-            TackInstructionNode(.liuw(.w(7), 0x0112)),
-            TackInstructionNode(.memcpy(.w(0), .w(7), 2))
+            TackInstructionNode(.lip(.p(8), 0x0110)), // TODO: make sure the optimizer can remove dead stores like this one
+            TackInstructionNode(.lip(.p(0), 0x0110)),
+            TackInstructionNode(.lip(.p(1), 0x0112)),
+            TackInstructionNode(.addip(.p(2), .p(1), 0)),
+            TackInstructionNode(.lip(.p(3), 0x0110)),
+            TackInstructionNode(.sp(.p(3), .p(2), 0)),
+            TackInstructionNode(.lip(.p(4), 0x0112)),
+            TackInstructionNode(.addip(.p(5), .p(4), 1)),
+            TackInstructionNode(.lip(.p(6), 0x0110)),
+            TackInstructionNode(.sp(.p(6), .p(5), 0)),
+            TackInstructionNode(.lip(.p(7), 0x0112)),
+            TackInstructionNode(.memcpy(.p(0), .p(7), 2))
         ])
         XCTAssertEqual(actual, expected)
     }
@@ -3340,18 +3352,18 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try SnapASTToTackASTCompiler(symbols: symbols, globalEnvironment: globalEnvironment, options: opts).compile(ast1)
 
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(8), 0x0110)), // TODO: make sure the optimizer can remove dead stores like this one
-            TackInstructionNode(.liuw(.w(0), 0x0110)),
-            TackInstructionNode(.liuw(.w(1), 0x0112)),
-            TackInstructionNode(.addiw(.w(2), .w(1), 0)),
-            TackInstructionNode(.liuw(.w(3), 0x0110)),
-            TackInstructionNode(.sw(.w(3), .w(2), 0)),
-            TackInstructionNode(.liuw(.w(4), 0x0112)),
-            TackInstructionNode(.addiw(.w(5), .w(4), 1)),
-            TackInstructionNode(.liuw(.w(6), 0x0110)),
-            TackInstructionNode(.sw(.w(6), .w(5), 0)),
-            TackInstructionNode(.liuw(.w(7), 0x0112)),
-            TackInstructionNode(.memcpy(.w(0), .w(7), 2))
+            TackInstructionNode(.lip(.p(8), 0x0110)), // TODO: make sure the optimizer can remove dead stores like this one
+            TackInstructionNode(.lip(.p(0), 0x0110)),
+            TackInstructionNode(.lip(.p(1), 0x0112)),
+            TackInstructionNode(.addip(.p(2), .p(1), 0)),
+            TackInstructionNode(.lip(.p(3), 0x0110)),
+            TackInstructionNode(.sp(.p(3), .p(2), 0)),
+            TackInstructionNode(.lip(.p(4), 0x0112)),
+            TackInstructionNode(.addip(.p(5), .p(4), 1)),
+            TackInstructionNode(.lip(.p(6), 0x0110)),
+            TackInstructionNode(.sp(.p(6), .p(5), 0)),
+            TackInstructionNode(.lip(.p(7), 0x0112)),
+            TackInstructionNode(.memcpy(.p(0), .p(7), 2))
         ])
         XCTAssertEqual(actual, expected)
     }
@@ -3371,9 +3383,9 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let expr = Expression.Get(expr: si, member: Expression.Identifier("bar"))
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.lvalue(expr: expr)
-        let expected = TackInstructionNode(.liuw(.w(0), 0xabcd))
+        let expected = TackInstructionNode(.lip(.p(0), 0xabcd))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
     }
 
     func testLvalue_CannotInstantiateGenericFunctionTypeWithoutApplication() {
@@ -3422,9 +3434,9 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
                                                      arguments: [Expression.PrimitiveType(constU16)])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.lvalue(expr: expr)
-        let expected = TackInstructionNode(.la(.w(0), "__foo_const_u16"))
+        let expected = TackInstructionNode(.la(.p(0), "__foo_const_u16"))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
     }
 
     func testRvalue_RvalueOfMemberOfStructInitializer() throws {
@@ -3443,8 +3455,8 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xabcd)),
-            TackInstructionNode(.lw(.w(1), .w(0), 0))
+            TackInstructionNode(.lip(.p(0), 0xabcd)),
+            TackInstructionNode(.lw(.w(1), .p(0), 0))
         ])
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(1)))
@@ -3479,9 +3491,9 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: symbols)
         let expr = Expression.Identifier("panic")
         let actual = try compiler.rvalue(expr: expr)
-        let expected = TackInstructionNode(.la(.w(0), "panic"))
+        let expected = TackInstructionNode(.la(.p(0), "panic"))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
     }
 
     func testRvalue_CannotInstantiateGenericFunctionTypeWithoutApplication() throws {
@@ -3553,9 +3565,9 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
                                                      arguments: [Expression.PrimitiveType(constU16)])
         let actual = try compiler.rvalue(expr: expr)
-        let expected = TackInstructionNode(.la(.w(0), "__foo_const_u16"))
+        let expected = TackInstructionNode(.la(.p(0), "__foo_const_u16"))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
     }
 
     func testRvalue_CannotTakeTheAddressOfGenericFunctionWithoutTypeArguments() {
@@ -3631,9 +3643,9 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let expr = Expression.Unary(op: .ampersand, expression: Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"), arguments: [Expression.PrimitiveType(constU16)]))
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: expr)
-        let expected = TackInstructionNode(.la(.w(0), "__foo_const_u16"))
+        let expected = TackInstructionNode(.la(.p(0), "__foo_const_u16"))
         XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
+        XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
     }
 
     func testCompilationFailsOnConcreteInstantiationOfGenericFunction() throws {
@@ -3694,13 +3706,13 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let compiler = SnapASTToTackASTCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
         let actual = try compiler.compileWithEpilog(ast1)
         let expected = Seq(children: [
-            TackInstructionNode(.la(.w(0), "__foo_const_u16")),
+            TackInstructionNode(.la(.p(0), "__foo_const_u16")),
             Subroutine(identifier: "__foo_const_u16", children: [
                 TackInstructionNode(.enter(0)),
-                TackInstructionNode(.addiw(.w(1), .fp, 8)),
-                TackInstructionNode(.addiw(.w(2), .fp, 7)),
-                TackInstructionNode(.lw(.w(3), .w(2), 0)),
-                TackInstructionNode(.sw(.w(3), .w(1), 0)),
+                TackInstructionNode(.addip(.p(1), .fp, 8)),
+                TackInstructionNode(.addip(.p(2), .fp, 7)),
+                TackInstructionNode(.lw(.w(3), .p(2), 0)),
+                TackInstructionNode(.sw(.w(3), .p(1), 0)),
                 TackInstructionNode(.leave),
                 TackInstructionNode(.ret)
             ])
@@ -3738,21 +3750,21 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.compileWithEpilog(ast1)
         let expected = Seq(children: [
             TackInstructionNode(.liuw(.w(0), 0xffff)),
-            TackInstructionNode(.alloca(.w(1), 1)),
-            TackInstructionNode(.alloca(.w(2), 1)),
-            TackInstructionNode(.sw(.w(0), .w(2), 0)),
+            TackInstructionNode(.alloca(.p(1), 1)),
+            TackInstructionNode(.alloca(.p(2), 1)),
+            TackInstructionNode(.sw(.w(0), .p(2), 0)),
             TackInstructionNode(.call("__foo_const_u16")),
-            TackInstructionNode(.liuw(.w(3), 272)),
-            TackInstructionNode(.memcpy(.w(3), .w(1), 1)),
+            TackInstructionNode(.lip(.p(3), 272)),
+            TackInstructionNode(.memcpy(.p(3), .p(1), 1)),
             TackInstructionNode(.free(2)),
-            TackInstructionNode(.liuw(.w(4), 272)),
-            TackInstructionNode(.lw(.w(5), .w(4), 0)),
+            TackInstructionNode(.lip(.p(4), 272)),
+            TackInstructionNode(.lw(.w(5), .p(4), 0)),
             Subroutine(identifier: "__foo_const_u16", children: [
                 TackInstructionNode(.enter(0)),
-                TackInstructionNode(.addiw(.w(6), .fp, 8)),
-                TackInstructionNode(.addiw(.w(7), .fp, 7)),
-                TackInstructionNode(.lw(.w(8), .w(7), 0)),
-                TackInstructionNode(.sw(.w(8), .w(6), 0)),
+                TackInstructionNode(.addip(.p(6), .fp, 8)),
+                TackInstructionNode(.addip(.p(7), .fp, 7)),
+                TackInstructionNode(.lw(.w(8), .p(7), 0)),
+                TackInstructionNode(.sw(.w(8), .p(6), 0)),
                 TackInstructionNode(.leave),
                 TackInstructionNode(.ret)
             ])
@@ -3791,21 +3803,21 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         let actual = try compiler.compileWithEpilog(ast1)
         let expected = Seq(children: [
             TackInstructionNode(.liuw(.w(0), 0xffff)),
-            TackInstructionNode(.alloca(.w(1), 1)),
-            TackInstructionNode(.alloca(.w(2), 1)),
-            TackInstructionNode(.sw(.w(0), .w(2), 0)),
+            TackInstructionNode(.alloca(.p(1), 1)),
+            TackInstructionNode(.alloca(.p(2), 1)),
+            TackInstructionNode(.sw(.w(0), .p(2), 0)),
             TackInstructionNode(.call("__foo_u16")),
-            TackInstructionNode(.liuw(.w(3), 272)),
-            TackInstructionNode(.memcpy(.w(3), .w(1), 1)),
+            TackInstructionNode(.lip(.p(3), 272)),
+            TackInstructionNode(.memcpy(.p(3), .p(1), 1)),
             TackInstructionNode(.free(2)),
-            TackInstructionNode(.liuw(.w(4), 272)),
-            TackInstructionNode(.lw(.w(5), .w(4), 0)),
+            TackInstructionNode(.lip(.p(4), 272)),
+            TackInstructionNode(.lw(.w(5), .p(4), 0)),
             Subroutine(identifier: "__foo_u16", children: [
                 TackInstructionNode(.enter(0)),
-                TackInstructionNode(.addiw(.w(6), .fp, 8)),
-                TackInstructionNode(.addiw(.w(7), .fp, 7)),
-                TackInstructionNode(.lw(.w(8), .w(7), 0)),
-                TackInstructionNode(.sw(.w(8), .w(6), 0)),
+                TackInstructionNode(.addip(.p(6), .fp, 8)),
+                TackInstructionNode(.addip(.p(7), .fp, 7)),
+                TackInstructionNode(.lw(.w(8), .p(7), 0)),
+                TackInstructionNode(.sw(.w(8), .p(6), 0)),
                 TackInstructionNode(.leave),
                 TackInstructionNode(.ret)
             ])

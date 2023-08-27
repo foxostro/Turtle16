@@ -1278,7 +1278,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             return
         }
         
-        XCTAssertEqual(debugger.vm.loadb(address: Word(symbol.offset)), 42)
+        XCTAssertEqual(debugger.vm.loadb(address: UInt(symbol.offset)), 42)
     }
 
     func test_EndToEndIntegration_AssignStructInitializerToStructInstance() throws {
@@ -1295,7 +1295,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(debugger.vm.loadb(address: Word(symbol.offset)), 42)
+        XCTAssertEqual(debugger.vm.loadb(address: UInt(symbol.offset)), 42)
     }
 
     func test_EndToEndIntegration_ReadStructMembersThroughPointer() throws {
@@ -1312,7 +1312,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(debugger.vm.loadb(address: Word(symbol.offset)), 1)
+        XCTAssertEqual(debugger.vm.loadb(address: UInt(symbol.offset)), 1)
     }
 
     func test_EndToEndIntegration_WriteStructMembersThroughPointer() throws {
@@ -1328,7 +1328,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(debugger.vm.loadb(address: Word(symbol.offset)), 2)
+        XCTAssertEqual(debugger.vm.loadb(address: UInt(symbol.offset)), 2)
     }
 
     func test_EndToEndIntegration_PassPointerToStructAsFunctionParameter() throws {
@@ -1386,7 +1386,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(debugger.vm.loadb(address: Word(symbol.offset)), 6)
+        XCTAssertEqual(debugger.vm.loadb(address: UInt(symbol.offset)), 6)
     }
 
     func test_EndToEndIntegration_FunctionReturnsPointerToStruct_Right() throws {
@@ -1418,7 +1418,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(debugger.vm.loadb(address: Word(symbol.offset)), 42)
+        XCTAssertEqual(debugger.vm.loadb(address: UInt(symbol.offset)), 42)
     }
 
     func test_EndToEndIntegration_GetArrayCountThroughAPointer() throws {
@@ -1574,7 +1574,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(debugger.vm.loadb(address: Word(symbol.offset+kUnionPayloadOffset)), 0x2a)
+        XCTAssertEqual(debugger.vm.loadb(address: UInt(symbol.offset+kUnionPayloadOffset)), 0x2a)
     }
 
     func test_EndToEndIntegration_Match_WithExtraneousClause() {

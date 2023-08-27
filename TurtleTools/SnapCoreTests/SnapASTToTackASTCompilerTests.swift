@@ -11,10 +11,6 @@ import SnapCore
 import TurtleCore
 import Turtle16SimulatorCore
 
-
-#warning("TODO: I'm in the middle of adding a new register type for pointers. This requires many changes to unit tests. These need to have an Int backing type in the virtual machine instead of UInt16. Also, add unit tests for all new Tack instructions I've had to add in support of this change.")
-
-
 let kSliceName = "Slice"
 let kSliceBase = "base"
 let kSliceBaseAddressOffset = 0

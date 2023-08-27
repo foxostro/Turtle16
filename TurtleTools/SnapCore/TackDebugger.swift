@@ -34,7 +34,7 @@ public class TackDebugger: NSObject {
         return lines.joined(separator: "\n")
     }
     
-    public func showSourceList(pc: Word, count: Int) -> String? {
+    public func showSourceList(pc: UInt, count: Int) -> String? {
         guard let sourceAnchor = vm.findSourceAnchor(pc: pc),
               let lineNumbers = sourceAnchor.lineNumbers else {
             return nil
@@ -72,7 +72,7 @@ public class TackDebugger: NSObject {
         return result
     }
     
-    public func showFunctionName(pc: Word) -> String? {
+    public func showFunctionName(pc: UInt) -> String? {
         guard pc < vm.program.subroutines.count else {
             return nil
         }
@@ -91,25 +91,25 @@ public class TackDebugger: NSObject {
         guard symbol.type.correspondingConstType == .arithmeticType(.immutableInt(.u8)) else {
             return nil
         }
-        let word = vm.loadb(address: Word(symbol.offset))
+        let word = vm.loadb(address: UInt(symbol.offset))
         let byte = UInt8(word & 0xff)
         return byte
     }
     
-    public func addressOfSymbol(_ symbol: Symbol) -> Word {
-        let addr: Word
+    public func addressOfSymbol(_ symbol: Symbol) -> UInt {
+        let addr: UInt
         switch symbol.storage {
         case .automaticStorage:
             let fp = try! vm.getRegister(p: .fp)
             if symbol.offset < 0 {
-                addr = fp &+ Word(-symbol.offset)
+                addr = fp &+ UInt(-symbol.offset)
             }
             else {
-                addr = fp &- Word(symbol.offset)
+                addr = fp &- UInt(symbol.offset)
             }
             
         case .staticStorage:
-            addr = Word(symbol.offset)
+            addr = UInt(symbol.offset)
         }
         return addr
     }
@@ -181,7 +181,7 @@ public class TackDebugger: NSObject {
         let baseAddr = addressOfSymbol(symbol)
         var arr: [UInt8] = []
         for i in 0..<count {
-            let addr = baseAddr &+ Word(i*memoryLayoutStrategy.sizeof(type: .arithmeticType(.mutableInt(.u8))))
+            let addr = baseAddr &+ UInt(i*memoryLayoutStrategy.sizeof(type: .arithmeticType(.mutableInt(.u8))))
             let value = vm.loadb(address: addr)
             arr.append(value)
         }
@@ -198,7 +198,7 @@ public class TackDebugger: NSObject {
         let baseAddr = addressOfSymbol(symbol)
         var arr: [UInt16] = []
         for i in 0..<count {
-            let addr = baseAddr &+ Word(i*memoryLayoutStrategy.sizeof(type: .arithmeticType(.mutableInt(.u16))))
+            let addr = baseAddr &+ UInt(i*memoryLayoutStrategy.sizeof(type: .arithmeticType(.mutableInt(.u16))))
             let word = vm.loadw(address: addr)
             arr.append(word)
         }
@@ -223,7 +223,7 @@ public class TackDebugger: NSObject {
         let baseAddr = addressOfSymbol(symbol)
         var arr: [UInt8] = []
         for i in 0..<count {
-            let addr = baseAddr &+ Word(i*memoryLayoutStrategy.sizeof(type: .arithmeticType(.mutableInt(.u8))))
+            let addr = baseAddr &+ UInt(i*memoryLayoutStrategy.sizeof(type: .arithmeticType(.mutableInt(.u8))))
             let value = vm.loadb(address: addr)
             arr.append(value)
         }
@@ -252,8 +252,8 @@ public class TackDebugger: NSObject {
         let kSliceCountOffset = 1
         
         let baseAddr = addressOfSymbol(symbol)
-        let payloadAddr = vm.loadw(address: baseAddr &+ Word(kSliceBaseAddressOffset))
-        let count = vm.loadw(address: baseAddr &+ Word(kSliceCountOffset))
+        let payloadAddr = vm.loadp(address: baseAddr &+ UInt(kSliceBaseAddressOffset))
+        let count = UInt(vm.loadw(address: baseAddr &+ UInt(kSliceCountOffset)))
         
         var arr: [UInt8] = []
         for i in 0..<count {

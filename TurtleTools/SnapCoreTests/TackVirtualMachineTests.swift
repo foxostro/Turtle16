@@ -10,8 +10,7 @@ import XCTest
 import SnapCore
 
 final class TackVirtualMachineTests: XCTestCase {
-    public typealias Word = TackVirtualMachine.Word
-    fileprivate let kSizeOfSavedRegisters: Word = 7
+    fileprivate let kSizeOfSavedRegisters: UInt = 7
     
     func testGetRegister_InvalidRegister_LocalRegister() throws {
         let program = TackProgram(instructions: [])
@@ -348,9 +347,9 @@ final class TackVirtualMachineTests: XCTestCase {
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         try vm.step()
-        let a = vm.loadw(address: Word(0) &- kSizeOfSavedRegisters)
+        let a = vm.loadw(address: UInt(0) &- kSizeOfSavedRegisters)
         XCTAssertEqual(a, 0)
-        let expectedSp = Word(0) &- kSizeOfSavedRegisters
+        let expectedSp = UInt(0) &- kSizeOfSavedRegisters
         XCTAssertEqual(expectedSp, try vm.getRegister(p: .sp))
     }
     
@@ -361,9 +360,9 @@ final class TackVirtualMachineTests: XCTestCase {
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         try vm.step()
-        let a = vm.loadw(address: Word(0) &- kSizeOfSavedRegisters)
+        let a = vm.loadw(address: UInt(0) &- kSizeOfSavedRegisters)
         XCTAssertEqual(a, 0)
-        let expectedSp = Word(0) &- kSizeOfSavedRegisters &- Word(size)
+        let expectedSp = UInt(0) &- kSizeOfSavedRegisters &- UInt(size)
         XCTAssertEqual(expectedSp, try vm.getRegister(p: .sp))
     }
     
@@ -613,7 +612,7 @@ final class TackVirtualMachineTests: XCTestCase {
         let vm = TackVirtualMachine(program)
         try vm.step()
         let sp = try vm.getRegister(p: .sp)
-        let expectedSp = Word(0) &- 10
+        let expectedSp = UInt(0) &- 10
         XCTAssertEqual(sp, expectedSp)
         XCTAssertEqual(sp, try vm.getRegister(p: .p(0)))
     }
@@ -645,7 +644,7 @@ final class TackVirtualMachineTests: XCTestCase {
         let vm = TackVirtualMachine(program)
         
         var sp = try vm.getRegister(p: .sp)
-        sp = sp &- Word(count)
+        sp = sp &- UInt(count)
         vm.setRegister(.sp, p: sp)
         
         try vm.step()
@@ -708,7 +707,7 @@ final class TackVirtualMachineTests: XCTestCase {
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(0), w: 0)
         try vm.step()
-        XCTAssertEqual(Word(0) &- 1, try vm.getRegister(w: .w(1)))
+        XCTAssertEqual(UInt16(0) &- 1, try vm.getRegister(w: .w(1)))
     }
     
     func testSUBI16_pos() throws {
@@ -718,7 +717,7 @@ final class TackVirtualMachineTests: XCTestCase {
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(0), w: 0)
         try vm.step()
-        XCTAssertEqual(Word(0) &- 1, try vm.getRegister(w: .w(1)))
+        XCTAssertEqual(UInt16(0) &- 1, try vm.getRegister(w: .w(1)))
     }
     
     func testSUBI16_neg() throws {
@@ -748,7 +747,7 @@ final class TackVirtualMachineTests: XCTestCase {
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(0), w: 2)
         try vm.step()
-        XCTAssertEqual(Word(0) &- 4, try vm.getRegister(w: .w(1)))
+        XCTAssertEqual(UInt16(0) &- 4, try vm.getRegister(w: .w(1)))
     }
     
     func testLI16_pos() throws {
@@ -766,7 +765,7 @@ final class TackVirtualMachineTests: XCTestCase {
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         try vm.step()
-        XCTAssertEqual(Word(0) &- 1, try vm.getRegister(w: .w(0)))
+        XCTAssertEqual(UInt16(0) &- 1, try vm.getRegister(w: .w(0)))
     }
     
     func testLI16_TooBigPos() throws {
@@ -916,7 +915,7 @@ final class TackVirtualMachineTests: XCTestCase {
         vm.setRegister(.w(0), w: 2)
         vm.setRegister(.w(1), w: 1)
         try vm.step()
-        XCTAssertEqual(Word(0) &- 1, try vm.getRegister(w: .w(2)))
+        XCTAssertEqual(UInt16(0) &- 1, try vm.getRegister(w: .w(2)))
     }
     
     func testMUL16() throws {
@@ -1131,7 +1130,7 @@ final class TackVirtualMachineTests: XCTestCase {
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(0), w: 1000)
-        vm.setRegister(.w(1), w: Word(0) &- Word(1000))
+        vm.setRegister(.w(1), w: UInt16(0) &- UInt16(1000))
         try vm.step()
         XCTAssertEqual(true, try vm.getRegister(o: .o(2)))
     }
@@ -1141,7 +1140,7 @@ final class TackVirtualMachineTests: XCTestCase {
             .ltw(.o(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(0), w: Word(0) &- Word(1000))
+        vm.setRegister(.w(0), w: UInt16(0) &- UInt16(1000))
         vm.setRegister(.w(1), w: 1000)
         try vm.step()
         XCTAssertEqual(false, try vm.getRegister(o: .o(2)))
@@ -1153,7 +1152,7 @@ final class TackVirtualMachineTests: XCTestCase {
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(1), w: 1000)
-        vm.setRegister(.w(0), w: Word(0) &- Word(1000))
+        vm.setRegister(.w(0), w: UInt16(0) &- UInt16(1000))
         try vm.step()
         XCTAssertEqual(true, try vm.getRegister(o: .o(2)))
     }
@@ -1163,7 +1162,7 @@ final class TackVirtualMachineTests: XCTestCase {
             .gew(.o(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(1), w: Word(0) &- Word(1000))
+        vm.setRegister(.w(1), w: UInt16(0) &- UInt16(1000))
         vm.setRegister(.w(0), w: 1000)
         try vm.step()
         XCTAssertEqual(false, try vm.getRegister(o: .o(2)))
@@ -1174,7 +1173,7 @@ final class TackVirtualMachineTests: XCTestCase {
             .lew(.o(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(1), w: Word(0) &- Word(1000))
+        vm.setRegister(.w(1), w: UInt16(0) &- UInt16(1000))
         vm.setRegister(.w(0), w: 1000)
         try vm.step()
         XCTAssertEqual(true, try vm.getRegister(o: .o(2)))
@@ -1186,7 +1185,7 @@ final class TackVirtualMachineTests: XCTestCase {
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(1), w: 1000)
-        vm.setRegister(.w(0), w: Word(0) &- Word(1000))
+        vm.setRegister(.w(0), w: UInt16(0) &- UInt16(1000))
         try vm.step()
         XCTAssertEqual(false, try vm.getRegister(o: .o(2)))
     }
@@ -1197,7 +1196,7 @@ final class TackVirtualMachineTests: XCTestCase {
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(1), w: 1000)
-        vm.setRegister(.w(0), w: Word(0) &- Word(1000))
+        vm.setRegister(.w(0), w: UInt16(0) &- UInt16(1000))
         try vm.step()
         XCTAssertEqual(true, try vm.getRegister(o: .o(2)))
     }
@@ -1207,7 +1206,7 @@ final class TackVirtualMachineTests: XCTestCase {
             .gtw(.o(2), .w(1), .w(0))
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.w(1), w: Word(0) &- Word(1000))
+        vm.setRegister(.w(1), w: UInt16(0) &- UInt16(1000))
         vm.setRegister(.w(0), w: 1000)
         try vm.step()
         XCTAssertEqual(false, try vm.getRegister(o: .o(2)))
@@ -1492,7 +1491,6 @@ final class TackVirtualMachineTests: XCTestCase {
     }
     
     func testDIV8_negative_divisor() throws {
-        #warning("TODO: This test fails because DIV{W,B} does not handle signed operands correctly.")
         let program = TackProgram(instructions: [
             .divb(.b(2), .b(1), .b(0))
         ], labels: [:])
@@ -1500,7 +1498,6 @@ final class TackVirtualMachineTests: XCTestCase {
         vm.setRegister(.b(1), b: 2)
         vm.setRegister(.b(0), b: UInt8(0) &- UInt8(1))
         try vm.step()
-        // TODO: I need a DIV{B,W} and a DIVU{B,W} instruction for signed and unsigned division, respectively.
         XCTAssertEqual(UInt8(0) &- UInt8(2), try vm.getRegister(b: .b(2)))
     }
     
@@ -1848,7 +1845,7 @@ final class TackVirtualMachineTests: XCTestCase {
         let vm = TackVirtualMachine(program)
         vm.setRegister(.b(0), b: 0x80)
         try vm.step()
-        XCTAssertEqual(Word(0) &- 0x80, try vm.getRegister(w: .w(1)))
+        XCTAssertEqual(UInt16(0) &- 0x80, try vm.getRegister(w: .w(1)))
     }
     
     func testMOVSBW_Zero() throws {
@@ -1980,7 +1977,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testSyscall_getc() throws {
         let syscallNumber = TackVirtualMachine.Syscall.getc.rawValue
-        let addressOfArgumentStructure = UInt16(274)
+        let addressOfArgumentStructure = UInt(274)
         let program = TackProgram(instructions: [
             // Write the syscall number to memory at 272, keep address in vr0.
             .lip(.p(0), 272),
@@ -2006,7 +2003,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testSyscall_putc() throws {
         let syscallNumber = TackVirtualMachine.Syscall.putc.rawValue
-        let addressOfArgumentStructure = UInt16(274)
+        let addressOfArgumentStructure = UInt(274)
         let argument = 65
         let program = TackProgram(instructions: [
             // Write the syscall number to memory at 272, keep address in vr0.
@@ -2059,7 +2056,7 @@ final class TackVirtualMachineTests: XCTestCase {
             .addip(.p(1), .p(0), 1)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
-        vm.setRegister(.p(0), p: 0xffff)
+        vm.setRegister(.p(0), p: ~0)
         try vm.step()
         XCTAssertEqual(0, try vm.getRegister(p: .p(1)))
     }
@@ -2071,6 +2068,6 @@ final class TackVirtualMachineTests: XCTestCase {
         let vm = TackVirtualMachine(program)
         vm.setRegister(.p(0), p: 0)
         try vm.step()
-        XCTAssertEqual(0xffff, try vm.getRegister(p: .p(1)))
+        XCTAssertEqual(~0, try vm.getRegister(p: .p(1)))
     }
 }

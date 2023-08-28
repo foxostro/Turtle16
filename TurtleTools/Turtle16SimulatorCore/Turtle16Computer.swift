@@ -180,7 +180,16 @@ public class Turtle16Computer: NSObject, NSSecureCoding {
     }
     
     public func restore(from snapshot: Data) {
-        let decodedComputer = try! NSKeyedUnarchiver.unarchivedObject(ofClass: Turtle16Computer.self, from: snapshot)!
+        var decodedComputer: Turtle16Computer? = nil
+        do {
+            decodedComputer = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(snapshot) as? Turtle16Computer
+        }
+        catch {
+            fatalError("Exception occured while attempting to restore computer state from snapshot: \(error.localizedDescription)")
+        }
+        guard let decodedComputer else {
+            fatalError("Failed to restore computer state from snapshot.")
+        }
         cpu = decodedComputer.cpu
         ram = decodedComputer.ram
         cachedDisassembly = nil

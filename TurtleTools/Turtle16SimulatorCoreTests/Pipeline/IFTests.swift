@@ -131,7 +131,7 @@ class IFTests: XCTestCase {
             return
         }
         var stageIF2: IF! = nil
-        XCTAssertNoThrow(stageIF2 = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? IF)
+        XCTAssertNoThrow(stageIF2 = try IF.decode(from: data))
         XCTAssertEqual(stageIF1, stageIF2)
     }
 }

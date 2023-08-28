@@ -108,6 +108,20 @@ public class Turtle16Computer: NSObject, NSSecureCoding {
         coder.encode(ram, forKey: "ram")
     }
     
+    public static func decode(from data: Data) throws -> Turtle16Computer {
+        var decodedObject: Turtle16Computer? = nil
+        let unarchiver = try NSKeyedUnarchiver(forReadingFrom: data)
+        unarchiver.requiresSecureCoding = false
+        decodedObject = unarchiver.decodeObject(of: self, forKey: NSKeyedArchiveRootObjectKey)
+        if let error = unarchiver.error {
+            fatalError("Error occured while attempting to decode \(self) from data: \(error.localizedDescription)")
+        }
+        guard let decodedObject else {
+            fatalError("Failed to decode \(self) from data.")
+        }
+        return decodedObject
+    }
+    
     public func setRegister(_ idx: Int, _ val: UInt16) {
         cpu.setRegister(idx, val)
     }
@@ -175,14 +189,19 @@ public class Turtle16Computer: NSObject, NSSecureCoding {
     }
     
     public func snapshot() -> Data {
-        let snapshot = try! NSKeyedArchiver.archivedData(withRootObject: self, requiringSecureCoding: true)
+        let snapshot = try! NSKeyedArchiver.archivedData(withRootObject: self, requiringSecureCoding: false)
         return snapshot
     }
     
     public func restore(from snapshot: Data) {
         var decodedComputer: Turtle16Computer? = nil
         do {
-            decodedComputer = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(snapshot) as? Turtle16Computer
+            let unarchiver = try NSKeyedUnarchiver(forReadingFrom: snapshot)
+            unarchiver.requiresSecureCoding = false
+            decodedComputer = unarchiver.decodeObject(of: Turtle16Computer.self, forKey: NSKeyedArchiveRootObjectKey)
+            if let error = unarchiver.error {
+                fatalError("Error occured while attempting to restore computer state from snapshot: \(error.localizedDescription)")
+            }
         }
         catch {
             fatalError("Exception occured while attempting to restore computer state from snapshot: \(error.localizedDescription)")

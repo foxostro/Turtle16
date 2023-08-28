@@ -50,7 +50,14 @@ class Document: NSDocument {
     }
 
     override func read(from data: Data, ofType typeName: String) throws {
-        guard let decodedDebugger = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? DebugConsole else {
+        var decodedDebugger: DebugConsole? = nil
+        let unarchiver = try NSKeyedUnarchiver(forReadingFrom: data)
+        unarchiver.requiresSecureCoding = false
+        decodedComputer = unarchiver.decodeObject(of: DebugConsole.self, forKey: NSKeyedArchiveRootObjectKey)
+        if let error = unarchiver.error {
+            throw NSError(domain: kSimulator16ErrorDomain, code: kFailedToReadDocument, userInfo: nil)
+        }
+        guard let decodedDebugger else {
             throw NSError(domain: kSimulator16ErrorDomain, code: kFailedToReadDocument, userInfo: nil)
         }
         debugger = decodedDebugger

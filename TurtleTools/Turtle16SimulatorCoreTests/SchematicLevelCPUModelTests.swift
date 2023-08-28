@@ -1712,7 +1712,7 @@ class SchematicLevelCPUModelTests: XCTestCase {
             return
         }
         var cpu2: SchematicLevelCPUModel! = nil
-        XCTAssertNoThrow(cpu2 = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? SchematicLevelCPUModel)
+        XCTAssertNoThrow(cpu2 = try SchematicLevelCPUModel.decode(from: data))
         XCTAssertEqual(cpu1, cpu2)
     }
     

@@ -86,7 +86,7 @@ class MEMTests: XCTestCase {
             return
         }
         var stage2: MEM! = nil
-        XCTAssertNoThrow(stage2 = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? MEM)
+        XCTAssertNoThrow(stage2 = try MEM.decode(from: data))
         XCTAssertEqual(stage1, stage2)
     }
 }

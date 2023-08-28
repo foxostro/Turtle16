@@ -549,7 +549,7 @@ class IDT7381Tests: XCTestCase {
             return
         }
         var alu2: IDT7381! = nil
-        XCTAssertNoThrow(alu2 = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? IDT7381)
+        XCTAssertNoThrow(alu2 = try IDT7381.decode(from: data))
         XCTAssertEqual(alu1, alu2)
     }
 }

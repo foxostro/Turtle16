@@ -95,6 +95,20 @@ public class IDT7381: NSObject, NSSecureCoding {
         coder.encode(f, forKey: "f")
     }
     
+    public static func decode(from data: Data) throws -> IDT7381 {
+        var decodedObject: IDT7381? = nil
+        let unarchiver = try NSKeyedUnarchiver(forReadingFrom: data)
+        unarchiver.requiresSecureCoding = false
+        decodedObject = unarchiver.decodeObject(of: self, forKey: NSKeyedArchiveRootObjectKey)
+        if let error = unarchiver.error {
+            fatalError("Error occured while attempting to decode \(self) from data: \(error.localizedDescription)")
+        }
+        guard let decodedObject else {
+            fatalError("Failed to decode \(self) from data.")
+        }
+        return decodedObject
+    }
+    
     public func step(input: Input) -> Output {
         if input.ena == 0 {
             a = input.a

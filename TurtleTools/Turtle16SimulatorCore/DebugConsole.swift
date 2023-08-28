@@ -61,6 +61,20 @@ open class DebugConsole: NSObject, NSSecureCoding {
         coder.encode(computer, forKey: "computer")
     }
     
+    public static func decode(from data: Data) throws -> DebugConsole {
+        var decodedObject: DebugConsole? = nil
+        let unarchiver = try NSKeyedUnarchiver(forReadingFrom: data)
+        unarchiver.requiresSecureCoding = false
+        decodedObject = unarchiver.decodeObject(of: self, forKey: NSKeyedArchiveRootObjectKey)
+        if let error = unarchiver.error {
+            fatalError("Error occured while attempting to decode \(self) from data: \(error.localizedDescription)")
+        }
+        guard let decodedObject else {
+            fatalError("Failed to decode \(self) from data.")
+        }
+        return decodedObject
+    }
+    
     public func eval(_ text: String) {
         assert(!shouldQuit)
         logger.append("> \(text)\n")

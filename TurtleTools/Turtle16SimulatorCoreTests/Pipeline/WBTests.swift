@@ -81,7 +81,7 @@ class WBTests: XCTestCase {
             return
         }
         var stage2: WB! = nil
-        XCTAssertNoThrow(stage2 = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? WB)
+        XCTAssertNoThrow(stage2 = try WB.decode(from: data))
         XCTAssertEqual(stage1, stage2)
     }
 }

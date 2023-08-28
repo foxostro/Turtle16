@@ -77,7 +77,7 @@ class DebugConsoleTests: XCTestCase {
             return
         }
         var debugConsole2: DebugConsole! = nil
-        XCTAssertNoThrow(debugConsole2 = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? DebugConsole)
+        XCTAssertNoThrow(debugConsole2 = try DebugConsole.decode(from: data))
         XCTAssertEqual(debugConsole1, debugConsole2)
     }
 }

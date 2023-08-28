@@ -218,6 +218,20 @@ public class SchematicLevelCPUModel: NSObject, CPU {
         coder.encode(outputWB, forKey: "outputWB")
     }
     
+    public static func decode(from data: Data) throws -> SchematicLevelCPUModel {
+        var decodedObject: SchematicLevelCPUModel? = nil
+        let unarchiver = try NSKeyedUnarchiver(forReadingFrom: data)
+        unarchiver.requiresSecureCoding = false
+        decodedObject = unarchiver.decodeObject(of: self, forKey: NSKeyedArchiveRootObjectKey)
+        if let error = unarchiver.error {
+            fatalError("Error occured while attempting to decode \(self) from data: \(error.localizedDescription)")
+        }
+        guard let decodedObject else {
+            fatalError("Failed to decode \(self) from data.")
+        }
+        return decodedObject
+    }
+    
     public static func ==(lhs: SchematicLevelCPUModel, rhs: SchematicLevelCPUModel) -> Bool {
         return lhs.isEqual(rhs)
     }

@@ -78,7 +78,7 @@ class Turtle16ComputerTests: XCTestCase {
             return
         }
         var computer2: Turtle16Computer! = nil
-        XCTAssertNoThrow(computer2 = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? Turtle16Computer)
+        XCTAssertNoThrow(computer2 = try Turtle16Computer.decode(from: data))
         XCTAssertEqual(computer1, computer2)
     }
     

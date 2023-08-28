@@ -228,7 +228,7 @@ class EXTests: XCTestCase {
             return
         }
         var stage2: EX! = nil
-        XCTAssertNoThrow(stage2 = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? EX)
+        XCTAssertNoThrow(stage2 = try EX.decode(from: data))
         XCTAssertEqual(stage1, stage2)
     }
 }

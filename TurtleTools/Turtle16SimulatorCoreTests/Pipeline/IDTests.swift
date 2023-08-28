@@ -433,7 +433,7 @@ class IDTests: XCTestCase {
             return
         }
         var stageID2: ID! = nil
-        XCTAssertNoThrow(stageID2 = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? ID)
+        XCTAssertNoThrow(stageID2 = try ID.decode(from: data))
         XCTAssertEqual(stageID1, stageID2)
     }
 }

@@ -325,6 +325,20 @@ public class EX: NSObject, NSSecureCoding {
         coder.encode(associatedPC, forKey: "associatedPC")
     }
     
+    public static func decode(from data: Data) throws -> EX {
+        var decodedObject: EX? = nil
+        let unarchiver = try NSKeyedUnarchiver(forReadingFrom: data)
+        unarchiver.requiresSecureCoding = false
+        decodedObject = unarchiver.decodeObject(of: self, forKey: NSKeyedArchiveRootObjectKey)
+        if let error = unarchiver.error {
+            fatalError("Error occured while attempting to decode \(self) from data: \(error.localizedDescription)")
+        }
+        guard let decodedObject else {
+            fatalError("Failed to decode \(self) from data.")
+        }
+        return decodedObject
+    }
+    
     public static func ==(lhs: EX, rhs: EX) -> Bool {
         return lhs.isEqual(rhs)
     }

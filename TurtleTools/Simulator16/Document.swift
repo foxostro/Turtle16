@@ -53,9 +53,9 @@ class Document: NSDocument {
         var decodedDebugger: DebugConsole? = nil
         let unarchiver = try NSKeyedUnarchiver(forReadingFrom: data)
         unarchiver.requiresSecureCoding = false
-        decodedComputer = unarchiver.decodeObject(of: DebugConsole.self, forKey: NSKeyedArchiveRootObjectKey)
+        decodedDebugger = unarchiver.decodeObject(of: DebugConsole.self, forKey: NSKeyedArchiveRootObjectKey)
         if let error = unarchiver.error {
-            throw NSError(domain: kSimulator16ErrorDomain, code: kFailedToReadDocument, userInfo: nil)
+            throw NSError(domain: kSimulator16ErrorDomain, code: kFailedToReadDocument, userInfo: [NSUnderlyingErrorKey: error])
         }
         guard let decodedDebugger else {
             throw NSError(domain: kSimulator16ErrorDomain, code: kFailedToReadDocument, userInfo: nil)

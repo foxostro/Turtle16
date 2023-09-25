@@ -48,70 +48,75 @@ TestFixtureInputs TestFixtureInputPorts::read() const {
 }
 
 TestFixtureOutputs::TestFixtureOutputs() :
-  SelC_MEM(0),
-  Ctl_MEM(0b1111111),
-  Ins_ID(0),
-  c(0),
-  z(0),
-  v(0),
-  n(0),
-  phi1(0),
-  phi2(0),
-  rst(1) {
+  SelC_MEM_(0),
+  Ctl_MEM_(0b1111111),
+  Ins_ID_(0),
+  carry_(0),
+  zero_(0),
+  overflow_(0),
+  negative_(0),
+  phi1_(0),
+  phi2_(1),
+  rst_(1) {
 }
 
 TestFixtureOutputs TestFixtureOutputs::selC(int index) const {
   TestFixtureOutputs result = *this;
-  result.SelC_MEM = index;
+  result.SelC_MEM_ = index;
   return result;
 }
 
 TestFixtureOutputs TestFixtureOutputs::ctl(unsigned value) const {
   TestFixtureOutputs result = *this;
-  result.Ctl_MEM = value;
+  result.Ctl_MEM_ = value;
   return result;
 }
 
 TestFixtureOutputs TestFixtureOutputs::ins(unsigned value) const {
   TestFixtureOutputs result = *this;
-  result.Ins_ID = value;
+  result.Ins_ID_ = value;
   return result;
 }
 
 TestFixtureOutputs TestFixtureOutputs::carry(bool isActive) const {
   TestFixtureOutputs result = *this;
-  result.c = isActive ? 1 : 0;
+  result.carry_ = isActive ? 1 : 0;
   return result;
 }
 
 TestFixtureOutputs TestFixtureOutputs::zero(bool isActive) const {
   TestFixtureOutputs result = *this;
-  result.z = isActive ? 1 : 0;
+  result.zero_ = isActive ? 1 : 0;
   return result;
 }
 
 TestFixtureOutputs TestFixtureOutputs::overflow(bool isActive) const {
   TestFixtureOutputs result = *this;
-  result.v = isActive ? 1 : 0;
+  result.overflow_ = isActive ? 1 : 0;
   return result;
 }
 
 TestFixtureOutputs TestFixtureOutputs::negative(bool isActive) const {
   TestFixtureOutputs result = *this;
-  result.n = isActive ? 1 : 0;
+  result.negative_ = isActive ? 1 : 0;
   return result;
 }
 
-TestFixtureOutputs TestFixtureOutputs::tick(unsigned value) const {
+TestFixtureOutputs TestFixtureOutputs::phi1(unsigned value) const {
   TestFixtureOutputs result = *this;
-  result.phi1 = value;
-  result.phi2 = value;
+  result.phi1_ = value;
+  return result;
+}
+
+TestFixtureOutputs TestFixtureOutputs::phi2(unsigned value) const {
+  TestFixtureOutputs result = *this;
+  result.phi2_ = value;
   return result;
 }
 
 TestFixtureOutputs TestFixtureOutputs::reset(bool isActive) const {
   TestFixtureOutputs result = *this;
-  result.rst = isActive ? 0 : 1;
+  result.rst_ = isActive ? 0 : 1;
   return result;
 }
 
@@ -132,39 +137,39 @@ void TestFixtureOutputPorts::initializeHardware() const {
 static void updateTestFixtureOutputs(const TestFixtureOutputPorts &outputPorts, const TestFixtureOutputs &outputs) {
   // Rev A Hardware Requires the Input bits to be read in this order.
   // These are named after the corresponding nets in the KiCad schematic:
-  int RST = outputs.rst & 1;
-  int Phi2 = outputs.phi2 & 1;
-  int Phi1 = outputs.phi1 & 1;
-  int n = outputs.n & 1;
-  int v = outputs.v & 1;
-  int z = outputs.z & 1;
-  int c = outputs.c & 1;
-  int Ins_ID15 = (outputs.Ins_ID >> 15) & 1;
-  int Ins_ID14 = (outputs.Ins_ID >> 14) & 1;
-  int Ins_ID13 = (outputs.Ins_ID >> 13) & 1;
-  int Ins_ID12 = (outputs.Ins_ID >> 12) & 1;
-  int Ins_ID11 = (outputs.Ins_ID >> 11) & 1;
-  int Ins_ID10 = (outputs.Ins_ID >> 10) & 1;
-  int Ins_ID9  = (outputs.Ins_ID >>  9) & 1;
-  int Ins_ID8  = (outputs.Ins_ID >>  8) & 1;
-  int Ins_ID7  = (outputs.Ins_ID >>  7) & 1;
-  int Ins_ID6  = (outputs.Ins_ID >>  6) & 1;
-  int Ins_ID5  = (outputs.Ins_ID >>  5) & 1;
-  int Ins_ID4  = (outputs.Ins_ID >>  4) & 1;
-  int Ins_ID3  = (outputs.Ins_ID >>  3) & 1;
-  int Ins_ID2  = (outputs.Ins_ID >>  2) & 1;
-  int Ins_ID1  = (outputs.Ins_ID >>  1) & 1;
-  int Ins_ID0  = (outputs.Ins_ID >>  0) & 1;
-  int Ctl_MEM20 = (outputs.Ctl_MEM >> 6) & 1;
-  int Ctl_MEM19 = (outputs.Ctl_MEM >> 5) & 1;
-  int Ctl_MEM18 = (outputs.Ctl_MEM >> 4) & 1;
-  int Ctl_MEM17 = (outputs.Ctl_MEM >> 3) & 1;
-  int Ctl_MEM16 = (outputs.Ctl_MEM >> 2) & 1;
-  int Ctl_MEM15 = (outputs.Ctl_MEM >> 1) & 1;
-  int Ctl_MEM14 = (outputs.Ctl_MEM >> 0) & 1;
-  int SelC_MEM2 = (outputs.SelC_MEM >> 2) & 1;
-  int SelC_MEM1 = (outputs.SelC_MEM >> 1) & 1;
-  int SelC_MEMO = (outputs.SelC_MEM >> 0) & 1;
+  int RST = outputs.rst_ & 1;
+  int Phi2 = outputs.phi2_ & 1;
+  int Phi1 = outputs.phi1_ & 1;
+  int n = outputs.negative_ & 1;
+  int v = outputs.overflow_ & 1;
+  int z = outputs.zero_ & 1;
+  int c = outputs.carry_ & 1;
+  int Ins_ID15 = (outputs.Ins_ID_ >> 15) & 1;
+  int Ins_ID14 = (outputs.Ins_ID_ >> 14) & 1;
+  int Ins_ID13 = (outputs.Ins_ID_ >> 13) & 1;
+  int Ins_ID12 = (outputs.Ins_ID_ >> 12) & 1;
+  int Ins_ID11 = (outputs.Ins_ID_ >> 11) & 1;
+  int Ins_ID10 = (outputs.Ins_ID_ >> 10) & 1;
+  int Ins_ID9  = (outputs.Ins_ID_ >>  9) & 1;
+  int Ins_ID8  = (outputs.Ins_ID_ >>  8) & 1;
+  int Ins_ID7  = (outputs.Ins_ID_ >>  7) & 1;
+  int Ins_ID6  = (outputs.Ins_ID_ >>  6) & 1;
+  int Ins_ID5  = (outputs.Ins_ID_ >>  5) & 1;
+  int Ins_ID4  = (outputs.Ins_ID_ >>  4) & 1;
+  int Ins_ID3  = (outputs.Ins_ID_ >>  3) & 1;
+  int Ins_ID2  = (outputs.Ins_ID_ >>  2) & 1;
+  int Ins_ID1  = (outputs.Ins_ID_ >>  1) & 1;
+  int Ins_ID0  = (outputs.Ins_ID_ >>  0) & 1;
+  int Ctl_MEM20 = (outputs.Ctl_MEM_ >> 6) & 1;
+  int Ctl_MEM19 = (outputs.Ctl_MEM_ >> 5) & 1;
+  int Ctl_MEM18 = (outputs.Ctl_MEM_ >> 4) & 1;
+  int Ctl_MEM17 = (outputs.Ctl_MEM_ >> 3) & 1;
+  int Ctl_MEM16 = (outputs.Ctl_MEM_ >> 2) & 1;
+  int Ctl_MEM15 = (outputs.Ctl_MEM_ >> 1) & 1;
+  int Ctl_MEM14 = (outputs.Ctl_MEM_ >> 0) & 1;
+  int SelC_MEM2 = (outputs.SelC_MEM_ >> 2) & 1;
+  int SelC_MEM1 = (outputs.SelC_MEM_ >> 1) & 1;
+  int SelC_MEMO = (outputs.SelC_MEM_ >> 0) & 1;
 
   int bits[] = {
     RST,
@@ -216,9 +221,17 @@ void TestFixtureOutputPorts::set(const TestFixtureOutputs &outputs) const {
 
 TestFixtureOutputs TestFixtureOutputPorts::tick(const TestFixtureOutputs &testFixtureOutputs_) const {
   TestFixtureOutputs testFixtureOutputs = testFixtureOutputs_;
-  testFixtureOutputs = testFixtureOutputs.tick(1);
+  testFixtureOutputs = testFixtureOutputs
+    .phi1(0)
+    .phi2(1);
   set(testFixtureOutputs);
-  testFixtureOutputs = testFixtureOutputs.tick(0);
+  testFixtureOutputs = testFixtureOutputs
+    .phi1(1)
+    .phi2(0);
+  set(testFixtureOutputs);
+  testFixtureOutputs = testFixtureOutputs
+    .phi1(0)
+    .phi2(1);
   set(testFixtureOutputs);
   return testFixtureOutputs;
 }

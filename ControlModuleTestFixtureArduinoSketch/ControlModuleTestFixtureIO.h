@@ -22,16 +22,16 @@ struct TestFixtureInputPorts {
 };
 
 struct TestFixtureOutputs {
-  unsigned SelC_MEM;
-  unsigned Ctl_MEM;
-  unsigned Ins_ID;
-  unsigned c;
-  unsigned z;
-  unsigned v;
-  unsigned n;
-  unsigned phi1;
-  unsigned phi2;
-  unsigned rst;
+  unsigned SelC_MEM_;
+  unsigned Ctl_MEM_;
+  unsigned Ins_ID_;
+  unsigned carry_;
+  unsigned zero_;
+  unsigned overflow_;
+  unsigned negative_;
+  unsigned phi1_;
+  unsigned phi2_;
+  unsigned rst_;
 
   TestFixtureOutputs();
   TestFixtureOutputs selC(int index) const;
@@ -41,7 +41,8 @@ struct TestFixtureOutputs {
   TestFixtureOutputs zero(bool isActive) const;
   TestFixtureOutputs overflow(bool isActive) const;
   TestFixtureOutputs negative(bool isActive) const;
-  TestFixtureOutputs tick(unsigned value) const;
+  TestFixtureOutputs phi1(unsigned value) const;
+  TestFixtureOutputs phi2(unsigned value) const;
   TestFixtureOutputs reset(bool isActive) const;
 };
 

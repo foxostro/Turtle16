@@ -24,58 +24,98 @@ const LEDOutputPorts ledPorts = {
   .CLR = 14
 };
 
-// void testReset(unsigned ledState) {
-//   printf("%s: ", __FUNCTION__);
-//   printf("Testing reset function...");
+void testInstructionWordCopiedOver(unsigned ledState) {
+  TestFixtureOutputs testFixtureOutputs;
 
-//   // Assert the reset line
-//   BusOutputs busOutputs;
-//   TestFixtureOutputs testFixtureOutputs = TestFixtureOutputs()
-//     .ready(false)
-//     .reset(true)
-//     .ledState(ledState);
-//   busOutputPorts.set(busOutputs);
-//   testFixtureOutputPorts.set(testFixtureOutputs);
+  printf("%s: ", __FUNCTION__);
+  printf("Check that the lower eleven bits of the instruction word are copied to the next pipeline stage...");
 
-//   // Pulse the clock
-//   testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);
+  // Assert the reset line
+  testFixtureOutputs = TestFixtureOutputs().ins(0b1111111111111111);
+  testFixtureOutputPorts.set(testFixtureOutputs);
 
-//   // De-assert the reset line
-//   testFixtureOutputs = testFixtureOutputs.reset(false);
-//   testFixtureOutputPorts.set(testFixtureOutputs);
+  // Pulse the clock
+  testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);
   
-//   BusInputs actualBusInputs = busInputPorts.read();
-//   assertEqual(0, actualBusInputs.Bank, "Expect that Bank is zero after reset.");
+  TestFixtureInputs actualTestFixtureInputs = testFixtureInputPorts.read();
+  assertEqual(0b11111111111, actualTestFixtureInputs.Ins_EX, "Expect Ins_EX contains the lower eleven bits of the instruction word");
+
+  printf("passed\n");
+}
+
+void testHlt(unsigned ledState) {
+  TestFixtureOutputs testFixtureOutputs;
+
+  printf("%s: ", __FUNCTION__);
+  printf("Put a HLT through the Control unit and check what it outputs to the text fixture...");
+
+  // Assert the reset line
+  testFixtureOutputs = TestFixtureOutputs().ins(1 << 11);
+  testFixtureOutputPorts.set(testFixtureOutputs);
+
+  // Pulse the clock
+  testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);
   
-//   TestFixtureInputs actualTestFixtureInputs = testFixtureInputPorts.read();
-//   assertEqual(0b1111, actualTestFixtureInputs.Ctl_WB, "Expect that no control signals are asserted.");
+  TestFixtureInputs actualTestFixtureInputs = testFixtureInputPorts.read();
+  assertEqual(0, actualTestFixtureInputs.Ctl_EX & 1, "Expect HLT control line is active");
 
-//   printf("passed\n");
-// }
+  printf("passed\n");
+}
 
-// void testNop(unsigned ledState) {
-//   printf("%s: ", __FUNCTION__);
-//   printf("Put a NOP through the MEM stage and check what it outputs to the text fixture...");
+void testReset(unsigned ledState) {
+  TestFixtureOutputs testFixtureOutputs;
 
-//   BusOutputs busOutputs;
-//   TestFixtureOutputs testFixtureOutputs = TestFixtureOutputs()
-//     .ledState(ledState);
-//   busOutputPorts.set(busOutputs);
-//   testFixtureOutputPorts.set(testFixtureOutputs);
+  printf("%s: ", __FUNCTION__);
+  printf("Testing reset function...");
 
-//   BusInputs actualBusInputs = busInputPorts.read();
-//   assertEqual(0, actualBusInputs.Bank, "Expect that bank was zero.");
+  // Assert the reset line
+  testFixtureOutputs = TestFixtureOutputs().reset(true);
+  testFixtureOutputPorts.set(testFixtureOutputs);
+
+  // Pulse the clock
+  testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);
   
-//   TestFixtureInputs actualTestFixtureInputs = testFixtureInputPorts.read();
-//   assertEqual(0b1111, actualTestFixtureInputs.Ctl_WB, "Expect that no control signals are asserted.");
-//   assertEqual(0b111, actualTestFixtureInputs.SelC_WB, "Expect that SelC is passed through unmodified.");
+  TestFixtureInputs actualTestFixtureInputs = testFixtureInputPorts.read();
+  assertEqual(0b111111111111111111111, actualTestFixtureInputs.Ctl_EX, "Expect that no control signals are asserted.");
+  assertEqual(0, actualTestFixtureInputs.Ins_EX, "Expect Ins_EX==0");
+  assertEqual(0, actualTestFixtureInputs.stall, "Expect stall==0");
+  assertEqual(0, actualTestFixtureInputs.fwd_a, "Expect fwd_a==0");
+  assertEqual(0, actualTestFixtureInputs.fwd_ex_to_a, "Expect fwd_ex_to_a==0");
+  assertEqual(0, actualTestFixtureInputs.fwd_mem_to_a, "Expect fwd_mem_to_a==0");
+  assertEqual(0, actualTestFixtureInputs.fwd_b, "Expect fwd_b==0");
+  assertEqual(0, actualTestFixtureInputs.fwd_ex_to_b, "Expect fwd_ex_to_b==0");
+  assertEqual(0, actualTestFixtureInputs.fwd_mem_to_b, "Expect fwd_mem_to_b==0");
 
-//   printf("passed\n");
-// }
+  printf("passed\n");
+}
+
+void testNop(unsigned ledState) {
+  TestFixtureOutputs testFixtureOutputs;
+
+  printf("%s: ", __FUNCTION__);
+  printf("Put a NOP through the Control unit and check what it outputs to the text fixture...");
+
+  // Assert NOP instruction as input
+  testFixtureOutputs = TestFixtureOutputs().ins(0);
+  testFixtureOutputPorts.set(testFixtureOutputs);
+
+  assertEqual(0, 1, "Break");
+  // Pulse the clock
+  //testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);  
+  
+  TestFixtureInputs actualTestFixtureInputs = testFixtureInputPorts.read();
+  assertEqual(0, actualTestFixtureInputs.Ins_EX, "Expect Ins_EX==0");
+  assertEqual(0, actualTestFixtureInputs.stall, "Expect stall==0");
+  assertEqual(0b111111111111111111111, actualTestFixtureInputs.Ctl_EX, "Expect that no control signals are asserted.");
+
+  printf("passed\n");
+}
 
 void (*allTests[])(unsigned) = {
+  testInstructionWordCopiedOver,
+  testHlt,
   // testReset,
-  // testNop
+  testNop,
 };
 
 void doAllTests() {

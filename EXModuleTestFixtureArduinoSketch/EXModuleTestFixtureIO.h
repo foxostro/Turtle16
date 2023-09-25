@@ -27,7 +27,7 @@ struct TestFixtureOutputs {
   unsigned B_;
   unsigned A_;
   unsigned Ins_EX_;
-  unsigned Ctl_EX_;
+  uint32_t Ctl_EX_;
 
   TestFixtureOutputs();
   TestFixtureOutputs phi1(unsigned value) const;
@@ -35,7 +35,7 @@ struct TestFixtureOutputs {
   TestFixtureOutputs b(unsigned value) const;
   TestFixtureOutputs a(unsigned value) const;
   TestFixtureOutputs ins(unsigned value) const;
-  TestFixtureOutputs ctl(unsigned value) const;
+  TestFixtureOutputs ctl(uint32_t value) const;
 };
 
 struct TestFixtureOutputPorts {

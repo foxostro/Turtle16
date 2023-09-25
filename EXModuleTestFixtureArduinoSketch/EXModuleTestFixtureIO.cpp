@@ -86,7 +86,7 @@ TestFixtureOutputs TestFixtureOutputs::ins(unsigned value) const {
   return result;
 }
 
-TestFixtureOutputs TestFixtureOutputs::ctl(unsigned value) const {
+TestFixtureOutputs TestFixtureOutputs::ctl(uint32_t value) const {
   TestFixtureOutputs result = *this;
   result.Ctl_EX_ = value;
   return result;

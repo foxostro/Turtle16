@@ -24,30 +24,136 @@ const LEDOutputPorts ledPorts = {
   .CLR = 14
 };
 
-// void testNop(unsigned ledState) {
-//   TestFixtureOutputs testFixtureOutputs;
+void testSelC(unsigned ledState) {
+  TestFixtureOutputs testFixtureOutputs;
 
-//   printf("%s: ", __FUNCTION__);
-//   printf("Put a NOP through the Control unit and check what it outputs to the text fixture...");
+  printf("%s: ", __FUNCTION__);
+  printf("Check that bits of the instruction word are extracted to SelC_MEM...");
 
-//   // Assert NOP instruction as input
-//   testFixtureOutputs = TestFixtureOutputs().ins(0);
-//   testFixtureOutputPorts.set(testFixtureOutputs);
+  testFixtureOutputs = TestFixtureOutputs().ins(0b11100000000);
+  testFixtureOutputPorts.set(testFixtureOutputs);
 
-//   assertEqual(0, 1, "Break");
-//   // Pulse the clock
-//   //testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);  
+  // Pulse the clock
+  testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);  
   
-//   TestFixtureInputs actualTestFixtureInputs = testFixtureInputPorts.read();
-//   assertEqual(0, actualTestFixtureInputs.Ins_EX, "Expect Ins_EX==0");
-//   assertEqual(0, actualTestFixtureInputs.stall, "Expect stall==0");
-//   assertEqual(0b111111111111111111111, actualTestFixtureInputs.Ctl_EX, "Expect that no control signals are asserted.");
+  TestFixtureInputs actualTestFixtureInputs = testFixtureInputPorts.read();
+  assertEqual(0b111, actualTestFixtureInputs.SelC_MEM, "Expect that three bits of the instruction bits are extracted to SelC_MEM");
 
-//   printf("passed\n");
-// }
+  printf("passed\n");
+}
+
+void testControlWordCopiedToNextPipelineStage(unsigned ledState) {
+  TestFixtureOutputs testFixtureOutputs;
+
+  printf("%s: ", __FUNCTION__);
+  printf("Check that bits of the control word are copied to the next pipeline stage...");
+
+  testFixtureOutputs = TestFixtureOutputs()
+    .ctl(0b111111111111111111111);
+  testFixtureOutputPorts.set(testFixtureOutputs);
+
+  // Pulse the clock
+  testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);  
+  
+  TestFixtureInputs actualTestFixtureInputs = testFixtureInputPorts.read();
+  assertEqual(0b1111111, actualTestFixtureInputs.Ctl_MEM, "Expect that the top seven bits of the control word are passed forward");
+
+  printf("passed\n");
+}
+
+static const int kSelStoreOpShift = 1;
+
+void testStoreOp_RegisterB(unsigned ledState) {
+  TestFixtureOutputs testFixtureOutputs;
+
+  printf("%s: ", __FUNCTION__);
+  printf("SelStoreOp=0 -> Select RegisterB...");
+
+  testFixtureOutputs = TestFixtureOutputs()
+    .b(0xcafe)
+    .ctl(0 << kSelStoreOpShift);
+  testFixtureOutputPorts.set(testFixtureOutputs);
+
+  // Pulse the clock
+  testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);  
+  
+  TestFixtureInputs actualTestFixtureInputs = testFixtureInputPorts.read();
+  assertEqual(0xcafe, actualTestFixtureInputs.StoreOp_MEM, "Expect that StoreOp_MEM contains the value of register B");
+
+  printf("passed\n");
+}
+
+void testStoreOp_PCPlusOne(unsigned ledState) {
+  TestFixtureOutputs testFixtureOutputs;
+
+  printf("%s: ", __FUNCTION__);
+  printf("SelStoreOp=1 -> Select PC...");
+
+  testFixtureOutputs = TestFixtureOutputs()
+    .pc(0xcafe)
+    .ctl(1 << kSelStoreOpShift);
+  testFixtureOutputPorts.set(testFixtureOutputs);
+
+  // Pulse the clock
+  testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);  
+  
+  TestFixtureInputs actualTestFixtureInputs = testFixtureInputPorts.read();
+  assertEqual(0xcafe, actualTestFixtureInputs.StoreOp_MEM, "Expect that StoreOp_MEM contains the value of PC");
+
+  printf("passed\n");
+}
+
+void testStoreOp_Imm(unsigned ledState) {
+  TestFixtureOutputs testFixtureOutputs;
+
+  printf("%s: ", __FUNCTION__);
+  printf("SelStoreOp=2 -> Select signed eight-bit immediate value...");
+
+  testFixtureOutputs = TestFixtureOutputs()
+    .ins(0xab) // 0b10101011, so high bit is set, and we expect the result to be sign-extended
+    .ctl(2 << kSelStoreOpShift);
+  testFixtureOutputPorts.set(testFixtureOutputs);
+
+  // Pulse the clock
+  testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);  
+  
+  TestFixtureInputs actualTestFixtureInputs = testFixtureInputPorts.read();
+  assertEqual(0xffab, actualTestFixtureInputs.StoreOp_MEM, "Expect that StoreOp_MEM contains the value of the signed eight-bit immediate value");
+
+  printf("passed\n");
+}
+
+void testStoreOp_ImmUpper(unsigned ledState) {
+  TestFixtureOutputs testFixtureOutputs;
+
+  printf("%s: ", __FUNCTION__);
+  printf("SelStoreOp=3 -> Select signed eight-bit immediate value, shifted left...");
+
+  testFixtureOutputs = TestFixtureOutputs()
+    .ins(0xab)
+    .ctl(3 << kSelStoreOpShift);
+  testFixtureOutputPorts.set(testFixtureOutputs);
+
+  // Pulse the clock
+  testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);  
+  
+  TestFixtureInputs actualTestFixtureInputs = testFixtureInputPorts.read();
+  assertEqual(0xab00, actualTestFixtureInputs.StoreOp_MEM, "Expect that StoreOp_MEM contains the value of the signed eight-bit immediate value, shift left");
+
+  printf("passed\n");
+}
 
 void (*allTests[])(unsigned) = {
-  // testNop,
+  testSelC,
+  testControlWordCopiedToNextPipelineStage,
+  testStoreOp_RegisterB,
+  testStoreOp_PCPlusOne,
+  testStoreOp_Imm,
+  testStoreOp_ImmUpper,
+  // #error("TODO: Write a test for NOP next")
+  // #error("TODO: Write a test for something which passes the right op through unmodified and exercise all options for SelRightOp")
+  // #error("TODO: Write tests for all the arithmetic operations")
+  // #error("TODO: Write tests for the status bits")
 };
 
 void doAllTests() {

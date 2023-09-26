@@ -1102,7 +1102,7 @@
   (symbol (lib_id "power:GND") (at 140.97 177.8 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid e7d9dbaf-4cdc-4418-bebf-fc50120c1f4b)
-    (property "Reference" "#PWR0279" (at 140.97 184.15 0)
+    (property "Reference" "#PWR0281" (at 140.97 184.15 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 141.097 182.1942 0)
@@ -1118,7 +1118,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/00000000-0000-0000-0000-00005fe35007"
-          (reference "#PWR0279") (unit 1)
+          (reference "#PWR0281") (unit 1)
         )
       )
     )

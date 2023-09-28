@@ -218,6 +218,71 @@ void testAddWithSignedOverflow() {
   printf("passed\n");
 }
 
+static const int kSelRightOpShift = 3;
+
+void testRightOp_1() {
+  TestFixtureOutputs testFixtureOutputs;
+
+  printf("%s: ", __FUNCTION__);
+  printf("Add with SelRightOp=1, which selects ins[4:0]...");
+
+  testFixtureOutputs = TestFixtureOutputs()
+    .ins(0b00000001111)
+    .a(0)
+    .b(0)
+    .ctl(0b110110<<6 | 0b01<<kSelRightOpShift); 
+  testFixtureOutputPorts.set(testFixtureOutputs);
+
+  // Pulse the clock
+  testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);  
+  
+  TestFixtureInputs actualTestFixtureInputs = testFixtureInputPorts.read();
+  assertEqual(0b00000001111, actualTestFixtureInputs.Y_EX, "Expect that Y_EX==0b00000001111");
+  printf("passed\n");
+}
+
+void testRightOp_2() {
+  TestFixtureOutputs testFixtureOutputs;
+
+  printf("%s: ", __FUNCTION__);
+  printf("Add with SelRightOp=2, which selects ins[10:8,1:0]...");
+
+  testFixtureOutputs = TestFixtureOutputs()
+    .ins(0b01100000011)
+    .a(0)
+    .b(0)
+    .ctl(0b110110<<6 | 0b10<<kSelRightOpShift);
+  testFixtureOutputPorts.set(testFixtureOutputs);
+
+  // Pulse the clock
+  testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);  
+  
+  TestFixtureInputs actualTestFixtureInputs = testFixtureInputPorts.read();
+  assertEqual(0b1111, actualTestFixtureInputs.Y_EX, "Expect that Y_EX==0b1111");
+  printf("passed\n");
+}
+
+void testRightOp_3() {
+  TestFixtureOutputs testFixtureOutputs;
+
+  printf("%s: ", __FUNCTION__);
+  printf("Add with SelRightOp=2, which selects ins[10:0]...");
+
+  testFixtureOutputs = TestFixtureOutputs()
+    .ins(0b01111111111)
+    .a(0)
+    .b(0)
+    .ctl(0b110110<<6 | 0b11<<kSelRightOpShift);
+  testFixtureOutputPorts.set(testFixtureOutputs);
+
+  // Pulse the clock
+  testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);  
+  
+  TestFixtureInputs actualTestFixtureInputs = testFixtureInputPorts.read();
+  assertEqual(0b01111111111, actualTestFixtureInputs.Y_EX, "Expect that Y_EX==0b01111111111");
+  printf("passed\n");
+}
+
 void (*allTests[])(void) = {
   testSelC,
   testControlWordCopiedToNextPipelineStage,
@@ -228,9 +293,9 @@ void (*allTests[])(void) = {
   testAdd,
   testAddWithCarryOutput,
   testAddWithSignedOverflow,
-  // #error("TODO: Write a test for something which passes the right op through unmodified and exercise all options for SelRightOp")
-  // #error("TODO: Write tests for all the arithmetic operations")
-  // #error("TODO: Write tests for the status bits")
+  testRightOp_1,
+  testRightOp_2,
+  testRightOp_3,
 };
 
 void doAllTests() {

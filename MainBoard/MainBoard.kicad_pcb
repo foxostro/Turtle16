@@ -4356,7 +4356,7 @@
 
   (footprint "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" (layer "F.Cu")
     (tstamp 263a6f28-9214-45d9-a55f-cb30b5296982)
-    (at 236.1225 168.4809)
+    (at 236.1225 163.83)
     (descr "Capacitor SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
     (tags "capacitor handsolder")
     (property "Mouser" "https://www.mouser.com/ProductDetail/963-EMK107B7104KAHT")

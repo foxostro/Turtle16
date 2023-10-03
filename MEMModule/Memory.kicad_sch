@@ -891,7 +891,7 @@
     (uuid ff41e847-b324-4fd2-996f-ded569915345)
   )
 
-  (text "The Bank register resets to zero when\nthe computer resets. Set the bank\nregister by writing a word to address\nzero.\n\nWhen the bank register is zero, the\ninstruction fetch unit is fed by ROM.\n(The PLD asserts ~{ROMEN}.)\n\nOtherwise, the instruction fetch unit\nis fed by one side of the dual port\nRAM IC. This allows the computer to\nbe reprogrammed at run time.\n\nThe PLD allows some other combinations\nof memory address and bank to be\nmapped to RAM during load/store over\nthe memory bus. This mapping may be\nreprogrammed later to accomodate new\ndevices added to the bus. If there are\nno other devices on the bus then a\ngood default mapping would be to map\nall banks and memory ranges to RAM."
+  (text "The Bank register resets to zero when\nthe computer resets. Set the bank\nregister by writing a word to address\n0xffff.\n\nWhen the bank register is zero, the\ninstruction fetch unit is fed by ROM.\n\nWhen the bank register is not zero,\nthe instruction fetch unit is fed by\nThe right side of RAM. This allows\nthe computer to be reprogrammed at\nrun time.\n\nWhen the bank register is zero or\none then the left side of RAM is\nenabled on the system bus.\n\nThe PLD allows some other combinations\nof memory address and bank to be\nmapped to RAM during load/store over\nthe memory bus. This mapping may be\nreprogrammed later to accomodate new\ndevices added to the bus. If there are\nno other devices on the bus then a\ngood default mapping would be to map\nall banks and memory ranges to RAM."
     (at 33.02 114.935 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 6646c9dc-5f0a-44fb-b7b0-993a9523f92b)
@@ -1077,7 +1077,7 @@
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid d5d3e2ab-c32d-4f84-8bd1-1e0e80ae5e71)
   )
-  (label "RAMEN_L" (at 182.88 40.64 0) (fields_autoplaced)
+  (label "RAMEN_R" (at 182.88 40.64 0) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid dd9938df-2844-40ad-a471-8c5b4bcdfe83)
   )
@@ -1767,7 +1767,7 @@
     (property "Sheetfile" "ROM.kicad_sch" (at 205.74 46.3046 0)
       (effects (font (size 1.27 1.27)) (justify left top))
     )
-    (pin "RAMEN_L" input (at 205.74 40.64 180)
+    (pin "RAMEN_R" input (at 205.74 40.64 180)
       (effects (font (size 1.27 1.27)) (justify left))
       (uuid 0b379c16-77b3-4c46-b6d4-3ff4b62a6913)
     )

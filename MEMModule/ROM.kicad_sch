@@ -538,8 +538,8 @@
     (uuid fc44bb21-4aaa-4e80-bef4-54afe0e41700)
   )
 
-  (text "RAMEN_L enables the ROM.\nIf the IF stage is not being fed by\nRAM then it is being fed by this ROM."
-    (at 71.755 144.78 0)
+  (text "RAMEN_R enables the ROM.\nThe right side of the RAM is used for\nInstruction Fetch. If the IF stage is\nnot being fed by RAM then it is being\nfed by this ROM."
+    (at 72.39 148.59 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 4aecc0d8-e9c6-4df8-a9e9-22ff0918c9c2)
   )
@@ -761,11 +761,11 @@
     (effects (font (size 1.27 1.27)) (justify right))
     (uuid 9ee1e495-3bf3-479d-8e29-5ee395be86c7)
   )
-  (hierarchical_label "RAMEN_L" (shape input) (at 166.37 132.08 180) (fields_autoplaced)
+  (hierarchical_label "RAMEN_R" (shape input) (at 166.37 132.08 180) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify right))
     (uuid c912e20f-21b8-4200-9d30-b6674486c097)
   )
-  (hierarchical_label "RAMEN_L" (shape input) (at 93.98 133.35 180) (fields_autoplaced)
+  (hierarchical_label "RAMEN_R" (shape input) (at 93.98 133.35 180) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify right))
     (uuid d2326e52-f5cb-4e8c-8f31-7d6c9f76dfb3)
   )

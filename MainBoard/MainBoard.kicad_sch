@@ -1573,7 +1573,7 @@
   (symbol (lib_id "power:GND") (at 67.31 184.15 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 0c80a418-0224-4de2-b54c-e873ba6708cb)
-    (property "Reference" "#PWR0467" (at 67.31 190.5 0)
+    (property "Reference" "#PWR08" (at 67.31 190.5 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 67.437 188.5442 0)
@@ -1589,7 +1589,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "#PWR0467") (unit 1)
+          (reference "#PWR08") (unit 1)
         )
       )
     )
@@ -1623,7 +1623,7 @@
   (symbol (lib_id "power:GND") (at 67.31 196.85 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 26431c22-74c7-4c06-a58e-fb9435f81280)
-    (property "Reference" "#PWR0468" (at 67.31 203.2 0)
+    (property "Reference" "#PWR09" (at 67.31 203.2 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 67.437 201.2442 0)
@@ -1639,7 +1639,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "#PWR0468") (unit 1)
+          (reference "#PWR09") (unit 1)
         )
       )
     )
@@ -1827,7 +1827,7 @@
   (symbol (lib_id "power:VCC") (at 252.73 143.51 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 6f1cf8bb-f580-4488-9831-30be63d4cb16)
-    (property "Reference" "#PWR07" (at 248.92 143.51 0)
+    (property "Reference" "#PWR010" (at 248.92 143.51 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "VCC" (at 255.9812 143.9418 90)
@@ -1843,7 +1843,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "#PWR07") (unit 1)
+          (reference "#PWR010") (unit 1)
         )
       )
     )
@@ -1852,7 +1852,7 @@
   (symbol (lib_id "power:VCC") (at 20.32 31.75 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 8cd93adf-4703-4fb1-94a9-16ff18fe99a3)
-    (property "Reference" "#PWR0469" (at 16.51 31.75 0)
+    (property "Reference" "#PWR05" (at 16.51 31.75 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "VCC" (at 24.13 32.385 90)
@@ -1868,7 +1868,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "#PWR0469") (unit 1)
+          (reference "#PWR05") (unit 1)
         )
       )
     )
@@ -1981,7 +1981,7 @@
   (symbol (lib_id "power:GND") (at 42.545 184.15 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid da945a9a-f9f3-4e34-8581-a2e62c7d77f7)
-    (property "Reference" "#PWR05" (at 42.545 190.5 0)
+    (property "Reference" "#PWR06" (at 42.545 190.5 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 42.672 188.5442 0)
@@ -1997,7 +1997,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "#PWR05") (unit 1)
+          (reference "#PWR06") (unit 1)
         )
       )
     )
@@ -2006,7 +2006,7 @@
   (symbol (lib_id "power:GND") (at 252.73 151.13 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid e4f8f196-f5f1-4751-975e-15fe5807bcb2)
-    (property "Reference" "#PWR08" (at 259.08 151.13 0)
+    (property "Reference" "#PWR011" (at 259.08 151.13 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 255.9812 151.003 90)
@@ -2022,7 +2022,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "#PWR08") (unit 1)
+          (reference "#PWR011") (unit 1)
         )
       )
     )
@@ -2056,7 +2056,7 @@
   (symbol (lib_id "power:GND") (at 42.545 196.85 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid ff495587-450a-492f-b95b-47d54506ec29)
-    (property "Reference" "#PWR06" (at 42.545 203.2 0)
+    (property "Reference" "#PWR07" (at 42.545 203.2 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 42.672 201.2442 0)
@@ -2072,7 +2072,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "#PWR06") (unit 1)
+          (reference "#PWR07") (unit 1)
         )
       )
     )

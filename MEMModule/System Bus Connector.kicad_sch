@@ -2269,7 +2269,7 @@
     (uuid ff476df7-7811-4a3b-9a3c-14594a603288)
   )
 
-  (text "The bus connector has a shared open-drain active-high RDY signal.\nIf all bus devices are ready then they allow the line to remain high.\nIf any bus device is not ready then it drives the line low.\nWhen RDY is driven low, the CPU Phi1 clock stops and the CPU\ndisconnects from the bus, placing the lines in a high-Z mode.\n\nIf no bus devices are connected then the CPU is always ready.\n\nCut the sodler bridge to remove the pull-up resistor on RDY\nwhen connecting to another module that already has one."
+  (text "The bus connector has a shared open-drain active-high RDY signal.\nIf all bus devices are ready then they allow the line to remain high.\nIf any bus device is not ready then it drives the line low.\nWhen RDY is driven low, the CPU Phi1 clock stops and the CPU\ndisconnects from the bus, placing the lines in a high-Z mode.\n\nIf no bus devices are connected then the CPU is always ready.\n\nCut the solder bridge to remove the pull-up resistor on RDY\nwhen connecting to another module that already has one."
     (at 171.45 53.34 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 3d4a3e1d-c69b-43e5-a8c0-516f2642b1e6)

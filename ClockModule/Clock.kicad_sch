@@ -2665,7 +2665,7 @@
     (effects (font (size 1.27 1.27)) (justify right bottom))
     (uuid 2a38b809-f858-4d94-b98b-86010b4c5ee9)
   )
-  (label "Phi1_1" (at 77.47 148.59 0) (fields_autoplaced)
+  (label "Phi1_0" (at 77.47 148.59 0) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 3b061cbc-0c27-4c37-a7a0-3b555bfbe16d)
   )

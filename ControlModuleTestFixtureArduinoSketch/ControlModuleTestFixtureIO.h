@@ -2,7 +2,7 @@
 
 struct TestFixtureInputs {
   unsigned Ins_EX;
-  unsigned Ctl_EX;
+  uint32_t Ctl_EX;
   unsigned stall;
   unsigned fwd_a;
   unsigned fwd_ex_to_a;

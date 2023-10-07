@@ -25,7 +25,7 @@ static TestFixtureInputs updateTestFixtureInputs(const TestFixtureInputPorts &in
   unsigned fwd_ex_to_a = readInputBit(inputPorts);
   unsigned fwd_a = readInputBit(inputPorts);
   unsigned stall = readInputBit(inputPorts);
-  unsigned Ctl_EX = readInputWord(21, inputPorts);
+  uint32_t Ctl_EX = readInputWord(21, inputPorts);
   unsigned Ins_EX = readInputWord(11, inputPorts);
 
   TestFixtureInputs testFixtureInputs = {

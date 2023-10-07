@@ -22,10 +22,10 @@ unsigned readInputBit(const InputPorts &inputPorts) {
 }
 
 template<typename InputPorts>
-unsigned readInputWord(int numBits, const InputPorts &inputPorts) {
-  unsigned value = 0;
+uint32_t readInputWord(int numBits, const InputPorts &inputPorts) {
+  uint32_t value = 0;
   for (int i = 0; i < numBits; ++i) {
-    unsigned bit = digitalRead(inputPorts.SO);
+    uint32_t bit = digitalRead(inputPorts.SO);
     value <<= 1;
     value |= bit;
     strobeHigh(inputPorts.SCK);

@@ -1115,7 +1115,7 @@
     (property "Reference" "C71" (at 29.591 182.9816 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "100nF" (at 29.591 185.293 0)
+    (property "Value" "0.1uF" (at 29.591 185.293 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" (at 27.6352 187.96 0)

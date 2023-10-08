@@ -1031,7 +1031,7 @@
     (property "Reference" "C21" (at 28.321 189.3316 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "100nF" (at 28.321 191.643 0)
+    (property "Value" "0.1uF" (at 28.321 191.643 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" (at 26.3652 194.31 0)

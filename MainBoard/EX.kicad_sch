@@ -993,7 +993,7 @@
     (property "Reference" "C43" (at 27.051 186.7916 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "100nF" (at 27.051 189.103 0)
+    (property "Value" "0.1uF" (at 27.051 189.103 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" (at 25.0952 191.77 0)

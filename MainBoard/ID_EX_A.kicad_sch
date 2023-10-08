@@ -1119,7 +1119,7 @@
     (property "Reference" "C70" (at 24.511 181.7116 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "100nF" (at 24.511 184.023 0)
+    (property "Value" "0.1uF" (at 24.511 184.023 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" (at 22.5552 186.69 0)

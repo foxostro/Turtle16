@@ -1126,7 +1126,7 @@
     (property "Reference" "C56" (at 32.131 177.9016 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "100nF" (at 32.131 180.213 0)
+    (property "Value" "0.1uF" (at 32.131 180.213 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" (at 30.1752 182.88 0)

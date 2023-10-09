@@ -828,7 +828,6 @@
   )
 
 
-
   (no_connect (at 109.855 78.74) (uuid 6f5d120d-06c4-4302-a7d0-ebce5dc9386e))
 
   (bus_entry (at 194.31 113.03) (size -2.54 2.54)

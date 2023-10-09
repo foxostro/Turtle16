@@ -2321,6 +2321,31 @@
     )
   )
 
+  (symbol (lib_id "power:GND") (at 128.27 75.565 270) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid b9122dcd-9d57-44ec-88c4-6f1f65eb70f8)
+    (property "Reference" "#PWR066" (at 121.92 75.565 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "GND" (at 125.0188 75.692 90)
+      (effects (font (size 1.27 1.27)) (justify right))
+    )
+    (property "Footprint" "" (at 128.27 75.565 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "" (at 128.27 75.565 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid a23da91c-f91b-4391-aa54-6f76878bcde2))
+    (instances
+      (project "MainBoard"
+        (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf"
+          (reference "#PWR066") (unit 1)
+        )
+      )
+    )
+  )
+
   (symbol (lib_id "Connector:TestPoint") (at 114.3 176.53 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid c591831c-a521-4f21-a61c-a76f7b3a45d9)
@@ -2391,31 +2416,6 @@
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf"
           (reference "TP11") (unit 1)
-        )
-      )
-    )
-  )
-
-  (symbol (lib_id "power:GND") (at 128.27 75.565 270) (unit 1)
-    (in_bom yes) (on_board yes) (dnp no)
-    (uuid d981488c-76ba-4ffd-8015-fff1fce3c10e)
-    (property "Reference" "#PWR066" (at 121.92 75.565 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value" "GND" (at 125.0188 75.692 90)
-      (effects (font (size 1.27 1.27)) (justify right))
-    )
-    (property "Footprint" "" (at 128.27 75.565 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (at 128.27 75.565 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid a23da91c-f91b-4391-aa54-6f76878bcde2))
-    (instances
-      (project "MainBoard"
-        (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/00000000-0000-0000-0000-00005fed3839/00000000-0000-0000-0000-000060693bcf"
-          (reference "#PWR066") (unit 1)
         )
       )
     )

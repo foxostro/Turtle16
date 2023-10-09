@@ -1188,7 +1188,7 @@
     (property "Value" "74ABT16374" (at 147.32 95.25 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Footprint" "Package_SO:TSSOP-48_8x12.5mm_P0.5mm" (at 148.59 97.79 0)
+    (property "Footprint" "Package_SO:TSSOP-48_6.1x12.5mm_P0.5mm" (at 148.59 97.79 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "https://www.ti.com/lit/ds/symlink/sn74abt16374a.pdf?HQS=dis-mous-null-mousermode-dsf-pf-null-wwe&ts=1617318801237" (at 158.75 109.22 0)

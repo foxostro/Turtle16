@@ -1799,6 +1799,31 @@
     )
   )
 
+  (symbol (lib_id "power:GND") (at 92.075 184.15 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 590c5580-efd7-4fd0-a859-15bef5f0fa58)
+    (property "Reference" "#PWR0470" (at 92.075 190.5 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "GND" (at 92.202 188.5442 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 92.075 184.15 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "" (at 92.075 184.15 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 61b60bbe-78c6-4196-ac6f-b5b6a7a25c7b))
+    (instances
+      (project "MainBoard"
+        (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
+          (reference "#PWR0470") (unit 1)
+        )
+      )
+    )
+  )
+
   (symbol (lib_id "power:PWR_FLAG") (at 248.92 138.43 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 5ef08090-3ee1-4550-aa55-6246b605d0dd)
@@ -1819,6 +1844,31 @@
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
           (reference "#FLG01") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "power:GND") (at 92.075 196.85 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 6d1c37af-ff39-4ba9-b5dc-46ce66bea4cd)
+    (property "Reference" "#PWR0471" (at 92.075 203.2 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "GND" (at 92.202 201.2442 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 92.075 196.85 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "" (at 92.075 196.85 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid f4029c17-4e18-4d1b-bbf5-2fed08d29a2c))
+    (instances
+      (project "MainBoard"
+        (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
+          (reference "#PWR0471") (unit 1)
         )
       )
     )
@@ -1849,6 +1899,56 @@
     )
   )
 
+  (symbol (lib_id "power:GND") (at 116.205 184.15 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 7df4ece8-15b6-4675-9bd9-b4e2ec8ea8e4)
+    (property "Reference" "#PWR0472" (at 116.205 190.5 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "GND" (at 116.332 188.5442 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 116.205 184.15 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "" (at 116.205 184.15 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid c762b703-6bcb-451e-bfc4-589203227ef4))
+    (instances
+      (project "MainBoard"
+        (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
+          (reference "#PWR0472") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Mechanical:MountingHole_Pad") (at 92.075 194.31 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 83f5cc7e-d3ea-4f46-9af1-6b9c74dd8e9f)
+    (property "Reference" "H8" (at 94.615 193.0654 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "MountingHole_Pad" (at 94.615 195.3768 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "MountingHole:MountingHole_3.2mm_M3_Pad" (at 92.075 194.31 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 92.075 194.31 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid e3dc2cd1-883d-4740-9a85-c9d50e2025c4))
+    (instances
+      (project "MainBoard"
+        (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
+          (reference "H8") (unit 1)
+        )
+      )
+    )
+  )
+
   (symbol (lib_id "power:VCC") (at 20.32 31.75 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 8cd93adf-4703-4fb1-94a9-16ff18fe99a3)
@@ -1869,6 +1969,56 @@
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
           (reference "#PWR05") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Mechanical:MountingHole_Pad") (at 116.205 181.61 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 8f36be17-859a-4d52-b2b9-777753c7dac3)
+    (property "Reference" "H9" (at 118.745 180.3654 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "MountingHole_Pad" (at 118.745 182.6768 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "MountingHole:MountingHole_3.2mm_M3_Pad" (at 116.205 181.61 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 116.205 181.61 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 82b060b2-d82c-46d3-b9d1-32f889734512))
+    (instances
+      (project "MainBoard"
+        (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
+          (reference "H9") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Mechanical:MountingHole_Pad") (at 116.205 194.31 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 945edeaf-1a4a-44b3-bf97-fff2b2a11137)
+    (property "Reference" "H10" (at 118.745 193.0654 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "MountingHole_Pad" (at 118.745 195.3768 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "MountingHole:MountingHole_3.2mm_M3_Pad" (at 116.205 194.31 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 116.205 194.31 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid adf45adf-6202-49ab-9ea1-949e538b7d40))
+    (instances
+      (project "MainBoard"
+        (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
+          (reference "H10") (unit 1)
         )
       )
     )
@@ -1919,6 +2069,31 @@
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
           (reference "#PWR01") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Mechanical:MountingHole_Pad") (at 92.075 181.61 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid adfbcd15-2ae4-4e09-9a88-8d7a10df610b)
+    (property "Reference" "H7" (at 94.615 180.3654 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "MountingHole_Pad" (at 94.615 182.6768 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "MountingHole:MountingHole_3.2mm_M3_Pad" (at 92.075 181.61 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 92.075 181.61 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 4f2f6499-6e3b-43a7-9c5c-ee5d3ef899df))
+    (instances
+      (project "MainBoard"
+        (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
+          (reference "H7") (unit 1)
         )
       )
     )
@@ -2048,6 +2223,31 @@
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
           (reference "#PWR02") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "power:GND") (at 116.205 196.85 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid f6176660-dfba-460e-ac43-84e5b67917a2)
+    (property "Reference" "#PWR0473" (at 116.205 203.2 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "GND" (at 116.332 201.2442 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 116.205 196.85 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "" (at 116.205 196.85 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 8bc78887-8135-4477-973b-06f4324784e9))
+    (instances
+      (project "MainBoard"
+        (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
+          (reference "#PWR0473") (unit 1)
         )
       )
     )

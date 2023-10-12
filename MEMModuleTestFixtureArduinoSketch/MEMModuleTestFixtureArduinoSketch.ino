@@ -62,7 +62,7 @@ void testReset(unsigned ledState) {
 
 void testNop(unsigned ledState) {
   printf("%s: ", __FUNCTION__);
-  printf("Put a NOP through the MEM stage and check what it outputs to the text fixture...");
+  printf("Put a NOP through the MEM stage and check what it outputs to the test fixture...");
 
   BusOutputs busOutputs;
   TestFixtureOutputs testFixtureOutputs = TestFixtureOutputs()
@@ -101,6 +101,7 @@ void testWriteRAM(unsigned ledState) {
     .assertAddrLines()
     .assertDataLines();
   busOutputPorts.set(busOutputs);
+  // printf("BREAKPOINT\n"); while(true){};
 
   // Bus transaction to Store a word to RAM.
   // Store 0xabcd to RAM at address 0x1234
@@ -243,81 +244,6 @@ void testStore(unsigned ledState) {
   printf("passed\n");
 }
 
-void testInstructionFlushInstruction(unsigned ledState) {
-  printf("%s: ", __FUNCTION__);
-  printf("Flush the instruction being fetched this clock...");
-
-  // Set signals to put MEM into a Wait state.
-  // This ought to effectively disconnect MEM from the bus.
-  testFixtureOutputPorts.set(TestFixtureOutputs()
-    .ready(false)
-    .ledState(ledState));
-
-  // Bus transaction to Store a word to RAM and then release the bus.
-  busOutputPorts.set(BusOutputs()
-    .memStore(true)
-    .addr(0xabab)
-    .data(0xcdcd)
-    .assertMemLoadStoreLines()
-    .assertAddrLines()
-    .assertDataLines());
-  busOutputPorts.set(BusOutputs());
-
-  // Fetch an instruction
-  auto testFixtureOutputs = TestFixtureOutputs()
-    .ready(true)
-    .pc(0xabab)
-    .flushInstruction(true)
-    .ledState(ledState);
-  testFixtureOutputPorts.set(testFixtureOutputs);
-
-  // Tick the clock
-  testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);
-  
-  // Read the MEM module output signals
-  TestFixtureInputs actualTestFixtureInputs = testFixtureInputPorts.read();
-  assertEqual(0xcdcd, actualTestFixtureInputs.Ins_IF, "Expect to fetch a NOP instruction this clock.");
-
-  printf("passed\n");
-}
-
-void testInstructionFetch(unsigned ledState) {
-  printf("%s: ", __FUNCTION__);
-  printf("Fetch an instruction from RAM...");
-
-  // Set signals to put MEM into a Wait state.
-  // This ought to effectively disconnect MEM from the bus.
-  testFixtureOutputPorts.set(TestFixtureOutputs()
-    .ready(false)
-    .ledState(ledState));
-
-  // Bus transaction to Store a word to RAM and then release the bus.
-  busOutputPorts.set(BusOutputs()
-    .memStore(true)
-    .addr(0xabab)
-    .data(0xcdcd)
-    .assertMemLoadStoreLines()
-    .assertAddrLines()
-    .assertDataLines());
-  busOutputPorts.set(BusOutputs());
-
-  // Fetch an instruction
-  auto testFixtureOutputs = TestFixtureOutputs()
-    .ready(true)
-    .pc(0xabab)
-    .ledState(ledState);
-  testFixtureOutputPorts.set(testFixtureOutputs);
-
-  // Tick the clock
-  testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);
-  
-  // Read the MEM module output signals
-  TestFixtureInputs actualTestFixtureInputs = testFixtureInputPorts.read();
-  assertEqual(0xcdcd, actualTestFixtureInputs.Ins_IF, "Expect that we fetch the same instruction as written to RAM.");
-
-  printf("passed\n");
-}
-
 void testModifyBankRegister(unsigned ledState) {
   printf("%s: ", __FUNCTION__);
   printf("Check that we can modify the memory-mapped bank register...");
@@ -352,15 +278,130 @@ void testModifyBankRegister(unsigned ledState) {
   printf("passed\n");
 }
 
+void testInstructionFetchFromROM(unsigned ledState) {
+  printf("%s: ", __FUNCTION__);
+  printf("Fetch an instruction from ROM...");
+
+  // Set signals to put MEM into a Wait state.
+  // This ought to effectively disconnect MEM from the bus.
+  auto testFixtureOutputs = TestFixtureOutputs()
+    .ready(false)
+    .ledState(ledState);
+    testFixtureOutputPorts.tick(testFixtureOutputs);
+
+  // The bank register is memory-mapped at 0xffff.
+  BusOutputs busOutputs = BusOutputs()
+    .memStore(true)
+    .addr(0xffff)
+    .data(0) // IF will fetch from ROM when bank is set to zero.
+    .assertMemLoadStoreLines()
+    .assertAddrLines()
+    .assertDataLines();
+  busOutputPorts.set(busOutputs);
+
+  // Tick the clock
+  testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);
+
+  // Fetch an instruction
+  testFixtureOutputs = testFixtureOutputs
+    .ready(true)
+    .pc(0xabab);
+  testFixtureOutputPorts.set(testFixtureOutputs);
+
+  // Tick the clock
+  testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);
+  
+  // Read the MEM module output signals
+  TestFixtureInputs actualTestFixtureInputs = testFixtureInputPorts.read();
+  assertEqual(0xffff, actualTestFixtureInputs.Ins_IF, "Expect that we fetch 0xffff from ROM");
+
+  printf("passed\n");
+}
+
+void testInstructionFetchFromRAM(unsigned ledState) {
+  printf("%s: ", __FUNCTION__);
+  printf("Fetch an instruction from RAM...");
+
+  // Set signals to put MEM into a Wait state.
+  // This ought to effectively disconnect MEM from the bus.
+  auto testFixtureOutputs = TestFixtureOutputs()
+    .ready(false)
+    .ledState(ledState);
+  testFixtureOutputPorts.set(testFixtureOutputs);
+
+  // The bank register is memory-mapped at 0xffff.
+  BusOutputs busOutputs = BusOutputs()
+    .memStore(true)
+    .addr(0xffff)
+    .data(1) // IF will fetch from RAM when bank is set to one.
+    .assertMemLoadStoreLines()
+    .assertAddrLines()
+    .assertDataLines();
+  busOutputPorts.set(busOutputs);
+
+  // Tick the clock
+  testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);
+
+  // Bus transaction to Store a word to RAM and then release the bus.
+  busOutputPorts.set(BusOutputs()
+    .memStore(true)
+    .addr(0xabab)
+    .data(0xcdcd)
+    .assertMemLoadStoreLines()
+    .assertAddrLines()
+    .assertDataLines());
+  busOutputPorts.set(BusOutputs());
+
+  // Fetch an instruction
+  testFixtureOutputs = testFixtureOutputs
+    .ready(true)
+    .pc(0xabab)
+    .ledState(ledState);
+  testFixtureOutputPorts.set(testFixtureOutputs);
+
+  // Tick the clock
+  testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);
+  
+  // Read the MEM module output signals
+  TestFixtureInputs actualTestFixtureInputs = testFixtureInputPorts.read();
+  assertEqual(0xcdcd, actualTestFixtureInputs.Ins_IF, "Expect that we fetch the same instruction as written to RAM.");
+
+  printf("passed\n");
+}
+
+void testInstructionFlushInstruction(unsigned ledState) {
+  printf("%s: ", __FUNCTION__);
+  printf("Flush the instruction being fetched this clock...");
+
+  // Fetch an instruction
+  auto testFixtureOutputs = TestFixtureOutputs()
+    .ready(true)
+    .pc(0xabab)
+    .flushInstruction(true)
+    .ledState(ledState);
+  testFixtureOutputPorts.set(testFixtureOutputs);
+  assertEqual(0, 1, "BREAK");
+
+  // Tick the clock
+  testFixtureOutputs = testFixtureOutputPorts.tick(testFixtureOutputs);
+  
+  // Read the MEM module output signals
+  TestFixtureInputs actualTestFixtureInputs = testFixtureInputPorts.read();
+  assertEqual(0, actualTestFixtureInputs.Ins_IF, "Expect to fetch a NOP instruction this clock.");
+
+  printf("passed\n");
+}
+
 void (*allTests[])(unsigned) = {
   testReset,
   testNop,
   testWriteRAM,
   testLoad,
   testStore,
-  testInstructionFlushInstruction,
-  testInstructionFetch,
   testModifyBankRegister,
+  testInstructionFetchFromROM,
+  testInstructionFetchFromRAM,
+  // testInstructionFlushInstruction,
 };
 
 void doAllTests() {

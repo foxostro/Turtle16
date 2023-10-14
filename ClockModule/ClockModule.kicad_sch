@@ -6,8 +6,8 @@
 
   (title_block
     (title "Turtle16: Clock Module")
-    (date "2022-04-15")
-    (rev "B")
+    (date "2023-10-13")
+    (rev "D")
   )
 
   (lib_symbols

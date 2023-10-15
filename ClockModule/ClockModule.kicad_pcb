@@ -7,8 +7,8 @@
   (paper "USLetter")
   (title_block
     (title "Turtle16: Clock Module")
-    (date "2022-04-15")
-    (rev "B")
+    (date "2023-10-15")
+    (rev "D")
     (comment 4 "Clock module for the Turtle16 computer")
   )
 
@@ -88,7 +88,7 @@
       (mirror false)
       (drillshape 0)
       (scaleselection 1)
-      (outputdirectory "../Generated/ClockModule_Rev_D_004ce7dc/")
+      (outputdirectory "../Generated/ClockModule_Rev_D_4f85ced7")
     )
   )
 

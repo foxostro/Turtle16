@@ -42,12 +42,12 @@ Pin 21 = NOTRST       S0 = 1   S1 = 0
  32  xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
  33  xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
 
-Pin 20 = NOTRDY       S0 = 1   S1 = 0
+Pin 20 = NOTRDY       S0 = 0   S1 = 0
  34  ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
- 35  ---- -x-- ---x ---- ---- --x- ---- ---- ---- ---- ----
- 36  ---- -x-- ---x ---- ---- ---- ---x ---- ---- ---- ----
- 37  ---- ---- -x-x ---- ---- --x- ---- ---- ---- ---- ----
- 38  ---- ---- -x-x ---- ---- ---- ---x ---- ---- ---- ----
+ 35  ---- -x-- ---x ---- ---- ---x ---x ---- ---- ---- ----
+ 36  ---- ---- -x-x ---- ---- ---x ---x ---- ---- ---- ----
+ 37  ---- x--- x--x ---- ---- ---- ---- ---- ---- ---- ----
+ 38  xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
  39  xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
  40  xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
  41  xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx

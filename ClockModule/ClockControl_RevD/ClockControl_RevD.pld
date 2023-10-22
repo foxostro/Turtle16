@@ -11,7 +11,7 @@ Button1.R = /Button0 * NOTRST
 Button2.R = /Button1 * NOTRST
 Phi2 = Clock
 Phi1 = /Clock * RDY + /Clock * /NOTRST
-NOTRDY = /Button1 * NOTRST * /NOTSINGL + Button2 * NOTRST * /NOTSINGL + /Button1 * NOTRST * /NOTHLT + Button2 * NOTRST * /NOTHLT
+/NOTRDY = Button1 * Button2 * NOTRST * /NOTSINGL + Button1 * Button2 * NOTRST * /NOTHLT + NOTRST * NOTHLT * NOTSINGL
 
 DESCRIPTION
 

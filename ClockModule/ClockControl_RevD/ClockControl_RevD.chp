@@ -1,0 +1,29 @@
+
+
+                                GAL22V10
+
+                          -------\___/-------
+                    Clock |  1           24 | VCC
+                          |                 |
+                 NOTSINGL |  2           23 | Phi1
+                          |                 |
+                   NOTHLT |  3           22 | Phi2
+                          |                 |
+                  NOTRSTa |  4           21 | NOTRST
+                          |                 |
+                  Button0 |  5           20 | NOTRDY
+                          |                 |
+                     RDYa |  6           19 | RDY
+                          |                 |
+                       NC |  7           18 | Button1
+                          |                 |
+                       NC |  8           17 | Button2
+                          |                 |
+                       NC |  9           16 | NC
+                          |                 |
+                       NC | 10           15 | NC
+                          |                 |
+                       NC | 11           14 | NC
+                          |                 |
+                      GND | 12           13 | NC
+                          -------------------

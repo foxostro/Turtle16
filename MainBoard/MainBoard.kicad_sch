@@ -6,7 +6,7 @@
 
   (title_block
     (title "Turtle16: Main Board")
-    (date "2022-09-25")
+    (date "2023-10-22")
     (rev "C")
     (comment 4 "Microcomputer built from 74xx series logic chips.")
   )
@@ -1802,7 +1802,7 @@
   (symbol (lib_id "power:GND") (at 92.075 184.15 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 590c5580-efd7-4fd0-a859-15bef5f0fa58)
-    (property "Reference" "#PWR0470" (at 92.075 190.5 0)
+    (property "Reference" "#PWR010" (at 92.075 190.5 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 92.202 188.5442 0)
@@ -1818,7 +1818,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "#PWR0470") (unit 1)
+          (reference "#PWR010") (unit 1)
         )
       )
     )
@@ -1852,7 +1852,7 @@
   (symbol (lib_id "power:GND") (at 92.075 196.85 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 6d1c37af-ff39-4ba9-b5dc-46ce66bea4cd)
-    (property "Reference" "#PWR0471" (at 92.075 203.2 0)
+    (property "Reference" "#PWR011" (at 92.075 203.2 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 92.202 201.2442 0)
@@ -1868,7 +1868,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "#PWR0471") (unit 1)
+          (reference "#PWR011") (unit 1)
         )
       )
     )
@@ -1877,7 +1877,7 @@
   (symbol (lib_id "power:VCC") (at 252.73 143.51 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 6f1cf8bb-f580-4488-9831-30be63d4cb16)
-    (property "Reference" "#PWR010" (at 248.92 143.51 0)
+    (property "Reference" "#PWR014" (at 248.92 143.51 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "VCC" (at 255.9812 143.9418 90)
@@ -1893,7 +1893,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "#PWR010") (unit 1)
+          (reference "#PWR014") (unit 1)
         )
       )
     )
@@ -1902,7 +1902,7 @@
   (symbol (lib_id "power:GND") (at 116.205 184.15 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 7df4ece8-15b6-4675-9bd9-b4e2ec8ea8e4)
-    (property "Reference" "#PWR0472" (at 116.205 190.5 0)
+    (property "Reference" "#PWR012" (at 116.205 190.5 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 116.332 188.5442 0)
@@ -1918,7 +1918,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "#PWR0472") (unit 1)
+          (reference "#PWR012") (unit 1)
         )
       )
     )
@@ -2181,7 +2181,7 @@
   (symbol (lib_id "power:GND") (at 252.73 151.13 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid e4f8f196-f5f1-4751-975e-15fe5807bcb2)
-    (property "Reference" "#PWR011" (at 259.08 151.13 0)
+    (property "Reference" "#PWR015" (at 259.08 151.13 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 255.9812 151.003 90)
@@ -2197,7 +2197,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "#PWR011") (unit 1)
+          (reference "#PWR015") (unit 1)
         )
       )
     )
@@ -2231,7 +2231,7 @@
   (symbol (lib_id "power:GND") (at 116.205 196.85 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid f6176660-dfba-460e-ac43-84e5b67917a2)
-    (property "Reference" "#PWR0473" (at 116.205 203.2 0)
+    (property "Reference" "#PWR013" (at 116.205 203.2 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 116.332 201.2442 0)
@@ -2247,7 +2247,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "#PWR0473") (unit 1)
+          (reference "#PWR013") (unit 1)
         )
       )
     )

@@ -5,7 +5,7 @@
   (paper "USLetter")
 
   (title_block
-    (date "2022-09-25")
+    (date "2023-10-22")
     (rev "C")
   )
 
@@ -1112,7 +1112,7 @@
   (symbol (lib_id "Device:C") (at 26.67 184.15 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005fe2a65c)
-    (property "Reference" "C71" (at 29.591 182.9816 0)
+    (property "Reference" "C68" (at 29.591 182.9816 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "0.1uF" (at 29.591 185.293 0)
@@ -1132,7 +1132,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/d661b2bc-e1e7-41b6-9d3a-8c7c4264da70"
-          (reference "C71") (unit 1)
+          (reference "C68") (unit 1)
         )
       )
     )
@@ -1141,7 +1141,7 @@
   (symbol (lib_id "power:VCC") (at 26.67 180.34 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005fe2a662)
-    (property "Reference" "#PWR0386" (at 26.67 184.15 0)
+    (property "Reference" "#PWR0383" (at 26.67 184.15 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "VCC" (at 27.1018 175.9458 0)
@@ -1157,7 +1157,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/d661b2bc-e1e7-41b6-9d3a-8c7c4264da70"
-          (reference "#PWR0386") (unit 1)
+          (reference "#PWR0383") (unit 1)
         )
       )
     )
@@ -1166,7 +1166,7 @@
   (symbol (lib_id "power:GND") (at 26.67 190.5 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005fe2a668)
-    (property "Reference" "#PWR0387" (at 26.67 196.85 0)
+    (property "Reference" "#PWR0384" (at 26.67 196.85 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 26.797 194.8942 0)
@@ -1182,7 +1182,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/d661b2bc-e1e7-41b6-9d3a-8c7c4264da70"
-          (reference "#PWR0387") (unit 1)
+          (reference "#PWR0384") (unit 1)
         )
       )
     )
@@ -1191,7 +1191,7 @@
   (symbol (lib_id "power:GND") (at 133.35 113.03 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00006085e8d4)
-    (property "Reference" "#PWR0388" (at 127 113.03 0)
+    (property "Reference" "#PWR0385" (at 127 113.03 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 130.0988 113.157 90)
@@ -1207,7 +1207,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/d661b2bc-e1e7-41b6-9d3a-8c7c4264da70"
-          (reference "#PWR0388") (unit 1)
+          (reference "#PWR0385") (unit 1)
         )
       )
     )
@@ -1216,7 +1216,7 @@
   (symbol (lib_id "power:VCC") (at 148.59 62.23 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00006085e8db)
-    (property "Reference" "#PWR0389" (at 148.59 66.04 0)
+    (property "Reference" "#PWR0386" (at 148.59 66.04 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "VCC" (at 149.0218 57.8358 0)
@@ -1232,7 +1232,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/d661b2bc-e1e7-41b6-9d3a-8c7c4264da70"
-          (reference "#PWR0389") (unit 1)
+          (reference "#PWR0386") (unit 1)
         )
       )
     )
@@ -1241,7 +1241,7 @@
   (symbol (lib_id "power:GND") (at 148.59 127 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00006085e8e1)
-    (property "Reference" "#PWR0390" (at 148.59 133.35 0)
+    (property "Reference" "#PWR0387" (at 148.59 133.35 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 148.717 131.3942 0)
@@ -1257,7 +1257,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/d661b2bc-e1e7-41b6-9d3a-8c7c4264da70"
-          (reference "#PWR0390") (unit 1)
+          (reference "#PWR0387") (unit 1)
         )
       )
     )
@@ -1266,7 +1266,7 @@
   (symbol (lib_id "74xx (kicad5):74ABT16374") (at 148.59 91.44 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00006085e90c)
-    (property "Reference" "U66" (at 148.59 91.44 0)
+    (property "Reference" "U63" (at 148.59 91.44 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "74ABT16374" (at 148.59 93.98 0)
@@ -1332,7 +1332,7 @@
     (instances
       (project "MainBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/d661b2bc-e1e7-41b6-9d3a-8c7c4264da70"
-          (reference "U66") (unit 1)
+          (reference "U63") (unit 1)
         )
       )
     )

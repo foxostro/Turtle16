@@ -5,8 +5,8 @@
   (paper "USLetter")
 
   (title_block
-    (date "2023-10-22")
-    (rev "C")
+    (date "2023-10-28")
+    (rev "D")
   )
 
   (lib_symbols
@@ -397,7 +397,7 @@
     (property "Reference" "C2" (at 29.591 179.1716 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "0.1uF" (at 29.591 181.483 0)
+    (property "Value" "0.1μF" (at 29.591 181.483 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" (at 27.6352 184.15 0)

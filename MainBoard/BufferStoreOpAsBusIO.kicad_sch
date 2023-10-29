@@ -6,8 +6,8 @@
 
   (title_block
     (title "MEM: Buffer StoreOp")
-    (date "2023-10-22")
-    (rev "C")
+    (date "2023-10-28")
+    (rev "D")
     (comment 3 "This allows peripheral devices to assert their own value to the bus during a Load.")
     (comment 4 "The store operand can be disconnected from the system memory bus via tristate outputs.")
   )
@@ -1160,7 +1160,7 @@
     (property "Reference" "C3" (at 27.051 172.8216 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "0.1uF" (at 27.051 175.133 0)
+    (property "Value" "0.1μF" (at 27.051 175.133 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" (at 25.0952 177.8 0)

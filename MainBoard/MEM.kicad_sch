@@ -6,8 +6,8 @@
 
   (title_block
     (title "MEM")
-    (date "2023-10-22")
-    (rev "C")
+    (date "2023-10-28")
+    (rev "D")
     (comment 1 "place bus lines into tristate and halt the Phi1 clock.")
     (comment 2 "Devices on the bus may take the open-collector ~RDY~ signal high to force the CPU to")
     (comment 3 "These devices connect to the main board via a connector described in another sheet.")
@@ -1398,7 +1398,7 @@
     (property "Reference" "C69" (at 25.781 185.5216 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "0.1uF" (at 25.781 187.833 0)
+    (property "Value" "0.1μF" (at 25.781 187.833 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" (at 23.8252 190.5 0)
@@ -1635,7 +1635,7 @@
     )
   )
 
-  (symbol (lib_id "74xx:74LS32") (at 113.03 38.1 0) (unit 1)
+  (symbol (lib_id "74xx:74LS32") (at 113.03 38.1 0) (unit 1) (convert 2)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-000060caa449)
     (property "Reference" "U64" (at 113.03 29.845 0)
@@ -1682,7 +1682,7 @@
     (property "Reference" "C70" (at 38.481 185.5216 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "0.1uF" (at 38.481 187.833 0)
+    (property "Value" "0.1μF" (at 38.481 187.833 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" (at 36.5252 190.5 0)

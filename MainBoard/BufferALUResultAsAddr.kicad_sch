@@ -6,8 +6,8 @@
 
   (title_block
     (title "MEM: Buffer ALUResult")
-    (date "2023-10-22")
-    (rev "C")
+    (date "2023-10-28")
+    (rev "D")
     (comment 4 "Buffer the effective address before it leaves the main board.")
   )
 
@@ -1123,7 +1123,7 @@
     (property "Reference" "C4" (at 242.951 151.2316 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "0.1uF" (at 242.951 153.543 0)
+    (property "Value" "0.1μF" (at 242.951 153.543 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" (at 240.9952 156.21 0)

@@ -6,8 +6,8 @@
 
   (title_block
     (title "MEM/WB: Control Word Register")
-    (date "2023-10-22")
-    (rev "C")
+    (date "2023-10-28")
+    (rev "D")
   )
 
   (lib_symbols
@@ -697,7 +697,7 @@
     (property "Reference" "C5" (at 24.511 181.7116 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "0.1uF" (at 24.511 184.023 0)
+    (property "Value" "0.1μF" (at 24.511 184.023 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" (at 22.5552 186.69 0)

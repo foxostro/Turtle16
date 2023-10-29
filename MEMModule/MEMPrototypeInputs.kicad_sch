@@ -6,8 +6,8 @@
 
   (title_block
     (title "Turtle16: MEM Prototype Inputs")
-    (date "2023-03-22")
-    (rev "B")
+    (date "2023-10-28")
+    (rev "D")
     (comment 4 "Headers for various inputs to the prototype board")
   )
 

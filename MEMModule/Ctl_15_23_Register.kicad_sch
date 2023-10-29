@@ -6,8 +6,8 @@
 
   (title_block
     (title "MEM/WB: Control Word Register")
-    (date "2023-03-22")
-    (rev "B")
+    (date "2023-10-28")
+    (rev "D")
   )
 
   (lib_symbols

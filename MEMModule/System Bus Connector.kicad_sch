@@ -6,8 +6,8 @@
 
   (title_block
     (title "System Bus Connector")
-    (date "2023-03-22")
-    (rev "B")
+    (date "2023-10-28")
+    (rev "D")
     (comment 4 "Peripheral devices on separate boards connect to the system bus here.")
   )
 

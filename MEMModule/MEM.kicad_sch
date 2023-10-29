@@ -6,8 +6,8 @@
 
   (title_block
     (title "MEM")
-    (date "2023-03-22")
-    (rev "B")
+    (date "2023-10-28")
+    (rev "D")
     (comment 1 "place bus lines into tristate and halt the Phi1 clock.")
     (comment 2 "Devices on the bus may take the open-collector ~RDY~ signal high to force the CPU to")
     (comment 3 "These devices connect to the main board via a connector described in another sheet.")
@@ -1635,7 +1635,7 @@
     )
   )
 
-  (symbol (lib_id "74xx:74LS32") (at 113.03 38.1 0) (unit 1)
+  (symbol (lib_id "74xx:74LS32") (at 113.03 38.1 0) (unit 1) (convert 2)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-000060caa449)
     (property "Reference" "U1" (at 113.03 29.845 0)

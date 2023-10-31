@@ -6,7 +6,7 @@
 
   (title_block
     (title "ID")
-    (date "2023-10-29")
+    (date "2023-10-30")
     (rev "D")
     (comment 1 "Simultaneously, read the register file using indices extracted from the instruction word.")
     (comment 2 "effect conditional instructions.")

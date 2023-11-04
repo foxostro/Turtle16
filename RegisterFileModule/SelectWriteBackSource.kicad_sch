@@ -6,8 +6,8 @@
 
   (title_block
     (title "WB: Select Write Back Source")
-    (date "2022-04-11")
-    (rev "A (17a66eba)")
+    (date "2023-11-04")
+    (rev "B")
     (comment 2 "or a byte swapped version of the latter.")
     (comment 3 "It can choose either the ALU result, the store operand / value loaded from peripherals,")
     (comment 4 "The write back stage can select one of several values to write back to the register file.")
@@ -2067,7 +2067,7 @@
   (symbol (lib_id "power:VCC") (at 76.2 88.9 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005fd9a285)
-    (property "Reference" "#PWR017" (at 80.01 88.9 0)
+    (property "Reference" "#PWR018" (at 80.01 88.9 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "VCC" (at 72.9742 88.519 90)
@@ -2083,7 +2083,7 @@
     (instances
       (project "RegisterFileModule"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/e246f5e8-ec22-4141-b6b8-29cb3989af2b/15d111da-e708-4cff-aee7-702b294baaf1"
-          (reference "#PWR017") (unit 1)
+          (reference "#PWR018") (unit 1)
         )
       )
     )
@@ -2092,7 +2092,7 @@
   (symbol (lib_id "power:GND") (at 40.64 161.29 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005fdb1d73)
-    (property "Reference" "#PWR09" (at 34.29 161.29 0)
+    (property "Reference" "#PWR010" (at 34.29 161.29 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 35.56 161.29 90)
@@ -2108,7 +2108,7 @@
     (instances
       (project "RegisterFileModule"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/e246f5e8-ec22-4141-b6b8-29cb3989af2b/15d111da-e708-4cff-aee7-702b294baaf1"
-          (reference "#PWR09") (unit 1)
+          (reference "#PWR010") (unit 1)
         )
       )
     )
@@ -2175,7 +2175,7 @@
   (symbol (lib_id "power:VCC") (at 74.93 186.69 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-0000601eab2f)
-    (property "Reference" "#PWR015" (at 74.93 190.5 0)
+    (property "Reference" "#PWR016" (at 74.93 190.5 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "VCC" (at 75.3618 182.2958 0)
@@ -2191,7 +2191,7 @@
     (instances
       (project "RegisterFileModule"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/e246f5e8-ec22-4141-b6b8-29cb3989af2b/15d111da-e708-4cff-aee7-702b294baaf1"
-          (reference "#PWR015") (unit 1)
+          (reference "#PWR016") (unit 1)
         )
       )
     )
@@ -2200,7 +2200,7 @@
   (symbol (lib_id "power:GND") (at 74.93 196.85 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-0000601eab37)
-    (property "Reference" "#PWR016" (at 74.93 203.2 0)
+    (property "Reference" "#PWR017" (at 74.93 203.2 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 75.057 201.2442 0)
@@ -2216,7 +2216,7 @@
     (instances
       (project "RegisterFileModule"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/e246f5e8-ec22-4141-b6b8-29cb3989af2b/15d111da-e708-4cff-aee7-702b294baaf1"
-          (reference "#PWR016") (unit 1)
+          (reference "#PWR017") (unit 1)
         )
       )
     )
@@ -2254,7 +2254,7 @@
   (symbol (lib_id "power:GND") (at 55.88 186.69 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-0000601eac01)
-    (property "Reference" "#PWR014" (at 55.88 193.04 0)
+    (property "Reference" "#PWR015" (at 55.88 193.04 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 56.007 191.0842 0)
@@ -2270,7 +2270,7 @@
     (instances
       (project "RegisterFileModule"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/e246f5e8-ec22-4141-b6b8-29cb3989af2b/15d111da-e708-4cff-aee7-702b294baaf1"
-          (reference "#PWR014") (unit 1)
+          (reference "#PWR015") (unit 1)
         )
       )
     )
@@ -2279,7 +2279,7 @@
   (symbol (lib_id "power:VCC") (at 55.88 149.86 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-0000601eac07)
-    (property "Reference" "#PWR013" (at 55.88 153.67 0)
+    (property "Reference" "#PWR014" (at 55.88 153.67 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "VCC" (at 56.3118 145.4658 0)
@@ -2295,7 +2295,7 @@
     (instances
       (project "RegisterFileModule"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/e246f5e8-ec22-4141-b6b8-29cb3989af2b/15d111da-e708-4cff-aee7-702b294baaf1"
-          (reference "#PWR013") (unit 1)
+          (reference "#PWR014") (unit 1)
         )
       )
     )
@@ -2304,7 +2304,7 @@
   (symbol (lib_id "power:GND") (at 40.64 163.83 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-0000601eac1a)
-    (property "Reference" "#PWR010" (at 34.29 163.83 0)
+    (property "Reference" "#PWR011" (at 34.29 163.83 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 35.56 163.83 90)
@@ -2320,7 +2320,7 @@
     (instances
       (project "RegisterFileModule"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/e246f5e8-ec22-4141-b6b8-29cb3989af2b/15d111da-e708-4cff-aee7-702b294baaf1"
-          (reference "#PWR010") (unit 1)
+          (reference "#PWR011") (unit 1)
         )
       )
     )
@@ -2329,7 +2329,7 @@
   (symbol (lib_id "power:GND") (at 40.64 175.26 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-0000601eac24)
-    (property "Reference" "#PWR012" (at 34.29 175.26 0)
+    (property "Reference" "#PWR013" (at 34.29 175.26 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 35.56 175.26 90)
@@ -2345,7 +2345,7 @@
     (instances
       (project "RegisterFileModule"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/e246f5e8-ec22-4141-b6b8-29cb3989af2b/15d111da-e708-4cff-aee7-702b294baaf1"
-          (reference "#PWR012") (unit 1)
+          (reference "#PWR013") (unit 1)
         )
       )
     )
@@ -2354,7 +2354,7 @@
   (symbol (lib_id "power:VCC") (at 40.64 171.45 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-0000601eac2a)
-    (property "Reference" "#PWR011" (at 44.45 171.45 0)
+    (property "Reference" "#PWR012" (at 44.45 171.45 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "VCC" (at 37.4142 171.069 90)
@@ -2370,7 +2370,7 @@
     (instances
       (project "RegisterFileModule"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/e246f5e8-ec22-4141-b6b8-29cb3989af2b/15d111da-e708-4cff-aee7-702b294baaf1"
-          (reference "#PWR011") (unit 1)
+          (reference "#PWR012") (unit 1)
         )
       )
     )
@@ -2379,7 +2379,7 @@
   (symbol (lib_id "power:GND") (at 104.14 102.87 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-0000621dfa41)
-    (property "Reference" "#PWR019" (at 104.14 109.22 0)
+    (property "Reference" "#PWR020" (at 104.14 109.22 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 104.267 107.2642 0)
@@ -2395,7 +2395,7 @@
     (instances
       (project "RegisterFileModule"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/e246f5e8-ec22-4141-b6b8-29cb3989af2b/15d111da-e708-4cff-aee7-702b294baaf1"
-          (reference "#PWR019") (unit 1)
+          (reference "#PWR020") (unit 1)
         )
       )
     )
@@ -2404,7 +2404,7 @@
   (symbol (lib_id "power:VCC") (at 92.71 38.1 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-0000621dfa47)
-    (property "Reference" "#PWR018" (at 92.71 41.91 0)
+    (property "Reference" "#PWR019" (at 92.71 41.91 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "VCC" (at 93.1418 33.7058 0)
@@ -2420,7 +2420,7 @@
     (instances
       (project "RegisterFileModule"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/e246f5e8-ec22-4141-b6b8-29cb3989af2b/15d111da-e708-4cff-aee7-702b294baaf1"
-          (reference "#PWR018") (unit 1)
+          (reference "#PWR019") (unit 1)
         )
       )
     )
@@ -2504,7 +2504,7 @@
   (symbol (lib_id "power:VCC") (at 158.75 88.9 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-0000622ef9de)
-    (property "Reference" "#PWR020" (at 162.56 88.9 0)
+    (property "Reference" "#PWR021" (at 162.56 88.9 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "VCC" (at 155.5242 88.519 90)
@@ -2520,7 +2520,7 @@
     (instances
       (project "RegisterFileModule"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/e246f5e8-ec22-4141-b6b8-29cb3989af2b/15d111da-e708-4cff-aee7-702b294baaf1"
-          (reference "#PWR020") (unit 1)
+          (reference "#PWR021") (unit 1)
         )
       )
     )
@@ -2529,7 +2529,7 @@
   (symbol (lib_id "power:GND") (at 186.69 102.87 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-0000622efa08)
-    (property "Reference" "#PWR022" (at 186.69 109.22 0)
+    (property "Reference" "#PWR023" (at 186.69 109.22 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 186.817 107.2642 0)
@@ -2545,7 +2545,7 @@
     (instances
       (project "RegisterFileModule"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/e246f5e8-ec22-4141-b6b8-29cb3989af2b/15d111da-e708-4cff-aee7-702b294baaf1"
-          (reference "#PWR022") (unit 1)
+          (reference "#PWR023") (unit 1)
         )
       )
     )
@@ -2554,7 +2554,7 @@
   (symbol (lib_id "power:VCC") (at 175.26 38.1 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-0000622efa0e)
-    (property "Reference" "#PWR021" (at 175.26 41.91 0)
+    (property "Reference" "#PWR022" (at 175.26 41.91 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "VCC" (at 175.6918 33.7058 0)
@@ -2570,7 +2570,7 @@
     (instances
       (project "RegisterFileModule"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/e246f5e8-ec22-4141-b6b8-29cb3989af2b/15d111da-e708-4cff-aee7-702b294baaf1"
-          (reference "#PWR021") (unit 1)
+          (reference "#PWR022") (unit 1)
         )
       )
     )

@@ -6,11 +6,71 @@
 
   (title_block
     (title "Turtle16: Write Back and Register File")
-    (date "2022-04-11")
-    (rev "A (17a66eba)")
+    (date "2023-11-04")
+    (rev "B")
   )
 
   (lib_symbols
+    (symbol "Connector:Conn_01x02_Pin" (pin_names (offset 1.016) hide) (in_bom yes) (on_board yes)
+      (property "Reference" "J" (at 0 2.54 0)
+        (effects (font (size 1.27 1.27)))
+      )
+      (property "Value" "Conn_01x02_Pin" (at 0 -5.08 0)
+        (effects (font (size 1.27 1.27)))
+      )
+      (property "Footprint" "" (at 0 0 0)
+        (effects (font (size 1.27 1.27)) hide)
+      )
+      (property "Datasheet" "~" (at 0 0 0)
+        (effects (font (size 1.27 1.27)) hide)
+      )
+      (property "ki_locked" "" (at 0 0 0)
+        (effects (font (size 1.27 1.27)))
+      )
+      (property "ki_keywords" "connector" (at 0 0 0)
+        (effects (font (size 1.27 1.27)) hide)
+      )
+      (property "ki_description" "Generic connector, single row, 01x02, script generated" (at 0 0 0)
+        (effects (font (size 1.27 1.27)) hide)
+      )
+      (property "ki_fp_filters" "Connector*:*_1x??_*" (at 0 0 0)
+        (effects (font (size 1.27 1.27)) hide)
+      )
+      (symbol "Conn_01x02_Pin_1_1"
+        (polyline
+          (pts
+            (xy 1.27 -2.54)
+            (xy 0.8636 -2.54)
+          )
+          (stroke (width 0.1524) (type default))
+          (fill (type none))
+        )
+        (polyline
+          (pts
+            (xy 1.27 0)
+            (xy 0.8636 0)
+          )
+          (stroke (width 0.1524) (type default))
+          (fill (type none))
+        )
+        (rectangle (start 0.8636 -2.413) (end 0 -2.667)
+          (stroke (width 0.1524) (type default))
+          (fill (type outline))
+        )
+        (rectangle (start 0.8636 0.127) (end 0 -0.127)
+          (stroke (width 0.1524) (type default))
+          (fill (type outline))
+        )
+        (pin passive line (at 5.08 0 180) (length 3.81)
+          (name "Pin_1" (effects (font (size 1.27 1.27))))
+          (number "1" (effects (font (size 1.27 1.27))))
+        )
+        (pin passive line (at 5.08 -2.54 180) (length 3.81)
+          (name "Pin_2" (effects (font (size 1.27 1.27))))
+          (number "2" (effects (font (size 1.27 1.27))))
+        )
+      )
+    )
     (symbol "Connector:Conn_01x03_Pin" (pin_names (offset 1.016) hide) (in_bom yes) (on_board yes)
       (property "Reference" "J" (at 0 5.08 0)
         (effects (font (size 1.27 1.27)))
@@ -1075,6 +1135,10 @@
     (stroke (width 0) (type default))
     (uuid 12c2731c-f09b-44bd-b443-2acd97789145)
   )
+  (wire (pts (xy 114.935 99.06) (xy 114.935 118.745))
+    (stroke (width 0) (type default))
+    (uuid 15ba0ac4-30db-48a3-90a1-3d60609301e0)
+  )
   (bus (pts (xy 205.74 102.87) (xy 205.74 105.41))
     (stroke (width 0) (type default))
     (uuid 17806b5c-9183-43cb-b3c0-73787510545b)
@@ -1084,6 +1148,10 @@
     (uuid 1a76c45c-49e5-49f7-80fd-6825e886558e)
   )
 
+  (wire (pts (xy 123.19 99.06) (xy 114.935 99.06))
+    (stroke (width 0) (type default))
+    (uuid 1c603a29-9585-449f-b339-5448843fb6cc)
+  )
   (wire (pts (xy 52.07 124.46) (xy 71.12 124.46))
     (stroke (width 0) (type default))
     (uuid 1e2fb18c-c46d-4907-bbf1-fe5a3a3e93f7)
@@ -1255,6 +1323,11 @@
   (bus (pts (xy 205.74 52.07) (xy 205.74 54.61))
     (stroke (width 0) (type default))
     (uuid 525464b7-e8f0-499f-9708-00f63a1e3686)
+  )
+
+  (wire (pts (xy 107.95 121.285) (xy 111.76 121.285))
+    (stroke (width 0) (type default))
+    (uuid 531831f1-abeb-4f17-8f03-9af05c221a49)
   )
   (bus (pts (xy 76.2 182.88) (xy 76.2 185.42))
     (stroke (width 0) (type default))
@@ -1471,6 +1544,10 @@
     (uuid 9850e05c-5817-4390-9382-92756bb17636)
   )
 
+  (wire (pts (xy 114.935 118.745) (xy 107.95 118.745))
+    (stroke (width 0) (type default))
+    (uuid 994e4dbf-28bb-4fb4-87fe-f109b276df2b)
+  )
   (wire (pts (xy 146.05 41.91) (xy 146.05 36.83))
     (stroke (width 0) (type default))
     (uuid 9a8ad8bb-d9a9-4b2b-bc88-ea6fd2676d45)
@@ -2094,7 +2171,7 @@
   (symbol (lib_id "power:GND") (at 111.76 180.34 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005d9d8fa4)
-    (property "Reference" "#PWR03" (at 111.76 186.69 0)
+    (property "Reference" "#PWR04" (at 111.76 186.69 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 111.887 184.7342 0)
@@ -2110,7 +2187,7 @@
     (instances
       (project "RegisterFileModule"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "#PWR03") (unit 1)
+          (reference "#PWR04") (unit 1)
         )
       )
     )
@@ -2119,7 +2196,7 @@
   (symbol (lib_id "power:GND") (at 137.16 180.34 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005d9d9546)
-    (property "Reference" "#PWR05" (at 137.16 186.69 0)
+    (property "Reference" "#PWR06" (at 137.16 186.69 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 137.287 184.7342 0)
@@ -2135,7 +2212,7 @@
     (instances
       (project "RegisterFileModule"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "#PWR05") (unit 1)
+          (reference "#PWR06") (unit 1)
         )
       )
     )
@@ -2194,7 +2271,7 @@
   (symbol (lib_id "power:GND") (at 111.76 193.04 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005d9db4f9)
-    (property "Reference" "#PWR04" (at 111.76 199.39 0)
+    (property "Reference" "#PWR05" (at 111.76 199.39 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 111.887 197.4342 0)
@@ -2210,7 +2287,7 @@
     (instances
       (project "RegisterFileModule"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "#PWR04") (unit 1)
+          (reference "#PWR05") (unit 1)
         )
       )
     )
@@ -2219,7 +2296,7 @@
   (symbol (lib_id "power:GND") (at 137.16 193.04 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00005d9db4ff)
-    (property "Reference" "#PWR06" (at 137.16 199.39 0)
+    (property "Reference" "#PWR07" (at 137.16 199.39 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 137.287 197.4342 0)
@@ -2235,7 +2312,7 @@
     (instances
       (project "RegisterFileModule"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "#PWR06") (unit 1)
+          (reference "#PWR07") (unit 1)
         )
       )
     )
@@ -2244,7 +2321,7 @@
   (symbol (lib_id "power:VCC") (at 149.86 29.21 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-0000608fd908)
-    (property "Reference" "#PWR07" (at 146.05 29.21 0)
+    (property "Reference" "#PWR08" (at 146.05 29.21 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "VCC" (at 153.1112 29.6418 90)
@@ -2260,7 +2337,7 @@
     (instances
       (project "RegisterFileModule"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "#PWR07") (unit 1)
+          (reference "#PWR08") (unit 1)
         )
       )
     )
@@ -2269,7 +2346,7 @@
   (symbol (lib_id "power:GND") (at 149.86 36.83 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-0000608fd90e)
-    (property "Reference" "#PWR08" (at 156.21 36.83 0)
+    (property "Reference" "#PWR09" (at 156.21 36.83 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 153.1112 36.703 90)
@@ -2285,7 +2362,7 @@
     (instances
       (project "RegisterFileModule"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "#PWR08") (unit 1)
+          (reference "#PWR09") (unit 1)
         )
       )
     )
@@ -2413,7 +2490,7 @@
   (symbol (lib_id "Connector:Conn_01x16_Pin") (at 237.49 107.95 0) (mirror y) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 177595e8-c8ed-460d-9c81-8653618bf187)
-    (property "Reference" "J8" (at 236.22 85.09 0)
+    (property "Reference" "J9" (at 236.22 85.09 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "RegisterB" (at 233.68 87.63 0)
@@ -2444,7 +2521,7 @@
     (instances
       (project "RegisterFileModule"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "J8") (unit 1)
+          (reference "J9") (unit 1)
         )
       )
     )
@@ -2537,7 +2614,7 @@
   (symbol (lib_id "Connector:Conn_01x16_Pin") (at 237.49 59.69 0) (mirror y) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 7c241cef-0e7a-4a47-8129-0a0c3fbb969b)
-    (property "Reference" "J7" (at 236.22 36.83 0)
+    (property "Reference" "J8" (at 236.22 36.83 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Value" "RegisterA" (at 233.68 39.37 0)
@@ -2568,7 +2645,7 @@
     (instances
       (project "RegisterFileModule"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "J7") (unit 1)
+          (reference "J8") (unit 1)
         )
       )
     )
@@ -2619,6 +2696,31 @@
       (project "RegisterFileModule"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
           (reference "#PWR01") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "power:GND") (at 111.76 121.285 90) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid b677e091-116b-4ab0-9163-427ca425e101)
+    (property "Reference" "#PWR03" (at 118.11 121.285 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "GND" (at 115.0112 121.158 90)
+      (effects (font (size 1.27 1.27)) (justify right))
+    )
+    (property "Footprint" "" (at 111.76 121.285 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "" (at 111.76 121.285 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 5e7fdea7-9624-421a-af96-6b8189036eea))
+    (instances
+      (project "RegisterFileModule"
+        (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
+          (reference "#PWR03") (unit 1)
         )
       )
     )
@@ -2691,14 +2793,40 @@
     )
   )
 
-  (sheet (at 123.19 73.66) (size 46.99 25.4) (fields_autoplaced)
+  (symbol (lib_id "Connector:Conn_01x02_Pin") (at 102.87 121.285 0) (mirror x) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid ecb9f674-9d55-4971-a1ba-a14bc3bfc5ce)
+    (property "Reference" "J7" (at 102.87 113.03 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Value" "Phi2" (at 103.505 115.57 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" (at 102.87 121.285 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 102.87 121.285 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 7fa614c7-564e-42ab-8a7c-920517939ff0))
+    (pin "2" (uuid d66b9a07-cf2e-4eb0-9ef0-7c76c1839627))
+    (instances
+      (project "RegisterFileModule"
+        (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
+          (reference "J7") (unit 1)
+        )
+      )
+    )
+  )
+
+  (sheet (at 123.19 73.66) (size 46.99 27.305) (fields_autoplaced)
     (stroke (width 0.1524) (type solid))
     (fill (color 0 0 0 0.0000))
     (uuid e246f5e8-ec22-4141-b6b8-29cb3989af2b)
     (property "Sheetname" "Write Back and Register File" (at 123.19 72.9484 0)
       (effects (font (size 1.27 1.27)) (justify left bottom))
     )
-    (property "Sheetfile" "WBReg.kicad_sch" (at 123.19 99.6446 0)
+    (property "Sheetfile" "WBReg.kicad_sch" (at 123.19 101.5496 0)
       (effects (font (size 1.27 1.27)) (justify left top))
     )
     (pin "~{WRL}" input (at 123.19 86.36 180)
@@ -2744,6 +2872,10 @@
     (pin "RegisterB[0..15]" output (at 170.18 86.36 0)
       (effects (font (size 1.27 1.27)) (justify right))
       (uuid 619f186f-b439-4886-97fc-15b32d5f6d7f)
+    )
+    (pin "Phi2" input (at 123.19 99.06 180)
+      (effects (font (size 1.27 1.27)) (justify left))
+      (uuid 105bb555-bca5-4ecd-880b-b6b99136c636)
     )
     (instances
       (project "RegisterFileModule"

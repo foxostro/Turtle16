@@ -6,7 +6,7 @@
 
   (title_block
     (title "Turtle16: RAM")
-    (date "2023-10-28")
+    (date "2023-11-04")
     (rev "D")
     (comment 3 "instruction on the second read port.")
     (comment 4 "RAM is implemented with a 64K x 16 dual port SRAM so that the IF stage can fetch an")

@@ -1332,6 +1332,10 @@
     (uuid f36aaa20-2e8d-4eec-a62d-bbbeb1b3d56e)
   )
 
+  (wire (pts (xy 21.59 120.65) (xy 31.75 120.65))
+    (stroke (width 0) (type default))
+    (uuid f3da9dab-5de9-4407-be09-0af4331e16aa)
+  )
   (wire (pts (xy 20.955 123.19) (xy 31.75 123.19))
     (stroke (width 0) (type default))
     (uuid f4266a30-e6ed-416f-a0e7-7861e469888a)
@@ -1422,6 +1426,10 @@
   (label "Ctl_WB18" (at 20.955 128.27 0) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 1fa1bc76-d26b-4c98-b262-12f377c3a5a0)
+  )
+  (label "Phi2" (at 21.59 120.65 0) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid 30eb14df-f86c-47f6-b4d8-54c37ed8c8c6)
   )
   (label "Phi1d" (at 123.19 120.65 0) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify left bottom))
@@ -2942,6 +2950,10 @@
     (pin "RegisterB[0..15]" output (at 73.66 128.27 0)
       (effects (font (size 1.27 1.27)) (justify right))
       (uuid 619f186f-b439-4886-97fc-15b32d5f6d7f)
+    )
+    (pin "Phi2" input (at 31.75 120.65 180)
+      (effects (font (size 1.27 1.27)) (justify left))
+      (uuid 5410f0b0-e74f-40ff-8795-b632ded7e399)
     )
     (instances
       (project "MainBoard"

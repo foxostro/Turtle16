@@ -1,10 +1,9 @@
 NOP
-LI r7, -2
-LI r0, -1
+LI r7, -1
 NOP
 NOP
 NOP
-STORE r0, r7, 0
+STORE r7, r7, 0
 NOP
 NOP
 NOP

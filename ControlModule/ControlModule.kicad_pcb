@@ -89,7 +89,7 @@
       (mirror false)
       (drillshape 0)
       (scaleselection 1)
-      (outputdirectory "../Generated/ControlModule_Rev_B_66167b10/")
+      (outputdirectory "../Generated/ControlModule_Rev_D_453885b1/")
     )
   )
 
@@ -4321,9 +4321,9 @@
       (stroke (width 0.1) (type solid)) (layer "F.Fab") (tstamp c2b2a2da-a978-4d4d-8825-b15ff9708aea))
     (fp_line (start 1.6 0.8) (end -1.6 0.8)
       (stroke (width 0.1) (type solid)) (layer "F.Fab") (tstamp 19a937f8-e3a2-405f-9747-8856ea64d3e5))
-    (pad "1" smd roundrect (at -1.5625 0 270) (size 1.325 1.8) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.188679)
+    (pad "1" smd roundrect (at -1.5625 0 270) (size 1.325 1.8) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.1886792453)
       (net 2 "VCC") (pintype "passive") (tstamp 5563a86d-a36f-4574-b0e7-1a129929552c))
-    (pad "2" smd roundrect (at 1.5625 0 270) (size 1.325 1.8) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.188679)
+    (pad "2" smd roundrect (at 1.5625 0 270) (size 1.325 1.8) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.1886792453)
       (net 1 "GND") (pintype "passive") (tstamp 913ddfe8-3a36-4c6b-9f52-fe9d4eb0466b))
     (model "${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_1206_3216Metric.wrl"
       (offset (xyz 0 0 0))

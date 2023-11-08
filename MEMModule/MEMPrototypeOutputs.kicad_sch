@@ -1430,7 +1430,7 @@
     (property "Reference" "J8" (at 115.57 64.77 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
-    (property "Value" "Ctl_MEM" (at 113.03 67.31 0)
+    (property "Value" "Ctl_WB" (at 113.03 67.31 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
     (property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical" (at 116.84 72.39 0)

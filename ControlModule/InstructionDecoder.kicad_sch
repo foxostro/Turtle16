@@ -6,8 +6,8 @@
 
   (title_block
     (title "Instruction Decoder")
-    (date "2023-10-30")
-    (rev "D")
+    (date "2023-11-14")
+    (rev "E")
     (comment 4 "Decodes an instruction opcode into an array of control signals.")
   )
 

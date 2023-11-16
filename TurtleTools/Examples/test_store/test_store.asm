@@ -1,10 +1,6 @@
 NOP
 LI r7, -1
-NOP
-NOP
-NOP
 STORE r7, r7, 0
-NOP
 NOP
 NOP
 HLT

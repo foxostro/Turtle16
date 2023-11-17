@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name ProcessorBoard)(type KiCad)(uri ${KIPRJMOD}/ProcessorBoard.pretty)(options "")(descr ""))
+)

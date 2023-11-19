@@ -6,7 +6,7 @@
 
   (title_block
     (title "MEM: Buffer StoreOp")
-    (date "2023-11-15")
+    (date "2023-11-19")
     (rev "A")
     (comment 3 "This allows peripheral devices to assert their own value to the bus during a Load.")
     (comment 4 "The store operand can be disconnected from the system memory bus via tristate outputs.")

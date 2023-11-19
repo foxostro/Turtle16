@@ -6,7 +6,7 @@
 
   (title_block
     (title "ID")
-    (date "2023-11-15")
+    (date "2023-11-19")
     (rev "A")
     (comment 1 "Simultaneously, read the register file using indices extracted from the instruction word.")
     (comment 2 "effect conditional instructions.")
@@ -67,6 +67,10 @@
   (bus (pts (xy 69.85 128.27) (xy 91.44 128.27))
     (stroke (width 0) (type default))
     (uuid 3f40e620-2b34-4c9e-b852-1ba39e3dbc3a)
+  )
+  (bus (pts (xy 91.44 120.65) (xy 76.2 120.65))
+    (stroke (width 0) (type default))
+    (uuid 40dd95e8-f694-4b73-9182-5d9645228bbb)
   )
   (bus (pts (xy 165.735 78.105) (xy 175.895 78.105))
     (stroke (width 0) (type default))
@@ -202,6 +206,10 @@
   (label "Ins_EX[0..10]" (at 212.09 62.23 0) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 418a0e9c-c95f-4d4a-a88f-ec13faf3303c)
+  )
+  (label "Ctl_EX[0..20]" (at 76.2 120.65 0) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid 47810042-03f0-4ee4-a50e-f2ff484df170)
   )
   (label "Ctl_EX[0..20]" (at 212.725 77.47 0) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify left bottom))
@@ -362,6 +370,10 @@
     (pin "FLUSH" output (at 127 112.395 0)
       (effects (font (size 1.27 1.27)) (justify right))
       (uuid 8ebb9e95-3077-468f-b1ce-2532864c8a5b)
+    )
+    (pin "Ctl_EX[0..20]" input (at 91.44 120.65 180)
+      (effects (font (size 1.27 1.27)) (justify left))
+      (uuid 26c71aa4-6d7b-4b4a-8877-c1425a3e0c35)
     )
     (instances
       (project "ProcessorBoard"

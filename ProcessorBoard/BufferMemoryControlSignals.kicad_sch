@@ -382,7 +382,7 @@
     (effects (font (size 1.27 1.27)) (justify right))
     (uuid 2e00a52e-9c16-45d3-84a5-a06979b617b4)
   )
-  (hierarchical_label "~{RDY}" (shape input) (at 92.71 114.3 180) (fields_autoplaced)
+  (hierarchical_label "~{AssertCtl}" (shape input) (at 92.71 114.3 180) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify right))
     (uuid 516d561c-e210-47a1-b528-cf70e07f88f1)
   )

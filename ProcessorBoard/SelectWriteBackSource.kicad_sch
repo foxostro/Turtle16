@@ -6,7 +6,7 @@
 
   (title_block
     (title "WB: Select Write Back Source")
-    (date "2023-11-19")
+    (date "2023-11-20")
     (rev "A")
     (comment 2 "or a byte swapped version of the latter.")
     (comment 3 "It can choose either the ALU result, the store operand / value loaded from peripherals,")

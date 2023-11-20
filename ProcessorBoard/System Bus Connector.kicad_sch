@@ -6,7 +6,7 @@
 
   (title_block
     (title "System Bus Connector")
-    (date "2023-11-19")
+    (date "2023-11-20")
     (rev "A")
     (comment 4 "Peripheral devices on separate boards connect to the system bus here.")
   )
@@ -730,6 +730,8 @@
   (junction (at 26.67 99.06) (diameter 0) (color 0 0 0 0)
     (uuid fbab9b51-d944-4809-95b4-af7f75717232)
   )
+
+  (no_connect (at 215.9 135.89) (uuid 2fa48c19-2597-4f03-a32e-05dfc00c55b9))
 
   (bus_entry (at 86.36 43.18) (size -2.54 -2.54)
     (stroke (width 0) (type default))
@@ -3623,31 +3625,6 @@
       (project "ProcessorBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/00000000-0000-0000-0000-00005faed671"
           (reference "#PWR0443") (unit 1)
-        )
-      )
-    )
-  )
-
-  (symbol (lib_id "power:GND") (at 215.9 135.89 90) (mirror x) (unit 1)
-    (in_bom yes) (on_board yes) (dnp no)
-    (uuid 2048c0ab-350d-48dd-8210-d28942328eb8)
-    (property "Reference" "#PWR03" (at 222.25 135.89 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value" "GND" (at 219.1512 136.017 90)
-      (effects (font (size 1.27 1.27)) (justify right))
-    )
-    (property "Footprint" "" (at 215.9 135.89 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (at 215.9 135.89 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid 763819a0-ab57-4bce-b575-9e58e446a09c))
-    (instances
-      (project "ProcessorBoard"
-        (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/00000000-0000-0000-0000-00005faed671"
-          (reference "#PWR03") (unit 1)
         )
       )
     )

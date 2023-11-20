@@ -6,7 +6,7 @@
 
   (title_block
     (title "EX")
-    (date "2023-11-19")
+    (date "2023-11-20")
     (rev "A")
     (comment 2 "ID stage of the CPU pipeline.")
     (comment 3 "The ALU condition codes may be latched in a flags register which feeds back into the")

@@ -1,8 +1,6 @@
 NOP
 LI r7, 1
 ADDI r7, r7, 2
-NOP
-NOP
 STORE r7, r7, 0
 NOP
 NOP

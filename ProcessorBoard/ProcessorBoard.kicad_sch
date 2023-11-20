@@ -1382,7 +1382,7 @@
   (symbol (lib_id "Connector:Conn_01x02_Pin") (at 224.79 146.05 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-00006076d993)
-    (property "Reference" "J2" (at 227.5332 141.4526 0)
+    (property "Reference" "J1" (at 227.5332 141.4526 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "Power" (at 227.5332 143.764 0)
@@ -1402,7 +1402,7 @@
     (instances
       (project "ProcessorBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "J2") (unit 1)
+          (reference "J1") (unit 1)
         )
       )
     )
@@ -1565,7 +1565,7 @@
   (symbol (lib_id "power:VCC") (at 252.73 143.51 270) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 6f1cf8bb-f580-4488-9831-30be63d4cb16)
-    (property "Reference" "#PWR014" (at 248.92 143.51 0)
+    (property "Reference" "#PWR05" (at 248.92 143.51 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "VCC" (at 255.9812 143.9418 90)
@@ -1581,7 +1581,7 @@
     (instances
       (project "ProcessorBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "#PWR014") (unit 1)
+          (reference "#PWR05") (unit 1)
         )
       )
     )
@@ -1640,7 +1640,7 @@
   (symbol (lib_id "power:GND") (at 42.545 184.15 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid da945a9a-f9f3-4e34-8581-a2e62c7d77f7)
-    (property "Reference" "#PWR06" (at 42.545 190.5 0)
+    (property "Reference" "#PWR03" (at 42.545 190.5 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 42.672 188.5442 0)
@@ -1656,7 +1656,7 @@
     (instances
       (project "ProcessorBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "#PWR06") (unit 1)
+          (reference "#PWR03") (unit 1)
         )
       )
     )
@@ -1665,7 +1665,7 @@
   (symbol (lib_id "power:GND") (at 252.73 151.13 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid e4f8f196-f5f1-4751-975e-15fe5807bcb2)
-    (property "Reference" "#PWR015" (at 259.08 151.13 0)
+    (property "Reference" "#PWR06" (at 259.08 151.13 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 255.9812 151.003 90)
@@ -1681,7 +1681,7 @@
     (instances
       (project "ProcessorBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "#PWR015") (unit 1)
+          (reference "#PWR06") (unit 1)
         )
       )
     )
@@ -1715,7 +1715,7 @@
   (symbol (lib_id "power:GND") (at 42.545 196.85 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid ff495587-450a-492f-b95b-47d54506ec29)
-    (property "Reference" "#PWR07" (at 42.545 203.2 0)
+    (property "Reference" "#PWR04" (at 42.545 203.2 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 42.672 201.2442 0)
@@ -1731,7 +1731,7 @@
     (instances
       (project "ProcessorBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d"
-          (reference "#PWR07") (unit 1)
+          (reference "#PWR04") (unit 1)
         )
       )
     )

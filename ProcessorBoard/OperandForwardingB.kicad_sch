@@ -2561,7 +2561,7 @@
   (symbol (lib_id "Device:C") (at 31.75 185.42 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-000060af0e58)
-    (property "Reference" "C60" (at 34.671 184.2516 0)
+    (property "Reference" "C54" (at 34.671 184.2516 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "0.1uF" (at 34.671 186.563 0)
@@ -2581,7 +2581,7 @@
     (instances
       (project "ProcessorBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/2e370670-2291-4657-8360-03c3bd44e418"
-          (reference "C60") (unit 1)
+          (reference "C54") (unit 1)
         )
       )
     )
@@ -2590,7 +2590,7 @@
   (symbol (lib_id "power:VCC") (at 19.05 181.61 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-000060af0e5e)
-    (property "Reference" "#PWR0350" (at 19.05 185.42 0)
+    (property "Reference" "#PWR0332" (at 19.05 185.42 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "VCC" (at 19.4818 177.2158 0)
@@ -2606,7 +2606,7 @@
     (instances
       (project "ProcessorBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/2e370670-2291-4657-8360-03c3bd44e418"
-          (reference "#PWR0350") (unit 1)
+          (reference "#PWR0332") (unit 1)
         )
       )
     )
@@ -2615,7 +2615,7 @@
   (symbol (lib_id "power:GND") (at 19.05 191.77 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-000060af0e67)
-    (property "Reference" "#PWR0351" (at 19.05 198.12 0)
+    (property "Reference" "#PWR0333" (at 19.05 198.12 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 19.177 196.1642 0)
@@ -2631,7 +2631,7 @@
     (instances
       (project "ProcessorBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/2e370670-2291-4657-8360-03c3bd44e418"
-          (reference "#PWR0351") (unit 1)
+          (reference "#PWR0333") (unit 1)
         )
       )
     )
@@ -2640,7 +2640,7 @@
   (symbol (lib_id "Device:C") (at 44.45 185.42 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-000060af0e70)
-    (property "Reference" "C61" (at 47.371 184.2516 0)
+    (property "Reference" "C55" (at 47.371 184.2516 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "0.1uF" (at 47.371 186.563 0)
@@ -2660,7 +2660,7 @@
     (instances
       (project "ProcessorBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/2e370670-2291-4657-8360-03c3bd44e418"
-          (reference "C61") (unit 1)
+          (reference "C55") (unit 1)
         )
       )
     )
@@ -2669,7 +2669,7 @@
   (symbol (lib_id "power:VCC") (at 83.82 60.96 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-000060af0f33)
-    (property "Reference" "#PWR0353" (at 83.82 64.77 0)
+    (property "Reference" "#PWR0335" (at 83.82 64.77 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "VCC" (at 84.2518 56.5658 0)
@@ -2685,7 +2685,7 @@
     (instances
       (project "ProcessorBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/2e370670-2291-4657-8360-03c3bd44e418"
-          (reference "#PWR0353") (unit 1)
+          (reference "#PWR0335") (unit 1)
         )
       )
     )
@@ -2694,7 +2694,7 @@
   (symbol (lib_id "power:GND") (at 95.25 125.73 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-000060af0f39)
-    (property "Reference" "#PWR0354" (at 95.25 132.08 0)
+    (property "Reference" "#PWR0336" (at 95.25 132.08 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 95.377 130.1242 0)
@@ -2710,7 +2710,7 @@
     (instances
       (project "ProcessorBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/2e370670-2291-4657-8360-03c3bd44e418"
-          (reference "#PWR0354") (unit 1)
+          (reference "#PWR0336") (unit 1)
         )
       )
     )
@@ -2719,7 +2719,7 @@
   (symbol (lib_id "74xx (kicad5):74AHCT16245") (at 83.82 92.71 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-000060af0f47)
-    (property "Reference" "U54" (at 83.82 91.44 0)
+    (property "Reference" "U50" (at 83.82 91.44 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "74AHCT16245" (at 83.82 93.98 0)
@@ -2785,7 +2785,7 @@
     (instances
       (project "ProcessorBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/2e370670-2291-4657-8360-03c3bd44e418"
-          (reference "U54") (unit 1)
+          (reference "U50") (unit 1)
         )
       )
     )
@@ -2794,7 +2794,7 @@
   (symbol (lib_id "74xx (kicad5):74AHCT16245") (at 151.13 93.98 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-000060af102e)
-    (property "Reference" "U55" (at 151.13 92.71 0)
+    (property "Reference" "U51" (at 151.13 92.71 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "74AHCT16245" (at 151.13 95.25 0)
@@ -2860,7 +2860,7 @@
     (instances
       (project "ProcessorBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/2e370670-2291-4657-8360-03c3bd44e418"
-          (reference "U55") (unit 1)
+          (reference "U51") (unit 1)
         )
       )
     )
@@ -2869,7 +2869,7 @@
   (symbol (lib_id "power:VCC") (at 134.62 113.03 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-000060af1034)
-    (property "Reference" "#PWR0355" (at 138.43 113.03 0)
+    (property "Reference" "#PWR0337" (at 138.43 113.03 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "VCC" (at 131.3942 112.649 90)
@@ -2885,7 +2885,7 @@
     (instances
       (project "ProcessorBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/2e370670-2291-4657-8360-03c3bd44e418"
-          (reference "#PWR0355") (unit 1)
+          (reference "#PWR0337") (unit 1)
         )
       )
     )
@@ -2894,7 +2894,7 @@
   (symbol (lib_id "power:GND") (at 162.56 127 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-000060af103a)
-    (property "Reference" "#PWR0357" (at 162.56 133.35 0)
+    (property "Reference" "#PWR0339" (at 162.56 133.35 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 162.687 131.3942 0)
@@ -2910,7 +2910,7 @@
     (instances
       (project "ProcessorBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/2e370670-2291-4657-8360-03c3bd44e418"
-          (reference "#PWR0357") (unit 1)
+          (reference "#PWR0339") (unit 1)
         )
       )
     )
@@ -2919,7 +2919,7 @@
   (symbol (lib_id "power:VCC") (at 151.13 62.23 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-000060af1040)
-    (property "Reference" "#PWR0356" (at 151.13 66.04 0)
+    (property "Reference" "#PWR0338" (at 151.13 66.04 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "VCC" (at 151.5618 57.8358 0)
@@ -2935,7 +2935,7 @@
     (instances
       (project "ProcessorBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/2e370670-2291-4657-8360-03c3bd44e418"
-          (reference "#PWR0356") (unit 1)
+          (reference "#PWR0338") (unit 1)
         )
       )
     )
@@ -2944,7 +2944,7 @@
   (symbol (lib_id "74xx (kicad5):74AHCT16245") (at 218.44 93.98 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-000060af10a0)
-    (property "Reference" "U56" (at 218.44 92.71 0)
+    (property "Reference" "U52" (at 218.44 92.71 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "74AHCT16245" (at 218.44 95.25 0)
@@ -3010,7 +3010,7 @@
     (instances
       (project "ProcessorBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/2e370670-2291-4657-8360-03c3bd44e418"
-          (reference "U56") (unit 1)
+          (reference "U52") (unit 1)
         )
       )
     )
@@ -3019,7 +3019,7 @@
   (symbol (lib_id "power:VCC") (at 201.93 113.03 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-000060af1107)
-    (property "Reference" "#PWR0358" (at 205.74 113.03 0)
+    (property "Reference" "#PWR0340" (at 205.74 113.03 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "VCC" (at 198.7042 112.649 90)
@@ -3035,7 +3035,7 @@
     (instances
       (project "ProcessorBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/2e370670-2291-4657-8360-03c3bd44e418"
-          (reference "#PWR0358") (unit 1)
+          (reference "#PWR0340") (unit 1)
         )
       )
     )
@@ -3044,7 +3044,7 @@
   (symbol (lib_id "Device:C") (at 19.05 185.42 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-000060f256eb)
-    (property "Reference" "C59" (at 21.971 184.2516 0)
+    (property "Reference" "C53" (at 21.971 184.2516 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "0.1uF" (at 21.971 186.563 0)
@@ -3064,7 +3064,7 @@
     (instances
       (project "ProcessorBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/2e370670-2291-4657-8360-03c3bd44e418"
-          (reference "C59") (unit 1)
+          (reference "C53") (unit 1)
         )
       )
     )
@@ -3073,7 +3073,7 @@
   (symbol (lib_id "power:VCC") (at 67.31 111.76 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-000060f256f2)
-    (property "Reference" "#PWR0352" (at 71.12 111.76 0)
+    (property "Reference" "#PWR0334" (at 71.12 111.76 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "VCC" (at 64.0842 111.379 90)
@@ -3089,7 +3089,7 @@
     (instances
       (project "ProcessorBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/2e370670-2291-4657-8360-03c3bd44e418"
-          (reference "#PWR0352") (unit 1)
+          (reference "#PWR0334") (unit 1)
         )
       )
     )
@@ -3098,7 +3098,7 @@
   (symbol (lib_id "power:GND") (at 229.87 127 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-000060f256fa)
-    (property "Reference" "#PWR0360" (at 229.87 133.35 0)
+    (property "Reference" "#PWR0342" (at 229.87 133.35 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "GND" (at 229.997 131.3942 0)
@@ -3114,7 +3114,7 @@
     (instances
       (project "ProcessorBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/2e370670-2291-4657-8360-03c3bd44e418"
-          (reference "#PWR0360") (unit 1)
+          (reference "#PWR0342") (unit 1)
         )
       )
     )
@@ -3123,7 +3123,7 @@
   (symbol (lib_id "power:VCC") (at 218.44 62.23 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 00000000-0000-0000-0000-000060f256fb)
-    (property "Reference" "#PWR0359" (at 218.44 66.04 0)
+    (property "Reference" "#PWR0341" (at 218.44 66.04 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Value" "VCC" (at 218.8718 57.8358 0)
@@ -3139,7 +3139,7 @@
     (instances
       (project "ProcessorBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/2e370670-2291-4657-8360-03c3bd44e418"
-          (reference "#PWR0359") (unit 1)
+          (reference "#PWR0341") (unit 1)
         )
       )
     )

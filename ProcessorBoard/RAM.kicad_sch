@@ -616,9 +616,7 @@
 
 
   (no_connect (at 143.51 41.91) (uuid 9726b6ca-d406-4234-942d-34e8f1b44acb))
-  (no_connect (at 140.97 41.91) (uuid 9726b6ca-d406-4234-942d-34e8f1b44acc))
   (no_connect (at 130.81 41.91) (uuid 9726b6ca-d406-4234-942d-34e8f1b44acd))
-  (no_connect (at 133.35 41.91) (uuid 9726b6ca-d406-4234-942d-34e8f1b44ace))
   (no_connect (at 97.79 77.47) (uuid d03b0ded-cc65-4e0b-9912-e721b1649217))
   (no_connect (at 97.79 80.01) (uuid d03b0ded-cc65-4e0b-9912-e721b1649218))
   (no_connect (at 166.37 138.43) (uuid d03b0ded-cc65-4e0b-9912-e721b1649219))
@@ -931,6 +929,11 @@
     (uuid f8aea244-89df-4ad8-a378-7cf41231bdfd)
   )
 
+  (text "The RAM is configured in ~{S} mode to\ndisable the onboard write arbitration\nlogic."
+    (at 118.11 24.13 0)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid 7fe0eb42-c378-4184-ac19-ef5dbc1c15da)
+  )
   (text "If the IF stage is not being fed by\nROM then it is being fed by RAM."
     (at 39.37 90.17 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
@@ -1300,6 +1303,31 @@
       (project "ProcessorBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/27dfe254-60c9-4400-9d01-5b17cd0eff2c/46d35a1a-4867-4988-9941-4b86f9dbec1c"
           (reference "#PWR0145") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "power:VCC") (at 133.35 41.91 0) (mirror y) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 07405a24-d782-4c75-b440-96139bf6316f)
+    (property "Reference" "#PWR0454" (at 133.35 45.72 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "VCC" (at 133.35 34.29 90)
+      (effects (font (size 1.27 1.27)) (justify right))
+    )
+    (property "Footprint" "" (at 133.35 41.91 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "" (at 133.35 41.91 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 276f1596-d1e8-4855-a931-4c738bcc86ec))
+    (instances
+      (project "ProcessorBoard"
+        (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/27dfe254-60c9-4400-9d01-5b17cd0eff2c/46d35a1a-4867-4988-9941-4b86f9dbec1c"
+          (reference "#PWR0454") (unit 1)
         )
       )
     )
@@ -1732,19 +1760,19 @@
     )
   )
 
-  (symbol (lib_id "power:VCC") (at 138.43 41.91 0) (mirror y) (unit 1)
+  (symbol (lib_id "power:VCC") (at 140.97 41.91 0) (mirror y) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid b0c0e032-8de4-453a-8972-76827ecc9a33)
-    (property "Reference" "#PWR0144" (at 138.43 45.72 0)
+    (property "Reference" "#PWR0144" (at 140.97 45.72 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (property "Value" "VCC" (at 138.43 34.29 90)
+    (property "Value" "VCC" (at 140.97 34.29 90)
       (effects (font (size 1.27 1.27)) (justify right))
     )
-    (property "Footprint" "" (at 138.43 41.91 0)
+    (property "Footprint" "" (at 140.97 41.91 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (property "Datasheet" "" (at 138.43 41.91 0)
+    (property "Datasheet" "" (at 140.97 41.91 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (pin "1" (uuid 0065f8f4-dcf4-48eb-bc1a-38f35451a2a1))
@@ -1981,6 +2009,31 @@
       (project "ProcessorBoard"
         (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/27dfe254-60c9-4400-9d01-5b17cd0eff2c/46d35a1a-4867-4988-9941-4b86f9dbec1c"
           (reference "#PWR0154") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "power:GND") (at 138.43 41.91 180) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid f50dd27d-c758-4089-96a5-4c458308283d)
+    (property "Reference" "#PWR0455" (at 138.43 35.56 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "GND" (at 138.43 34.29 90)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "" (at 138.43 41.91 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "" (at 138.43 41.91 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 0157c9b2-8a04-4ee2-b4f1-4011b2020176))
+    (instances
+      (project "ProcessorBoard"
+        (path "/83c5181e-f5ee-453c-ae5c-d7256ba8837d/27dfe254-60c9-4400-9d01-5b17cd0eff2c/46d35a1a-4867-4988-9941-4b86f9dbec1c"
+          (reference "#PWR0455") (unit 1)
         )
       )
     )

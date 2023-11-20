@@ -1,0 +1,7 @@
+NOP
+LI r7, 0
+ADDI r7, r7, 0
+STORE r7, r7, 0
+NOP
+NOP
+HLT

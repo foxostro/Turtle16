@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name ROMDaughterBoard)(type KiCad)(uri ${KIPRJMOD}/ROMDaughterBoard.pretty)(options "")(descr ""))
+)

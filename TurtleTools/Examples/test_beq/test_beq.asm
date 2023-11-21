@@ -1,0 +1,15 @@
+NOP
+LI r0, 1
+LI r1, 2
+CMPI r0, 1
+NOP
+BEQ equal
+STORE r0, r0, 0
+NOP
+NOP
+HLT
+equal:
+STORE r1, r1, 0
+NOP
+NOP
+HLT

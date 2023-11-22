@@ -1124,7 +1124,7 @@
     (property "Reference" "C11" (at 25.781 180.4416 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "0.1μF" (at 25.781 182.753 0)
+    (property "Value" "0.1uF" (at 25.781 182.753 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder" (at 23.8252 185.42 0)

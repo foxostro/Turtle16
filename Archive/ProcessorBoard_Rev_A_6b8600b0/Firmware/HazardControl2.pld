@@ -1,0 +1,22 @@
+GAL22V10     ; Second stage of logic to detect and resolve pipeline hazards
+HazardControl2
+        
+NC    OP3    OP4    FI    J     FSXTA    FSMTA    FSXTB    FSMTB    NC       NC       GND
+NC    NC     NC     NC    NC    NC       NC       FHZD     FLUSH    NFLUSH   STALL    VCC
+
+; LOW indicates that the ID pipeline should flush
+NFLUSH = J * /FHZD * FSXTA * FSMTA * FSXTB * FSMTB
+
+; HIGH indicates that the ID pipeline stage should flush
+/FLUSH = J * /FHZD * FSXTA * FSMTA * FSXTB * FSMTB
+
+; HIGH indicates that the ID and IF pipeline stages should stall
+/STALL = /FHZD * FSXTA * FSMTA * FSXTB * FSMTB
+
+; HIGH indicates that this is a flags hazard.
+FHZD = OP3 * OP4 * /FI
+
+
+DESCRIPTION
+
+Second of two stages of logic to detect and resolve pipeline hazards for the Turtle16 CPU

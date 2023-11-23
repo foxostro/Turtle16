@@ -1,0 +1,19 @@
+GAL22V10
+InstructionDecoder3
+
+A     B     C     D     E     F     G     H     I          NC         NC      GND
+NC    NC    NC    NC    NC    NC    NC    NC    RUNUSED    LUNUSED    WBEN    VCC
+
+WBEN = E*F*/G + E*/F*H*I + E*G*/H + /E*/F*G*H*/I + /E*/F*/G*/H + F*G*/H*I + /F*/G*H*I
+LUNUSED = E*F*/G + E*F*/H + E*/F*H*I + /E*/F*/H + /F*G*/H*/I
+RUNUSED = E*/F + E*/G + E*/H + /E*F*G + /F*/H
+
+DESCRIPTION
+
+Decodes instruction opcode and ALU flags to control signals 3 of 3
+Input {E, F, G, H, I} is the five bits of the instruction opcode.
+Input D is the carry condition code.
+Input C is the zero condition code.
+Input B is the overflow condition code.
+Input A is the negative condition code.
+The order of inputs and outputs must match those in Decoder.swift.

@@ -640,11 +640,6 @@
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 6d7ff8c0-8a2a-4636-844f-c7210ff3e6f2)
   )
-  (text "This doesn’t have to be a 74ABT device,\nbut Mouser doesn’t normally stock the\n74AHCT377 we would otherwise use."
-    (at 224.79 149.86 0)
-    (effects (font (size 1.27 1.27)) (justify left bottom))
-    (uuid 90fd611c-300b-48cf-a7c4-0d604953cd00)
-  )
   (text "SelRightOp=0  —> Select Register B\nSelRightOp=1  —> Select Immediate ins[4:0]\nSelRightOp=2  —> Select Immediate ins[10:8, 1:0]\nSelRightOp=3  —> Select Immediate ins[10:0]"
     (at 91.44 132.08 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))

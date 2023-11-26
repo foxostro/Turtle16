@@ -1,3 +1,3 @@
 (fp_lib_table
-  (lib (name ROMZIFBoard)(type KiCad)(uri ${KIPRJMOD}/ROMZIFBoard.pretty)(options "")(descr ""))
+  (lib (name ROMZIFBoard)(type KiCad)(uri ${KIPRJMOD}/Turtle16.pretty)(options "")(descr ""))
 )

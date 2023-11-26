@@ -1,4 +1,3 @@
 (sym_lib_table
-  (lib (name "ROMZIFBoard-rescue")(type "Legacy")(uri "${KIPRJMOD}/ROMZIFBoard-rescue.lib")(options "")(descr ""))
-  (lib (name "74xx (kicad5)")(type "KiCad")(uri "/Users/andrewfox/src/Turtle16/KiCad_Libraries/74xx.kicad_sym")(options "")(descr ""))
+  (lib (name "74xx (kicad5)")(type "KiCad")(uri "Turtle16.kicad_sym")(options "")(descr ""))
 )

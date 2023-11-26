@@ -2503,6 +2503,11 @@
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 82c972ff-9b4a-4ae0-87c0-d19a4576fde8)
   )
+  (text "The PLD maps the computer's address range\n[0x0000, 0x0fff] to the dual-port SRAM.\nThe address range [0x1000, 0x1fff] maps\nto the 7024's semaphores. Though, only\neight such semaphores are provided by\nhardware. The remaining addresses in this\nregion are unused."
+    (at 100.33 29.21 0)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid 9d1cad97-0bb9-4933-b2fb-2e1b4dea5c6c)
+  )
   (text "RAM is configured in M\nmode because we need the\nonboard arbitration logic\nto be enabled in order to\nuse the semaphores."
     (at 15.24 77.47 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))

@@ -1,3 +1,4 @@
 (fp_lib_table
-  (lib (name MainBoard)(type KiCad)(uri ${KIPRJMOD}/MainBoard.pretty)(options "")(descr ""))
+  (version 7)
+  (lib (name "Turtle16")(type "KiCad")(uri "${KIPRJMOD}/Turtle16.pretty")(options "")(descr ""))
 )

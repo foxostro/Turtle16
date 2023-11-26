@@ -1069,6 +1069,10 @@
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 1a93b013-6e3a-4bce-98f1-94c25470f7ca)
   )
+  (text "Each ROM is socketed SST39SF010A, or equivalent." (at 81.28 139.7 0)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid 2855d9d6-3c3a-4433-a405-46d144d177ef)
+  )
 
   (label "PC7" (at 39.37 92.71 0) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify left bottom))

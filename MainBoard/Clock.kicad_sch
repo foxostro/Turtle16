@@ -1123,8 +1123,8 @@
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid a6d1a905-da17-4819-b554-bd39d6ffe805)
   )
-  (text "While the ~{HLT} line is active, the\nResume button will allow the clock\nto tick one time per button press.\n\nAssert ~{SINGLE} to allow single-\nstep with the Resume button."
-    (at 217.17 39.37 0)
+  (text "While the ~{HLT} line is active, the\nResume button will allow the clock\nto tick one time per button press."
+    (at 217.17 34.29 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid e21d4999-148f-4ea0-855d-c93560879faf)
   )

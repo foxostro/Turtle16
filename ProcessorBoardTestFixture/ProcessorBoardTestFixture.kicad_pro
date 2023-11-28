@@ -503,6 +503,10 @@
       ""
     ],
     [
+      "064b077d-bcb0-4534-a926-472094275707",
+      "Instruction ROM Interface"
+    ],
+    [
       "b1c9603f-9c72-4dbb-b556-2ab597d5d407",
       "LED Output"
     ],
@@ -512,11 +516,11 @@
     ],
     [
       "3d0ea7d5-f77f-41b5-8e89-f84b86198dbd",
-      "System Memory Bus Output"
+      "Test Fixture Output"
     ],
     [
       "67716de9-7421-40ed-8544-2b9f4f557b7f",
-      "System Memory Bus Input"
+      "TestFixture Input"
     ]
   ],
   "text_variables": {}

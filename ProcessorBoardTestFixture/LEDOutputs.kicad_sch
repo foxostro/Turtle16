@@ -2,7 +2,7 @@
 
   (uuid a3adfa96-87d9-41e1-83b2-1af650547ee1)
 
-  (paper "A4")
+  (paper "USLetter")
 
   (title_block
     (date "2023-11-27")

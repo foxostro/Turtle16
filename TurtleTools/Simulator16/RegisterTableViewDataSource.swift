@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 
 class RegisterTableViewDataSource: NSObject, NSTableViewDataSource {
     public let computer: Turtle16Computer

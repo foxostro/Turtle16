@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 
 class HexDataViewController: NSViewController {
     @IBOutlet var tableView: NSTableView!

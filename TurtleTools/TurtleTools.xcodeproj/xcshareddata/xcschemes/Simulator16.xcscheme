@@ -55,8 +55,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "6F734338259327D400B7E43F"
-               BuildableName = "Turtle16SimulatorCoreTests.xctest"
-               BlueprintName = "Turtle16SimulatorCoreTests"
+               BuildableName = "TurtleSimulatorCoreTests.xctest"
+               BlueprintName = "TurtleSimulatorCoreTests"
                ReferencedContainer = "container:TurtleTools.xcodeproj">
             </BuildableReference>
          </TestableReference>

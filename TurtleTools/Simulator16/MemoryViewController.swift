@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 
 class MemoryViewController: NSViewController {
     @IBOutlet var memoryTabSelector: NSPopUpButton!

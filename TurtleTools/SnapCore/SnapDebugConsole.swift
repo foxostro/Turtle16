@@ -6,7 +6,7 @@
 //  Copyright © 2022 Andrew Fox. All rights reserved.
 //
 
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 
 public class SnapDebugConsole : DebugConsole {
     public var symbols: SymbolTable? = nil

@@ -8,7 +8,7 @@
 
 import Cocoa
 import TurtleCore
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 
 class DisassemblyViewController: NSViewController {
     @IBOutlet var tableView: NSTableView!

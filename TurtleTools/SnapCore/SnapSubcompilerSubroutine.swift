@@ -7,7 +7,7 @@
 //
 
 import TurtleCore
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 
 public class SnapSubcompilerSubroutine: SnapASTTransformerBase {
     var subroutines: [Subroutine] = []

@@ -7,7 +7,7 @@
 //
 
 import TurtleCore
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 
 // Rewrites the program to use physical register names instead of virtual.
 // Inserts code to load and store values when a register must spill.

@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 
 class OpcodeDecodeROM2: HexDataTableViewDataSource {
     public override func load(address: Int) -> Int {

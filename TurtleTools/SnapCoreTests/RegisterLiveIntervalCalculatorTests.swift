@@ -8,7 +8,7 @@
 
 import XCTest
 import TurtleCore
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 import SnapCore
 
 class RegisterLiveIntervalCalculatorTests: XCTestCase {

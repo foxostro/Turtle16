@@ -9,7 +9,7 @@
 import XCTest
 import SnapCore
 import TurtleCore
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 
 class RegisterSpillerTests: XCTestCase {
     func testNoSpills1() throws {

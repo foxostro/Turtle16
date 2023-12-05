@@ -7,7 +7,7 @@
 //
 
 import TurtleCore
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 
 public class RegisterSpiller: NSObject {
     public enum SpillError : Error {

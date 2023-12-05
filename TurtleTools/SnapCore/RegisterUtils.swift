@@ -6,7 +6,7 @@
 //  Copyright © 2021 Andrew Fox. All rights reserved.
 //
 
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 import TurtleCore
 
 public class RegisterUtils: NSObject {

@@ -7,7 +7,7 @@
 //
 
 import TurtleCore
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 
 public class RegisterAllocatorNaive: SnapASTTransformerBase {
     public override func compile(instruction node: InstructionNode) throws -> AbstractSyntaxTreeNode? {

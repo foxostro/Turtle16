@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 
 class PipelineTableViewDataSource: NSObject, NSTableViewDataSource {
     public let computer: Turtle16Computer

@@ -8,7 +8,7 @@
 
 import Cocoa
 import TurtleCore
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 
 class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate {
     @IBOutlet var debuggerOutput: NSTextView!

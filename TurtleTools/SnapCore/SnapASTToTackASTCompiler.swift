@@ -7,7 +7,7 @@
 //
 
 import TurtleCore
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 
 public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
     public typealias Register = TackInstruction.Register

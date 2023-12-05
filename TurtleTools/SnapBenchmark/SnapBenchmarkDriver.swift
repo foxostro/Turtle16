@@ -7,7 +7,7 @@
 //
 
 import SnapCore
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 import TurtleCore
 
 class SnapBenchmarkDriver: NSObject {

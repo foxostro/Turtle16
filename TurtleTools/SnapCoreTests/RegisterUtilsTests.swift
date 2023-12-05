@@ -9,7 +9,7 @@
 import XCTest
 import SnapCore
 import TurtleCore
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 
 class RegisterUtilsTests: XCTestCase {
     func testGetReferencedRegisters_Label() throws {

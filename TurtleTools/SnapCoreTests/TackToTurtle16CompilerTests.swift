@@ -9,7 +9,7 @@
 import XCTest
 import SnapCore
 import TurtleCore
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 
 class TackToTurtle16CompilerTests: XCTestCase {
     fileprivate func makeDebugger(assembly: AbstractSyntaxTreeNode?) -> DebugConsole {

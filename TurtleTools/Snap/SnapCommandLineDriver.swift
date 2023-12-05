@@ -8,7 +8,7 @@
 
 import SnapCore
 import TurtleCore
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 
 // Provides an interface for driving the snap compiler from the command-line.
 public class SnapCommandLineDriver: NSObject {

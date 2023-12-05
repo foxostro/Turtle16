@@ -8,7 +8,7 @@
 
 import Cocoa
 import TurtleCore
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 
 let kSimulator16ErrorDomain = "kSimulator16ErrorDomain"
 let kFailedToReadDocument = -1

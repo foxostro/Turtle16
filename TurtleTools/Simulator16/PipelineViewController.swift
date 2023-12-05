@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 
 class PipelineViewController: NSViewController {
     @IBOutlet var pipelineTableView: NSTableView!

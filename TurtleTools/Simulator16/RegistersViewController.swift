@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 
 class RegistersViewController: NSViewController {
     @IBOutlet var registerTableView: NSTableView!

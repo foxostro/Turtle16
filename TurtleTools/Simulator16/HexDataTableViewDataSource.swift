@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 
 public class HexDataTableViewDataSource: NSObject, NSTableViewDataSource {
     public let computer: Turtle16Computer

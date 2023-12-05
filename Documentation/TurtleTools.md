@@ -13,13 +13,13 @@ The current implementation of the Simulator app attempts to accurately model all
 Please refer to the TurtleTools/Examples/ directory for examples of saved simulator sessions.
 
 
-# Turtle16Assembler
+# TurtleAssembler
 
 ```
-usage: Turtle16Assembler <INPUT> <OUTPUT>
+usage: TurtleAssembler <INPUT> <OUTPUT>
 ```
 
-The Turtle16Assembler command line tool compiles a single file of assembly source code to a single instruction memory image.
+The TurtleAssembler command line tool compiles a single file of assembly source code to a single instruction memory image.
 
 Example assembly program:
 ```

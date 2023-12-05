@@ -7,7 +7,7 @@
 //
 
 import TurtleCore
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 
 public class SnapCompilerBackEndTurtle16: NSObject {
     public private(set) var assembly: Result<TopLevel, Error>! = nil

@@ -7,7 +7,7 @@
 //
 
 import TurtleCore
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 
 public class RegisterLiveIntervalCalculator: NSObject {
     public func determineLiveIntervals(_ nodes: [AbstractSyntaxTreeNode]) -> [LiveInterval] {

@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import Turtle16SimulatorCore
+import TurtleSimulatorCore
 
 class DataMemoryTableViewDataSource: HexDataTableViewDataSource {
     public override func store(address: Int, value: Int) {

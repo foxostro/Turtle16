@@ -118,15 +118,15 @@ public class DebugConsoleCommandLineInterpreter: NSObject {
     }
     
     fileprivate func printRegisters() {
-        let r0 = String(format: "0x%04x", computer.getRegister(0))
-        let r1 = String(format: "0x%04x", computer.getRegister(1))
-        let r2 = String(format: "0x%04x", computer.getRegister(2))
-        let r3 = String(format: "0x%04x", computer.getRegister(3))
-        let r4 = String(format: "0x%04x", computer.getRegister(4))
-        let r5 = String(format: "0x%04x", computer.getRegister(5))
-        let r6 = String(format: "0x%04x", computer.getRegister(6))
-        let r7 = String(format: "0x%04x", computer.getRegister(7))
-        let pc = String(format: "0x%04x", computer.pc)
+        let r0 = String(format: "$%04x", computer.getRegister(0))
+        let r1 = String(format: "$%04x", computer.getRegister(1))
+        let r2 = String(format: "$%04x", computer.getRegister(2))
+        let r3 = String(format: "$%04x", computer.getRegister(3))
+        let r4 = String(format: "$%04x", computer.getRegister(4))
+        let r5 = String(format: "$%04x", computer.getRegister(5))
+        let r6 = String(format: "$%04x", computer.getRegister(6))
+        let r7 = String(format: "$%04x", computer.getRegister(7))
+        let pc = String(format: "$%04x", computer.pc)
         logger.append("""
 r0: \(r0)\tr4: \(r4)
 r1: \(r1)\tr5: \(r5)
@@ -162,9 +162,9 @@ isResetting: \(computer.isResetting)
     }
     
     fileprivate func printMemoryContents(array: [UInt16], base: UInt16, count: UInt) {
-        let baseStr = String(format: "0x%04x", base)
+        let baseStr = String(format: "$%04x", base)
         let hexDump = (0..<count).map({idx in
-            String(format: "0x%04x", Int(array[Int(base) + Int(idx)]))
+            String(format: "$%04x", Int(array[Int(base) + Int(idx)]))
         }).joined(separator: " ")
         logger.append("\(baseStr): \(hexDump)\n")
     }

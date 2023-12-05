@@ -93,11 +93,11 @@ cpu is halted
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .reg)
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
-r0: 0x0000\tr4: 0x0004
-r1: 0x0001\tr5: 0x0005
-r2: 0x0002\tr6: 0x0006
-r3: 0x0003\tr7: 0x0007
-pc: 0xabcd
+r0: $0000\tr4: $0004
+r1: $0001\tr5: $0005
+r2: $0002\tr6: $0006
+r3: $0003\tr7: $0007
+pc: $abcd
 
 """)
     }
@@ -156,11 +156,11 @@ EX\t0000\tnczvjah, y: 0000, storeOp: 0000, ctl: 1fffff, selC: 0
 MEM\t0000\ty: 0000, storeOp: 0000, selC: 0, ctl: 1fffff
 WB\t0000\tc: 0000, wrl: 1, wrh: 1, wben: 1
 
-r0: 0x0000\tr4: 0x0004
-r1: 0x0001\tr5: 0x0005
-r2: 0x0002\tr6: 0x0006
-r3: 0x0003\tr7: 0x0007
-pc: 0xabcd
+r0: $0000\tr4: $0004
+r1: $0001\tr5: $0005
+r2: $0002\tr6: $0006
+r3: $0003\tr7: $0007
+pc: $abcd
 
 
 """)
@@ -174,7 +174,7 @@ pc: 0xabcd
         computer.ram[0x1001] = 0xbbbb
         interpreter.runOne(instruction: .readMemory(base: 0x1000, count: 2))
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
-0x1000: 0xaaaa 0xbbbb
+$1000: $aaaa $bbbb
 
 """)
     }
@@ -373,7 +373,7 @@ Syntax: disassemble [<base-address>] [<count>]
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .readInstructions(base: 0, count: 2))
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
-0x0000: 0xffff 0x0000
+$0000: $ffff $0000
 
 """)
     }
@@ -458,11 +458,11 @@ EX\t000a\tNczvjaH, y: ffff, storeOp: 0000, ctl: 1ffffe, selC: 0
 MEM\t0009\ty: ffff, storeOp: 0000, selC: 7, ctl: 1fffff
 WB\t0000\tc: 0000, wrl: 1, wrh: 1, wben: 1
 
-r0: 0x0022\tr4: 0x0000
-r1: 0x0037\tr5: 0x0000
-r2: 0x0037\tr6: 0x0000
-r3: 0x0000\tr7: 0x0009
-pc: 0x000d
+r0: $0022\tr4: $0000
+r1: $0037\tr5: $0000
+r2: $0037\tr6: $0000
+r3: $0000\tr7: $0009
+pc: $000d
 
 
 """)
@@ -505,11 +505,11 @@ EX\t000a\tNczvjaH, y: ffff, storeOp: 0000, ctl: 1ffffe, selC: 0
 MEM\t0009\ty: ffff, storeOp: 0000, selC: 7, ctl: 1fffff
 WB\t0000\tc: 0000, wrl: 1, wrh: 1, wben: 1
 
-r0: 0x0022\tr4: 0x0000
-r1: 0x0037\tr5: 0x0000
-r2: 0x0037\tr6: 0x0000
-r3: 0x0000\tr7: 0x0009
-pc: 0x000d
+r0: $0022\tr4: $0000
+r1: $0037\tr5: $0000
+r2: $0037\tr6: $0000
+r3: $0000\tr7: $0009
+pc: $000d
 
 
 """)

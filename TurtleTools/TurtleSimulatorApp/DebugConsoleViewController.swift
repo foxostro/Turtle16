@@ -13,14 +13,6 @@ import TurtleSimulatorCore
 class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate {
     @IBOutlet var debuggerOutput: NSTextView!
     @IBOutlet var debuggerInput: NSTextField!
-    @IBOutlet var halted: NSTextField!
-    @IBOutlet var resetting: NSTextField!
-    @IBOutlet var stall: NSTextField!
-    @IBOutlet var timeStamp: NSTextField!
-    @IBOutlet var n: NSTextField!
-    @IBOutlet var c: NSTextField!
-    @IBOutlet var z: NSTextField!
-    @IBOutlet var v: NSTextField!
     
     let debugger: DebugConsole
     var history: [String] = []
@@ -29,7 +21,6 @@ class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate
     public required init(debugger: DebugConsole) {
         self.debugger = debugger
         super.init(nibName: NSNib.Name("DebugConsoleViewController"), bundle: Bundle(for: type(of: self)))
-        NotificationCenter.default.addObserver(self, selector: #selector(self.virtualMachineStateDidChange(notification:)), name:  .virtualMachineStateDidChange, object: debugger.computer)
     }
     
     required init?(coder: NSCoder) {
@@ -48,28 +39,10 @@ class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.windowDidBecomeKey(notification:)), name: NSWindow.didBecomeKeyNotification, object: self.view.window)
         debuggerInput.becomeFirstResponder()
-        
-        reload()
     }
     
     @objc func windowDidBecomeKey(notification: Notification) {
         debuggerInput.becomeFirstResponder()
-    }
-    
-    @objc func virtualMachineStateDidChange(notification: Notification) {
-        reload()
-    }
-    
-    fileprivate func reload() {
-        let computer = debugger.computer
-        halted.isHidden = !computer.isHalted
-        resetting.isHidden = !computer.isResetting
-        stall.isHidden = !computer.isStalling
-        timeStamp.stringValue = "t=\(computer.timeStamp)"
-        n.isHidden = (computer.n == 0)
-        c.isHidden = (computer.c == 0)
-        z.isHidden = (computer.z == 0)
-        v.isHidden = (computer.v == 0)
     }
     
     @IBAction func submitCommandLine(_ sender: Any) {
@@ -81,7 +54,7 @@ class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate
         }
         debugger.eval(command)
         if debugger.shouldQuit {
-            NSApp.terminate(self)
+            NSApplication.shared.keyWindow?.close()
         }
         debugger.logger.append("\n")
         debuggerInput.stringValue = ""
@@ -90,7 +63,7 @@ class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate
     }
     
     func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
-        if control === debuggerInput {
+        if !history.isEmpty, control === debuggerInput {
             if commandSelector == #selector(moveUp(_:)) {
                 debuggerInput.stringValue = history[cursor]
                 cursor = min(cursor + 1, history.count - 1)

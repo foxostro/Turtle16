@@ -58,20 +58,10 @@
 		6F15423426B91BD800BA9572 /* SnapSubcompilerFunctionDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F15423326B91BD800BA9572 /* SnapSubcompilerFunctionDeclarationTests.swift */; };
 		6F15423626B92AB500BA9572 /* SnapSubcompilerStructDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F15423526B92AB500BA9572 /* SnapSubcompilerStructDeclaration.swift */; };
 		6F15423826B92ADB00BA9572 /* SnapSubcompilerStructDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F15423726B92ADB00BA9572 /* SnapSubcompilerStructDeclarationTests.swift */; };
-		6F1698AD262897ED00C96D07 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1698AC262897ED00C96D07 /* AppDelegate.swift */; };
-		6F1698AF262897ED00C96D07 /* Simulator16ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1698AE262897ED00C96D07 /* Simulator16ViewController.swift */; };
-		6F1698B1262897ED00C96D07 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6F1698B0262897ED00C96D07 /* Assets.xcassets */; };
-		6F1698B4262897ED00C96D07 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F1698B2262897ED00C96D07 /* Main.storyboard */; };
-		6F1698C0262897ED00C96D07 /* Simulator16Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1698BF262897ED00C96D07 /* Simulator16Tests.swift */; };
 		6F1800A7251D9079005D9D36 /* Import.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1800A6251D9079005D9D36 /* Import.swift */; };
 		6F1D24C524823DD90095D7B4 /* If.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1D24C424823DD90095D7B4 /* If.swift */; };
 		6F1D24C724823EC60095D7B4 /* IfTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1D24C624823EC60095D7B4 /* IfTests.swift */; };
-		6F1E5C5C262A1E8D0038F966 /* InstructionMemoryTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1E5C5B262A1E8D0038F966 /* InstructionMemoryTableViewDataSource.swift */; };
 		6F1EC340265EB66800465075 /* AssemblerCompiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1EC33F265EB66800465075 /* AssemblerCompiler.swift */; };
-		6F2100EB2675B49E004CFB5D /* TurtleCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; };
-		6F2100EC2675B4A3004CFB5D /* TurtleSimulatorCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F734331259327D400B7E43F /* TurtleSimulatorCore.framework */; };
-		6F2100EE2675B5DC004CFB5D /* TurtleSimulatorCore.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6F734331259327D400B7E43F /* TurtleSimulatorCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		6F2100EF2675B5E1004CFB5D /* TurtleCore.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6F238AD9248C6A560040250D /* Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F238AD8248C6A560040250D /* Block.swift */; };
 		6F24AC8B24A07CAF005193BB /* StatementTracer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F24AC8A24A07CAF005193BB /* StatementTracer.swift */; };
 		6F24AC8D24A07CBC005193BB /* StatementTracerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F24AC8C24A07CBC005193BB /* StatementTracerTests.swift */; };
@@ -100,26 +90,23 @@
 		6F300DD1266A913B00BFBAC4 /* AssemblerCommandLineDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F300DD0266A913B00BFBAC4 /* AssemblerCommandLineDriver.swift */; };
 		6F35B4362628ABF6004EA0AB /* DebugConsole.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F35B4352628ABF6004EA0AB /* DebugConsole.swift */; };
 		6F35B4552628AC80004EA0AB /* TextViewLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AEA22EEE6C400B38267 /* TextViewLogger.swift */; };
-		6F35B4B32628AFED004EA0AB /* example.bin in Resources */ = {isa = PBXBuildFile; fileRef = 6F35B4B22628AFED004EA0AB /* example.bin */; };
 		6F3987662814BBF600C601AE /* Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3987652814BBF600C601AE /* Decoder.swift */; };
 		6F3987682814CD9800C601AE /* DecoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3987672814CD9800C601AE /* DecoderTests.swift */; };
 		6F39876A281517D800C601AE /* InstructionDecoder1.pld in Resources */ = {isa = PBXBuildFile; fileRef = 6F398769281517D800C601AE /* InstructionDecoder1.pld */; };
 		6F39876C281517E400C601AE /* InstructionDecoder2.pld in Resources */ = {isa = PBXBuildFile; fileRef = 6F39876B281517E400C601AE /* InstructionDecoder2.pld */; };
 		6F39876E281517F700C601AE /* InstructionDecoder3.pld in Resources */ = {isa = PBXBuildFile; fileRef = 6F39876D281517F700C601AE /* InstructionDecoder3.pld */; };
+		6F3B82D62B1FBE5E0001EDE5 /* RegistersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3B82D52B1FBE5E0001EDE5 /* RegistersView.swift */; };
+		6F3B82DC2B204FD80001EDE5 /* PipelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3B82DB2B204FD80001EDE5 /* PipelineView.swift */; };
+		6F3B82E82B212B4F0001EDE5 /* example.bin in Resources */ = {isa = PBXBuildFile; fileRef = 6F3B82E72B212B4F0001EDE5 /* example.bin */; };
+		6F3B82EA2B212BA50001EDE5 /* SnapCore.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6F9201E52471DAC7009E1410 /* SnapCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6F3B82EB2B212BA90001EDE5 /* TurtleCore.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6F3B82EC2B212BB10001EDE5 /* TurtleSimulatorCore.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6F734331259327D400B7E43F /* TurtleSimulatorCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6F3B82EE2B212BD90001EDE5 /* Snap in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6F9201D92471DA22009E1410 /* Snap */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		6F3B82EF2B212BDF0001EDE5 /* TurtleAssembler in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6F300DC0266A906F00BFBAC4 /* TurtleAssembler */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		6F3B82F12B214DAE0001EDE5 /* DisassemblyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3B82F02B214DAE0001EDE5 /* DisassemblyView.swift */; };
+		6F3B82F32B2258180001EDE5 /* MemoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3B82F22B2258180001EDE5 /* MemoryView.swift */; };
 		6F3E5AD5291AF84100C0F988 /* TackDebuggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3E5AD4291AF84100C0F988 /* TackDebuggerTests.swift */; };
 		6F3E5AD7291AF85A00C0F988 /* TackDebugger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3E5AD6291AF85A00C0F988 /* TackDebugger.swift */; };
-		6F3EEB83262D22B400688D12 /* MemoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3EEB81262D22B400688D12 /* MemoryViewController.swift */; };
-		6F3EEB84262D22B400688D12 /* MemoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F3EEB82262D22B400688D12 /* MemoryViewController.xib */; };
-		6F3EEBA5262D333700688D12 /* RegistersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3EEBA3262D333700688D12 /* RegistersViewController.swift */; };
-		6F3EEBA6262D333700688D12 /* RegistersViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F3EEBA4262D333700688D12 /* RegistersViewController.xib */; };
-		6F3EEBC7262D355C00688D12 /* DebugConsoleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3EEBC5262D355C00688D12 /* DebugConsoleViewController.swift */; };
-		6F3EEBC8262D355C00688D12 /* DebugConsoleViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F3EEBC6262D355C00688D12 /* DebugConsoleViewController.xib */; };
-		6F3EEBDA262D3CF300688D12 /* HexDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3EEBD8262D3CF300688D12 /* HexDataViewController.swift */; };
-		6F3EEBDB262D3CF300688D12 /* HexDataViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F3EEBD9262D3CF300688D12 /* HexDataViewController.xib */; };
-		6F3EEBFB262D4C7500688D12 /* HexDataTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3EEBFA262D4C7500688D12 /* HexDataTableViewDataSource.swift */; };
-		6F3EEC0C262DD42A00688D12 /* OpcodeDecodeROM2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3EEC0B262DD42A00688D12 /* OpcodeDecodeROM2.swift */; };
-		6F3EEC1D262DD51200688D12 /* OpcodeDecodeROM1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3EEC1C262DD51200688D12 /* OpcodeDecodeROM1.swift */; };
-		6F3EEC2E262DD53600688D12 /* OpcodeDecodeROM3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3EEC2D262DD53600688D12 /* OpcodeDecodeROM3.swift */; };
 		6F3F00F4274F651C00875339 /* Subroutine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3F00F3274F651C00875339 /* Subroutine.swift */; };
 		6F3F00F8274F736C00875339 /* SnapSubcompilerSubroutine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3F00F7274F736C00875339 /* SnapSubcompilerSubroutine.swift */; };
 		6F3F00FA27560FDB00875339 /* RegisterAllocatorDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3F00F927560FDB00875339 /* RegisterAllocatorDriver.swift */; };
@@ -181,7 +168,6 @@
 		6F47D8F3261CC6F2008EFFF2 /* JEDECFuseFileParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F47D8F2261CC6F2008EFFF2 /* JEDECFuseFileParser.swift */; };
 		6F47D905261CC6FC008EFFF2 /* JEDECFuseFileParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F47D904261CC6FC008EFFF2 /* JEDECFuseFileParserTests.swift */; };
 		6F4B5CB22471DE2D000C57EB /* SnapCommandLineDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4B5CB12471DE2D000C57EB /* SnapCommandLineDriver.swift */; };
-		6F4BCFA22629135700BA4775 /* RegisterTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4BCFA12629135700BA4775 /* RegisterTableViewDataSource.swift */; };
 		6F4F3C43249EAEB30018BBBC /* FunctionDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F3C42249EAEB30018BBBC /* FunctionDeclaration.swift */; };
 		6F4F3C45249EAF700018BBBC /* FunctionDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F3C44249EAF700018BBBC /* FunctionDeclarationTests.swift */; };
 		6F4F3C47249EBC3A0018BBBC /* TokenType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4F3C46249EBC3A0018BBBC /* TokenType.swift */; };
@@ -196,9 +182,6 @@
 		6F6956FB24F965B3006D66FC /* UInt8Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6956FA24F965B3006D66FC /* UInt8Extension.swift */; };
 		6F6AED40251696C5002E3AC5 /* Impl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6AED3F251696C5002E3AC5 /* Impl.swift */; };
 		6F6DD22524809731004B1703 /* VarDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F6DD22424809731004B1703 /* VarDeclaration.swift */; };
-		6F6EA40727653EFA00B2ABE4 /* Snap in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6F9201D92471DA22009E1410 /* Snap */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		6F6EA40827653F0000B2ABE4 /* TurtleAssembler in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6F300DC0266A906F00BFBAC4 /* TurtleAssembler */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		6F6EA40D27653FB700B2ABE4 /* SnapCore.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6F9201E52471DAC7009E1410 /* SnapCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6F73433A259327D400B7E43F /* TurtleSimulatorCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F734331259327D400B7E43F /* TurtleSimulatorCore.framework */; };
 		6F734341259327D400B7E43F /* TurtleSimulatorCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 6F734333259327D400B7E43F /* TurtleSimulatorCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6F7343592593283D00B7E43F /* WB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7343582593283D00B7E43F /* WB.swift */; };
@@ -207,11 +190,8 @@
 		6F7343EF25932FEE00B7E43F /* MEMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7343EE25932FEE00B7E43F /* MEMTests.swift */; };
 		6F7C14EA259A94C30034C7D0 /* EX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7C14E9259A94C30034C7D0 /* EX.swift */; };
 		6F7C14FC259A94E40034C7D0 /* EXTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7C14FB259A94E40034C7D0 /* EXTests.swift */; };
-		6F7D951826753D81003889FB /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7D951726753D81003889FB /* Document.swift */; };
 		6F7E16D427F3A3660067D059 /* runtime_Turtle16.snap in Resources */ = {isa = PBXBuildFile; fileRef = 6F7E16D327F3A3660067D059 /* runtime_Turtle16.snap */; };
 		6F7F356A24D2323F00BA8E37 /* stdlib.snap in Resources */ = {isa = PBXBuildFile; fileRef = 6F7F356924D2323F00BA8E37 /* stdlib.snap */; };
-		6F809DDE26615A860098A7FF /* InstructionMemoryHiTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F809DDD26615A860098A7FF /* InstructionMemoryHiTableViewDataSource.swift */; };
-		6F809DE026615A8D0098A7FF /* InstructionMemoryLoTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F809DDF26615A8D0098A7FF /* InstructionMemoryLoTableViewDataSource.swift */; };
 		6F83480B26FD3B0100EB466E /* RegisterAllocatorNaive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F83480A26FD3B0100EB466E /* RegisterAllocatorNaive.swift */; };
 		6F83480D26FD3B1200EB466E /* RegisterAllocatorNaiveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F83480C26FD3B1200EB466E /* RegisterAllocatorNaiveTests.swift */; };
 		6F8405102918050400C9B957 /* TackVirtualMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F84050F2918050400C9B957 /* TackVirtualMachine.swift */; };
@@ -279,13 +259,14 @@
 		6FBCFA5A26F7F4D400193819 /* Tack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBCFA5926F7F4D400193819 /* Tack.swift */; };
 		6FBCFA5C26F7F52400193819 /* TackToTurtle16Compiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBCFA5B26F7F52400193819 /* TackToTurtle16Compiler.swift */; };
 		6FBCFA5E26F7F5FC00193819 /* TackToTurtle16CompilerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBCFA5D26F7F5FC00193819 /* TackToTurtle16CompilerTests.swift */; };
-		6FBDDD442670859B0098BEC8 /* PipelineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBDDD422670859B0098BEC8 /* PipelineViewController.swift */; };
-		6FBDDD452670859B0098BEC8 /* PipelineViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6FBDDD432670859B0098BEC8 /* PipelineViewController.xib */; };
-		6FBDDD4726712E320098BEC8 /* PipelineTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FBDDD4626712E320098BEC8 /* PipelineTableViewDataSource.swift */; };
 		6FC0E650291AD4E600DFDE8B /* SnapCompilerBackEndTurtle16Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FC0E64F291AD4E600DFDE8B /* SnapCompilerBackEndTurtle16Tests.swift */; };
 		6FC0E652291AD4FF00DFDE8B /* SnapCompilerBackEndTurtle16.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FC0E651291AD4FF00DFDE8B /* SnapCompilerBackEndTurtle16.swift */; };
 		6FC4E6ED28FBEB900079A88C /* GenericFunctionTypeArgumentSolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FC4E6EC28FBEB900079A88C /* GenericFunctionTypeArgumentSolver.swift */; };
 		6FC4E6EF28FBEBA30079A88C /* GenericFunctionTypeArgumentSolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FC4E6EE28FBEBA30079A88C /* GenericFunctionTypeArgumentSolverTests.swift */; };
+		6FCA0B842B229E41000BB22C /* DebugConsoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCA0B822B229E37000BB22C /* DebugConsoleView.swift */; };
+		6FCA0B872B22A49C000BB22C /* DebugConsoleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCA0B852B22A49C000BB22C /* DebugConsoleViewController.swift */; };
+		6FCA0B882B22A49C000BB22C /* DebugConsoleViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6FCA0B862B22A49C000BB22C /* DebugConsoleViewController.xib */; };
+		6FCA0B8A2B22F60A000BB22C /* DebugStatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCA0B892B22F60A000BB22C /* DebugStatusBar.swift */; };
 		6FCA942525264C61000C2A2D /* Assert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCA942425264C61000C2A2D /* Assert.swift */; };
 		6FCB681A2472050900798905 /* SnapLexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCB6818247204F900798905 /* SnapLexer.swift */; };
 		6FCB681C2472051200798905 /* SnapLexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCB681B2472051200798905 /* SnapLexerTests.swift */; };
@@ -304,13 +285,18 @@
 		6FD5AE6426A2228300670CEB /* AssemblerListingMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD5AE6326A2228300670CEB /* AssemblerListingMaker.swift */; };
 		6FD5AE6626A2229500670CEB /* AssemblerListingMakerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD5AE6526A2229500670CEB /* AssemblerListingMakerTests.swift */; };
 		6FD5AE6E26A24AB500670CEB /* CommentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD5AE6D26A24AB500670CEB /* CommentNode.swift */; };
+		6FDA165D2B1FAC9800FD1FC0 /* TurtleSimulatorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDA165C2B1FAC9800FD1FC0 /* TurtleSimulatorApp.swift */; };
+		6FDA165F2B1FAC9800FD1FC0 /* TurtleSimulatorDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDA165E2B1FAC9800FD1FC0 /* TurtleSimulatorDocument.swift */; };
+		6FDA16612B1FAC9800FD1FC0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDA16602B1FAC9800FD1FC0 /* ContentView.swift */; };
+		6FDA16632B1FAC9900FD1FC0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6FDA16622B1FAC9900FD1FC0 /* Assets.xcassets */; };
+		6FDA16662B1FAC9900FD1FC0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6FDA16652B1FAC9900FD1FC0 /* Preview Assets.xcassets */; };
+		6FDA16722B1FAC9B00FD1FC0 /* TurtleSimulatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDA16712B1FAC9B00FD1FC0 /* TurtleSimulatorTests.swift */; };
+		6FDA167C2B1FAC9D00FD1FC0 /* TurtleSimulatorUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDA167B2B1FAC9D00FD1FC0 /* TurtleSimulatorUITests.swift */; };
+		6FDA167E2B1FAC9D00FD1FC0 /* TurtleSimulatorUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDA167D2B1FAC9D00FD1FC0 /* TurtleSimulatorUITestsLaunchTests.swift */; };
 		6FDC6AAC27331637003A8ABF /* SnapToTurtle16Compiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDC6AAB27331637003A8ABF /* SnapToTurtle16Compiler.swift */; };
 		6FDC6AAE27331640003A8ABF /* SnapToTurtle16EndToEndIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDC6AAD27331640003A8ABF /* SnapToTurtle16EndToEndIntegrationTests.swift */; };
 		6FDF61E1266D86DC002E7A17 /* Disassembler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDF61E0266D86DC002E7A17 /* Disassembler.swift */; };
 		6FDF61E3266D86E8002E7A17 /* DisassemblerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDF61E2266D86E8002E7A17 /* DisassemblerTests.swift */; };
-		6FDF61E8266ECACC002E7A17 /* DisassemblyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDF61E6266ECACC002E7A17 /* DisassemblyViewController.swift */; };
-		6FDF61E9266ECACC002E7A17 /* DisassemblyViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6FDF61E7266ECACC002E7A17 /* DisassemblyViewController.xib */; };
-		6FDF61EB266ECB4B002E7A17 /* DisassemblyTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDF61EA266ECB4B002E7A17 /* DisassemblyTableViewDataSource.swift */; };
 		6FEC3DFE24D78CF800E9C299 /* LabelMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEC3DFD24D78CF800E9C299 /* LabelMaker.swift */; };
 		6FF179C126B9F97C0026F284 /* SnapSubcompilerTraitDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF179C026B9F97C0026F284 /* SnapSubcompilerTraitDeclaration.swift */; };
 		6FF179C326B9F9EE0026F284 /* SnapSubcompilerTraitDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF179C226B9F9EE0026F284 /* SnapSubcompilerTraitDeclarationTests.swift */; };
@@ -318,7 +304,6 @@
 		6FF179CB26BA34760026F284 /* SnapSubcompilerImport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF179CA26BA34760026F284 /* SnapSubcompilerImport.swift */; };
 		6FF75BA62486C31000F55625 /* SnapCommandLineArgumentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF75BA52486C31000F55625 /* SnapCommandLineArgumentParser.swift */; };
 		6FF75BA82486C35400F55625 /* SnapCommandLineArgumentParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF75BA72486C35400F55625 /* SnapCommandLineArgumentParserTests.swift */; };
-		6FFABC3B262A423B00372BF9 /* DataMemoryTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABC3A262A423B00372BF9 /* DataMemoryTableViewDataSource.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -345,13 +330,6 @@
 			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
 			remoteInfo = TurtleCore;
 		};
-		6F1698BC262897ED00C96D07 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6F1698A9262897ED00C96D07;
-			remoteInfo = Simulator16;
-		};
 		6F300DC9266A90CC00BFBAC4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
@@ -366,14 +344,35 @@
 			remoteGlobalIDString = 6FB0D28A24710C26003B5D5C;
 			remoteInfo = TurtleCore;
 		};
-		6F35B4242628AA01004EA0AB /* PBXContainerItemProxy */ = {
+		6F3B82DD2B212AA70001EDE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F300DBF266A906F00BFBAC4;
+			remoteInfo = TurtleAssembler;
+		};
+		6F3B82DF2B212AAB0001EDE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F9201D82471DA22009E1410;
+			remoteInfo = Snap;
+		};
+		6F3B82E12B212AB50001EDE5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F9201E42471DAC7009E1410;
+			remoteInfo = SnapCore;
+		};
+		6F3B82E32B212AB90001EDE5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 6F734330259327D400B7E43F;
 			remoteInfo = TurtleSimulatorCore;
 		};
-		6F35B4742628AD7A004EA0AB /* PBXContainerItemProxy */ = {
+		6F3B82E52B212AC50001EDE5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
 			proxyType = 1;
@@ -402,27 +401,6 @@
 			remoteInfo = TurtleCore;
 		};
 		6F4B5CB52471DE3F000C57EB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6F9201E42471DAC7009E1410;
-			remoteInfo = SnapCore;
-		};
-		6F6EA40927653F2100B2ABE4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6F9201D82471DA22009E1410;
-			remoteInfo = Snap;
-		};
-		6F6EA40B27653F2500B2ABE4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 6F300DBF266A906F00BFBAC4;
-			remoteInfo = TurtleAssembler;
-		};
-		6F6EA40E27653FBD00B2ABE4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
 			proxyType = 1;
@@ -478,21 +456,23 @@
 			remoteGlobalIDString = 6F734330259327D400B7E43F;
 			remoteInfo = TurtleSimulatorCore;
 		};
+		6FDA166E2B1FAC9A00FD1FC0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FDA16592B1FAC9700FD1FC0;
+			remoteInfo = TurtleSimulator;
+		};
+		6FDA16782B1FAC9C00FD1FC0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6FF1994B22ECB36F00C255A2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FDA16592B1FAC9700FD1FC0;
+			remoteInfo = TurtleSimulator;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		6F2100ED2675B5BD004CFB5D /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				6F6EA40D27653FB700B2ABE4 /* SnapCore.framework in CopyFiles */,
-				6F2100EF2675B5E1004CFB5D /* TurtleCore.framework in CopyFiles */,
-				6F2100EE2675B5DC004CFB5D /* TurtleSimulatorCore.framework in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		6F300DBE266A906F00BFBAC4 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -514,14 +494,26 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6F6EA40627653EF100B2ABE4 /* CopyFiles */ = {
+		6F3B82E92B212B910001EDE5 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				6F6EA40827653F0000B2ABE4 /* TurtleAssembler in CopyFiles */,
-				6F6EA40727653EFA00B2ABE4 /* Snap in CopyFiles */,
+				6F3B82EC2B212BB10001EDE5 /* TurtleSimulatorCore.framework in CopyFiles */,
+				6F3B82EB2B212BA90001EDE5 /* TurtleCore.framework in CopyFiles */,
+				6F3B82EA2B212BA50001EDE5 /* SnapCore.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6F3B82ED2B212BCA0001EDE5 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				6F3B82EF2B212BDF0001EDE5 /* TurtleAssembler in CopyFiles */,
+				6F3B82EE2B212BD90001EDE5 /* Snap in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -576,21 +568,10 @@
 		6F15423326B91BD800BA9572 /* SnapSubcompilerFunctionDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerFunctionDeclarationTests.swift; sourceTree = "<group>"; };
 		6F15423526B92AB500BA9572 /* SnapSubcompilerStructDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerStructDeclaration.swift; sourceTree = "<group>"; };
 		6F15423726B92ADB00BA9572 /* SnapSubcompilerStructDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerStructDeclarationTests.swift; sourceTree = "<group>"; };
-		6F1698AA262897ED00C96D07 /* Simulator16.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Simulator16.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		6F1698AC262897ED00C96D07 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		6F1698AE262897ED00C96D07 /* Simulator16ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Simulator16ViewController.swift; sourceTree = "<group>"; };
-		6F1698B0262897ED00C96D07 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		6F1698B3262897ED00C96D07 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		6F1698B5262897ED00C96D07 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		6F1698B6262897ED00C96D07 /* Simulator16.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Simulator16.entitlements; sourceTree = "<group>"; };
-		6F1698BB262897ED00C96D07 /* Simulator16Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Simulator16Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		6F1698BF262897ED00C96D07 /* Simulator16Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Simulator16Tests.swift; sourceTree = "<group>"; };
-		6F1698C1262897ED00C96D07 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6F1800A6251D9079005D9D36 /* Import.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Import.swift; sourceTree = "<group>"; };
 		6F1D24B82482245E0095D7B4 /* TokenMisc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenMisc.swift; sourceTree = "<group>"; };
 		6F1D24C424823DD90095D7B4 /* If.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = If.swift; sourceTree = "<group>"; };
 		6F1D24C624823EC60095D7B4 /* IfTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IfTests.swift; sourceTree = "<group>"; };
-		6F1E5C5B262A1E8D0038F966 /* InstructionMemoryTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionMemoryTableViewDataSource.swift; sourceTree = "<group>"; };
 		6F1EC33F265EB66800465075 /* AssemblerCompiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCompiler.swift; sourceTree = "<group>"; };
 		6F238AD8248C6A560040250D /* Block.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Block.swift; sourceTree = "<group>"; };
 		6F24AC8A24A07CAF005193BB /* StatementTracer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatementTracer.swift; sourceTree = "<group>"; };
@@ -612,26 +593,18 @@
 		6F300DC2266A906F00BFBAC4 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		6F300DD0266A913B00BFBAC4 /* AssemblerCommandLineDriver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCommandLineDriver.swift; sourceTree = "<group>"; };
 		6F35B4352628ABF6004EA0AB /* DebugConsole.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugConsole.swift; sourceTree = "<group>"; };
-		6F35B4B22628AFED004EA0AB /* example.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = example.bin; sourceTree = "<group>"; };
 		6F3987652814BBF600C601AE /* Decoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Decoder.swift; sourceTree = "<group>"; };
 		6F3987672814CD9800C601AE /* DecoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecoderTests.swift; sourceTree = "<group>"; };
 		6F398769281517D800C601AE /* InstructionDecoder1.pld */ = {isa = PBXFileReference; lastKnownFileType = text; path = InstructionDecoder1.pld; sourceTree = "<group>"; };
 		6F39876B281517E400C601AE /* InstructionDecoder2.pld */ = {isa = PBXFileReference; lastKnownFileType = text; path = InstructionDecoder2.pld; sourceTree = "<group>"; };
 		6F39876D281517F700C601AE /* InstructionDecoder3.pld */ = {isa = PBXFileReference; lastKnownFileType = text; path = InstructionDecoder3.pld; sourceTree = "<group>"; };
+		6F3B82D52B1FBE5E0001EDE5 /* RegistersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistersView.swift; sourceTree = "<group>"; };
+		6F3B82DB2B204FD80001EDE5 /* PipelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PipelineView.swift; sourceTree = "<group>"; };
+		6F3B82E72B212B4F0001EDE5 /* example.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = example.bin; sourceTree = "<group>"; };
+		6F3B82F02B214DAE0001EDE5 /* DisassemblyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisassemblyView.swift; sourceTree = "<group>"; };
+		6F3B82F22B2258180001EDE5 /* MemoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryView.swift; sourceTree = "<group>"; };
 		6F3E5AD4291AF84100C0F988 /* TackDebuggerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TackDebuggerTests.swift; sourceTree = "<group>"; };
 		6F3E5AD6291AF85A00C0F988 /* TackDebugger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TackDebugger.swift; sourceTree = "<group>"; };
-		6F3EEB81262D22B400688D12 /* MemoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryViewController.swift; sourceTree = "<group>"; };
-		6F3EEB82262D22B400688D12 /* MemoryViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MemoryViewController.xib; sourceTree = "<group>"; };
-		6F3EEBA3262D333700688D12 /* RegistersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistersViewController.swift; sourceTree = "<group>"; };
-		6F3EEBA4262D333700688D12 /* RegistersViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RegistersViewController.xib; sourceTree = "<group>"; };
-		6F3EEBC5262D355C00688D12 /* DebugConsoleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugConsoleViewController.swift; sourceTree = "<group>"; };
-		6F3EEBC6262D355C00688D12 /* DebugConsoleViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DebugConsoleViewController.xib; sourceTree = "<group>"; };
-		6F3EEBD8262D3CF300688D12 /* HexDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexDataViewController.swift; sourceTree = "<group>"; };
-		6F3EEBD9262D3CF300688D12 /* HexDataViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HexDataViewController.xib; sourceTree = "<group>"; };
-		6F3EEBFA262D4C7500688D12 /* HexDataTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexDataTableViewDataSource.swift; sourceTree = "<group>"; };
-		6F3EEC0B262DD42A00688D12 /* OpcodeDecodeROM2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpcodeDecodeROM2.swift; sourceTree = "<group>"; };
-		6F3EEC1C262DD51200688D12 /* OpcodeDecodeROM1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpcodeDecodeROM1.swift; sourceTree = "<group>"; };
-		6F3EEC2D262DD53600688D12 /* OpcodeDecodeROM3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpcodeDecodeROM3.swift; sourceTree = "<group>"; };
 		6F3F00F3274F651C00875339 /* Subroutine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subroutine.swift; sourceTree = "<group>"; };
 		6F3F00F7274F736C00875339 /* SnapSubcompilerSubroutine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerSubroutine.swift; sourceTree = "<group>"; };
 		6F3F00F927560FDB00875339 /* RegisterAllocatorDriver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterAllocatorDriver.swift; sourceTree = "<group>"; };
@@ -696,7 +669,6 @@
 		6F47D8F2261CC6F2008EFFF2 /* JEDECFuseFileParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JEDECFuseFileParser.swift; sourceTree = "<group>"; };
 		6F47D904261CC6FC008EFFF2 /* JEDECFuseFileParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JEDECFuseFileParserTests.swift; sourceTree = "<group>"; };
 		6F4B5CB12471DE2D000C57EB /* SnapCommandLineDriver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapCommandLineDriver.swift; sourceTree = "<group>"; };
-		6F4BCFA12629135700BA4775 /* RegisterTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterTableViewDataSource.swift; sourceTree = "<group>"; };
 		6F4BE175230D2E31008C2329 /* CompilerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerError.swift; sourceTree = "<group>"; };
 		6F4F3C42249EAEB30018BBBC /* FunctionDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionDeclaration.swift; sourceTree = "<group>"; };
 		6F4F3C44249EAF700018BBBC /* FunctionDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionDeclarationTests.swift; sourceTree = "<group>"; };
@@ -738,14 +710,11 @@
 		6F790AEA22EEE6C400B38267 /* TextViewLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewLogger.swift; sourceTree = "<group>"; };
 		6F7C14E9259A94C30034C7D0 /* EX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EX.swift; sourceTree = "<group>"; };
 		6F7C14FB259A94E40034C7D0 /* EXTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EXTests.swift; sourceTree = "<group>"; };
-		6F7D951726753D81003889FB /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
 		6F7E16D327F3A3660067D059 /* runtime_Turtle16.snap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = runtime_Turtle16.snap; sourceTree = "<group>"; };
 		6F7F356924D2323F00BA8E37 /* stdlib.snap */ = {isa = PBXFileReference; lastKnownFileType = text; path = stdlib.snap; sourceTree = "<group>"; };
 		6F7F356D24D33C7700BA8E37 /* SourceAnchor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceAnchor.swift; sourceTree = "<group>"; };
 		6F7F356F24D33CC800BA8E37 /* SourceLineRangeMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceLineRangeMapper.swift; sourceTree = "<group>"; };
 		6F7F357324D492F000BA8E37 /* Parameter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parameter.swift; sourceTree = "<group>"; };
-		6F809DDD26615A860098A7FF /* InstructionMemoryHiTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionMemoryHiTableViewDataSource.swift; sourceTree = "<group>"; };
-		6F809DDF26615A8D0098A7FF /* InstructionMemoryLoTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionMemoryLoTableViewDataSource.swift; sourceTree = "<group>"; };
 		6F83480A26FD3B0100EB466E /* RegisterAllocatorNaive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterAllocatorNaive.swift; sourceTree = "<group>"; };
 		6F83480C26FD3B1200EB466E /* RegisterAllocatorNaiveTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterAllocatorNaiveTests.swift; sourceTree = "<group>"; };
 		6F84050F2918050400C9B957 /* TackVirtualMachine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TackVirtualMachine.swift; sourceTree = "<group>"; };
@@ -819,14 +788,16 @@
 		6FBCFA5926F7F4D400193819 /* Tack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tack.swift; sourceTree = "<group>"; };
 		6FBCFA5B26F7F52400193819 /* TackToTurtle16Compiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TackToTurtle16Compiler.swift; sourceTree = "<group>"; };
 		6FBCFA5D26F7F5FC00193819 /* TackToTurtle16CompilerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TackToTurtle16CompilerTests.swift; sourceTree = "<group>"; };
-		6FBDDD422670859B0098BEC8 /* PipelineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PipelineViewController.swift; sourceTree = "<group>"; };
-		6FBDDD432670859B0098BEC8 /* PipelineViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PipelineViewController.xib; sourceTree = "<group>"; };
-		6FBDDD4626712E320098BEC8 /* PipelineTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PipelineTableViewDataSource.swift; sourceTree = "<group>"; };
 		6FC0E64F291AD4E600DFDE8B /* SnapCompilerBackEndTurtle16Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapCompilerBackEndTurtle16Tests.swift; sourceTree = "<group>"; };
 		6FC0E651291AD4FF00DFDE8B /* SnapCompilerBackEndTurtle16.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapCompilerBackEndTurtle16.swift; sourceTree = "<group>"; };
 		6FC4E6EC28FBEB900079A88C /* GenericFunctionTypeArgumentSolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericFunctionTypeArgumentSolver.swift; sourceTree = "<group>"; };
 		6FC4E6EE28FBEBA30079A88C /* GenericFunctionTypeArgumentSolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericFunctionTypeArgumentSolverTests.swift; sourceTree = "<group>"; };
 		6FC9262025045F5E006FAE8C /* AudioRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRenderer.swift; sourceTree = "<group>"; };
+		6FCA0B822B229E37000BB22C /* DebugConsoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugConsoleView.swift; sourceTree = "<group>"; };
+		6FCA0B852B22A49C000BB22C /* DebugConsoleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugConsoleViewController.swift; sourceTree = "<group>"; };
+		6FCA0B862B22A49C000BB22C /* DebugConsoleViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DebugConsoleViewController.xib; sourceTree = "<group>"; };
+		6FCA0B892B22F60A000BB22C /* DebugStatusBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugStatusBar.swift; sourceTree = "<group>"; };
+		6FCA0B8C2B231868000BB22C /* TurtleSimulatorApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TurtleSimulatorApp.xctestplan; sourceTree = "<group>"; };
 		6FCA942425264C61000C2A2D /* Assert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assert.swift; sourceTree = "<group>"; };
 		6FCB6818247204F900798905 /* SnapLexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapLexer.swift; sourceTree = "<group>"; };
 		6FCB681B2472051200798905 /* SnapLexerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapLexerTests.swift; sourceTree = "<group>"; };
@@ -847,13 +818,23 @@
 		6FD5AE6326A2228300670CEB /* AssemblerListingMaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerListingMaker.swift; sourceTree = "<group>"; };
 		6FD5AE6526A2229500670CEB /* AssemblerListingMakerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerListingMakerTests.swift; sourceTree = "<group>"; };
 		6FD5AE6D26A24AB500670CEB /* CommentNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentNode.swift; sourceTree = "<group>"; };
+		6FDA165A2B1FAC9700FD1FC0 /* TurtleSimulator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TurtleSimulator.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6FDA165C2B1FAC9800FD1FC0 /* TurtleSimulatorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurtleSimulatorApp.swift; sourceTree = "<group>"; };
+		6FDA165E2B1FAC9800FD1FC0 /* TurtleSimulatorDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurtleSimulatorDocument.swift; sourceTree = "<group>"; };
+		6FDA16602B1FAC9800FD1FC0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		6FDA16622B1FAC9900FD1FC0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		6FDA16652B1FAC9900FD1FC0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		6FDA16672B1FAC9900FD1FC0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6FDA16682B1FAC9900FD1FC0 /* TurtleSimulator.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TurtleSimulator.entitlements; sourceTree = "<group>"; };
+		6FDA166D2B1FAC9900FD1FC0 /* TurtleSimulatorAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TurtleSimulatorAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6FDA16712B1FAC9B00FD1FC0 /* TurtleSimulatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurtleSimulatorTests.swift; sourceTree = "<group>"; };
+		6FDA16772B1FAC9B00FD1FC0 /* TurtleSimulatorAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TurtleSimulatorAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6FDA167B2B1FAC9D00FD1FC0 /* TurtleSimulatorUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurtleSimulatorUITests.swift; sourceTree = "<group>"; };
+		6FDA167D2B1FAC9D00FD1FC0 /* TurtleSimulatorUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurtleSimulatorUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		6FDC6AAB27331637003A8ABF /* SnapToTurtle16Compiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapToTurtle16Compiler.swift; sourceTree = "<group>"; };
 		6FDC6AAD27331640003A8ABF /* SnapToTurtle16EndToEndIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapToTurtle16EndToEndIntegrationTests.swift; sourceTree = "<group>"; };
 		6FDF61E0266D86DC002E7A17 /* Disassembler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Disassembler.swift; sourceTree = "<group>"; };
 		6FDF61E2266D86E8002E7A17 /* DisassemblerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisassemblerTests.swift; sourceTree = "<group>"; };
-		6FDF61E6266ECACC002E7A17 /* DisassemblyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisassemblyViewController.swift; sourceTree = "<group>"; };
-		6FDF61E7266ECACC002E7A17 /* DisassemblyViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DisassemblyViewController.xib; sourceTree = "<group>"; };
-		6FDF61EA266ECB4B002E7A17 /* DisassemblyTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisassemblyTableViewDataSource.swift; sourceTree = "<group>"; };
 		6FE0465F2405119D001461C4 /* NullLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NullLogger.swift; sourceTree = "<group>"; };
 		6FEBE3E223F77F0200E42B66 /* ThrottledQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottledQueue.swift; sourceTree = "<group>"; };
 		6FEC3DFD24D78CF800E9C299 /* LabelMaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelMaker.swift; sourceTree = "<group>"; };
@@ -863,26 +844,9 @@
 		6FF179CA26BA34760026F284 /* SnapSubcompilerImport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerImport.swift; sourceTree = "<group>"; };
 		6FF75BA52486C31000F55625 /* SnapCommandLineArgumentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapCommandLineArgumentParser.swift; sourceTree = "<group>"; };
 		6FF75BA72486C35400F55625 /* SnapCommandLineArgumentParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapCommandLineArgumentParserTests.swift; sourceTree = "<group>"; };
-		6FFABC3A262A423B00372BF9 /* DataMemoryTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataMemoryTableViewDataSource.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		6F1698A7262897ED00C96D07 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6F2100EC2675B4A3004CFB5D /* TurtleSimulatorCore.framework in Frameworks */,
-				6F2100EB2675B49E004CFB5D /* TurtleCore.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6F1698B8262897ED00C96D07 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		6F300DBD266A906F00BFBAC4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -951,56 +915,30 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6FDA16572B1FAC9700FD1FC0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6FDA166A2B1FAC9900FD1FC0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6FDA16742B1FAC9B00FD1FC0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		6F1698AB262897ED00C96D07 /* Simulator16 */ = {
-			isa = PBXGroup;
-			children = (
-				6F1698AC262897ED00C96D07 /* AppDelegate.swift */,
-				6F4BCFA12629135700BA4775 /* RegisterTableViewDataSource.swift */,
-				6F3EEBA3262D333700688D12 /* RegistersViewController.swift */,
-				6F3EEBA4262D333700688D12 /* RegistersViewController.xib */,
-				6F1E5C5B262A1E8D0038F966 /* InstructionMemoryTableViewDataSource.swift */,
-				6F809DDD26615A860098A7FF /* InstructionMemoryHiTableViewDataSource.swift */,
-				6F809DDF26615A8D0098A7FF /* InstructionMemoryLoTableViewDataSource.swift */,
-				6FFABC3A262A423B00372BF9 /* DataMemoryTableViewDataSource.swift */,
-				6F3EEBC5262D355C00688D12 /* DebugConsoleViewController.swift */,
-				6F3EEBC6262D355C00688D12 /* DebugConsoleViewController.xib */,
-				6FDF61EA266ECB4B002E7A17 /* DisassemblyTableViewDataSource.swift */,
-				6FDF61E6266ECACC002E7A17 /* DisassemblyViewController.swift */,
-				6FDF61E7266ECACC002E7A17 /* DisassemblyViewController.xib */,
-				6F7D951726753D81003889FB /* Document.swift */,
-				6F3EEC1C262DD51200688D12 /* OpcodeDecodeROM1.swift */,
-				6F3EEC0B262DD42A00688D12 /* OpcodeDecodeROM2.swift */,
-				6F3EEC2D262DD53600688D12 /* OpcodeDecodeROM3.swift */,
-				6F3EEBFA262D4C7500688D12 /* HexDataTableViewDataSource.swift */,
-				6F3EEBD8262D3CF300688D12 /* HexDataViewController.swift */,
-				6F3EEBD9262D3CF300688D12 /* HexDataViewController.xib */,
-				6F3EEB81262D22B400688D12 /* MemoryViewController.swift */,
-				6F3EEB82262D22B400688D12 /* MemoryViewController.xib */,
-				6FBDDD4626712E320098BEC8 /* PipelineTableViewDataSource.swift */,
-				6FBDDD422670859B0098BEC8 /* PipelineViewController.swift */,
-				6FBDDD432670859B0098BEC8 /* PipelineViewController.xib */,
-				6F1698AE262897ED00C96D07 /* Simulator16ViewController.swift */,
-				6F1698B0262897ED00C96D07 /* Assets.xcassets */,
-				6F1698B2262897ED00C96D07 /* Main.storyboard */,
-				6F35B4B22628AFED004EA0AB /* example.bin */,
-				6F1698B5262897ED00C96D07 /* Info.plist */,
-				6F1698B6262897ED00C96D07 /* Simulator16.entitlements */,
-			);
-			path = Simulator16;
-			sourceTree = "<group>";
-		};
-		6F1698BE262897ED00C96D07 /* Simulator16Tests */ = {
-			isa = PBXGroup;
-			children = (
-				6F1698BF262897ED00C96D07 /* Simulator16Tests.swift */,
-				6F1698C1262897ED00C96D07 /* Info.plist */,
-			);
-			path = Simulator16Tests;
-			sourceTree = "<group>";
-		};
 		6F300DC1266A906F00BFBAC4 /* TurtleAssembler */ = {
 			isa = PBXGroup;
 			children = (
@@ -1417,11 +1355,58 @@
 			path = SnapBenchmark;
 			sourceTree = "<group>";
 		};
+		6FDA165B2B1FAC9800FD1FC0 /* TurtleSimulatorApp */ = {
+			isa = PBXGroup;
+			children = (
+				6FDA16602B1FAC9800FD1FC0 /* ContentView.swift */,
+				6FCA0B822B229E37000BB22C /* DebugConsoleView.swift */,
+				6FCA0B852B22A49C000BB22C /* DebugConsoleViewController.swift */,
+				6FCA0B862B22A49C000BB22C /* DebugConsoleViewController.xib */,
+				6FCA0B892B22F60A000BB22C /* DebugStatusBar.swift */,
+				6F3B82F02B214DAE0001EDE5 /* DisassemblyView.swift */,
+				6F3B82F22B2258180001EDE5 /* MemoryView.swift */,
+				6F3B82DB2B204FD80001EDE5 /* PipelineView.swift */,
+				6F3B82D52B1FBE5E0001EDE5 /* RegistersView.swift */,
+				6FDA165C2B1FAC9800FD1FC0 /* TurtleSimulatorApp.swift */,
+				6FDA165E2B1FAC9800FD1FC0 /* TurtleSimulatorDocument.swift */,
+				6FCA0B8C2B231868000BB22C /* TurtleSimulatorApp.xctestplan */,
+				6FDA16622B1FAC9900FD1FC0 /* Assets.xcassets */,
+				6FDA16672B1FAC9900FD1FC0 /* Info.plist */,
+				6FDA16682B1FAC9900FD1FC0 /* TurtleSimulator.entitlements */,
+				6F3B82E72B212B4F0001EDE5 /* example.bin */,
+				6FDA16642B1FAC9900FD1FC0 /* Preview Content */,
+			);
+			path = TurtleSimulatorApp;
+			sourceTree = "<group>";
+		};
+		6FDA16642B1FAC9900FD1FC0 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				6FDA16652B1FAC9900FD1FC0 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		6FDA16702B1FAC9B00FD1FC0 /* TurtleSimulatorAppTests */ = {
+			isa = PBXGroup;
+			children = (
+				6FDA16712B1FAC9B00FD1FC0 /* TurtleSimulatorTests.swift */,
+			);
+			path = TurtleSimulatorAppTests;
+			sourceTree = "<group>";
+		};
+		6FDA167A2B1FAC9D00FD1FC0 /* TurtleSimulatorAppUITests */ = {
+			isa = PBXGroup;
+			children = (
+				6FDA167B2B1FAC9D00FD1FC0 /* TurtleSimulatorUITests.swift */,
+				6FDA167D2B1FAC9D00FD1FC0 /* TurtleSimulatorUITestsLaunchTests.swift */,
+			);
+			path = TurtleSimulatorAppUITests;
+			sourceTree = "<group>";
+		};
 		6FF1994A22ECB36F00C255A2 = {
 			isa = PBXGroup;
 			children = (
-				6F1698AB262897ED00C96D07 /* Simulator16 */,
-				6F1698BE262897ED00C96D07 /* Simulator16Tests */,
 				6F9201DA2471DA22009E1410 /* Snap */,
 				6F9201E62471DAC7009E1410 /* SnapCore */,
 				6F9201F12471DAC7009E1410 /* SnapCoreTests */,
@@ -1431,6 +1416,9 @@
 				6F734332259327D400B7E43F /* TurtleSimulatorCore */,
 				6F73433D259327D400B7E43F /* TurtleSimulatorCoreTests */,
 				6F300DC1266A906F00BFBAC4 /* TurtleAssembler */,
+				6FDA165B2B1FAC9800FD1FC0 /* TurtleSimulatorApp */,
+				6FDA16702B1FAC9B00FD1FC0 /* TurtleSimulatorAppTests */,
+				6FDA167A2B1FAC9D00FD1FC0 /* TurtleSimulatorAppUITests */,
 				6FF1995422ECB36F00C255A2 /* Products */,
 				6F5036F822F50DBA00761737 /* Frameworks */,
 			);
@@ -1447,9 +1435,10 @@
 				6FB28F652512C50B001F5D12 /* SnapBenchmark */,
 				6F734331259327D400B7E43F /* TurtleSimulatorCore.framework */,
 				6F734339259327D400B7E43F /* TurtleSimulatorCoreTests.xctest */,
-				6F1698AA262897ED00C96D07 /* Simulator16.app */,
-				6F1698BB262897ED00C96D07 /* Simulator16Tests.xctest */,
 				6F300DC0266A906F00BFBAC4 /* TurtleAssembler */,
+				6FDA165A2B1FAC9700FD1FC0 /* TurtleSimulator.app */,
+				6FDA166D2B1FAC9900FD1FC0 /* TurtleSimulatorAppTests.xctest */,
+				6FDA16772B1FAC9B00FD1FC0 /* TurtleSimulatorAppUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1484,48 +1473,6 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		6F1698A9262897ED00C96D07 /* Simulator16 */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 6F1698D3262897ED00C96D07 /* Build configuration list for PBXNativeTarget "Simulator16" */;
-			buildPhases = (
-				6F1698A6262897ED00C96D07 /* Sources */,
-				6F1698A7262897ED00C96D07 /* Frameworks */,
-				6F1698A8262897ED00C96D07 /* Resources */,
-				6F2100ED2675B5BD004CFB5D /* CopyFiles */,
-				6F6EA40627653EF100B2ABE4 /* CopyFiles */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				6F6EA40C27653F2500B2ABE4 /* PBXTargetDependency */,
-				6F6EA40A27653F2100B2ABE4 /* PBXTargetDependency */,
-				6F6EA40F27653FBD00B2ABE4 /* PBXTargetDependency */,
-				6F35B4752628AD7A004EA0AB /* PBXTargetDependency */,
-				6F35B4252628AA01004EA0AB /* PBXTargetDependency */,
-			);
-			name = Simulator16;
-			productName = Simulator16;
-			productReference = 6F1698AA262897ED00C96D07 /* Simulator16.app */;
-			productType = "com.apple.product-type.application";
-		};
-		6F1698BA262897ED00C96D07 /* Simulator16Tests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 6F1698D4262897ED00C96D07 /* Build configuration list for PBXNativeTarget "Simulator16Tests" */;
-			buildPhases = (
-				6F1698B7262897ED00C96D07 /* Sources */,
-				6F1698B8262897ED00C96D07 /* Frameworks */,
-				6F1698B9262897ED00C96D07 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				6F1698BD262897ED00C96D07 /* PBXTargetDependency */,
-			);
-			name = Simulator16Tests;
-			productName = Simulator16Tests;
-			productReference = 6F1698BB262897ED00C96D07 /* Simulator16Tests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		6F300DBF266A906F00BFBAC4 /* TurtleAssembler */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6F300DC4266A906F00BFBAC4 /* Build configuration list for PBXNativeTarget "TurtleAssembler" */;
@@ -1698,6 +1645,66 @@
 			productReference = 6FB28F652512C50B001F5D12 /* SnapBenchmark */;
 			productType = "com.apple.product-type.tool";
 		};
+		6FDA16592B1FAC9700FD1FC0 /* TurtleSimulator */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6FDA16852B1FAC9D00FD1FC0 /* Build configuration list for PBXNativeTarget "TurtleSimulator" */;
+			buildPhases = (
+				6FDA16562B1FAC9700FD1FC0 /* Sources */,
+				6FDA16572B1FAC9700FD1FC0 /* Frameworks */,
+				6FDA16582B1FAC9700FD1FC0 /* Resources */,
+				6F3B82E92B212B910001EDE5 /* CopyFiles */,
+				6F3B82ED2B212BCA0001EDE5 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6F3B82DE2B212AA70001EDE5 /* PBXTargetDependency */,
+				6F3B82E02B212AAB0001EDE5 /* PBXTargetDependency */,
+				6F3B82E22B212AB50001EDE5 /* PBXTargetDependency */,
+				6F3B82E62B212AC50001EDE5 /* PBXTargetDependency */,
+				6F3B82E42B212AB90001EDE5 /* PBXTargetDependency */,
+			);
+			name = TurtleSimulator;
+			productName = TurtleSimulator;
+			productReference = 6FDA165A2B1FAC9700FD1FC0 /* TurtleSimulator.app */;
+			productType = "com.apple.product-type.application";
+		};
+		6FDA166C2B1FAC9900FD1FC0 /* TurtleSimulatorAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6FDA16862B1FAC9D00FD1FC0 /* Build configuration list for PBXNativeTarget "TurtleSimulatorAppTests" */;
+			buildPhases = (
+				6FDA16692B1FAC9900FD1FC0 /* Sources */,
+				6FDA166A2B1FAC9900FD1FC0 /* Frameworks */,
+				6FDA166B2B1FAC9900FD1FC0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6FDA166F2B1FAC9A00FD1FC0 /* PBXTargetDependency */,
+			);
+			name = TurtleSimulatorAppTests;
+			productName = TurtleSimulatorTests;
+			productReference = 6FDA166D2B1FAC9900FD1FC0 /* TurtleSimulatorAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		6FDA16762B1FAC9B00FD1FC0 /* TurtleSimulatorAppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6FDA16872B1FAC9D00FD1FC0 /* Build configuration list for PBXNativeTarget "TurtleSimulatorAppUITests" */;
+			buildPhases = (
+				6FDA16732B1FAC9B00FD1FC0 /* Sources */,
+				6FDA16742B1FAC9B00FD1FC0 /* Frameworks */,
+				6FDA16752B1FAC9B00FD1FC0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6FDA16792B1FAC9C00FD1FC0 /* PBXTargetDependency */,
+			);
+			name = TurtleSimulatorAppUITests;
+			productName = TurtleSimulatorUITests;
+			productReference = 6FDA16772B1FAC9B00FD1FC0 /* TurtleSimulatorAppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -1705,17 +1712,10 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastSwiftUpdateCheck = 1250;
-				LastUpgradeCheck = 1430;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
 				ORGANIZATIONNAME = "Andrew Fox";
 				TargetAttributes = {
-					6F1698A9262897ED00C96D07 = {
-						CreatedOnToolsVersion = 12.4;
-					};
-					6F1698BA262897ED00C96D07 = {
-						CreatedOnToolsVersion = 12.4;
-						TestTargetID = 6F1698A9262897ED00C96D07;
-					};
 					6F300DBF266A906F00BFBAC4 = {
 						CreatedOnToolsVersion = 12.5;
 					};
@@ -1747,6 +1747,17 @@
 					6FB28F642512C50B001F5D12 = {
 						CreatedOnToolsVersion = 11.7;
 					};
+					6FDA16592B1FAC9700FD1FC0 = {
+						CreatedOnToolsVersion = 15.0.1;
+					};
+					6FDA166C2B1FAC9900FD1FC0 = {
+						CreatedOnToolsVersion = 15.0.1;
+						TestTargetID = 6FDA16592B1FAC9700FD1FC0;
+					};
+					6FDA16762B1FAC9B00FD1FC0 = {
+						CreatedOnToolsVersion = 15.0.1;
+						TestTargetID = 6FDA16592B1FAC9700FD1FC0;
+					};
 				};
 			};
 			buildConfigurationList = 6FF1994E22ECB36F00C255A2 /* Build configuration list for PBXProject "TurtleTools" */;
@@ -1770,37 +1781,15 @@
 				6FB28F642512C50B001F5D12 /* SnapBenchmark */,
 				6F734330259327D400B7E43F /* TurtleSimulatorCore */,
 				6F734338259327D400B7E43F /* TurtleSimulatorCoreTests */,
-				6F1698A9262897ED00C96D07 /* Simulator16 */,
-				6F1698BA262897ED00C96D07 /* Simulator16Tests */,
 				6F300DBF266A906F00BFBAC4 /* TurtleAssembler */,
+				6FDA16592B1FAC9700FD1FC0 /* TurtleSimulator */,
+				6FDA166C2B1FAC9900FD1FC0 /* TurtleSimulatorAppTests */,
+				6FDA16762B1FAC9B00FD1FC0 /* TurtleSimulatorAppUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		6F1698A8262897ED00C96D07 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6FBDDD452670859B0098BEC8 /* PipelineViewController.xib in Resources */,
-				6F35B4B32628AFED004EA0AB /* example.bin in Resources */,
-				6F3EEB84262D22B400688D12 /* MemoryViewController.xib in Resources */,
-				6F3EEBA6262D333700688D12 /* RegistersViewController.xib in Resources */,
-				6F1698B1262897ED00C96D07 /* Assets.xcassets in Resources */,
-				6F3EEBC8262D355C00688D12 /* DebugConsoleViewController.xib in Resources */,
-				6FDF61E9266ECACC002E7A17 /* DisassemblyViewController.xib in Resources */,
-				6F1698B4262897ED00C96D07 /* Main.storyboard in Resources */,
-				6F3EEBDB262D3CF300688D12 /* HexDataViewController.xib in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6F1698B9262897ED00C96D07 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		6F73432F259327D400B7E43F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1852,44 +1841,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6FDA16582B1FAC9700FD1FC0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6FCA0B882B22A49C000BB22C /* DebugConsoleViewController.xib in Resources */,
+				6F3B82E82B212B4F0001EDE5 /* example.bin in Resources */,
+				6FDA16662B1FAC9900FD1FC0 /* Preview Assets.xcassets in Resources */,
+				6FDA16632B1FAC9900FD1FC0 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6FDA166B2B1FAC9900FD1FC0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6FDA16752B1FAC9B00FD1FC0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		6F1698A6262897ED00C96D07 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6FBDDD4726712E320098BEC8 /* PipelineTableViewDataSource.swift in Sources */,
-				6F3EEBC7262D355C00688D12 /* DebugConsoleViewController.swift in Sources */,
-				6F4BCFA22629135700BA4775 /* RegisterTableViewDataSource.swift in Sources */,
-				6F3EEBFB262D4C7500688D12 /* HexDataTableViewDataSource.swift in Sources */,
-				6F7D951826753D81003889FB /* Document.swift in Sources */,
-				6F3EEBDA262D3CF300688D12 /* HexDataViewController.swift in Sources */,
-				6F3EEB83262D22B400688D12 /* MemoryViewController.swift in Sources */,
-				6F3EEC2E262DD53600688D12 /* OpcodeDecodeROM3.swift in Sources */,
-				6F3EEC0C262DD42A00688D12 /* OpcodeDecodeROM2.swift in Sources */,
-				6F809DDE26615A860098A7FF /* InstructionMemoryHiTableViewDataSource.swift in Sources */,
-				6FBDDD442670859B0098BEC8 /* PipelineViewController.swift in Sources */,
-				6F1E5C5C262A1E8D0038F966 /* InstructionMemoryTableViewDataSource.swift in Sources */,
-				6FDF61E8266ECACC002E7A17 /* DisassemblyViewController.swift in Sources */,
-				6FDF61EB266ECB4B002E7A17 /* DisassemblyTableViewDataSource.swift in Sources */,
-				6FFABC3B262A423B00372BF9 /* DataMemoryTableViewDataSource.swift in Sources */,
-				6F1698AF262897ED00C96D07 /* Simulator16ViewController.swift in Sources */,
-				6F1698AD262897ED00C96D07 /* AppDelegate.swift in Sources */,
-				6F3EEBA5262D333700688D12 /* RegistersViewController.swift in Sources */,
-				6F809DE026615A8D0098A7FF /* InstructionMemoryLoTableViewDataSource.swift in Sources */,
-				6F3EEC1D262DD51200688D12 /* OpcodeDecodeROM1.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6F1698B7262897ED00C96D07 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6F1698C0262897ED00C96D07 /* Simulator16Tests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		6F300DBC266A906F00BFBAC4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2209,6 +2188,40 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6FDA16562B1FAC9700FD1FC0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6F3B82F32B2258180001EDE5 /* MemoryView.swift in Sources */,
+				6FDA165D2B1FAC9800FD1FC0 /* TurtleSimulatorApp.swift in Sources */,
+				6F3B82D62B1FBE5E0001EDE5 /* RegistersView.swift in Sources */,
+				6F3B82DC2B204FD80001EDE5 /* PipelineView.swift in Sources */,
+				6F3B82F12B214DAE0001EDE5 /* DisassemblyView.swift in Sources */,
+				6FDA165F2B1FAC9800FD1FC0 /* TurtleSimulatorDocument.swift in Sources */,
+				6FCA0B842B229E41000BB22C /* DebugConsoleView.swift in Sources */,
+				6FDA16612B1FAC9800FD1FC0 /* ContentView.swift in Sources */,
+				6FCA0B872B22A49C000BB22C /* DebugConsoleViewController.swift in Sources */,
+				6FCA0B8A2B22F60A000BB22C /* DebugStatusBar.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6FDA16692B1FAC9900FD1FC0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6FDA16722B1FAC9B00FD1FC0 /* TurtleSimulatorTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6FDA16732B1FAC9B00FD1FC0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6FDA167C2B1FAC9D00FD1FC0 /* TurtleSimulatorUITests.swift in Sources */,
+				6FDA167E2B1FAC9D00FD1FC0 /* TurtleSimulatorUITestsLaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -2216,11 +2229,6 @@
 			isa = PBXTargetDependency;
 			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
 			targetProxy = 6F0009822626606B00C5DFDE /* PBXContainerItemProxy */;
-		};
-		6F1698BD262897ED00C96D07 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6F1698A9262897ED00C96D07 /* Simulator16 */;
-			targetProxy = 6F1698BC262897ED00C96D07 /* PBXContainerItemProxy */;
 		};
 		6F300DCA266A90CC00BFBAC4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2232,15 +2240,30 @@
 			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
 			targetProxy = 6F300DCD266A90CC00BFBAC4 /* PBXContainerItemProxy */;
 		};
-		6F35B4252628AA01004EA0AB /* PBXTargetDependency */ = {
+		6F3B82DE2B212AA70001EDE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F300DBF266A906F00BFBAC4 /* TurtleAssembler */;
+			targetProxy = 6F3B82DD2B212AA70001EDE5 /* PBXContainerItemProxy */;
+		};
+		6F3B82E02B212AAB0001EDE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F9201D82471DA22009E1410 /* Snap */;
+			targetProxy = 6F3B82DF2B212AAB0001EDE5 /* PBXContainerItemProxy */;
+		};
+		6F3B82E22B212AB50001EDE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F9201E42471DAC7009E1410 /* SnapCore */;
+			targetProxy = 6F3B82E12B212AB50001EDE5 /* PBXContainerItemProxy */;
+		};
+		6F3B82E42B212AB90001EDE5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 6F734330259327D400B7E43F /* TurtleSimulatorCore */;
-			targetProxy = 6F35B4242628AA01004EA0AB /* PBXContainerItemProxy */;
+			targetProxy = 6F3B82E32B212AB90001EDE5 /* PBXContainerItemProxy */;
 		};
-		6F35B4752628AD7A004EA0AB /* PBXTargetDependency */ = {
+		6F3B82E62B212AC50001EDE5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 6FB0D28A24710C26003B5D5C /* TurtleCore */;
-			targetProxy = 6F35B4742628AD7A004EA0AB /* PBXContainerItemProxy */;
+			targetProxy = 6F3B82E52B212AC50001EDE5 /* PBXContainerItemProxy */;
 		};
 		6F41B6702476F5130043A8D7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2261,21 +2284,6 @@
 			isa = PBXTargetDependency;
 			target = 6F9201E42471DAC7009E1410 /* SnapCore */;
 			targetProxy = 6F4B5CB52471DE3F000C57EB /* PBXContainerItemProxy */;
-		};
-		6F6EA40A27653F2100B2ABE4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6F9201D82471DA22009E1410 /* Snap */;
-			targetProxy = 6F6EA40927653F2100B2ABE4 /* PBXContainerItemProxy */;
-		};
-		6F6EA40C27653F2500B2ABE4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6F300DBF266A906F00BFBAC4 /* TurtleAssembler */;
-			targetProxy = 6F6EA40B27653F2500B2ABE4 /* PBXContainerItemProxy */;
-		};
-		6F6EA40F27653FBD00B2ABE4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 6F9201E42471DAC7009E1410 /* SnapCore */;
-			targetProxy = 6F6EA40E27653FBD00B2ABE4 /* PBXContainerItemProxy */;
 		};
 		6F73433C259327D400B7E43F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2312,124 +2320,19 @@
 			target = 6F734330259327D400B7E43F /* TurtleSimulatorCore */;
 			targetProxy = 6FD2736F26CA1BC900749CDA /* PBXContainerItemProxy */;
 		};
+		6FDA166F2B1FAC9A00FD1FC0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FDA16592B1FAC9700FD1FC0 /* TurtleSimulator */;
+			targetProxy = 6FDA166E2B1FAC9A00FD1FC0 /* PBXContainerItemProxy */;
+		};
+		6FDA16792B1FAC9C00FD1FC0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FDA16592B1FAC9700FD1FC0 /* TurtleSimulator */;
+			targetProxy = 6FDA16782B1FAC9C00FD1FC0 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
-/* Begin PBXVariantGroup section */
-		6F1698B2262897ED00C96D07 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				6F1698B3262897ED00C96D07 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
-
 /* Begin XCBuildConfiguration section */
-		6F1698CD262897ED00C96D07 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Simulator16/Simulator16.entitlements;
-				CODE_SIGN_IDENTITY = "-";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = T44BD3BAYQ;
-				ENABLE_HARDENED_RUNTIME = YES;
-				INFOPLIST_FILE = Simulator16/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.Simulator16;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 5.0;
-			};
-			name = Debug;
-		};
-		6F1698CE262897ED00C96D07 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Simulator16/Simulator16.entitlements;
-				CODE_SIGN_IDENTITY = "-";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = T44BD3BAYQ;
-				ENABLE_HARDENED_RUNTIME = YES;
-				INFOPLIST_FILE = Simulator16/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.Simulator16;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 5.0;
-			};
-			name = Release;
-		};
-		6F1698CF262897ED00C96D07 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = T44BD3BAYQ;
-				INFOPLIST_FILE = Simulator16Tests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 11.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.Simulator16Tests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Simulator16.app/Contents/MacOS/Simulator16";
-			};
-			name = Debug;
-		};
-		6F1698D0262897ED00C96D07 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = T44BD3BAYQ;
-				INFOPLIST_FILE = Simulator16Tests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 11.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.Simulator16Tests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Simulator16.app/Contents/MacOS/Simulator16";
-			};
-			name = Release;
-		};
 		6F300DC5266A906F00BFBAC4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2470,7 +2373,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -2507,7 +2410,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -2624,7 +2527,7 @@
 		6F9201F72471DAC7009E1410 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -2660,7 +2563,7 @@
 		6F9201F82471DAC7009E1410 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -2742,7 +2645,7 @@
 		6FB0D29D24710C26003B5D5C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -2778,7 +2681,7 @@
 		6FB0D29E24710C26003B5D5C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -2887,6 +2790,171 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		6FDA167F2B1FAC9D00FD1FC0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = TurtleSimulatorApp/TurtleSimulator.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"TurtleSimulatorApp/Preview Content\"";
+				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TurtleSimulatorApp/Info.plist;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023 Andrew Fox. All rights reserved.";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleSimulator;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		6FDA16802B1FAC9D00FD1FC0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = TurtleSimulatorApp/TurtleSimulator.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"TurtleSimulatorApp/Preview Content\"";
+				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TurtleSimulatorApp/Info.plist;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023 Andrew Fox. All rights reserved.";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleSimulator;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		6FDA16812B1FAC9D00FD1FC0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleSimulatorTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TurtleSimulator.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TurtleSimulator";
+			};
+			name = Debug;
+		};
+		6FDA16822B1FAC9D00FD1FC0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleSimulatorTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TurtleSimulator.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TurtleSimulator";
+			};
+			name = Release;
+		};
+		6FDA16832B1FAC9D00FD1FC0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleSimulatorUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = TurtleSimulator;
+			};
+			name = Debug;
+		};
+		6FDA16842B1FAC9D00FD1FC0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = T44BD3BAYQ;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.foxostro.TurtleSimulatorUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = TurtleSimulator;
 			};
 			name = Release;
 		};
@@ -3014,24 +3082,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		6F1698D3262897ED00C96D07 /* Build configuration list for PBXNativeTarget "Simulator16" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				6F1698CD262897ED00C96D07 /* Debug */,
-				6F1698CE262897ED00C96D07 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		6F1698D4262897ED00C96D07 /* Build configuration list for PBXNativeTarget "Simulator16Tests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				6F1698CF262897ED00C96D07 /* Debug */,
-				6F1698D0262897ED00C96D07 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		6F300DC4266A906F00BFBAC4 /* Build configuration list for PBXNativeTarget "TurtleAssembler" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -3109,6 +3159,33 @@
 			buildConfigurations = (
 				6FB28F692512C50B001F5D12 /* Debug */,
 				6FB28F6A2512C50B001F5D12 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6FDA16852B1FAC9D00FD1FC0 /* Build configuration list for PBXNativeTarget "TurtleSimulator" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6FDA167F2B1FAC9D00FD1FC0 /* Debug */,
+				6FDA16802B1FAC9D00FD1FC0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6FDA16862B1FAC9D00FD1FC0 /* Build configuration list for PBXNativeTarget "TurtleSimulatorAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6FDA16812B1FAC9D00FD1FC0 /* Debug */,
+				6FDA16822B1FAC9D00FD1FC0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6FDA16872B1FAC9D00FD1FC0 /* Build configuration list for PBXNativeTarget "TurtleSimulatorAppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6FDA16832B1FAC9D00FD1FC0 /* Debug */,
+				6FDA16842B1FAC9D00FD1FC0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

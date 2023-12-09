@@ -278,7 +278,7 @@ public class ID: NSObject, NSSecureCoding {
     }
     
     public var registerFile: [UInt16]
-    public var decoder: Decoder
+    public var decoder: InstructionDecoder
     public var associatedPC: UInt16?
     let hazardControlUnit: HazardControl = HazardControlMockup()
     
@@ -290,7 +290,7 @@ public class ID: NSObject, NSSecureCoding {
     
     public required init?(coder: NSCoder) {
         guard let registerFile = coder.decodeObject(forKey: "registerFile") as? [UInt16],
-              let decoder = coder.decodeObject(forKey: "decoder") as? Decoder,
+              let decoder = coder.decodeObject(forKey: "decoder") as? InstructionDecoder,
               let associatedPC = coder.decodeObject(forKey: "associatedPC") as? UInt16? else {
             return nil
         }

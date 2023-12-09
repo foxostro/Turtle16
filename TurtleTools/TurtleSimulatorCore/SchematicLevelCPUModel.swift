@@ -35,7 +35,7 @@ public class SchematicLevelCPUModel: NSObject, CPU {
     
     public var instructions: [UInt16] = Array<UInt16>(repeating: 0, count: 65535)
     
-    public var decoder: Decoder {
+    public var decoder: InstructionDecoder {
         set(value) {
             stageID.decoder = value
         }

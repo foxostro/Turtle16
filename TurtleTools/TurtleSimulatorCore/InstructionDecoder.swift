@@ -1,5 +1,5 @@
 //
-//  Decoder.swift
+//  InstructionDecoder.swift
 //  TurtleSimulatorCore
 //
 //  Created by Andrew Fox on 4/23/22.
@@ -7,18 +7,18 @@
 //
 import Foundation
 
-public protocol Decoder: NSObject, NSSecureCoding {
+public protocol InstructionDecoder: NSObject, NSSecureCoding {
     var count: Int { get }
     func decode(_ address: Int) -> UInt
     func decode(n: UInt, c: UInt, z: UInt, v: UInt, opcode: UInt) -> UInt
 }
 
-public class OpcodeDecoderROM : NSObject, Decoder {
+public class OpcodeDecoderROM : NSObject, InstructionDecoder {
     public let count: Int = 512
     public static var supportsSecureCoding = true
     public var opcodeDecodeROM: [UInt]
     
-    public required init(_ original: Decoder? = nil) {
+    public required init(_ original: InstructionDecoder? = nil) {
         opcodeDecodeROM = Array<UInt>(repeating: 0, count: count)
         if let original = original {
             for i in 0..<count {
@@ -83,7 +83,7 @@ public class OpcodeDecoderROM : NSObject, Decoder {
     }
 }
 
-public class ProgrammableLogicDecoder : NSObject, Decoder {
+public class ProgrammableLogicDecoder : NSObject, InstructionDecoder {
     public static var supportsSecureCoding = true
     public let count: Int = 512
     

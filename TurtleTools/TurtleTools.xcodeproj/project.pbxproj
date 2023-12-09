@@ -90,7 +90,7 @@
 		6F300DD1266A913B00BFBAC4 /* AssemblerCommandLineDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F300DD0266A913B00BFBAC4 /* AssemblerCommandLineDriver.swift */; };
 		6F35B4362628ABF6004EA0AB /* DebugConsole.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F35B4352628ABF6004EA0AB /* DebugConsole.swift */; };
 		6F35B4552628AC80004EA0AB /* TextViewLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AEA22EEE6C400B38267 /* TextViewLogger.swift */; };
-		6F3987662814BBF600C601AE /* Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3987652814BBF600C601AE /* Decoder.swift */; };
+		6F3987662814BBF600C601AE /* InstructionDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3987652814BBF600C601AE /* InstructionDecoder.swift */; };
 		6F3987682814CD9800C601AE /* DecoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3987672814CD9800C601AE /* DecoderTests.swift */; };
 		6F39876A281517D800C601AE /* InstructionDecoder1.pld in Resources */ = {isa = PBXBuildFile; fileRef = 6F398769281517D800C601AE /* InstructionDecoder1.pld */; };
 		6F39876C281517E400C601AE /* InstructionDecoder2.pld in Resources */ = {isa = PBXBuildFile; fileRef = 6F39876B281517E400C601AE /* InstructionDecoder2.pld */; };
@@ -593,7 +593,7 @@
 		6F300DC2266A906F00BFBAC4 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		6F300DD0266A913B00BFBAC4 /* AssemblerCommandLineDriver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCommandLineDriver.swift; sourceTree = "<group>"; };
 		6F35B4352628ABF6004EA0AB /* DebugConsole.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugConsole.swift; sourceTree = "<group>"; };
-		6F3987652814BBF600C601AE /* Decoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Decoder.swift; sourceTree = "<group>"; };
+		6F3987652814BBF600C601AE /* InstructionDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionDecoder.swift; sourceTree = "<group>"; };
 		6F3987672814CD9800C601AE /* DecoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecoderTests.swift; sourceTree = "<group>"; };
 		6F398769281517D800C601AE /* InstructionDecoder1.pld */ = {isa = PBXFileReference; lastKnownFileType = text; path = InstructionDecoder1.pld; sourceTree = "<group>"; };
 		6F39876B281517E400C601AE /* InstructionDecoder2.pld */ = {isa = PBXFileReference; lastKnownFileType = text; path = InstructionDecoder2.pld; sourceTree = "<group>"; };
@@ -1066,7 +1066,7 @@
 				6F4527382623BE05003732B3 /* DebugConsoleCommandLineParser.swift */,
 				6F452B20262516AE003732B3 /* DebugConsoleHelpTopic.swift */,
 				6F452B3226258694003732B3 /* DebugConsoleInstruction.swift */,
-				6F3987652814BBF600C601AE /* Decoder.swift */,
+				6F3987652814BBF600C601AE /* InstructionDecoder.swift */,
 				6FAC109425A25E9300BB3836 /* DecoderGenerator.swift */,
 				6FDF61E0266D86DC002E7A17 /* Disassembler.swift */,
 				6F47D8AE261CC129008EFFF2 /* FuseListMaker.swift */,
@@ -1882,7 +1882,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6F3987662814BBF600C601AE /* Decoder.swift in Sources */,
+				6F3987662814BBF600C601AE /* InstructionDecoder.swift in Sources */,
 				6F452B21262516AE003732B3 /* DebugConsoleHelpTopic.swift in Sources */,
 				6F87A5D0261E47140093750D /* HazardControlGAL.swift in Sources */,
 				6FA5D2CF2593FAAA00044B17 /* IDT7381.swift in Sources */,

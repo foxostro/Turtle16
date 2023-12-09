@@ -30,7 +30,7 @@ public protocol CPU: NSObject, NSSecureCoding {
     var isStalling: Bool { get }
     var pc: UInt16 { get set }
     var instructions: [UInt16] { get set }
-    var decoder: Decoder { get set }
+    var decoder: InstructionDecoder { get set }
     
     var n: UInt { get }
     var c: UInt { get }

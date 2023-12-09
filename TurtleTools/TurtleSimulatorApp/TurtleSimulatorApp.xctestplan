@@ -22,7 +22,7 @@
       "target" : {
         "containerPath" : "container:TurtleTools.xcodeproj",
         "identifier" : "6FDA16762B1FAC9B00FD1FC0",
-        "name" : "TurtleSimulatorUITests"
+        "name" : "TurtleSimulatorAppUITests"
       }
     },
     {
@@ -30,7 +30,23 @@
       "target" : {
         "containerPath" : "container:TurtleTools.xcodeproj",
         "identifier" : "6FDA166C2B1FAC9900FD1FC0",
-        "name" : "TurtleSimulatorTests"
+        "name" : "TurtleSimulatorAppTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:TurtleTools.xcodeproj",
+        "identifier" : "6FB0D29224710C26003B5D5C",
+        "name" : "TurtleCoreTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:TurtleTools.xcodeproj",
+        "identifier" : "6F734338259327D400B7E43F",
+        "name" : "TurtleSimulatorCoreTests"
       }
     }
   ],

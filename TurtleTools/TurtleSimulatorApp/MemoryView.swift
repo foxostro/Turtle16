@@ -237,6 +237,12 @@ extension MemoryView {
         
         init(document: TurtleSimulatorDocument) {
             self.document = document
+            self.document.objectWillChange
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] _ in
+                    self?.objectWillChange.send()
+                }
+                .store(in: &subscriptions)
         }
         
         func load(address: Int) -> UInt16 {

@@ -86,9 +86,38 @@ public class Turtle16Computer: NSObject, NSSecureCoding {
         cpu.numberOfRegisters
     }
     
+    public private(set) var bank = 0 {
+        didSet {
+            assert(bank >= 0 && bank <= 7)
+            cachedDisassembly = nil
+        }
+    }
+    
     public required init(cpu: CPU, ram: [UInt16]) {
-        self.cpu = cpu
         self.ram = ram
+        self.cpu = cpu
+        super.init()
+        cpu.store = { [weak self] in
+            self?.store(value: $0, address: $1)
+        }
+        cpu.load = { [weak self] in
+            guard let self else { return 0 }
+            return self.load(address: $0)
+        }
+    }
+    
+    public let bankRegisterAddress = MemoryAddress(0xffff)
+    
+    private func store(value: UInt16, address: MemoryAddress) {
+        if address == bankRegisterAddress {
+            bank = Int(value & 0b111)
+        }
+        
+        ram[address.value] = value
+    }
+    
+    private func load(address: MemoryAddress) -> UInt16 {
+        ram[address.value]
     }
     
     public convenience init(_ cpu: CPU) {
@@ -131,6 +160,8 @@ public class Turtle16Computer: NSObject, NSSecureCoding {
     }
     
     public func reset(_ type: ResetType = .soft) {
+        bank = 0
+        
         switch type {
         case .soft:
             cpu.reset()

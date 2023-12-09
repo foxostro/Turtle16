@@ -38,7 +38,7 @@ class TurtleSimulatorDocument: ReferenceFileDocument {
     private var subscriptions = Set<AnyCancellable>()
     
     init() {
-        debugger = DebugConsole(computer: Turtle16Computer(SchematicLevelCPUModel()))
+        debugger = DebugConsole(computer: TurtleComputer(SchematicLevelCPUModel()))
         debugger.sandboxAccessManager = ConcreteSandboxAccessManager()
         
         let url = Bundle(for: type(of: self)).url(forResource: "example", withExtension: "bin")!

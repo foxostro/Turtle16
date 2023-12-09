@@ -10,12 +10,12 @@ import Foundation
 import TurtleCore
 
 public class DebugConsoleCommandLineInterpreter: NSObject {
-    public let computer: Turtle16Computer
+    public let computer: TurtleComputer
     public var shouldQuit = false
     public var logger: Logger = StringLogger()
     public var sandboxAccessManager: SandboxAccessManager? = nil
     
-    public init(_ computer: Turtle16Computer) {
+    public init(_ computer: TurtleComputer) {
         self.computer = computer
     }
     

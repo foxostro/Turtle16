@@ -183,7 +183,7 @@ public class SnapCommandLineDriver: NSObject {
                 self.stdout.write(String(delta))
             }
         }
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         computer.cpu.store = { (value: UInt16, addr: MemoryAddress) in
             if addr == self.kMemoryMappedSerialOutputPort {
                 onSerialOutput(value)
@@ -253,7 +253,7 @@ public class SnapCommandLineDriver: NSObject {
                 self.stdout.write(String(delta))
             }
         }
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         computer.cpu.store = { (value: UInt16, addr: MemoryAddress) in
             if addr == self.kMemoryMappedSerialOutputPort {
                 onSerialOutput(value)
@@ -325,7 +325,7 @@ public class SnapCommandLineDriver: NSObject {
     
     func writeToFile(instructions: [UInt16]) throws {
         if let programOutputFileName = programOutputFileName {
-            let computer = Turtle16Computer(SchematicLevelCPUModel())
+            let computer = TurtleComputer(SchematicLevelCPUModel())
             computer.instructions = instructions
             let debugger = SnapDebugConsole(computer: computer)
             debugger.interpreter.runOne(instruction: .save("program", programOutputFileName))

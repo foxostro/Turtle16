@@ -12,7 +12,7 @@ import TurtleSimulatorCore
 class DebugConsoleTests: XCTestCase {
     func testRunProgram() throws {
         let path = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!.path
-        let debugConsole = DebugConsole(computer: Turtle16Computer(SchematicLevelCPUModel()))
+        let debugConsole = DebugConsole(computer: TurtleComputer(SchematicLevelCPUModel()))
         debugConsole.eval("load program \"\(path)\"")
         debugConsole.eval("c")
         XCTAssertTrue(debugConsole.computer.isHalted)
@@ -20,7 +20,7 @@ class DebugConsoleTests: XCTestCase {
     
     func testUndo() throws {
         let path = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!.path
-        let debugConsole = DebugConsole(computer: Turtle16Computer(SchematicLevelCPUModel()))
+        let debugConsole = DebugConsole(computer: TurtleComputer(SchematicLevelCPUModel()))
         let undoManager = UndoManager()
         debugConsole.undoManager = undoManager
         debugConsole.eval("load program \"\(path)\"")
@@ -34,11 +34,11 @@ class DebugConsoleTests: XCTestCase {
     func testEquality_Equal() throws {
         let path = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!.path
         
-        let debugConsole1 = DebugConsole(computer: Turtle16Computer(SchematicLevelCPUModel()))
+        let debugConsole1 = DebugConsole(computer: TurtleComputer(SchematicLevelCPUModel()))
         debugConsole1.undoManager = UndoManager()
         debugConsole1.eval("load program \"\(path)\"")
         
-        let debugConsole2 = DebugConsole(computer: Turtle16Computer(SchematicLevelCPUModel()))
+        let debugConsole2 = DebugConsole(computer: TurtleComputer(SchematicLevelCPUModel()))
         debugConsole2.undoManager = UndoManager()
         debugConsole2.eval("load program \"\(path)\"")
         
@@ -49,12 +49,12 @@ class DebugConsoleTests: XCTestCase {
     func testEquality_NotEqual() throws {
         let path = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!.path
         
-        let debugConsole1 = DebugConsole(computer: Turtle16Computer(SchematicLevelCPUModel()))
+        let debugConsole1 = DebugConsole(computer: TurtleComputer(SchematicLevelCPUModel()))
         debugConsole1.undoManager = UndoManager()
         debugConsole1.eval("load program \"\(path)\"")
         debugConsole1.eval("c")
         
-        let debugConsole2 = DebugConsole(computer: Turtle16Computer(SchematicLevelCPUModel()))
+        let debugConsole2 = DebugConsole(computer: TurtleComputer(SchematicLevelCPUModel()))
         debugConsole2.undoManager = UndoManager()
         debugConsole2.eval("load program \"\(path)\"")
         
@@ -65,7 +65,7 @@ class DebugConsoleTests: XCTestCase {
     func testEncodeDecodeRoundTrip() throws {
         let path = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!.path
         
-        let debugConsole1 = DebugConsole(computer: Turtle16Computer(SchematicLevelCPUModel()))
+        let debugConsole1 = DebugConsole(computer: TurtleComputer(SchematicLevelCPUModel()))
         debugConsole1.undoManager = UndoManager()
         debugConsole1.eval("load program \"\(path)\"")
         debugConsole1.eval("r")

@@ -33,7 +33,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
         cpu.load = {(addr: MemoryAddress) in
             return ram[addr.value]
         }
-        let computer = Turtle16Computer(cpu)
+        let computer = TurtleComputer(cpu)
         computer.instructions = assembler.instructions
         computer.reset()
         let debugger = DebugConsole(computer: computer)

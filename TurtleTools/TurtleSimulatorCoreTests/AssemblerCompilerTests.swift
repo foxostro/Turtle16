@@ -13,7 +13,7 @@ import TurtleSimulatorCore
 class AssemblerCompilerTests: XCTestCase {
     fileprivate func makeDebugger(instructions: [UInt16]) -> DebugConsole {
         let cpu = SchematicLevelCPUModel()
-        let computer = Turtle16Computer(cpu)
+        let computer = TurtleComputer(cpu)
         cpu.store = {(value: UInt16, addr: MemoryAddress) in
             computer.ram[addr.value] = value
         }

@@ -150,7 +150,7 @@ func foo() {
             print((try! compiler.tack.get().ast as! Seq).makeChildDescriptions())
         }
         
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         computer.cpu.store = { (value: UInt16, addr: MemoryAddress) in
             if options.isVerboseLogging {
                 print("store ram[\(addr.value)] <- \(value)")

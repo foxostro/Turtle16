@@ -39,19 +39,19 @@ open class DebugConsole: NSObject, NSSecureCoding {
         }
     }
     
-    public let computer: Turtle16Computer
+    public let computer: TurtleComputer
     public let interpreter: DebugConsoleCommandLineInterpreter
     public let compiler: DebugConsoleCommandLineCompiler
     public var undoManager: UndoManager? = nil
     
-    public required init(computer: Turtle16Computer) {
+    public required init(computer: TurtleComputer) {
         self.computer = computer
         interpreter = DebugConsoleCommandLineInterpreter(computer)
         compiler = DebugConsoleCommandLineCompiler()
     }
     
     public required convenience init?(coder: NSCoder) {
-        guard let computer = coder.decodeObject(of: Turtle16Computer.self, forKey: "computer") else {
+        guard let computer = coder.decodeObject(of: TurtleComputer.self, forKey: "computer") else {
             return nil
         }
         self.init(computer: computer)

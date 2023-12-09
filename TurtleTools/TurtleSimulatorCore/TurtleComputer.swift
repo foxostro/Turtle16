@@ -1,5 +1,5 @@
 //
-//  Turtle16Computer.swift
+//  TurtleComputer.swift
 //  TurtleSimulatorCore
 //
 //  Created by Andrew Fox on 4/11/21.
@@ -18,7 +18,7 @@ public extension Notification.Name {
 
 // Models the Turtle16 Computer as a whole.
 // This is where we simulate memory mapping and integration with peripherals.
-public class Turtle16Computer: NSObject, NSSecureCoding {
+public class TurtleComputer: NSObject, NSSecureCoding {
     public static var supportsSecureCoding = true
     public private(set) var cpu: CPU
     public var ram: [UInt16]
@@ -137,8 +137,8 @@ public class Turtle16Computer: NSObject, NSSecureCoding {
         coder.encode(ram, forKey: "ram")
     }
     
-    public static func decode(from data: Data) throws -> Turtle16Computer {
-        var decodedObject: Turtle16Computer? = nil
+    public static func decode(from data: Data) throws -> TurtleComputer {
+        var decodedObject: TurtleComputer? = nil
         let unarchiver = try NSKeyedUnarchiver(forReadingFrom: data)
         unarchiver.requiresSecureCoding = false
         decodedObject = unarchiver.decodeObject(of: self, forKey: NSKeyedArchiveRootObjectKey)
@@ -200,12 +200,12 @@ public class Turtle16Computer: NSObject, NSSecureCoding {
         return cachedDisassembly!
     }
     
-    public static func ==(lhs: Turtle16Computer, rhs: Turtle16Computer) -> Bool {
+    public static func ==(lhs: TurtleComputer, rhs: TurtleComputer) -> Bool {
         return lhs.isEqual(rhs)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
-        guard let rhs = rhs as? Turtle16Computer,
+        guard let rhs = rhs as? TurtleComputer,
               ram == rhs.ram,
               cpu == rhs.cpu else {
             return false
@@ -226,11 +226,11 @@ public class Turtle16Computer: NSObject, NSSecureCoding {
     }
     
     public func restore(from snapshot: Data) {
-        var decodedComputer: Turtle16Computer? = nil
+        var decodedComputer: TurtleComputer? = nil
         do {
             let unarchiver = try NSKeyedUnarchiver(forReadingFrom: snapshot)
             unarchiver.requiresSecureCoding = false
-            decodedComputer = unarchiver.decodeObject(of: Turtle16Computer.self, forKey: NSKeyedArchiveRootObjectKey)
+            decodedComputer = unarchiver.decodeObject(of: TurtleComputer.self, forKey: NSKeyedArchiveRootObjectKey)
             if let error = unarchiver.error {
                 fatalError("Error occured while attempting to restore computer state from snapshot: \(error.localizedDescription)")
             }

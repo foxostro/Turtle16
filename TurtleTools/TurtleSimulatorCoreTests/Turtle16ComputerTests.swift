@@ -12,7 +12,7 @@ import TurtleSimulatorCore
 class Turtle16ComputerTests: XCTestCase {
     func testFlagsAreZeroAfterReset() throws {
         let cpu = SchematicLevelCPUModel()
-        let computer = Turtle16Computer(cpu)
+        let computer = TurtleComputer(cpu)
         computer.reset()
         XCTAssertEqual(computer.timeStamp, 0)
         XCTAssertEqual(computer.n, 0)
@@ -23,7 +23,7 @@ class Turtle16ComputerTests: XCTestCase {
     
     func testDisassemblyOfInstructionMemory() throws {
         let cpu = SchematicLevelCPUModel()
-        let computer = Turtle16Computer(cpu)
+        let computer = TurtleComputer(cpu)
         
         computer.instructions = [
             0b1010011111111110, // JMP -2
@@ -37,12 +37,12 @@ class Turtle16ComputerTests: XCTestCase {
     }
     
     func testEquality_Equal() throws {
-        let computer1 = Turtle16Computer(SchematicLevelCPUModel())
+        let computer1 = TurtleComputer(SchematicLevelCPUModel())
         computer1.instructions = [0x000, 0x0800]
         computer1.reset()
         computer1.run()
         
-        let computer2 = Turtle16Computer(SchematicLevelCPUModel())
+        let computer2 = TurtleComputer(SchematicLevelCPUModel())
         computer2.instructions = [0x000, 0x0800]
         computer2.reset()
         computer2.run()
@@ -52,12 +52,12 @@ class Turtle16ComputerTests: XCTestCase {
     }
     
     func testEquality_NotEqual() throws {
-        let computer1 = Turtle16Computer(SchematicLevelCPUModel())
+        let computer1 = TurtleComputer(SchematicLevelCPUModel())
         computer1.instructions = [0x000, 0x0800]
         computer1.reset()
         computer1.run()
         
-        let computer2 = Turtle16Computer(SchematicLevelCPUModel())
+        let computer2 = TurtleComputer(SchematicLevelCPUModel())
         computer2.instructions = [0x000, 0x000, 0x0800]
         computer2.reset()
         computer2.run()
@@ -67,7 +67,7 @@ class Turtle16ComputerTests: XCTestCase {
     }
     
     func testEncodeDecodeRoundTrip() throws {
-        let computer1 = Turtle16Computer(SchematicLevelCPUModel())
+        let computer1 = TurtleComputer(SchematicLevelCPUModel())
         computer1.instructions = [0x000, 0x0800]
         computer1.reset()
         computer1.run()
@@ -77,13 +77,13 @@ class Turtle16ComputerTests: XCTestCase {
             XCTFail()
             return
         }
-        var computer2: Turtle16Computer! = nil
-        XCTAssertNoThrow(computer2 = try Turtle16Computer.decode(from: data))
+        var computer2: TurtleComputer! = nil
+        XCTAssertNoThrow(computer2 = try TurtleComputer.decode(from: data))
         XCTAssertEqual(computer1, computer2)
     }
     
     func testSaveRestoreSnapshot() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         computer.instructions = [0x000, 0x0800]
         computer.reset()
         let snapshot = computer.snapshot()

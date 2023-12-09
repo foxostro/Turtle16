@@ -12,14 +12,14 @@ import TurtleSimulatorCore
 
 class DebugConsoleCommandLineInterpreterTests: XCTestCase {
     func testQuit() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .quit)
         XCTAssertTrue(interpreter.shouldQuit)
     }
     
     func testResetSoft() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         computer.reset()
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         computer.cpu.pc = 1000
@@ -28,7 +28,7 @@ class DebugConsoleCommandLineInterpreterTests: XCTestCase {
     }
     
     func testResetHard() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         computer.reset()
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         computer.cpu.pc = 1000
@@ -39,7 +39,7 @@ class DebugConsoleCommandLineInterpreterTests: XCTestCase {
     }
     
     func testStepOnce() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         computer.reset()
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .step(count: 1))
@@ -47,7 +47,7 @@ class DebugConsoleCommandLineInterpreterTests: XCTestCase {
     }
     
     func testStepTwice() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         computer.reset()
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .step(count: 2))
@@ -55,7 +55,7 @@ class DebugConsoleCommandLineInterpreterTests: XCTestCase {
     }
     
     func testStepUntilHalted() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         computer.reset()
         let hltOpcode: UInt = 1
         let ins: UInt16 = UInt16(hltOpcode << 11)
@@ -66,7 +66,7 @@ class DebugConsoleCommandLineInterpreterTests: XCTestCase {
     }
     
     func testStepWhileHalted() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         computer.reset()
         let hltOpcode: UInt = 1
         let ins: UInt16 = UInt16(hltOpcode << 11)
@@ -80,7 +80,7 @@ cpu is halted
     }
     
     func testPrintRegisters() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         computer.setRegister(0, 0x0000)
         computer.setRegister(1, 0x0001)
         computer.setRegister(2, 0x0002)
@@ -103,7 +103,7 @@ pc: $abcd
     }
     
     func testPrintInfoOnNil() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .info(nil))
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
@@ -118,7 +118,7 @@ Syntax: info cpu
     }
     
     func testPrintInfoOnUnrecognizedDevice() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .info("asdf"))
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
@@ -133,7 +133,7 @@ Syntax: info cpu
     }
     
     func testPrintInfoOnCPU() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         computer.setRegister(0, 0x0000)
         computer.setRegister(1, 0x0001)
         computer.setRegister(2, 0x0002)
@@ -167,7 +167,7 @@ pc: $abcd
     }
     
     func testReadMemory() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         computer.reset()
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         computer.ram[0x1000] = 0xaaaa
@@ -180,7 +180,7 @@ $1000: $aaaa $bbbb
     }
     
     func testHelp() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.none))
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
@@ -205,7 +205,7 @@ For more information on any command, type `help <command-name>'.
     }
     
     func testHelpHelp() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.help))
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
@@ -217,7 +217,7 @@ Syntax: help [<topic>]
     }
     
     func testHelpQuit() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.quit))
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
@@ -229,7 +229,7 @@ Syntax: quit
     }
     
     func testHelpReset() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.reset))
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
@@ -241,7 +241,7 @@ Syntax: reset
     }
     
     func testHelpStep() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.step))
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
@@ -253,7 +253,7 @@ Syntax: step [<cycle-count>]
     }
     
     func testHelpInfo() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.info))
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
@@ -268,7 +268,7 @@ Syntax: info cpu
     }
     
     func testHelpReg() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.reg))
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
@@ -280,7 +280,7 @@ Syntax: reg
     }
     
     func testHelpReadMemory() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.readMemory))
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
@@ -292,7 +292,7 @@ Syntax: x [/<count>] <address>
     }
     
     func testHelpWriteMemory() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.writeMemory))
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
@@ -304,7 +304,7 @@ Syntax: writemem <address> <word> [<word>...]
     }
     
     func testHelpLoad() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.load))
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
@@ -325,7 +325,7 @@ Syntax: load <destination> "<path>"
     }
     
     func testHelpSave() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.save))
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
@@ -346,7 +346,7 @@ Syntax: save <destination> "<path>"
     }
     
     func testHelpDisassemble() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.disassemble))
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
@@ -358,7 +358,7 @@ Syntax: disassemble [<base-address>] [<count>]
     }
     
     func testWriteMemory() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         computer.reset()
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .writeMemory(base: 0x1000, words: [0xaaaa, 0xbbbb]))
@@ -367,7 +367,7 @@ Syntax: disassemble [<base-address>] [<count>]
     }
     
     func testReadInstructions() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         computer.reset()
         computer.instructions[0] = ~UInt16(0)
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
@@ -379,7 +379,7 @@ $0000: $ffff $0000
     }
     
     func testWriteInstructions() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         computer.reset()
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .writeInstructions(base: 0x1000, words: [0xaaaa, 0xbbbb]))
@@ -388,7 +388,7 @@ $0000: $ffff $0000
     }
     
     func testHelpReadInstructions() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.readInstructions))
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
@@ -400,7 +400,7 @@ Syntax: xi [/<count>] <address>
     }
     
     func testHelpWriteInstructions() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.runOne(instruction: .help(.writeInstructions))
         XCTAssertEqual((interpreter.logger as! StringLogger).stringValue, """
@@ -412,7 +412,7 @@ Syntax: writememi <address> <word> [<word>...]
     }
     
     func testContinue() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         computer.reset()
         let hltOpcode: UInt = 1
         let ins: UInt16 = UInt16(hltOpcode << 11)
@@ -426,7 +426,7 @@ Syntax: writememi <address> <word> [<word>...]
     }
     
     func testInputFibonacciProgramAndRunIt() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
             .reset(type: .soft),
@@ -470,7 +470,7 @@ pc: $000d
     
     func testFailToLoadProgramBecauseFileDoesNotExist() throws {
         let url = URL(fileURLWithPath: "doesnotexistdoesnotexistdoesnotexistdoesnotexist")
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
             .load("program", url)
@@ -484,7 +484,7 @@ The file doesn’t exist.
     
     func testLoadFibonacciProgramFromFileAndRunIt() throws {
         let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
             .reset(type: .soft),
@@ -517,7 +517,7 @@ pc: $000d
     
     func testLoadProgramHi() throws {
         let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
             .reset(type: .soft),
@@ -532,7 +532,7 @@ pc: $000d
     
     func testLoadProgramLo() throws {
         let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
             .reset(type: .soft),
@@ -547,7 +547,7 @@ pc: $000d
     
     func testLoadDataFromFile() throws {
         let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
             .load("data", url)
@@ -557,7 +557,7 @@ pc: $000d
     
     func testFailToLoadFromInvalidDestination() throws {
         let url = URL(fileURLWithPath: "doesnotexistdoesnotexistdoesnotexistdoesnotexist")
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
             .load("asdf", url)
@@ -581,7 +581,7 @@ Syntax: load <destination> "<path>"
     
     func testLoadDataFromFileForOpcodeDecodeROM1() throws {
         let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
             .load("OpcodeDecodeROM1", url)
@@ -591,7 +591,7 @@ Syntax: load <destination> "<path>"
     
     func testLoadDataFromFileForOpcodeDecodeROM2() throws {
         let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
             .load("OpcodeDecodeROM2", url)
@@ -601,7 +601,7 @@ Syntax: load <destination> "<path>"
     
     func testLoadDataFromFileForOpcodeDecodeROM3() throws {
         let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
             .load("OpcodeDecodeROM3", url)
@@ -615,7 +615,7 @@ Syntax: load <destination> "<path>"
             try? FileManager.default.removeItem(at: tempUrl)
         }
         let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
             .reset(type: .soft),
@@ -637,7 +637,7 @@ Syntax: load <destination> "<path>"
             try? FileManager.default.removeItem(at: tempUrl)
         }
         let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
             .reset(type: .soft),
@@ -660,7 +660,7 @@ Syntax: load <destination> "<path>"
             try? FileManager.default.removeItem(at: tempUrl)
         }
         let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
             .reset(type: .soft),
@@ -683,7 +683,7 @@ Syntax: load <destination> "<path>"
             try? FileManager.default.removeItem(at: tempUrl)
         }
         let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
             .reset(type: .soft),
@@ -705,7 +705,7 @@ Syntax: load <destination> "<path>"
             try? FileManager.default.removeItem(at: tempUrl)
         }
         let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
             .reset(type: .soft),
@@ -727,7 +727,7 @@ Syntax: load <destination> "<path>"
             try? FileManager.default.removeItem(at: tempUrl)
         }
         let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
             .reset(type: .soft),
@@ -749,7 +749,7 @@ Syntax: load <destination> "<path>"
             try? FileManager.default.removeItem(at: tempUrl)
         }
         let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
             .reset(type: .soft),
@@ -767,7 +767,7 @@ Syntax: load <destination> "<path>"
     
     func testDisassembleWithZeroParameters() throws {
         let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
             .load("program", url),
@@ -797,7 +797,7 @@ Wrote 65536 words to instruction memory.
     
     func testDisassembleWithBaseAddress() throws {
         let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
             .load("program", url),
@@ -827,7 +827,7 @@ Wrote 65536 words to instruction memory.
     
     func testDisassembleWithBaseAddressAndCount() throws {
         let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
             .load("program", url),
@@ -845,7 +845,7 @@ Wrote 65536 words to instruction memory.
     
     func testDisassembleWithIdentifier() throws {
         let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
             .load("program", url),
@@ -875,7 +875,7 @@ Wrote 65536 words to instruction memory.
     
     func testDisassembleWithIdentifierAndCount() throws {
         let url = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
             .load("program", url),
@@ -894,7 +894,7 @@ Wrote 65536 words to instruction memory.
     }
     
     func testDisassembleWithUnresolvedIdentifier() throws {
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)
         interpreter.run(instructions:[
             .disassemble(.identifier("foo"))

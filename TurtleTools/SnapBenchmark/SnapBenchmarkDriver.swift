@@ -95,7 +95,7 @@ class SnapBenchmarkDriver: NSObject {
             logger?.append((try! compiler.tack.get() as! Seq).makeChildDescriptions())
         }
         
-        let computer = Turtle16Computer(SchematicLevelCPUModel())
+        let computer = TurtleComputer(SchematicLevelCPUModel())
         computer.cpu.store = { (value: UInt16, addr: MemoryAddress) in
             if let logger = logger {
                 logger.append("store ram[\(addr.value)] <- \(value)")

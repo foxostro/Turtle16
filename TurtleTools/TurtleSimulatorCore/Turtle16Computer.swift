@@ -171,6 +171,7 @@ public class Turtle16Computer: NSObject, NSSecureCoding {
             for i in 0..<numberOfRegisters {
                 setRegister(i, 0)
             }
+            ram = Array<UInt16>(repeating: 0, count: ram.count)
         }
     }
     

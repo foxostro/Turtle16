@@ -49,5 +49,6 @@ public protocol CPU: NSObject, NSSecureCoding {
     
     func reset()
     func run()
+    func run(until date: Date) -> Bool
     func step()
 }

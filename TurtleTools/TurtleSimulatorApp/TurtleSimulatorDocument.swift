@@ -79,7 +79,7 @@ class TurtleSimulatorDocument: ReferenceFileDocument {
     
     private func subscribe() {
         NotificationCenter.default
-            .publisher(for: .virtualMachineStateDidChange)
+            .publisher(for: .debuggerStateDidChange, object: debugger)
             .sink { [weak self] _ in
                 self?.objectWillChange.send()
             }

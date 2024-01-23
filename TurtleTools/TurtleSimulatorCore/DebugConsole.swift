@@ -103,15 +103,11 @@ open class DebugConsole: NSObject, NSSecureCoding {
         if let actionName = actionName {
             undoManager.setActionName(actionName)
         }
-        let snapshotForUndo = snapshot()
+        let snapshotForUndo = computer.snapshot()
         undoManager.registerUndo(withTarget: self, handler: { [weak self] in
             self?.registerUndo(actionName)
             $0.restore(from: snapshotForUndo)
         })
-    }
-    
-    fileprivate func snapshot() -> Data {
-        return computer.snapshot()
     }
     
     fileprivate func restore(from data: Data) {

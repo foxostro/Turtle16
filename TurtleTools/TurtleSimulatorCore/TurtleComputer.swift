@@ -13,7 +13,7 @@ public enum ResetType {
 }
 
 public extension Notification.Name {
-    static let virtualMachineStateDidChange = Notification.Name("VirtualMachineStateDidChange")
+    static let computerStateDidChange = Notification.Name("computerStateDidChange")
 }
 
 // Models the Turtle16 Computer as a whole.
@@ -175,8 +175,8 @@ public class TurtleComputer: NSObject, NSSecureCoding {
         }
     }
     
-    public func run() {
-        cpu.run()
+    public func run(until date: Date = Date.distantFuture) -> Bool {
+        cpu.run(until: date)
     }
     
     public func step() {
@@ -244,8 +244,6 @@ public class TurtleComputer: NSObject, NSSecureCoding {
         cpu = decodedComputer.cpu
         ram = decodedComputer.ram
         cachedDisassembly = nil
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: .virtualMachineStateDidChange, object: nil)
-        }
+        NotificationCenter.default.post(name: .computerStateDidChange, object: snapshot)
     }
 }

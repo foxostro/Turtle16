@@ -107,14 +107,12 @@ extension RegistersView {
         }
         
         func reloadData() {
-            document.debugger.withLock { debugConsole in
-                let computer = debugConsole.computer
-                let gpr = (0..<computer.numberOfRegisters).map { i in
-                    Register(name: "r\(i)", value: computer.getRegister(i))
-                }
-                let pc = Register(name: "pc", value: computer.pc)
-                registers = gpr + [pc]
+            guard let computer = document.debugger.latestSnapshot else { return }
+            let gpr = (0..<computer.numberOfRegisters).map { i in
+                Register(name: "r\(i)", value: computer.getRegister(i))
             }
+            let pc = Register(name: "pc", value: computer.pc)
+            registers = gpr + [pc]
         }
     }
 }

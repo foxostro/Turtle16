@@ -124,22 +124,20 @@ extension DisassemblyView {
             reloadData()
         }
         
+        private var latestSnapshot: TurtleComputer? {
+            document.debugger.latestSnapshot
+        }
+        
         private func reloadData() {
-            document.debugger.withLock { debugConsole in
-                pc = debugConsole.computer.pc
-            }
+            pc = latestSnapshot?.pc ?? 0
         }
         
         func word(at row: Int) -> String {
-            document.debugger.withLock { debugConsole in
-                debugConsole.computer.instructions[row].hexadecimalString
-            }
+            latestSnapshot?.instructions[row].hexadecimalString ?? ""
         }
         
         func label(at row: Int) -> String {
-            let entries = document.debugger.withLock { debugConsole in
-                debugConsole.computer.disassembly.entries
-            }
+            let entries = latestSnapshot?.disassembly.entries ?? []
             if row < entries.count, let label = entries[row].label {
                 return label + ":"
             }
@@ -147,9 +145,7 @@ extension DisassemblyView {
         }
         
         func mnemonic(at row: Int) -> String {
-            let entries = document.debugger.withLock { debugConsole in
-                debugConsole.computer.disassembly.entries
-            }
+            let entries = latestSnapshot?.disassembly.entries ?? []
             if row < entries.count, let mnemonic = entries[row].mnemonic {
                 return mnemonic
             }

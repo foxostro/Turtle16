@@ -64,28 +64,26 @@ extension PipelineView {
         }
         
         func reloadData() {
-            document.debugger.withLock { debugConsole in
-                let computer = debugConsole.computer
-                let cpu = computer.cpu
-                pipelineStages = (0..<cpu.numberOfPipelineStages)
-                    .map {
-                        cpu.getPipelineStageInfo($0)
+            guard let computer = document.debugger.latestSnapshot else { return }
+            let cpu = computer.cpu
+            pipelineStages = (0..<cpu.numberOfPipelineStages)
+                .map {
+                    cpu.getPipelineStageInfo($0)
+                }
+                .map { info in
+                    let disassembledInstruction: String?
+                    if let pc = info.pc {
+                        let disassembly = computer.disassembly.entries
+                        disassembledInstruction = disassembly.first(where: { $0.address == pc })?.mnemonic
+                    } else {
+                        disassembledInstruction = nil
                     }
-                    .map { info in
-                        let disassembledInstruction: String?
-                        if let pc = info.pc {
-                            let disassembly = computer.disassembly.entries
-                            disassembledInstruction = disassembly.first(where: { $0.address == pc })?.mnemonic
-                        } else {
-                            disassembledInstruction = nil
-                        }
-                        
-                        return PipelineStage(shortName: info.name,
-                                             programCounter: info.pc,
-                                             disassembly: disassembledInstruction ?? "",
-                                             status: info.status)
-                    }
-            }
+                    
+                    return PipelineStage(shortName: info.name,
+                                         programCounter: info.pc,
+                                         disassembly: disassembledInstruction ?? "",
+                                         status: info.status)
+                }
         }
     }
 }

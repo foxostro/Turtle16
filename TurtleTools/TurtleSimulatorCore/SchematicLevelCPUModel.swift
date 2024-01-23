@@ -303,6 +303,16 @@ public class SchematicLevelCPUModel: NSObject, CPU {
         timeStamp = 0
     }
     
+    public func run(until date: Date = Date.distantFuture) -> Bool {
+        repeat {
+            step()
+            if Date.now > date {
+                return false
+            }
+        } while !isHalted
+        return true
+    }
+    
     public func run() {
         repeat {
             step()

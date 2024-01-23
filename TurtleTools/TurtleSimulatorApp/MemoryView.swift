@@ -246,16 +246,15 @@ extension MemoryView {
         }
         
         func load(address: Int) -> UInt16 {
-            switch selectedAddressSpace {
+            guard let computer = document.debugger.latestSnapshot else {
+                return 0
+            }
+            return switch selectedAddressSpace {
             case .program:
-                document.debugger.withLock { debugConsole in
-                    debugConsole.computer.instructions[address]
-                }
+                computer.instructions[address]
                 
             case .data:
-                document.debugger.withLock { debugConsole in
-                    debugConsole.computer.ram[address]
-                }
+                computer.ram[address]
             }
         }
         

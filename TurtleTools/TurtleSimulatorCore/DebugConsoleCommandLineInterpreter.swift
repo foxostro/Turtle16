@@ -23,16 +23,19 @@ public class DebugConsoleCommandLineInterpreter: NSObject {
         for ins in instructions {
             internalRunOne(instruction: ins)
         }
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: .virtualMachineStateDidChange, object: nil)
-        }
+        postComputerStateDidChangeNotification()
     }
     
     public func runOne(instruction: DebugConsoleInstruction) {
         internalRunOne(instruction: instruction)
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: .virtualMachineStateDidChange, object: nil)
-        }
+        postComputerStateDidChangeNotification()
+    }
+    
+    private func postComputerStateDidChangeNotification() {
+        let snapshot = computer.snapshot()
+        NotificationCenter.default.post(
+            name: .computerStateDidChange,
+            object: snapshot)
     }
     
     public func internalRunOne(instruction: DebugConsoleInstruction) {
@@ -97,7 +100,10 @@ public class DebugConsoleCommandLineInterpreter: NSObject {
     }
     
     fileprivate func run() {
-        computer.run()
+        let timeout: TimeInterval = 1.0
+        while !computer.run(until: Date.now + timeout) {
+            postComputerStateDidChangeNotification()
+        }
         if computer.isHalted {
             logger.append("cpu is halted\n")
         }

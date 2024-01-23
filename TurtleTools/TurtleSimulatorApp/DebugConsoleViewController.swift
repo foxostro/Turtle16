@@ -52,7 +52,9 @@ class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate
         } else {
             command = debuggerInput.stringValue
         }
-        debugger.eval(command) { debugConsole in
+        debuggerInput.isEnabled = false
+        debugger.eval(command) { [weak self] debugConsole in
+            guard let self else { return }
             if debugConsole.shouldQuit {
                 NSApplication.shared.keyWindow?.close()
             }
@@ -60,6 +62,8 @@ class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate
             debuggerInput.stringValue = ""
             history.insert(command, at: 0)
             cursor = 0
+            debuggerInput.isEnabled = true
+            debuggerInput.becomeFirstResponder()
         }
     }
     

@@ -18,6 +18,7 @@ struct ContentView: View {
                 DebugConsoleView(viewModel: DebugConsoleView.ViewModel(document: document))
                 DebugStatusBar(viewModel: DebugStatusBar.ViewModel(document: document))
             }
+            .frame(minHeight: Constant.lowerDeckViewMinHeight)
         }
     }
     
@@ -46,6 +47,7 @@ struct ContentView: View {
     }
     
     enum Constant {
+        static let lowerDeckViewMinHeight = 100.0
         static let upperDeckViewMinHeight = 260.0
         static let registersViewMinWidth = 145.0
         static let pipelineViewMinWidth = 350.0

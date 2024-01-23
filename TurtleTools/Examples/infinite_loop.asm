@@ -1,0 +1,2 @@
+loop:
+JMP loop

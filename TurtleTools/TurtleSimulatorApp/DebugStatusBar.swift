@@ -73,15 +73,17 @@ extension DebugStatusBar {
         }
         
         private func reloadData() {
-            let computer = document.debugger.computer
-            isHalted = computer.isHalted
-            isResetting = computer.isResetting
-            isStalling = computer.isStalling
-            isCarryFlagSet = computer.c != 0
-            isZeroFlagSet = computer.z != 0
-            isOverflowFlagSet = computer.v != 0
-            isNegativeFlagSet = computer.n != 0
-            timeStamp = "\(computer.timeStamp)"
+            document.debugger.withLock { debugConsole in
+                let computer = debugConsole.computer
+                isHalted = computer.isHalted
+                isResetting = computer.isResetting
+                isStalling = computer.isStalling
+                isCarryFlagSet = computer.c != 0
+                isZeroFlagSet = computer.z != 0
+                isOverflowFlagSet = computer.v != 0
+                isNegativeFlagSet = computer.n != 0
+                timeStamp = "\(computer.timeStamp)"
+            }
         }
     }
 }

@@ -23,12 +23,16 @@ public class DebugConsoleCommandLineInterpreter: NSObject {
         for ins in instructions {
             internalRunOne(instruction: ins)
         }
-        NotificationCenter.default.post(name: .virtualMachineStateDidChange, object: self.computer)
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .virtualMachineStateDidChange, object: nil)
+        }
     }
     
     public func runOne(instruction: DebugConsoleInstruction) {
         internalRunOne(instruction: instruction)
-        NotificationCenter.default.post(name: .virtualMachineStateDidChange, object: self.computer)
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .virtualMachineStateDidChange, object: nil)
+        }
     }
     
     public func internalRunOne(instruction: DebugConsoleInstruction) {

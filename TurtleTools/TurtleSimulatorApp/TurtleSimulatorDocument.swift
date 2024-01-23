@@ -34,18 +34,20 @@ class TurtleSimulatorDocument: ReferenceFileDocument {
         let isShowingMemory: Bool
     }
     
-    let debugger: DebugConsole
+    let debugger: DebugConsoleActor
     private var subscriptions = Set<AnyCancellable>()
     
     init() {
-        debugger = DebugConsole(computer: TurtleComputer(SchematicLevelCPUModel()))
-        debugger.sandboxAccessManager = ConcreteSandboxAccessManager()
+        let debugConsole = DebugConsole(computer: TurtleComputer(SchematicLevelCPUModel()))
+        debugConsole.sandboxAccessManager = ConcreteSandboxAccessManager()
         
         let url = Bundle(for: type(of: self)).url(forResource: "example", withExtension: "bin")!
-        debugger.interpreter.run(instructions: [
+        debugConsole.interpreter.run(instructions: [
             .reset(type: .soft),
             .load("program", url)
         ])
+        
+        debugger = DebugConsoleActor(debugConsole: debugConsole)
         
         subscribe()
     }
@@ -69,16 +71,15 @@ class TurtleSimulatorDocument: ReferenceFileDocument {
             throw CocoaError(.fileReadCorruptFile)
         }
         
-        debugger = decodedDebugger
-        debugger.sandboxAccessManager = ConcreteSandboxAccessManager()
+        decodedDebugger.sandboxAccessManager = ConcreteSandboxAccessManager()
+        debugger = DebugConsoleActor(debugConsole: decodedDebugger)
         
         subscribe()
     }
     
     private func subscribe() {
         NotificationCenter.default
-            .publisher(for: .virtualMachineStateDidChange,
-                       object: debugger.computer)
+            .publisher(for: .virtualMachineStateDidChange)
             .sink { [weak self] _ in
                 self?.objectWillChange.send()
             }
@@ -86,13 +87,15 @@ class TurtleSimulatorDocument: ReferenceFileDocument {
     }
     
     func snapshot(contentType: UTType) throws -> Snapshot {
-        let encodedDebugger = try NSKeyedArchiver.archivedData(withRootObject: debugger, requiringSecureCoding: true)
-        let snapshot = Snapshot(encodedDebugger: encodedDebugger,
-                                isShowingRegisters: isShowingRegisters,
-                                isShowingPipeline: isShowingPipeline,
-                                isShowingDisassembly: isShowingDisassembly,
-                                isShowingMemory: isShowingMemory)
-        return snapshot
+        try debugger.withLock { debugConsole in
+            let encodedDebugger = try NSKeyedArchiver.archivedData(withRootObject: debugConsole, requiringSecureCoding: true)
+            let snapshot = Snapshot(encodedDebugger: encodedDebugger,
+                                    isShowingRegisters: isShowingRegisters,
+                                    isShowingPipeline: isShowingPipeline,
+                                    isShowingDisassembly: isShowingDisassembly,
+                                    isShowingMemory: isShowingMemory)
+            return snapshot
+        }
     }
     
     func fileWrapper(snapshot: Snapshot, configuration: WriteConfiguration) throws -> FileWrapper {

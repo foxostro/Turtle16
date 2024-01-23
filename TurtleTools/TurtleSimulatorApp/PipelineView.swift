@@ -64,25 +64,28 @@ extension PipelineView {
         }
         
         func reloadData() {
-            let cpu = document.debugger.computer.cpu
-            pipelineStages = (0..<cpu.numberOfPipelineStages)
-                .map {
-                    cpu.getPipelineStageInfo($0)
-                }
-                .map { info in
-                    let disassembledInstruction: String?
-                    if let pc = info.pc {
-                        let disassembly = document.debugger.computer.disassembly.entries
-                        disassembledInstruction = disassembly.first(where: { $0.address == pc })?.mnemonic
-                    } else {
-                        disassembledInstruction = nil
+            document.debugger.withLock { debugConsole in
+                let computer = debugConsole.computer
+                let cpu = computer.cpu
+                pipelineStages = (0..<cpu.numberOfPipelineStages)
+                    .map {
+                        cpu.getPipelineStageInfo($0)
                     }
-                    
-                    return PipelineStage(shortName: info.name,
-                                         programCounter: info.pc,
-                                         disassembly: disassembledInstruction ?? "",
-                                         status: info.status)
-                }
+                    .map { info in
+                        let disassembledInstruction: String?
+                        if let pc = info.pc {
+                            let disassembly = computer.disassembly.entries
+                            disassembledInstruction = disassembly.first(where: { $0.address == pc })?.mnemonic
+                        } else {
+                            disassembledInstruction = nil
+                        }
+                        
+                        return PipelineStage(shortName: info.name,
+                                             programCounter: info.pc,
+                                             disassembly: disassembledInstruction ?? "",
+                                             status: info.status)
+                    }
+            }
         }
     }
 }

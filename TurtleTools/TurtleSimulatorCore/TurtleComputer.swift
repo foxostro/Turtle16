@@ -244,6 +244,8 @@ public class TurtleComputer: NSObject, NSSecureCoding {
         cpu = decodedComputer.cpu
         ram = decodedComputer.ram
         cachedDisassembly = nil
-        NotificationCenter.default.post(name: .virtualMachineStateDidChange, object: self)
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .virtualMachineStateDidChange, object: nil)
+        }
     }
 }

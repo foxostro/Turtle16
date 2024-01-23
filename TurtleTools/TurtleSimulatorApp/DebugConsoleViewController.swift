@@ -14,11 +14,11 @@ class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate
     @IBOutlet var debuggerOutput: NSTextView!
     @IBOutlet var debuggerInput: NSTextField!
     
-    let debugger: DebugConsole
+    let debugger: DebugConsoleActor
     var history: [String] = []
     var cursor = 0
     
-    public required init(debugger: DebugConsole) {
+    public required init(debugger: DebugConsoleActor) {
         self.debugger = debugger
         super.init(nibName: NSNib.Name("DebugConsoleViewController"), bundle: Bundle(for: type(of: self)))
     }
@@ -52,14 +52,15 @@ class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate
         } else {
             command = debuggerInput.stringValue
         }
-        debugger.eval(command)
-        if debugger.shouldQuit {
-            NSApplication.shared.keyWindow?.close()
+        debugger.eval(command) { debugConsole in
+            if debugConsole.shouldQuit {
+                NSApplication.shared.keyWindow?.close()
+            }
+            debugConsole.logger.append("\n")
+            debuggerInput.stringValue = ""
+            history.insert(command, at: 0)
+            cursor = 0
         }
-        debugger.logger.append("\n")
-        debuggerInput.stringValue = ""
-        history.insert(command, at: 0)
-        cursor = 0
     }
     
     func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {

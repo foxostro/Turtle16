@@ -248,30 +248,34 @@ extension MemoryView {
         func load(address: Int) -> UInt16 {
             switch selectedAddressSpace {
             case .program:
-                document.debugger.computer.instructions[address]
+                document.debugger.withLock { debugConsole in
+                    debugConsole.computer.instructions[address]
+                }
                 
             case .data:
-                document.debugger.computer.ram[address]
+                document.debugger.withLock { debugConsole in
+                    debugConsole.computer.ram[address]
+                }
             }
         }
         
         func saveMemory(url: URL) {
             switch selectedAddressSpace {
             case .program:
-                document.debugger.interpreter.runOne(instruction: .save("program", url))
+                document.debugger.run(instruction: .save("program", url))
                 
             case .data:
-                document.debugger.interpreter.runOne(instruction: .save("data", url))
+                document.debugger.run(instruction: .save("data", url))
             }
         }
         
         func loadMemory(url: URL) {
             switch selectedAddressSpace {
             case .program:
-                document.debugger.interpreter.runOne(instruction: .load("program", url))
+                document.debugger.run(instruction: .load("program", url))
                 
             case .data:
-                document.debugger.interpreter.runOne(instruction: .load("data", url))
+                document.debugger.run(instruction: .load("data", url))
             }
         }
         

@@ -125,15 +125,21 @@ extension DisassemblyView {
         }
         
         private func reloadData() {
-            pc = document.debugger.computer.pc
+            document.debugger.withLock { debugConsole in
+                pc = debugConsole.computer.pc
+            }
         }
         
         func word(at row: Int) -> String {
-            document.debugger.computer.instructions[row].hexadecimalString
+            document.debugger.withLock { debugConsole in
+                debugConsole.computer.instructions[row].hexadecimalString
+            }
         }
         
         func label(at row: Int) -> String {
-            let entries = document.debugger.computer.disassembly.entries
+            let entries = document.debugger.withLock { debugConsole in
+                debugConsole.computer.disassembly.entries
+            }
             if row < entries.count, let label = entries[row].label {
                 return label + ":"
             }
@@ -141,7 +147,9 @@ extension DisassemblyView {
         }
         
         func mnemonic(at row: Int) -> String {
-            let entries = document.debugger.computer.disassembly.entries
+            let entries = document.debugger.withLock { debugConsole in
+                debugConsole.computer.disassembly.entries
+            }
             if row < entries.count, let mnemonic = entries[row].mnemonic {
                 return mnemonic
             }

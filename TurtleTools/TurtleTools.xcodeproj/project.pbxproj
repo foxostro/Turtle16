@@ -88,6 +88,7 @@
 		6F300DCB266A90CC00BFBAC4 /* TurtleCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; };
 		6F300DCC266A90CC00BFBAC4 /* TurtleCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6F300DD1266A913B00BFBAC4 /* AssemblerCommandLineDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F300DD0266A913B00BFBAC4 /* AssemblerCommandLineDriver.swift */; };
+		6F3443FD2B5F55EE002593F2 /* DebugConsoleActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3443FC2B5F55EE002593F2 /* DebugConsoleActor.swift */; };
 		6F35B4362628ABF6004EA0AB /* DebugConsole.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F35B4352628ABF6004EA0AB /* DebugConsole.swift */; };
 		6F35B4552628AC80004EA0AB /* TextViewLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AEA22EEE6C400B38267 /* TextViewLogger.swift */; };
 		6F3987662814BBF600C601AE /* InstructionDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3987652814BBF600C601AE /* InstructionDecoder.swift */; };
@@ -592,6 +593,7 @@
 		6F300DC0266A906F00BFBAC4 /* TurtleAssembler */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TurtleAssembler; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F300DC2266A906F00BFBAC4 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		6F300DD0266A913B00BFBAC4 /* AssemblerCommandLineDriver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCommandLineDriver.swift; sourceTree = "<group>"; };
+		6F3443FC2B5F55EE002593F2 /* DebugConsoleActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugConsoleActor.swift; sourceTree = "<group>"; };
 		6F35B4352628ABF6004EA0AB /* DebugConsole.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugConsole.swift; sourceTree = "<group>"; };
 		6F3987652814BBF600C601AE /* InstructionDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionDecoder.swift; sourceTree = "<group>"; };
 		6F3987672814CD9800C601AE /* DecoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecoderTests.swift; sourceTree = "<group>"; };
@@ -1075,6 +1077,7 @@
 				6F87A557261E26F40093750D /* HazardControlMockup.swift */,
 				6FA5D2CE2593FAAA00044B17 /* IDT7381.swift */,
 				6F47D8F2261CC6F2008EFFF2 /* JEDECFuseFileParser.swift */,
+				6F3443FC2B5F55EE002593F2 /* DebugConsoleActor.swift */,
 				6FAE8DFD261B943600A8A23D /* OutputLogicMacroCell.swift */,
 				6FAE8E31261BA6F500A8A23D /* ProductTermFuseMap.swift */,
 				6F889D55259D494900EB647C /* SchematicLevelCPUModel.swift */,
@@ -1915,6 +1918,7 @@
 				6F47D8AF261CC129008EFFF2 /* FuseListMaker.swift in Sources */,
 				6FAC109525A25E9300BB3836 /* DecoderGenerator.swift in Sources */,
 				6FA5D28B2593F6F300044B17 /* IF.swift in Sources */,
+				6F3443FD2B5F55EE002593F2 /* DebugConsoleActor.swift in Sources */,
 				6FD5AE6426A2228300670CEB /* AssemblerListingMaker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -175,6 +175,10 @@ public class TurtleComputer: NSObject, NSSecureCoding {
         }
     }
     
+    public func run() {
+        _ = cpu.run(until: Date.distantFuture)
+    }
+    
     public func run(until date: Date = Date.distantFuture) -> Bool {
         cpu.run(until: date)
     }

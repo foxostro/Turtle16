@@ -39,6 +39,15 @@ open class DebugConsole: NSObject, NSSecureCoding {
         }
     }
     
+    public var isFreeRunning: Bool {
+        set (newValue) {
+            computer.isFreeRunning = newValue
+        }
+        get {
+            computer.isFreeRunning
+        }
+    }
+    
     public let computer: TurtleComputer
     public let interpreter: DebugConsoleCommandLineInterpreter
     public let compiler: DebugConsoleCommandLineCompiler
@@ -130,5 +139,9 @@ open class DebugConsole: NSObject, NSSecureCoding {
         var hasher = Hasher()
         hasher.combine(computer.hash)
         return hasher.finalize()
+    }
+    
+    public func pause() {
+        interpreter.pause()
     }
 }

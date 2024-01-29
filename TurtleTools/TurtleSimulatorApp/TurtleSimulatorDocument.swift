@@ -25,6 +25,7 @@ class TurtleSimulatorDocument: ReferenceFileDocument {
     @Published var isShowingPipeline = true
     @Published var isShowingDisassembly = true
     @Published var isShowingMemory = true
+    @Published var isFreeRunning = false
     
     struct Snapshot: Codable {
         let encodedDebugger: Data
@@ -74,14 +75,27 @@ class TurtleSimulatorDocument: ReferenceFileDocument {
         decodedDebugger.sandboxAccessManager = ConcreteSandboxAccessManager()
         debugger = DebugConsoleActor(debugConsole: decodedDebugger)
         
+        isFreeRunning = debugger.isFreeRunning
+        
         subscribe()
     }
     
     private func subscribe() {
         NotificationCenter.default
             .publisher(for: .debuggerStateDidChange, object: debugger)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
-                self?.objectWillChange.send()
+                guard let self else { return }
+                self.objectWillChange.send()
+            }
+            .store(in: &subscriptions)
+    
+        NotificationCenter.default
+            .publisher(for: .debuggerIsFreeRunningDidChange, object: debugger)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                isFreeRunning = debugger.isFreeRunning
             }
             .store(in: &subscriptions)
     }
@@ -102,5 +116,13 @@ class TurtleSimulatorDocument: ReferenceFileDocument {
         let data = try JSONEncoder().encode(snapshot)
         let fileWrapper = FileWrapper(regularFileWithContents: data)
         return fileWrapper
+    }
+    
+    func pause() {
+        debugger.pause()
+    }
+    
+    func run() {
+        debugger.run(instruction: .run)
     }
 }

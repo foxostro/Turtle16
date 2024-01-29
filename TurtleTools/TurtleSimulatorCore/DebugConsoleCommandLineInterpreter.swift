@@ -17,6 +17,7 @@ public class DebugConsoleCommandLineInterpreter: NSObject {
     
     public init(_ computer: TurtleComputer) {
         self.computer = computer
+        shouldPauseLock.name = "TurtleComputer.shouldPauseLock"
     }
     
     public func run(instructions: [DebugConsoleInstruction]) {
@@ -99,12 +100,56 @@ public class DebugConsoleCommandLineInterpreter: NSObject {
         }
     }
     
+    public var isFreeRunning: Bool {
+        set(newValue) {
+            computer.isFreeRunning = newValue
+        }
+        get {
+            computer.isFreeRunning
+        }
+    }
+    
+    fileprivate var shouldPauseFlag = false
+    fileprivate var shouldPauseLock = NSLock()
+    
+    public func pause() {
+        shouldPauseLock.withLock {
+            shouldPauseFlag = true
+        }
+    }
+    
+    fileprivate func unpause() {
+        shouldPauseLock.withLock {
+            shouldPauseFlag = false
+        }
+    }
+    
+    fileprivate func testAndSetPause() -> Bool {
+        shouldPauseLock.withLock {
+            if shouldPauseFlag {
+                shouldPauseFlag = false
+                return true
+            }
+            else {
+                return false
+            }
+        }
+    }
+    
     fileprivate func run() {
         let timeout: TimeInterval = 1.0
+        
+        isFreeRunning = true
+        
         while !computer.run(until: Date.now + timeout) {
-            postComputerStateDidChangeNotification()
+            if testAndSetPause() {
+                isFreeRunning = false
+                break
+            }
         }
+        
         if computer.isHalted {
+            isFreeRunning = false
             logger.append("cpu is halted\n")
         }
     }

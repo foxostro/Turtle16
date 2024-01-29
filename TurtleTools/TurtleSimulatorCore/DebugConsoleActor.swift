@@ -12,6 +12,7 @@ import TurtleCore
 
 public extension Notification.Name {
     static let debuggerStateDidChange = Notification.Name("debuggerStateDidChange")
+    static let debuggerIsFreeRunningDidChange = Notification.Name("debuggerIsFreeRunningDidChange")
 }
 
 public final class DebugConsoleActor: NSObject {
@@ -46,11 +47,21 @@ public final class DebugConsoleActor: NSObject {
         }
     }
     
+    public var isFreeRunning: Bool {
+        set(newValue) {
+            debugConsole.isFreeRunning = newValue
+        }
+        get {
+            debugConsole.isFreeRunning
+        }
+    }
+    
     public init(debugConsole: DebugConsole) {
         self.debugConsole = debugConsole
         internalLatestSnapshot = try? TurtleComputer.decode(from: debugConsole.computer.snapshot())
             
         super.init()
+        
         NotificationCenter.default
             .publisher(for: .computerStateDidChange)
             .sink { [weak self] _ in
@@ -59,11 +70,19 @@ public final class DebugConsoleActor: NSObject {
                 snapshotLock.withLock {
                     self.internalLatestSnapshot = snapshot
                 }
-                DispatchQueue.main.async {
-                    NotificationCenter.default.post(
-                        name: .debuggerStateDidChange,
-                        object: self)
-                }
+                NotificationCenter.default.post(
+                    name: .debuggerStateDidChange,
+                    object: self)
+            }
+            .store(in: &subscriptions)
+        
+        NotificationCenter.default
+            .publisher(for: .computerIsFreeRunningDidChange, object: debugConsole.computer)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                NotificationCenter.default.post(
+                    name: .debuggerIsFreeRunningDidChange,
+                    object: self)
             }
             .store(in: &subscriptions)
         
@@ -85,6 +104,10 @@ public final class DebugConsoleActor: NSObject {
             commandQueue.insert(command, at: 0)
             lock.signal()
         }
+    }
+    
+    public func pause() {
+        debugConsole.pause()
     }
     
     public func run(instruction: DebugConsoleInstruction) {

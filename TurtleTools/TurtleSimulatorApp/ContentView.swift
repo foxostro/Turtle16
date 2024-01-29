@@ -20,6 +20,24 @@ struct ContentView: View {
             }
             .frame(minHeight: Constant.lowerDeckViewMinHeight)
         }
+        .toolbar {
+            ToolbarItem {
+                if document.isFreeRunning {
+                    Button {
+                        document.pause()
+                    } label: {
+                        Image(systemName: "pause.fill")
+                    }
+                }
+                else {
+                    Button {
+                        document.run()
+                    } label: {
+                        Image(systemName: "play.fill")
+                    }
+                }
+            }
+        }
     }
     
     @ViewBuilder var upperDeckView: some View {

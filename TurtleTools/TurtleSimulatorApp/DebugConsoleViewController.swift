@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import Combine
 import TurtleCore
 import TurtleSimulatorCore
 
@@ -17,6 +18,7 @@ class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate
     let debugger: DebugConsoleActor
     var history: [String] = []
     var cursor = 0
+    var subscriptions = Set<AnyCancellable>()
     
     public required init(debugger: DebugConsoleActor) {
         self.debugger = debugger
@@ -37,8 +39,33 @@ class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate
         debuggerOutput.string = "\n"
         debuggerOutput.font = debuggerInput.font
         
-        NotificationCenter.default.addObserver(self, selector: #selector(self.windowDidBecomeKey(notification:)), name: NSWindow.didBecomeKeyNotification, object: self.view.window)
         debuggerInput.becomeFirstResponder()
+        
+        subscribe()
+    }
+    
+    private func subscribe() {
+        NotificationCenter.default
+            .publisher(for: NSWindow.didBecomeKeyNotification, object: self.view.window)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                self.debuggerInput.becomeFirstResponder()
+            }
+            .store(in: &subscriptions)
+    
+        NotificationCenter.default
+            .publisher(for: .debuggerIsFreeRunningDidChange, object: debugger)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                let isNotFreeRunning = !debugger.isFreeRunning
+                debuggerInput.isEnabled = isNotFreeRunning
+                if isNotFreeRunning {
+                    debuggerInput.becomeFirstResponder()
+                }
+            }
+            .store(in: &subscriptions)
     }
     
     @objc func windowDidBecomeKey(notification: Notification) {
@@ -52,7 +79,6 @@ class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate
         } else {
             command = debuggerInput.stringValue
         }
-        debuggerInput.isEnabled = false
         debugger.eval(command) { [weak self] debugConsole in
             guard let self else { return }
             if debugConsole.shouldQuit {
@@ -62,7 +88,6 @@ class DebugConsoleViewController: NSViewController, NSControlTextEditingDelegate
             debuggerInput.stringValue = ""
             history.insert(command, at: 0)
             cursor = 0
-            debuggerInput.isEnabled = true
             debuggerInput.becomeFirstResponder()
         }
     }

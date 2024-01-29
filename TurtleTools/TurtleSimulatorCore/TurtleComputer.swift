@@ -14,6 +14,7 @@ public enum ResetType {
 
 public extension Notification.Name {
     static let computerStateDidChange = Notification.Name("computerStateDidChange")
+    static let computerIsFreeRunningDidChange = Notification.Name("computerIsFreeRunningDidChange")
 }
 
 // Models the Turtle16 Computer as a whole.
@@ -45,6 +46,26 @@ public class TurtleComputer: NSObject, NSSecureCoding {
     
     public var isStalling: Bool {
         cpu.isStalling
+    }
+    
+    let isFreeRunningLock = NSLock()
+    var isFreeRunningInternal = false
+    
+    public var isFreeRunning: Bool {
+        set (newValue) {
+            isFreeRunningLock.withLock {
+                isFreeRunningInternal = newValue
+                DispatchQueue.global().async { [weak self] in
+                    guard let self else { return }
+                    NotificationCenter.default.post(name: .computerIsFreeRunningDidChange, object: self)
+                }
+            }
+        }
+        get {
+            isFreeRunningLock.withLock {
+                isFreeRunningInternal
+            }
+        }
     }
     
     public var pc: UInt16 {
@@ -93,9 +114,11 @@ public class TurtleComputer: NSObject, NSSecureCoding {
         }
     }
     
-    public required init(cpu: CPU, ram: [UInt16]) {
+    public required init(cpu: CPU, ram: [UInt16], isFreeRunning: Bool = false) {
         self.ram = ram
         self.cpu = cpu
+        isFreeRunningInternal = isFreeRunning
+        isFreeRunningLock.name = "TurtleComputer.isFreeRunningLock"
         super.init()
         cpu.store = { [weak self] in
             self?.store(value: $0, address: $1)
@@ -129,12 +152,14 @@ public class TurtleComputer: NSObject, NSSecureCoding {
               let ram = coder.decodeObject(forKey: "ram") as? [UInt16] else {
             return nil
         }
-        self.init(cpu: cpu, ram: ram)
+        let isFreeRunning = coder.decodeBool(forKey: "isFreeRunning")
+        self.init(cpu: cpu, ram: ram, isFreeRunning: isFreeRunning)
     }
 
     public func encode(with coder: NSCoder) {
         coder.encode(cpu, forKey: "cpu")
         coder.encode(ram, forKey: "ram")
+        coder.encode(isFreeRunning, forKey: "isFreeRunning")
     }
     
     public static func decode(from data: Data) throws -> TurtleComputer {

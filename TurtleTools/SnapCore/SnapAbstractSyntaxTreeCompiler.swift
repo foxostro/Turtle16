@@ -57,34 +57,51 @@ public class SnapAbstractSyntaxTreeCompiler: NSObject {
     
     func tryCompile(_ t0: AbstractSyntaxTreeNode) throws -> AbstractSyntaxTreeNode? {
         try t0
+            .withImplicitImport(moduleName: runtimeSupport)?
+            .withImplicitImport(moduleName: standardLibraryName)?
             .desugarTestDeclarations(
                 testNames: &testNames,
                 globalEnvironment: globalEnvironment,
-                shouldRunSpecificTest: shouldRunSpecificTest,
-                isUsingStandardLibrary: isUsingStandardLibrary,
-                runtimeSupport: runtimeSupport)?
+                shouldRunSpecificTest: shouldRunSpecificTest)?
             .declPass(
                 injectModules: injectModules,
                 globalEnvironment: globalEnvironment,
                 runtimeSupport: runtimeSupport)?
-            .implPass(globalEnvironment: globalEnvironment)
+            .implPass(globalEnvironment)
+    }
+    
+    var standardLibraryName: String? {
+        isUsingStandardLibrary
+            ? kStandardLibraryModuleName
+            : nil
     }
 }
 
 extension AbstractSyntaxTreeNode {
+    // Insert an import statement for an implicit import
+    fileprivate func withImplicitImport(moduleName: String?) -> AbstractSyntaxTreeNode? {
+        if let moduleName, let top = self as? TopLevel {
+            TopLevel(sourceAnchor: sourceAnchor,
+                     children: [Import(moduleName: moduleName)] + top.children)
+        }
+        else if let moduleName, let block = self as? Block {
+            Block(sourceAnchor: sourceAnchor,
+                  children: [Import(moduleName: moduleName)] + block.children)
+        }
+        else {
+            self
+        }
+    }
+    
     // Erase test declarations and replace with a synthesized test runner.
     fileprivate func desugarTestDeclarations(
         testNames: inout [String],
         globalEnvironment: GlobalEnvironment,
-        shouldRunSpecificTest: String?,
-        isUsingStandardLibrary: Bool,
-        runtimeSupport: String?) throws -> AbstractSyntaxTreeNode? {
+        shouldRunSpecificTest: String?) throws -> AbstractSyntaxTreeNode? {
         
         let testDeclarationTransformer = SnapASTTransformerTestDeclaration(
             globalEnvironment: globalEnvironment,
-            shouldRunSpecificTest: shouldRunSpecificTest,
-            isUsingStandardLibrary: isUsingStandardLibrary,
-            runtimeSupport: runtimeSupport)
+            shouldRunSpecificTest: shouldRunSpecificTest)
         let result = try testDeclarationTransformer.compile(self)
         testNames = testDeclarationTransformer.testNames
         return result
@@ -104,7 +121,7 @@ extension AbstractSyntaxTreeNode {
     }
     
     // Rewrite higher-level nodes in terms of trees of lower-level nodes.
-    fileprivate func implPass(globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
+    fileprivate func implPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
         try SnapAbstractSyntaxTreeCompilerImplPass(globalEnvironment: globalEnvironment)
             .compile(self)
     }

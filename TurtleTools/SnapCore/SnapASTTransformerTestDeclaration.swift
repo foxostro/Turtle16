@@ -11,35 +11,20 @@ import TurtleCore
 public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
     public private(set) var testNames: [String] = []
     public private(set) var testDeclarations: [TestDeclaration] = []
-    public let isUsingStandardLibrary: Bool
-    public let runtimeSupport: String?
     var currentTest: TestDeclaration? = nil
     var depth = 0
     let shouldRunSpecificTest: String?
     let globalEnvironment: GlobalEnvironment
     
     public init(globalEnvironment: GlobalEnvironment,
-                shouldRunSpecificTest: String? = nil,
-                isUsingStandardLibrary: Bool = false,
-                runtimeSupport: String? = nil,
-                isRuntimeModule: Bool = false) {
+                shouldRunSpecificTest: String? = nil) {
         self.globalEnvironment = globalEnvironment
         self.shouldRunSpecificTest = shouldRunSpecificTest
-        self.isUsingStandardLibrary = isUsingStandardLibrary
-        self.runtimeSupport = runtimeSupport
     }
     
     public override func compile(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {
-        var children = node.children
-        if isUsingStandardLibrary {
-            let importStmt = Import(moduleName: kStandardLibraryModuleName)
-            children.insert(importStmt, at: 0)
-        }
-        if let runtimeSupport {
-            children.insert(Import(moduleName: runtimeSupport), at: 0)
-        }
         let block = Block(sourceAnchor: node.sourceAnchor,
-                          children: children)
+                          children: node.children)
         return try compile(block: block)
     }
     

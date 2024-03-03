@@ -128,3 +128,12 @@ public class SymbolTablesReconnector: NSObject {
         reconnect(node.body)
     }
 }
+
+extension AbstractSyntaxTreeNode {
+    // Perform a reconnect to ensure the symbol table tree is topologically
+    // connected to correspond to the lexical structure of the program.
+    public func reconnect(parent: SymbolTable?) -> Self {
+        SymbolTablesReconnector(parent).reconnect(self)
+        return self
+    }
+}

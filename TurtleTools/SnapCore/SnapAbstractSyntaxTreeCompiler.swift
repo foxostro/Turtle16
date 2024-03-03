@@ -86,15 +86,8 @@ extension AbstractSyntaxTreeNode {
         let block = Block(sourceAnchor: top.sourceAnchor,
                           symbols: SymbolTable(),
                           children: top.children)
-            .reconnect(nil)
+            .reconnect(parent: nil)
         return block
-    }
-    
-    // Perform a reconnect to ensure the symbol table tree is topologically
-    // connected to correspond to the lexical structure of the program.
-    public func reconnect(_ symbols: SymbolTable?) -> Self {
-        SymbolTablesReconnector(symbols).reconnect(self)
-        return self
     }
     
     // Insert an import statement for an implicit import

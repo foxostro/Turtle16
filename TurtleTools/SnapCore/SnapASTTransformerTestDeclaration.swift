@@ -70,7 +70,7 @@ public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
             let result1 = Block(sourceAnchor: result.sourceAnchor,
                                 symbols: result.symbols,
                                 children: children)
-                .reconnect(result.symbols.parent)
+                .reconnect(parent: result.symbols.parent)
             
             return result1
         }

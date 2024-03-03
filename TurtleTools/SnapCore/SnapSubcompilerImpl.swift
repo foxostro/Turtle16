@@ -47,8 +47,6 @@ public class SnapSubcompilerImpl: NSObject {
         symbols.enclosingFunctionNameMode = .set(typ.name)
         symbols.enclosingFunctionTypeMode = .set(nil)
         
-        SymbolTablesReconnector(symbols).reconnect(node)
-        
         for child in node.children {
             let identifier = child.identifier.identifier
             if typ.symbols.exists(identifier: identifier) {

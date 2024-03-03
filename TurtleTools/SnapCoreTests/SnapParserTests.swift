@@ -151,7 +151,7 @@ class SnapParserTests: XCTestCase {
         
         XCTAssertEqual(ast.children.count, 1)
         let innerArray = Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(10, 26),
-                                                 arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(3, 9), count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(6, 9), typ: .arithmeticType(.mutableInt(.u16)))),
+                                                 arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(10, 16), count: nil, elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(13, 16), typ: .arithmeticType(.mutableInt(.u16)))),
                                                  elements: [Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(17, 20), identifier: "foo"),
                                                             Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(22, 25), identifier: "foo")])
         let expected = Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(0, 27),
@@ -207,7 +207,7 @@ class SnapParserTests: XCTestCase {
         
         let expected = VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 24),
                                       identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 7), identifier: "foo"),
-                                      explicitType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(17, 22), count: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(10, 11), value: 0), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(12, 14), typ: .arithmeticType(.mutableInt(.u8)))),
+                                      explicitType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(9, 14), count: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(10, 11), value: 0), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(12, 14), typ: .arithmeticType(.mutableInt(.u8)))),
                                       expression: Expression.LiteralArray(sourceAnchor: parser.lineMapper.anchor(17, 24),
                                                                           arrayType: Expression.ArrayType(sourceAnchor: parser.lineMapper.anchor(17, 22), count: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(18, 19), value: 0), elementType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(20, 22), typ: .arithmeticType(.mutableInt(.u8)))),
                                                                           elements: []),
@@ -1963,7 +1963,7 @@ for i in 0..10 {
                     VarDeclaration(sourceAnchor: parser.lineMapper.anchor(21, 32),
                                    identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(25, 28), identifier: "foo"),
                                    explicitType: nil,
-                                   expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(4, 5), identifier: "i"),
+                                   expression: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(31, 32), identifier: "i"),
                                    storage: .automaticStorage,
                                    isMutable: true)
                 ]))
@@ -2917,7 +2917,7 @@ impl Serial for SerialFake {
         let parser = parse("asm(\"\"")
         XCTAssertTrue(parser.hasError)
         XCTAssertNil(parser.syntaxTree)
-        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(5, 5))
+        XCTAssertEqual(parser.errors.first?.sourceAnchor, parser.lineMapper.anchor(6, 6))
         XCTAssertEqual(parser.errors.first?.message, "expected `)' in asm statement")
     }
     

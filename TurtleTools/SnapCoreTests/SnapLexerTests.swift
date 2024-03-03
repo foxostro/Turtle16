@@ -43,14 +43,14 @@ class SnapLexerTests: XCTestCase {
     func testTokenizeComment() {
         let tokenizer = SnapLexer("// comment")
         tokenizer.scanTokens()
-        XCTAssertEqual(tokenizer.tokens, [TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(9, 9))])
+        XCTAssertEqual(tokenizer.tokens, [TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(10, 10))])
     }
     
     func testTokenizeCommaAndComment() {
         let tokenizer = SnapLexer(",// comment")
         tokenizer.scanTokens()
         XCTAssertEqual(tokenizer.tokens, [TokenComma(sourceAnchor: tokenizer.lineMapper.anchor(0, 1)),
-                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(10, 10))])
+                                          TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(11, 11))])
     }
     
     func testTokenizeCommentWithWhitespace() {

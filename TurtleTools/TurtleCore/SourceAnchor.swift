@@ -78,6 +78,9 @@ public class SourceAnchor: NSObject {
         guard text == rhs.text else {
             return false
         }
+        guard range == rhs.range else {
+            return false
+        }
         return true
     }
     

@@ -129,7 +129,6 @@ public class SnapCommandLineDriver: NSObject {
     
     fileprivate func collectNamesOfTests(_ text: String, _ fileName: String) throws -> [String] {
         let opts = SnapToTurtle16Compiler.Options(isBoundsCheckEnabled: true,
-                                                  shouldDefineCompilerIntrinsicFunctions: true,
                                                   isUsingStandardLibrary: false,
                                                   runtimeSupport: kRuntime)
         let frontEnd0 = SnapToTurtle16Compiler(options: opts)
@@ -143,7 +142,6 @@ public class SnapCommandLineDriver: NSObject {
     fileprivate func runSpecificTest(_ testName: String, _ text: String, _ fileName: String) throws {
         reportInfoMessage("Running test \"\(testName)\"...\n")
         let opts = SnapToTurtle16Compiler.Options(isBoundsCheckEnabled: true,
-                                                  shouldDefineCompilerIntrinsicFunctions: true,
                                                   isUsingStandardLibrary: false,
                                                   runtimeSupport: kRuntime,
                                                   shouldRunSpecificTest: testName)
@@ -214,7 +212,6 @@ public class SnapCommandLineDriver: NSObject {
         }
         
         let opts = SnapToTurtle16Compiler.Options(isBoundsCheckEnabled: true,
-                                                  shouldDefineCompilerIntrinsicFunctions: true,
                                                   isUsingStandardLibrary: false,
                                                   runtimeSupport: kRuntime)
         let frontEnd = SnapToTurtle16Compiler(options: opts)
@@ -285,7 +282,6 @@ public class SnapCommandLineDriver: NSObject {
             throw SnapCommandLineDriverError("failed to read input file as UTF-8 text: \(fileName)")
         }
         let options = SnapToTurtle16Compiler.Options(isBoundsCheckEnabled: true,
-                                                     shouldDefineCompilerIntrinsicFunctions: true,
                                                      isUsingStandardLibrary: false,
                                                      runtimeSupport: kRuntime)
         let frontEnd = SnapToTurtle16Compiler(options: options)

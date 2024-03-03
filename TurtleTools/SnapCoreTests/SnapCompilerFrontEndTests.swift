@@ -105,7 +105,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     fileprivate struct Options {
         public let isVerboseLogging: Bool
         public let isBoundsCheckEnabled: Bool
-        public let shouldDefineCompilerIntrinsicFunctions: Bool
         public let isUsingStandardLibrary: Bool
         public let runtimeSupport: String?
         public let shouldRunSpecificTest: String?
@@ -115,7 +114,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         
         public init(isVerboseLogging: Bool = false,
                     isBoundsCheckEnabled: Bool = false,
-                    shouldDefineCompilerIntrinsicFunctions: Bool = false,
                     isUsingStandardLibrary: Bool = false,
                     runtimeSupport: String? = nil,
                     shouldRunSpecificTest: String? = nil,
@@ -124,7 +122,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
                     injectModules: [String:String] = [:]) {
             self.isVerboseLogging = isVerboseLogging
             self.isBoundsCheckEnabled = isBoundsCheckEnabled
-            self.shouldDefineCompilerIntrinsicFunctions = shouldDefineCompilerIntrinsicFunctions
             self.isUsingStandardLibrary = isUsingStandardLibrary
             self.runtimeSupport = runtimeSupport
             self.shouldRunSpecificTest = shouldRunSpecificTest
@@ -137,7 +134,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     fileprivate func makeDebugger(options: Options, program: String) throws -> TackDebugger {
         let opts2 = SnapCompilerFrontEnd.Options(
             isBoundsCheckEnabled: options.isBoundsCheckEnabled,
-            shouldDefineCompilerIntrinsicFunctions: options.shouldDefineCompilerIntrinsicFunctions,
             isUsingStandardLibrary: options.isUsingStandardLibrary,
             runtimeSupport: options.runtimeSupport,
             shouldRunSpecificTest: options.shouldRunSpecificTest,
@@ -205,7 +201,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     }
 
     func test_EndToEndIntegration_ForIn_Range_1() throws {
-        let debugger = try run(program: """
+        let opts = Options(runtimeSupport: kRuntime)
+        let debugger = try run(options: opts, program: """
             var a: u16 = 100
             for i in 0..10 {
                 a = i
@@ -216,7 +213,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     }
 
     func test_EndToEndIntegration_ForIn_Range_2() throws {
-        let debugger = try run(program: """
+        let opts = Options(runtimeSupport: kRuntime)
+        let debugger = try run(options: opts, program: """
             var a: u16 = 255
             let range = 0..10
             for i in range {
@@ -228,7 +226,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     }
 
     func test_EndToEndIntegration_ForIn_Range_SingleStatement() throws {
-        let debugger = try run(program: """
+        let opts = Options(runtimeSupport: kRuntime)
+        let debugger = try run(options: opts, program: """
             var a: u16 = 255
             for i in 0..10
                 a = i
@@ -321,7 +320,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     }
 
     func test_EndToEndIntegration_Fibonacci() throws {
-        let debugger = try run(program: """
+        let opts = Options(runtimeSupport: kRuntime)
+        let debugger = try run(options: opts, program: """
             var a: u16 = 1
             var b: u16 = 1
             var fib: u16 = 0
@@ -337,7 +337,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     }
 
     func test_EndToEndIntegration_Fibonacci_ExercisingStaticKeyword() throws {
-        let debugger = try run(program: """
+        let opts = Options(runtimeSupport: kRuntime)
+        let debugger = try run(options: opts, program: """
             var a: u16 = 1
             var b: u16 = 1
             for i in 0..10 {
@@ -352,7 +353,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     }
 
     func test_EndToEndIntegration_Fibonacci_U8_1() throws {
-        let debugger = try run(program: """
+        let opts = Options(runtimeSupport: kRuntime)
+        let debugger = try run(options: opts, program: """
             var a: u8 = 1
             var b: u8 = 1
             var fib: u8 = 0
@@ -368,7 +370,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     }
 
     func test_EndToEndIntegration_Fibonacci_U8_2() throws {
-        let debugger = try run(program: """
+        let opts = Options(runtimeSupport: kRuntime)
+        let debugger = try run(options: opts, program: """
             var a: u8 = 1
             var b: u8 = 1
             var fib: u8 = 0
@@ -400,7 +403,9 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     }
 
     func testLocalVariablesDoNotSurviveTheLocalScope_ForLoop() {
-        let compiler = makeCompiler()
+        let compiler = SnapCompilerFrontEnd(
+            options: SnapCompilerFrontEnd.Options(runtimeSupport: kRuntime),
+            globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: memoryLayoutStrategy))
         let result = compiler.compile(program: """
             for i in 0..10 {
                 var a = i
@@ -858,14 +863,15 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     }
     
     func test_EndToEndIntegration_Hlt() throws {
-        let opts = Options(shouldDefineCompilerIntrinsicFunctions: true)
+        let opts = Options(runtimeSupport: kRuntime)
         let debugger = try run(options: opts, program: """
-            var a: u16 = 0
+            var p: *u16 = 0x8000 bitcastAs *u16
+            p.pointee = 0
             hlt()
-            a = 1
+            p.pointee = 1
             """)
-        
-        XCTAssertEqual(debugger.loadSymbolU16("a"), 0)
+        let word = debugger.vm.loadw(address: 0x8000)
+        XCTAssertEqual(word, 0)
     }
 
     func test_EndToEndIntegration_DeclareArrayType_InferredType() throws {
@@ -1036,7 +1042,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     }
 
     func test_EndToEndIntegration_SumLoop() throws {
-        let debugger = try run(program: """
+        let opts = Options(runtimeSupport: kRuntime)
+        let debugger = try run(options: opts, program: """
             func sum() -> u8 {
                 var accum = 0
                 for i in 0..3 {
@@ -1073,7 +1080,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     }
 
     func test_Bug_ProgramRunsForever() throws {
-        let opts = Options(isVerboseLogging: true)
+        let opts = Options()
         let debugger = try run(options: opts, program: """
             func sum() -> u16 {
                 let a = [_]u16{1, 2}
@@ -1097,7 +1104,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     }
 
     func test_EndToEndIntegration_PassArrayAsFunctionParameter_2() throws {
-        let debugger = try run(program: """
+        let opts = Options(runtimeSupport: kRuntime)
+        let debugger = try run(options: opts, program: """
             func sum(a: [3]u16) -> u16 {
                 var accum: u16 = 0
                 for i in 0..3 {
@@ -1156,7 +1164,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     }
 
     func test_EndToEndIntegration_PassArraysAsFunctionArgumentsAndReturnArrayValue() throws {
-        let debugger = try run(program: """
+        let opts = Options(runtimeSupport: kRuntime)
+        let debugger = try run(options: opts, program: """
             func sum(a: [3]u8, b: [3]u8, c: u8) -> [3]u8 {
                 var result = [_]u8{0, 0, 0}
                 for i in 0..3 {
@@ -1171,7 +1180,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     }
 
     func test_EndToEndIntegration_PassArraysAsFunctionArgumentsAndReturnArrayValue_U16() throws {
-        let debugger = try run(program: """
+        let opts = Options(runtimeSupport: kRuntime)
+        let debugger = try run(options: opts, program: """
             func sum(a: [3]u16, b: [3]u16, c: u16) -> [3]u16 {
                 var result = [_]u16{0, 0, 0}
                 for i in 0..3 {
@@ -1186,7 +1196,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     }
 
     func test_EndToEndIntegration_BugWhenStackVariablesAreDeclaredAfterForLoop() throws {
-        let debugger = try run(program: """
+        let opts = Options(runtimeSupport: kRuntime)
+        let debugger = try run(options: opts, program: """
             func foo() -> u16 {
                 for i in 0..3 {
                 }
@@ -1204,8 +1215,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         let onSerialOutput = { (value: UInt8) in
             serialOutput.append(value)
         }
-        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
-                              runtimeSupport: kRuntime,
+        let options = Options(runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = try run(options: options, program: """
             puts("Hello, World!")
@@ -1220,8 +1230,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         let onSerialOutput = { (value: UInt8) in
             serialOutput.append(value)
         }
-        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
-                              runtimeSupport: kRuntime,
+        let options = Options(runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = try run(options: options, program: """
             panic("oops!")
@@ -1238,7 +1247,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             serialOutput.append(value)
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = try run(options: options, program: """
@@ -1639,8 +1647,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     }
 
     func testArraySlice_SliceStaticArrayWithCompileTimeRange() throws {
-        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
-                              runtimeSupport: kRuntime)
+        let options = Options(runtimeSupport: kRuntime)
         let debugger = try run(options: options, program: """
             let helloWorld = "Hello, World!"
             let hello = helloWorld[0..5]
@@ -1656,7 +1663,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             serialOutput.append(value)
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = try run(options: options, program: """
@@ -1676,7 +1682,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             serialOutput.append(value)
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = try run(options: options, program: """
@@ -1696,7 +1701,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             serialOutput.append(value)
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = try run(options: options, program: """
@@ -1715,7 +1719,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             serialOutput.append(value)
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = try run(options: options, program: """
@@ -1735,7 +1738,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             serialOutput.append(value)
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = try run(options: options, program: """
@@ -1755,7 +1757,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             serialOutput.append(value)
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = try run(options: options, program: """
@@ -1772,7 +1773,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             serialOutput.append(value)
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               shouldRunSpecificTest: "foo",
                               onSerialOutput: onSerialOutput)
@@ -1791,7 +1791,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             serialOutput.append(value)
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               shouldRunSpecificTest: "foo",
                               onSerialOutput: onSerialOutput)
@@ -1811,7 +1810,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             serialOutput.append(value)
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               shouldRunSpecificTest: "foo",
                               onSerialOutput: onSerialOutput,
@@ -1835,7 +1833,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             serialOutput.append(value)
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = try run(options: options, program: """
@@ -1870,7 +1867,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             serialOutput.append(value)
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = try run(options: options, program: """
@@ -1891,8 +1887,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         let onSerialOutput = { (value: UInt8) in
             serialOutput.append(value)
         }
-        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
-                              runtimeSupport: kRuntime,
+        let options = Options(runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = try run(options: options, program: """
             struct Serial {
@@ -1913,8 +1908,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         let onSerialOutput = { (value: UInt8) in
             serialOutput.append(value)
         }
-        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
-                              runtimeSupport: kRuntime,
+        let options = Options(runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = try run(options: options, program: """
             struct Foo {
@@ -1981,8 +1975,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         let onSerialOutput = { (value: UInt8) in
             serialOutput.append(value)
         }
-        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
-                              runtimeSupport: kRuntime,
+        let options = Options(runtimeSupport: kRuntime,
                               shouldRunSpecificTest: "foo",
                               onSerialOutput: onSerialOutput)
         _ = try run(options: options, program: """
@@ -2019,8 +2012,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         let onSerialOutput = { (value: UInt8) in
             serialOutput.append(value)
         }
-        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
-                              runtimeSupport: kRuntime,
+        let options = Options(runtimeSupport: kRuntime,
                               shouldRunSpecificTest: "call through vtable pseudo-interface",
                               onSerialOutput: onSerialOutput)
         _ = try run(options: options, program: """
@@ -2079,8 +2071,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         let onSerialOutput = { (value: UInt8) in
             serialOutput.append(value)
         }
-        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
-                              runtimeSupport: kRuntime,
+        let options = Options(runtimeSupport: kRuntime,
                               shouldRunSpecificTest: "call through trait interface",
                               onSerialOutput: onSerialOutput)
         _ = try run(options: options, program: """
@@ -2206,8 +2197,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         let onSerialOutput = { (value: UInt8) in
             serialOutput.append(value)
         }
-        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
-                              runtimeSupport: kRuntime,
+        let options = Options(runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = try run(options: options, program: """
             struct Foo {
@@ -2305,8 +2295,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         let onSerialOutput = { (value: UInt8) in
             serialOutput.append(value)
         }
-        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
-                              runtimeSupport: kRuntime,
+        let options = Options(runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = try run(options: options, program: """
             let helloWorld = "Hello, World!"
@@ -2604,7 +2593,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             serialOutput.append(value)
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               shouldRunSpecificTest: "foo",
                               onSerialOutput: onSerialOutput)
@@ -2626,7 +2614,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             serialOutput.append(value)
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = try run(options: options, program: """
@@ -2653,7 +2640,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             serialOutput.append(value)
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               shouldRunSpecificTest: "foo",
                               onSerialOutput: onSerialOutput)
@@ -2996,9 +2982,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     
     func test_EndToEndIntegration_syscall_invalid() throws {
         let opts = Options(
-            isVerboseLogging: true,
-            shouldDefineCompilerIntrinsicFunctions: true,
-            isUsingStandardLibrary: true)
+            isUsingStandardLibrary: true,
+            runtimeSupport: kRuntime)
         let debugger = try run(options: opts, program: """
             var a: u16 = 0xffff
             asm("BREAK")
@@ -3013,8 +2998,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     
     func test_EndToEndIntegration_syscall_getc() throws {
         let opts = Options(
-            isVerboseLogging: true,
-            shouldDefineCompilerIntrinsicFunctions: true,
+            isVerboseLogging: false,
             runtimeSupport: kRuntime,
             onSerialInput: { 65 })
         let debugger = try run(options: opts, program: """
@@ -3027,8 +3011,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     func test_EndToEndIntegration_syscall_putc() throws {
         var output: UInt8? = nil
         let opts = Options(
-            isVerboseLogging: true,
-            shouldDefineCompilerIntrinsicFunctions: true,
             runtimeSupport: kRuntime,
             onSerialOutput: { output = $0 })
         _ = try run(options: opts, program: """

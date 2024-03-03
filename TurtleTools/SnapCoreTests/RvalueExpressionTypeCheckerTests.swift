@@ -10,6 +10,19 @@ import XCTest
 import SnapCore
 import TurtleCore
 
+extension SymbolTable {
+    func withCompilerIntrinsicRangeType(_ memoryLayoutStrategy: MemoryLayoutStrategy) -> SymbolTable {
+        let sizeOfU16 = memoryLayoutStrategy.sizeof(type: .arithmeticType(.mutableInt(.u16)))
+        let name = "Range"
+        let typ: SymbolType = .structType(StructType(name: name, symbols: SymbolTable(tuples: [
+            ("begin", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0*sizeOfU16, storage: .automaticStorage)),
+            ("limit", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 1*sizeOfU16, storage: .automaticStorage))
+        ])))
+        bind(identifier: name, symbolType: typ, visibility: .privateVisibility)
+        return self
+    }
+}
+
 class RvalueExpressionTypeCheckerTests: XCTestCase {
     let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
     

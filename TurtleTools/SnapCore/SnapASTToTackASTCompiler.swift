@@ -123,20 +123,6 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
             result.append(subroutine)
         }
         
-        if options.shouldDefineCompilerIntrinsicFunctions {
-            result.append(Subroutine(identifier: kHalt, children: [
-                TackInstructionNode(.hlt)
-            ]))
-            result.append(Subroutine(identifier: kSyscall, children: [
-                TackInstructionNode(.enter(0)),
-                TackInstructionNode(.addip(.p(0), .fp, 8)), // syscall number
-                TackInstructionNode(.addip(.p(1), .fp, 7)), // pointer to argument struct
-                TackInstructionNode(.syscall(.p(0), .p(1))),
-                TackInstructionNode(.leave),
-                TackInstructionNode(.ret)
-            ]))
-        }
-        
         return result
     }
     

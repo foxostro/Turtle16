@@ -100,7 +100,6 @@ func foo() {
     fileprivate struct Options {
         public let isVerboseLogging: Bool
         public let isBoundsCheckEnabled: Bool
-        public let shouldDefineCompilerIntrinsicFunctions: Bool
         public let isUsingStandardLibrary: Bool
         public let runtimeSupport: String?
         public let shouldRunSpecificTest: String?
@@ -109,7 +108,6 @@ func foo() {
         
         public init(isVerboseLogging: Bool = false,
                     isBoundsCheckEnabled: Bool = false,
-                    shouldDefineCompilerIntrinsicFunctions: Bool = false,
                     isUsingStandardLibrary: Bool = false,
                     runtimeSupport: String? = nil,
                     shouldRunSpecificTest: String? = nil,
@@ -117,7 +115,6 @@ func foo() {
                     injectModules: [String:String] = [:]) {
             self.isVerboseLogging = isVerboseLogging
             self.isBoundsCheckEnabled = isBoundsCheckEnabled
-            self.shouldDefineCompilerIntrinsicFunctions = shouldDefineCompilerIntrinsicFunctions
             self.isUsingStandardLibrary = isUsingStandardLibrary
             self.runtimeSupport = runtimeSupport
             self.shouldRunSpecificTest = shouldRunSpecificTest
@@ -131,7 +128,6 @@ func foo() {
     fileprivate func makeDebugger(options: Options, program: String) -> SnapDebugConsole? {
         let opts2 = SnapToTurtle16Compiler.Options(
             isBoundsCheckEnabled: options.isBoundsCheckEnabled,
-            shouldDefineCompilerIntrinsicFunctions: options.shouldDefineCompilerIntrinsicFunctions,
             isUsingStandardLibrary: options.isUsingStandardLibrary,
             runtimeSupport: options.runtimeSupport,
             shouldRunSpecificTest: options.shouldRunSpecificTest,
@@ -231,7 +227,8 @@ func foo() {
     }
     
     func test_EndToEndIntegration_ForIn_Range_1() {
-        let debugger = run(program: """
+        let opts = Options(runtimeSupport: kRuntime)
+        let debugger = run(options: opts, program: """
             var a: u16 = 100
             for i in 0..10 {
                 a = i
@@ -242,7 +239,8 @@ func foo() {
     }
     
     func test_EndToEndIntegration_ForIn_Range_2() {
-        let debugger = run(program: """
+        let opts = Options(runtimeSupport: kRuntime)
+        let debugger = run(options: opts, program: """
             var a: u16 = 255
             let range = 0..10
             for i in range {
@@ -254,7 +252,8 @@ func foo() {
     }
     
     func test_EndToEndIntegration_ForIn_Range_SingleStatement() {
-        let debugger = run(program: """
+        let opts = Options(runtimeSupport: kRuntime)
+        let debugger = run(options: opts, program: """
             var a: u16 = 255
             for i in 0..10
                 a = i
@@ -347,7 +346,8 @@ func foo() {
     }
     
     func test_EndToEndIntegration_Fibonacci() {
-        let debugger = run(program: """
+        let opts = Options(runtimeSupport: kRuntime)
+        let debugger = run(options: opts, program: """
             var a: u16 = 1
             var b: u16 = 1
             var fib: u16 = 0
@@ -363,7 +363,8 @@ func foo() {
     }
     
     func test_EndToEndIntegration_Fibonacci_ExercisingStaticKeyword() {
-        let debugger = run(program: """
+        let opts = Options(runtimeSupport: kRuntime)
+        let debugger = run(options: opts, program: """
             var a: u16 = 1
             var b: u16 = 1
             for i in 0..10 {
@@ -378,7 +379,8 @@ func foo() {
     }
     
     func test_EndToEndIntegration_Fibonacci_U8_1() {
-        let debugger = run(program: """
+        let opts = Options(runtimeSupport: kRuntime)
+        let debugger = run(options: opts, program: """
             var a: u8 = 1
             var b: u8 = 1
             var fib: u8 = 0
@@ -394,7 +396,8 @@ func foo() {
     }
     
     func test_EndToEndIntegration_Fibonacci_U8_2() {
-        let debugger = run(program: """
+        let opts = Options(runtimeSupport: kRuntime)
+        let debugger = run(options: opts, program: """
             var a: u8 = 1
             var b: u8 = 1
             var fib: u8 = 0
@@ -426,7 +429,8 @@ func foo() {
     }
     
     func testLocalVariablesDoNotSurviveTheLocalScope_ForLoop() {
-        let compiler = SnapToTurtle16Compiler()
+        let opts = SnapToTurtle16Compiler.Options(runtimeSupport: kRuntime)
+        let compiler = SnapToTurtle16Compiler(options: opts)
         compiler.compile(program: """
             for i in 0..10 {
                 var a = i
@@ -844,7 +848,7 @@ func foo() {
     }
     
     func test_EndToEndIntegration_Hlt() {
-        let opts = Options(shouldDefineCompilerIntrinsicFunctions: true)
+        let opts = Options(runtimeSupport: kRuntime)
         let debugger = run(options: opts, program: """
             var a: u16 = 0
             hlt()
@@ -1026,7 +1030,8 @@ func foo() {
     }
     
     func test_EndToEndIntegration_SumLoop() {
-        let debugger = run(program: """
+        let opts = Options(runtimeSupport: kRuntime)
+        let debugger = run(options: opts, program: """
             func sum() -> u8 {
                 var accum = 0
                 for i in 0..3 {
@@ -1088,7 +1093,8 @@ func foo() {
     }
     
     func test_EndToEndIntegration_PassArrayAsFunctionParameter_2() {
-        let debugger = run(program: """
+        let opts = Options(runtimeSupport: kRuntime)
+        let debugger = run(options: opts, program: """
             func sum(a: [3]u16) -> u16 {
                 var accum: u16 = 0
                 for i in 0..3 {
@@ -1149,7 +1155,8 @@ func foo() {
     }
 
     func test_EndToEndIntegration_PassArraysAsFunctionArgumentsAndReturnArrayValue() {
-        let debugger = run(program: """
+        let opts = Options(runtimeSupport: kRuntime)
+        let debugger = run(options: opts, program: """
             func sum(a: [3]u8, b: [3]u8, c: u8) -> [3]u8 {
                 var result = [_]u8{0, 0, 0}
                 for i in 0..3 {
@@ -1164,7 +1171,8 @@ func foo() {
     }
 
     func test_EndToEndIntegration_PassArraysAsFunctionArgumentsAndReturnArrayValue_U16() {
-        let debugger = run(program: """
+        let opts = Options(runtimeSupport: kRuntime)
+        let debugger = run(options: opts, program: """
             func sum(a: [3]u16, b: [3]u16, c: u16) -> [3]u16 {
                 var result = [_]u16{0, 0, 0}
                 for i in 0..3 {
@@ -1179,7 +1187,8 @@ func foo() {
     }
     
     func test_EndToEndIntegration_BugWhenStackVariablesAreDeclaredAfterForLoop() {
-        let debugger = run(program: """
+        let opts = Options(runtimeSupport: kRuntime)
+        let debugger = run(options: opts, program: """
             func foo() -> u16 {
                 for i in 0..3 {
                 }
@@ -1203,8 +1212,7 @@ func foo() {
         let onSerialOutput = { (value: UInt16) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
-        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
-                              runtimeSupport: kRuntime,
+        let options = Options(runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = run(options: options, program: """
             puts("Hello, World!")
@@ -1219,8 +1227,7 @@ func foo() {
         let onSerialOutput = { (value: UInt16) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
-        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
-                              runtimeSupport: kRuntime,
+        let options = Options(runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = run(options: options, program: """
             panic("oops!")
@@ -1237,7 +1244,6 @@ func foo() {
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = run(options: options, program: """
@@ -1638,8 +1644,7 @@ func foo() {
     }
     
     func testArraySlice_SliceStaticArrayWithCompileTimeRange() {
-        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
-                              runtimeSupport: kRuntime)
+        let options = Options(runtimeSupport: kRuntime)
         let debugger = run(options: options, program: """
             let helloWorld = "Hello, World!"
             let hello = helloWorld[0..5]
@@ -1655,7 +1660,6 @@ func foo() {
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = run(options: options, program: """
@@ -1675,7 +1679,6 @@ func foo() {
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = run(options: options, program: """
@@ -1695,7 +1698,6 @@ func foo() {
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = run(options: options, program: """
@@ -1714,7 +1716,6 @@ func foo() {
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = run(options: options, program: """
@@ -1734,7 +1735,6 @@ func foo() {
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = run(options: options, program: """
@@ -1754,7 +1754,6 @@ func foo() {
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = run(options: options, program: """
@@ -1771,7 +1770,6 @@ func foo() {
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               shouldRunSpecificTest: "foo",
                               onSerialOutput: onSerialOutput)
@@ -1790,7 +1788,6 @@ func foo() {
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               shouldRunSpecificTest: "foo",
                               onSerialOutput: onSerialOutput)
@@ -1810,7 +1807,6 @@ func foo() {
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               shouldRunSpecificTest: "foo",
                               onSerialOutput: onSerialOutput,
@@ -1834,7 +1830,6 @@ func foo() {
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = run(options: options, program: """
@@ -1869,7 +1864,6 @@ func foo() {
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = run(options: options, program: """
@@ -1890,8 +1884,7 @@ func foo() {
         let onSerialOutput = { (value: UInt16) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
-        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
-                              runtimeSupport: kRuntime,
+        let options = Options(runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = run(options: options, program: """
             struct Serial {
@@ -1912,8 +1905,7 @@ func foo() {
         let onSerialOutput = { (value: UInt16) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
-        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
-                              runtimeSupport: kRuntime,
+        let options = Options(runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = run(options: options, program: """
             struct Foo {
@@ -1980,8 +1972,7 @@ func foo() {
         let onSerialOutput = { (value: UInt16) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
-        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
-                              runtimeSupport: kRuntime,
+        let options = Options(runtimeSupport: kRuntime,
                               shouldRunSpecificTest: "foo",
                               onSerialOutput: onSerialOutput)
         _ = run(options: options, program: """
@@ -2018,8 +2009,7 @@ func foo() {
         let onSerialOutput = { (value: UInt16) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
-        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
-                              runtimeSupport: kRuntime,
+        let options = Options(runtimeSupport: kRuntime,
                               shouldRunSpecificTest: "call through vtable pseudo-interface",
                               onSerialOutput: onSerialOutput)
         _ = run(options: options, program: """
@@ -2078,8 +2068,7 @@ func foo() {
         let onSerialOutput = { (value: UInt16) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
-        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
-                              runtimeSupport: kRuntime,
+        let options = Options(runtimeSupport: kRuntime,
                               shouldRunSpecificTest: "call through trait interface",
                               onSerialOutput: onSerialOutput)
         _ = run(options: options, program: """
@@ -2207,8 +2196,7 @@ func foo() {
         let onSerialOutput = { (value: UInt16) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
-        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
-                              runtimeSupport: kRuntime,
+        let options = Options(runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = run(options: options, program: """
             struct Foo {
@@ -2308,8 +2296,7 @@ func foo() {
         let onSerialOutput = { (value: UInt16) in
             serialOutput.append(UInt8(value & 0x00ff))
         }
-        let options = Options(shouldDefineCompilerIntrinsicFunctions: true,
-                              runtimeSupport: kRuntime,
+        let options = Options(runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = run(options: options, program: """
             let helloWorld = "Hello, World!"
@@ -2608,7 +2595,6 @@ func foo() {
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               shouldRunSpecificTest: "foo",
                               onSerialOutput: onSerialOutput)
@@ -2630,7 +2616,6 @@ func foo() {
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = run(options: options, program: """
@@ -2657,7 +2642,6 @@ func foo() {
             serialOutput.append(UInt8(value & 0x00ff))
         }
         let options = Options(isBoundsCheckEnabled: true,
-                              shouldDefineCompilerIntrinsicFunctions: true,
                               runtimeSupport: kRuntime,
                               shouldRunSpecificTest: "foo",
                               onSerialOutput: onSerialOutput)

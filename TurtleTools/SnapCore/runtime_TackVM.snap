@@ -1,7 +1,19 @@
+public struct Range {
+    begin: u16, limit: u16
+}
+
+public struct Slice {
+    base: u16, count: u16
+}       
+
 // Syscall numbers must match those in TackVirtualMachine.swift
 private let kSyscallInvalid = 0
 private let kSyscallRead = 1
 private let kSyscallWrite = 2
+
+public func __syscall(syscallNumber: u16, arg: *void) {
+    asm("SYSCALL")
+}
 
 public func getc() -> u8 {
     struct Arguments {
@@ -28,6 +40,10 @@ public func puts(s: []const u8) {
     for c in s {
         putc(c)
     }
+}
+
+public func hlt() {
+    asm("HLT")
 }
 
 public func panic(message: []const u8) {

@@ -35,7 +35,7 @@ public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
             let importStmt = Import(moduleName: kStandardLibraryModuleName)
             children.insert(importStmt, at: 0)
         }
-        if let runtimeSupport = runtimeSupport {
+        if let runtimeSupport {
             children.insert(Import(moduleName: runtimeSupport), at: 0)
         }
         let block = Block(sourceAnchor: node.sourceAnchor,

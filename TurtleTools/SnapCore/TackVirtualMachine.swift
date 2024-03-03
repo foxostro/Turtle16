@@ -1188,6 +1188,11 @@ public class TackVirtualMachine: NSObject {
         switch asm {
         case "HLT":
             hlt()
+            
+        case "SYSCALL":
+            try addip(.p(0), .fp, 8) // syscall number
+            try addip(.p(1), .fp, 7) // pointer to argument struct
+            try syscall(.p(0), .p(1))
         
         case "BREAK":
             if nextPc < breakPoints.count {

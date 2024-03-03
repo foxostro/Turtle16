@@ -14,7 +14,6 @@ final class TackDebuggerTests: XCTestCase {
     fileprivate struct Options {
         public let isVerboseLogging: Bool
         public let isBoundsCheckEnabled: Bool
-        public let shouldDefineCompilerIntrinsicFunctions: Bool
         public let isUsingStandardLibrary: Bool
         public let runtimeSupport: String?
         public let shouldRunSpecificTest: String?
@@ -23,7 +22,6 @@ final class TackDebuggerTests: XCTestCase {
         
         public init(isVerboseLogging: Bool = false,
                     isBoundsCheckEnabled: Bool = false,
-                    shouldDefineCompilerIntrinsicFunctions: Bool = false,
                     isUsingStandardLibrary: Bool = false,
                     runtimeSupport: String? = nil,
                     shouldRunSpecificTest: String? = nil,
@@ -31,7 +29,6 @@ final class TackDebuggerTests: XCTestCase {
                     injectModules: [String:String] = [:]) {
             self.isVerboseLogging = isVerboseLogging
             self.isBoundsCheckEnabled = isBoundsCheckEnabled
-            self.shouldDefineCompilerIntrinsicFunctions = shouldDefineCompilerIntrinsicFunctions
             self.isUsingStandardLibrary = isUsingStandardLibrary
             self.runtimeSupport = runtimeSupport
             self.shouldRunSpecificTest = shouldRunSpecificTest
@@ -43,7 +40,6 @@ final class TackDebuggerTests: XCTestCase {
     fileprivate func makeDebugger(options: Options, program: String) throws -> TackDebugger {
         let opts2 = SnapCompilerFrontEnd.Options(
             isBoundsCheckEnabled: options.isBoundsCheckEnabled,
-            shouldDefineCompilerIntrinsicFunctions: options.shouldDefineCompilerIntrinsicFunctions,
             isUsingStandardLibrary: options.isUsingStandardLibrary,
             runtimeSupport: options.runtimeSupport,
             shouldRunSpecificTest: options.shouldRunSpecificTest,

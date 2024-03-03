@@ -1,3 +1,16 @@
+public struct Range {
+    begin: u16, limit: u16
+}
+
+public struct Slice {
+    base: u16, count: u16
+}
+
+public func __syscall(syscallNumber: u16, arg: *void) {
+    static let kPanicMessageUnimplemented = "__syscall is unimplemented"
+    panic(kPanicMessageUnimplemented)
+}
+
 let serialOut = (0x0001 as u16) bitcastAs *u8
 
 public func putc(c: u8) {
@@ -8,6 +21,13 @@ public func puts(s: []const u8) {
     for c in s {
         serialOut.pointee = c
     }
+}
+
+public func hlt() {
+    asm("""
+        NOP
+        HLT
+        """)
 }
 
 public func panic(message: []const u8) {

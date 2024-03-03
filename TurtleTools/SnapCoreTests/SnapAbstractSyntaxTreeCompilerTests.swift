@@ -17,9 +17,7 @@ class SnapAbstractSyntaxTreeCompilerTests: XCTestCase {
         let input = TopLevel(children: [CommentNode(string: "")])
         compiler.compile(input)
         let actual = compiler.ast
-        let expectedGlobalSymbols = SymbolTable()
-            .withCompilerIntrinsics(globalEnvironment.memoryLayoutStrategy)
-        let expected = Block(symbols: expectedGlobalSymbols,
+        let expected = Block(symbols: SymbolTable(),
                              children: [CommentNode(string: "")])
         XCTAssertFalse(compiler.hasError)
         XCTAssertEqual(expected, actual)

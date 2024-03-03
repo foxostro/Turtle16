@@ -77,7 +77,7 @@ public class SnapCompilerFrontEnd: NSObject {
     }
     
     func contract(_ syntaxTree: AbstractSyntaxTreeNode?) -> Result<AbstractSyntaxTreeNode?, Error> {
-        let contractionStep = SnapAbstractSyntaxTreeCompiler(
+        let contractionStep = SnapToCoreCompiler(
             shouldRunSpecificTest: options.shouldRunSpecificTest,
             injectModules: Array(options.injectedModules),
             isUsingStandardLibrary: options.isUsingStandardLibrary,

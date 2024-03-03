@@ -45,7 +45,7 @@ public class SnapSubcompilerImport: NSObject {
         let isUsingStandardLibrary = (node.moduleName != kStandardLibraryModuleName) && (runtimeSupport == nil)
         let moduleData = try readModuleFromFile(sourceAnchor: node.sourceAnchor, moduleName: node.moduleName)
         let topLevel = try parse(url: moduleData.1, text: moduleData.0)
-        let compiler = SnapAbstractSyntaxTreeCompiler(
+        let compiler = SnapToCoreCompiler(
             isUsingStandardLibrary: isUsingStandardLibrary,
             runtimeSupport: (node.moduleName == runtimeSupport) ? nil : runtimeSupport,
             sandboxAccessManager: sandboxAccessManager,

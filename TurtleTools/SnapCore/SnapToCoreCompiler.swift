@@ -1,5 +1,5 @@
 //
-//  SnapAbstractSyntaxTreeCompiler.swift
+//  SnapToCoreCompiler.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 7/28/21.
@@ -8,11 +8,14 @@
 
 import TurtleCore
 
+// Compiles a syntax tree, lowering nodes to the core Snap language.
 // Accepts a parse / syntax tree and returns an abstract syntax tree.
 // This is generally a contraction and rewriting of the parse tree, simplifying,
 // removing extraneous nodes, and rewriting nodes to express high-level concepts
-// in terms simpler ones.
-public class SnapAbstractSyntaxTreeCompiler: NSObject {
+// in terms simpler ones. (i.e., de-sugaring of language constructs)
+// The core Snap language is a simpler subset of the language which can be
+// accepted by the next stage of the compiler.
+public class SnapToCoreCompiler: NSObject {
     public private(set) var ast: Block = Block()
     public private(set) var testNames: [String] = []
     public private(set) var errors: [CompilerError] = []
@@ -42,9 +45,7 @@ public class SnapAbstractSyntaxTreeCompiler: NSObject {
     }
     
     public func compile(_ root: AbstractSyntaxTreeNode?) {
-        guard let root = root else {
-            return
-        }
+        guard let root else { return }
         do {
             guard let topLevel = try tryCompile(root) as? Block else {
                 throw CompilerError(message: "expected Block at root of tree after AST transformation")

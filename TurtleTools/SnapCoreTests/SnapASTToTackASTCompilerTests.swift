@@ -3293,7 +3293,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         ])
 
         let opts = SnapASTToTackASTCompiler.Options()
-        let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
+        let contractStep = SnapToCoreCompiler(globalEnvironment: globalEnvironment)
         contractStep.compile(ast0)
         let ast1 = contractStep.ast
         let compiler = SnapASTToTackASTCompiler(symbols: symbols, globalEnvironment: globalEnvironment, options: opts)
@@ -3343,7 +3343,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         ])
 
         let opts = SnapASTToTackASTCompiler.Options()
-        let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
+        let contractStep = SnapToCoreCompiler(globalEnvironment: globalEnvironment)
         contractStep.compile(ast0)
         let ast1 = contractStep.ast
         let actual = try SnapASTToTackASTCompiler(symbols: symbols, globalEnvironment: globalEnvironment, options: opts).compile(ast1)
@@ -3665,7 +3665,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
 
         let symbols = SymbolTable()
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
+        let contractStep = SnapToCoreCompiler(globalEnvironment: globalEnvironment)
         contractStep.compile(ast0)
         let ast1 = contractStep.ast
         let compiler = SnapASTToTackASTCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
@@ -3697,7 +3697,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
 
         let symbols = SymbolTable()
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
+        let contractStep = SnapToCoreCompiler(globalEnvironment: globalEnvironment)
         contractStep.compile(ast0)
         let ast1 = contractStep.ast
         let compiler = SnapASTToTackASTCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
@@ -3736,7 +3736,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
 
         let symbols = SymbolTable()
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
+        let contractStep = SnapToCoreCompiler(globalEnvironment: globalEnvironment)
         contractStep.compile(ast0)
         if contractStep.hasError {
             XCTFail("contract step failed before the test")
@@ -3788,7 +3788,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
 
         let symbols = SymbolTable()
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        let contractStep = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
+        let contractStep = SnapToCoreCompiler(globalEnvironment: globalEnvironment)
         contractStep.compile(ast0)
         if contractStep.hasError {
             let error = CompilerError.makeOmnibusError(fileName: nil, errors: contractStep.errors)

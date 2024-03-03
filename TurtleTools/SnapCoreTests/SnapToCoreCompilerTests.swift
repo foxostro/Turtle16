@@ -1,5 +1,5 @@
 //
-//  SnapAbstractSyntaxTreeCompilerTests.swift
+//  SnapToCoreCompilerTests.swift
 //  SnapCoreTests
 //
 //  Created by Andrew Fox on 7/28/21.
@@ -10,10 +10,10 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class SnapAbstractSyntaxTreeCompilerTests: XCTestCase {
+class SnapToCoreCompilerTests: XCTestCase {
     func testExample() throws {
         let globalEnvironment = GlobalEnvironment()
-        let compiler = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
+        let compiler = SnapToCoreCompiler(globalEnvironment: globalEnvironment)
         let input = TopLevel(children: [CommentNode(string: "")])
         compiler.compile(input)
         let actual = compiler.ast
@@ -25,7 +25,7 @@ class SnapAbstractSyntaxTreeCompilerTests: XCTestCase {
     
     func testExpectTopLevelNodeAtRoot() throws {
         let globalEnvironment = GlobalEnvironment()
-        let compiler = SnapAbstractSyntaxTreeCompiler(globalEnvironment: globalEnvironment)
+        let compiler = SnapToCoreCompiler(globalEnvironment: globalEnvironment)
         compiler.compile(CommentNode(string: ""))
         XCTAssertTrue(compiler.hasError)
     }

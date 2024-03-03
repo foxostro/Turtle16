@@ -5033,10 +5033,11 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testSubscriptAnArrayWithARange() {
-        let binder = CompilerIntrinsicSymbolBinder(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let symbols = binder.bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
-            ("foo", Symbol(type: .array(count: 10, elementType: .arithmeticType(.mutableInt(.u8))), offset: 0x0010))
-        ]))
+        let symbols = SymbolTable(tuples: [
+                ("foo", Symbol(type: .array(count: 10, elementType: .arithmeticType(.mutableInt(.u8))), offset: 0x0010))
+            ])
+            .withCompilerIntrinsicRangeType(MemoryLayoutStrategyTurtleTTL())
+        
         let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
             Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(1)),
             Expression.StructInitializer.Argument(name: "limit", expr: Expression.LiteralInt(2))
@@ -5050,10 +5051,10 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testSubscriptADynamicArrayWithARange_1() {
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
-        let binder = CompilerIntrinsicSymbolBinder(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let symbols = binder.bindCompilerIntrinsics(symbols: SymbolTable(tuples: [
-            ("foo", Symbol(type: .dynamicArray(elementType: .arithmeticType(.mutableInt(.u16))), offset: offset))
-        ]))
+        let symbols = SymbolTable(tuples: [
+                ("foo", Symbol(type: .dynamicArray(elementType: .arithmeticType(.mutableInt(.u16))), offset: offset))
+            ])
+            .withCompilerIntrinsicRangeType(MemoryLayoutStrategyTurtleTTL())
         let range = Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [
             Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(0)),
             Expression.StructInitializer.Argument(name: "limit", expr: Expression.LiteralInt(0))

@@ -57,8 +57,8 @@ public class SnapAbstractSyntaxTreeCompiler: NSObject {
     
     func tryCompile(_ t0: AbstractSyntaxTreeNode) throws -> AbstractSyntaxTreeNode? {
         // Bind compiler intrinsics in the environment's global symbol table.
-        let binder = CompilerIntrinsicSymbolBinder(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy)
-        _ = binder.bindCompilerIntrinsics(symbols: globalEnvironment.globalSymbols)
+        _ = globalEnvironment.globalSymbols
+            .withCompilerIntrinsics(globalEnvironment.memoryLayoutStrategy)
         
         // Erase test declarations and replace with a synthesized test runner.
         let testDeclarationTransformer = SnapASTTransformerTestDeclaration(

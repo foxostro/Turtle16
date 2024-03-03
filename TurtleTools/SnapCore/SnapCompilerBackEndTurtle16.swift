@@ -26,7 +26,7 @@ public class SnapCompilerBackEndTurtle16: NSObject {
     }
     
     func compileTackToAssembly(_ tackProgram: TackProgram) -> Result<TopLevel, Error> {
-        let compiler = TackToTurtle16Compiler(globalEnvironment.globalSymbols)
+        let compiler = TackToTurtle16Compiler()
         return Result(catching: {
             try compiler.compile(TopLevel(children: [
                 tackProgram.ast

@@ -13,7 +13,7 @@ import TurtleCore
 class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
     func testFunctionRedefinesExistingSymbol() throws {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let symbols = globalEnvironment.globalSymbols
+        let symbols = SymbolTable()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .void))
         let compiler = SnapSubcompilerFunctionDeclaration()
         let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
@@ -28,7 +28,7 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
     
     func testFunctionBodyMissingReturn() throws {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let symbols = globalEnvironment.globalSymbols
+        let symbols = SymbolTable()
         let compiler = SnapSubcompilerFunctionDeclaration()
         let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                         functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: []),
@@ -43,7 +43,7 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
     
     func testDeclareFunction() throws {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let symbols = globalEnvironment.globalSymbols
+        let symbols = SymbolTable()
         let originalBody = Block(children: [])
         let expectedRewrittenBody = Block(children: [Return()])
         let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
@@ -68,7 +68,7 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
     
     func testCompilationFailsBecauseCodeAfterReturnWillNeverBeExecuted() {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let symbols = globalEnvironment.globalSymbols
+        let symbols = SymbolTable()
         let compiler = SnapSubcompilerFunctionDeclaration()
         let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                         functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: []),
@@ -98,7 +98,7 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
                                         visibility: .privateVisibility,
                                         symbols: SymbolTable())
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let symbols = globalEnvironment.globalSymbols
+        let symbols = SymbolTable()
         try SnapSubcompilerFunctionDeclaration()
             .compile(globalEnvironment: globalEnvironment,
                      symbols: symbols,

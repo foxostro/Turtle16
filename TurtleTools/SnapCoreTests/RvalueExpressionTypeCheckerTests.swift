@@ -5150,13 +5150,13 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testAssignment_automatic_conversion_from_trait_to_pointer() throws {
         let globalEnvironment = GlobalEnvironment()
-        let symbols = globalEnvironment.globalSymbols
+        let symbols = SymbolTable()
         let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Foo"),
                                          members: [],
                                          visibility: .privateVisibility)
-        _ = try SnapSubcompilerTraitDeclaration(
-            globalEnvironment: globalEnvironment,
-            symbols: globalEnvironment.globalSymbols).compile(traitDecl)
+        _ = try SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment,
+                                                symbols: symbols)
+            .compile(traitDecl)
         
         let traitObjectType = try symbols.resolveType(identifier: traitDecl.nameOfTraitObjectType)
         symbols.bind(identifier: "foo", symbol: Symbol(type: .pointer(traitObjectType), offset: 0x1000, storage: .staticStorage))

@@ -36,14 +36,11 @@ public class GlobalEnvironment: NSObject {
     public let tempNameMaker = LabelMaker(prefix: "__temp")
     public var modules: [String : Block] = [:]
     public let functionsToCompile: FunctionsToCompile
-    public let globalSymbols: SymbolTable
     
     public init(memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16(),
-                functionsToCompile: FunctionsToCompile = FunctionsToCompile(),
-                globalSymbols: SymbolTable = SymbolTable()) {
+                functionsToCompile: FunctionsToCompile = FunctionsToCompile()) {
         self.memoryLayoutStrategy = memoryLayoutStrategy
         self.functionsToCompile = functionsToCompile
-        self.globalSymbols = globalSymbols
     }
     
     public func hasModule(_ name: String) -> Bool {

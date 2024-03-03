@@ -11,7 +11,8 @@ import SnapCore
 import TurtleCore
 
 class SnapSubcompilerImplForTests: XCTestCase {
-    fileprivate func compileSerialTrait(_ globalEnvironment: GlobalEnvironment,  _ globalSymbols: SymbolTable) throws {
+    fileprivate func compileSerialTrait(_ globalEnvironment: GlobalEnvironment,
+                                        _ symbols: SymbolTable) throws {
         let bar = TraitDeclaration.Member(name: "puts", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.void), arguments: [
             Expression.PointerType(Expression.Identifier("Serial")),
             Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
@@ -21,21 +22,25 @@ class SnapSubcompilerImplForTests: XCTestCase {
                                          visibility: .privateVisibility)
         _ = try SnapSubcompilerTraitDeclaration(
             globalEnvironment: globalEnvironment,
-            symbols: globalEnvironment.globalSymbols).compile(traitDecl)
+            symbols: symbols)
+        .compile(traitDecl)
     }
     
-    fileprivate func compileSerialFake(_ globalEnvironment: GlobalEnvironment,  _ globalSymbols: SymbolTable) throws {
+    fileprivate func compileSerialFake(_ globalEnvironment: GlobalEnvironment,
+                                       _ symbols: SymbolTable) throws {
         let fake = StructDeclaration(identifier: Expression.Identifier("SerialFake"), members: [])
-        try SnapSubcompilerStructDeclaration(symbols: globalSymbols, globalEnvironment: globalEnvironment)
-            .compile(fake)
+        try SnapSubcompilerStructDeclaration(
+            symbols: symbols,
+            globalEnvironment: globalEnvironment)
+        .compile(fake)
     }
     
     func testCompileImplForTrait() throws {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let globalSymbols = globalEnvironment.globalSymbols
+        let symbols = SymbolTable()
         
-        try compileSerialTrait(globalEnvironment, globalSymbols)
-        try compileSerialFake(globalEnvironment, globalSymbols)
+        try compileSerialTrait(globalEnvironment, symbols)
+        try compileSerialFake(globalEnvironment, symbols)
         
         let ast = ImplFor(typeArguments: [],
                           traitTypeExpr: Expression.Identifier("Serial"),
@@ -50,11 +55,11 @@ class SnapSubcompilerImplForTests: XCTestCase {
                                                   body: Block())
                           ])
         
-        try SnapSubcompilerImplFor(symbols: globalSymbols, globalEnvironment: globalEnvironment).compile(ast)
+        try SnapSubcompilerImplFor(symbols: symbols, globalEnvironment: globalEnvironment).compile(ast)
         
         // Let's examine, for correctness, the vtable symbol
         let nameOfVtableInstance = "__Serial_SerialFake_vtable_instance"
-        let vtableInstance = try globalSymbols.resolve(identifier: nameOfVtableInstance)
+        let vtableInstance = try symbols.resolve(identifier: nameOfVtableInstance)
         let vtableStructType = vtableInstance.type.unwrapStructType()
         XCTAssertEqual(vtableStructType.name, "__Serial_vtable")
         XCTAssertEqual(vtableStructType.symbols.exists(identifier: "puts"), true)
@@ -65,17 +70,17 @@ class SnapSubcompilerImplForTests: XCTestCase {
     
     func testFailToCompileImplForTraitBecauseMethodsAreMissing() throws {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let globalSymbols = globalEnvironment.globalSymbols
+        let symbols = SymbolTable()
         
-        try compileSerialTrait(globalEnvironment, globalSymbols)
-        try compileSerialFake(globalEnvironment, globalSymbols)
+        try compileSerialTrait(globalEnvironment, symbols)
+        try compileSerialFake(globalEnvironment, symbols)
         
         let ast = ImplFor(typeArguments: [],
                           traitTypeExpr: Expression.Identifier("Serial"),
                           structTypeExpr: Expression.Identifier("SerialFake"),
                           children: [])
         
-        let compiler = SnapSubcompilerImplFor(symbols: globalSymbols, globalEnvironment: globalEnvironment)
+        let compiler = SnapSubcompilerImplFor(symbols: symbols, globalEnvironment: globalEnvironment)
         XCTAssertThrowsError(try compiler.compile(ast)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -85,10 +90,10 @@ class SnapSubcompilerImplForTests: XCTestCase {
     
     func testFailToCompileImplForTraitBecauseMethodHasIncorrectNumberOfParameters() throws {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let globalSymbols = globalEnvironment.globalSymbols
+        let symbols = SymbolTable()
         
-        try compileSerialTrait(globalEnvironment, globalSymbols)
-        try compileSerialFake(globalEnvironment, globalSymbols)
+        try compileSerialTrait(globalEnvironment, symbols)
+        try compileSerialFake(globalEnvironment, symbols)
         
         let ast = ImplFor(typeArguments: [],
                           traitTypeExpr: Expression.Identifier("Serial"),
@@ -102,7 +107,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
                                                   body: Block())
                           ])
         
-        let compiler = SnapSubcompilerImplFor(symbols: globalSymbols, globalEnvironment: globalEnvironment)
+        let compiler = SnapSubcompilerImplFor(symbols: symbols, globalEnvironment: globalEnvironment)
         XCTAssertThrowsError(try compiler.compile(ast)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -112,10 +117,10 @@ class SnapSubcompilerImplForTests: XCTestCase {
     
     func testFailToCompileImplForTraitBecauseMethodHasIncorrectParameterTypes() throws {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let globalSymbols = globalEnvironment.globalSymbols
+        let symbols = SymbolTable()
         
-        try compileSerialTrait(globalEnvironment, globalSymbols)
-        try compileSerialFake(globalEnvironment, globalSymbols)
+        try compileSerialTrait(globalEnvironment, symbols)
+        try compileSerialFake(globalEnvironment, symbols)
         
         let ast = ImplFor(typeArguments: [],
                           traitTypeExpr: Expression.Identifier("Serial"),
@@ -130,7 +135,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
                                                   body: Block())
                           ])
         
-        let compiler = SnapSubcompilerImplFor(symbols: globalSymbols, globalEnvironment: globalEnvironment)
+        let compiler = SnapSubcompilerImplFor(symbols: symbols, globalEnvironment: globalEnvironment)
         XCTAssertThrowsError(try compiler.compile(ast)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -140,10 +145,10 @@ class SnapSubcompilerImplForTests: XCTestCase {
     
     func testFailToCompileImplForTraitBecauseMethodHasIncorrectSelfParameterTypes() throws {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let globalSymbols = globalEnvironment.globalSymbols
+        let symbols = SymbolTable()
         
-        try compileSerialTrait(globalEnvironment, globalSymbols)
-        try compileSerialFake(globalEnvironment, globalSymbols)
+        try compileSerialTrait(globalEnvironment, symbols)
+        try compileSerialFake(globalEnvironment, symbols)
         
         let ast = ImplFor(typeArguments: [],
                           traitTypeExpr: Expression.Identifier("Serial"),
@@ -158,7 +163,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
                                                   body: Block())
                           ])
         
-        let compiler = SnapSubcompilerImplFor(symbols: globalSymbols, globalEnvironment: globalEnvironment)
+        let compiler = SnapSubcompilerImplFor(symbols: symbols, globalEnvironment: globalEnvironment)
         XCTAssertThrowsError(try compiler.compile(ast)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -168,10 +173,10 @@ class SnapSubcompilerImplForTests: XCTestCase {
     
     func testFailToCompileImplForTraitBecauseMethodHasIncorrectReturnType() throws {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let globalSymbols = globalEnvironment.globalSymbols
+        let symbols = SymbolTable()
         
-        try compileSerialTrait(globalEnvironment, globalSymbols)
-        try compileSerialFake(globalEnvironment, globalSymbols)
+        try compileSerialTrait(globalEnvironment, symbols)
+        try compileSerialFake(globalEnvironment, symbols)
         
         let ast = ImplFor(typeArguments: [],
                           traitTypeExpr: Expression.Identifier("Serial"),
@@ -188,7 +193,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
                                                 ]))
                           ])
         
-        let compiler = SnapSubcompilerImplFor(symbols: globalSymbols, globalEnvironment: globalEnvironment)
+        let compiler = SnapSubcompilerImplFor(symbols: symbols, globalEnvironment: globalEnvironment)
         XCTAssertThrowsError(try compiler.compile(ast)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)

@@ -20,12 +20,12 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
     
     func testFunctionDeclaration() throws {
         let globalEnvironment = GlobalEnvironment()
-        let globalSymbols = globalEnvironment.globalSymbols
+        let symbols = SymbolTable()
         let originalFunctionDeclaration = FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                                               functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
                                                               argumentNames: [],
                                                               body: Block(children: []))
-        let input = Block(symbols: globalSymbols, children: [
+        let input = Block(symbols: symbols, children: [
             originalFunctionDeclaration
         ])
         
@@ -41,18 +41,18 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         
         let compiler = SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment)
         _ = try compiler.compile(input)
-        let actual = try globalSymbols.resolve(identifier: "foo")
+        let actual = try symbols.resolve(identifier: "foo")
         XCTAssertEqual(actual, expected)
     }
     
     func testStructDeclaration() throws {
         let globalEnvironment = GlobalEnvironment()
-        let globalSymbols = globalEnvironment.globalSymbols
-        let input = Block(symbols: globalSymbols, children: [
+        let symbols = SymbolTable()
+        let input = Block(symbols: symbols, children: [
             StructDeclaration(identifier: Expression.Identifier("None"), members: [])
         ])
         
-        let expected = Block(symbols: globalSymbols, children: []) // StructDeclaration is removed after being processed
+        let expected = Block(symbols: symbols, children: []) // StructDeclaration is removed after being processed
         let compiler = SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment)
         let result = try? compiler.compile(input)
         XCTAssertEqual(result, expected)
@@ -60,32 +60,32 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         let expectedStructSymbols = SymbolTable()
         expectedStructSymbols.enclosingFunctionNameMode = .set("None")
         let expectedType: SymbolType = .structType(StructType(name: "None", symbols: expectedStructSymbols))
-        let actualType = try? globalSymbols.resolveType(identifier: "None")
+        let actualType = try? symbols.resolveType(identifier: "None")
         XCTAssertEqual(actualType, expectedType)
     }
     
     func testTypealias() throws {
         let globalEnvironment = GlobalEnvironment()
-        let globalSymbols = globalEnvironment.globalSymbols
-        let input = Block(symbols: globalSymbols, children: [
+        let symbols = SymbolTable()
+        let input = Block(symbols: symbols, children: [
             Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
         ])
         
-        let expected = Block(symbols: globalSymbols, children: []) // Typealias is removed after being processed
+        let expected = Block(symbols: symbols, children: []) // Typealias is removed after being processed
         let compiler = SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment)
         let result = try? compiler.compile(input)
         XCTAssertEqual(result, expected)
         
         let expectedType: SymbolType = .arithmeticType(.mutableInt(.u8))
-        let actualType = try? globalSymbols.resolveType(identifier: "Foo")
+        let actualType = try? symbols.resolveType(identifier: "Foo")
         XCTAssertEqual(actualType, expectedType)
     }
     
     func testTraitDeclaration() throws {
         let globalEnvironment = GlobalEnvironment()
-        let globalSymbols = globalEnvironment.globalSymbols
+        let symbols = SymbolTable()
         
-        let input = Block(symbols: globalSymbols, children: [
+        let input = Block(symbols: symbols, children: [
             TraitDeclaration(identifier: Expression.Identifier("Foo"), members: [])
         ])
         
@@ -95,14 +95,14 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         let expectedSymbols = SymbolTable()
         expectedSymbols.enclosingFunctionNameMode = .set("Foo")
         let expectedType: SymbolType = .traitType(TraitType(name: "Foo", nameOfTraitObjectType: "__Foo_object", nameOfVtableType: "__Foo_vtable", symbols: expectedSymbols))
-        let actualType = try? globalSymbols.resolveType(identifier: "Foo")
+        let actualType = try? symbols.resolveType(identifier: "Foo")
         XCTAssertEqual(expectedType, actualType)
     }
     
     func testImportStdlib() throws {
         let globalEnvironment = GlobalEnvironment()
-        let globalSymbols = globalEnvironment.globalSymbols
-        let input = Block(symbols: globalSymbols, children: [
+        let symbols = SymbolTable()
+        let input = Block(symbols: symbols, children: [
             Import(moduleName: kStandardLibraryModuleName)
         ])
         let compiler = SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment)
@@ -110,13 +110,13 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         XCTAssertNoThrow(output = try compiler.compile(input))
         XCTAssertNotNil(output)
         XCTAssertTrue(compiler.globalEnvironment.hasModule(kStandardLibraryModuleName))
-        XCTAssertTrue(globalSymbols.modulesAlreadyImported.contains(kStandardLibraryModuleName))
-        XCTAssertNotNil(try? globalSymbols.resolve(identifier: "none"))
+        XCTAssertTrue(symbols.modulesAlreadyImported.contains(kStandardLibraryModuleName))
+        XCTAssertNotNil(try? symbols.resolve(identifier: "none"))
     }
     
     func testImpl() throws {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let globalSymbols = globalEnvironment.globalSymbols
+        let symbols = SymbolTable()
         
         func makeImpl() throws {
             let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [
@@ -127,7 +127,8 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
                                        visibility: .privateVisibility)
             _ = try SnapSubcompilerTraitDeclaration(
                 globalEnvironment: globalEnvironment,
-                symbols: globalEnvironment.globalSymbols).compile(foo)
+                symbols: symbols)
+            .compile(foo)
         }
         try makeImpl()
         
@@ -145,7 +146,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
                                                   arguments: [argType])
             return expectedMethodType
         }
-        let expectedMethodType = makeExpectedMethodType(symbols: globalSymbols, globalEnvironment: globalEnvironment)
+        let expectedMethodType = makeExpectedMethodType(symbols: symbols, globalEnvironment: globalEnvironment)
         
         let actualMethodType = globalEnvironment.functionsToCompile.removeFirst()
         XCTAssertEqual(actualMethodType, expectedMethodType)
@@ -153,7 +154,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
     
     func testCompileImplForTrait() throws {
         let globalEnvironment = GlobalEnvironment()
-        let globalSymbols = globalEnvironment.globalSymbols
+        let symbols = SymbolTable()
         
         let bar = TraitDeclaration.Member(name: "puts", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.void), arguments: [
             Expression.PointerType(Expression.Identifier("Serial")),
@@ -175,7 +176,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
                                                     argumentNames: ["self", "s"],
                                                     body: Block())
                               ])
-        let input = Block(symbols: globalSymbols, children: [
+        let input = Block(symbols: symbols, children: [
             traitDecl,
             fake,
             implFor
@@ -186,7 +187,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         
         // Let's examine, for correctness, the vtable symbol
         let nameOfVtableInstance = "__Serial_SerialFake_vtable_instance"
-        let vtableInstance = try globalSymbols.resolve(identifier: nameOfVtableInstance)
+        let vtableInstance = try symbols.resolve(identifier: nameOfVtableInstance)
         let vtableStructType = vtableInstance.type.unwrapStructType()
         XCTAssertEqual(vtableStructType.name, "__Serial_vtable")
         XCTAssertEqual(vtableStructType.symbols.exists(identifier: "puts"), true)

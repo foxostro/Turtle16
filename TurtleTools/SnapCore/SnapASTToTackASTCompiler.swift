@@ -66,7 +66,9 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         return result
     }
     
-    public init(symbols: SymbolTable, globalEnvironment: GlobalEnvironment, options: SnapASTToTackASTCompiler.Options = Options()) {
+    public init(symbols: SymbolTable = SymbolTable(),
+                globalEnvironment: GlobalEnvironment,
+                options: SnapASTToTackASTCompiler.Options = Options()) {
         self.globalEnvironment = globalEnvironment
         self.options = options
         kUnionTypeTagOffset = 0

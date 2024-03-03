@@ -13,6 +13,7 @@ import TurtleCore
 class SnapSubcompilerImplTests: XCTestCase {
     func testExample() throws {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let symbols = SymbolTable()
         
         func makeImpl() throws {
             let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [
@@ -23,7 +24,8 @@ class SnapSubcompilerImplTests: XCTestCase {
                                        visibility: .privateVisibility)
             _ = try SnapSubcompilerTraitDeclaration(
                 globalEnvironment: globalEnvironment,
-                symbols: globalEnvironment.globalSymbols).compile(foo)
+                symbols: symbols)
+            .compile(foo)
         }
         try makeImpl()
         
@@ -36,7 +38,10 @@ class SnapSubcompilerImplTests: XCTestCase {
         
         func makeExpectedMethodType(_ globalEnvironment: GlobalEnvironment) -> FunctionType {
             let argTypeExpr = Expression.PointerType(Expression.Identifier("__Foo_object"))
-            let argType = try! RvalueExpressionTypeChecker(symbols: globalEnvironment.globalSymbols, globalEnvironment: globalEnvironment).check(expression: argTypeExpr)
+            let argType = try! RvalueExpressionTypeChecker(
+                symbols: symbols,
+                globalEnvironment: globalEnvironment)
+            .check(expression: argTypeExpr)
             let expectedMethodType = FunctionType(name: "bar",
                                                   mangledName: "__Foo_object_bar",
                                                   returnType: .arithmeticType(.mutableInt(.u8)),
@@ -56,7 +61,10 @@ class SnapSubcompilerImplTests: XCTestCase {
         let foo = TraitDeclaration(identifier: Expression.Identifier("Foo"),
                                    members: [bar, bar],
                                    visibility: .privateVisibility)
-        XCTAssertThrowsError(try SnapSubcompilerTraitDeclaration( globalEnvironment: globalEnvironment, symbols: globalEnvironment.globalSymbols).compile(foo)) {
+        XCTAssertThrowsError(try SnapSubcompilerTraitDeclaration(
+            globalEnvironment: globalEnvironment,
+            symbols: SymbolTable()).compile(foo)) {
+            
             let error = $0 as? CompilerError
             XCTAssertEqual(error?.message, "function redefines existing symbol: `bar'")
         }

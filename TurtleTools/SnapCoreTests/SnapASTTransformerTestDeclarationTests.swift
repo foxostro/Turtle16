@@ -30,7 +30,7 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
         ])
         
         // It's super annoying to connect symbol table chains by hand. Do it automatically.
-        SymbolTablesReconnector(globalEnvironment.globalSymbols).reconnect(original)
+        SymbolTablesReconnector().reconnect(original)
         
         let transformer = SnapASTTransformerTestDeclaration(globalEnvironment: globalEnvironment,
                                                             shouldRunSpecificTest: "bar")
@@ -51,7 +51,7 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
         ])
         
         // It's super annoying to connect symbol table chains by hand. Do it automatically.
-        SymbolTablesReconnector(globalEnvironment.globalSymbols).reconnect(original)
+        SymbolTablesReconnector().reconnect(original)
         
         let transformer = SnapASTTransformerTestDeclaration(globalEnvironment: globalEnvironment)
         XCTAssertThrowsError(try transformer.compile(original)) {

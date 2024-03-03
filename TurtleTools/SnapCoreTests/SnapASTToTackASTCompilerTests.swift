@@ -32,10 +32,10 @@ let kRangeType: SymbolType = .structType(StructType(name: kRangeName, symbols: S
 
 
 class SnapASTToTackASTCompilerTests: XCTestCase {
-    func makeCompiler(options opts: SnapASTToTackASTCompiler.Options = SnapASTToTackASTCompiler.Options(isBoundsCheckEnabled: true), symbols: SymbolTable = SymbolTable()) -> SnapASTToTackASTCompiler {
+    func makeCompiler(options opts: SnapASTToTackASTCompiler.Options = SnapASTToTackASTCompiler.Options(isBoundsCheckEnabled: true),
+                      symbols: SymbolTable = SymbolTable()) -> SnapASTToTackASTCompiler {
         let globalEnvironment = GlobalEnvironment(
-            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
-            globalSymbols: symbols)
+            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
         return SnapASTToTackASTCompiler(
             symbols: symbols,
             globalEnvironment: globalEnvironment,
@@ -2193,13 +2193,14 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
 
     func testRvalue_Assignment_automatic_conversion_from_trait_to_pointer() throws {
         let globalEnvironment = GlobalEnvironment()
-        let symbols = globalEnvironment.globalSymbols
+        let symbols = SymbolTable()
         let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Foo"),
                                          members: [],
                                          visibility: .privateVisibility)
         _ = try SnapSubcompilerTraitDeclaration(
             globalEnvironment: globalEnvironment,
-            symbols: globalEnvironment.globalSymbols).compile(traitDecl)
+            symbols: symbols)
+        .compile(traitDecl)
 
         let traitObjectType = try symbols.resolveType(identifier: traitDecl.nameOfTraitObjectType)
         symbols.bind(identifier: "foo", symbol: Symbol(type: .pointer(traitObjectType), offset: 0x1000, storage: .staticStorage))
@@ -2591,17 +2592,17 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         // This test is for the case where the callee of the Call expression is
         // A Get expression where expr is of the type `Foo' and the function's
         // first argument is of the type `*Foo'
-        let globalSymbols = SymbolTable()
+        let symbols = SymbolTable()
         let fooSymbols = SymbolTable()
         let fooType = SymbolType.structType(StructType(name: "Foo", symbols: fooSymbols))
         let fnType = FunctionType(name: "bar", mangledName: "bar", returnType: .void, arguments: [
             .pointer(fooType)
         ])
         fooSymbols.bind(identifier: "bar", symbol: Symbol(type: .function(fnType)))
-        globalSymbols.bind(identifier: "Foo", symbolType: fooType)
-        globalSymbols.bind(identifier: "foo", symbol: Symbol(type: fooType, offset: 0x1000, storage: .staticStorage))
+        symbols.bind(identifier: "Foo", symbolType: fooType)
+        symbols.bind(identifier: "foo", symbol: Symbol(type: fooType, offset: 0x1000, storage: .staticStorage))
 
-        let compiler = makeCompiler(symbols: globalSymbols)
+        let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Get(expr: Expression.Identifier("foo"), member: Expression.Identifier("bar")), arguments: []))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 272)),
@@ -2628,17 +2629,17 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         // This test is for the case where the callee of the Call expression is
         // A Get expression where expr is of the type `Foo' and the function's
         // first argument is of the type `*const Foo'
-        let globalSymbols = SymbolTable()
+        let symbols = SymbolTable()
         let fooSymbols = SymbolTable()
         let fooType = SymbolType.structType(StructType(name: "Foo", symbols: fooSymbols))
         let fnType = FunctionType(name: "bar", mangledName: "bar", returnType: .void, arguments: [
             .constPointer(fooType)
         ])
         fooSymbols.bind(identifier: "bar", symbol: Symbol(type: .function(fnType)))
-        globalSymbols.bind(identifier: "Foo", symbolType: fooType)
-        globalSymbols.bind(identifier: "foo", symbol: Symbol(type: fooType, offset: 0x1000, storage: .staticStorage))
+        symbols.bind(identifier: "Foo", symbolType: fooType)
+        symbols.bind(identifier: "foo", symbol: Symbol(type: fooType, offset: 0x1000, storage: .staticStorage))
 
-        let compiler = makeCompiler(symbols: globalSymbols)
+        let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Get(expr: Expression.Identifier("foo"), member: Expression.Identifier("bar")), arguments: []))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 272)),
@@ -2665,17 +2666,17 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
         // This test is for the case where the callee of the Call expression is
         // A Get expression where expr is of the type `Foo' and the function's
         // first argument is of the type `*const Foo'
-        let globalSymbols = SymbolTable()
+        let symbols = SymbolTable()
         let fooSymbols = SymbolTable()
         let fooType = SymbolType.structType(StructType(name: "Foo", symbols: fooSymbols))
         let fnType = FunctionType(name: "bar", mangledName: "bar", returnType: .void, arguments: [
             .constPointer(fooType.correspondingConstType)
         ])
         fooSymbols.bind(identifier: "bar", symbol: Symbol(type: .function(fnType)))
-        globalSymbols.bind(identifier: "Foo", symbolType: fooType)
-        globalSymbols.bind(identifier: "foo", symbol: Symbol(type: fooType, offset: 0x1000, storage: .staticStorage))
+        symbols.bind(identifier: "Foo", symbolType: fooType)
+        symbols.bind(identifier: "foo", symbol: Symbol(type: fooType, offset: 0x1000, storage: .staticStorage))
 
-        let compiler = makeCompiler(symbols: globalSymbols)
+        let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Get(expr: Expression.Identifier("foo"), member: Expression.Identifier("bar")), arguments: []))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 272)),
@@ -3267,7 +3268,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
 
     func testRvalue_convert_pointer_to_trait() throws {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        let symbols = globalEnvironment.globalSymbols
+        let symbols = SymbolTable()
 
         let ast0 = Block(symbols: symbols, children: [
             TraitDeclaration(identifier: Expression.Identifier("Serial"),
@@ -3317,7 +3318,7 @@ class SnapASTToTackASTCompilerTests: XCTestCase {
 
     func testRvalue_convert_struct_to_trait() throws {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        let symbols = globalEnvironment.globalSymbols
+        let symbols = SymbolTable()
 
         let ast0 = Block(symbols: symbols, children: [
             TraitDeclaration(identifier: Expression.Identifier("Serial"),

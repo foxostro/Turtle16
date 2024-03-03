@@ -29,7 +29,7 @@ public class SnapSubcompilerImport: NSObject {
     }
     
     public func compile(_ node: Import) throws {
-        guard symbols.parent == nil || symbols.parent == globalEnvironment.globalSymbols else {
+        guard symbols.parent == nil else {
             throw CompilerError(sourceAnchor: node.sourceAnchor, message: "declaration is only valid at file scope")
         }
         

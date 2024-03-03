@@ -39,7 +39,6 @@ public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
             children.insert(Import(moduleName: runtimeSupport), at: 0)
         }
         let block = Block(sourceAnchor: node.sourceAnchor,
-                          symbols: SymbolTable(parent: globalEnvironment.globalSymbols),
                           children: children)
         return try compile(block: block)
     }

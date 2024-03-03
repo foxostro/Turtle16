@@ -96,9 +96,9 @@ public class SnapCompilerFrontEnd: NSObject {
     }
     
     func compileSnapToTack(_ ast: AbstractSyntaxTreeNode?) -> Result<TackProgram, Error> {
-        let compiler = SnapASTToTackASTCompiler(symbols: globalEnvironment.globalSymbols,
-                                          globalEnvironment: globalEnvironment,
-                                          options: options)
+        let compiler = SnapASTToTackASTCompiler(
+            globalEnvironment: globalEnvironment,
+            options: options)
         let tack = Result(catching: {
             let tackAst = try compiler.compileWithEpilog(ast) ?? Seq()
             let tackProgram = try TackFlattener().compile(tackAst)

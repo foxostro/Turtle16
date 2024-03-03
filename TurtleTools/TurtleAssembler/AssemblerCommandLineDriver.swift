@@ -14,8 +14,8 @@ public class AssemblerCommandLineDriver: NSObject {
     public struct AssemblerCommandLineDriverError: Error {
         public let message: String
         
-        public init(format: String, _ args: CVarArg...) {
-            message = String(format:format, arguments:args)
+        public init(_ message: String) {
+            self.message = message
         }
     }
     
@@ -27,6 +27,7 @@ public class AssemblerCommandLineDriver: NSObject {
     let arguments: [String]
     public private(set) var inputFileName: URL?
     public private(set) var outputFileName: URL?
+    public var shouldBeQuiet = false
     
     public required init(withArguments arguments: [String]) {
         self.arguments = arguments
@@ -45,7 +46,9 @@ public class AssemblerCommandLineDriver: NSObject {
     }
     
     func reportError(withMessage message: String) {
-        stderr.write("Error: " + message + "\n")
+        if !shouldBeQuiet {
+            stderr.write("Error: " + message)
+        }
     }
     
     func tryRun() throws {
@@ -58,7 +61,7 @@ public class AssemblerCommandLineDriver: NSObject {
         let fileName = inputFileName!.relativePath
         let maybeText = String(data: try Data(contentsOf: inputFileName!), encoding: .utf8)
         guard let text = maybeText else {
-            throw AssemblerCommandLineDriverError(format: "Failed to read input file as UTF-8 text: %@", fileName)
+            throw AssemblerCommandLineDriverError("Failed to read input file as UTF-8 text: \(fileName)")
         }
         let frontEnd = Assembler()
         frontEnd.compile(text)
@@ -79,36 +82,96 @@ public class AssemblerCommandLineDriver: NSObject {
     }
     
     public func parseArguments() throws {
-        if (arguments.count != 3) {
-            throw AssemblerCommandLineDriverError(format: "usage: TurtleAssembler <INPUT> <OUTPUT>\nExpected two arguments, got \(arguments.count-1): \(arguments.debugDescription)")
+        let argParser = AssemblerCommandLineArgumentParser(args: arguments)
+        do {
+            try argParser.parse()
+        } catch let error as AssemblerCommandLineParserError {
+            switch error {
+            case .unexpectedEndOfInput:
+                throw AssemblerCommandLineDriverError(makeUsageMessage())
+            case .unknownOption(let option):
+                throw AssemblerCommandLineDriverError("unknown option `\(option)'\n\n\(makeUsageMessage())")
+            }
+        }
+        let options = argParser.options
+        
+        if options.contains(.printHelp) {
+            stdout.write(makeUsageMessage())
+            exit(0)
+        }
+            
+        for option in options {
+            switch option {
+            case .printHelp:
+                break // do nothing
+                
+            case .inputFileName(let fileName):
+                try parseInputFileName(fileName)
+                
+            case .outputFileName(let fileName):
+                try parseOutputFileName(fileName)
+                
+            case .quiet:
+                shouldBeQuiet = true
+            }
         }
         
-        try parseInputFileName()
-        try parseOutputFileName()
-    }
-
-    func parseInputFileName() throws {
-        inputFileName = URL(fileURLWithPath: arguments[1])
-        var isDirectory: ObjCBool = false
-        if !FileManager.default.fileExists(atPath: inputFileName!.relativePath, isDirectory: &isDirectory) {
-            throw AssemblerCommandLineDriverError(format: "Input file does not exist: %@", inputFileName!.relativePath)
+        if inputFileName == nil {
+            throw AssemblerCommandLineDriverError("expected input filename")
         }
-        if (isDirectory.boolValue) {
-            throw AssemblerCommandLineDriverError(format: "Input file is a directory: %@", inputFileName!.relativePath)
-        }
-        if !FileManager.default.isReadableFile(atPath: inputFileName!.relativePath) {
-            throw AssemblerCommandLineDriverError(format: "Input file is not readable: %@", inputFileName!.relativePath)
+        
+        let baseName: URL = inputFileName!.deletingPathExtension()
+        
+        if outputFileName == nil {
+            outputFileName = baseName.appendingPathExtension("bin")
         }
     }
     
-    func parseOutputFileName() throws {
-        outputFileName = URL(fileURLWithPath: arguments[2])
+    func makeUsageMessage() -> String {
+        return """
+OVERVIEW: assembler for the Turtle16 computer
+
+USAGE:
+\(arguments[0]) [options] file...
+            
+OPTIONS:
+\t-h         Display available options
+\t-o <file>  Specify the output filename
+\t-q         Quiet. Do not print progress to stdout
+
+"""
+    }
+
+    func parseInputFileName(_ fileName: String) throws {
+        if inputFileName != nil {
+            throw AssemblerCommandLineDriverError("assembler currently only supports one input file at a time.")
+        }
+        inputFileName = URL(fileURLWithPath: fileName)
+        var isDirectory: ObjCBool = false
+        if !FileManager.default.fileExists(atPath: inputFileName!.relativePath, isDirectory: &isDirectory) {
+            throw AssemblerCommandLineDriverError("input file does not exist: \(inputFileName!.relativePath)")
+        }
+        if (isDirectory.boolValue) {
+            throw AssemblerCommandLineDriverError("input file is a directory: \(inputFileName!.relativePath)")
+        }
+        if !FileManager.default.isReadableFile(atPath: inputFileName!.relativePath) {
+            throw AssemblerCommandLineDriverError("input file is not readable: \(inputFileName!.relativePath)")
+        }
+    }
+    
+    func parseOutputFileName(_ fileName: String) throws {
+        if outputFileName != nil {
+            throw AssemblerCommandLineDriverError("output filename can only be specified one time.")
+        }
+        outputFileName = URL(fileURLWithPath: fileName)
         if !FileManager.default.fileExists(atPath: outputFileName!.deletingLastPathComponent().relativePath) {
-            throw AssemblerCommandLineDriverError(format: "Specified output directory does not exist: %@", outputFileName!.deletingLastPathComponent().relativePath)
+            let name = outputFileName!.deletingLastPathComponent().relativePath
+            throw AssemblerCommandLineDriverError("specified output directory does not exist: \(name)")
         }
         if FileManager.default.fileExists(atPath: outputFileName!.relativePath) {
             if !FileManager.default.isWritableFile(atPath: outputFileName!.relativePath) {
-                throw AssemblerCommandLineDriverError(format: "Output file exists but is not writable: %@", outputFileName!.relativePath)
+                let name = outputFileName!.relativePath
+                throw AssemblerCommandLineDriverError("output file exists but is not writable: \(name)")
             }
         }
     }

@@ -57,6 +57,7 @@ public class SnapAbstractSyntaxTreeCompiler: NSObject {
     
     func tryCompile(_ t0: AbstractSyntaxTreeNode) throws -> AbstractSyntaxTreeNode? {
         try t0
+            .replaceTopLevelWithBlock()
             .withImplicitImport(moduleName: runtimeSupport)?
             .withImplicitImport(moduleName: standardLibraryName)?
             .desugarTestDeclarations(
@@ -78,6 +79,19 @@ public class SnapAbstractSyntaxTreeCompiler: NSObject {
 }
 
 extension AbstractSyntaxTreeNode {
+    // The parser gives us an AST with a TopLevel node at the root. This node
+    // should be replaced by a Block node.
+    fileprivate func replaceTopLevelWithBlock() -> AbstractSyntaxTreeNode {
+        if let top = self as? TopLevel {
+            Block(sourceAnchor: top.sourceAnchor,
+                  symbols: SymbolTable(),
+                  children: top.children)
+        }
+        else {
+            self
+        }
+    }
+    
     // Insert an import statement for an implicit import
     fileprivate func withImplicitImport(moduleName: String?) -> AbstractSyntaxTreeNode? {
         if let moduleName, let top = self as? TopLevel {

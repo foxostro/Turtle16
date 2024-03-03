@@ -22,12 +22,6 @@ public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
         self.shouldRunSpecificTest = shouldRunSpecificTest
     }
     
-    public override func compile(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {
-        let block = Block(sourceAnchor: node.sourceAnchor,
-                          children: node.children)
-        return try compile(block: block)
-    }
-    
     public override func compile(block node: Block) throws -> AbstractSyntaxTreeNode? {
         depth += 1
         let result = try super.compile(block: node) as! Block

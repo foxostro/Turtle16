@@ -33,9 +33,8 @@ let kRangeType: SymbolType = .structType(StructType(name: kRangeName, symbols: S
 
 class CoreToTackCompilerTests: XCTestCase {
     func makeCompiler(options opts: CoreToTackCompiler.Options = CoreToTackCompiler.Options(isBoundsCheckEnabled: true),
-                      symbols: SymbolTable = SymbolTable()) -> CoreToTackCompiler {
-        let globalEnvironment = GlobalEnvironment(
-            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
+                      symbols: SymbolTable = SymbolTable(),
+                      globalEnvironment: GlobalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())) -> CoreToTackCompiler {
         return CoreToTackCompiler(
             symbols: symbols,
             globalEnvironment: globalEnvironment,
@@ -2784,7 +2783,8 @@ class CoreToTackCompilerTests: XCTestCase {
     }
 
     func testFixBugWithCompilerTemporaryOfArrayTypeWithNoExplicitCount() throws {
-        let compiler = makeCompiler()
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
+        let compiler = makeCompiler(globalEnvironment: globalEnvironment)
         let symbols = SymbolTable(tuples: [
             ("a", Symbol(type: .array(count: nil, elementType: .arithmeticType(.mutableInt(.u16))), offset: 2, storage: .automaticStorage, visibility: .privateVisibility))
         ])
@@ -2797,7 +2797,7 @@ class CoreToTackCompilerTests: XCTestCase {
             XCTFail("failed to resolve __temp0")
             return
         }
-        let actual = compiler.globalEnvironment.memoryLayoutStrategy.sizeof(type: type)
+        let actual = globalEnvironment.memoryLayoutStrategy.sizeof(type: type)
         XCTAssertEqual(actual, 2)
     }
 

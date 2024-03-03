@@ -15,8 +15,8 @@ public class CoreToTackCompiler: SnapASTTransformerBase {
     public typealias RegisterType = TackInstruction.RegisterType
     public typealias Options = SnapCompilerFrontEnd.Options
     
-    public let options: Options
-    public let globalEnvironment: GlobalEnvironment
+    private let options: Options
+    private let globalEnvironment: GlobalEnvironment
     public internal(set) var registerStack: [Register] = []
     var nextRegisterIndex = 0
     let kOOB = "__oob"

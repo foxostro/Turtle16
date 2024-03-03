@@ -57,15 +57,13 @@ public class SnapAbstractSyntaxTreeCompiler: NSObject {
     
     func tryCompile(_ t0: AbstractSyntaxTreeNode) throws -> AbstractSyntaxTreeNode? {
         try t0
-            .replaceTopLevelWithBlock()
             .withImplicitImport(moduleName: runtimeSupport)?
             .withImplicitImport(moduleName: standardLibraryName)?
-            .reconnect() // setup initial connections
+            .replaceTopLevelWithBlock()
             .desugarTestDeclarations(
                 testNames: &testNames,
                 globalEnvironment: globalEnvironment,
                 shouldRunSpecificTest: shouldRunSpecificTest)?
-            .reconnect() // rebuild after desugarTestDeclarations() invalidated stackFrameIndex
             .declPass(
                 injectModules: injectModules,
                 globalEnvironment: globalEnvironment,
@@ -88,25 +86,24 @@ extension AbstractSyntaxTreeNode {
         let block = Block(sourceAnchor: top.sourceAnchor,
                           symbols: SymbolTable(),
                           children: top.children)
+            .reconnect(nil)
         return block
     }
     
     // Perform a reconnect to ensure the symbol table tree is topologically
     // connected to correspond to the lexical structure of the program.
-    public func reconnect() -> Self {
-        SymbolTablesReconnector().reconnect(self)
+    public func reconnect(_ symbols: SymbolTable?) -> Self {
+        SymbolTablesReconnector(symbols).reconnect(self)
         return self
     }
     
     // Insert an import statement for an implicit import
     fileprivate func withImplicitImport(moduleName: String?) -> AbstractSyntaxTreeNode? {
         if let moduleName, let top = self as? TopLevel {
-            TopLevel(sourceAnchor: sourceAnchor,
-                     children: [Import(moduleName: moduleName)] + top.children)
+            top.withChildren([Import(moduleName: moduleName)] + top.children)
         }
         else if let moduleName, let block = self as? Block {
-            Block(sourceAnchor: sourceAnchor,
-                  children: [Import(moduleName: moduleName)] + block.children)
+            block.withChildren([Import(moduleName: moduleName)] + block.children)
         }
         else {
             self

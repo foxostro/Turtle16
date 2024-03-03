@@ -99,7 +99,7 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
             TestDeclaration(name: "bar", body: Block(children: [])),
             FunctionDeclaration(identifier: Expression.Identifier("main"), functionType: Expression.FunctionType(name: "main", returnType: Expression.PrimitiveType(.void), arguments: []), argumentNames: [], body: Block(children: []))
         ])
-        .reconnect()
+        .reconnect(nil)
         
         let expected = Block(children: [
             VarDeclaration(identifier: Expression.Identifier("foo"),
@@ -110,7 +110,7 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
             FunctionDeclaration(identifier: Expression.Identifier("main"), functionType: Expression.FunctionType(name: "main", returnType: Expression.PrimitiveType(.void), arguments: []), argumentNames: [], body: Block(children: [])),
             Expression.Call(callee: Expression.Identifier("main"), arguments: [])
         ])
-        .reconnect()
+        .reconnect(nil)
         
         let transformer = SnapASTTransformerTestDeclaration(globalEnvironment: globalEnvironment, shouldRunSpecificTest: nil)
         var actual: AbstractSyntaxTreeNode? = nil
@@ -216,7 +216,7 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
             ])),
             FunctionDeclaration(identifier: Expression.Identifier("main"), functionType: Expression.FunctionType(name: "main", returnType: Expression.PrimitiveType(.void), arguments: []), argumentNames: [], body: Block(children: []))
         ])
-        .reconnect()
+        .reconnect(nil)
         
         let expected = Block(children: [
             VarDeclaration(identifier: Expression.Identifier("foo"),
@@ -234,7 +234,7 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
             ])),
             Expression.Call(callee: Expression.Identifier("__testMain"), arguments: [])
         ])
-        .reconnect()
+        .reconnect(nil)
         
         let transformer = SnapASTTransformerTestDeclaration(globalEnvironment: globalEnvironment,
                                                             shouldRunSpecificTest: "bar")

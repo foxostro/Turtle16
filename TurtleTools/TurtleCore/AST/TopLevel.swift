@@ -21,6 +21,11 @@ public class TopLevel: AbstractSyntaxTreeNode {
         return TopLevel(sourceAnchor: sourceAnchor, children: children)
     }
     
+    public func withChildren(_ children: [AbstractSyntaxTreeNode]) -> TopLevel {
+        TopLevel(sourceAnchor: sourceAnchor,
+                 children: children)
+    }
+    
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else {
             return false

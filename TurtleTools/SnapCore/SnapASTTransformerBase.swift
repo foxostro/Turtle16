@@ -243,8 +243,6 @@ public class SnapASTTransformerBase: NSObject {
     }
     
     public func reconnect(_ node: AbstractSyntaxTreeNode?) {
-        if let symbols {
-            SymbolTablesReconnector(symbols).reconnect(node)
-        }
+        SymbolTablesReconnector(symbols).reconnect(node)
     }
 }

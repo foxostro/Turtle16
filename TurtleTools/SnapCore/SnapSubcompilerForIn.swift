@@ -67,6 +67,7 @@ public class SnapSubcompilerForIn: NSObject {
                   body: Block(symbols: SymbolTable(parent: grandparent),
                               children: [body, Expression.Assignment(lexpr: stmt.identifier, rexpr: Expression.Binary(op: .plus, left: stmt.identifier, right: Expression.LiteralInt(1)))]))
         ])
+        .reconnect(symbols)
         
         return ast
     }
@@ -128,6 +129,7 @@ public class SnapSubcompilerForIn: NSObject {
                                                                    right: Expression.LiteralInt(sourceAnchor: stmt.sourceAnchor, value: 1))),
                   ]))
         ])
+        .reconnect(symbols)
         
         return ast
     }

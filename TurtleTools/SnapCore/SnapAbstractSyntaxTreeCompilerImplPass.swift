@@ -42,9 +42,7 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: SnapASTTransformerBase {
     }
     
     public override func compile(forIn node0: ForIn) throws -> AbstractSyntaxTreeNode? {
-        let subcompiler = SnapSubcompilerForIn(symbols!)
-        let node1 = try subcompiler.compile(node0)
-        reconnect(node1)
+        let node1 = try SnapSubcompilerForIn(symbols!).compile(node0)
         let node2 = try compile(block: node1)
         return node2
     }

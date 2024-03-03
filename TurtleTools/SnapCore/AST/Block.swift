@@ -29,6 +29,12 @@ public class Block: AbstractSyntaxTreeNode {
                      children: children)
     }
     
+    public func withChildren(_ children: [AbstractSyntaxTreeNode]) -> Block {
+        Block(sourceAnchor: sourceAnchor,
+              symbols: symbols,
+              children: children)
+    }
+    
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else { return false }
         guard type(of: rhs!) == type(of: self) else { return false }

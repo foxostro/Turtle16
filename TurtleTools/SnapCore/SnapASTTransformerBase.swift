@@ -141,10 +141,9 @@ public class SnapASTTransformerBase: NSObject {
     
     public func compile(block node: Block) throws -> AbstractSyntaxTreeNode? {
         env.push(node.symbols)
-        let children: [AbstractSyntaxTreeNode] = try node.children.compactMap { try compile($0) }
-        let result = Block(sourceAnchor: node.sourceAnchor,
-                           symbols: node.symbols,
-                           children: children)
+        let result = node.withChildren(try node.children.compactMap {
+            try compile($0)
+        })
         env.pop()
         if let symbols = symbols, node.symbols.stackFrameIndex == symbols.stackFrameIndex {
             symbols.highwaterMark = max(symbols.highwaterMark, node.symbols.highwaterMark)

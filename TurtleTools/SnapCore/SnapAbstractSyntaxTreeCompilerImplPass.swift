@@ -79,8 +79,10 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: SnapASTTransformerBase {
     }
     
     public override func compile(while node0: While) throws -> AbstractSyntaxTreeNode? {
-        let node1 = try SnapSubcompilerWhile().compile(while: node0, symbols: symbols!, labelMaker: globalEnvironment.labelMaker)
-        reconnect(node1)
+        let node1 = try SnapSubcompilerWhile().compile(
+            while: node0,
+            symbols: symbols!,
+            labelMaker: globalEnvironment.labelMaker)
         let node2 = try super.compile(node1)
         return node2
     }

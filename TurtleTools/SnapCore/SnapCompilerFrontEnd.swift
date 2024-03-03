@@ -96,7 +96,7 @@ public class SnapCompilerFrontEnd: NSObject {
     }
     
     func compileSnapToTack(_ ast: AbstractSyntaxTreeNode?) -> Result<TackProgram, Error> {
-        let compiler = SnapASTToTackASTCompiler(
+        let compiler = CoreToTackCompiler(
             globalEnvironment: globalEnvironment,
             options: options)
         let tack = Result(catching: {

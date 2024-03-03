@@ -3048,4 +3048,22 @@ impl Serial for SerialFake {
                            children: [get])
         XCTAssertEqual(parser.syntaxTree, top)
     }
+    
+    func testBackslashNewlineExtendsParsingTheLine() {
+        let parser = parse("""
+                           1 \
+                           + 2
+                           """)
+        XCTAssertFalse(parser.hasError)
+        guard let ast = parser.syntaxTree, ast.children.count == 1 else {
+            XCTFail()
+            return
+        }
+        
+        let expected = Expression.Binary(sourceAnchor: parser.lineMapper.anchor(0, 5),
+                                         op: .plus,
+                                         left: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(0, 1), value: 1),
+                                         right: Expression.LiteralInt(sourceAnchor: parser.lineMapper.anchor(4, 5), value: 2))
+        XCTAssertEqual(expected, ast.children.first)
+    }
 }

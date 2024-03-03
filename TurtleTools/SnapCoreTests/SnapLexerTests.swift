@@ -776,4 +776,10 @@ test
         XCTAssertEqual(tokenizer.tokens, [TokenAt(sourceAnchor: tokenizer.lineMapper.anchor(0, 1)),
                                           TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(1, 1))])
     }
+    
+    func testTokenizeBackslashNewLine() {
+        let tokenizer = SnapLexer("\\\n")
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [TokenEOF(sourceAnchor: tokenizer.lineMapper.anchor(2, 2))])
+    }
 }

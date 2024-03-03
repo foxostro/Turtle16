@@ -12,6 +12,9 @@ public class SnapLexer: Lexer {
     public required init(_ string: String, _ url: URL? = nil) {
         super.init(string, url)
         self.rules = [
+            Rule(pattern: "\\\\\n") { _ in
+                nil
+            },
             Rule(pattern: "\n") {
                 return TokenNewline(sourceAnchor: $0)
             },

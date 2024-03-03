@@ -92,7 +92,6 @@ public class SnapASTTransformerBase: NSObject {
         default:
             result = genericNode
         }
-        SymbolTablesReconnector(symbols, onlyCheck: true).reconnect(result)
         return result
     }
     

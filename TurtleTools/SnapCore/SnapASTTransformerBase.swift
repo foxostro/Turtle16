@@ -9,10 +9,31 @@
 import TurtleCore
 
 public class SnapASTTransformerBase: NSObject {
-    public internal(set) var symbols: SymbolTable? = nil
+    struct Environment {
+        private var stack: [SymbolTable] = []
+        
+        var symbols: SymbolTable? {
+            stack.last
+        }
+        
+        mutating func push(_ newSymbols: SymbolTable) {
+            stack.append(newSymbols)
+        }
+        
+        @discardableResult mutating func pop() -> SymbolTable {
+            stack.removeLast()
+        }
+    }
+    var env = Environment()
+    
+    public var symbols: SymbolTable? {
+        env.symbols
+    }
     
     public init(_ symbols: SymbolTable? = nil) {
-        self.symbols = symbols
+        if let symbols {
+            env.push(symbols)
+        }
     }
     
     public func compile(_ genericNode: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
@@ -119,13 +140,12 @@ public class SnapASTTransformerBase: NSObject {
     }
     
     public func compile(block node: Block) throws -> AbstractSyntaxTreeNode? {
-        let parent = symbols
-        symbols = node.symbols
+        env.push(node.symbols)
         let children: [AbstractSyntaxTreeNode] = try node.children.compactMap { try compile($0) }
         let result = Block(sourceAnchor: node.sourceAnchor,
                            symbols: node.symbols,
                            children: children)
-        symbols = parent
+        env.pop()
         if let symbols = symbols, node.symbols.stackFrameIndex == symbols.stackFrameIndex {
             symbols.highwaterMark = max(symbols.highwaterMark, node.symbols.highwaterMark)
         }
@@ -137,8 +157,7 @@ public class SnapASTTransformerBase: NSObject {
     }
     
     public func compile(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
-        let parent = symbols
-        symbols = node.symbols
+        env.push(node.symbols)
         let result = FunctionDeclaration(sourceAnchor: node.sourceAnchor,
                                          identifier: node.identifier,
                                          functionType: node.functionType,
@@ -147,7 +166,7 @@ public class SnapASTTransformerBase: NSObject {
                                          body: try compile(node.body) as! Block,
                                          visibility: node.visibility,
                                          symbols: node.symbols)
-        symbols = parent
+        env.pop()
         return result
     }
     

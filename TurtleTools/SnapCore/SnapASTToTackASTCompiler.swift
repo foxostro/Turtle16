@@ -168,8 +168,7 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
     }
     
     public override func compile(block node0: Block) throws -> AbstractSyntaxTreeNode? {
-        let parent = symbols
-        symbols = node0.symbols
+        env.push(node0.symbols)
         let children: [AbstractSyntaxTreeNode] = try node0.children.compactMap { try compile($0) }
         let seq: Seq
         if let scopePrologue = symbols?.scopePrologue,
@@ -184,8 +183,8 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                 sourceAnchor: node0.sourceAnchor,
                 children: children)
         }
-        symbols = parent
-        if let symbols = symbols, node0.symbols.stackFrameIndex == symbols.stackFrameIndex {
+        env.pop()
+        if let symbols, node0.symbols.stackFrameIndex == symbols.stackFrameIndex {
             symbols.highwaterMark = max(symbols.highwaterMark, node0.symbols.highwaterMark)
         }
         return seq
@@ -2889,9 +2888,8 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                     typ: typ.returnType))
         }
         
-        let parent = symbols
-        let innerBlock = SymbolTable(parent: parent)
-        symbols = innerBlock
+        let innerBlock = SymbolTable(parent: symbols)
+        env.push(innerBlock)
         
         var children: [AbstractSyntaxTreeNode] = []
         
@@ -3015,8 +3013,8 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
         
         let innerSeq = Seq(sourceAnchor: expr.sourceAnchor, children: children)
         
-        symbols = parent
-        if let symbols = symbols, innerBlock.stackFrameIndex == symbols.stackFrameIndex {
+        env.pop()
+        if let symbols, innerBlock.stackFrameIndex == symbols.stackFrameIndex {
             symbols.highwaterMark = max(symbols.highwaterMark, innerBlock.highwaterMark)
         }
         

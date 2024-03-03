@@ -57,8 +57,8 @@ public class SnapAbstractSyntaxTreeCompiler: NSObject {
     
     func tryCompile(_ t0: AbstractSyntaxTreeNode) throws -> AbstractSyntaxTreeNode? {
         try t0
-            .withImplicitImport(moduleName: runtimeSupport)?
             .withImplicitImport(moduleName: standardLibraryName)?
+            .withImplicitImport(moduleName: runtimeSupport)?
             .replaceTopLevelWithBlock()
             .reconnect(parent: nil)
             .desugarTestDeclarations(

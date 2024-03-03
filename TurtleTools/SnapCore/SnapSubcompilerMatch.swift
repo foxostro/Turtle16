@@ -83,11 +83,6 @@ public class SnapSubcompilerMatch: NSObject {
                            symbols: outer,
                            children: stmts)
         
-        SymbolTablesReconnector(symbols).reconnect(block0)
-        
-//        let subcompiler = SnapASTTransformerVarDeclaration(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols)
-//        let block1 = try subcompiler.compile(block0) as! Block
-        
         return block0
     }
     

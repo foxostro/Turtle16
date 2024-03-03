@@ -82,14 +82,18 @@ extension AbstractSyntaxTreeNode {
     // The parser gives us an AST with a TopLevel node at the root. This node
     // should be replaced by a Block node.
     fileprivate func replaceTopLevelWithBlock() -> AbstractSyntaxTreeNode {
-        if let top = self as? TopLevel {
-            Block(sourceAnchor: top.sourceAnchor,
-                  symbols: SymbolTable(),
-                  children: top.children)
-        }
-        else {
-            self
-        }
+        guard let top = self as? TopLevel else { return self }
+        let block = Block(sourceAnchor: top.sourceAnchor,
+                          symbols: SymbolTable(),
+                          children: top.children)
+        return block
+    }
+    
+    // Perform a reconnect to ensure the symbol table tree is topologically
+    // connected to correspond to the lexical structure of the program.
+    public func reconnect() -> Self {
+        SymbolTablesReconnector().reconnect(self)
+        return self
     }
     
     // Insert an import statement for an implicit import

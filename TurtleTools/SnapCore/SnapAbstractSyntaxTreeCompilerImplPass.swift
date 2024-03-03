@@ -70,8 +70,10 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: SnapASTTransformerBase {
     }
     
     public override func compile(if node0: If) throws -> AbstractSyntaxTreeNode? {
-        let node1 = try SnapSubcompilerIf().compile(if: node0, symbols: symbols!, labelMaker: globalEnvironment.labelMaker)
-        reconnect(node1)
+        let node1 = try SnapSubcompilerIf().compile(
+            if: node0,
+            symbols: symbols!,
+            labelMaker: globalEnvironment.labelMaker)
         let node2 = try super.compile(node1)
         return node2
     }

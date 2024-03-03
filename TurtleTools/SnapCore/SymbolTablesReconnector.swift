@@ -10,9 +10,11 @@ import TurtleCore
 
 public class SymbolTablesReconnector: NSObject {
     var symbols: SymbolTable? = nil
+    let onlyCheck: Bool
     
-    public init(_ symbols: SymbolTable? = nil) {
+    public init(_ symbols: SymbolTable? = nil, onlyCheck: Bool = false) {
         self.symbols = symbols
+        self.onlyCheck = onlyCheck
     }
     
     public func reconnect(_ genericNode: AbstractSyntaxTreeNode?) {
@@ -72,7 +74,12 @@ public class SymbolTablesReconnector: NSObject {
     func reconnect(block node: Block) {
         let parent = symbols
         node.symbols.parent = parent
-        node.symbols.stackFrameIndex = parent?.stackFrameIndex ?? 0
+        if onlyCheck {
+            assert(node.symbols.stackFrameIndex == parent?.stackFrameIndex ?? 0)
+        }
+        else {
+            node.symbols.stackFrameIndex = parent?.stackFrameIndex ?? 0
+        }
         
         symbols = node.symbols
         for child in node.children {
@@ -83,8 +90,15 @@ public class SymbolTablesReconnector: NSObject {
     
     func reconnect(func node: FunctionDeclaration) {
         let parent = symbols
-        node.symbols.parent = parent
-        node.symbols.stackFrameIndex = (parent?.stackFrameIndex ?? 0) + 1
+        
+        if onlyCheck {
+            assert(node.symbols.parent === parent)
+            assert(node.symbols.stackFrameIndex == (parent?.stackFrameIndex ?? 0) + 1)
+        }
+        else {
+            node.symbols.parent = parent
+            node.symbols.stackFrameIndex = (parent?.stackFrameIndex ?? 0) + 1
+        }
         
         symbols = node.symbols
         reconnect(node.body)

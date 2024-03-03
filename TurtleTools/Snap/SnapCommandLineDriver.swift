@@ -415,7 +415,7 @@ public class SnapCommandLineDriver: NSObject {
 OVERVIEW: compiler for the Snap programming language
 
 USAGE:
-\(arguments[0]) [test] [options] file...
+\(arguments[0]) [test|run] [options] file...
             
 OPTIONS:
 \trun        Compile the program and run immediately in a VM.

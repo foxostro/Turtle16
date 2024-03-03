@@ -241,8 +241,4 @@ public class SnapASTTransformerBase: NSObject {
     public func compile(tack node: TackInstructionNode) throws -> AbstractSyntaxTreeNode? {
         return node
     }
-    
-    public func reconnect(_ node: AbstractSyntaxTreeNode?) {
-        SymbolTablesReconnector(symbols).reconnect(node)
-    }
 }

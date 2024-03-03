@@ -557,8 +557,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                     then: Expression.Call(
                         sourceAnchor: expr.sourceAnchor,
                         callee: Expression.Identifier(kOOB)))
-                let boundsCheck1 = try SnapSubcompilerIf().compile(if: boundsCheck0, symbols: symbols!, labelMaker: globalEnvironment.labelMaker)
-                reconnect(boundsCheck1)
+                let boundsCheck1 = try SnapSubcompilerIf().compile(
+                    if: boundsCheck0,
+                    symbols: symbols!,
+                    labelMaker: globalEnvironment.labelMaker)
                 if let boundsCheck2 = try super.compile(boundsCheck1) {
                     children.append(boundsCheck2)
                 }
@@ -579,8 +581,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                         callee: Expression.Identifier(
                             sourceAnchor: expr.sourceAnchor,
                             identifier: kOOB)))
-                let boundsCheck1 = try SnapSubcompilerIf().compile(if: boundsCheck0, symbols: symbols!, labelMaker: globalEnvironment.labelMaker)
-                reconnect(boundsCheck1)
+                let boundsCheck1 = try SnapSubcompilerIf().compile(
+                    if: boundsCheck0,
+                    symbols: symbols!,
+                    labelMaker: globalEnvironment.labelMaker)
                 if let boundsCheck2 = try super.compile(boundsCheck1) {
                     children.append(boundsCheck2)
                 }
@@ -750,8 +754,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                         callee: Expression.Identifier(
                             sourceAnchor: expr.sourceAnchor,
                             identifier: kOOB)))
-                let boundsCheck1 = try SnapSubcompilerIf().compile(if: boundsCheck0, symbols: symbols!, labelMaker: globalEnvironment.labelMaker)
-                reconnect(boundsCheck1)
+                let boundsCheck1 = try SnapSubcompilerIf().compile(
+                    if: boundsCheck0,
+                    symbols: symbols!,
+                    labelMaker: globalEnvironment.labelMaker)
                 if let boundsCheck2 = try super.compile(boundsCheck1) {
                     children.append(boundsCheck2)
                 }
@@ -770,8 +776,10 @@ public class SnapASTToTackASTCompiler: SnapASTTransformerBase {
                         callee: Expression.Identifier(
                             sourceAnchor: expr.sourceAnchor,
                             identifier: kOOB)))
-                let boundsCheck1 = try SnapSubcompilerIf().compile(if: boundsCheck0, symbols: symbols!, labelMaker: globalEnvironment.labelMaker)
-                reconnect(boundsCheck1)
+                let boundsCheck1 = try SnapSubcompilerIf().compile(
+                    if: boundsCheck0,
+                    symbols: symbols!,
+                    labelMaker: globalEnvironment.labelMaker)
                 if let boundsCheck2 = try super.compile(boundsCheck1) {
                     children.append(boundsCheck2)
                 }

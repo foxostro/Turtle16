@@ -56,27 +56,56 @@ public class SnapAbstractSyntaxTreeCompiler: NSObject {
     }
     
     func tryCompile(_ t0: AbstractSyntaxTreeNode) throws -> AbstractSyntaxTreeNode? {
-        // Erase test declarations and replace with a synthesized test runner.
+        try t0
+            .desugarTestDeclarations(
+                testNames: &testNames,
+                globalEnvironment: globalEnvironment,
+                shouldRunSpecificTest: shouldRunSpecificTest,
+                isUsingStandardLibrary: isUsingStandardLibrary,
+                runtimeSupport: runtimeSupport)?
+            .declPass(
+                injectModules: injectModules,
+                globalEnvironment: globalEnvironment,
+                runtimeSupport: runtimeSupport)?
+            .implPass(globalEnvironment: globalEnvironment)
+    }
+}
+
+extension AbstractSyntaxTreeNode {
+    // Erase test declarations and replace with a synthesized test runner.
+    fileprivate func desugarTestDeclarations(
+        testNames: inout [String],
+        globalEnvironment: GlobalEnvironment,
+        shouldRunSpecificTest: String?,
+        isUsingStandardLibrary: Bool,
+        runtimeSupport: String?) throws -> AbstractSyntaxTreeNode? {
+        
         let testDeclarationTransformer = SnapASTTransformerTestDeclaration(
             globalEnvironment: globalEnvironment,
             shouldRunSpecificTest: shouldRunSpecificTest,
             isUsingStandardLibrary: isUsingStandardLibrary,
             runtimeSupport: runtimeSupport)
-        let t1 = try testDeclarationTransformer.compile(t0)
+        let result = try testDeclarationTransformer.compile(self)
         testNames = testDeclarationTransformer.testNames
+        return result
+    }
+    
+    // Collect type declarations in a discrete pass
+    fileprivate func declPass(
+        injectModules: [(String, String)],
+        globalEnvironment: GlobalEnvironment,
+        runtimeSupport: String?) throws -> AbstractSyntaxTreeNode? {
         
-        // Collect type declarations in a discrete pass
-        let t2 = try SnapAbstractSyntaxTreeCompilerDeclPass(
+        try SnapAbstractSyntaxTreeCompilerDeclPass(
             injectModules: injectModules,
             globalEnvironment: globalEnvironment,
             runtimeSupport: runtimeSupport)
-        .compile(t1)
-        
-        // Rewrite higher-level nodes in terms of trees of lower-level nodes.
-        let t3 = try SnapAbstractSyntaxTreeCompilerImplPass(
-            globalEnvironment: globalEnvironment)
-        .compile(t2)
-
-        return t3
+        .compile(self)
+    }
+    
+    // Rewrite higher-level nodes in terms of trees of lower-level nodes.
+    fileprivate func implPass(globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
+        try SnapAbstractSyntaxTreeCompilerImplPass(globalEnvironment: globalEnvironment)
+            .compile(self)
     }
 }

@@ -60,6 +60,7 @@ public class SnapAbstractSyntaxTreeCompiler: NSObject {
             .withImplicitImport(moduleName: runtimeSupport)?
             .withImplicitImport(moduleName: standardLibraryName)?
             .replaceTopLevelWithBlock()
+            .reconnect(parent: nil)
             .desugarTestDeclarations(
                 testNames: &testNames,
                 globalEnvironment: globalEnvironment,
@@ -86,7 +87,6 @@ extension AbstractSyntaxTreeNode {
         let block = Block(sourceAnchor: top.sourceAnchor,
                           symbols: SymbolTable(),
                           children: top.children)
-            .reconnect(parent: nil)
         return block
     }
     

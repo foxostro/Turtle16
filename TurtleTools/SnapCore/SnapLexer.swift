@@ -16,7 +16,7 @@ public class SnapLexer: Lexer {
                 nil
             },
             Rule(pattern: "\n") {
-                return TokenNewline(sourceAnchor: $0)
+                TokenNewline(sourceAnchor: $0)
             },
             Rule(pattern: "((#)|(//))") {[weak self] _ in
                 self!.advanceToNewline()

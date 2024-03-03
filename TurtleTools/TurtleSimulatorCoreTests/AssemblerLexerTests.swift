@@ -52,4 +52,19 @@ class AssemblerLexerTests: XCTestCase {
                         TokenEOF(sourceAnchor: lineMapper.anchor(8, 8))
                         ])
     }
+    
+    func testTokenizeBackslashNewline() {
+        let text = "JR \\\n1(r1)"
+        let lineMapper = SourceLineRangeMapper(text: text)
+        let tokenizer = AssemblerLexer(text)
+        tokenizer.scanTokens()
+        XCTAssertEqual(tokenizer.tokens, [
+                        TokenIdentifier(sourceAnchor: lineMapper.anchor(0, 2)),
+                        TokenNumber(sourceAnchor: lineMapper.anchor(5, 6), literal: 1),
+                        TokenParenLeft(sourceAnchor: lineMapper.anchor(6, 7)),
+                        TokenIdentifier(sourceAnchor: lineMapper.anchor(7, 9)),
+                        TokenParenRight(sourceAnchor: lineMapper.anchor(9, 10)),
+                        TokenEOF(sourceAnchor: lineMapper.anchor(10, 10))
+                        ])
+    }
 }

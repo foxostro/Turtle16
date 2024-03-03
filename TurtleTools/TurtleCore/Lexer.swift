@@ -133,32 +133,38 @@ open class Lexer: NSObject {
         return CompilerError(sourceAnchor: sourceAnchor, message: "unexpected character: `\(sourceAnchor.text)'")
     }
     
+    public func makeBackslashNewlineRule() -> Lexer.Rule {
+        Rule(pattern: "\\\\\n") { _ in
+            nil
+        }
+    }
+    
     public func makeNewlineRule() -> Lexer.Rule {
-        return Rule(pattern: "\n") {
+        Rule(pattern: "\n") {
             TokenNewline(sourceAnchor: $0)
         }
     }
     
     public func makeCommaRule() -> Lexer.Rule {
-        return Rule(pattern: ",") {
+        Rule(pattern: ",") {
             TokenComma(sourceAnchor: $0)
         }
     }
     
     public func makeColonRule() -> Lexer.Rule {
-        return Rule(pattern: ":") {
+        Rule(pattern: ":") {
             TokenColon(sourceAnchor: $0)
         }
     }
     
     public func makeForwardSlashRule() -> Lexer.Rule {
-        return Rule(pattern: "/") {
+        Rule(pattern: "/") {
             TokenForwardSlash(sourceAnchor: $0)
         }
     }
     
     public func makeQuotedStringRule() -> Lexer.Rule {
-        return Rule(pattern: "\".*\"") {[weak self] in
+        Rule(pattern: "\".*\"") {[weak self] in
             TokenLiteralString(sourceAnchor: $0, literal: self!.interpretQuotedString(lexeme: String($0.text)))
         }
     }
@@ -179,13 +185,13 @@ open class Lexer: NSObject {
     }
     
     public func makeIdentifierRule() -> Lexer.Rule {
-        return Rule(pattern: "[_a-zA-Z][\\-_a-zA-Z0-9]*\\b") {
+        Rule(pattern: "[_a-zA-Z][\\-_a-zA-Z0-9]*\\b") {
             TokenIdentifier(sourceAnchor: $0)
         }
     }
     
     public func makeDecimalNumberRule() -> Lexer.Rule {
-        return Rule(pattern: "[-]{0,1}[0-9]+\\b") {
+        Rule(pattern: "[-]{0,1}[0-9]+\\b") {
             let scanner = Scanner(string: String($0.text))
             var number: Int = 0
             let result = scanner.scanInt(&number)
@@ -195,7 +201,7 @@ open class Lexer: NSObject {
     }
     
     public func makeHexadecimalNumberWithDollarSigilRule() -> Lexer.Rule {
-        return Rule(pattern: "\\$[0-9a-fA-F]+\\b") {
+        Rule(pattern: "\\$[0-9a-fA-F]+\\b") {
             let scanner = Scanner(string: String($0.text.dropFirst()))
             var number: UInt64 = 0
             let result = scanner.scanHexInt64(&number)
@@ -205,7 +211,7 @@ open class Lexer: NSObject {
     }
     
     public func makeHexadecimalNumberRule() -> Lexer.Rule {
-        return Rule(pattern: "0[xX][0-9a-fA-F]+\\b") {
+        Rule(pattern: "0[xX][0-9a-fA-F]+\\b") {
             let scanner = Scanner(string: String($0.text))
             var number: UInt64 = 0
             let result = scanner.scanHexInt64(&number)
@@ -215,7 +221,7 @@ open class Lexer: NSObject {
     }
     
     public func makeBinaryNumberRule() -> Lexer.Rule {
-        return Rule(pattern: "0b[01]+\\b") {
+        Rule(pattern: "0b[01]+\\b") {
             let scanner = Scanner(string: String($0.text))
             var number = 0
             let result = scanner.scanBinaryInt(&number)
@@ -225,33 +231,33 @@ open class Lexer: NSObject {
     }
     
     public func makeQuotedCharacterRule() -> Lexer.Rule {
-        return Rule(pattern: "'.'") {
+        Rule(pattern: "'.'") {
             let number = Int(String($0.text).split(separator: "'").first!.unicodeScalars.first!.value)
             return TokenNumber(sourceAnchor: $0, literal: number)
         }
     }
     
     public func makeWhitespaceRule() -> Lexer.Rule {
-        return Rule(pattern: "[ \t]+") {_ in
+        Rule(pattern: "[ \t]+") {_ in
             nil
         }
     }
     
     public func makeCommentRule() -> Lexer.Rule {
-        return Rule(pattern: "((#)|(//))") {[weak self] _ in
+        Rule(pattern: "((#)|(//))") {[weak self] _ in
             self!.advanceToNewline()
             return nil
         }
     }
     
     public func makeParenLeftRule() -> Lexer.Rule {
-        return Rule(pattern: "\\(") {
+        Rule(pattern: "\\(") {
             TokenParenLeft(sourceAnchor: $0)
         }
     }
     
     public func makeParenRightRule() -> Lexer.Rule {
-        return Rule(pattern: "\\)") {
+        Rule(pattern: "\\)") {
             TokenParenRight(sourceAnchor: $0)
         }
     }

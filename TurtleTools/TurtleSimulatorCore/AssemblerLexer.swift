@@ -13,6 +13,7 @@ public class AssemblerLexer: Lexer {
     public required init(_ string: String, _ url: URL? = nil) {
         super.init(string, url)
         self.rules = [
+            makeBackslashNewlineRule(),
             makeNewlineRule(),
             makeCommentRule(),
             makeCommaRule(),

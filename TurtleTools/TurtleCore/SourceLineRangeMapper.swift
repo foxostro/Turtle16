@@ -50,6 +50,9 @@ public class SourceLineRangeMapper: NSObject {
     }
     
     public func anchor(_ begin: Int, _ end: Int) -> SourceAnchor {
+        assert(begin <= end)
+        assert(text.distance(from: text.startIndex, to: text.endIndex) >= end, "Anchor has bad end index of \(end) when largest valid index is \(text.distance(from: text.startIndex, to: text.endIndex))")
+        assert(text.distance(from: text.startIndex, to: text.endIndex) >= begin, "Anchor has bad begin index of \(begin) when largest valid index is \(text.distance(from: text.startIndex, to: text.endIndex))")
         let range = text.index(text.startIndex, offsetBy: begin) ..< text.index(text.startIndex, offsetBy: end)
         return SourceAnchor(range: range, lineMapper: self)
     }

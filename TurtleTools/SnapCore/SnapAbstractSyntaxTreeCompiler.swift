@@ -66,10 +66,16 @@ public class SnapAbstractSyntaxTreeCompiler: NSObject {
         testNames = testDeclarationTransformer.testNames
         
         // Collect type declarations in a discrete pass
-        let t2 = try SnapAbstractSyntaxTreeCompilerDeclPass(symbols: nil, injectModules: injectModules, globalEnvironment: globalEnvironment, runtimeSupport: runtimeSupport).compile(t1)
+        let t2 = try SnapAbstractSyntaxTreeCompilerDeclPass(
+            injectModules: injectModules,
+            globalEnvironment: globalEnvironment,
+            runtimeSupport: runtimeSupport)
+        .compile(t1)
         
         // Rewrite higher-level nodes in terms of trees of lower-level nodes.
-        let t3 = try SnapAbstractSyntaxTreeCompilerImplPass(symbols: nil, globalEnvironment: globalEnvironment).compile(t2)
+        let t3 = try SnapAbstractSyntaxTreeCompilerImplPass(
+            globalEnvironment: globalEnvironment)
+        .compile(t2)
 
         return t3
     }

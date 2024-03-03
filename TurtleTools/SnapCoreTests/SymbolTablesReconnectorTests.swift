@@ -28,11 +28,15 @@ class SymbolTablesReconnectorTests: XCTestCase {
         let table2 = SymbolTable()
         
         let input = Block(symbols: table1, children: [
-            FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                            functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: []),
-                                            argumentNames: [],
-                                            body: Block(children: []),
-                                            symbols: table2)
+            FunctionDeclaration(
+                identifier: Expression.Identifier("foo"),
+                functionType: Expression.FunctionType(
+                    name: "foo",
+                    returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
+                    arguments: []),
+                argumentNames: [],
+                body: Block(children: []),
+                symbols: table2)
         ])
         SymbolTablesReconnector().reconnect(input)
         

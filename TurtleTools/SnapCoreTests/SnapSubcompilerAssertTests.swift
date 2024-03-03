@@ -13,7 +13,7 @@ import TurtleCore
 class SnapSubcompilerAssertTests: XCTestCase {
     func testTransformAssert() throws {
         let input = makeAssertFalse()
-        let result = try? SnapSubcompilerAssert().compile(input)
+        let result = try? SnapSubcompilerAssert().compile(nil, input)
         let expected = makeAssertFalseResult()
         XCTAssertEqual(result, expected)
     }

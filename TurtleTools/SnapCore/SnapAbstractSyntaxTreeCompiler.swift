@@ -60,10 +60,12 @@ public class SnapAbstractSyntaxTreeCompiler: NSObject {
             .replaceTopLevelWithBlock()
             .withImplicitImport(moduleName: runtimeSupport)?
             .withImplicitImport(moduleName: standardLibraryName)?
+            .reconnect() // setup initial connections
             .desugarTestDeclarations(
                 testNames: &testNames,
                 globalEnvironment: globalEnvironment,
                 shouldRunSpecificTest: shouldRunSpecificTest)?
+            .reconnect() // rebuild after desugarTestDeclarations() invalidated stackFrameIndex
             .declPass(
                 injectModules: injectModules,
                 globalEnvironment: globalEnvironment,

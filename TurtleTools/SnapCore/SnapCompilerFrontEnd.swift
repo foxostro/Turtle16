@@ -95,15 +95,13 @@ public class SnapCompilerFrontEnd: NSObject {
     }
     
     func compileSnapToTack(_ ast: AbstractSyntaxTreeNode?) -> Result<TackProgram, Error> {
-        let compiler = CoreToTackCompiler(
-            globalEnvironment: globalEnvironment,
-            options: options)
-        let tack = Result(catching: {
-            let tackAst = try compiler.compileWithEpilog(ast) ?? Seq()
-            let tackProgram = try TackFlattener().compile(tackAst)
+        Result {
+            let tackAst = try CoreToTackCompiler(
+                globalEnvironment: globalEnvironment,
+                options: options)
+            .compileWithEpilog(ast)
+            let tackProgram = try TackFlattener().compile(tackAst ?? Seq())
             return tackProgram
-        })
-        
-        return tack
+        }
     }
 }

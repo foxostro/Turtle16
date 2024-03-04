@@ -11,7 +11,7 @@ import TurtleSimulatorCore
 
 public class SnapCompilerBackEndTurtle16: NSObject {
     public private(set) var assembly: Result<TopLevel, Error>! = nil
-    public let globalEnvironment: GlobalEnvironment
+    private let globalEnvironment: GlobalEnvironment
     
     public init(globalEnvironment: GlobalEnvironment) {
         self.globalEnvironment = globalEnvironment
@@ -26,22 +26,21 @@ public class SnapCompilerBackEndTurtle16: NSObject {
     }
     
     func compileTackToAssembly(_ tackProgram: TackProgram) -> Result<TopLevel, Error> {
-        let compiler = TackToTurtle16Compiler()
-        return Result(catching: {
-            try compiler.compile(TopLevel(children: [
+        Result {
+            try TackToTurtle16Compiler().compile(TopLevel(children: [
                 tackProgram.ast
             ])) as! TopLevel
-        })
+        }
     }
     
     func registerAllocation(_ input: TopLevel) -> Result<TopLevel, Error> {
-        return Result(catching: {
+        Result {
             try RegisterAllocatorDriver().compile(topLevel: input)
-        })
+        }
     }
     
     func compileToLowerAssembly(_ input: TopLevel) -> Result<TopLevel, Error> {
-        self.assembly = Result(catching: {
+        self.assembly = Result {
             //try SnapASTTransformerFlattenSeq().compile(
             var topLevel = try SnapSubcompilerSubroutine().compile(input) as! TopLevel
             
@@ -51,7 +50,7 @@ public class SnapCompilerBackEndTurtle16: NSObject {
             }
             
             return topLevel
-        })
+        }
         return self.assembly
     }
     

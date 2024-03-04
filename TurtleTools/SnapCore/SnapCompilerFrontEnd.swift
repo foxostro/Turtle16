@@ -30,8 +30,8 @@ public class SnapCompilerFrontEnd: NSObject {
         }
     }
     
-    public let options: Options
-    public let globalEnvironment: GlobalEnvironment
+    let options: Options
+    let globalEnvironment: GlobalEnvironment
     
     public private(set) var testNames: [String] = []
     public private(set) var syntaxTree: AbstractSyntaxTreeNode! = nil

@@ -16,12 +16,7 @@ import TurtleCore
 // The core Snap language is a simpler subset of the language which can be
 // accepted by the next stage of the compiler.
 public class SnapToCoreCompiler: NSObject {
-    public private(set) var ast: Block = Block()
     public private(set) var testNames: [String] = []
-    public private(set) var errors: [CompilerError] = []
-    public var hasError: Bool {
-        !errors.isEmpty
-    }
     
     let shouldRunSpecificTest: String?
     let isUsingStandardLibrary: Bool
@@ -35,7 +30,7 @@ public class SnapToCoreCompiler: NSObject {
                 isUsingStandardLibrary: Bool = false,
                 runtimeSupport: String? = nil,
                 sandboxAccessManager: SandboxAccessManager? = nil,
-                globalEnvironment: GlobalEnvironment) {
+                globalEnvironment: GlobalEnvironment = GlobalEnvironment()) {
         self.shouldRunSpecificTest = shouldRunSpecificTest
         self.injectModules = injectModules
         self.isUsingStandardLibrary = isUsingStandardLibrary
@@ -44,33 +39,31 @@ public class SnapToCoreCompiler: NSObject {
         self.globalEnvironment = globalEnvironment
     }
     
-    public func compile(_ root: AbstractSyntaxTreeNode?) {
-        guard let root else { return }
-        do {
-            guard let topLevel = try tryCompile(root) as? Block else {
-                throw CompilerError(message: "expected Block at root of tree after AST transformation")
-            }
-            ast = topLevel
-        } catch let e {
-            errors.append(e as! CompilerError)
+    public func compile(_ root: AbstractSyntaxTreeNode?) -> Result<Block?, Error> {
+        Result {
+            try root?
+                .withImplicitImport(moduleName: standardLibraryName)?
+                .withImplicitImport(moduleName: runtimeSupport)?
+                .replaceTopLevelWithBlock()
+                .reconnect(parent: nil)
+                .desugarTestDeclarations(
+                    testNames: &testNames,
+                    globalEnvironment: globalEnvironment,
+                    shouldRunSpecificTest: shouldRunSpecificTest)?
+                .declPass(
+                    injectModules: injectModules,
+                    globalEnvironment: globalEnvironment,
+                    runtimeSupport: runtimeSupport)?
+                .implPass(globalEnvironment)
         }
-    }
-    
-    func tryCompile(_ t0: AbstractSyntaxTreeNode) throws -> AbstractSyntaxTreeNode? {
-        try t0
-            .withImplicitImport(moduleName: standardLibraryName)?
-            .withImplicitImport(moduleName: runtimeSupport)?
-            .replaceTopLevelWithBlock()
-            .reconnect(parent: nil)
-            .desugarTestDeclarations(
-                testNames: &testNames,
-                globalEnvironment: globalEnvironment,
-                shouldRunSpecificTest: shouldRunSpecificTest)?
-            .declPass(
-                injectModules: injectModules,
-                globalEnvironment: globalEnvironment,
-                runtimeSupport: runtimeSupport)?
-            .implPass(globalEnvironment)
+        .flatMap { ast in
+            if let block = ast as? Block {
+                .success(block)
+            }
+            else {
+                .failure(CompilerError(message: "expected Block at root of tree after AST transformation"))
+            }
+        }
     }
     
     var standardLibraryName: String? {

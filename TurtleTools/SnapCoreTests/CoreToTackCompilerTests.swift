@@ -3292,12 +3292,15 @@ class CoreToTackCompilerTests: XCTestCase {
                            isMutable: false)
         ])
 
-        let opts = CoreToTackCompiler.Options()
-        let contractStep = SnapToCoreCompiler(globalEnvironment: globalEnvironment)
-        contractStep.compile(ast0)
-        let ast1 = contractStep.ast
-        let compiler = CoreToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment, options: opts)
-        let actual = try compiler.compile(ast1)
+        let ast1 = try SnapToCoreCompiler(globalEnvironment: globalEnvironment)
+            .compile(ast0)
+            .get()
+        
+        let actual = try CoreToTackCompiler(
+            symbols: symbols,
+            globalEnvironment: globalEnvironment,
+            options: CoreToTackCompiler.Options())
+        .compile(ast1)
 
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(8), 0x0110)), // TODO: make sure the optimizer can remove dead stores like this one
@@ -3342,11 +3345,14 @@ class CoreToTackCompilerTests: XCTestCase {
                            isMutable: false)
         ])
 
-        let opts = CoreToTackCompiler.Options()
-        let contractStep = SnapToCoreCompiler(globalEnvironment: globalEnvironment)
-        contractStep.compile(ast0)
-        let ast1 = contractStep.ast
-        let actual = try CoreToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment, options: opts).compile(ast1)
+        let ast1 = try SnapToCoreCompiler(globalEnvironment: globalEnvironment)
+            .compile(ast0)
+            .get()
+        let actual = try CoreToTackCompiler(
+            symbols: symbols,
+            globalEnvironment: globalEnvironment,
+            options: CoreToTackCompiler.Options())
+        .compile(ast1)
 
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(8), 0x0110)), // TODO: make sure the optimizer can remove dead stores like this one
@@ -3665,9 +3671,9 @@ class CoreToTackCompilerTests: XCTestCase {
 
         let symbols = SymbolTable()
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        let contractStep = SnapToCoreCompiler(globalEnvironment: globalEnvironment)
-        contractStep.compile(ast0)
-        let ast1 = contractStep.ast
+        let ast1 = try SnapToCoreCompiler(globalEnvironment: globalEnvironment)
+            .compile(ast0)
+            .get()
         let compiler = CoreToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
 
         XCTAssertThrowsError(try compiler.compileWithEpilog(ast1)) {
@@ -3697,9 +3703,9 @@ class CoreToTackCompilerTests: XCTestCase {
 
         let symbols = SymbolTable()
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        let contractStep = SnapToCoreCompiler(globalEnvironment: globalEnvironment)
-        contractStep.compile(ast0)
-        let ast1 = contractStep.ast
+        let ast1 = try SnapToCoreCompiler(globalEnvironment: globalEnvironment)
+            .compile(ast0)
+            .get()
         let compiler = CoreToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
         let actual = try compiler.compileWithEpilog(ast1)
         let expected = Seq(children: [
@@ -3736,13 +3742,9 @@ class CoreToTackCompilerTests: XCTestCase {
 
         let symbols = SymbolTable()
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        let contractStep = SnapToCoreCompiler(globalEnvironment: globalEnvironment)
-        contractStep.compile(ast0)
-        if contractStep.hasError {
-            XCTFail("contract step failed before the test")
-            return
-        }
-        let ast1 = contractStep.ast
+        let ast1 = try SnapToCoreCompiler(globalEnvironment: globalEnvironment)
+            .compile(ast0)
+            .get()
         let compiler = CoreToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
         let actual = try compiler.compileWithEpilog(ast1)
         let expected = Seq(children: [
@@ -3788,14 +3790,9 @@ class CoreToTackCompilerTests: XCTestCase {
 
         let symbols = SymbolTable()
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        let contractStep = SnapToCoreCompiler(globalEnvironment: globalEnvironment)
-        contractStep.compile(ast0)
-        if contractStep.hasError {
-            let error = CompilerError.makeOmnibusError(fileName: nil, errors: contractStep.errors)
-            XCTFail("contract step failed before the test: \(error.description)")
-            return
-        }
-        let ast1 = contractStep.ast
+        let ast1 = try SnapToCoreCompiler(globalEnvironment: globalEnvironment)
+            .compile(ast0)
+            .get()
         let compiler = CoreToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
         let actual = try compiler.compileWithEpilog(ast1)
         let expected = Seq(children: [

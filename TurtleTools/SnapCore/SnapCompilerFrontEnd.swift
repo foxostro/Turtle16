@@ -51,7 +51,7 @@ public class SnapCompilerFrontEnd: NSObject {
         
         let result = lex(text, url)
             .flatMap(parse)
-            .flatMap(contract)
+            .flatMap(desugar)
             .flatMap(compileSnapToTack)
         
         return result
@@ -76,23 +76,22 @@ public class SnapCompilerFrontEnd: NSObject {
         return .success(parser.syntaxTree)
     }
     
-    func contract(_ syntaxTree: AbstractSyntaxTreeNode?) -> Result<AbstractSyntaxTreeNode?, Error> {
-        let contractionStep = SnapToCoreCompiler(
+    func desugar(_ syntaxTree: AbstractSyntaxTreeNode?) -> Result<AbstractSyntaxTreeNode?, Error> {
+        let compiler = SnapToCoreCompiler(
             shouldRunSpecificTest: options.shouldRunSpecificTest,
             injectModules: Array(options.injectedModules),
             isUsingStandardLibrary: options.isUsingStandardLibrary,
             runtimeSupport: options.runtimeSupport,
             sandboxAccessManager: sandboxAccessManager,
             globalEnvironment: globalEnvironment)
-        contractionStep.compile(syntaxTree)
-        let ast = contractionStep.ast
-        let testNames = contractionStep.testNames
-        if let error = contractionStep.errors.first {
-            return .failure(error)
-        }
-        self.symbolsOfTopLevelScope = ast.symbols
-        self.testNames = testNames
-        return .success(ast)
+        
+        return compiler
+            .compile(syntaxTree)
+            .map { block in
+                symbolsOfTopLevelScope = block?.symbols
+                testNames = compiler.testNames
+                return block
+            }
     }
     
     func compileSnapToTack(_ ast: AbstractSyntaxTreeNode?) -> Result<TackProgram, Error> {

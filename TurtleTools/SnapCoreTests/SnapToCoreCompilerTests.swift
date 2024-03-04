@@ -12,21 +12,20 @@ import TurtleCore
 
 class SnapToCoreCompilerTests: XCTestCase {
     func testExample() throws {
-        let globalEnvironment = GlobalEnvironment()
-        let compiler = SnapToCoreCompiler(globalEnvironment: globalEnvironment)
         let input = TopLevel(children: [CommentNode(string: "")])
-        compiler.compile(input)
-        let actual = compiler.ast
         let expected = Block(symbols: SymbolTable(),
                              children: [CommentNode(string: "")])
-        XCTAssertFalse(compiler.hasError)
+        
+        let actual = try SnapToCoreCompiler()
+            .compile(input)
+            .get()
         XCTAssertEqual(expected, actual)
     }
     
     func testExpectTopLevelNodeAtRoot() throws {
-        let globalEnvironment = GlobalEnvironment()
-        let compiler = SnapToCoreCompiler(globalEnvironment: globalEnvironment)
-        compiler.compile(CommentNode(string: ""))
-        XCTAssertTrue(compiler.hasError)
+        let input = CommentNode(string: "")
+        XCTAssertThrowsError(try SnapToCoreCompiler()
+            .compile(input)
+            .get())
     }
 }

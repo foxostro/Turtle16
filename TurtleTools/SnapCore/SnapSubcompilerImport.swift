@@ -45,27 +45,23 @@ public class SnapSubcompilerImport: NSObject {
         let isUsingStandardLibrary = (node.moduleName != kStandardLibraryModuleName) && (runtimeSupport == nil)
         let moduleData = try readModuleFromFile(sourceAnchor: node.sourceAnchor, moduleName: node.moduleName)
         let topLevel = try parse(url: moduleData.1, text: moduleData.0)
-        let r = SnapToCoreCompiler(
+        globalEnvironment.modules[node.moduleName] = try SnapToCoreCompiler(
             isUsingStandardLibrary: isUsingStandardLibrary,
             runtimeSupport: (node.moduleName == runtimeSupport) ? nil : runtimeSupport,
             sandboxAccessManager: sandboxAccessManager,
             globalEnvironment: globalEnvironment)
         .compile(topLevel)
-        
-        switch r {
-        case .success(let block):
-            globalEnvironment.modules[node.moduleName] = block
-            
-        case .failure(let error):
+        .mapError { error in
             if let compilerError = error as? CompilerError {
-                throw CompilerError.makeOmnibusError(
+                CompilerError.makeOmnibusError(
                     fileName: topLevel.sourceAnchor?.url?.lastPathComponent,
                     errors: [compilerError])
             }
             else {
-                throw error
+                error
             }
         }
+        .get()
     }
     
     private func readModuleFromFile(sourceAnchor: SourceAnchor?, moduleName: String) throws -> (String, URL) {

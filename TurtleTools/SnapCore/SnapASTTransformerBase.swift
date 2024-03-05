@@ -144,9 +144,6 @@ public class SnapASTTransformerBase: NSObject {
             try compile($0)
         })
         env.pop()
-        if let symbols = symbols, node.symbols.stackFrameIndex == symbols.stackFrameIndex {
-            symbols.highwaterMark = max(symbols.highwaterMark, node.symbols.highwaterMark)
-        }
         return result
     }
     

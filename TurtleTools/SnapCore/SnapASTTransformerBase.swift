@@ -173,7 +173,9 @@ public class SnapASTTransformerBase: NSObject {
         return Impl(sourceAnchor: node.sourceAnchor,
                     typeArguments: node.typeArguments,
                     structTypeExpr: node.structTypeExpr,
-                    children: try node.children.map { try compile($0) as! FunctionDeclaration })
+                    children: try node.children.compactMap {
+            try compile($0) as? FunctionDeclaration
+        })
     }
     
     public func compile(implFor node: ImplFor) throws -> AbstractSyntaxTreeNode? {
@@ -181,7 +183,9 @@ public class SnapASTTransformerBase: NSObject {
                        typeArguments: node.typeArguments,
                        traitTypeExpr: node.traitTypeExpr,
                        structTypeExpr: node.structTypeExpr,
-                       children: try node.children.map { try compile($0) as! FunctionDeclaration })
+                       children: try node.children.compactMap {
+            try compile($0) as? FunctionDeclaration
+        })
     }
     
     public func compile(match node: Match) throws -> AbstractSyntaxTreeNode? {

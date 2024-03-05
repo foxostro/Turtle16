@@ -2785,10 +2785,6 @@ class CoreToTackCompilerTests: XCTestCase {
     func testFixBugWithCompilerTemporaryOfArrayTypeWithNoExplicitCount() throws {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
         let compiler = makeCompiler(globalEnvironment: globalEnvironment)
-        let symbols = SymbolTable(tuples: [
-            ("a", Symbol(type: .array(count: nil, elementType: .arithmeticType(.mutableInt(.u16))), offset: 2, storage: .automaticStorage, visibility: .privateVisibility))
-        ])
-        symbols.highwaterMark = 2
         let literalArray = Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))), elements: [
             Expression.LiteralInt(1), Expression.LiteralInt(2)
         ])

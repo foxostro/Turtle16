@@ -184,7 +184,7 @@ public class CoreToTackCompiler: SnapASTTransformerBase {
                 children: children)
         }
         env.pop()
-        if let symbols, node0.symbols.stackFrameIndex == symbols.stackFrameIndex {
+        if let symbols {
             symbols.highwaterMark = max(symbols.highwaterMark, node0.symbols.highwaterMark)
         }
         return seq
@@ -3022,7 +3022,7 @@ public class CoreToTackCompiler: SnapASTTransformerBase {
         let innerSeq = Seq(sourceAnchor: expr.sourceAnchor, children: children)
         
         env.pop()
-        if let symbols, innerBlock.stackFrameIndex == symbols.stackFrameIndex {
+        if let symbols {
             symbols.highwaterMark = max(symbols.highwaterMark, innerBlock.highwaterMark)
         }
         

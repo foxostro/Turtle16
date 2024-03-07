@@ -92,14 +92,15 @@ public class SymbolTablesReconnector: NSObject {
         let parent = symbols
         
         let nextIndex = (parent?.stackFrameIndex ?? 0) + 1
+        let nextFrame = Frame(index: nextIndex)
         
         if onlyCheck {
             assert(node.symbols.parent === parent)
-            assert(node.symbols.stackFrameLookupMode == .set(nextIndex))
+            assert(node.symbols.stackFrameLookupMode == .set(nextFrame))
         }
         else {
             node.symbols.parent = parent
-            node.symbols.stackFrameLookupMode = .set(nextIndex)
+            node.symbols.stackFrameLookupMode = .set(nextFrame)
         }
         
         symbols = node.symbols

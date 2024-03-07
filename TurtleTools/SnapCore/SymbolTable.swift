@@ -930,17 +930,20 @@ public class SymbolTable: NSObject {
     public var highwaterMark: Int
     
     public enum StackFrameLookupMode: Hashable, Equatable {
-        case inherit, set(Int)
+        case inherit, set(Frame)
     }
     public var stackFrameLookupMode: StackFrameLookupMode = .inherit
-    public var stackFrameIndex: Int {
+    public var stackFrame: Frame? {
         switch stackFrameLookupMode {
         case .inherit:
-            return parent?.stackFrameIndex ?? 0
+            parent?.stackFrame
             
-        case .set(let index):
-            return index
+        case .set(let frame):
+            frame
         }
+    }
+    public var stackFrameIndex: Int {
+        stackFrame?.index ?? 0
     }
     
     // This is a code sequence which needs to execute when entering this scope.

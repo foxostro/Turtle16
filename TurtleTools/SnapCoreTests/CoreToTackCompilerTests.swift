@@ -281,7 +281,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: offset, storage: .automaticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Identifier("foo"))
         let expected = Seq(children: [
@@ -307,7 +307,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8)))))
@@ -323,7 +323,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))))
@@ -340,7 +340,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8)))))
@@ -357,7 +357,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.i16)))))
@@ -374,7 +374,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.i16)), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.i8)))))
@@ -391,7 +391,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.i8)), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.i16)))))
@@ -489,7 +489,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.compTimeInt(42)), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                         targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8)))))
@@ -502,7 +502,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.compTimeInt(1000)), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))))
@@ -515,7 +515,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .bool(.compTimeBool(true)), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.bool(.mutableBool))))
@@ -528,7 +528,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .bool(.compTimeBool(false)), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.bool(.mutableBool))))
@@ -541,7 +541,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(.arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PointerType(Expression.PrimitiveType(.arithmeticType(.immutableInt(.u16))))))
@@ -557,7 +557,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .unionType(UnionType([.arithmeticType(.mutableInt(.u16))])), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.UnionType([Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))])))
@@ -570,7 +570,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .unionType(UnionType([.arithmeticType(.mutableInt(.u16))])), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))))
@@ -586,7 +586,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .unionType(UnionType([.array(count: 1, elementType: .arithmeticType(.mutableInt(.u16)))])), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))))
@@ -602,7 +602,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))])))
         let expected = Seq(children: [
@@ -621,7 +621,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.PrimitiveType(.bool(.mutableBool)), Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))])))
         let expected = Seq(children: [
@@ -640,7 +640,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 2, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.ArrayType(count: Expression.LiteralInt(2), elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))])))
         let expected = Seq(children: [
@@ -659,7 +659,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .unionType(UnionType([.bool(.mutableBool), .arithmeticType(.mutableInt(.u16))])), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))))
@@ -680,7 +680,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Bitcast(expr: Expression.Identifier("foo"),
                                                                   targetType: Expression.PointerType(Expression.PrimitiveType(.arithmeticType(.immutableInt(.u16))))))
@@ -1980,7 +1980,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 10, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: Expression.LiteralInt(9)))
         let expected = Seq(children: [
@@ -1997,7 +1997,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 10, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
         let expected = Seq(children: [
@@ -2024,7 +2024,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 10, elementType: .void), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
         let expected = Seq(children: [
@@ -2039,7 +2039,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 10, elementType: .array(count: 2, elementType: .arithmeticType(.mutableInt(.u16)))), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
         let expected = Seq(children: [
@@ -2066,7 +2066,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .dynamicArray(elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
         let expected = Seq(children: [
@@ -2223,7 +2223,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 42, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("count")))
@@ -2236,7 +2236,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .dynamicArray(elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("count")))
@@ -2252,7 +2252,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: kSliceType, offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("count")))
@@ -2272,7 +2272,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: type, offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("baz")))
@@ -2288,7 +2288,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(.arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("pointee")))
@@ -2305,7 +2305,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(.arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.lvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("pointee")))
@@ -2321,7 +2321,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(.arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.lvalue(expr: Expression.Bitcast(expr: Expression.Get(expr: Expression.Identifier("foo"), member: Expression.Identifier("pointee")), targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8)))))
         let expected = Seq(children: [
@@ -2336,7 +2336,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(.array(count: 1, elementType: .arithmeticType(.mutableInt(.u16)))), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("pointee")))
@@ -2352,7 +2352,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(.array(count: 42, elementType: .arithmeticType(.mutableInt(.u16)))), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("count")))
@@ -2365,7 +2365,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(.dynamicArray(elementType: .arithmeticType(.mutableInt(.u16)))), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("count")))
@@ -2382,7 +2382,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(kSliceType), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("count")))
@@ -2403,7 +2403,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: type, offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
                                                               member: Expression.Identifier("baz")))
@@ -2430,7 +2430,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .arithmeticType(.mutableInt(.u16)), arguments: []))))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: []))
         let expected = Seq(children: [
@@ -2450,7 +2450,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .dynamicArray(elementType: .arithmeticType(.mutableInt(.u16))), arguments: []))))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: []))
         let expected = Seq(children: [
@@ -2471,7 +2471,7 @@ class CoreToTackCompilerTests: XCTestCase {
                 .arithmeticType(.mutableInt(.u16))
             ]))))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: [
             Expression.LiteralInt(0x1000)
@@ -2493,7 +2493,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .arithmeticType(.mutableInt(.u16)), arguments: [.arithmeticType(.mutableInt(.u16))]))))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: [Expression.LiteralInt(0xabcd)]))
         let expected = Seq(children: [
@@ -2517,7 +2517,7 @@ class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .arithmeticType(.mutableInt(.u16)), arguments: [.unionType(UnionType([.arithmeticType(.mutableInt(.u16))]))])))),
             ("bar", Symbol(type: .unionType(UnionType([.arithmeticType(.mutableInt(.u16))])), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: [
             Expression.LiteralInt(1000)
@@ -2560,7 +2560,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("panic", Symbol(type: .function(FunctionType(name: "panic", mangledName: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .arithmeticType(.immutableInt(.u8)))]))))
         ])
-        symbols.stackFrameIndex = 1
+        symbols.stackFrameLookupMode = .set(1)
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("panic"), arguments: [
             Expression.LiteralString("panic")

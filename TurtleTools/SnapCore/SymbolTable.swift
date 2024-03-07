@@ -928,7 +928,20 @@ public class SymbolTable: NSObject {
     public var parent: SymbolTable?
     public var storagePointer: Int
     public var highwaterMark: Int
-    public var stackFrameIndex: Int
+    
+    public enum StackFrameLookupMode: Hashable, Equatable {
+        case inherit, set(Int)
+    }
+    public var stackFrameLookupMode: StackFrameLookupMode = .inherit
+    public var stackFrameIndex: Int {
+        switch stackFrameLookupMode {
+        case .inherit:
+            return parent?.stackFrameIndex ?? 0
+            
+        case .set(let index):
+            return index
+        }
+    }
     
     // This is a code sequence which needs to execute when entering this scope.
     // Used to insert code for setting up vtables and such.
@@ -969,7 +982,6 @@ public class SymbolTable: NSObject {
         typeTable = typeDict.mapValues({TypeRecord(symbolType: $0, visibility: .privateVisibility)})
         storagePointer = p?.storagePointer ?? 0
         highwaterMark = p?.highwaterMark ?? 0
-        stackFrameIndex = p?.stackFrameIndex ?? 0
         
         super.init()
         
@@ -1188,7 +1200,7 @@ public class SymbolTable: NSObject {
         hasher.combine(highwaterMark)
         hasher.combine(enclosingFunctionType)
         hasher.combine(enclosingFunctionName)
-        hasher.combine(stackFrameIndex)
+        hasher.combine(stackFrameLookupMode)
         return hasher.finalize()
     }
     
@@ -1200,7 +1212,7 @@ public class SymbolTable: NSObject {
         result.parent = parent
         result.storagePointer = storagePointer
         result.highwaterMark = highwaterMark
-        result.stackFrameIndex = stackFrameIndex
+        result.stackFrameLookupMode = stackFrameLookupMode
         result.scopePrologue = scopePrologue
         result.enclosingFunctionTypeMode = enclosingFunctionTypeMode
         result.enclosingFunctionNameMode = enclosingFunctionNameMode

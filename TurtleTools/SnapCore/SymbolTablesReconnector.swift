@@ -73,12 +73,12 @@ public class SymbolTablesReconnector: NSObject {
     
     func reconnect(block node: Block) {
         let parent = symbols
-        node.symbols.parent = parent
+        
         if onlyCheck {
             assert(node.symbols.stackFrameIndex == parent?.stackFrameIndex ?? 0)
         }
         else {
-            node.symbols.stackFrameIndex = parent?.stackFrameIndex ?? 0
+            node.symbols.parent = parent
         }
         
         symbols = node.symbols
@@ -91,13 +91,15 @@ public class SymbolTablesReconnector: NSObject {
     func reconnect(func node: FunctionDeclaration) {
         let parent = symbols
         
+        let nextIndex = (parent?.stackFrameIndex ?? 0) + 1
+        
         if onlyCheck {
             assert(node.symbols.parent === parent)
-            assert(node.symbols.stackFrameIndex == (parent?.stackFrameIndex ?? 0) + 1)
+            assert(node.symbols.stackFrameLookupMode == .set(nextIndex))
         }
         else {
             node.symbols.parent = parent
-            node.symbols.stackFrameIndex = (parent?.stackFrameIndex ?? 0) + 1
+            node.symbols.stackFrameLookupMode = .set(nextIndex)
         }
         
         symbols = node.symbols

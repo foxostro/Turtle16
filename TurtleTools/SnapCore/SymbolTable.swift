@@ -931,6 +931,15 @@ public class SymbolTable: NSObject {
     
     public enum StackFrameLookupMode: Hashable, Equatable {
         case inherit, set(Frame)
+        
+        public var isSet: Bool {
+            if case .set(_) = self {
+                true
+            }
+            else {
+                false
+            }
+        }
     }
     public var stackFrameLookupMode: StackFrameLookupMode = .inherit
     public var stackFrame: Frame? {
@@ -942,7 +951,7 @@ public class SymbolTable: NSObject {
             frame
         }
     }
-    public var stackFrameIndex: Int {
+    private var stackFrameIndex: Int {
         var index = 0
         var curr: SymbolTable? = self
         repeat {
@@ -1040,7 +1049,7 @@ public class SymbolTable: NSObject {
     
     public func bind(identifier: String, symbol: Symbol) {
 //        let offset = symbol.maybeOffset == nil ? "nil" : "\(symbol.offset)"
-//        print("bind: \(identifier) -> \(symbol.type) at offset=\(offset) and stackFrameIndex=\(stackFrameIndex)")
+//        print("bind: \(identifier) -> \(symbol.type) at offset=\(offset) and stackFrame=\(stackFrame)")
         symbolTable[identifier] = symbol
         if let index = declarationOrder.firstIndex(of: identifier) {
             declarationOrder.remove(at: index)
@@ -1084,7 +1093,7 @@ public class SymbolTable: NSObject {
             throw CompilerError(sourceAnchor: sourceAnchor,
                                 message: "use of unresolved identifier: `\(identifier)'")
         }
-        return resolution
+        return (resolution.0, stackFrameIndex - resolution.1)
     }
     
     private func maybeResolveWithStackFrameDepth(sourceAnchor: SourceAnchor?, identifier: String) -> (Symbol, Int)? {
@@ -1195,7 +1204,7 @@ public class SymbolTable: NSObject {
         guard enclosingFunctionName == rhs.enclosingFunctionName else {
             return false
         }
-        guard stackFrameIndex == rhs.stackFrameIndex else {
+        guard stackFrameLookupMode == rhs.stackFrameLookupMode else {
             return false
         }
         return true

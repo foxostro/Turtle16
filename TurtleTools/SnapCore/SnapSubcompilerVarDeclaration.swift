@@ -91,7 +91,7 @@ public class SnapSubcompilerVarDeclaration: NSObject {
     }
 
     func makeSymbolWithExplicitType(explicitType: SymbolType, storage: SymbolStorage, visibility: SymbolVisibility) throws -> Symbol {
-        let storage: SymbolStorage = (symbols.stackFrameIndex==0) ? .staticStorage : storage
+        let storage: SymbolStorage = (symbols.stackFrame==nil) ? .staticStorage : storage
         let offset = bumpStoragePointer(explicitType, storage)
         let symbol = Symbol(type: explicitType, offset: offset, storage: storage, visibility: visibility)
         return symbol

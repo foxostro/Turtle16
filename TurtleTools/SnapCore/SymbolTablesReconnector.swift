@@ -75,7 +75,8 @@ public class SymbolTablesReconnector: NSObject {
         let parent = symbols
         
         if onlyCheck {
-            assert(node.symbols.stackFrameIndex == parent?.stackFrameIndex ?? 0)
+            assert(node.symbols.parent === parent)
+            assert(node.symbols.stackFrameLookupMode == .inherit)
         }
         else {
             node.symbols.parent = parent
@@ -95,7 +96,6 @@ public class SymbolTablesReconnector: NSObject {
             assert(node.symbols.parent === parent)
             assert(node.symbols.stackFrameLookupMode == .set(Frame()))
             assert(node.symbols.stackFrame == Frame())
-            assert(node.symbols.stackFrameIndex == ((parent?.stackFrameIndex ?? 0) + 1))
         }
         else {
             node.symbols.parent = parent

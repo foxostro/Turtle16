@@ -43,7 +43,8 @@ class SymbolTablesReconnectorTests: XCTestCase {
         XCTAssertEqual(table2.parent, table1)
         XCTAssertEqual(table1.parent, nil)
         
-        XCTAssertEqual(table2.stackFrameIndex, table1.stackFrameIndex+1)
+        XCTAssertEqual(table1.stackFrameLookupMode, .inherit)
+        XCTAssertTrue(table2.stackFrameLookupMode.isSet)
     }
     
     func testFunctionDeclaration_Body() throws {

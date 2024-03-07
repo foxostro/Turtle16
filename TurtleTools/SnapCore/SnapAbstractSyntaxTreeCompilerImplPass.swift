@@ -48,7 +48,7 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: SnapASTTransformerBase {
     }
     
     public override func compile(block node0: Block) throws -> AbstractSyntaxTreeNode? {
-        if let parent = symbols, node0.symbols.parent == parent && node0.symbols.stackFrameIndex == parent.stackFrameIndex {
+        if let parent = symbols, node0.symbols.parent == parent && node0.symbols.stackFrame == parent.stackFrame {
             node0.symbols.storagePointer = parent.storagePointer
         }
         let node1 = try super.compile(block: node0)

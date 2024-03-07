@@ -303,7 +303,7 @@ public class CoreToTackCompiler: SnapASTTransformerBase {
         default:
             let resolution = try symbols!.resolveWithStackFrameDepth(sourceAnchor: node.sourceAnchor, identifier: node.identifier)
             let symbol = resolution.0
-            let depth = symbols!.stackFrameIndex - resolution.1
+            let depth = resolution.1
             assert(depth >= 0)
             let result = computeAddressOfSymbol(sourceAnchor: node.sourceAnchor, symbol: symbol, depth: depth)
             return try compile(result)!

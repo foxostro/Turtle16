@@ -2836,7 +2836,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     }
 
     func test_EndToEndIntegration_GenericStruct_Impl() throws {
-        let opts = Options(isVerboseLogging: true)
+        let opts = Options()
         let debugger = try run(options: opts, program: """
             struct Foo[T] {
                 val: T

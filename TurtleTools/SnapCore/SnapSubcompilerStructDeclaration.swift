@@ -53,15 +53,17 @@ public class SnapSubcompilerStructDeclaration: NSObject {
                      visibility: node.visibility)
         
         members.enclosingFunctionNameMode = .set(name)
+        let frame = Frame()
+        members.stackFrameLookupMode = .set(frame)
         for memberDeclaration in node.members {
             let memberType = try typeChecker.check(expression: memberDeclaration.memberType)
             if memberType == .structType(fullyQualifiedStructType) || memberType == .constStructType(fullyQualifiedStructType) {
                 throw CompilerError(sourceAnchor: memberDeclaration.memberType.sourceAnchor, message: "a struct cannot contain itself recursively")
             }
-            let symbol = Symbol(type: memberType, offset: members.storagePointer, storage: .automaticStorage)
+            let symbol = Symbol(type: memberType, offset: frame.storagePointer, storage: .automaticStorage)
             members.bind(identifier: memberDeclaration.name, symbol: symbol)
             let sizeOfMemberType = globalEnvironment.memoryLayoutStrategy.sizeof(type: memberType)
-            members.storagePointer += sizeOfMemberType
+            frame.bumpStoragePointer(sizeOfMemberType)
         }
         members.parent = nil
         

@@ -926,8 +926,6 @@ public class SymbolTable: NSObject {
     public var symbolTable: [String:Symbol] = [:]
     public var typeTable: [String:TypeRecord]
     public var parent: SymbolTable?
-    public var storagePointer: Int
-    public var highwaterMark: Int
     
     public enum StackFrameLookupMode: Hashable, Equatable {
         case inherit, set(Frame)
@@ -997,11 +995,10 @@ public class SymbolTable: NSObject {
     
     public var modulesAlreadyImported: Set<String> = []
     
-    public init(parent p: SymbolTable? = nil, tuples: [(String, Symbol)] = [], typeDict: [String:SymbolType] = [:]) {
+    public init(parent p: SymbolTable? = nil, stackFrameLookupMode s: StackFrameLookupMode = .inherit, tuples: [(String, Symbol)] = [], typeDict: [String:SymbolType] = [:]) {
         parent = p
+        stackFrameLookupMode = s
         typeTable = typeDict.mapValues({TypeRecord(symbolType: $0, visibility: .privateVisibility)})
-        storagePointer = p?.storagePointer ?? 0
-        highwaterMark = p?.highwaterMark ?? 0
         
         super.init()
         
@@ -1048,8 +1045,17 @@ public class SymbolTable: NSObject {
     }
     
     public func bind(identifier: String, symbol: Symbol) {
-//        let offset = symbol.maybeOffset == nil ? "nil" : "\(symbol.offset)"
-//        print("bind: \(identifier) -> \(symbol.type) at offset=\(offset) and stackFrame=\(stackFrame)")
+#if false
+        let offset = symbol.maybeOffset == nil ? "nil" : "\(symbol.offset)"
+        let stackFrameDesc: String
+        if let stackFrame {
+            stackFrameDesc = "\(stackFrame)"
+        }
+        else {
+            stackFrameDesc = "nil"
+        }
+        print("\(self) -- bind \(identifier): \(symbol.type) at offset=\(offset) and stackFrame=\(stackFrameDesc)")
+#endif
         symbolTable[identifier] = symbol
         if let index = declarationOrder.firstIndex(of: identifier) {
             declarationOrder.remove(at: index)
@@ -1192,12 +1198,6 @@ public class SymbolTable: NSObject {
         guard parent == rhs.parent else {
             return false
         }
-        guard storagePointer == rhs.storagePointer else {
-            return false
-        }
-        guard highwaterMark == rhs.highwaterMark else {
-            return false
-        }
         guard enclosingFunctionType == rhs.enclosingFunctionType else {
             return false
         }
@@ -1216,8 +1216,6 @@ public class SymbolTable: NSObject {
         hasher.combine(symbolTable)
         hasher.combine(typeTable)
         hasher.combine(parent)
-        hasher.combine(storagePointer)
-        hasher.combine(highwaterMark)
         hasher.combine(enclosingFunctionType)
         hasher.combine(enclosingFunctionName)
         hasher.combine(stackFrameLookupMode)
@@ -1230,8 +1228,6 @@ public class SymbolTable: NSObject {
         result.symbolTable = symbolTable
         result.typeTable = typeTable
         result.parent = parent
-        result.storagePointer = storagePointer
-        result.highwaterMark = highwaterMark
         result.stackFrameLookupMode = stackFrameLookupMode
         result.scopePrologue = scopePrologue
         result.enclosingFunctionTypeMode = enclosingFunctionTypeMode

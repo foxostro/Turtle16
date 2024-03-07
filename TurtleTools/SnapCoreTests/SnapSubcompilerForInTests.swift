@@ -11,7 +11,7 @@ import SnapCore
 import TurtleCore
 
 class SnapSubcompilerForInTests: XCTestCase {
-    public let kRangeType: SymbolType = .structType(StructType(name: "Range", symbols: SymbolTable(tuples: [
+    public let kRangeType: SymbolType = .structType(StructType(name: "Range", symbols: SymbolTable(stackFrameLookupMode: .set(Frame()), tuples: [
         ("begin", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0)),
         ("limit", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 2))
     ])))
@@ -101,7 +101,7 @@ class SnapSubcompilerForInTests: XCTestCase {
     }
     
     func testCompileForInLoop_ArrayOfU16() {
-        let symbols = SymbolTable(tuples: [
+        let symbols = SymbolTable(stackFrameLookupMode: .set(Frame()), tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0))
         ])
         let input = ForIn(identifier: Expression.Identifier("i"),

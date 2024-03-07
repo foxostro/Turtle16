@@ -22,6 +22,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
         .compile(ast)
         
         let expectedSymbols = SymbolTable()
+        expectedSymbols.stackFrameLookupMode = .set(Frame())
         expectedSymbols.enclosingFunctionNameMode = .set("Foo")
         let expected: SymbolType = .traitType(TraitType(name: "Foo", nameOfTraitObjectType: "__Foo_object", nameOfVtableType: "__Foo_vtable", symbols: expectedSymbols))
         let actual = try symbols.resolveType(identifier: "Foo")
@@ -48,11 +49,13 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
         let fullyQualifiedTraitType = TraitType(name: "Foo", nameOfTraitObjectType: "__Foo_object", nameOfVtableType: "__Foo_vtable", symbols: members)
         let expected: SymbolType = .traitType(fullyQualifiedTraitType)
         members.enclosingFunctionNameMode = .set("Foo")
+        let frame = Frame()
+        members.stackFrameLookupMode = .set(frame)
         let memberType: SymbolType = .pointer(.function(FunctionType(returnType: .arithmeticType(.mutableInt(.u8)), arguments: [.pointer(expected)])))
-        let symbol = Symbol(type: memberType, offset: members.storagePointer, storage: .automaticStorage)
+        let symbol = Symbol(type: memberType, offset: frame.storagePointer, storage: .automaticStorage)
         members.bind(identifier: "bar", symbol: symbol)
         let sizeOfMemoryType = memoryLayoutStrategy.sizeof(type: memberType)
-        members.storagePointer += sizeOfMemoryType
+        frame.bumpStoragePointer(sizeOfMemoryType)
         members.parent = nil
 
         let actual = try symbols.resolveType(identifier: "Foo")

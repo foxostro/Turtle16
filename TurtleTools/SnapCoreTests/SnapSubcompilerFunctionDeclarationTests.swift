@@ -16,10 +16,12 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
         let symbols = SymbolTable()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .void))
         let compiler = SnapSubcompilerFunctionDeclaration()
-        let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                        functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: []),
-                                        argumentNames: [],
-                                        body: Block(children: []))
+        let input = FunctionDeclaration(
+            identifier: Expression.Identifier("foo"),
+            functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: []),
+            argumentNames: [],
+            body: Block(children: []))
+            .reconnect(parent: nil)
         XCTAssertThrowsError(try compiler.compile(globalEnvironment: globalEnvironment, symbols: symbols, node: input)) {
             let error = $0 as? CompilerError
             XCTAssertEqual(error?.message, "function redefines existing symbol: `foo\'")
@@ -30,10 +32,12 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let symbols = SymbolTable()
         let compiler = SnapSubcompilerFunctionDeclaration()
-        let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                        functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: []),
-                                        argumentNames: [],
-                                        body: Block(children: []))
+        let input = FunctionDeclaration(
+            identifier: Expression.Identifier("foo"),
+            functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: []),
+            argumentNames: [],
+            body: Block(children: []))
+            .reconnect(parent: nil)
         XCTAssertThrowsError(try compiler.compile(globalEnvironment: globalEnvironment, symbols: symbols, node: input)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -46,10 +50,12 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
         let symbols = SymbolTable()
         let originalBody = Block(children: [])
         let expectedRewrittenBody = Block(children: [Return()])
-        let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                        functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
-                                        argumentNames: [],
-                                        body: originalBody)
+        let input = FunctionDeclaration(
+            identifier: Expression.Identifier("foo"),
+            functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
+            argumentNames: [],
+            body: originalBody)
+            .reconnect(parent: nil)
         let functionType = FunctionType(name: "foo",
                                         mangledName: "foo",
                                         returnType: .void,
@@ -70,13 +76,15 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let symbols = SymbolTable()
         let compiler = SnapSubcompilerFunctionDeclaration()
-        let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                        functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: []),
-                                        argumentNames: [],
-                                        body: Block(children: [
-                                            Return(Expression.LiteralBool(true)),
-                                            Expression.LiteralBool(false)
-                                        ]))
+        let input = FunctionDeclaration(
+            identifier: Expression.Identifier("foo"),
+            functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: []),
+            argumentNames: [],
+            body: Block(children: [
+                Return(Expression.LiteralBool(true)),
+                Expression.LiteralBool(false)
+            ]))
+            .reconnect(parent: nil)
         XCTAssertThrowsError(try compiler.compile(globalEnvironment: globalEnvironment, symbols: symbols, node: input)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -88,15 +96,17 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
         let functionType = Expression.FunctionType(name: "foo",
                                                    returnType: Expression.Identifier("T"),
                                                    arguments: [Expression.Identifier("T")])
-        let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                        functionType: functionType,
-                                        argumentNames: ["a"],
-                                        typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
-                                        body: Block(children: [
-                                            Return(Expression.Identifier("a"))
-                                        ]),
-                                        visibility: .privateVisibility,
-                                        symbols: SymbolTable())
+        let input = FunctionDeclaration(
+            identifier: Expression.Identifier("foo"),
+            functionType: functionType,
+            argumentNames: ["a"],
+            typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
+            body: Block(children: [
+                Return(Expression.Identifier("a"))
+            ]),
+            visibility: .privateVisibility,
+            symbols: SymbolTable())
+            .reconnect(parent: nil)
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let symbols = SymbolTable()
         try SnapSubcompilerFunctionDeclaration()

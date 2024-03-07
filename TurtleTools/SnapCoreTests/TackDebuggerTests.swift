@@ -474,7 +474,7 @@ final class TackDebuggerTests: XCTestCase {
     }
     
     func testShowFunctionName() throws {
-        let opts = Options(isVerboseLogging: true)
+        let opts = Options()
         let debugger = try run(options: opts, program: """
             func foo() {
                 asm("BREAK")
@@ -487,7 +487,7 @@ final class TackDebuggerTests: XCTestCase {
     }
     
     func testSymbolicatedBacktrace_TopLevel() throws {
-        let opts = Options(isVerboseLogging: true)
+        let opts = Options()
         let debugger = try run(options: opts, program: """
             let a = 1
             asm("BREAK")
@@ -497,7 +497,7 @@ final class TackDebuggerTests: XCTestCase {
     }
     
     func testSymbolicatedBacktrace() throws {
-        let opts = Options(isVerboseLogging: true)
+        let opts = Options()
         let debugger = try run(options: opts, program: """
             func baz() {
                 asm("BREAK")
@@ -515,7 +515,7 @@ final class TackDebuggerTests: XCTestCase {
     }
     
     func testFormattedBacktrace() throws {
-        let opts = Options(isVerboseLogging: true)
+        let opts = Options()
         let debugger = try run(options: opts, program: """
             func baz() {
                 asm("BREAK")

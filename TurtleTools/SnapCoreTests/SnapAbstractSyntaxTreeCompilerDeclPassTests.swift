@@ -21,13 +21,15 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
     func testFunctionDeclaration() throws {
         let globalEnvironment = GlobalEnvironment()
         let symbols = SymbolTable()
-        let originalFunctionDeclaration = FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                                              functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
-                                                              argumentNames: [],
-                                                              body: Block(children: []))
+        let originalFunctionDeclaration = FunctionDeclaration(
+            identifier: Expression.Identifier("foo"),
+            functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
+            argumentNames: [],
+            body: Block(children: []))
         let input = Block(symbols: symbols, children: [
             originalFunctionDeclaration
         ])
+            .reconnect(parent: nil)
         
         let expectedRewrittenFunctionDeclaration = originalFunctionDeclaration.withBody(Block(children: [Return()]))
         let expectedFunctionType = FunctionType(name: "foo",
@@ -58,6 +60,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         XCTAssertEqual(result, expected)
         
         let expectedStructSymbols = SymbolTable()
+        expectedStructSymbols.stackFrameLookupMode = .set(Frame())
         expectedStructSymbols.enclosingFunctionNameMode = .set("None")
         let expectedType: SymbolType = .structType(StructType(name: "None", symbols: expectedStructSymbols))
         let actualType = try? symbols.resolveType(identifier: "None")
@@ -93,6 +96,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         _ = try compiler.compile(input)
         
         let expectedSymbols = SymbolTable()
+        expectedSymbols.stackFrameLookupMode = .set(Frame())
         expectedSymbols.enclosingFunctionNameMode = .set("Foo")
         let expectedType: SymbolType = .traitType(TraitType(name: "Foo", nameOfTraitObjectType: "__Foo_object", nameOfVtableType: "__Foo_vtable", symbols: expectedSymbols))
         let actualType = try? symbols.resolveType(identifier: "Foo")
@@ -176,6 +180,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
                                                     argumentNames: ["self", "s"],
                                                     body: Block())
                               ])
+            .reconnect(parent: nil)
         let input = Block(symbols: symbols, children: [
             traitDecl,
             fake,

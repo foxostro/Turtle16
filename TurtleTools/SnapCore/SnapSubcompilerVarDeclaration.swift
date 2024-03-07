@@ -105,9 +105,8 @@ public class SnapSubcompilerVarDeclaration: NSObject {
             offset = globalEnvironment.staticStorageOffset
             globalEnvironment.staticStorageOffset += size
         case .automaticStorage:
-            symbols.storagePointer += size
-            symbols.highwaterMark = max(symbols.highwaterMark, symbols.storagePointer)
-            offset = symbols.storagePointer
+            let frame = symbols.stackFrame!
+            offset = frame.bumpStoragePointer(size)
         }
         return offset
     }

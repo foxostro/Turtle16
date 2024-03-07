@@ -54,6 +54,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
                                                   argumentNames: ["self", "s"],
                                                   body: Block())
                           ])
+            .reconnect(parent: nil)
         
         try SnapSubcompilerImplFor(symbols: symbols, globalEnvironment: globalEnvironment).compile(ast)
         
@@ -106,6 +107,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
                                                   argumentNames: ["self"],
                                                   body: Block())
                           ])
+            .reconnect(parent: nil)
         
         let compiler = SnapSubcompilerImplFor(symbols: symbols, globalEnvironment: globalEnvironment)
         XCTAssertThrowsError(try compiler.compile(ast)) {
@@ -134,6 +136,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
                                                   argumentNames: ["self", "s"],
                                                   body: Block())
                           ])
+            .reconnect(parent: nil)
         
         let compiler = SnapSubcompilerImplFor(symbols: symbols, globalEnvironment: globalEnvironment)
         XCTAssertThrowsError(try compiler.compile(ast)) {
@@ -162,6 +165,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
                                                   argumentNames: ["self", "s"],
                                                   body: Block())
                           ])
+            .reconnect(parent: nil)
         
         let compiler = SnapSubcompilerImplFor(symbols: symbols, globalEnvironment: globalEnvironment)
         XCTAssertThrowsError(try compiler.compile(ast)) {
@@ -192,6 +196,7 @@ class SnapSubcompilerImplForTests: XCTestCase {
                                                     Return(Expression.LiteralBool(false))
                                                 ]))
                           ])
+            .reconnect(parent: nil)
         
         let compiler = SnapSubcompilerImplFor(symbols: symbols, globalEnvironment: globalEnvironment)
         XCTAssertThrowsError(try compiler.compile(ast)) {

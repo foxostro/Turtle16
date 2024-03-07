@@ -75,10 +75,13 @@ public class CoreToTackCompiler: SnapASTTransformerBase {
         kUnionPayloadOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .arithmeticType(.mutableInt(.u16)))
         kSliceBaseAddressOffset = 0
         kSliceCountOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .pointer(.void))
-        kSliceType = .structType(StructType(name: kSliceName, symbols: SymbolTable(tuples: [
-            (kSliceBase,  Symbol(type: kSliceBaseAddressType, offset: kSliceBaseAddressOffset)),
-            (kSliceCount, Symbol(type: kSliceCountType, offset: kSliceCountOffset))
-        ])))
+        let structSymbols = SymbolTable(
+            stackFrameLookupMode: .set(Frame()),
+            tuples: [
+                (kSliceBase,  Symbol(type: kSliceBaseAddressType, offset: kSliceBaseAddressOffset)),
+                (kSliceCount, Symbol(type: kSliceCountType, offset: kSliceCountOffset))
+            ])
+        kSliceType = .structType(StructType(name: kSliceName, symbols: structSymbols))
         super.init(symbols)
     }
     
@@ -137,12 +140,13 @@ public class CoreToTackCompiler: SnapASTTransformerBase {
             fatalError("missing AST for function: \(m)")
         }
         
+        let stackFrame = ast.symbols.stackFrame!
+        assert(ast.symbols.stackFrameLookupMode == .set(stackFrame))
         let body0 = ast.body
         let body1 = try SnapAbstractSyntaxTreeCompilerDeclPass(symbols: ast.symbols, globalEnvironment: globalEnvironment).compile(body0) as! Block
         let body2 = try SnapAbstractSyntaxTreeCompilerImplPass(symbols: ast.symbols, globalEnvironment: globalEnvironment).compile(body1) as! Block
         let body3 = try compile(body2) ?? Seq()
-        ast.symbols.highwaterMark = max(ast.symbols.highwaterMark, ast.body.symbols.highwaterMark)
-        let sizeOfLocalVariables = ast.symbols.highwaterMark
+        let sizeOfLocalVariables = stackFrame.storagePointer
         
         let subroutine = Subroutine(
             sourceAnchor: ast.sourceAnchor,
@@ -184,9 +188,6 @@ public class CoreToTackCompiler: SnapASTTransformerBase {
                 children: children)
         }
         env.pop()
-        if let symbols {
-            symbols.highwaterMark = max(symbols.highwaterMark, node0.symbols.highwaterMark)
-        }
         return seq
     }
     
@@ -3022,9 +3023,6 @@ public class CoreToTackCompiler: SnapASTTransformerBase {
         let innerSeq = Seq(sourceAnchor: expr.sourceAnchor, children: children)
         
         env.pop()
-        if let symbols {
-            symbols.highwaterMark = max(symbols.highwaterMark, innerBlock.highwaterMark)
-        }
         
         // If the function call evaluates to a non-void value then get the
         // rvalue of the compiler temporary so we can chain that value into the

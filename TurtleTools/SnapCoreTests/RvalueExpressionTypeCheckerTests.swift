@@ -5462,6 +5462,8 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         
         let concreteStructSymbols = SymbolTable(tuples: [
         ])
+        let frame = Frame()
+        concreteStructSymbols.stackFrameLookupMode = .set(frame)
         concreteStructSymbols.enclosingFunctionNameMode = .set("foo")
         let expected = SymbolType.structType(StructType(name: "__foo_u16", symbols: concreteStructSymbols))
         let actual = try typeChecker.check(expression: expr)
@@ -5488,7 +5490,9 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let concreteStructSymbols = SymbolTable(tuples: [
             ("bar", Symbol(type: constU16, offset: 0, storage: .automaticStorage))
         ])
-        concreteStructSymbols.storagePointer = 1
+        let frame = Frame()
+        frame.bumpStoragePointer(1)
+        concreteStructSymbols.stackFrameLookupMode = .set(frame)
         concreteStructSymbols.enclosingFunctionNameMode = .set("foo")
         
         let expected = SymbolType.structType(StructType(name: "__foo_u16", symbols: concreteStructSymbols))
@@ -5519,7 +5523,9 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let concreteStructSymbols = SymbolTable(tuples: [
             ("bar", Symbol(type: constU16, offset: 0, storage: .automaticStorage))
         ])
-        concreteStructSymbols.storagePointer = 1
+        let frame = Frame()
+        frame.bumpStoragePointer(1)
+        concreteStructSymbols.stackFrameLookupMode = .set(frame)
         concreteStructSymbols.enclosingFunctionNameMode = .set("foo")
 
         let expected = SymbolType.structType(StructType(name: "__foo_u16", symbols: concreteStructSymbols))
@@ -5595,6 +5601,8 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                                                      arguments: [Expression.PrimitiveType(constU16)])
         
         let expectedSymbols = SymbolTable()
+        let frame = Frame()
+        expectedSymbols.stackFrameLookupMode = .set(frame)
         expectedSymbols.enclosingFunctionNameMode = .set("__Foo_u16")
         let expected = SymbolType.traitType(TraitType(
             name: "__Foo_u16",
@@ -5642,8 +5650,10 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
                 ast: nil
             ))), offset: 0, storage: .automaticStorage))
         ])
+        let frame = Frame()
+        frame.bumpStoragePointer(1)
+        concreteTraitSymbols.stackFrameLookupMode = .set(frame)
         concreteTraitSymbols.enclosingFunctionNameMode = .set("__Foo_u16")
-        concreteTraitSymbols.storagePointer = 1
         
         let expected = SymbolType.traitType(TraitType(
             name: "__Foo_u16",

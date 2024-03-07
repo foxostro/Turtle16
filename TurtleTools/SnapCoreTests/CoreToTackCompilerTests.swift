@@ -117,6 +117,7 @@ class CoreToTackCompilerTests: XCTestCase {
                                      body: Block(children: [
                                         Return()
                                      ]))
+            .reconnect(parent: nil)
         let symbols = SymbolTable()
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
         try SnapSubcompilerFunctionDeclaration()

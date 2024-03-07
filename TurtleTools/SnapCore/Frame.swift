@@ -10,7 +10,11 @@ import Foundation
 
 // An activation record, usually a stack frame
 public class Frame: NSObject {
-    public private(set) var storagePointer = 0
+    public private(set) var storagePointer: Int
+    
+    public init(storagePointer: Int = 0) {
+        self.storagePointer = storagePointer
+    }
     
     public static func ==(lhs: Frame, rhs: Frame) -> Bool {
         return lhs.isEqual(rhs)

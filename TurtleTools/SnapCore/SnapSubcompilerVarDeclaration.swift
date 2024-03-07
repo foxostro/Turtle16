@@ -102,8 +102,9 @@ public class SnapSubcompilerVarDeclaration: NSObject {
         let offset: Int
         switch storage {
         case .staticStorage:
-            offset = globalEnvironment.staticStorageOffset
-            globalEnvironment.staticStorageOffset += size
+            let frame = globalEnvironment.staticStorageFrame
+            offset = frame.storagePointer
+            frame.bumpStoragePointer(size)
         case .automaticStorage:
             let frame = symbols.frame!
             offset = frame.bumpStoragePointer(size)

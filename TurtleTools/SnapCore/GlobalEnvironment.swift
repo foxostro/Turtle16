@@ -30,7 +30,7 @@ public class FunctionsToCompile: NSObject {
 }
 
 public class GlobalEnvironment: NSObject {
-    public var staticStorageOffset = SnapCompilerMetrics.kStaticStorageStartAddress
+    public let staticStorageFrame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
     public let memoryLayoutStrategy: MemoryLayoutStrategy
     public let labelMaker = LabelMaker()
     public let tempNameMaker = LabelMaker(prefix: "__temp")

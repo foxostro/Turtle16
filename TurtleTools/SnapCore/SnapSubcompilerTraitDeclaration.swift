@@ -90,10 +90,10 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
         members.frameLookupMode = .set(frame)
         for memberDeclaration in traitDecl.members {
             let memberType = try typeChecker.check(expression: memberDeclaration.memberType)
-            let symbol = Symbol(type: memberType, offset: frame.storagePointer, storage: .automaticStorage)
-            members.bind(identifier: memberDeclaration.name, symbol: symbol)
             let sizeOfMemberType = memoryLayoutStrategy.sizeof(type: memberType)
-            frame.bumpStoragePointer(sizeOfMemberType)
+            let offset = frame.allocate(size: sizeOfMemberType)
+            let symbol = Symbol(type: memberType, offset: offset, storage: .automaticStorage)
+            members.bind(identifier: memberDeclaration.name, symbol: symbol)
         }
         members.parent = nil
         

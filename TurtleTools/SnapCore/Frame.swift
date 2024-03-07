@@ -48,15 +48,16 @@ public class Frame: NSObject {
         return hasher.finalize()
     }
     
-    @discardableResult public func bumpStoragePointer(_ delta: Int) -> Int {
+    // Allocate memory within a frame, returning the offset for the allocation
+    public func allocate(size: Int) -> Int {
         switch growthDirection {
         case .down:
-            storagePointer += delta
+            storagePointer += size
             return storagePointer
             
         case .up:
             let result = storagePointer
-            storagePointer += delta
+            storagePointer += size
             return result
         }
     }

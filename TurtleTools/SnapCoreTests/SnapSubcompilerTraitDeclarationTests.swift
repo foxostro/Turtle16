@@ -52,10 +52,10 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
         let frame = Frame()
         members.frameLookupMode = .set(frame)
         let memberType: SymbolType = .pointer(.function(FunctionType(returnType: .arithmeticType(.mutableInt(.u8)), arguments: [.pointer(expected)])))
-        let symbol = Symbol(type: memberType, offset: frame.storagePointer, storage: .automaticStorage)
-        members.bind(identifier: "bar", symbol: symbol)
         let sizeOfMemoryType = memoryLayoutStrategy.sizeof(type: memberType)
-        frame.bumpStoragePointer(sizeOfMemoryType)
+        let offset = frame.allocate(size: sizeOfMemoryType)
+        let symbol = Symbol(type: memberType, offset: offset, storage: .automaticStorage)
+        members.bind(identifier: "bar", symbol: symbol)
         members.parent = nil
 
         let actual = try symbols.resolveType(identifier: "Foo")

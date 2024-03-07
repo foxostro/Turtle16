@@ -60,10 +60,10 @@ public class SnapSubcompilerStructDeclaration: NSObject {
             if memberType == .structType(fullyQualifiedStructType) || memberType == .constStructType(fullyQualifiedStructType) {
                 throw CompilerError(sourceAnchor: memberDeclaration.memberType.sourceAnchor, message: "a struct cannot contain itself recursively")
             }
-            let symbol = Symbol(type: memberType, offset: frame.storagePointer, storage: .automaticStorage)
-            members.bind(identifier: memberDeclaration.name, symbol: symbol)
             let sizeOfMemberType = globalEnvironment.memoryLayoutStrategy.sizeof(type: memberType)
-            frame.bumpStoragePointer(sizeOfMemberType)
+            let offset = frame.allocate(size: sizeOfMemberType)
+            let symbol = Symbol(type: memberType, offset: offset, storage: .automaticStorage)
+            members.bind(identifier: memberDeclaration.name, symbol: symbol)
         }
         members.parent = nil
         

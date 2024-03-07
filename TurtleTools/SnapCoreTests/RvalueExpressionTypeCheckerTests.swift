@@ -5491,7 +5491,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
             ("bar", Symbol(type: constU16, offset: 0, storage: .automaticStorage))
         ])
         let frame = Frame()
-        frame.bumpStoragePointer(1)
+        _ = frame.allocate(size: 1)
         concreteStructSymbols.frameLookupMode = .set(frame)
         concreteStructSymbols.enclosingFunctionNameMode = .set("foo")
         
@@ -5524,7 +5524,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
             ("bar", Symbol(type: constU16, offset: 0, storage: .automaticStorage))
         ])
         let frame = Frame()
-        frame.bumpStoragePointer(1)
+        _ = frame.allocate(size: 1)
         concreteStructSymbols.frameLookupMode = .set(frame)
         concreteStructSymbols.enclosingFunctionNameMode = .set("foo")
 
@@ -5651,7 +5651,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
             ))), offset: 0, storage: .automaticStorage))
         ])
         let frame = Frame()
-        frame.bumpStoragePointer(1)
+        _ = frame.allocate(size: 1)
         concreteTraitSymbols.frameLookupMode = .set(frame)
         concreteTraitSymbols.enclosingFunctionNameMode = .set("__Foo_u16")
         

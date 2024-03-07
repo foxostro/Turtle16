@@ -99,16 +99,14 @@ public class SnapSubcompilerVarDeclaration: NSObject {
 
     func bumpStoragePointer(_ symbolType: SymbolType, _ storage: SymbolStorage) -> Int {
         let size = globalEnvironment.memoryLayoutStrategy.sizeof(type: symbolType)
-        let offset: Int
-        switch storage {
+        let frame = switch storage {
         case .staticStorage:
-            let frame = globalEnvironment.staticStorageFrame
-            offset = frame.storagePointer
-            frame.bumpStoragePointer(size)
+            globalEnvironment.staticStorageFrame
+            
         case .automaticStorage:
-            let frame = symbols.frame!
-            offset = frame.bumpStoragePointer(size)
+            symbols.frame!
         }
+        let offset = frame.allocate(size: size)
         return offset
     }
 }

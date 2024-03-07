@@ -54,7 +54,7 @@ class SnapSubcompilerStructDeclarationTests: XCTestCase {
         ])
         expectedStructSymbols.enclosingFunctionNameMode = .set("Foo")
         let frame = Frame()
-        frame.bumpStoragePointer(1)
+        _ = frame.allocate(size: 1)
         expectedStructSymbols.frameLookupMode = .set(frame)
         let expectedType: SymbolType = .structType(StructType(name: "Foo", symbols: expectedStructSymbols))
         let actualType = try? symbols.resolveType(identifier: "Foo")

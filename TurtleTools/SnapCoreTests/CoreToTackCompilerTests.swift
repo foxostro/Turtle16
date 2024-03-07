@@ -603,7 +603,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.frameLookupMode = .set(Frame())
+        symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))])))
         let expected = Seq(children: [
@@ -622,7 +622,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.frameLookupMode = .set(Frame())
+        symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.PrimitiveType(.bool(.mutableBool)), Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))])))
         let expected = Seq(children: [
@@ -641,7 +641,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .array(count: 2, elementType: .arithmeticType(.mutableInt(.u16))), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.frameLookupMode = .set(Frame())
+        symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.ArrayType(count: Expression.LiteralInt(2), elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))])))
         let expected = Seq(children: [
@@ -660,7 +660,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .unionType(UnionType([.bool(.mutableBool), .arithmeticType(.mutableInt(.u16))])), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.frameLookupMode = .set(Frame())
+        symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
                                                              targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16)))))
@@ -2431,7 +2431,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .arithmeticType(.mutableInt(.u16)), arguments: []))))
         ])
-        symbols.frameLookupMode = .set(Frame())
+        symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: []))
         let expected = Seq(children: [
@@ -2451,7 +2451,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .dynamicArray(elementType: .arithmeticType(.mutableInt(.u16))), arguments: []))))
         ])
-        symbols.frameLookupMode = .set(Frame())
+        symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: []))
         let expected = Seq(children: [
@@ -2494,7 +2494,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .arithmeticType(.mutableInt(.u16)), arguments: [.arithmeticType(.mutableInt(.u16))]))))
         ])
-        symbols.frameLookupMode = .set(Frame())
+        symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: [Expression.LiteralInt(0xabcd)]))
         let expected = Seq(children: [
@@ -2518,7 +2518,7 @@ class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .arithmeticType(.mutableInt(.u16)), arguments: [.unionType(UnionType([.arithmeticType(.mutableInt(.u16))]))])))),
             ("bar", Symbol(type: .unionType(UnionType([.arithmeticType(.mutableInt(.u16))])), offset: 0xabcd, storage: .staticStorage))
         ])
-        symbols.frameLookupMode = .set(Frame())
+        symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: [
             Expression.LiteralInt(1000)
@@ -2561,7 +2561,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("panic", Symbol(type: .function(FunctionType(name: "panic", mangledName: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .arithmeticType(.immutableInt(.u8)))]))))
         ])
-        symbols.frameLookupMode = .set(Frame())
+        symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("panic"), arguments: [
             Expression.LiteralString("panic")

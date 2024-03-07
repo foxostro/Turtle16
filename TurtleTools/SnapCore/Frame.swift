@@ -10,10 +10,15 @@ import Foundation
 
 // An activation record, usually a stack frame
 public class Frame: NSObject {
+    public enum GrowthDirection {
+        case down, up
+    }
+    public let growthDirection: GrowthDirection
     public private(set) var storagePointer: Int
     
-    public init(storagePointer: Int = 0) {
+    public init(storagePointer: Int = 0, growthDirection: GrowthDirection = .up) {
         self.storagePointer = storagePointer
+        self.growthDirection = growthDirection
     }
     
     public static func ==(lhs: Frame, rhs: Frame) -> Bool {
@@ -30,17 +35,29 @@ public class Frame: NSObject {
         guard storagePointer == rhs.storagePointer else {
             return false
         }
+        guard growthDirection == rhs.growthDirection else {
+            return false
+        }
         return true
     }
     
     open override var hash: Int {
         var hasher = Hasher()
         hasher.combine(storagePointer)
+        hasher.combine(growthDirection)
         return hasher.finalize()
     }
     
     @discardableResult public func bumpStoragePointer(_ delta: Int) -> Int {
-        storagePointer += delta
-        return storagePointer
+        switch growthDirection {
+        case .down:
+            storagePointer += delta
+            return storagePointer
+            
+        case .up:
+            let result = storagePointer
+            storagePointer += delta
+            return result
+        }
     }
 }

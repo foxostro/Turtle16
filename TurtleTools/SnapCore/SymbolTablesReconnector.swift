@@ -94,12 +94,12 @@ public class SymbolTablesReconnector: NSObject {
         
         if onlyCheck {
             assert(node.symbols.parent === parent)
-            assert(node.symbols.frameLookupMode == .set(Frame()))
-            assert(node.symbols.frame == Frame())
+            assert(node.symbols.frameLookupMode == .set(Frame(growthDirection: .down)))
+            assert(node.symbols.frame == Frame(growthDirection: .down))
         }
         else {
             node.symbols.parent = parent
-            node.symbols.frameLookupMode = .set(Frame())
+            node.symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         }
         
         symbols = node.symbols

@@ -91,16 +91,15 @@ public class SymbolTablesReconnector: NSObject {
     func reconnect(func node: FunctionDeclaration) {
         let parent = symbols
         
-        let nextIndex = (parent?.stackFrameIndex ?? 0) + 1
-        let nextFrame = Frame(index: nextIndex)
-        
         if onlyCheck {
             assert(node.symbols.parent === parent)
-            assert(node.symbols.stackFrameLookupMode == .set(nextFrame))
+            assert(node.symbols.stackFrameLookupMode == .set(Frame()))
+            assert(node.symbols.stackFrame == Frame())
+            assert(node.symbols.stackFrameIndex == ((parent?.stackFrameIndex ?? 0) + 1))
         }
         else {
             node.symbols.parent = parent
-            node.symbols.stackFrameLookupMode = .set(nextFrame)
+            node.symbols.stackFrameLookupMode = .set(Frame())
         }
         
         symbols = node.symbols

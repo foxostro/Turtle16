@@ -943,7 +943,15 @@ public class SymbolTable: NSObject {
         }
     }
     public var stackFrameIndex: Int {
-        stackFrame?.index ?? 0
+        var index = 0
+        var curr: SymbolTable? = self
+        repeat {
+            if case .set(_) = curr?.stackFrameLookupMode {
+                index += 1
+            }
+            curr = curr?.parent
+        } while curr != nil
+        return index
     }
     
     // This is a code sequence which needs to execute when entering this scope.

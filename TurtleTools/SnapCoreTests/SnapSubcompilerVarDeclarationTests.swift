@@ -32,7 +32,7 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
     
     func testDeclareVariable_AutomaticStorage() throws {
         let symbols = SymbolTable()
-        symbols.stackFrameLookupMode = .set(Frame(index: 1))
+        symbols.stackFrameLookupMode = .set(Frame())
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),

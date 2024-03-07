@@ -10,9 +10,4 @@ import Foundation
 
 // An activation record, usually a stack frame
 public class Frame: NSObject {
-    public let index: Int
-    
-    public init(index: Int) {
-        self.index = index
-    }
 }

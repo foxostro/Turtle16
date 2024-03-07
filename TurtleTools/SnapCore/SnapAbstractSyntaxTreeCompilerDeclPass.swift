@@ -31,7 +31,7 @@ public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
     }
     
     public override func compile(func node0: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
-        assert(node0.symbols.stackFrameLookupMode.isSet)
+        assert(node0.symbols.frameLookupMode.isSet)
         let subcompiler = SnapSubcompilerFunctionDeclaration()
         try subcompiler.compile(globalEnvironment: globalEnvironment,
                                 symbols: symbols!,

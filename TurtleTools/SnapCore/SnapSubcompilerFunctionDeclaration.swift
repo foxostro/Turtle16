@@ -12,7 +12,7 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
     public func compile(globalEnvironment: GlobalEnvironment,
                         symbols: SymbolTable,
                         node: FunctionDeclaration) throws {
-        assert(node.symbols.stackFrameLookupMode.isSet)
+        assert(node.symbols.frameLookupMode.isSet)
         let name = node.identifier.identifier
         
         guard symbols.existsAndCannotBeShadowed(identifier: name) == false else {

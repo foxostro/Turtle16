@@ -54,7 +54,7 @@ public class SnapSubcompilerStructDeclaration: NSObject {
         
         members.enclosingFunctionNameMode = .set(name)
         let frame = Frame()
-        members.stackFrameLookupMode = .set(frame)
+        members.frameLookupMode = .set(frame)
         for memberDeclaration in node.members {
             let memberType = try typeChecker.check(expression: memberDeclaration.memberType)
             if memberType == .structType(fullyQualifiedStructType) || memberType == .constStructType(fullyQualifiedStructType) {

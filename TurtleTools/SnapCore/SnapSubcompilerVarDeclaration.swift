@@ -91,7 +91,7 @@ public class SnapSubcompilerVarDeclaration: NSObject {
     }
 
     func makeSymbolWithExplicitType(explicitType: SymbolType, storage: SymbolStorage, visibility: SymbolVisibility) throws -> Symbol {
-        let storage: SymbolStorage = (symbols.stackFrame==nil) ? .staticStorage : storage
+        let storage: SymbolStorage = (symbols.frame==nil) ? .staticStorage : storage
         let offset = bumpStoragePointer(explicitType, storage)
         let symbol = Symbol(type: explicitType, offset: offset, storage: storage, visibility: visibility)
         return symbol
@@ -105,7 +105,7 @@ public class SnapSubcompilerVarDeclaration: NSObject {
             offset = globalEnvironment.staticStorageOffset
             globalEnvironment.staticStorageOffset += size
         case .automaticStorage:
-            let frame = symbols.stackFrame!
+            let frame = symbols.frame!
             offset = frame.bumpStoragePointer(size)
         }
         return offset

@@ -87,7 +87,7 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
         
         members.enclosingFunctionNameMode = .set(mangledName)
         let frame = Frame()
-        members.stackFrameLookupMode = .set(frame)
+        members.frameLookupMode = .set(frame)
         for memberDeclaration in traitDecl.members {
             let memberType = try typeChecker.check(expression: memberDeclaration.memberType)
             let symbol = Symbol(type: memberType, offset: frame.storagePointer, storage: .automaticStorage)
@@ -171,7 +171,7 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
             let callee = Expression.Get(expr: Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("vtable")), member: Expression.Identifier(method.name))
             let arguments = [Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("object"))] + argumentNames[1...].map({Expression.Identifier($0)})
             
-            let outer = SymbolTable(parent: symbols, stackFrameLookupMode: .set(Frame()))
+            let outer = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))
             
             let fnBody: Block
             let returnType = try TypeContextTypeChecker(symbols: symbols).check(expression: functionType.returnType)

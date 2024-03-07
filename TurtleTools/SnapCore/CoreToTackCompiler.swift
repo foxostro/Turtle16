@@ -76,7 +76,7 @@ public class CoreToTackCompiler: SnapASTTransformerBase {
         kSliceBaseAddressOffset = 0
         kSliceCountOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .pointer(.void))
         let structSymbols = SymbolTable(
-            stackFrameLookupMode: .set(Frame()),
+            frameLookupMode: .set(Frame()),
             tuples: [
                 (kSliceBase,  Symbol(type: kSliceBaseAddressType, offset: kSliceBaseAddressOffset)),
                 (kSliceCount, Symbol(type: kSliceCountType, offset: kSliceCountOffset))
@@ -140,8 +140,8 @@ public class CoreToTackCompiler: SnapASTTransformerBase {
             fatalError("missing AST for function: \(m)")
         }
         
-        let stackFrame = ast.symbols.stackFrame!
-        assert(ast.symbols.stackFrameLookupMode == .set(stackFrame))
+        let stackFrame = ast.symbols.frame!
+        assert(ast.symbols.frameLookupMode == .set(stackFrame))
         let body0 = ast.body
         let body1 = try SnapAbstractSyntaxTreeCompilerDeclPass(symbols: ast.symbols, globalEnvironment: globalEnvironment).compile(body0) as! Block
         let body2 = try SnapAbstractSyntaxTreeCompilerImplPass(symbols: ast.symbols, globalEnvironment: globalEnvironment).compile(body1) as! Block

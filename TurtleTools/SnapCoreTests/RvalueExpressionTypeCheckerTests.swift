@@ -5463,7 +5463,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let concreteStructSymbols = SymbolTable(tuples: [
         ])
         let frame = Frame()
-        concreteStructSymbols.stackFrameLookupMode = .set(frame)
+        concreteStructSymbols.frameLookupMode = .set(frame)
         concreteStructSymbols.enclosingFunctionNameMode = .set("foo")
         let expected = SymbolType.structType(StructType(name: "__foo_u16", symbols: concreteStructSymbols))
         let actual = try typeChecker.check(expression: expr)
@@ -5492,7 +5492,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         ])
         let frame = Frame()
         frame.bumpStoragePointer(1)
-        concreteStructSymbols.stackFrameLookupMode = .set(frame)
+        concreteStructSymbols.frameLookupMode = .set(frame)
         concreteStructSymbols.enclosingFunctionNameMode = .set("foo")
         
         let expected = SymbolType.structType(StructType(name: "__foo_u16", symbols: concreteStructSymbols))
@@ -5525,7 +5525,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         ])
         let frame = Frame()
         frame.bumpStoragePointer(1)
-        concreteStructSymbols.stackFrameLookupMode = .set(frame)
+        concreteStructSymbols.frameLookupMode = .set(frame)
         concreteStructSymbols.enclosingFunctionNameMode = .set("foo")
 
         let expected = SymbolType.structType(StructType(name: "__foo_u16", symbols: concreteStructSymbols))
@@ -5602,7 +5602,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         
         let expectedSymbols = SymbolTable()
         let frame = Frame()
-        expectedSymbols.stackFrameLookupMode = .set(frame)
+        expectedSymbols.frameLookupMode = .set(frame)
         expectedSymbols.enclosingFunctionNameMode = .set("__Foo_u16")
         let expected = SymbolType.traitType(TraitType(
             name: "__Foo_u16",
@@ -5652,7 +5652,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         ])
         let frame = Frame()
         frame.bumpStoragePointer(1)
-        concreteTraitSymbols.stackFrameLookupMode = .set(frame)
+        concreteTraitSymbols.frameLookupMode = .set(frame)
         concreteTraitSymbols.enclosingFunctionNameMode = .set("__Foo_u16")
         
         let expected = SymbolType.traitType(TraitType(

@@ -927,7 +927,7 @@ public class SymbolTable: NSObject {
     public var typeTable: [String:TypeRecord]
     public var parent: SymbolTable?
     
-    public enum StackFrameLookupMode: Hashable, Equatable {
+    public enum FrameLookupMode: Hashable, Equatable {
         case inherit, set(Frame)
         
         public var isSet: Bool {
@@ -939,11 +939,11 @@ public class SymbolTable: NSObject {
             }
         }
     }
-    public var stackFrameLookupMode: StackFrameLookupMode = .inherit
-    public var stackFrame: Frame? {
-        switch stackFrameLookupMode {
+    public var frameLookupMode: FrameLookupMode = .inherit
+    public var frame: Frame? {
+        switch frameLookupMode {
         case .inherit:
-            parent?.stackFrame
+            parent?.frame
             
         case .set(let frame):
             frame
@@ -953,7 +953,7 @@ public class SymbolTable: NSObject {
         var index = 0
         var curr: SymbolTable? = self
         repeat {
-            if case .set(_) = curr?.stackFrameLookupMode {
+            if case .set(_) = curr?.frameLookupMode {
                 index += 1
             }
             curr = curr?.parent
@@ -995,9 +995,9 @@ public class SymbolTable: NSObject {
     
     public var modulesAlreadyImported: Set<String> = []
     
-    public init(parent p: SymbolTable? = nil, stackFrameLookupMode s: StackFrameLookupMode = .inherit, tuples: [(String, Symbol)] = [], typeDict: [String:SymbolType] = [:]) {
+    public init(parent p: SymbolTable? = nil, frameLookupMode s: FrameLookupMode = .inherit, tuples: [(String, Symbol)] = [], typeDict: [String:SymbolType] = [:]) {
         parent = p
-        stackFrameLookupMode = s
+        frameLookupMode = s
         typeTable = typeDict.mapValues({TypeRecord(symbolType: $0, visibility: .privateVisibility)})
         
         super.init()
@@ -1048,8 +1048,8 @@ public class SymbolTable: NSObject {
 #if false
         let offset = symbol.maybeOffset == nil ? "nil" : "\(symbol.offset)"
         let stackFrameDesc: String
-        if let stackFrame {
-            stackFrameDesc = "\(stackFrame)"
+        if let frame {
+            stackFrameDesc = "\(frame)"
         }
         else {
             stackFrameDesc = "nil"
@@ -1204,7 +1204,7 @@ public class SymbolTable: NSObject {
         guard enclosingFunctionName == rhs.enclosingFunctionName else {
             return false
         }
-        guard stackFrameLookupMode == rhs.stackFrameLookupMode else {
+        guard frameLookupMode == rhs.frameLookupMode else {
             return false
         }
         return true
@@ -1218,7 +1218,7 @@ public class SymbolTable: NSObject {
         hasher.combine(parent)
         hasher.combine(enclosingFunctionType)
         hasher.combine(enclosingFunctionName)
-        hasher.combine(stackFrameLookupMode)
+        hasher.combine(frameLookupMode)
         return hasher.finalize()
     }
     
@@ -1228,7 +1228,7 @@ public class SymbolTable: NSObject {
         result.symbolTable = symbolTable
         result.typeTable = typeTable
         result.parent = parent
-        result.stackFrameLookupMode = stackFrameLookupMode
+        result.frameLookupMode = frameLookupMode
         result.scopePrologue = scopePrologue
         result.enclosingFunctionTypeMode = enclosingFunctionTypeMode
         result.enclosingFunctionNameMode = enclosingFunctionNameMode

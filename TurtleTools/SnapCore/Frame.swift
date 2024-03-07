@@ -16,6 +16,12 @@ public class Frame: NSObject {
     public let growthDirection: GrowthDirection
     public private(set) var storagePointer: Int
     
+    public struct Pair: Hashable, Equatable {
+        let identifier: String
+        let symbol: Symbol
+    }
+    public private(set) var symbols: [Pair] = []
+    
     public init(storagePointer: Int = 0, growthDirection: GrowthDirection = .up) {
         self.storagePointer = storagePointer
         self.growthDirection = growthDirection
@@ -38,6 +44,9 @@ public class Frame: NSObject {
         guard growthDirection == rhs.growthDirection else {
             return false
         }
+        guard symbols == rhs.symbols else {
+            return false
+        }
         return true
     }
     
@@ -45,6 +54,7 @@ public class Frame: NSObject {
         var hasher = Hasher()
         hasher.combine(storagePointer)
         hasher.combine(growthDirection)
+        hasher.combine(symbols)
         return hasher.finalize()
     }
     
@@ -60,5 +70,10 @@ public class Frame: NSObject {
             storagePointer += size
             return result
         }
+    }
+    
+    // Record that a symbol is attached to this frame.
+    public func add(identifier: String, symbol: Symbol) {
+        symbols.append(Pair(identifier: identifier, symbol: symbol))
     }
 }

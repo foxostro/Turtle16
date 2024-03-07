@@ -5487,11 +5487,11 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
                                                      arguments: [Expression.PrimitiveType(constU16)])
         
-        let concreteStructSymbols = SymbolTable(tuples: [
-            ("bar", Symbol(type: constU16, offset: 0, storage: .automaticStorage))
-        ])
+        let bar = Symbol(type: constU16, offset: 0, storage: .automaticStorage)
+        let concreteStructSymbols = SymbolTable(tuples: [("bar", bar)])
         let frame = Frame()
         _ = frame.allocate(size: 1)
+        frame.add(identifier: "bar", symbol: bar)
         concreteStructSymbols.frameLookupMode = .set(frame)
         concreteStructSymbols.enclosingFunctionNameMode = .set("foo")
         
@@ -5520,11 +5520,13 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
             Expression.StructInitializer.Argument(name: "bar", expr: Expression.LiteralInt(1)),
         ])
 
+        let bar = Symbol(type: constU16, offset: 0, storage: .automaticStorage)
         let concreteStructSymbols = SymbolTable(tuples: [
-            ("bar", Symbol(type: constU16, offset: 0, storage: .automaticStorage))
+            ("bar", bar)
         ])
         let frame = Frame()
         _ = frame.allocate(size: 1)
+        frame.add(identifier: "bar", symbol: bar)
         concreteStructSymbols.frameLookupMode = .set(frame)
         concreteStructSymbols.enclosingFunctionNameMode = .set("foo")
 
@@ -5641,17 +5643,21 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("Foo"),
                                                      arguments: [Expression.PrimitiveType(constU16)])
         
-        let concreteTraitSymbols = SymbolTable(tuples: [
-            ("bar", Symbol(type: .pointer(.function(FunctionType(
+        let bar = Symbol(
+            type: .pointer(.function(FunctionType(
                 name: "bar",
                 mangledName: "__Foo_u16_bar",
                 returnType: constU16,
                 arguments: [constU16],
-                ast: nil
-            ))), offset: 0, storage: .automaticStorage))
+                ast: nil))),
+            offset: 0,
+            storage: .automaticStorage)
+        let concreteTraitSymbols = SymbolTable(tuples: [
+            ("bar", bar)
         ])
         let frame = Frame()
         _ = frame.allocate(size: 1)
+        frame.add(identifier: "bar", symbol: bar)
         concreteTraitSymbols.frameLookupMode = .set(frame)
         concreteTraitSymbols.enclosingFunctionNameMode = .set("__Foo_u16")
         

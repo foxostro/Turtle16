@@ -49,12 +49,17 @@ class SnapSubcompilerStructDeclarationTests: XCTestCase {
             StructDeclaration.Member(name: "bar", type: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
         ])
         XCTAssertNoThrow(try makeCompiler(symbols).compile(input))
+        let bar = Symbol(
+            type: .arithmeticType(.mutableInt(.u8)),
+            offset: 0,
+            storage: .automaticStorage)
         let expectedStructSymbols = SymbolTable(tuples: [
-            ("bar", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0, storage: .automaticStorage))
+            ("bar", bar)
         ])
         expectedStructSymbols.enclosingFunctionNameMode = .set("Foo")
         let frame = Frame()
         _ = frame.allocate(size: 1)
+        frame.add(identifier: "bar", symbol: bar)
         expectedStructSymbols.frameLookupMode = .set(frame)
         let expectedType: SymbolType = .structType(StructType(name: "Foo", symbols: expectedStructSymbols))
         let actualType = try? symbols.resolveType(identifier: "Foo")

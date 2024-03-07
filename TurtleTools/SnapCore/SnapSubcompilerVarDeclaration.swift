@@ -72,6 +72,7 @@ public class SnapSubcompilerVarDeclaration: NSObject {
             }
             let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: node.storage, visibility: node.visibility)
             symbols.bind(identifier: node.identifier.identifier, symbol: symbol)
+            attachToFrame(identifier: node.identifier.identifier, symbol: symbol)
             result = Expression.InitialAssignment(sourceAnchor: node.sourceAnchor,
                                                   lexpr: node.identifier,
                                                   rexpr: varDeclExpr)
@@ -108,5 +109,16 @@ public class SnapSubcompilerVarDeclaration: NSObject {
         }
         let offset = frame.allocate(size: size)
         return offset
+    }
+    
+    func attachToFrame(identifier: String, symbol: Symbol) {
+        let frame = switch symbol.storage {
+        case .staticStorage:
+            globalEnvironment.staticStorageFrame
+            
+        case .automaticStorage:
+            symbols.frame!
+        }
+        frame.add(identifier: identifier, symbol: symbol)
     }
 }

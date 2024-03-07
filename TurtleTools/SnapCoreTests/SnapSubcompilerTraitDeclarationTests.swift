@@ -55,6 +55,7 @@ class SnapSubcompilerTraitDeclarationTests: XCTestCase {
         let sizeOfMemoryType = memoryLayoutStrategy.sizeof(type: memberType)
         let offset = frame.allocate(size: sizeOfMemoryType)
         let symbol = Symbol(type: memberType, offset: offset, storage: .automaticStorage)
+        frame.add(identifier: "bar", symbol: symbol)
         members.bind(identifier: "bar", symbol: symbol)
         members.parent = nil
 

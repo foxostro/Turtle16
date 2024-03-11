@@ -1070,6 +1070,8 @@ public class CoreToTackCompiler: SnapASTTransformerBase {
             result = try rvalue(sizeof: node)
         case let node as Expression.GenericTypeApplication:
             result = try rvalue(genericTypeApplication: node)
+        case let eseq as Expression.Eseq:
+            result = try rvalue(eseq: eseq)
         default:
             throw CompilerError(message: "unimplemented: `\(expr)'")
         }
@@ -3104,5 +3106,20 @@ public class CoreToTackCompiler: SnapASTTransformerBase {
             sourceAnchor: expr.sourceAnchor,
             symbols: symbols)
         return result
+    }
+    
+    func rvalue(eseq: Expression.Eseq) throws -> AbstractSyntaxTreeNode {
+        var children: [AbstractSyntaxTreeNode] = []
+        if eseq.children.count > 1 {
+            for child in eseq.children[0..<eseq.children.count-1] {
+                let savedRegisterStack = registerStack
+                children.append(try rvalue(expr: child))
+                registerStack = savedRegisterStack
+            }
+        }
+        if let lastChild = eseq.children.last {
+            children.append(try rvalue(expr: lastChild))
+        }
+        return Seq(sourceAnchor: eseq.sourceAnchor, children: children)
     }
 }

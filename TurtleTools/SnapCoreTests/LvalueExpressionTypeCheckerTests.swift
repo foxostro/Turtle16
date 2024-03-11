@@ -297,4 +297,37 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
         let actual = try typeChecker.check(expression: expr)
         XCTAssertEqual(actual, expected)
     }
+    
+    func testEseq_Empty() throws {
+        let expr = Expression.Eseq(children: [])
+        let result = try LvalueExpressionTypeChecker().check(expression: expr)
+        XCTAssertNil(result)
+    }
+    
+    func testEseq_OneChild() throws {
+        let ident = "foo"
+        let symbols = SymbolTable(tuples: [
+            (ident, Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0x0010))
+        ])
+        let expr = Expression.Eseq(children: [
+            Expression.Identifier("foo")
+        ])
+        let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
+        let result = try typeChecker.check(expression: expr)
+        XCTAssertEqual(result, .arithmeticType(.mutableInt(.u16)))
+    }
+    
+    func testEseq_MultipleChildren() throws {
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)))),
+            ("bar", Symbol(type: .arithmeticType(.mutableInt(.i16))))
+        ])
+        let expr = Expression.Eseq(children: [
+            Expression.Identifier("bar"),
+            Expression.Identifier("foo")
+        ])
+        let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
+        let result = try typeChecker.check(expression: expr)
+        XCTAssertEqual(result, .arithmeticType(.mutableInt(.u16)))
+    }
 }

@@ -261,6 +261,55 @@ public class Expression: AbstractSyntaxTreeNode {
         }
     }
     
+    // A linear sequence of expressions, the value of which is determined by the last expression
+    public class Eseq: Expression {
+        public let children: [Expression]
+        
+        public init(sourceAnchor: SourceAnchor? = nil, children: [Expression]) {
+            self.children = children
+            super.init(sourceAnchor: sourceAnchor)
+        }
+        
+        public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Eseq {
+            if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
+                return self
+            }
+            return Eseq(sourceAnchor: sourceAnchor, children: children)
+        }
+        
+        public override func isEqual(_ rhs: Any?) -> Bool {
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
+            guard let rhs = rhs as? Eseq else { return false }
+            guard children == rhs.children else { return false }
+            return true
+        }
+        
+        public override var hash: Int {
+            var hasher = Hasher()
+            hasher.combine(children)
+            hasher.combine(super.hash)
+            return hasher.finalize()
+        }
+        
+        open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            let leading = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+            
+            let typeDesc = String(describing: type(of: self))
+            
+            var childrenDesc = children.map {
+                $0.makeIndentedDescription(depth: depth+1, wantsLeadingWhitespace: true)
+            }.joined(separator: "\n")
+            if children.count > 0 {
+                childrenDesc = "\n" + childrenDesc
+            }
+            
+            let result = leading + typeDesc + childrenDesc
+            return result
+        }
+    }
+    
     public class Binary: Expression {
         public let op: TokenOperator.Operator
         public let left: Expression

@@ -3816,5 +3816,15 @@ class CoreToTackCompilerTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
     
+    func testRvalue_Eseq() throws {
+        let compiler = makeCompiler()
+        let actual = try compiler.rvalue(expr: Expression.Eseq(children: [
+            Expression.LiteralBool(false)
+        ]))
+        let expected = TackInstructionNode(.lio(.o(0), false))
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, .o(.o(0)))
+    }
+    
     // TODO: Need unit tests which exercise the syscall path on Turtle16. On this target, the SYSCALL Tack instruction ought to compile to basically a function call to a system call handler in the Turtle16 runtime.
 }

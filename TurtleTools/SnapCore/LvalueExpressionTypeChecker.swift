@@ -40,6 +40,8 @@ public class LvalueExpressionTypeChecker: NSObject {
             }
         case let expr as Expression.GenericTypeApplication:
             return try check(genericTypeApplication: expr)
+        case let expr as Expression.Eseq:
+            return try check(eseq: expr)
         default:
             return nil
         }
@@ -111,5 +113,12 @@ public class LvalueExpressionTypeChecker: NSObject {
     
     public func check(genericTypeApplication expr: Expression.GenericTypeApplication) throws -> SymbolType? {
         return try rvalueContext().check(genericTypeApplication: expr)
+    }
+    
+    public func check(eseq: Expression.Eseq) throws -> SymbolType? {
+        guard let expr = eseq.children.last else {
+            return nil
+        }
+        return try check(expression: expr)
     }
 }

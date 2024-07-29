@@ -15,7 +15,7 @@ import TurtleCore
 //
 // SnapAbstractSyntaxTreeCompilerImplPass delegates most the specific work to
 // various subcompilers classes.
-public class SnapAbstractSyntaxTreeCompilerImplPass: SnapASTTransformerBase {
+public class SnapAbstractSyntaxTreeCompilerImplPass: CompilerPass {
     public let globalEnvironment: GlobalEnvironment
     
     public init(symbols: SymbolTable? = nil,

@@ -8,7 +8,7 @@
 
 import TurtleCore
 
-public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
+public class SnapASTTransformerTestDeclaration: CompilerPass {
     public private(set) var testNames: [String] = []
     public private(set) var testDeclarations: [TestDeclaration] = []
     var currentTest: TestDeclaration? = nil

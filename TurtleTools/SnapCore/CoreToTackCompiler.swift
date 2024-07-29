@@ -9,7 +9,7 @@
 import TurtleCore
 import TurtleSimulatorCore
 
-public class CoreToTackCompiler: SnapASTTransformerBase {
+public class CoreToTackCompiler: CompilerPass {
     public typealias Register = TackInstruction.Register
     public typealias RegisterPointer = TackInstruction.RegisterPointer
     public typealias RegisterType = TackInstruction.RegisterType

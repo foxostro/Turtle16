@@ -1,5 +1,5 @@
 //
-//  SnapASTTransformerBase.swift
+//  CompilerPass.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 7/29/21.
@@ -8,7 +8,7 @@
 
 import TurtleCore
 
-public class SnapASTTransformerBase: NSObject {
+public class CompilerPass: NSObject {
     struct Environment {
         private var stack: [SymbolTable] = []
         

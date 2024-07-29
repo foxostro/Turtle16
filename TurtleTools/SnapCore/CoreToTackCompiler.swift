@@ -89,7 +89,7 @@ public class CoreToTackCompiler: SnapASTTransformerBase {
         var children: [AbstractSyntaxTreeNode] = []
         
         let compiledModules = try collectCompiledModuleCode()
-        let compiledNode = try compile(node0)
+        let compiledNode = try visit(node0)
         let compiledFunctions = try compileFunctions()
         
         children += compiledModules
@@ -107,7 +107,7 @@ public class CoreToTackCompiler: SnapASTTransformerBase {
         var nodes: [AbstractSyntaxTreeNode] = []
         
         for (_, module) in globalEnvironment.modules {
-            if let compiledModuleNode = try super.compile(module) {
+            if let compiledModuleNode = try super.visit(module) {
                 nodes.append(compiledModuleNode)
             }
         }
@@ -143,9 +143,9 @@ public class CoreToTackCompiler: SnapASTTransformerBase {
         let stackFrame = ast.symbols.frame!
         assert(ast.symbols.frameLookupMode == .set(stackFrame))
         let body0 = ast.body
-        let body1 = try SnapAbstractSyntaxTreeCompilerDeclPass(symbols: ast.symbols, globalEnvironment: globalEnvironment).compile(body0) as! Block
-        let body2 = try SnapAbstractSyntaxTreeCompilerImplPass(symbols: ast.symbols, globalEnvironment: globalEnvironment).compile(body1) as! Block
-        let body3 = try compile(body2) ?? Seq()
+        let body1 = try SnapAbstractSyntaxTreeCompilerDeclPass(symbols: ast.symbols, globalEnvironment: globalEnvironment).visit(body0) as! Block
+        let body2 = try SnapAbstractSyntaxTreeCompilerImplPass(symbols: ast.symbols, globalEnvironment: globalEnvironment).visit(body1) as! Block
+        let body3 = try visit(body2) ?? Seq()
         let sizeOfLocalVariables = stackFrame.storagePointer
         
         let subroutine = Subroutine(
@@ -162,22 +162,22 @@ public class CoreToTackCompiler: SnapASTTransformerBase {
     }
     
     func flatten(_ node: AbstractSyntaxTreeNode?) -> AbstractSyntaxTreeNode? {
-        return try! SnapASTTransformerFlattenSeq().compile(node)
+        return try! SnapASTTransformerFlattenSeq().visit(node)
     }
     
-    public override func compile(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
-        let node1 = try super.compile(node0)
+    public override func visit(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
+        let node1 = try super.visit(node0)
         let node2 = flatten(node1)
         return node2
     }
     
-    public override func compile(block node0: Block) throws -> AbstractSyntaxTreeNode? {
+    public override func visit(block node0: Block) throws -> AbstractSyntaxTreeNode? {
         env.push(node0.symbols)
-        let children: [AbstractSyntaxTreeNode] = try node0.children.compactMap { try compile($0) }
+        let children: [AbstractSyntaxTreeNode] = try node0.children.compactMap { try visit($0) }
         let seq: Seq
         if let scopePrologue = symbols?.scopePrologue,
            !scopePrologue.children.isEmpty,
-           let compiledPrologue = try compile(seq: scopePrologue) {
+           let compiledPrologue = try visit(seq: scopePrologue) {
             seq = Seq(
                 sourceAnchor: node0.sourceAnchor,
                 children: [compiledPrologue] + children)
@@ -191,7 +191,7 @@ public class CoreToTackCompiler: SnapASTTransformerBase {
         return seq
     }
     
-    public override func compile(return node: Return) throws -> AbstractSyntaxTreeNode? {
+    public override func visit(return node: Return) throws -> AbstractSyntaxTreeNode? {
         assert(node.expression == nil)
         return Seq(
             sourceAnchor: node.sourceAnchor,
@@ -207,28 +207,28 @@ public class CoreToTackCompiler: SnapASTTransformerBase {
             ])
     }
     
-    public override func compile(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
+    public override func visit(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
         // Record the function (by type) so we can revisit and compile it later.
         let functionType = try symbols!.resolve(identifier: node.identifier.identifier).type.unwrapFunctionType()
         globalEnvironment.functionsToCompile.enqueue(functionType)
         return nil
     }
     
-    public override func compile(asm node: Asm) throws -> AbstractSyntaxTreeNode? {
+    public override func visit(asm node: Asm) throws -> AbstractSyntaxTreeNode? {
         return TackInstructionNode(
             instruction: .inlineAssembly(node.assemblyCode),
             sourceAnchor: node.sourceAnchor,
             symbols: symbols)
     }
     
-    public override func compile(goto node: Goto) throws -> AbstractSyntaxTreeNode? {
+    public override func visit(goto node: Goto) throws -> AbstractSyntaxTreeNode? {
         return TackInstructionNode(
             instruction: .jmp(node.target),
             sourceAnchor: node.sourceAnchor,
             symbols: symbols)
     }
     
-    public override func compile(gotoIfFalse node: GotoIfFalse) throws -> AbstractSyntaxTreeNode? {
+    public override func visit(gotoIfFalse node: GotoIfFalse) throws -> AbstractSyntaxTreeNode? {
         var children: [AbstractSyntaxTreeNode] = [
             try rvalue(expr: node.condition)
         ]
@@ -243,7 +243,7 @@ public class CoreToTackCompiler: SnapASTTransformerBase {
         return Seq(sourceAnchor: node.sourceAnchor, children: children)
     }
     
-    public override func compile(expressionStatement node: Expression) throws -> AbstractSyntaxTreeNode? {
+    public override func visit(expressionStatement node: Expression) throws -> AbstractSyntaxTreeNode? {
         let savedRegisterStack = registerStack
         let result = try rvalue(expr: node)
         registerStack = savedRegisterStack
@@ -307,7 +307,7 @@ public class CoreToTackCompiler: SnapASTTransformerBase {
             let depth = resolution.1
             assert(depth >= 0)
             let result = computeAddressOfSymbol(sourceAnchor: node.sourceAnchor, symbol: symbol, depth: depth)
-            return try compile(result)!
+            return try visit(result)!
         }
     }
     
@@ -562,7 +562,7 @@ public class CoreToTackCompiler: SnapASTTransformerBase {
                     if: boundsCheck0,
                     symbols: symbols!,
                     labelMaker: globalEnvironment.labelMaker)
-                if let boundsCheck2 = try super.compile(boundsCheck1) {
+                if let boundsCheck2 = try super.visit(boundsCheck1) {
                     children.append(boundsCheck2)
                 }
             }
@@ -586,7 +586,7 @@ public class CoreToTackCompiler: SnapASTTransformerBase {
                     if: boundsCheck0,
                     symbols: symbols!,
                     labelMaker: globalEnvironment.labelMaker)
-                if let boundsCheck2 = try super.compile(boundsCheck1) {
+                if let boundsCheck2 = try super.visit(boundsCheck1) {
                     children.append(boundsCheck2)
                 }
             }
@@ -759,7 +759,7 @@ public class CoreToTackCompiler: SnapASTTransformerBase {
                     if: boundsCheck0,
                     symbols: symbols!,
                     labelMaker: globalEnvironment.labelMaker)
-                if let boundsCheck2 = try super.compile(boundsCheck1) {
+                if let boundsCheck2 = try super.visit(boundsCheck1) {
                     children.append(boundsCheck2)
                 }
             }
@@ -781,7 +781,7 @@ public class CoreToTackCompiler: SnapASTTransformerBase {
                     if: boundsCheck0,
                     symbols: symbols!,
                     labelMaker: globalEnvironment.labelMaker)
-                if let boundsCheck2 = try super.compile(boundsCheck1) {
+                if let boundsCheck2 = try super.visit(boundsCheck1) {
                     children.append(boundsCheck2)
                 }
             }

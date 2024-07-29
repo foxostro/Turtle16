@@ -32,7 +32,7 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
         
         let transformer = SnapASTTransformerTestDeclaration(globalEnvironment: globalEnvironment,
                                                             shouldRunSpecificTest: "bar")
-        XCTAssertThrowsError(try transformer.compile(original)) {
+        XCTAssertThrowsError(try transformer.visit(original)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "declaration is only valid at file scope")
@@ -50,7 +50,7 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
         .reconnect(parent: nil)
         
         let transformer = SnapASTTransformerTestDeclaration(globalEnvironment: globalEnvironment)
-        XCTAssertThrowsError(try transformer.compile(original)) {
+        XCTAssertThrowsError(try transformer.visit(original)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "test \"bar\" already exists")
@@ -78,7 +78,7 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
         
         let transformer = SnapASTTransformerTestDeclaration(globalEnvironment: globalEnvironment, shouldRunSpecificTest: nil)
         var actual: AbstractSyntaxTreeNode? = nil
-        XCTAssertNoThrow(actual = try transformer.compile(input))
+        XCTAssertNoThrow(actual = try transformer.visit(input))
         
         XCTAssertEqual(actual, expected)
     }
@@ -110,7 +110,7 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
         
         let transformer = SnapASTTransformerTestDeclaration(globalEnvironment: globalEnvironment, shouldRunSpecificTest: nil)
         var actual: AbstractSyntaxTreeNode? = nil
-        XCTAssertNoThrow(actual = try transformer.compile(input))
+        XCTAssertNoThrow(actual = try transformer.visit(input))
         
         XCTAssertEqual(actual, expected)
     }
@@ -147,7 +147,7 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
         
         let transformer = SnapASTTransformerTestDeclaration(globalEnvironment: globalEnvironment, shouldRunSpecificTest: "bar")
         var actual: AbstractSyntaxTreeNode? = nil
-        XCTAssertNoThrow(actual = try transformer.compile(input))
+        XCTAssertNoThrow(actual = try transformer.visit(input))
         
         XCTAssertEqual(actual, expected)
     }
@@ -188,7 +188,7 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
         
         let transformer = SnapASTTransformerTestDeclaration(globalEnvironment: globalEnvironment, shouldRunSpecificTest: "bar")
         var actual: AbstractSyntaxTreeNode? = nil
-        XCTAssertNoThrow(actual = try transformer.compile(input))
+        XCTAssertNoThrow(actual = try transformer.visit(input))
         
         XCTAssertEqual(actual, expected)
     }
@@ -235,7 +235,7 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
         let transformer = SnapASTTransformerTestDeclaration(globalEnvironment: globalEnvironment,
                                                             shouldRunSpecificTest: "bar")
         var actual: AbstractSyntaxTreeNode? = nil
-        XCTAssertNoThrow(actual = try transformer.compile(input))
+        XCTAssertNoThrow(actual = try transformer.visit(input))
         
         XCTAssertEqual(actual, expected)
     }

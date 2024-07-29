@@ -22,9 +22,9 @@ public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
         self.shouldRunSpecificTest = shouldRunSpecificTest
     }
     
-    public override func compile(block node: Block) throws -> AbstractSyntaxTreeNode? {
+    public override func visit(block node: Block) throws -> AbstractSyntaxTreeNode? {
         depth += 1
-        let result = try super.compile(block: node) as! Block
+        let result = try super.visit(block: node) as! Block
         depth -= 1
         
         if depth == 0 {
@@ -78,7 +78,7 @@ public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
         return result
     }
     
-    public override func compile(testDecl node: TestDeclaration) throws -> AbstractSyntaxTreeNode? {
+    public override func visit(testDecl node: TestDeclaration) throws -> AbstractSyntaxTreeNode? {
         guard depth <= 1 else {
             throw CompilerError(sourceAnchor: node.sourceAnchor, message: "declaration is only valid at file scope")
         }
@@ -90,7 +90,7 @@ public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
         currentTest = node
         defer { currentTest = nil }
         
-        let modifiedNode = try super.compile(testDecl: node) as! TestDeclaration
+        let modifiedNode = try super.visit(testDecl: node) as! TestDeclaration
         
         testNames.append(modifiedNode.name)
         testDeclarations.append(modifiedNode)
@@ -98,7 +98,7 @@ public class SnapASTTransformerTestDeclaration: SnapASTTransformerBase {
         return nil // Erase TestDeclaration at this point.
     }
     
-    public override func compile(assert node: Assert) throws -> AbstractSyntaxTreeNode {
+    public override func visit(assert node: Assert) throws -> AbstractSyntaxTreeNode {
         return Assert(sourceAnchor: node.sourceAnchor,
                       condition: node.condition,
                       message: node.message,

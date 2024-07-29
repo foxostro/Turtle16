@@ -27,7 +27,7 @@ public class SnapCompilerBackEndTurtle16: NSObject {
     
     func compileTackToAssembly(_ tackProgram: TackProgram) -> Result<TopLevel, Error> {
         Result {
-            try TackToTurtle16Compiler().compile(TopLevel(children: [
+            try TackToTurtle16Compiler().visit(TopLevel(children: [
                 tackProgram.ast
             ])) as! TopLevel
         }
@@ -42,7 +42,7 @@ public class SnapCompilerBackEndTurtle16: NSObject {
     func compileToLowerAssembly(_ input: TopLevel) -> Result<TopLevel, Error> {
         self.assembly = Result {
             //try SnapASTTransformerFlattenSeq().compile(
-            var topLevel = try SnapSubcompilerSubroutine().compile(input) as! TopLevel
+            var topLevel = try SnapSubcompilerSubroutine().visit(input) as! TopLevel
             
             // The hardware requires us to place a NOP at the first instruction.
             if topLevel.children.first != InstructionNode(instruction: kNOP) {

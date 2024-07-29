@@ -10,12 +10,12 @@ import TurtleCore
 import TurtleSimulatorCore
 
 public class TackToTurtle16Compiler: SnapASTTransformerBase {
-    public override func compile(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
-        return flatten(try super.compile(node0))
+    public override func visit(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
+        return flatten(try super.visit(node0))
     }
     
     fileprivate func flatten(_ node: AbstractSyntaxTreeNode?) -> AbstractSyntaxTreeNode {
-        return try! SnapASTTransformerFlattenSeq().compile(node) ?? Seq(sourceAnchor: node?.sourceAnchor, children: [])
+        return try! SnapASTTransformerFlattenSeq().visit(node) ?? Seq(sourceAnchor: node?.sourceAnchor, children: [])
     }
     
     fileprivate var nextRegisterIndex = 0
@@ -51,7 +51,7 @@ public class TackToTurtle16Compiler: SnapASTTransformerBase {
         return ParameterIdentifier(asmRegister)
     }
     
-    public override func compile(tack node: TackInstructionNode) throws -> AbstractSyntaxTreeNode? {
+    public override func visit(tack node: TackInstructionNode) throws -> AbstractSyntaxTreeNode? {
         let anc = node.sourceAnchor
         switch node.instruction {
         case .nop: return nop(node)

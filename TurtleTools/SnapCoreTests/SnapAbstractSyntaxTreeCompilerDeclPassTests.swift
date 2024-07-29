@@ -14,7 +14,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
     func testExample() throws {
         let globalEnvironment = GlobalEnvironment()
         let compiler = SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment)
-        let result = try compiler.compile(CommentNode(string: "foo"))
+        let result = try compiler.visit(CommentNode(string: "foo"))
         XCTAssertEqual(result, CommentNode(string: "foo"))
     }
     
@@ -42,7 +42,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
                               storage: .automaticStorage)
         
         let compiler = SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment)
-        _ = try compiler.compile(input)
+        _ = try compiler.visit(input)
         let actual = try symbols.resolve(identifier: "foo")
         XCTAssertEqual(actual, expected)
     }
@@ -56,7 +56,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         
         let expected = Block(symbols: symbols, children: []) // StructDeclaration is removed after being processed
         let compiler = SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment)
-        let result = try? compiler.compile(input)
+        let result = try? compiler.visit(input)
         XCTAssertEqual(result, expected)
         
         let expectedStructSymbols = SymbolTable()
@@ -76,7 +76,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         
         let expected = Block(symbols: symbols, children: []) // Typealias is removed after being processed
         let compiler = SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment)
-        let result = try? compiler.compile(input)
+        let result = try? compiler.visit(input)
         XCTAssertEqual(result, expected)
         
         let expectedType: SymbolType = .arithmeticType(.mutableInt(.u8))
@@ -93,7 +93,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         ])
         
         let compiler = SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment)
-        _ = try compiler.compile(input)
+        _ = try compiler.visit(input)
         
         let expectedSymbols = SymbolTable()
         expectedSymbols.frameLookupMode = .set(Frame())
@@ -111,7 +111,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         ])
         let compiler = SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment)
         var output: AbstractSyntaxTreeNode? = nil
-        XCTAssertNoThrow(output = try compiler.compile(input))
+        XCTAssertNoThrow(output = try compiler.visit(input))
         XCTAssertNotNil(output)
         XCTAssertTrue(compiler.globalEnvironment.hasModule(kStandardLibraryModuleName))
         XCTAssertTrue(symbols.modulesAlreadyImported.contains(kStandardLibraryModuleName))
@@ -188,7 +188,7 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
         ])
         
         let compiler = SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment)
-        _ = try compiler.compile(input)
+        _ = try compiler.visit(input)
         
         // Let's examine, for correctness, the vtable symbol
         let nameOfVtableInstance = "__Serial_SerialFake_vtable_instance"

@@ -10,7 +10,7 @@ import TurtleCore
 import TurtleSimulatorCore
 
 public class RegisterAllocatorNaive: SnapASTTransformerBase {
-    public override func compile(instruction node: InstructionNode) throws -> AbstractSyntaxTreeNode? {
+    public override func visit(instruction node: InstructionNode) throws -> AbstractSyntaxTreeNode? {
         switch node.instruction {
         case kLOAD, kSTORE, kLI, kLUI, kCMP, kADD, kSUB, kAND, kOR, kXOR, kNOT, kCMPI, kADDI, kSUBI, kANDI, kORI, kXORI, kJR, kJALR, kADC, kSBC, kCALLPTR:
             return try rewriteInstructionWithRegisterIdentifiers(node)

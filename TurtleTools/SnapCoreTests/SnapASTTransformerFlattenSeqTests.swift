@@ -14,7 +14,7 @@ class SnapASTTransformerFlattenSeqTests: XCTestCase {
     func testRemoveEmptySeqStatements() throws {
         let input = Seq(children: [])
         let compiler = SnapASTTransformerFlattenSeq()
-        let actual = try? compiler.compile(input)
+        let actual = try? compiler.visit(input)
         XCTAssertNil(actual)
     }
     
@@ -24,7 +24,7 @@ class SnapASTTransformerFlattenSeqTests: XCTestCase {
         ])
         let expected = CommentNode(string: "")
         let compiler = SnapASTTransformerFlattenSeq()
-        let actual = try? compiler.compile(input)
+        let actual = try? compiler.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -42,7 +42,7 @@ class SnapASTTransformerFlattenSeqTests: XCTestCase {
             CommentNode(string: "c")
         ])
         let compiler = SnapASTTransformerFlattenSeq()
-        let actual = try? compiler.compile(input)
+        let actual = try? compiler.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -60,7 +60,7 @@ class SnapASTTransformerFlattenSeqTests: XCTestCase {
             CommentNode(string: "c")
         ])
         let compiler = SnapASTTransformerFlattenSeq()
-        let actual = try? compiler.compile(input)
+        let actual = try? compiler.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -78,7 +78,7 @@ class SnapASTTransformerFlattenSeqTests: XCTestCase {
             CommentNode(string: "c")
         ])
         let compiler = SnapASTTransformerFlattenSeq()
-        let actual = try? compiler.compile(input)
+        let actual = try? compiler.visit(input)
         XCTAssertEqual(actual, expected)
     }
 }

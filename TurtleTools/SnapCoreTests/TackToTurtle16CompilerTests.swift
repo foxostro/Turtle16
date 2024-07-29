@@ -19,7 +19,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
             InstructionNode(instruction: kNOP),
             InstructionNode(instruction: kHLT)
         ])
-        let topLevel1 = try! SnapASTTransformerFlattenSeq().compile(topLevel0)! as! TopLevel
+        let topLevel1 = try! SnapASTTransformerFlattenSeq().visit(topLevel0)! as! TopLevel
         let assembler = AssemblerCompiler()
         assembler.compile(topLevel1)
         if assembler.hasError {
@@ -43,8 +43,8 @@ class TackToTurtle16CompilerTests: XCTestCase {
     func compile(_ input: AbstractSyntaxTreeNode) throws -> AbstractSyntaxTreeNode? {
         let compiler = TackToTurtle16Compiler()
         let registerAllocator = RegisterAllocatorNaive()
-        let stage0 = try compiler.compile(input)
-        let stage1 = try registerAllocator.compile(stage0)
+        let stage0 = try compiler.visit(input)
+        let stage1 = try registerAllocator.visit(stage0)
         return stage1
     }
     
@@ -52,7 +52,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let compiler = TackToTurtle16Compiler()
         let input = Seq(children: [])
         let expected = Seq(children: [])
-        let actual = try compiler.compile(input)
+        let actual = try compiler.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -60,7 +60,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
         let compiler = TackToTurtle16Compiler()
         let input = InstructionNode(instruction: "")
         let expected = InstructionNode(instruction: "")
-        let actual = try compiler.compile(input)
+        let actual = try compiler.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -180,7 +180,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
             ])
         ])
         let compiler = TackToTurtle16Compiler()
-        let actual = try compiler.compile(input)
+        let actual = try compiler.visit(input)
         XCTAssertEqual(actual, expected)
     }
 
@@ -285,7 +285,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
                 ParameterIdentifier("vr2")
             ])
         ])
-        let actual = try TackToTurtle16Compiler().compile(input)
+        let actual = try TackToTurtle16Compiler().visit(input)
         XCTAssertEqual(actual, expected)
     }
 
@@ -310,7 +310,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
                 ParameterIdentifier("vr2")
             ])
         ])
-        let actual = try TackToTurtle16Compiler().compile(input)
+        let actual = try TackToTurtle16Compiler().visit(input)
         XCTAssertEqual(actual, expected)
     }
 
@@ -357,7 +357,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
                 ParameterIdentifier("vr2")
             ])
         ])
-        let actual = try TackToTurtle16Compiler().compile(input)
+        let actual = try TackToTurtle16Compiler().visit(input)
         XCTAssertEqual(actual, expected)
     }
 
@@ -382,7 +382,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
                 ParameterIdentifier("vr2")
             ])
         ])
-        let actual = try TackToTurtle16Compiler().compile(input)
+        let actual = try TackToTurtle16Compiler().visit(input)
         XCTAssertEqual(actual, expected)
     }
 
@@ -429,7 +429,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
                 ParameterIdentifier("vr2")
             ])
         ])
-        let actual = try TackToTurtle16Compiler().compile(input)
+        let actual = try TackToTurtle16Compiler().visit(input)
         XCTAssertEqual(actual, expected)
     }
 
@@ -454,7 +454,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
                 ParameterIdentifier("vr2")
             ])
         ])
-        let actual = try TackToTurtle16Compiler().compile(input)
+        let actual = try TackToTurtle16Compiler().visit(input)
         XCTAssertEqual(actual, expected)
     }
 
@@ -501,7 +501,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
                 ParameterIdentifier("vr2")
             ])
         ])
-        let actual = try TackToTurtle16Compiler().compile(input)
+        let actual = try TackToTurtle16Compiler().visit(input)
         XCTAssertEqual(actual, expected)
     }
 
@@ -526,7 +526,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
                 ParameterIdentifier("vr2")
             ])
         ])
-        let actual = try TackToTurtle16Compiler().compile(input)
+        let actual = try TackToTurtle16Compiler().visit(input)
         XCTAssertEqual(actual, expected)
     }
 

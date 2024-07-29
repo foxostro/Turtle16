@@ -106,7 +106,7 @@ extension AbstractSyntaxTreeNode {
         let testDeclarationTransformer = SnapASTTransformerTestDeclaration(
             globalEnvironment: globalEnvironment,
             shouldRunSpecificTest: shouldRunSpecificTest)
-        let result = try testDeclarationTransformer.compile(self)
+        let result = try testDeclarationTransformer.visit(self)
         testNames = testDeclarationTransformer.testNames
         return result
     }
@@ -121,12 +121,12 @@ extension AbstractSyntaxTreeNode {
             injectModules: injectModules,
             globalEnvironment: globalEnvironment,
             runtimeSupport: runtimeSupport)
-        .compile(self)
+        .visit(self)
     }
     
     // Rewrite higher-level nodes in terms of trees of lower-level nodes.
     fileprivate func implPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
         try SnapAbstractSyntaxTreeCompilerImplPass(globalEnvironment: globalEnvironment)
-            .compile(self)
+            .visit(self)
     }
 }

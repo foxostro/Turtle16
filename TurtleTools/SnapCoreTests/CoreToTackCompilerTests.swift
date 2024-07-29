@@ -3297,7 +3297,7 @@ class CoreToTackCompilerTests: XCTestCase {
             symbols: symbols,
             globalEnvironment: globalEnvironment,
             options: CoreToTackCompiler.Options())
-        .compile(ast1)
+        .visit(ast1)
 
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(8), 0x0110)), // TODO: make sure the optimizer can remove dead stores like this one
@@ -3349,7 +3349,7 @@ class CoreToTackCompilerTests: XCTestCase {
             symbols: symbols,
             globalEnvironment: globalEnvironment,
             options: CoreToTackCompiler.Options())
-        .compile(ast1)
+        .visit(ast1)
 
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(8), 0x0110)), // TODO: make sure the optimizer can remove dead stores like this one
@@ -3464,14 +3464,14 @@ class CoreToTackCompilerTests: XCTestCase {
 
     func testAsm_Empty() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.compile(asm: Asm(assemblyCode: ""))
+        let actual = try compiler.visit(asm: Asm(assemblyCode: ""))
         let expected = TackInstructionNode(.inlineAssembly(""))
         XCTAssertEqual(actual, expected)
     }
 
     func testAsm_HLT() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.compile(asm: Asm(assemblyCode: "HLT"))
+        let actual = try compiler.visit(asm: Asm(assemblyCode: "HLT"))
         let expected = TackInstructionNode(.inlineAssembly("HLT"))
         XCTAssertEqual(actual, expected)
     }

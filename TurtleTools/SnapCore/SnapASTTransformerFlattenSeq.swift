@@ -9,17 +9,17 @@
 import TurtleCore
 
 public class SnapASTTransformerFlattenSeq: SnapASTTransformerBase {
-    public override func compile(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {
+    public override func visit(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {
         let flatChildren = flatten(node.children)
         return TopLevel(sourceAnchor: node.sourceAnchor, children: flatChildren)
     }
     
-    public override func compile(subroutine node: Subroutine) throws -> AbstractSyntaxTreeNode? {
+    public override func visit(subroutine node: Subroutine) throws -> AbstractSyntaxTreeNode? {
         let flatChildren = flatten(node.children)
         return Subroutine(sourceAnchor: node.sourceAnchor, identifier: node.identifier, children: flatChildren)
     }
     
-    public override func compile(seq node: Seq) throws -> AbstractSyntaxTreeNode? {
+    public override func visit(seq node: Seq) throws -> AbstractSyntaxTreeNode? {
         let flatChildren = flatten(node.children)
         if flatChildren.count < 2 {
             return flatChildren.first
@@ -28,7 +28,7 @@ public class SnapASTTransformerFlattenSeq: SnapASTTransformerBase {
         }
     }
     
-    public override func compile(block node: Block) throws -> AbstractSyntaxTreeNode? {
+    public override func visit(block node: Block) throws -> AbstractSyntaxTreeNode? {
         let flatChildren = flatten(node.children)
         return Block(sourceAnchor: node.sourceAnchor,
                      symbols: node.symbols,
@@ -36,7 +36,7 @@ public class SnapASTTransformerFlattenSeq: SnapASTTransformerBase {
     }
     
     func flatten(_ children0: [AbstractSyntaxTreeNode]) -> [AbstractSyntaxTreeNode] {
-        let children1: [AbstractSyntaxTreeNode] = try! children0.compactMap { try compile($0) }
+        let children1: [AbstractSyntaxTreeNode] = try! children0.compactMap { try visit($0) }
         var children2: [AbstractSyntaxTreeNode] = []
         for node in children1 {
             if let seq = node as? Seq {

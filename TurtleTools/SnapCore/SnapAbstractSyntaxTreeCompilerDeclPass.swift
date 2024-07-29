@@ -30,7 +30,7 @@ public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
         super.init(symbols)
     }
     
-    public override func compile(func node0: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
+    public override func visit(func node0: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
         assert(node0.symbols.frameLookupMode.isSet)
         let subcompiler = SnapSubcompilerFunctionDeclaration()
         try subcompiler.compile(globalEnvironment: globalEnvironment,
@@ -39,31 +39,31 @@ public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
         return nil
     }
     
-    public override func compile(struct node0: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
+    public override func visit(struct node0: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
         let subcompiler = SnapSubcompilerStructDeclaration(symbols: symbols!, globalEnvironment: globalEnvironment)
         try subcompiler.compile(node0)
         return nil // Erase the StructDeclaration now that it's been processed.
     }
     
-    public override func compile(typealias node0: Typealias) throws -> AbstractSyntaxTreeNode? {
+    public override func visit(typealias node0: Typealias) throws -> AbstractSyntaxTreeNode? {
         let subcompiler = SnapSubcompilerTypealias(symbols!)
         try subcompiler.compile(node0)
         return nil // Erase the typealias now that we've bound the new type.
     }
     
-    public override func compile(trait node0: TraitDeclaration) throws -> AbstractSyntaxTreeNode? {
+    public override func visit(trait node0: TraitDeclaration) throws -> AbstractSyntaxTreeNode? {
         _ = try SnapSubcompilerTraitDeclaration(
             globalEnvironment: globalEnvironment,
             symbols: symbols!).compile(node0)
         return nil // Erase the trait declaration now that we've bound new types in the environment.
     }
     
-    public override func compile(impl node0: Impl) throws -> AbstractSyntaxTreeNode? {
+    public override func visit(impl node0: Impl) throws -> AbstractSyntaxTreeNode? {
         try SnapSubcompilerImpl(symbols: symbols!, globalEnvironment: globalEnvironment).compile(node0)
         return nil // Erase the Impl node now that it's been processed.
     }
     
-    public override func compile(import node0: Import) throws -> AbstractSyntaxTreeNode? {
+    public override func visit(import node0: Import) throws -> AbstractSyntaxTreeNode? {
         let subcompiler = SnapSubcompilerImport(symbols: symbols!,
                                                 globalEnvironment: globalEnvironment,
                                                 runtimeSupport: runtimeSupport)
@@ -74,7 +74,7 @@ public class SnapAbstractSyntaxTreeCompilerDeclPass: SnapASTTransformerBase {
         return nil
     }
     
-    public override func compile(implFor node0: ImplFor) throws -> AbstractSyntaxTreeNode? {
+    public override func visit(implFor node0: ImplFor) throws -> AbstractSyntaxTreeNode? {
         try SnapSubcompilerImplFor(symbols: symbols!,
                                    globalEnvironment: globalEnvironment)
             .compile(node0)

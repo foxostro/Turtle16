@@ -12,8 +12,8 @@ import TurtleSimulatorCore
 public class SnapSubcompilerSubroutine: SnapASTTransformerBase {
     var subroutines: [Subroutine] = []
     
-    public override func compile(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {
-        var children: [AbstractSyntaxTreeNode] = try node.children.compactMap { try compile($0) }
+    public override func visit(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {
+        var children: [AbstractSyntaxTreeNode] = try node.children.compactMap { try visit($0) }
         
         children += [
             InstructionNode(instruction: kNOP),
@@ -28,7 +28,7 @@ public class SnapSubcompilerSubroutine: SnapASTTransformerBase {
         return TopLevel(sourceAnchor: node.sourceAnchor, children: children)
     }
     
-    public override func compile(subroutine node: Subroutine) throws -> AbstractSyntaxTreeNode? {
+    public override func visit(subroutine node: Subroutine) throws -> AbstractSyntaxTreeNode? {
         subroutines.append(node)
         return nil
     }

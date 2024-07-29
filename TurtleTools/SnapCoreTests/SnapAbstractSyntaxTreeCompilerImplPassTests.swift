@@ -17,7 +17,7 @@ class SnapAbstractSyntaxTreeCompilerImplPassTests: XCTestCase {
     
     func testExample() throws {
         let compiler = makeCompiler()
-        let result = try? compiler.compile(CommentNode(string: "foo"))
+        let result = try? compiler.visit(CommentNode(string: "foo"))
         XCTAssertEqual(result, CommentNode(string: "foo"))
     }
 }

@@ -22,7 +22,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0")
         ])
-        let actual = try registerAllocator.compile(input)
+        let actual = try registerAllocator.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -38,7 +38,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0")
         ])
-        let actual = try registerAllocator.compile(input)
+        let actual = try registerAllocator.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -54,7 +54,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
             ParameterIdentifier("r3"),
             ParameterIdentifier("r5")
         ])
-        let actual = try registerAllocator.compile(input)
+        let actual = try registerAllocator.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -70,7 +70,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
             ParameterIdentifier("r7"),
             ParameterIdentifier("r3")
         ])
-        let actual = try registerAllocator.compile(input)
+        let actual = try registerAllocator.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -81,7 +81,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
             ParameterIdentifier("vr1"),
             ParameterIdentifier("vr0")
         ])
-        XCTAssertThrowsError(try registerAllocator.compile(input)) {
+        XCTAssertThrowsError(try registerAllocator.visit(input)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "unable to map virtual register to physical register: `foo'")
@@ -100,7 +100,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0")
         ])
-        let actual = try registerAllocator.compile(input)
+        let actual = try registerAllocator.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -116,7 +116,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0")
         ])
-        let actual = try registerAllocator.compile(input)
+        let actual = try registerAllocator.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -132,7 +132,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0")
         ])
-        let actual = try registerAllocator.compile(input)
+        let actual = try registerAllocator.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -148,7 +148,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0")
         ])
-        let actual = try registerAllocator.compile(input)
+        let actual = try registerAllocator.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -162,7 +162,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0")
         ])
-        let actual = try registerAllocator.compile(input)
+        let actual = try registerAllocator.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -176,7 +176,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
             ParameterIdentifier("r1"),
             ParameterNumber(0)
         ])
-        let actual = try registerAllocator.compile(input)
+        let actual = try registerAllocator.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -192,7 +192,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
             ParameterIdentifier("r1"),
             ParameterNumber(0)
         ])
-        let actual = try registerAllocator.compile(input)
+        let actual = try registerAllocator.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -208,7 +208,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
             ParameterIdentifier("r1"),
             ParameterNumber(0)
         ])
-        let actual = try registerAllocator.compile(input)
+        let actual = try registerAllocator.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -224,7 +224,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
             ParameterIdentifier("r1"),
             ParameterNumber(0)
         ])
-        let actual = try registerAllocator.compile(input)
+        let actual = try registerAllocator.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -240,7 +240,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
             ParameterIdentifier("r1"),
             ParameterNumber(0)
         ])
-        let actual = try registerAllocator.compile(input)
+        let actual = try registerAllocator.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -256,7 +256,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
             ParameterIdentifier("r1"),
             ParameterNumber(0)
         ])
-        let actual = try registerAllocator.compile(input)
+        let actual = try registerAllocator.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -272,7 +272,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0")
         ])
-        let actual = try registerAllocator.compile(input)
+        let actual = try registerAllocator.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -288,7 +288,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0")
         ])
-        let actual = try registerAllocator.compile(input)
+        let actual = try registerAllocator.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -302,7 +302,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
             ParameterIdentifier("r1"),
             ParameterNumber(1)
         ])
-        let actual = try registerAllocator.compile(input)
+        let actual = try registerAllocator.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -316,7 +316,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
             ParameterIdentifier("r1"),
             ParameterNumber(1)
         ])
-        let actual = try registerAllocator.compile(input)
+        let actual = try registerAllocator.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -328,7 +328,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
         let expected = InstructionNode(instruction: kJR, parameters:[
             ParameterIdentifier("r1")
         ])
-        let actual = try registerAllocator.compile(input)
+        let actual = try registerAllocator.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -340,7 +340,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
         let expected = InstructionNode(instruction: kCALLPTR, parameters:[
             ParameterIdentifier("r1")
         ])
-        let actual = try registerAllocator.compile(input)
+        let actual = try registerAllocator.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -354,7 +354,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
             ParameterIdentifier("r2"),
             ParameterIdentifier("r1")
         ])
-        let actual = try registerAllocator.compile(input)
+        let actual = try registerAllocator.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -368,7 +368,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
             ParameterIdentifier("r2"),
             ParameterIdentifier("r1")
         ])
-        let actual = try registerAllocator.compile(input)
+        let actual = try registerAllocator.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -382,7 +382,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
             ParameterIdentifier("r2"),
             ParameterIdentifier("r1")
         ])
-        let actual = try registerAllocator.compile(input)
+        let actual = try registerAllocator.visit(input)
         XCTAssertEqual(actual, expected)
     }
     
@@ -396,7 +396,7 @@ class RegisterAllocatorNaiveTests: XCTestCase {
             ParameterIdentifier("r0"),
             ParameterIdentifier("foo"),
         ])
-        let actual = try registerAllocator.compile(input)
+        let actual = try registerAllocator.visit(input)
         XCTAssertEqual(actual, expected)
     }
 }

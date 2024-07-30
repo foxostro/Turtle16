@@ -16,54 +16,107 @@ class SnapSubcompilerImplTests: XCTestCase {
         let symbols = SymbolTable()
         
         func makeImpl() throws {
-            let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [
-                Expression.PointerType(Expression.Identifier("Foo"))
-            ])))
-            let foo = TraitDeclaration(identifier: Expression.Identifier("Foo"),
-                                       members: [bar],
-                                       visibility: .privateVisibility)
-            _ = try SnapSubcompilerTraitDeclaration(
-                globalEnvironment: globalEnvironment,
-                symbols: symbols)
+            let foo = StructDeclaration(
+                identifier: Expression.Identifier("Foo"),
+                members: [],
+                visibility: .privateVisibility)
+            _ = try SnapSubcompilerStructDeclaration(
+                symbols: symbols,
+                globalEnvironment: globalEnvironment)
             .compile(foo)
+            
+            let functionSymbols = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))
+            
+            let functionBodySymbols = SymbolTable(parent: functionSymbols, frameLookupMode: .inherit)
+            
+            let impl = Impl(
+                typeArguments: [],
+                structTypeExpr: Expression.Identifier("Foo"),
+                children: [
+                    FunctionDeclaration(
+                        identifier: Expression.Identifier("bar"),
+                        functionType: Expression.FunctionType(
+                            name: "bar",
+                            returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
+                            arguments: [
+                                Expression.PointerType(Expression.Identifier("Foo"))
+                            ]),
+                        argumentNames: ["baz"],
+                        typeArguments: [],
+                        body: Block(
+                            symbols: functionBodySymbols,
+                            children: [
+                                Return(Expression.LiteralInt(0))
+                            ]),
+                        symbols: functionSymbols)
+                ])
+            _ = try SnapSubcompilerImpl(
+                symbols: symbols,
+                globalEnvironment: globalEnvironment)
+            .compile(impl)
         }
         try makeImpl()
         
-        XCTAssertFalse(globalEnvironment.functionsToCompile.isEmpty)
-        guard !globalEnvironment.functionsToCompile.isEmpty else {
-            return
+        let actualFunType: FunctionType?
+        if globalEnvironment.functionsToCompile.isEmpty {
+            actualFunType = nil
+        }
+        else {
+            actualFunType = globalEnvironment.functionsToCompile.removeFirst()
         }
         
-        let methodType = globalEnvironment.functionsToCompile.removeFirst()
+        XCTAssertEqual(actualFunType?.name, "bar")
         
-        func makeExpectedMethodType(_ globalEnvironment: GlobalEnvironment) -> FunctionType {
-            let argTypeExpr = Expression.PointerType(Expression.Identifier("__Foo_object"))
-            let argType = try! RvalueExpressionTypeChecker(
-                symbols: symbols,
-                globalEnvironment: globalEnvironment)
-            .check(expression: argTypeExpr)
-            let expectedMethodType = FunctionType(name: "bar",
-                                                  mangledName: "__Foo_object_bar",
-                                                  returnType: .arithmeticType(.mutableInt(.u8)),
-                                                  arguments: [argType])
-            return expectedMethodType
-        }
-        let expectedMethodType = makeExpectedMethodType(globalEnvironment)
+        let fooType = try symbols.resolveType(identifier: "Foo")
+        XCTAssertEqual(actualFunType?.arguments, [.pointer(fooType)])
         
-        XCTAssertEqual(methodType, expectedMethodType)
+        XCTAssertEqual(actualFunType?.returnType, .arithmeticType(.mutableInt(.u8)))
     }
     
     func testRedefinesExistingSymbol() throws {
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [
-            Expression.PointerType(Expression.Identifier("Foo"))
-        ])))
-        let foo = TraitDeclaration(identifier: Expression.Identifier("Foo"),
-                                   members: [bar, bar],
-                                   visibility: .privateVisibility)
-        XCTAssertThrowsError(try SnapSubcompilerTraitDeclaration(
-            globalEnvironment: globalEnvironment,
-            symbols: SymbolTable()).compile(foo)) {
+        let symbols = SymbolTable()
+        
+        let foo = StructDeclaration(
+            identifier: Expression.Identifier("Foo"),
+            members: [
+                StructDeclaration.Member(
+                    name: "bar",
+                    type: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
+            ],
+            visibility: .privateVisibility)
+        _ = try SnapSubcompilerStructDeclaration(
+            symbols: symbols,
+            globalEnvironment: globalEnvironment)
+        .compile(foo)
+        
+        let functionSymbols = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))
+        
+        let functionBodySymbols = SymbolTable(parent: functionSymbols, frameLookupMode: .inherit)
+        
+        let impl = Impl(
+            typeArguments: [],
+            structTypeExpr: Expression.Identifier("Foo"),
+            children: [
+                FunctionDeclaration(
+                    identifier: Expression.Identifier("bar"),
+                    functionType: Expression.FunctionType(
+                        name: "bar",
+                        returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
+                        arguments: [
+                            Expression.PointerType(Expression.Identifier("Foo"))
+                        ]),
+                    argumentNames: ["baz"],
+                    typeArguments: [],
+                    body: Block(
+                        symbols: functionBodySymbols,
+                        children: [
+                            Return(Expression.LiteralInt(0))
+                        ]),
+                    symbols: functionSymbols)
+            ])
+        
+        XCTAssertThrowsError(try SnapSubcompilerImpl(symbols: symbols, globalEnvironment: globalEnvironment).compile(impl)) {
             
             let error = $0 as? CompilerError
             XCTAssertEqual(error?.message, "function redefines existing symbol: `bar'")

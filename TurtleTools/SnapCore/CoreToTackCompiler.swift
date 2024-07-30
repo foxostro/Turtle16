@@ -475,7 +475,7 @@ public class CoreToTackCompiler: CompilerPass {
                 pushRegister(accessAddr)
                 children += [
                     TackInstructionNode(
-                        instruction: .mulib(offset.unwrap16!, index.unwrap16!, elementSize),
+                        instruction: .muliw(offset.unwrap16!, index.unwrap16!, elementSize),
                         sourceAnchor: expr.sourceAnchor,
                         symbols: symbols),
                     TackInstructionNode(

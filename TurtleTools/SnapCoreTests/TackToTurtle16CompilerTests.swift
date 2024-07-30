@@ -749,7 +749,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMULI16_zero() throws {
-        let input = TackInstructionNode(.mulib(.w(1), .w(0), 0))
+        let input = TackInstructionNode(.muliw(.w(1), .w(0), 0))
         let expected = InstructionNode(instruction: kLI, parameters:[
             ParameterIdentifier("r1"),
             ParameterNumber(0)
@@ -759,7 +759,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMULI16_pos_one() throws {
-        let input = TackInstructionNode(.mulib(.w(1), .w(0), 1))
+        let input = TackInstructionNode(.muliw(.w(1), .w(0), 1))
         let expected = InstructionNode(instruction: kADDI, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -770,7 +770,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMULI16_pos_two() throws {
-        let input = TackInstructionNode(.mulib(.w(1), .w(0), 2))
+        let input = TackInstructionNode(.muliw(.w(1), .w(0), 2))
         let expected = InstructionNode(instruction: kADD, parameters:[
             ParameterIdentifier("r1"),
             ParameterIdentifier("r0"),
@@ -781,7 +781,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMULI16_pos_three() throws {
-        let input = TackInstructionNode(.mulib(.w(1), .w(0), 3))
+        let input = TackInstructionNode(.muliw(.w(1), .w(0), 3))
         let expected = Seq(children: [
             InstructionNode(instruction: kADD, parameters:[
                 ParameterIdentifier("r1"),
@@ -799,7 +799,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMULI16_pos_four() throws {
-        let input = TackInstructionNode(.mulib(.w(1), .w(0), 4))
+        let input = TackInstructionNode(.muliw(.w(1), .w(0), 4))
         let expected = Seq(children: [
             InstructionNode(instruction: kADD, parameters:[
                 ParameterIdentifier("r1"),
@@ -817,7 +817,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMULI16_pos_five() throws {
-        let input = TackInstructionNode(.mulib(.w(1), .w(0), 5))
+        let input = TackInstructionNode(.muliw(.w(1), .w(0), 5))
         let expected = Seq(children: [
             InstructionNode(instruction: kADD, parameters:[
                 ParameterIdentifier("r1"),
@@ -840,7 +840,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMULI16_pos_six() throws {
-        let input = TackInstructionNode(.mulib(.w(1), .w(0), 6))
+        let input = TackInstructionNode(.muliw(.w(1), .w(0), 6))
         let expected = Seq(children: [
             InstructionNode(instruction: kADD, parameters:[
                 ParameterIdentifier("r1"),
@@ -868,7 +868,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMULI16_pos_seven() throws {
-        let input = TackInstructionNode(.mulib(.w(1), .w(0), 7))
+        let input = TackInstructionNode(.muliw(.w(1), .w(0), 7))
         let expected = Seq(children: [
             InstructionNode(instruction: kADD, parameters:[
                 ParameterIdentifier("r1"),
@@ -901,7 +901,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMULI16_pos_eight() throws {
-        let input = TackInstructionNode(.mulib(.w(1), .w(0), 8))
+        let input = TackInstructionNode(.muliw(.w(1), .w(0), 8))
         let expected = Seq(children: [
             InstructionNode(instruction: kADD, parameters:[
                 ParameterIdentifier("r1"),
@@ -924,7 +924,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMULI16_neg_one() throws {
-        let input = TackInstructionNode(.mulib(.w(1), .w(0), -1))
+        let input = TackInstructionNode(.muliw(.w(1), .w(0), -1))
         let expected = Seq(children: [
             InstructionNode(instruction: kNOT, parameters:[
                 ParameterIdentifier("r1"),
@@ -941,7 +941,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMULI16_neg_two() throws {
-        let input = TackInstructionNode(.mulib(.w(1), .w(0), -2))
+        let input = TackInstructionNode(.muliw(.w(1), .w(0), -2))
         let expected = Seq(children: [
             InstructionNode(instruction: kADD, parameters:[
                 ParameterIdentifier("r1"),
@@ -963,7 +963,7 @@ class TackToTurtle16CompilerTests: XCTestCase {
     }
 
     func testMULI16_three_element_sum() throws {
-        let input = TackInstructionNode(.mulib(.w(1), .w(0), 14))
+        let input = TackInstructionNode(.muliw(.w(1), .w(0), 14))
         let expected = Seq(children: [
             InstructionNode(instruction: kADD, parameters:[
                 ParameterIdentifier("r1"),

@@ -94,7 +94,7 @@ public class TackToTurtle16Compiler: CompilerPass {
         case .andiw(let dst, let left, let imm): return andiw(anc, dst, left, imm)
         case .addiw(let dst, let left, let imm): return addiw(anc, dst, left, imm)
         case .subiw(let dst, let left, let imm): return subiw(anc, dst, left, imm)
-        case .mulib(let dst, let left, let imm): return muliw(anc, dst, left, imm)
+        case .muliw(let dst, let left, let imm): return muliw(anc, dst, left, imm)
         case .liw(let dst, let imm): return liw(anc, dst, imm)
         case .liuw(let dst, let imm): return liuw(anc, dst, imm)
         case .andw(let c, let a, let b): return andw(anc, c, a, b)

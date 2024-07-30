@@ -2056,7 +2056,7 @@ class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.bnz(.o(5), ".L1")),
             TackInstructionNode(.call("__oob")),
             LabelDeclaration(identifier: ".L1"),
-            TackInstructionNode(.mulib(.w(6), .w(1), 2)),
+            TackInstructionNode(.muliw(.w(6), .w(1), 2)),
             TackInstructionNode(.addpw(.p(7), .p(0), .w(6)))
         ])
         XCTAssertEqual(actual, expected)

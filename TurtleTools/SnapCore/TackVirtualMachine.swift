@@ -411,7 +411,7 @@ public class TackVirtualMachine: NSObject {
             try addiw(dst, left, right)
         case .subiw(let dst, let left, let right):
             try subiw(dst, left, right)
-        case .mulib(let dst, let left, let right):
+        case .muliw(let dst, let left, let right):
             try muliw(dst, left, right)
         case .liw(let dst, let imm):
             try liw(dst, imm)

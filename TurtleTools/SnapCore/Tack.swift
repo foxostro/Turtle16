@@ -172,7 +172,7 @@ public enum TackInstruction: Equatable, Hashable {
     case andiw(Register16, Register16, Imm) // TODO: consider changing imm instruction mnemonic to andwi because the w operand is to the left of the i operand. This applies generally to many other Tack instructions too.
     case addiw(Register16, Register16, Imm)
     case subiw(Register16, Register16, Imm)
-    case mulib(Register16, Register16, Imm)
+    case muliw(Register16, Register16, Imm)
     case liw(Register16, Int)
     case liuw(Register16, Int)
     case andw(Register16, Register16, Register16)
@@ -273,7 +273,7 @@ public enum TackInstruction: Equatable, Hashable {
         case .andiw(let c, let a, let b): return "ANDIW \(c.description), \(a.description), \(b.description)"
         case .addiw(let c, let a, let b): return "ADDIW \(c.description), \(a.description), \(b.description)"
         case .subiw(let c, let a, let b): return "SUBIW \(c.description), \(a.description), \(b.description)"
-        case .mulib(let c, let a, let b): return "MULIIW \(c.description), \(a.description), \(b.description)"
+        case .muliw(let c, let a, let b): return "MULIIW \(c.description), \(a.description), \(b.description)"
         case .liw(let dst, let imm): return "LIW \(dst.description), \(imm)"
         case .liuw(let dst, let imm): return "LIUW \(dst.description), \(imm)"
         case .andw(let c, let a, let b): return "ANDW \(c.description), \(a.description), \(b.description)"

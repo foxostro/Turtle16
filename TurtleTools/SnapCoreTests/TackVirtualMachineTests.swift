@@ -732,7 +732,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testMULI16_pos() throws {
         let program = TackProgram(instructions: [
-            .mulib(.w(1), .w(0), 2)
+            .muliw(.w(1), .w(0), 2)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(0), w: 2)
@@ -742,7 +742,7 @@ final class TackVirtualMachineTests: XCTestCase {
     
     func testMULI16_neg() throws {
         let program = TackProgram(instructions: [
-            .mulib(.w(1), .w(0), -2)
+            .muliw(.w(1), .w(0), -2)
         ], labels: [:])
         let vm = TackVirtualMachine(program)
         vm.setRegister(.w(0), w: 2)

@@ -326,6 +326,8 @@ public class CompilerPass: NSObject {
             return try visit(eseq: eseq)
         case let node as Expression.Binary:
             return try visit(binary: node)
+        case let expr as Expression.InitialAssignment:
+            return try visit(initialAssignment: expr)
         case let expr as Expression.Assignment:
             return try visit(assignment: expr)
         case let node as Expression.Call:
@@ -438,6 +440,13 @@ public class CompilerPass: NSObject {
             sourceAnchor: node.sourceAnchor,
             expr: try visit(expr: node.expr)!,
             testType: try visit(expr: node.testType)!)
+    }
+    
+    public func visit(initialAssignment node: Expression.InitialAssignment) throws -> Expression? {
+        Expression.InitialAssignment(
+            sourceAnchor: node.sourceAnchor,
+            lexpr: try visit(expr: node.lexpr)!,
+            rexpr: try visit(expr: node.rexpr)!)
     }
     
     public func visit(assignment node: Expression.Assignment) throws -> Expression? {

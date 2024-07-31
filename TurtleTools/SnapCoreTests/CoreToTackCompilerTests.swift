@@ -3412,33 +3412,6 @@ class CoreToTackCompilerTests: XCTestCase {
         }
     }
 
-    func testLvalue_GenericFunctionApplication() throws {
-        let constU16 = SymbolType.arithmeticType(.immutableInt(.u16))
-        let functionType = Expression.FunctionType(name: "foo",
-                                                   returnType: Expression.Identifier("T"),
-                                                   arguments: [Expression.Identifier("T")])
-        let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                           functionType: functionType,
-                                           argumentNames: ["a"],
-                                           typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
-                                           body: Block(children: [
-                                            Return(Expression.Identifier("a"))
-                                           ]),
-                                           visibility: .privateVisibility,
-                                           symbols: SymbolTable())
-        let genericFunctionType = Expression.GenericFunctionType(template: template)
-        let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .genericFunction(genericFunctionType)))
-        ])
-        let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
-                                                     arguments: [Expression.PrimitiveType(constU16)])
-        let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.lvalue(expr: expr)
-        let expected = TackInstructionNode(.la(.p(0), "__foo_const_u16"))
-        XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
-    }
-
     func testRvalue_RvalueOfMemberOfStructInitializer() throws {
         let typ = StructType(name: "Foo", symbols: SymbolTable(tuples: [
             ("bar", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0, storage: .automaticStorage))
@@ -3541,33 +3514,6 @@ class CoreToTackCompilerTests: XCTestCase {
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "incorrect number of type arguments in application of generic function type `foo@[u16, u16]'")
         }
-    }
-
-    func testRvalue_GenericFunctionApplication() throws {
-        let constU16 = SymbolType.arithmeticType(.immutableInt(.u16))
-        let functionType = Expression.FunctionType(name: "foo",
-                                                   returnType: Expression.Identifier("T"),
-                                                   arguments: [Expression.Identifier("T")])
-        let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                           functionType: functionType,
-                                           argumentNames: ["a"],
-                                           typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
-                                           body: Block(children: [
-                                            Return(Expression.Identifier("a"))
-                                           ]),
-                                           visibility: .privateVisibility,
-                                           symbols: SymbolTable())
-        let genericFunctionType = Expression.GenericFunctionType(template: template)
-        let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .genericFunction(genericFunctionType)))
-        ])
-        let compiler = makeCompiler(symbols: symbols)
-        let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
-                                                     arguments: [Expression.PrimitiveType(constU16)])
-        let actual = try compiler.rvalue(expr: expr)
-        let expected = TackInstructionNode(.la(.p(0), "__foo_const_u16"))
-        XCTAssertEqual(actual, expected)
-        XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
     }
 
     func testRvalue_CannotTakeTheAddressOfGenericFunctionWithoutTypeArguments() {
@@ -3756,54 +3702,6 @@ class CoreToTackCompilerTests: XCTestCase {
             TackInstructionNode(.lip(.p(4), 272)),
             TackInstructionNode(.lw(.w(5), .p(4), 0)),
             Subroutine(identifier: "__foo_const_u16", children: [
-                TackInstructionNode(.enter(0)),
-                TackInstructionNode(.addip(.p(6), .fp, 8)),
-                TackInstructionNode(.addip(.p(7), .fp, 7)),
-                TackInstructionNode(.lw(.w(8), .p(7), 0)),
-                TackInstructionNode(.sw(.w(8), .p(6), 0)),
-                TackInstructionNode(.leave),
-                TackInstructionNode(.ret)
-            ])
-        ])
-        XCTAssertEqual(actual, expected)
-    }
-
-    func testCallCanTriggerConcreteInstantiationWithTypesInferredFromContext() throws {
-        let ast0 = TopLevel(children: [
-            FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                functionType: Expression.FunctionType(name: "foo",
-                                                                      returnType: Expression.Identifier("T"),
-                                                                      arguments: [Expression.Identifier("T")]),
-                                argumentNames: ["a"],
-                                typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
-                                body: Block(children: [
-                                    Return(Expression.Identifier("a"))
-                                ]),
-                                visibility: .privateVisibility,
-                                symbols: SymbolTable()),
-            Expression.Call(callee: Expression.Identifier("foo"),
-                            arguments: [ Expression.LiteralInt(65535) ])
-        ])
-
-        let symbols = SymbolTable()
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        let ast1 = try SnapToCoreCompiler(globalEnvironment: globalEnvironment)
-            .compile(ast0)
-            .get()
-        let compiler = CoreToTackCompiler(symbols: symbols, globalEnvironment: globalEnvironment)
-        let actual = try compiler.compileWithEpilog(ast1)
-        let expected = Seq(children: [
-            TackInstructionNode(.liuw(.w(0), 0xffff)),
-            TackInstructionNode(.alloca(.p(1), 1)),
-            TackInstructionNode(.alloca(.p(2), 1)),
-            TackInstructionNode(.sw(.w(0), .p(2), 0)),
-            TackInstructionNode(.call("__foo_u16")),
-            TackInstructionNode(.lip(.p(3), 272)),
-            TackInstructionNode(.memcpy(.p(3), .p(1), 1)),
-            TackInstructionNode(.free(2)),
-            TackInstructionNode(.lip(.p(4), 272)),
-            TackInstructionNode(.lw(.w(5), .p(4), 0)),
-            Subroutine(identifier: "__foo_u16", children: [
                 TackInstructionNode(.enter(0)),
                 TackInstructionNode(.addip(.p(6), .fp, 8)),
                 TackInstructionNode(.addip(.p(7), .fp, 7)),

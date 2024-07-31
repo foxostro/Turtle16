@@ -1022,12 +1022,7 @@ public class CoreToTackCompiler: CompilerPass {
     }
     
     public func lvalue(genericTypeApplication expr: Expression.GenericTypeApplication) throws -> AbstractSyntaxTreeNode {
-        guard try typeCheck(lexpr: expr) != nil else {
-            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "internal compiler error: expected lvalue: `\(expr)'")
-        }
-        
-        let result = try rvalue(genericTypeApplication: expr)
-        return result
+        throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "internal compiler error: expected generics to have been erased by this point: `\(expr)'")
     }
     
     public func rvalue(expr: Expression) throws -> AbstractSyntaxTreeNode {
@@ -2859,12 +2854,7 @@ public class CoreToTackCompiler: CompilerPass {
             return try rvalue(call: expr, typ: typ)
             
         case .genericFunction(let typ):
-            let typeChecker = RvalueExpressionTypeChecker(symbols: symbols!, globalEnvironment: globalEnvironment)
-            let app = try typeChecker.synthesizeGenericTypeApplication(call: expr, genericFunctionType: typ)
-            let expr1 = Expression.Call(sourceAnchor: expr.sourceAnchor,
-                                        callee: app,
-                                        arguments: expr.arguments)
-            return try rvalue(call: expr1)
+            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "internal compiler error: expected generics to have been erased by this point: `\(expr)'")
             
         default:
             fatalError("cannot call value of non-function type `\(calleeType)'")
@@ -3087,25 +3077,7 @@ public class CoreToTackCompiler: CompilerPass {
     }
     
     func rvalue(genericTypeApplication expr: Expression.GenericTypeApplication) throws -> AbstractSyntaxTreeNode {
-        let rvalueType = try typeCheck(rexpr: expr)
-        
-        guard rvalueType.isFunctionType else {
-            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "internal compiler error: expected rvalue to be a function type: `\(expr)'")
-        }
-        
-        let functionType = rvalueType.unwrapFunctionType()
-        
-        guard let mangledName = functionType.mangledName else {
-            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "internal compiler error: concrete instance of generic function has no mangled name: `\(functionType)'")
-        }
-        
-        let dst = nextRegister(type: .p)
-        pushRegister(dst)
-        let result = TackInstructionNode(
-            instruction: .la(dst.unwrapPointer!, mangledName),
-            sourceAnchor: expr.sourceAnchor,
-            symbols: symbols)
-        return result
+        throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "internal compiler error: expected generics to have been erased by this point: `\(expr)'")
     }
     
     func rvalue(eseq: Expression.Eseq) throws -> AbstractSyntaxTreeNode {

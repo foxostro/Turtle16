@@ -52,6 +52,7 @@ public class SnapCompilerFrontEnd: NSObject {
         let result = lex(text, url)
             .flatMap(parse)
             .flatMap(desugar)
+            .flatMap(eraseGenerics)
             .flatMap(compileSnapToTack)
         
         return result
@@ -92,6 +93,16 @@ public class SnapCompilerFrontEnd: NSObject {
                 testNames = compiler.testNames
                 return block
             }
+    }
+    
+    func eraseGenerics(_ ast0: AbstractSyntaxTreeNode?) -> Result<AbstractSyntaxTreeNode?, Error> {
+        Result {
+            let compiler = CompilerPassGenerics(
+                symbols: SymbolTable(),
+                globalEnvironment: globalEnvironment)
+            let ast1 = try compiler.visit(ast0)
+            return ast1
+        }
     }
     
     func compileSnapToTack(_ ast: AbstractSyntaxTreeNode?) -> Result<TackProgram, Error> {

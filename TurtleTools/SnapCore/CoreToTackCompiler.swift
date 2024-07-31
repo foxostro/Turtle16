@@ -275,9 +275,9 @@ public class CoreToTackCompiler: CompilerPass {
         case let node as Expression.Bitcast:
             result = try lvalue(expr: node.expr)
         case let node as Expression.GenericTypeApplication:
-            result = try lvalue(genericTypeApplication: node)
+            throw CompilerError(sourceAnchor: node.sourceAnchor, message: "internal compiler error: expected generics to have been erased by this point: `\(node)'")
         default:
-            fatalError("unimplemented")
+            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "internal compiler error: unimplemented support for expression in CoreToTackCompiler: `\(expr)'")
         }
         return flatten(result) ?? Seq(sourceAnchor: result.sourceAnchor, children: [])
     }
@@ -299,7 +299,7 @@ public class CoreToTackCompiler: CompilerPass {
             return result
             
         case .genericFunction:
-            fatalError()
+            throw CompilerError(sourceAnchor: node.sourceAnchor, message: "internal compiler error: expected generics to have been erased by this point: `\(node)'")
             
         default:
             let resolution = try symbols!.resolveWithStackFrameDepth(sourceAnchor: node.sourceAnchor, identifier: node.identifier)
@@ -1021,10 +1021,6 @@ public class CoreToTackCompiler: CompilerPass {
         return Seq(sourceAnchor: expr.sourceAnchor, children: children)
     }
     
-    public func lvalue(genericTypeApplication expr: Expression.GenericTypeApplication) throws -> AbstractSyntaxTreeNode {
-        throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "internal compiler error: expected generics to have been erased by this point: `\(expr)'")
-    }
-    
     public func rvalue(expr: Expression) throws -> AbstractSyntaxTreeNode {
         try typeCheck(rexpr: expr)
         let result: AbstractSyntaxTreeNode
@@ -1063,12 +1059,12 @@ public class CoreToTackCompiler: CompilerPass {
             result = try rvalue(call: node)
         case let node as Expression.SizeOf:
             result = try rvalue(sizeof: node)
-        case let node as Expression.GenericTypeApplication:
-            result = try rvalue(genericTypeApplication: node)
         case let eseq as Expression.Eseq:
             result = try rvalue(eseq: eseq)
+        case let node as Expression.GenericTypeApplication:
+            throw CompilerError(sourceAnchor: node.sourceAnchor, message: "internal compiler error: expected generics to have been erased by this point: `\(node)'")
         default:
-            throw CompilerError(message: "unimplemented: `\(expr)'")
+            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "internal compiler error: unimplemented support for expression in CoreToTackCompiler: `\(expr)'")
         }
         return flatten(result) ?? Seq(sourceAnchor: result.sourceAnchor, children: [])
     }
@@ -2854,10 +2850,10 @@ public class CoreToTackCompiler: CompilerPass {
             return try rvalue(call: expr, typ: typ)
             
         case .genericFunction(let typ):
-            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "internal compiler error: expected generics to have been erased by this point: `\(expr)'")
+            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "internal compiler error: expected generics to have been erased by this point: `\(expr)' of type `\(typ)'")
             
         default:
-            fatalError("cannot call value of non-function type `\(calleeType)'")
+            throw CompilerError(message: "cannot call value of non-function type `\(calleeType)'")
         }
     }
     
@@ -3074,10 +3070,6 @@ public class CoreToTackCompiler: CompilerPass {
             sourceAnchor: expr.sourceAnchor,
             symbols: symbols)
         return result
-    }
-    
-    func rvalue(genericTypeApplication expr: Expression.GenericTypeApplication) throws -> AbstractSyntaxTreeNode {
-        throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "internal compiler error: expected generics to have been erased by this point: `\(expr)'")
     }
     
     func rvalue(eseq: Expression.Eseq) throws -> AbstractSyntaxTreeNode {

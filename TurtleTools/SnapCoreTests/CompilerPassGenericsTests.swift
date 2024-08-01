@@ -219,7 +219,6 @@ final class CompilerPassGenericsTests: XCTestCase {
         let symbols = SymbolTable()
         let funSym = SymbolTable(parent: symbols)
         let bodySym = SymbolTable(parent: funSym)
-        let constU16 = SymbolType.arithmeticType(.mutableInt(.u16))
         let functionType = Expression.FunctionType(
             name: "foo",
             returnType: Expression.Identifier("T"),
@@ -243,8 +242,8 @@ final class CompilerPassGenericsTests: XCTestCase {
         let expr = Expression.GenericTypeApplication(
             identifier: Expression.Identifier("foo"),
             arguments: [
-                Expression.PrimitiveType(constU16),
-                Expression.PrimitiveType(constU16)
+                Expression.PrimitiveType(u16),
+                Expression.PrimitiveType(u16)
             ])
         XCTAssertThrowsError(try compiler.visit(expr: expr)) {
             let compilerError = $0 as? CompilerError
@@ -254,7 +253,6 @@ final class CompilerPassGenericsTests: XCTestCase {
     }
     
     func testCannotTakeTheAddressOfGenericFunctionWithInappropriateTypeArguments() {
-        let constU16 = SymbolType.arithmeticType(.immutableInt(.u16))
         let symbols = SymbolTable()
         let funSym = SymbolTable(parent: symbols)
         let bodySym = SymbolTable(parent: funSym)
@@ -291,5 +289,133 @@ final class CompilerPassGenericsTests: XCTestCase {
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "incorrect number of type arguments in application of generic function type `foo@[const u16, const u16]'")
         }
+    }
+    
+    // The concrete instantiation of the generic struct is added to the symbol table.
+    func testGenericStructDeclarationsAreErasedFromAST() throws {
+        let ast0 = Block(children: [
+            StructDeclaration(
+                identifier: Expression.Identifier("foo"),
+                typeArguments: [
+                    Expression.GenericTypeArgument(
+                        identifier: Expression.Identifier("T"),
+                        constraints: [])
+                ],
+                members: [
+                    StructDeclaration.Member(
+                        name: "bar",
+                        type: Expression.Identifier("T"))
+                ],
+                visibility: .privateVisibility,
+                isConst: false)
+        ])
+        
+        let compiler = CompilerPassGenerics(
+            symbols: SymbolTable(),
+            globalEnvironment: GlobalEnvironment(
+                memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()))
+        let ast1 = try compiler.visit(ast0)
+        XCTAssertEqual(ast1, Block())
+    }
+    
+    // The concrete instantiation of the generic struct is added to the symbol table.
+    func testGenericTypeApplicationCausesConcreteStructToBeAddedToSymbolTable() throws {
+        let symbols = SymbolTable()
+        
+        let ast0 = Block(symbols: symbols, children: [
+            StructDeclaration(
+                identifier: Expression.Identifier("foo"),
+                typeArguments: [
+                    Expression.GenericTypeArgument(
+                        identifier: Expression.Identifier("T"),
+                        constraints: [])
+                ],
+                members: [
+                    StructDeclaration.Member(
+                        name: "bar",
+                        type: Expression.Identifier("T"))
+                ],
+                visibility: .privateVisibility,
+                isConst: false),
+            Expression.StructInitializer(
+                expr: Expression.GenericTypeApplication(
+                    identifier: Expression.Identifier("foo"),
+                    arguments: [Expression.PrimitiveType(u16)]),
+                arguments: [
+                    Expression.StructInitializer.Argument(
+                        name: "T",
+                        expr: Expression.PrimitiveType(u16))
+                ])
+        ])
+        
+        let compiler = CompilerPassGenerics(
+            symbols: SymbolTable(),
+            globalEnvironment: GlobalEnvironment(
+                memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()))
+        let _ = try compiler.visit(ast0)
+        
+        switch try symbols.resolveType(identifier: "__foo_u16") {
+        case .structType(let typ):
+            XCTAssertEqual(typ.name, "__foo_u16")
+            XCTAssertEqual(typ.symbols.maybeResolve(identifier: "bar")?.type, u16)
+            
+        default:
+            XCTFail()
+        }
+    }
+    
+    // The concrete instantiation of the generic struct is inserted into the AST
+    func testGenericTypeApplicationCausesConcreteStructToBeAddedToAST() throws {
+        let expected = Block(children: [
+            StructDeclaration(
+                identifier: Expression.Identifier("__foo_u16"),
+                members: [
+                    StructDeclaration.Member(
+                        name: "bar",
+                        type: Expression.PrimitiveType(u16))
+                ],
+                visibility: .privateVisibility,
+                isConst: false),
+            Expression.StructInitializer(
+                expr: Expression.Identifier("__foo_u16"),
+                arguments: [
+                    Expression.StructInitializer.Argument(
+                        name: "T",
+                        expr: Expression.PrimitiveType(u16))
+                ])
+        ])
+        
+        let ast0 = Block(children: [
+            StructDeclaration(
+                identifier: Expression.Identifier("foo"),
+                typeArguments: [
+                    Expression.GenericTypeArgument(
+                        identifier: Expression.Identifier("T"),
+                        constraints: [])
+                ],
+                members: [
+                    StructDeclaration.Member(
+                        name: "bar",
+                        type: Expression.Identifier("T"))
+                ],
+                visibility: .privateVisibility,
+                isConst: false),
+            Expression.StructInitializer(
+                expr: Expression.GenericTypeApplication(
+                    identifier: Expression.Identifier("foo"),
+                    arguments: [Expression.PrimitiveType(u16)]),
+                arguments: [
+                    Expression.StructInitializer.Argument(
+                        name: "T",
+                        expr: Expression.PrimitiveType(u16))
+                ])
+        ])
+        
+        let compiler = CompilerPassGenerics(
+            symbols: SymbolTable(),
+            globalEnvironment: GlobalEnvironment(
+                memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()))
+        let ast1 = try compiler.visit(ast0)
+        XCTAssertEqual(ast1, expected)
     }
 }

@@ -43,6 +43,11 @@ public class CompilerPassGenerics: CompilerPass {
         return node.isGeneric ? nil : node
     }
     
+    public override func visit(struct node: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
+        try SnapSubcompilerStructDeclaration(symbols: symbols!, globalEnvironment: globalEnvironment!).compile(node)
+        return node.isGeneric ? nil : node
+    }
+    
     public override func visit(genericTypeApplication expr: Expression.GenericTypeApplication) throws -> Expression? {
         let exprTyp = try typeCheck(rexpr: expr)
         
@@ -102,8 +107,27 @@ public class CompilerPassGenerics: CompilerPass {
     }
     
     fileprivate func visit(genericTypeApplication expr: Expression.GenericTypeApplication, structType: StructType) throws -> Expression? {
-        // TODO: Create a StructDeclaration for the concrete instantiation of the generic struct. Insert the concrete struct type into the symbol table. Insert the concrete struct declaration into the AST.
-        expr
+        
+        symbols!.bind(
+            identifier: structType.name,
+            symbolType: .structType(structType))
+        
+        // The compiler pass must insert the concrete instantiation of the
+        // struct into the AST that it produces.
+        if let scope = symbols!.lookupScopeEnclosingType(identifier: structType.name), let id = scope.associatedBlockId {
+            let decl = StructDeclaration(
+                identifier: Expression.Identifier(structType.name),
+                members: structType.symbols.symbolTable.map {
+                    StructDeclaration.Member(
+                        name: $0.key,
+                        type: Expression.PrimitiveType($0.value.type))
+                },
+                visibility: .privateVisibility,
+                isConst: false)
+            pendingInsertions[id, default: []].append(decl)
+        }
+        
+        return Expression.Identifier(structType.name)
     }
     
     public override func visit(call expr0: Expression.Call) throws -> Expression? {

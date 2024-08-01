@@ -3086,4 +3086,8 @@ public class CoreToTackCompiler: CompilerPass {
         }
         return Seq(sourceAnchor: eseq.sourceAnchor, children: children)
     }
+    
+    public override func visit(struct: StructDeclaration) -> AbstractSyntaxTreeNode? {
+        nil
+    }
 }

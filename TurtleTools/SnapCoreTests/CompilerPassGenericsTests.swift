@@ -217,7 +217,7 @@ final class CompilerPassGenericsTests: XCTestCase {
     
     func testRejectsGenericFunctionApplicationWithIncorrectNumberOfArguments() throws {
         let symbols = SymbolTable()
-        let funSym = SymbolTable(parent: symbols)
+        let funSym = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))
         let bodySym = SymbolTable(parent: funSym)
         let functionType = Expression.FunctionType(
             name: "foo",
@@ -254,7 +254,7 @@ final class CompilerPassGenericsTests: XCTestCase {
     
     func testCannotTakeTheAddressOfGenericFunctionWithInappropriateTypeArguments() {
         let symbols = SymbolTable()
-        let funSym = SymbolTable(parent: symbols)
+        let funSym = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))
         let bodySym = SymbolTable(parent: funSym)
         let functionType = Expression.FunctionType(
             name: "foo",
@@ -291,7 +291,7 @@ final class CompilerPassGenericsTests: XCTestCase {
         }
     }
     
-    // The concrete instantiation of the generic struct is added to the symbol table.
+    // The concrete instantiation of the generic struct is erased from the AST.
     func testGenericStructDeclarationsAreErasedFromAST() throws {
         let ast0 = Block(children: [
             StructDeclaration(
@@ -410,6 +410,136 @@ final class CompilerPassGenericsTests: XCTestCase {
                         expr: Expression.PrimitiveType(u16))
                 ])
         ])
+        
+        let compiler = CompilerPassGenerics(
+            symbols: SymbolTable(),
+            globalEnvironment: GlobalEnvironment(
+                memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()))
+        let ast1 = try compiler.visit(ast0)
+        XCTAssertEqual(ast1, expected)
+    }
+    
+    // The concrete instantiation of the generic trait is erased from the AST.
+    func testGenericTraitDeclarationsAreErasedFromAST() throws {
+        let ast0 = Block(children: [
+            TraitDeclaration(
+                identifier: Expression.Identifier("foo"),
+                typeArguments: [
+                    Expression.GenericTypeArgument(
+                        identifier: Expression.Identifier("T"),
+                        constraints: [])
+                ],
+                members: [
+                    TraitDeclaration.Member(
+                        name: "bar",
+                        type: Expression.FunctionType(
+                            name: "bar",
+                            returnType: Expression.Identifier("T"),
+                            arguments: [Expression.Identifier("T")]))
+                ])
+        ])
+        
+        let compiler = CompilerPassGenerics(
+            symbols: SymbolTable(),
+            globalEnvironment: GlobalEnvironment(
+                memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()))
+        let ast1 = try compiler.visit(ast0)
+        XCTAssertEqual(ast1, Block())
+    }
+    
+    // The concrete instantiation of the generic trait is added to the symbol table.
+    func testGenericTypeApplicationCausesConcreteTraitToBeAddedToSymbolTable() throws {
+        let symbols = SymbolTable()
+        
+        let ast0 = Block(symbols: symbols, children: [
+            TraitDeclaration(
+                identifier: Expression.Identifier("MyTrait"),
+                typeArguments: [
+                    Expression.GenericTypeArgument(
+                        identifier: Expression.Identifier("T"),
+                        constraints: [])
+                ],
+                members: []),
+            StructDeclaration(
+                identifier: Expression.Identifier("MyStruct"),
+                members: []),
+            ImplFor(
+                typeArguments: [],
+                traitTypeExpr: Expression.GenericTypeApplication(
+                    identifier: Expression.Identifier("MyTrait"),
+                    arguments: [Expression.PrimitiveType(u16)]),
+                structTypeExpr: Expression.Identifier("MyStruct"),
+                children: [])
+        ])
+        
+        let compiler = CompilerPassGenerics(
+            symbols: SymbolTable(),
+            globalEnvironment: GlobalEnvironment(
+                memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()))
+        let _ = try compiler.visit(ast0)
+        
+        switch try symbols.resolveType(identifier: "__MyTrait_u16") {
+        case .traitType(let typ):
+            XCTAssertEqual(typ.name, "__MyTrait_u16")
+            
+        default:
+            XCTFail()
+        }
+    }
+    
+    // The concrete instantiation of the generic trait is inserted into the AST
+    func testGenericTypeApplicationCausesConcreteTraitToBeAddedToAST() throws {
+        let symbols = SymbolTable()
+        
+        let expected = Block(symbols: symbols, children: [
+            TraitDeclaration(
+                identifier: Expression.Identifier("__MyTrait_u16"),
+                members: [
+                    TraitDeclaration.Member(
+                        name: "foo",
+                        type: Expression.PrimitiveType(.pointer(.function(FunctionType(
+                            name: "foo",
+                            mangledName: "__MyTrait_u16_foo",
+                            returnType: u16,
+                            arguments: [u16])))))
+                ]),
+            StructDeclaration(
+                identifier: Expression.Identifier("MyStruct"),
+                members: []),
+            ImplFor(
+                typeArguments: [],
+                traitTypeExpr: Expression.Identifier("__MyTrait_u16"),
+                structTypeExpr: Expression.Identifier("MyStruct"),
+                children: [])
+        ])
+        
+        let ast0 = Block(symbols: symbols, children: [
+            TraitDeclaration(
+                identifier: Expression.Identifier("MyTrait"),
+                typeArguments: [
+                    Expression.GenericTypeArgument(
+                        identifier: Expression.Identifier("T"),
+                        constraints: [])
+                ],
+                members: [
+                    TraitDeclaration.Member(
+                        name: "foo",
+                        type: Expression.PointerType(Expression.FunctionType(
+                            name: "foo",
+                            returnType: Expression.Identifier("T"),
+                            arguments: [Expression.Identifier("T")])))
+                    ]),
+            StructDeclaration(
+                identifier: Expression.Identifier("MyStruct"),
+                members: []),
+            ImplFor(
+                typeArguments: [],
+                traitTypeExpr: Expression.GenericTypeApplication(
+                    identifier: Expression.Identifier("MyTrait"),
+                    arguments: [Expression.PrimitiveType(u16)]),
+                structTypeExpr: Expression.Identifier("MyStruct"),
+                children: [])
+        ], id: expected.id)
         
         let compiler = CompilerPassGenerics(
             symbols: SymbolTable(),

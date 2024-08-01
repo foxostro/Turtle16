@@ -12,10 +12,10 @@ import TurtleCore
 // * Every expression with a generic function application is rewritten to
 //   instead reference the concrete instantiation of the function. The concrete
 //   instantiation of the function is inserted into the AST.
-// * [WIP] Every reference to a generic struct type is rewritten to instead reference
+// * Every reference to a generic struct type is rewritten to instead reference
 //   the concrete instantiation of the struct. The concrete struct type is
 //   inserted into the AST.
-// * [WIP] Every reference to a generic trait is rewritten to instead reference the
+// * Every reference to a generic trait is rewritten to instead reference the
 //   concrete instantiation of the trait. The concrete trait type is inserted
 //   into the AST.
 public class CompilerPassGenerics: CompilerPass {
@@ -48,6 +48,11 @@ public class CompilerPassGenerics: CompilerPass {
         return node.isGeneric ? nil : node
     }
     
+    public override func visit(trait node: TraitDeclaration) throws -> AbstractSyntaxTreeNode? {
+        _ = try SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment!, symbols: symbols!).compile(node)
+        return node.isGeneric ? nil : node
+    }
+    
     public override func visit(genericTypeApplication expr: Expression.GenericTypeApplication) throws -> Expression? {
         let exprTyp = try typeCheck(rexpr: expr)
         
@@ -57,6 +62,9 @@ public class CompilerPassGenerics: CompilerPass {
             
         case .structType(let typ), .constStructType(let typ):
             return try visit(genericTypeApplication: expr, structType: typ)
+            
+        case .traitType(let typ), .constTraitType(let typ):
+            return try visit(genericTypeApplication: expr, traitType: typ)
             
         default:
             throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "internal compiler error: expected expression to have a function type: `\(expr)'")
@@ -128,6 +136,29 @@ public class CompilerPassGenerics: CompilerPass {
         }
         
         return Expression.Identifier(structType.name)
+    }
+    
+    fileprivate func visit(genericTypeApplication expr: Expression.GenericTypeApplication, traitType: TraitType) throws -> Expression? {
+        
+        symbols!.bind(
+            identifier: traitType.name,
+            symbolType: .traitType(traitType))
+        
+        // The compiler pass must insert the concrete instantiation of the
+        // trait into the AST that it produces.
+        if let scope = symbols!.lookupScopeEnclosingType(identifier: traitType.name), let id = scope.associatedBlockId {
+            let decl = TraitDeclaration(
+                identifier: Expression.Identifier(traitType.name),
+                members: traitType.symbols.symbolTable.map {
+                    TraitDeclaration.Member(
+                        name: $0.key,
+                        type: Expression.PrimitiveType($0.value.type))
+                },
+                visibility: .privateVisibility)
+            pendingInsertions[id, default: []].append(decl)
+        }
+        
+        return Expression.Identifier(traitType.name)
     }
     
     public override func visit(call expr0: Expression.Call) throws -> Expression? {

@@ -3438,6 +3438,31 @@ class CoreToTackCompilerTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "cannot instantiate generic function `func foo[T](a: T) -> T'")
         }
     }
+    
+    func testRvalue_CannotTakeTheAddressOfGenericFunctionWithoutTypeArguments() {
+        let functionType = Expression.FunctionType(name: "foo",
+                                                   returnType: Expression.Identifier("T"),
+                                                   arguments: [Expression.Identifier("T")])
+        let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
+                                           functionType: functionType,
+                                           argumentNames: ["a"],
+                                           typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
+                                           body: Block(),
+                                           visibility: .privateVisibility,
+                                           symbols: SymbolTable())
+        let genericFunctionType = Expression.GenericFunctionType(template: template)
+        let symbols = SymbolTable(tuples: [
+            ("foo", Symbol(type: .genericFunction(genericFunctionType)))
+        ])
+
+        let expr = Expression.Unary(op: .ampersand, expression: Expression.Identifier("foo"))
+        let compiler = makeCompiler(symbols: symbols)
+        XCTAssertThrowsError(try compiler.rvalue(expr: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot instantiate generic function `func foo[T](a: T) -> T'")
+        }
+    }
 
     func testRvalue_RvalueOfMemberOfStructInitializer() throws {
         let typ = StructType(name: "Foo", symbols: SymbolTable(tuples: [

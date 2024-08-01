@@ -3388,6 +3388,37 @@ class CoreToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
     }
 
+    func testLvalue_CannotInstantiateGenericFunctionTypeWithoutApplication() {
+        // Create a symbol table with a generic function defined
+        let symbols = SymbolTable()
+        let funSym = SymbolTable(parent: symbols)
+        let bodySym = SymbolTable(parent: funSym)
+        let functionType = Expression.FunctionType(
+            name: "foo",
+            returnType: Expression.Identifier("T"),
+            arguments: [Expression.Identifier("T")])
+        let template = FunctionDeclaration(
+            identifier: Expression.Identifier("foo"),
+            functionType: functionType,
+            argumentNames: ["a"],
+            typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
+            body: Block(symbols: bodySym),
+            visibility: .privateVisibility,
+            symbols: funSym)
+        let genericFunctionType = Expression.GenericFunctionType(template: template)
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .genericFunction(genericFunctionType)))
+        
+        // Compile the expression. We expect this to fail because we're missing
+        // a generic type application which would turn it into a concrete type.
+        let expr = Expression.Identifier("foo")
+        let compiler = makeCompiler(symbols: symbols)
+        XCTAssertThrowsError(try compiler.lvalue(expr: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "cannot instantiate generic function `func foo[T](a: T) -> T'")
+        }
+    }
+
     func testRvalue_RvalueOfMemberOfStructInitializer() throws {
         let typ = StructType(name: "Foo", symbols: SymbolTable(tuples: [
             ("bar", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0, storage: .automaticStorage))

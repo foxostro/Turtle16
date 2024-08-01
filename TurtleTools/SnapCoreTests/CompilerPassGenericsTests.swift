@@ -252,4 +252,44 @@ final class CompilerPassGenericsTests: XCTestCase {
             XCTAssertEqual(compilerError?.message, "incorrect number of type arguments in application of generic function type `foo@[u16, u16]'")
         }
     }
+    
+    func testCannotTakeTheAddressOfGenericFunctionWithInappropriateTypeArguments() {
+        let constU16 = SymbolType.arithmeticType(.immutableInt(.u16))
+        let symbols = SymbolTable()
+        let funSym = SymbolTable(parent: symbols)
+        let bodySym = SymbolTable(parent: funSym)
+        let functionType = Expression.FunctionType(
+            name: "foo",
+            returnType: Expression.Identifier("T"),
+            arguments: [Expression.Identifier("T")])
+        let template = FunctionDeclaration(
+            identifier: Expression.Identifier("foo"),
+            functionType: functionType,
+            argumentNames: ["a"],
+            typeArguments: [
+                Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])
+            ],
+            body: Block(symbols: bodySym),
+            visibility: .privateVisibility,
+            symbols: funSym)
+        let genericFunctionType = Expression.GenericFunctionType(template: template)
+        symbols.bind(
+            identifier: "foo",
+            symbol: Symbol(type: .genericFunction(genericFunctionType)))
+
+        let expr = Expression.Unary(
+            op: .ampersand,
+            expression: Expression.GenericTypeApplication(
+                identifier: Expression.Identifier("foo"),
+                arguments: [
+                    Expression.PrimitiveType(constU16),
+                    Expression.PrimitiveType(constU16)
+                ]))
+        let compiler = CompilerPassGenerics(symbols: symbols, globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()))
+        XCTAssertThrowsError(try compiler.visit(expr: expr)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "incorrect number of type arguments in application of generic function type `foo@[const u16, const u16]'")
+        }
+    }
 }

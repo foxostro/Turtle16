@@ -1126,6 +1126,31 @@ public class SymbolTable: NSObject {
         return nil
     }
     
+    // The UUID of the block associated with this scope, if any
+    public var associatedBlockId: Block.ID?
+    
+    // Given a symbol identifier, return the Id of the Block associated with the
+    // scope in which it was defined.
+    public func lookupScopeEnclosingSymbol(identifier: String) -> SymbolTable? {
+        if let _ = symbolTable[identifier] {
+            self
+        }
+        else {
+            parent?.lookupScopeEnclosingSymbol(identifier: identifier)
+        }
+    }
+    
+    // Given a type identifier, return the Id of the Block associated with the
+    // scope in which it was defined.
+    public func lookupScopeEnclosingType(identifier: String) -> SymbolTable? {
+        if let _ = typeTable[identifier] {
+            self
+        }
+        else {
+            parent?.lookupScopeEnclosingType(identifier: identifier)
+        }
+    }
+    
     public func allEnclosingFunctionNames() -> [String] {
         if let enclosingFunctionName = enclosingFunctionName {
             if let parent = parent {

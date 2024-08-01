@@ -19,43 +19,8 @@ import TurtleCore
 //   concrete instantiation of the trait. The concrete trait type is inserted
 //   into the AST.
 public class CompilerPassGenerics: CompilerPass {
-    // Remember where the declaration of a generic occurred.
-    // Assist in writing declarations for concrete instantiations of that type.
-    fileprivate class DeclarationWriter : NSObject {
-        var blocksForDecl: [String : Block] = [:]
-        var declsToInsert: [Block : [AbstractSyntaxTreeNode]] = [:]
-        
-        // Remember the block which encloses the specified generic declaration
-        // At the moment, this does not handle shadowed declarations.
-        func rememberGenericDeclaration(identifier: String, enclosingBlock: Block) {
-            assert(blocksForDecl[identifier] == nil)
-            blocksForDecl[identifier] = enclosingBlock
-        }
-        
-        // Return the block which encloses the specified generic declaration
-        func lookupBlockWhichEnclosesGenericDeclaration(identifier: String) -> Block? {
-            blocksForDecl[identifier]
-        }
-        
-        // Note a concrete declaration that we need for a previous generic declaration
-        func addConcreteDeclaration(identifierForGenericDeclaration: String, declaration: AbstractSyntaxTreeNode) {
-            if let block = lookupBlockWhichEnclosesGenericDeclaration(identifier: identifierForGenericDeclaration) {
-                declsToInsert[block, default: []].append(declaration)
-            }
-        }
-        
-        // Rewrite the block to include the declarations provided earlier
-        // Because rewriting the AST will create new nodes, with different
-        // identity, we need a reference to the original block instance that we
-        // recorded earlier.
-        func rewriteToIncludeDeclarations(blockForIdentity: Block, blockToRewrite: Block) -> Block {
-            blockToRewrite.withChildren(declsToInsert[blockForIdentity, default: []] + blockToRewrite.children)
-        }
-    }
-    
     fileprivate let globalEnvironment: GlobalEnvironment?
-    fileprivate var enclosingBlock: Block?
-    fileprivate let funcDeclWriter = DeclarationWriter()
+    fileprivate var pendingInsertions: [Block.ID : [AbstractSyntaxTreeNode]] = [:]
     
     @discardableResult func typeCheck(rexpr: Expression) throws -> SymbolType {
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols!, globalEnvironment: globalEnvironment)
@@ -67,25 +32,14 @@ public class CompilerPassGenerics: CompilerPass {
         super.init(symbols)
     }
     
-    public override func visit(block node: Block) throws -> AbstractSyntaxTreeNode? {
-        enclosingBlock = node
-        defer { enclosingBlock = nil }
-        let block0 = try super.visit(block: node) as! Block
-        let block1 = funcDeclWriter.rewriteToIncludeDeclarations(
-            blockForIdentity: node,
-            blockToRewrite: block0)
-        return block1
+    public override func visit(block block0: Block) throws -> AbstractSyntaxTreeNode? {
+        let block1 = try super.visit(block: block0) as! Block
+        let block2 = block1.inserting(children: pendingInsertions[block1.id, default: []], at: 0)
+        return block2
     }
     
     public override func visit(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
         try SnapSubcompilerFunctionDeclaration().compile(globalEnvironment: globalEnvironment!, symbols: symbols!, node: node)
-        
-        if node.isGeneric, let enclosingBlock {
-            funcDeclWriter.rememberGenericDeclaration(
-                identifier: node.identifier.identifier,
-                enclosingBlock: enclosingBlock)
-        }
-        
         return node.isGeneric ? nil : node
     }
     
@@ -118,13 +72,11 @@ public class CompilerPassGenerics: CompilerPass {
         
         // The compiler pass must insert the concrete instantiation of the
         // function into the AST that it produces.
-        if let block = funcDeclWriter.lookupBlockWhichEnclosesGenericDeclaration(identifier: functionType.name!) {
+        if let scope = symbols!.lookupScopeEnclosingSymbol(identifier: functionType.name!), let id = scope.associatedBlockId {
             let decl = makeConcreteFunctionDeclaration(
-                parentSymbols: block.symbols,
+                parentSymbols: scope,
                 functionType: functionType)
-            funcDeclWriter.addConcreteDeclaration(
-                identifierForGenericDeclaration: functionType.name!,
-                declaration: decl)
+            pendingInsertions[id, default: []].append(decl)
         }
         
         return Expression.Identifier(mangledName)

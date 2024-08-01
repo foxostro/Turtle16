@@ -11,28 +11,48 @@ import TurtleCore
 public class Block: AbstractSyntaxTreeNode {
     public let symbols: SymbolTable
     public let children: [AbstractSyntaxTreeNode]
+    public typealias ID = UUID
+    public let id: ID
     
     public init(sourceAnchor: SourceAnchor? = nil,
                 symbols: SymbolTable = SymbolTable(),
-                children: [AbstractSyntaxTreeNode] = []) {
+                children: [AbstractSyntaxTreeNode] = [],
+                id: ID = ID()) {
         self.symbols = symbols
+        symbols.associatedBlockId = id
         self.children = children.map { $0.withSourceAnchor(sourceAnchor) }
+        self.id = id
         super.init(sourceAnchor: sourceAnchor)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Block {
         if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
+            self
         }
-        return Block(sourceAnchor: sourceAnchor,
-                     symbols: symbols,
-                     children: children)
+        else {
+            Block(sourceAnchor: sourceAnchor,
+                  symbols: symbols,
+                  children: children,
+                  id: id)
+        }
     }
     
     public func withChildren(_ children: [AbstractSyntaxTreeNode]) -> Block {
         Block(sourceAnchor: sourceAnchor,
               symbols: symbols,
-              children: children)
+              children: children,
+              id: id)
+    }
+    
+    public func inserting(children toInsert: [AbstractSyntaxTreeNode], at index: Int) -> Block {
+        var children1 = children
+        children1.insert(contentsOf: toInsert, at: index)
+        
+        return Block(
+            sourceAnchor: sourceAnchor,
+            symbols: symbols,
+            children: children1,
+            id: id)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
@@ -54,26 +74,31 @@ public class Block: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        let parentStr: String
-        if let parent = symbols.parent {
-            parentStr = "\(parent)"
-        } else {
-            parentStr = "nil"
-        }
-        
-        return String(format: "%@%@%@",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)) + "(symbols=\(symbols); parent=\(parentStr))",
-                      makeChildDescriptions(depth: depth + 1))
+        let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let typeDesc = String(describing: type(of: self))
+        let parentStr = if let parent = symbols.parent {
+                "\(parent)"
+            }
+            else {
+                "nil"
+            }
+        let selfDesc = "(symbols=\(symbols); parent=\(parentStr); id=\(id.uuidString)"
+        let childDesc = makeChildDescriptions(depth: depth + 1)
+        let fullDesc = "\(indent)\(typeDesc)\(selfDesc)\(childDesc)"
+        return fullDesc
     }
     
     public func makeChildDescriptions(depth: Int = 0) -> String {
-        let result: String
         if children.isEmpty {
-            result = " (empty)"
+            " (empty)"
         } else {
-            result = "\n" + children.map({$0.makeIndentedDescription(depth: depth, wantsLeadingWhitespace: true)}).joined(separator: "\n")
+            "\n" + children
+                .map {
+                    $0.makeIndentedDescription(
+                        depth: depth,
+                        wantsLeadingWhitespace: true)
+                }
+                .joined(separator: "\n")
         }
-        return result
     }
 }

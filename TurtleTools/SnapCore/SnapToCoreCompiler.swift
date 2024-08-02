@@ -54,7 +54,8 @@ public class SnapToCoreCompiler: NSObject {
                     injectModules: injectModules,
                     globalEnvironment: globalEnvironment,
                     runtimeSupport: runtimeSupport)?
-                .implPass(globalEnvironment)
+                .implPass(globalEnvironment)?
+                .genericsPass(globalEnvironment)
         }
         .flatMap { ast in
             if let block = ast as? Block {
@@ -128,5 +129,14 @@ extension AbstractSyntaxTreeNode {
     fileprivate func implPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
         try SnapAbstractSyntaxTreeCompilerImplPass(globalEnvironment: globalEnvironment)
             .visit(self)
+    }
+    
+    // Erase generics, rewriting in terms of new concrete types
+    fileprivate func genericsPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
+        let compiler = CompilerPassGenerics(
+            symbols: SymbolTable(),
+            globalEnvironment: globalEnvironment)
+        let result = try compiler.visit(self)
+        return result
     }
 }

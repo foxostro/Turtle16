@@ -54,8 +54,13 @@ public class SnapToCoreCompiler: NSObject {
                     injectModules: injectModules,
                     globalEnvironment: globalEnvironment,
                     runtimeSupport: runtimeSupport)?
+                .clearSymbols(globalEnvironment: globalEnvironment)?
+                .declPass(
+                    injectModules: injectModules,
+                    globalEnvironment: globalEnvironment,
+                    runtimeSupport: runtimeSupport)?
                 .implPass(globalEnvironment)?
-                .genericsPass(globalEnvironment)
+                .genericsPass(globalEnvironment: globalEnvironment)
         }
         .flatMap { ast in
             if let block = ast as? Block {
@@ -132,11 +137,21 @@ extension AbstractSyntaxTreeNode {
     }
     
     // Erase generics, rewriting in terms of new concrete types
-    fileprivate func genericsPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        let compiler = CompilerPassGenerics(
-            symbols: SymbolTable(),
-            globalEnvironment: globalEnvironment)
-        let result = try compiler.visit(self)
+    fileprivate func genericsPass(globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
+        
+        try CompilerPassGenerics(symbols: nil, globalEnvironment: globalEnvironment)
+            .visit(self)
+    }
+    
+    // Clear all symbols from the AST and reconnect all symbol tables, lexically
+    fileprivate func clearSymbols(globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
+        
+        let result = try CompilerPassClearSymbols()
+            .visit(self)
+        
+        globalEnvironment.functionsToCompile.removeAll()
+        globalEnvironment.modules = [:]
+        
         return result
     }
 }

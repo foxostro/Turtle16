@@ -155,8 +155,11 @@ final class CompilerPassGenericsTests: XCTestCase {
                 arguments: [Expression.PrimitiveType(constU16)])
         ])
         
-        let compiler = CompilerPassGenerics(symbols: symbols, globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()))
-        let ast1 = try compiler.visit(ast0)
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
+        
+        _ = try SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment).visit(ast0)
+        
+        let ast1 = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).visit(ast0)
         
         XCTAssertEqual(ast1, expected)
     }
@@ -209,8 +212,9 @@ final class CompilerPassGenericsTests: XCTestCase {
                 arguments: [Expression.PrimitiveType(u16)])
         ])
         
-        let compiler = CompilerPassGenerics(symbols: symbols, globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()))
-        let ast1 = try compiler.visit(ast0)
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
+        _ = try SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment).visit(ast0)
+        let ast1 = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).visit(ast0)
         
         XCTAssertEqual(ast1, expected)
     }
@@ -348,11 +352,9 @@ final class CompilerPassGenericsTests: XCTestCase {
                 ])
         ])
         
-        let compiler = CompilerPassGenerics(
-            symbols: SymbolTable(),
-            globalEnvironment: GlobalEnvironment(
-                memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()))
-        let _ = try compiler.visit(ast0)
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
+        _ = try SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment).visit(ast0)
+        let _ = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).visit(ast0)
         
         switch try symbols.resolveType(identifier: "__foo_u16") {
         case .structType(let typ):
@@ -411,11 +413,10 @@ final class CompilerPassGenericsTests: XCTestCase {
                 ])
         ])
         
-        let compiler = CompilerPassGenerics(
-            symbols: SymbolTable(),
-            globalEnvironment: GlobalEnvironment(
-                memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()))
-        let ast1 = try compiler.visit(ast0)
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
+        _ = try SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment).visit(ast0)
+        let ast1 = try CompilerPassGenerics(symbols: nil, globalEnvironment: globalEnvironment).visit(ast0)
+        
         XCTAssertEqual(ast1, expected)
     }
     
@@ -472,11 +473,9 @@ final class CompilerPassGenericsTests: XCTestCase {
                 children: [])
         ])
         
-        let compiler = CompilerPassGenerics(
-            symbols: SymbolTable(),
-            globalEnvironment: GlobalEnvironment(
-                memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()))
-        let _ = try compiler.visit(ast0)
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
+        _ = try SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment).visit(ast0)
+        _ = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).visit(ast0)
         
         switch try symbols.resolveType(identifier: "__MyTrait_u16") {
         case .traitType(let typ):
@@ -490,6 +489,8 @@ final class CompilerPassGenericsTests: XCTestCase {
     // The concrete instantiation of the generic trait is inserted into the AST
     func testGenericTypeApplicationCausesConcreteTraitToBeAddedToAST() throws {
         let symbols = SymbolTable()
+        let funSym = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))
+        let bodySym = SymbolTable(parent: funSym)
         
         let expected = Block(symbols: symbols, children: [
             TraitDeclaration(
@@ -510,8 +511,21 @@ final class CompilerPassGenericsTests: XCTestCase {
                 typeArguments: [],
                 traitTypeExpr: Expression.Identifier("__MyTrait_u16"),
                 structTypeExpr: Expression.Identifier("MyStruct"),
-                children: [])
+                children: [
+                    FunctionDeclaration(
+                        identifier: Expression.Identifier("foo"),
+                        functionType: Expression.FunctionType(
+                            name: "foo",
+                            returnType: Expression.PrimitiveType(u16),
+                            arguments: [Expression.PrimitiveType(u16)]),
+                        argumentNames: ["arg1"],
+                        body: Block(symbols: bodySym, children: [
+                            Return(Expression.Identifier("arg1"))
+                        ]),
+                        symbols: funSym)
+                ])
         ])
+        let expectedBodyId = ((expected.children[2] as! ImplFor).children[0]).body.id
         
         let ast0 = Block(symbols: symbols, children: [
             TraitDeclaration(
@@ -538,14 +552,28 @@ final class CompilerPassGenericsTests: XCTestCase {
                     identifier: Expression.Identifier("MyTrait"),
                     arguments: [Expression.PrimitiveType(u16)]),
                 structTypeExpr: Expression.Identifier("MyStruct"),
-                children: [])
+                children: [
+                    FunctionDeclaration(
+                        identifier: Expression.Identifier("foo"),
+                        functionType: Expression.FunctionType(
+                            name: "foo",
+                            returnType: Expression.PrimitiveType(u16),
+                            arguments: [Expression.PrimitiveType(u16)]),
+                        argumentNames: ["arg1"],
+                        body: Block(
+                            symbols: bodySym,
+                            children: [
+                                Return(Expression.Identifier("arg1"))
+                            ],
+                            id: expectedBodyId),
+                        symbols: funSym)
+                ])
         ], id: expected.id)
         
-        let compiler = CompilerPassGenerics(
-            symbols: SymbolTable(),
-            globalEnvironment: GlobalEnvironment(
-                memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()))
-        let ast1 = try compiler.visit(ast0)
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
+        _ = try SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment).visit(ast0)
+        let ast1 = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).visit(ast0)
+        
         XCTAssertEqual(ast1, expected)
     }
 }

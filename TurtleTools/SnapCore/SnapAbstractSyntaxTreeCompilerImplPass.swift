@@ -82,7 +82,30 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: CompilerPass {
     }
     
     public override func visit(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
-        // We defer compilation of the function body until later.
-        return node
+        node // We defer compilation of the function body until later.
+    }
+
+    public override func visit(struct node0: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
+        nil
+    }
+
+    public override func visit(typealias node0: Typealias) throws -> AbstractSyntaxTreeNode? {
+        nil
+    }
+
+    public override func visit(trait node0: TraitDeclaration) throws -> AbstractSyntaxTreeNode? {
+        nil
+    }
+
+    public override func visit(impl node0: Impl) throws -> AbstractSyntaxTreeNode? {
+        nil
+    }
+
+    public override func visit(import node0: Import) throws -> AbstractSyntaxTreeNode? {
+        nil
+    }
+
+    public override func visit(implFor node0: ImplFor) throws -> AbstractSyntaxTreeNode? {
+        nil
     }
 }

@@ -20,6 +20,11 @@ public class FunctionsToCompile: NSObject {
         queue.removeFirst()
     }
     
+    public func removeAll() {
+        queue.removeAll()
+        alreadyQueued.removeAll()
+    }
+    
     public func enqueue(_ fn: FunctionType) {
         let mangledName = fn.mangledName!
         if !alreadyQueued.contains(mangledName) { // skip duplicates

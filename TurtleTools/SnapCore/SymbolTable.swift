@@ -1260,4 +1260,12 @@ public class SymbolTable: NSObject {
         result.modulesAlreadyImported = modulesAlreadyImported
         return result
     }
+    
+    public func clear() {
+        declarationOrder = []
+        symbolTable.removeAll()
+        typeTable.removeAll()
+        scopePrologue = Seq()
+        modulesAlreadyImported = []
+    }
 }

@@ -19,15 +19,15 @@ import TurtleCore
 //   concrete instantiation of the trait. The concrete trait type is inserted
 //   into the AST.
 public class CompilerPassGenerics: CompilerPass {
-    fileprivate let globalEnvironment: GlobalEnvironment?
+    fileprivate let globalEnvironment: GlobalEnvironment
     fileprivate var pendingInsertions: [Block.ID : [AbstractSyntaxTreeNode]] = [:]
     
-    @discardableResult func typeCheck(rexpr: Expression) throws -> SymbolType {
+    @discardableResult fileprivate func typeCheck(rexpr: Expression) throws -> SymbolType {
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols!, globalEnvironment: globalEnvironment)
         return try typeChecker.check(expression: rexpr)
     }
     
-    public init(symbols: SymbolTable, globalEnvironment: GlobalEnvironment) {
+    public init(symbols: SymbolTable?, globalEnvironment: GlobalEnvironment) {
         self.globalEnvironment = globalEnvironment
         super.init(symbols)
     }
@@ -38,19 +38,16 @@ public class CompilerPassGenerics: CompilerPass {
         return block2
     }
     
-    public override func visit(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
-        try SnapSubcompilerFunctionDeclaration().compile(globalEnvironment: globalEnvironment!, symbols: symbols!, node: node)
-        return node.isGeneric ? nil : node
+    public override func visit(func node0: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
+        node0.isGeneric ? nil : node0
     }
     
-    public override func visit(struct node: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
-        try SnapSubcompilerStructDeclaration(symbols: symbols!, globalEnvironment: globalEnvironment!).compile(node)
-        return node.isGeneric ? nil : node
+    public override func visit(struct node0: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
+        node0.isGeneric ? nil : node0
     }
     
-    public override func visit(trait node: TraitDeclaration) throws -> AbstractSyntaxTreeNode? {
-        _ = try SnapSubcompilerTraitDeclaration(globalEnvironment: globalEnvironment!, symbols: symbols!).compile(node)
-        return node.isGeneric ? nil : node
+    public override func visit(trait node0: TraitDeclaration) throws -> AbstractSyntaxTreeNode? {
+        node0.isGeneric ? nil : node0
     }
     
     public override func visit(genericTypeApplication expr: Expression.GenericTypeApplication) throws -> Expression? {

@@ -54,10 +54,9 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
             StructDeclaration(identifier: Expression.Identifier("None"), members: [])
         ])
         
-        let expected = Block(symbols: symbols, children: []) // StructDeclaration is removed after being processed
         let compiler = SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment)
         let result = try? compiler.visit(input)
-        XCTAssertEqual(result, expected)
+        XCTAssertEqual(result, input)
         
         let expectedStructSymbols = SymbolTable()
         expectedStructSymbols.frameLookupMode = .set(Frame())
@@ -74,10 +73,9 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
             Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
         ])
         
-        let expected = Block(symbols: symbols, children: []) // Typealias is removed after being processed
         let compiler = SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment)
         let result = try? compiler.visit(input)
-        XCTAssertEqual(result, expected)
+        XCTAssertEqual(result, input)
         
         let expectedType: SymbolType = .arithmeticType(.mutableInt(.u8))
         let actualType = try? symbols.resolveType(identifier: "Foo")

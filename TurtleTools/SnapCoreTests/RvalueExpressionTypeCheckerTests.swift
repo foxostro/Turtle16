@@ -4618,6 +4618,17 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertEqual(result, .arithmeticType(.mutableInt(.u16)))
     }
     
+    func testGetCountOfRange() throws {
+        let symbols = SymbolTable()
+            .withCompilerIntrinsicRangeType(MemoryLayoutStrategyTurtle16())
+        let expr = Expression.Get(
+            expr: ExprUtils.makeRange(0, 10),
+            member: Expression.Identifier("count"))
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        let result = try typeChecker.check(expression: expr)
+        XCTAssertEqual(result, .arithmeticType(.mutableInt(.u16)))
+    }
+    
     func testTypeOfPrimitiveTypeExpression() {
         let expr = Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8)))
         let typeChecker = RvalueExpressionTypeChecker()

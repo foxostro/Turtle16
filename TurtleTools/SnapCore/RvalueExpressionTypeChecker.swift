@@ -781,7 +781,7 @@ public class RvalueExpressionTypeChecker: NSObject {
             throw typeError
             
         case .structType(let typ), .constStructType(let typ):
-            // The compiler treats Range specially but maybe it shouldn't. We could instead have a way to provide an overload of the subscript operator or some other solution in the standard library.
+            // TODO: The compiler treats Range specially but maybe it shouldn't. We could instead have a way to provide an overload of the subscript operator or some other solution in the standard library.
             if typ.name == "Range" {
                 return .arithmeticType(.mutableInt(.u16))
             }
@@ -849,8 +849,24 @@ public class RvalueExpressionTypeChecker: NSObject {
         
         if let structInitializer = expr.expr as? Expression.StructInitializer {
             let argument = structInitializer.arguments.first(where: {$0.name == member.identifier})
-            let memberExpr = argument!.expr
-            return try check(expression: memberExpr)
+            if let argument {
+                return try check(expression: argument.expr)
+            }
+            else {
+                let a = try check(structInitializer: structInitializer)
+                switch a {
+                case .structType(let typ), .constStructType(let typ):
+                    // TODO: The compiler has special handling of Range.count but maybe it shouldn't. The compiler could provide a way to write a specialized Range.count property or something like that
+                    if typ.name == "Range", member.identifier == "count" {
+                        return .arithmeticType(.mutableInt(.u16))
+                    }
+                               
+                default:
+                    break
+                }
+                
+                throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "value of type `\(a)' has no member `\(member.identifier)'")
+            }
         }
         
         let name = member.identifier

@@ -104,16 +104,17 @@ class SnapAbstractSyntaxTreeCompilerDeclPassTests: XCTestCase {
     func testImportStdlib() throws {
         let globalEnvironment = GlobalEnvironment()
         let symbols = SymbolTable()
-        let input = Block(symbols: symbols, children: [
+        let ast0 = Block(symbols: symbols, children: [
             Import(moduleName: kStandardLibraryModuleName)
         ])
+        
         let compiler = SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment)
-        var output: AbstractSyntaxTreeNode? = nil
-        XCTAssertNoThrow(output = try compiler.visit(input))
-        XCTAssertNotNil(output)
-        XCTAssertTrue(compiler.globalEnvironment.hasModule(kStandardLibraryModuleName))
+        let ast1 = try compiler.visit(ast0)
+        
+        XCTAssertEqual(ast1, ast0)
+        XCTAssertTrue(globalEnvironment.hasModule(kStandardLibraryModuleName))
         XCTAssertTrue(symbols.modulesAlreadyImported.contains(kStandardLibraryModuleName))
-        XCTAssertNotNil(try? symbols.resolve(identifier: "none"))
+        XCTAssertNoThrow(try symbols.resolve(identifier: "none"))
     }
     
     func testImpl() throws {

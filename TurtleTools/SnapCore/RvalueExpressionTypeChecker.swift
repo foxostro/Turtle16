@@ -779,6 +779,16 @@ public class RvalueExpressionTypeChecker: NSObject {
                 return elementType
             }
             throw typeError
+            
+        case .structType(let typ), .constStructType(let typ):
+            // The compiler treats Range specially but maybe it shouldn't. We could instead have a way to provide an overload of the subscript operator or some other solution in the standard library.
+            if typ.name == "Range" {
+                return .arithmeticType(.mutableInt(.u16))
+            }
+            else {
+                throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "value of type `\(subscriptableType)' has no subscripts")
+            }
+            
         default:
             throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "value of type `\(subscriptableType)' has no subscripts")
         }
@@ -851,11 +861,18 @@ public class RvalueExpressionTypeChecker: NSObject {
                 return .arithmeticType(.mutableInt(.u16))
             }
         case .constStructType(let typ):
-            if let symbol = typ.symbols.maybeResolve(identifier: name) {
+            // TODO: The compiler treats Range specially but maybe it shouldn't do this. We could have some way to provide a specific template specialization and do it in stdlib.
+            if typ.name == "Range", name == "count" {
+                return .arithmeticType(.mutableInt(.u16))
+            }
+            else if let symbol = typ.symbols.maybeResolve(identifier: name) {
                 return symbol.type.correspondingConstType
             }
         case .structType(let typ):
-            if let symbol = typ.symbols.maybeResolve(identifier: name) {
+            if typ.name == "Range", name == "count" {
+                return .arithmeticType(.mutableInt(.u16))
+            }
+            else if let symbol = typ.symbols.maybeResolve(identifier: name) {
                 return symbol.type
             }
         case .constPointer(let typ), .pointer(let typ):

@@ -2680,33 +2680,50 @@ public class CoreToTackCompiler: CompilerPass {
             ]
         
         case .constStructType(let typ), .structType(let typ):
-            let symbol = try typ.symbols.resolve(identifier: name)
-            
-            if let primitiveType = symbol.type.primitiveType {
-                // Read the field in-place
-                children += [
-                    try lvalue(expr: expr.expr)
-                ]
-                let tempStructAddress = popRegister().unwrapPointer!
-                let dst = nextRegister(type: primitiveType)
-                pushRegister(dst)
-                children += [
-                    TackInstructionNode(
-                        instruction: {
-                            switch dst {
-                            case .p(let p): return .lp(p, tempStructAddress, symbol.offset)
-                            case .w(let w): return .lw(w, tempStructAddress, symbol.offset)
-                            case .b(let b): return .lb(b, tempStructAddress, symbol.offset)
-                            case .o(let o): return .lo(o, tempStructAddress, symbol.offset)
-                            }
-                        }(),
+            if typ.name == "Range", name == "count" {
+                let calcCount = Expression.Binary(
+                    sourceAnchor: expr.sourceAnchor,
+                    op: .minus,
+                    left: Expression.Get(
                         sourceAnchor: expr.sourceAnchor,
-                        symbols: symbols)
-                ]
-            } else {
-                children += [
-                    try lvalue(expr: expr)
-                ]
+                        expr: expr.expr,
+                        member: Expression.Identifier("limit")),
+                    right: Expression.Get(
+                        sourceAnchor: expr.sourceAnchor,
+                        expr: expr.expr,
+                        member: Expression.Identifier("begin")))
+                let result = try rvalue(binary: calcCount)
+                return result
+            }
+            else {
+                let symbol = try typ.symbols.resolve(identifier: name)
+                
+                if let primitiveType = symbol.type.primitiveType {
+                    // Read the field in-place
+                    children += [
+                        try lvalue(expr: expr.expr)
+                    ]
+                    let tempStructAddress = popRegister().unwrapPointer!
+                    let dst = nextRegister(type: primitiveType)
+                    pushRegister(dst)
+                    children += [
+                        TackInstructionNode(
+                            instruction: {
+                                switch dst {
+                                case .p(let p): return .lp(p, tempStructAddress, symbol.offset)
+                                case .w(let w): return .lw(w, tempStructAddress, symbol.offset)
+                                case .b(let b): return .lb(b, tempStructAddress, symbol.offset)
+                                case .o(let o): return .lo(o, tempStructAddress, symbol.offset)
+                                }
+                            }(),
+                            sourceAnchor: expr.sourceAnchor,
+                            symbols: symbols)
+                    ]
+                } else {
+                    children += [
+                        try lvalue(expr: expr)
+                    ]
+                }
             }
             
         case .constPointer(let typ), .pointer(let typ):

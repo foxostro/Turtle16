@@ -149,6 +149,10 @@ public class Expression: AbstractSyntaxTreeNode {
             return Identifier(sourceAnchor: sourceAnchor, identifier: identifier)
         }
         
+        public func withIdentifier(_ identifier: String) -> Identifier {
+            Identifier(sourceAnchor: sourceAnchor, identifier: identifier)
+        }
+        
         public override func isEqual(_ rhs: Any?) -> Bool {
             guard rhs != nil else { return false }
             guard type(of: rhs!) == type(of: self) else { return false }

@@ -50,6 +50,7 @@ public class SnapToCoreCompiler: NSObject {
                     testNames: &testNames,
                     globalEnvironment: globalEnvironment,
                     shouldRunSpecificTest: shouldRunSpecificTest)?
+//                .decomposeVarDecl(globalEnvironment)?
                 .declPass(
                     injectModules: injectModules,
                     globalEnvironment: globalEnvironment,
@@ -112,7 +113,18 @@ extension AbstractSyntaxTreeNode {
         return result
     }
     
-    // Collect type declarations in a discrete pass
+    public func flatten() throws -> AbstractSyntaxTreeNode? {
+        try SnapASTTransformerFlattenSeq().visit(self)
+    }
+    
+    // Split variable declarations from their initial assignments
+    fileprivate func decomposeVarDecl(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
+        
+        let result = try CompilerPassDecomposeVarDecl(symbols: nil, globalEnvironment: globalEnvironment)
+            .visit(self)
+        return result
+    }
+    
     // Collect type declarations and variable declarations
     fileprivate func declPass(
         injectModules: [(String, String)],

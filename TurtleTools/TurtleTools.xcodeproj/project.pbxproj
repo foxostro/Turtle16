@@ -221,6 +221,8 @@
 		6F9201DC2471DA22009E1410 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F9201DB2471DA22009E1410 /* main.swift */; };
 		6F9201EE2471DAC7009E1410 /* SnapCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F9201E52471DAC7009E1410 /* SnapCore.framework */; };
 		6F9201F52471DAC7009E1410 /* SnapCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 6F9201E72471DAC7009E1410 /* SnapCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6F921A2A2C6178FE00988048 /* CompilerPassDecomposeVarDecl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F921A292C6178FE00988048 /* CompilerPassDecomposeVarDecl.swift */; };
+		6F921A2C2C61797600988048 /* CompilerPassDecomposeVarDeclTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F921A2B2C61797600988048 /* CompilerPassDecomposeVarDeclTests.swift */; };
 		6F924E7A248B42D400F43741 /* RvalueExpressionTypeChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F924E79248B42D400F43741 /* RvalueExpressionTypeChecker.swift */; };
 		6F924E7C248B42E100F43741 /* RvalueExpressionTypeCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F924E7B248B42E100F43741 /* RvalueExpressionTypeCheckerTests.swift */; };
 		6F924E7E248B4CCA00F43741 /* ExprUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F924E7D248B4CCA00F43741 /* ExprUtils.swift */; };
@@ -766,6 +768,8 @@
 		6F9201E82471DAC7009E1410 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6F9201ED2471DAC7009E1410 /* SnapCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SnapCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F9201F42471DAC7009E1410 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6F921A292C6178FE00988048 /* CompilerPassDecomposeVarDecl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassDecomposeVarDecl.swift; sourceTree = "<group>"; };
+		6F921A2B2C61797600988048 /* CompilerPassDecomposeVarDeclTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassDecomposeVarDeclTests.swift; sourceTree = "<group>"; };
 		6F924E79248B42D400F43741 /* RvalueExpressionTypeChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RvalueExpressionTypeChecker.swift; sourceTree = "<group>"; };
 		6F924E7B248B42E100F43741 /* RvalueExpressionTypeCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RvalueExpressionTypeCheckerTests.swift; sourceTree = "<group>"; };
 		6F924E7D248B4CCA00F43741 /* ExprUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExprUtils.swift; sourceTree = "<group>"; };
@@ -1193,6 +1197,7 @@
 				6F53372F2474BE0B00CFD33C /* AST */,
 				6F5337322474BE4B00CFD33C /* Token */,
 				6F6A2EED2C5C5C6C004A25F5 /* CompilerPassClearSymbols.swift */,
+				6F921A292C6178FE00988048 /* CompilerPassDecomposeVarDecl.swift */,
 				6F058A302C59837E00B3FA82 /* CompilerPassGenerics.swift */,
 				6F40730626B1D5ED007D8382 /* CoreToTackCompiler.swift */,
 				6FBB8D902B97DDD600FEEF1F /* Frame.swift */,
@@ -1263,6 +1268,7 @@
 			isa = PBXGroup;
 			children = (
 				6F5337332474BE7100CFD33C /* AST */,
+				6F921A2B2C61797600988048 /* CompilerPassDecomposeVarDeclTests.swift */,
 				6F058A322C59839000B3FA82 /* CompilerPassGenericsTests.swift */,
 				6F924E7D248B4CCA00F43741 /* ExprUtils.swift */,
 				6FC4E6EE28FBEBA30079A88C /* GenericFunctionTypeArgumentSolverTests.swift */,
@@ -2033,6 +2039,7 @@
 				6F83480B26FD3B0100EB466E /* RegisterAllocatorNaive.swift in Sources */,
 				6F2B443626D9ACFE009ACF08 /* SnapASTTransformerFlattenSeq.swift in Sources */,
 				6FBCFA5C26F7F52400193819 /* TackToTurtle16Compiler.swift in Sources */,
+				6F921A2A2C6178FE00988048 /* CompilerPassDecomposeVarDecl.swift in Sources */,
 				6F3F0108275FEC5700875339 /* RegisterSpiller.swift in Sources */,
 				6F15422226B5EBA800BA9572 /* SnapASTTransformerTestDeclaration.swift in Sources */,
 				6F15421E26B34E3300BA9572 /* SymbolTablesReconnector.swift in Sources */,
@@ -2121,6 +2128,7 @@
 				6FBCFA5E26F7F5FC00193819 /* TackToTurtle16CompilerTests.swift in Sources */,
 				6FDC6AAE27331640003A8ABF /* SnapToTurtle16EndToEndIntegrationTests.swift in Sources */,
 				6F0D519F2506D57F00AB1C7E /* TypeContextTypeCheckerTests.swift in Sources */,
+				6F921A2C2C61797600988048 /* CompilerPassDecomposeVarDeclTests.swift in Sources */,
 				6F8405122918051500C9B957 /* TackVirtualMachineTests.swift in Sources */,
 				6F83480D26FD3B1200EB466E /* RegisterAllocatorNaiveTests.swift in Sources */,
 				6FC4E6EF28FBEBA30079A88C /* GenericFunctionTypeArgumentSolverTests.swift in Sources */,

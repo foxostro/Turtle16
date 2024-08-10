@@ -448,7 +448,15 @@ public class Expression: AbstractSyntaxTreeNode {
             if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
                 return self
             }
-            return Call(sourceAnchor: sourceAnchor, callee: callee, arguments: arguments)
+            return Call(sourceAnchor: sourceAnchor,
+                        callee: callee,
+                        arguments: arguments)
+        }
+        
+        public func withCallee(_ callee: Expression) -> Call {
+            Call(sourceAnchor: sourceAnchor,
+                 callee: callee,
+                 arguments: arguments)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {

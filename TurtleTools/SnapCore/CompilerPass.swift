@@ -171,7 +171,7 @@ public class CompilerPass: NSObject {
         let result = FunctionDeclaration(
             sourceAnchor: node.sourceAnchor,
             identifier: try visit(identifier: node.identifier) as! Expression.Identifier,
-            functionType: try visit(expr: node.functionType)!,
+            functionType: try visit(expr: node.functionType) as! Expression.FunctionType,
             argumentNames: node.argumentNames,
             typeArguments: try node.typeArguments.compactMap {
                 try visit(genericTypeArgument: $0) as! Expression.GenericTypeArgument?

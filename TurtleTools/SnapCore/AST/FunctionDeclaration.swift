@@ -10,7 +10,7 @@ import TurtleCore
 
 public class FunctionDeclaration: AbstractSyntaxTreeNode {
     public let identifier: Expression.Identifier
-    public let functionType: Expression
+    public let functionType: Expression.FunctionType
     public let argumentNames: [String]
     public let typeArguments: [Expression.GenericTypeArgument]
     public let body: Block
@@ -23,7 +23,7 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
     
     public init(sourceAnchor: SourceAnchor? = nil,
                 identifier: Expression.Identifier,
-                functionType: Expression,
+                functionType: Expression.FunctionType,
                 argumentNames: [String],
                 typeArguments: [Expression.GenericTypeArgument] = [],
                 body: Block,

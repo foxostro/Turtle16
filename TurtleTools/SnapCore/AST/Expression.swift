@@ -995,7 +995,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public var functionType: Expression.FunctionType {
-            template.functionType as! Expression.FunctionType
+            template.functionType
         }
         
         public var arguments: [Expression] {

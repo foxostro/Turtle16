@@ -173,9 +173,7 @@ public class CompilerPassGenerics: CompilerPass {
             let typeChecker = RvalueExpressionTypeChecker(symbols: symbols!, globalEnvironment: globalEnvironment)
             let app = try typeChecker.synthesizeGenericTypeApplication(call: expr0, genericFunctionType: typ)
             let callee1 = try visit(genericTypeApplication: app)!
-            let expr1 = Expression.Call(sourceAnchor: expr0.sourceAnchor,
-                                        callee: callee1,
-                                        arguments: expr0.arguments)
+            let expr1 = expr0.withCallee(callee1)
             return expr1
             
         default:

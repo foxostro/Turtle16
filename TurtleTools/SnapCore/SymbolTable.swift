@@ -1262,6 +1262,9 @@ public class SymbolTable: NSObject {
     }
     
     public func clear() {
+        if case .set(let frame) = frameLookupMode {
+            frame.reset()
+        }
         declarationOrder = []
         symbolTable.removeAll()
         typeTable.removeAll()

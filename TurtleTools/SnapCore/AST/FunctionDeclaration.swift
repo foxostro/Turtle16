@@ -75,6 +75,17 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
                             symbols: symbols)
     }
     
+    public func withIdentifier(_ name: String) -> FunctionDeclaration {
+        FunctionDeclaration(sourceAnchor: sourceAnchor,
+                            identifier: identifier.withIdentifier(name),
+                            functionType: functionType,
+                            argumentNames: argumentNames,
+                            typeArguments: typeArguments,
+                            body: body,
+                            visibility: visibility,
+                            symbols: symbols)
+    }
+    
     public func clone() -> FunctionDeclaration {
         FunctionDeclaration(sourceAnchor: sourceAnchor,
                             identifier: identifier,

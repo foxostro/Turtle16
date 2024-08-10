@@ -2606,32 +2606,52 @@ public class CoreToTackCompiler: CompilerPass {
     }
     
     func rvalue(subscript expr: Expression.Subscript) throws -> AbstractSyntaxTreeNode {
-        var children: [AbstractSyntaxTreeNode] = [
-            try lvalue(subscript: expr)
-        ]
+        let subscriptableType = try typeCheck(rexpr: expr.subscriptable)
         
-        let elementType = try typeCheck(rexpr: expr)
-        
-        if let primitiveType = elementType.primitiveType {
-            let addr = popRegister().unwrapPointer!
-            let dest = nextRegister(type: primitiveType)
-            pushRegister(dest)
-            children += [
-                TackInstructionNode(
-                    instruction: {
-                        switch dest {
-                        case .p(let p): return .lp(p, addr, 0)
-                        case .w(let w): return .lw(w, addr, 0)
-                        case .b(let b): return .lb(b, addr, 0)
-                        case .o(let o): return .lo(o, addr, 0)
-                        }
-                    }(),
+        switch subscriptableType {
+        case .structType(let typ), .constStructType(let typ):
+            guard typ.name == "Range" else {
+                fatalError("Cannot subscript an expression of type `\(subscriptableType)'")
+            }
+            let lowered = Expression.Binary(
+                sourceAnchor: expr.sourceAnchor,
+                op: .plus,
+                left: Expression.Get(
                     sourceAnchor: expr.sourceAnchor,
-                    symbols: symbols)
+                    expr: expr.subscriptable,
+                    member: Expression.Identifier("begin")),
+                right: expr.argument)
+            let result = try rvalue(expr: lowered)
+            return result
+            
+        default:
+            var children: [AbstractSyntaxTreeNode] = [
+                try lvalue(subscript: expr)
             ]
+            
+            let elementType = try typeCheck(rexpr: expr)
+            
+            if let primitiveType = elementType.primitiveType {
+                let addr = popRegister().unwrapPointer!
+                let dest = nextRegister(type: primitiveType)
+                pushRegister(dest)
+                children += [
+                    TackInstructionNode(
+                        instruction: {
+                            switch dest {
+                            case .p(let p): return .lp(p, addr, 0)
+                            case .w(let w): return .lw(w, addr, 0)
+                            case .b(let b): return .lb(b, addr, 0)
+                            case .o(let o): return .lo(o, addr, 0)
+                            }
+                        }(),
+                        sourceAnchor: expr.sourceAnchor,
+                        symbols: symbols)
+                ]
+            }
+            
+            return Seq(sourceAnchor: expr.sourceAnchor, children: children)
         }
-        
-        return Seq(sourceAnchor: expr.sourceAnchor, children: children)
     }
     
     func rvalue(get expr: Expression.Get) throws -> AbstractSyntaxTreeNode {

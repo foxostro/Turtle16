@@ -37,6 +37,13 @@ public class Block: AbstractSyntaxTreeNode {
         }
     }
     
+    public func withSymbols(_ symbols: SymbolTable) -> Block {
+        Block(sourceAnchor: sourceAnchor,
+              symbols: symbols,
+              children: children,
+              id: id)
+    }
+    
     public func withChildren(_ children: [AbstractSyntaxTreeNode]) -> Block {
         Block(sourceAnchor: sourceAnchor,
               symbols: symbols,

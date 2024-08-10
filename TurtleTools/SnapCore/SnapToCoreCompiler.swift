@@ -50,6 +50,7 @@ public class SnapToCoreCompiler: NSObject {
                     testNames: &testNames,
                     globalEnvironment: globalEnvironment,
                     shouldRunSpecificTest: shouldRunSpecificTest)?
+                .forInPass(globalEnvironment)?
                 .declPass(
                     injectModules: injectModules,
                     globalEnvironment: globalEnvironment,
@@ -109,6 +110,12 @@ extension AbstractSyntaxTreeNode {
             shouldRunSpecificTest: shouldRunSpecificTest)
         let result = try testDeclarationTransformer.visit(self)
         testNames = testDeclarationTransformer.testNames
+        return result
+    }
+    
+    // Lower and rewrite ForIn statements
+    fileprivate func forInPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
+        let result = try CompilerPassForIn(globalEnvironment: globalEnvironment).visit(self)
         return result
     }
     

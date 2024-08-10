@@ -54,7 +54,7 @@ public class SnapToCoreCompiler: NSObject {
                     injectModules: injectModules,
                     globalEnvironment: globalEnvironment,
                     runtimeSupport: runtimeSupport)?
-                .clearSymbols(globalEnvironment: globalEnvironment)?
+                .clearSymbols(globalEnvironment)?
                 .declPass(
                     injectModules: injectModules,
                     globalEnvironment: globalEnvironment,
@@ -144,11 +144,12 @@ extension AbstractSyntaxTreeNode {
     }
     
     // Clear all symbols from the AST and reconnect all symbol tables, lexically
-    fileprivate func clearSymbols(globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
+    fileprivate func clearSymbols(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
         
         let result = try CompilerPassClearSymbols()
             .visit(self)
         
+        globalEnvironment.staticStorageFrame.reset()
         globalEnvironment.functionsToCompile.removeAll()
         globalEnvironment.modules = [:]
         

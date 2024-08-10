@@ -45,6 +45,28 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
                               visibility: visibility)
     }
     
+    public func withExpression(_ expression: Expression?) -> VarDeclaration {
+        VarDeclaration(
+            sourceAnchor: sourceAnchor,
+            identifier: identifier,
+            explicitType: explicitType,
+            expression: expression,
+            storage: storage,
+            isMutable: isMutable,
+            visibility: visibility)
+    }
+    
+    public func withExplicitType(_ explicitType: Expression?) -> VarDeclaration {
+        VarDeclaration(
+            sourceAnchor: sourceAnchor,
+            identifier: identifier,
+            explicitType: explicitType,
+            expression: expression,
+            storage: storage,
+            isMutable: isMutable,
+            visibility: visibility)
+    }
+    
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else {
             return false

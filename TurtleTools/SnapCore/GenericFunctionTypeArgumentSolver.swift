@@ -77,6 +77,13 @@ public class GenericFunctionTypeArgumentSolver: NSObject {
                 return Expression.ConstType(r)
             }
             
+        case let expr as Expression.MutableType:
+            if let r = inferTypeArgumentInner(concreteArgument: concreteArgument,
+                                              genericArgument: expr.typ,
+                                              solvingFor: typeArgument) {
+                return Expression.MutableType(r)
+            }
+            
         case let expr as Expression.PointerType:
             if let r = inferTypeArgumentInner(concreteArgument: concreteArgument,
                                               genericArgument: expr.typ,

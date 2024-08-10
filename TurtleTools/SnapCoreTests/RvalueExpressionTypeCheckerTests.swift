@@ -4819,6 +4819,13 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         XCTAssertEqual(result, .arithmeticType(.immutableInt(.u8)))
     }
     
+    func testTypeExpressionWithMutableType_u8() throws {
+        let expr = Expression.MutableType(Expression.PrimitiveType(.arithmeticType(.immutableInt(.u8))))
+        let typeChecker = RvalueExpressionTypeChecker()
+        let result = try typeChecker.check(expression: expr)
+        XCTAssertEqual(result, .arithmeticType(.mutableInt(.u8)))
+    }
+    
     func testCannotTakeAddressOfLiteralInt() {
         let expr = Expression.Unary(op: .ampersand, expression: Expression.LiteralInt(0))
         let typeChecker = RvalueExpressionTypeChecker()

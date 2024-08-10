@@ -72,6 +72,8 @@ public class RvalueExpressionTypeChecker: NSObject {
             return try check(pointerType: expr)
         case let expr as Expression.ConstType:
             return try check(constType: expr)
+        case let expr as Expression.MutableType:
+            return try check(mutableType: expr)
         case let expr as Expression.StructInitializer:
             return try check(structInitializer: expr)
         case let expr as Expression.UnionType:
@@ -1190,6 +1192,11 @@ public class RvalueExpressionTypeChecker: NSObject {
     public func check(constType expr: Expression.ConstType) throws -> SymbolType {
         let typ = try check(expression: expr.typ)
         return typ.correspondingConstType
+    }
+    
+    public func check(mutableType expr: Expression.MutableType) throws -> SymbolType {
+        let typ = try check(expression: expr.typ)
+        return typ.correspondingMutableType
     }
     
     public func check(structInitializer expr: Expression.StructInitializer) throws -> SymbolType {

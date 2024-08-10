@@ -37,6 +37,15 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
     
+    func testInferTypeArgumentFromExpressionViaMutableType() {
+        let solver = GenericFunctionTypeArgumentSolver()
+        let expected = Expression.TypeOf(Expression.MutableType(Expression.Identifier("U")))
+        let actual = solver.inferTypeArgument(concreteArgument: Expression.Identifier("U"),
+                                              genericArgument: Expression.MutableType(Expression.Identifier("T")),
+                                              solvingFor: Expression.Identifier("T"))
+        XCTAssertEqual(actual, expected)
+    }
+    
     func testInferTypeArgumentFromExpressionViaPointerType() {
         let solver = GenericFunctionTypeArgumentSolver()
         let expected = Expression.TypeOf(Expression.PointerType(Expression.Identifier("U")))

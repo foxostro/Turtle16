@@ -362,6 +362,8 @@ public class CompilerPass: NSObject {
             return try visit(pointerType: node)
         case let node as Expression.ConstType:
             return try visit(constType: node)
+        case let node as Expression.MutableType:
+            return try visit(mutableType: node)
         case let node as Expression.UnionType:
             return try visit(unionType: node)
         case let node as Expression.StructInitializer:
@@ -540,6 +542,12 @@ public class CompilerPass: NSObject {
     
     public func visit(constType node: Expression.ConstType) throws -> Expression? {
         Expression.ConstType(
+            sourceAnchor: node.sourceAnchor,
+            typ: try visit(expr: node.typ)!)
+    }
+    
+    public func visit(mutableType node: Expression.MutableType) throws -> Expression? {
+        Expression.MutableType(
             sourceAnchor: node.sourceAnchor,
             typ: try visit(expr: node.typ)!)
     }

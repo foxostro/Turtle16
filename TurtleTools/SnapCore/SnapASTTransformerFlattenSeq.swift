@@ -29,10 +29,7 @@ public class SnapASTTransformerFlattenSeq: CompilerPass {
     }
     
     public override func visit(block node: Block) throws -> AbstractSyntaxTreeNode? {
-        let flatChildren = flatten(node.children)
-        return Block(sourceAnchor: node.sourceAnchor,
-                     symbols: node.symbols,
-                     children: flatChildren)
+        node.withChildren(flatten(node.children))
     }
     
     func flatten(_ children0: [AbstractSyntaxTreeNode]) -> [AbstractSyntaxTreeNode] {

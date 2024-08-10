@@ -15,6 +15,7 @@ public class Frame: NSObject {
     }
     public let growthDirection: GrowthDirection
     public private(set) var storagePointer: Int
+    public let initialStoragePointer: Int
     
     public struct Pair: Hashable, Equatable {
         let identifier: String
@@ -23,8 +24,14 @@ public class Frame: NSObject {
     public private(set) var symbols: [Pair] = []
     
     public init(storagePointer: Int = 0, growthDirection: GrowthDirection = .up) {
+        self.initialStoragePointer = storagePointer
         self.storagePointer = storagePointer
         self.growthDirection = growthDirection
+    }
+    
+    public func reset() {
+        storagePointer = initialStoragePointer
+        symbols.removeAll()
     }
     
     public static func ==(lhs: Frame, rhs: Frame) -> Bool {

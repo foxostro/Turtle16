@@ -50,6 +50,25 @@ public class Block: AbstractSyntaxTreeNode {
               id: id)
     }
     
+    public func withNewId() -> Block {
+        Block(sourceAnchor: sourceAnchor,
+              symbols: symbols,
+              children: children,
+              id: ID())
+    }
+    
+    public func clone() -> Block {
+        class BlockCloner: CompilerPass {
+            public override func visit(block block0: Block) throws -> AbstractSyntaxTreeNode? {
+                let block1 = try super.visit(block: block0) as! Block
+                let block2 = block1.withNewId()
+                return block2
+            }
+        }
+        
+        return try! BlockCloner().run(self) as! Block
+    }
+    
     public func inserting(children toInsert: [AbstractSyntaxTreeNode], at index: Int) -> Block {
         var children1 = children
         children1.insert(contentsOf: toInsert, at: index)

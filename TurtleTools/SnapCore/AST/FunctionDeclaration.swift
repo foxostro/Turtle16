@@ -98,14 +98,15 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
     }
     
     public func clone() -> FunctionDeclaration {
-        FunctionDeclaration(sourceAnchor: sourceAnchor,
-                            identifier: identifier,
-                            functionType: functionType,
-                            argumentNames: argumentNames,
-                            typeArguments: typeArguments,
-                            body: body,
-                            visibility: visibility,
-                            symbols: symbols.clone())
+        FunctionDeclaration(
+            sourceAnchor: sourceAnchor,
+            identifier: identifier,
+            functionType: functionType,
+            argumentNames: argumentNames,
+            typeArguments: typeArguments,
+            body: body.clone(),
+            visibility: visibility,
+            symbols: symbols.clone())
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

@@ -11,7 +11,6 @@ import TurtleCore
 public class Block: AbstractSyntaxTreeNode {
     public let symbols: SymbolTable
     public let children: [AbstractSyntaxTreeNode]
-    public typealias ID = UUID
     public let id: ID
     
     public init(sourceAnchor: SourceAnchor? = nil,
@@ -19,7 +18,7 @@ public class Block: AbstractSyntaxTreeNode {
                 children: [AbstractSyntaxTreeNode] = [],
                 id: ID = ID()) {
         self.symbols = symbols
-        symbols.associatedBlockId = id
+        symbols.associatedNodeId = id
         self.children = children.map { $0.withSourceAnchor(sourceAnchor) }
         self.id = id
         super.init(sourceAnchor: sourceAnchor)

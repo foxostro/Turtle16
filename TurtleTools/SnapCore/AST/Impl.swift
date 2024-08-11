@@ -12,6 +12,7 @@ public class Impl: AbstractSyntaxTreeNode {
     public let typeArguments: [Expression.GenericTypeArgument]
     public let structTypeExpr: Expression
     public let children: [FunctionDeclaration]
+    public let id: ID
     
     public var isGeneric: Bool {
         !typeArguments.isEmpty
@@ -20,10 +21,12 @@ public class Impl: AbstractSyntaxTreeNode {
     public init(sourceAnchor: SourceAnchor? = nil,
                 typeArguments: [Expression.GenericTypeArgument],
                 structTypeExpr: Expression,
-                children: [FunctionDeclaration]) {
+                children: [FunctionDeclaration],
+                id: ID = ID()) {
         self.typeArguments = typeArguments
         self.structTypeExpr = structTypeExpr.withSourceAnchor(sourceAnchor)
         self.children = children.map { $0.withSourceAnchor(sourceAnchor) }
+        self.id = id
         super.init(sourceAnchor: sourceAnchor)
     }
     
@@ -31,7 +34,8 @@ public class Impl: AbstractSyntaxTreeNode {
         Impl(sourceAnchor: sourceAnchor,
              typeArguments: typeArguments,
              structTypeExpr: structTypeExpr,
-             children: children.map{ $0.clone() })
+             children: children.map{ $0.clone() },
+             id: ID()) // The clone has it's own separate identity from the original.
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Impl {
@@ -41,14 +45,16 @@ public class Impl: AbstractSyntaxTreeNode {
         return Impl(sourceAnchor: sourceAnchor,
                     typeArguments: typeArguments,
                     structTypeExpr: structTypeExpr,
-                    children: children)
+                    children: children,
+                    id: id)
     }
     
     public func eraseTypeArguments() -> Impl {
-        return Impl(sourceAnchor: sourceAnchor,
-                    typeArguments: [],
-                    structTypeExpr: structTypeExpr,
-                    children: children)
+        Impl(sourceAnchor: sourceAnchor,
+             typeArguments: [],
+             structTypeExpr: structTypeExpr,
+             children: children,
+             id: id)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
@@ -72,14 +78,19 @@ public class Impl: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@\n%@typeArguments: %@\n%@structTypeExpr: %@%@",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      makeIndent(depth: depth+1),
-                      makeTypeArgumentsDescription(depth: depth+1),
-                      makeIndent(depth: depth + 1),
-                      structTypeExpr.makeIndentedDescription(depth: depth + 1),
-                      makeChildrenDescription(depth: depth + 1))
+        let leading = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let typeDesc = String(describing: type(of: self))
+        let indent = makeIndent(depth: depth + 1)
+        let childDesc = makeChildrenDescription(depth: depth + 1)
+        let typeArgumentsDesc = makeTypeArgumentsDescription(depth: depth + 1)
+        let structTypeExprDesc = structTypeExpr.makeIndentedDescription(depth: depth + 1)
+        let result = """
+            \(leading)\(typeDesc)
+            \(indent)id: \(id)
+            \(indent)typeArguments: \(typeArgumentsDesc)
+            \(indent)structTypeExpr: \(structTypeExpr)\(childDesc)
+            """
+        return result
     }
     
     private func makeTypeArgumentsDescription(depth: Int) -> String {

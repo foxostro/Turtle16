@@ -20,7 +20,7 @@ import TurtleCore
 //   into the AST.
 public class CompilerPassGenerics: CompilerPass {
     fileprivate let globalEnvironment: GlobalEnvironment
-    fileprivate var pendingInsertions: [Block.ID : [AbstractSyntaxTreeNode]] = [:]
+    fileprivate var pendingInsertions: [AbstractSyntaxTreeNode.ID : [AbstractSyntaxTreeNode]] = [:]
     
     @discardableResult fileprivate func typeCheck(rexpr: Expression) throws -> SymbolType {
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols!, globalEnvironment: globalEnvironment)
@@ -82,7 +82,7 @@ public class CompilerPassGenerics: CompilerPass {
         
         // The compiler pass must insert the concrete instantiation of the
         // function into the AST that it produces.
-        if let scope = symbols!.lookupScopeEnclosingSymbol(identifier: functionType.name!), let id = scope.associatedBlockId {
+        if let scope = symbols!.lookupScopeEnclosingSymbol(identifier: functionType.name!), let id = scope.associatedNodeId {
             let decl = makeConcreteFunctionDeclaration(
                 parentSymbols: scope,
                 functionType: functionType)
@@ -119,7 +119,7 @@ public class CompilerPassGenerics: CompilerPass {
         
         // The compiler pass must insert the concrete instantiation of the
         // struct into the AST that it produces.
-        if let scope = symbols!.lookupScopeEnclosingType(identifier: structType.name), let id = scope.associatedBlockId {
+        if let scope = symbols!.lookupScopeEnclosingType(identifier: structType.name), let id = scope.associatedNodeId {
             let decl = StructDeclaration(
                 identifier: Expression.Identifier(structType.name),
                 members: structType.symbols.symbolTable.map {
@@ -143,7 +143,7 @@ public class CompilerPassGenerics: CompilerPass {
         
         // The compiler pass must insert the concrete instantiation of the
         // trait into the AST that it produces.
-        if let scope = symbols!.lookupScopeEnclosingType(identifier: traitType.name), let id = scope.associatedBlockId {
+        if let scope = symbols!.lookupScopeEnclosingType(identifier: traitType.name), let id = scope.associatedNodeId {
             let decl = TraitDeclaration(
                 identifier: Expression.Identifier(traitType.name),
                 members: traitType.symbols.symbolTable.map {

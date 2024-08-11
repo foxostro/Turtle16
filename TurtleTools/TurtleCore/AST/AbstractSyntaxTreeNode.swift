@@ -7,6 +7,7 @@
 //
 
 open class AbstractSyntaxTreeNode : NSObject {
+    public typealias ID = UUID
     public let sourceAnchor: SourceAnchor?
     
     public init(sourceAnchor: SourceAnchor? = nil) {

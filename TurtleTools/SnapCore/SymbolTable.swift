@@ -1126,8 +1126,8 @@ public class SymbolTable: NSObject {
         return nil
     }
     
-    // The UUID of the block associated with this scope, if any
-    public var associatedBlockId: Block.ID?
+    // The UUID of the AST node associated with this scope, if any
+    public var associatedNodeId: AbstractSyntaxTreeNode.ID?
     
     // Given a symbol identifier, return the Id of the Block associated with the
     // scope in which it was defined.

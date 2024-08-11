@@ -57,6 +57,17 @@ public class Impl: AbstractSyntaxTreeNode {
              id: id)
     }
     
+    public func inserting(children toInsert: [FunctionDeclaration], at index: Int) -> Impl {
+        var children1 = children
+        children1.insert(contentsOf: toInsert, at: index)
+        
+        return Impl(sourceAnchor: sourceAnchor,
+                    typeArguments: typeArguments,
+                    structTypeExpr: structTypeExpr,
+                    children: children1,
+                    id: id)
+    }
+    
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else { return false }
         guard type(of: rhs!) == type(of: self) else { return false }

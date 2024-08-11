@@ -53,12 +53,7 @@ public class Block: AbstractSyntaxTreeNode {
     public func inserting(children toInsert: [AbstractSyntaxTreeNode], at index: Int) -> Block {
         var children1 = children
         children1.insert(contentsOf: toInsert, at: index)
-        
-        return Block(
-            sourceAnchor: sourceAnchor,
-            symbols: symbols,
-            children: children1,
-            id: id)
+        return withChildren(children1)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

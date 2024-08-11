@@ -9,6 +9,12 @@
 import TurtleCore
 
 public class SnapSubcompilerFunctionDeclaration: NSObject {
+    public let enclosingImplId: AbstractSyntaxTreeNode.ID?
+    
+    public init(enclosingImplId: AbstractSyntaxTreeNode.ID? = nil) {
+        self.enclosingImplId = enclosingImplId
+    }
+    
     public func compile(globalEnvironment: GlobalEnvironment,
                         symbols: SymbolTable,
                         node: FunctionDeclaration) throws {
@@ -34,7 +40,7 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
     private func doGeneric(symbols: SymbolTable,
                            node: FunctionDeclaration) throws {
         let name = node.identifier.identifier
-        let typ = Expression.GenericFunctionType(template: node)
+        let typ = Expression.GenericFunctionType(template: node, enclosingImplId: enclosingImplId)
         let symbol = Symbol(type: .genericFunction(typ),
                             offset: 0,
                             storage: .automaticStorage,

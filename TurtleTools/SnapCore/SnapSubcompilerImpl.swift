@@ -55,7 +55,7 @@ public class SnapSubcompilerImpl: NSObject {
             }
             
             // Enqueue the function to be compiled later
-            try SnapSubcompilerFunctionDeclaration()
+            try SnapSubcompilerFunctionDeclaration(enclosingImplId: node.id)
                 .compile(globalEnvironment: globalEnvironment,
                          symbols: symbols,
                          node: child)

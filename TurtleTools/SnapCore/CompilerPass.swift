@@ -592,9 +592,11 @@ public class CompilerPass: NSObject {
             })
     }
     
-    public func visit(genericFunctionType node: Expression.GenericFunctionType) throws -> Expression? {
-        Expression.GenericFunctionType(
-            sourceAnchor: node.sourceAnchor,
-            template: try visit(func: node.template) as! FunctionDeclaration)
+    public func visit(genericFunctionType node0: Expression.GenericFunctionType) throws -> Expression? {
+        
+        let template0 = node0.template
+        let template1 = try visit(func: template0) as! FunctionDeclaration
+        let node1 = node0.withTemplate(template1)
+        return node1
     }
 }

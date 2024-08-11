@@ -995,6 +995,7 @@ public class Expression: AbstractSyntaxTreeNode {
     // variables.
     public class GenericFunctionType: Expression {
         public let template: FunctionDeclaration
+        public let enclosingImplId: AbstractSyntaxTreeNode.ID?
         
         public var name: String {
             template.identifier.identifier
@@ -1019,9 +1020,18 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public init(sourceAnchor: SourceAnchor? = nil,
-                    template: FunctionDeclaration) {
+                    template: FunctionDeclaration,
+                    enclosingImplId: AbstractSyntaxTreeNode.ID? = nil) {
             self.template = template
+            self.enclosingImplId = enclosingImplId
             super.init(sourceAnchor: sourceAnchor)
+        }
+        
+        public func withTemplate(_ template: FunctionDeclaration) -> GenericFunctionType {
+            GenericFunctionType(
+                sourceAnchor: sourceAnchor,
+                template: template,
+                enclosingImplId: enclosingImplId)
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {

@@ -105,7 +105,7 @@ final class CompilerPassGenericsTests: XCTestCase {
         ])
         
         let compiler = CompilerPassGenerics(symbols: SymbolTable(), globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()))
-        let ast1 = try compiler.visit(ast0)
+        let ast1 = try compiler.run(ast0)
         
         XCTAssertEqual(ast1, Block())
     }
@@ -157,9 +157,9 @@ final class CompilerPassGenericsTests: XCTestCase {
         
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
         
-        _ = try SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment).visit(ast0)
+        _ = try SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment).run(ast0)
         
-        let ast1 = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).visit(ast0)
+        let ast1 = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).run(ast0)
         
         XCTAssertEqual(ast1, expected)
     }
@@ -213,8 +213,8 @@ final class CompilerPassGenericsTests: XCTestCase {
         ])
         
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        _ = try SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment).visit(ast0)
-        let ast1 = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).visit(ast0)
+        _ = try SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment).run(ast0)
+        let ast1 = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).run(ast0)
         
         XCTAssertEqual(ast1, expected)
     }
@@ -318,7 +318,7 @@ final class CompilerPassGenericsTests: XCTestCase {
             symbols: SymbolTable(),
             globalEnvironment: GlobalEnvironment(
                 memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()))
-        let ast1 = try compiler.visit(ast0)
+        let ast1 = try compiler.run(ast0)
         XCTAssertEqual(ast1, Block())
     }
     
@@ -353,8 +353,8 @@ final class CompilerPassGenericsTests: XCTestCase {
         ])
         
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        _ = try SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment).visit(ast0)
-        let _ = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).visit(ast0)
+        _ = try SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment).run(ast0)
+        let _ = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).run(ast0)
         
         switch try symbols.resolveType(identifier: "__foo_u16") {
         case .structType(let typ):
@@ -414,8 +414,8 @@ final class CompilerPassGenericsTests: XCTestCase {
         ])
         
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        _ = try SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment).visit(ast0)
-        let ast1 = try CompilerPassGenerics(symbols: nil, globalEnvironment: globalEnvironment).visit(ast0)
+        _ = try SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment).run(ast0)
+        let ast1 = try CompilerPassGenerics(symbols: nil, globalEnvironment: globalEnvironment).run(ast0)
         
         XCTAssertEqual(ast1, expected)
     }
@@ -444,7 +444,7 @@ final class CompilerPassGenericsTests: XCTestCase {
             symbols: SymbolTable(),
             globalEnvironment: GlobalEnvironment(
                 memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()))
-        let ast1 = try compiler.visit(ast0)
+        let ast1 = try compiler.run(ast0)
         XCTAssertEqual(ast1, Block())
     }
     
@@ -474,8 +474,8 @@ final class CompilerPassGenericsTests: XCTestCase {
         ])
         
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        _ = try SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment).visit(ast0)
-        _ = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).visit(ast0)
+        _ = try SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment).run(ast0)
+        _ = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).run(ast0)
         
         switch try symbols.resolveType(identifier: "__MyTrait_u16") {
         case .traitType(let typ):
@@ -571,8 +571,8 @@ final class CompilerPassGenericsTests: XCTestCase {
         ], id: expected.id)
         
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        _ = try SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment).visit(ast0)
-        let ast1 = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).visit(ast0)
+        _ = try SnapAbstractSyntaxTreeCompilerDeclPass(globalEnvironment: globalEnvironment).run(ast0)
+        let ast1 = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).run(ast0)
         
         XCTAssertEqual(ast1, expected)
     }

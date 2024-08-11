@@ -105,18 +105,17 @@ extension AbstractSyntaxTreeNode {
         globalEnvironment: GlobalEnvironment,
         shouldRunSpecificTest: String?) throws -> AbstractSyntaxTreeNode? {
         
-        let testDeclarationTransformer = SnapASTTransformerTestDeclaration(
+        let compiler = SnapASTTransformerTestDeclaration(
             globalEnvironment: globalEnvironment,
             shouldRunSpecificTest: shouldRunSpecificTest)
-        let result = try testDeclarationTransformer.visit(self)
-        testNames = testDeclarationTransformer.testNames
+        let result = try compiler.run(self)
+        testNames = compiler.testNames
         return result
     }
     
     // Lower and rewrite ForIn statements
     fileprivate func forInPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        let result = try CompilerPassForIn(globalEnvironment: globalEnvironment).visit(self)
-        return result
+        try CompilerPassForIn(globalEnvironment: globalEnvironment).run(self)
     }
     
     // Collect type declarations and variable declarations
@@ -125,13 +124,12 @@ extension AbstractSyntaxTreeNode {
         globalEnvironment: GlobalEnvironment,
         runtimeSupport: String?) throws -> AbstractSyntaxTreeNode? {
             
-            try self
-                .clearSymbols(globalEnvironment)?
-                .declPass_(
-                    injectModules: injectModules,
-                    globalEnvironment: globalEnvironment,
-                    runtimeSupport: runtimeSupport)
-        
+        try self
+            .clearSymbols(globalEnvironment)?
+            .declPass_(
+                injectModules: injectModules,
+                globalEnvironment: globalEnvironment,
+                runtimeSupport: runtimeSupport)
     }
     
     fileprivate func declPass_(
@@ -139,32 +137,32 @@ extension AbstractSyntaxTreeNode {
         globalEnvironment: GlobalEnvironment,
         runtimeSupport: String?) throws -> AbstractSyntaxTreeNode? {
         
-        try SnapAbstractSyntaxTreeCompilerDeclPass(
+        let compiler = SnapAbstractSyntaxTreeCompilerDeclPass(
             injectModules: injectModules,
             globalEnvironment: globalEnvironment,
             runtimeSupport: runtimeSupport)
-        .visit(self)
+        return try compiler.run(self)
     }
     
     // Rewrite higher-level nodes in terms of trees of lower-level nodes.
     fileprivate func implPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        try SnapAbstractSyntaxTreeCompilerImplPass(globalEnvironment: globalEnvironment)
-            .visit(self)
+        
+        let compiler = SnapAbstractSyntaxTreeCompilerImplPass(globalEnvironment: globalEnvironment)
+        return try compiler.run(self)
     }
     
     // Erase generics, rewriting in terms of new concrete types
     fileprivate func genericsPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
         
-        let result = try CompilerPassGenerics(symbols: nil, globalEnvironment: globalEnvironment)
-            .visit(self)
+        let compiler = CompilerPassGenerics(symbols: nil, globalEnvironment: globalEnvironment)
+        let result = try compiler.run(self)
         return result
     }
     
     // Clear all symbols from the AST and reconnect all symbol tables, lexically
     fileprivate func clearSymbols(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
         
-        let result = try CompilerPassClearSymbols()
-            .visit(self)
+        let result = try CompilerPassClearSymbols().run(self)
         
         globalEnvironment.staticStorageFrame.reset()
         globalEnvironment.functionsToCompile.removeAll()

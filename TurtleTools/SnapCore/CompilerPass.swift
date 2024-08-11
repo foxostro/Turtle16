@@ -36,6 +36,12 @@ public class CompilerPass: NSObject {
         }
     }
     
+    // Override in a subclass to specify actions to perform before and after
+    // visiting the nodes in the tree.
+    public func run(_ node: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
+        try visit(node)
+    }
+    
     public func visit(_ genericNode: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
         let result: AbstractSyntaxTreeNode?
         switch genericNode {

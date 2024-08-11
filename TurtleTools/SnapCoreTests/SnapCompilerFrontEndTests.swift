@@ -2744,7 +2744,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             }
 
             impl Point {
-                func add[T](p: *Point, x: T, y: T) -> Point {
+                func add[T](p: *const Point, x: T, y: T) -> Point {
                     return Point {
                         .x = p.x + x,
                         .y = p.y + y
@@ -2753,7 +2753,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             }
 
             let p1 = Point { .x = 0, .y = 0 }
-            let p2 = Point.add@[u16](p1, 1, 1)
+            let p2 = Point.add@[u16](&p1, 1, 1)
             let x = p2.x
             let y = p2.y
 

@@ -22,6 +22,29 @@ public class CompilerPassGenerics: CompilerPass {
     fileprivate let globalEnvironment: GlobalEnvironment
     fileprivate var pendingInsertions: [AbstractSyntaxTreeNode.ID : [AbstractSyntaxTreeNode]] = [:]
     
+    fileprivate class BlockRewriter: CompilerPass {
+        fileprivate let pendingInsertions: [AbstractSyntaxTreeNode.ID : [AbstractSyntaxTreeNode]]
+        
+        init(_ pendingInsertions: [AbstractSyntaxTreeNode.ID : [AbstractSyntaxTreeNode]]) {
+            self.pendingInsertions = pendingInsertions
+        }
+        
+        public override func visit(block block0: Block) throws -> AbstractSyntaxTreeNode? {
+            let block1 = try super.visit(block: block0) as! Block
+            let block2 = block1.inserting(children: pendingInsertions[block1.id, default: []], at: 0)
+            return block2
+        }
+        
+        public override func visit(impl node0: Impl) throws -> AbstractSyntaxTreeNode? {
+            let node1 = try super.visit(impl: node0) as! Impl
+            let toInsert = pendingInsertions[node1.id, default: []].map {
+                $0 as! FunctionDeclaration
+            }
+            let node2 = node1.inserting(children: toInsert, at: 0)
+            return node2
+        }
+    }
+    
     @discardableResult fileprivate func typeCheck(rexpr: Expression) throws -> SymbolType {
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols!, globalEnvironment: globalEnvironment)
         return try typeChecker.check(expression: rexpr)
@@ -32,10 +55,10 @@ public class CompilerPassGenerics: CompilerPass {
         super.init(symbols)
     }
     
-    public override func visit(block block0: Block) throws -> AbstractSyntaxTreeNode? {
-        let block1 = try super.visit(block: block0) as! Block
-        let block2 = block1.inserting(children: pendingInsertions[block1.id, default: []], at: 0)
-        return block2
+    public override func run(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
+        let node1 = try super.run(node0)
+        let node2 = try BlockRewriter(pendingInsertions).run(node1)
+        return node2
     }
     
     public override func visit(func node0: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {

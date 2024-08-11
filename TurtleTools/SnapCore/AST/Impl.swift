@@ -99,7 +99,7 @@ public class Impl: AbstractSyntaxTreeNode {
             \(leading)\(typeDesc)
             \(indent)id: \(id)
             \(indent)typeArguments: \(typeArgumentsDesc)
-            \(indent)structTypeExpr: \(structTypeExpr)\(childDesc)
+            \(indent)structTypeExpr: \(structTypeExprDesc)\(childDesc)
             """
         return result
     }

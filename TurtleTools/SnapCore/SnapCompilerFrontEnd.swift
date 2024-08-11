@@ -99,7 +99,7 @@ public class SnapCompilerFrontEnd: NSObject {
             let tackAst = try CoreToTackCompiler(
                 globalEnvironment: globalEnvironment,
                 options: options)
-            .compileWithEpilog(ast)
+            .run(ast)
             let tackProgram = try TackFlattener().compile(tackAst ?? Seq())
             return tackProgram
         }

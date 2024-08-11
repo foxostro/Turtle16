@@ -85,11 +85,11 @@ public class CoreToTackCompiler: CompilerPass {
         super.init(symbols)
     }
     
-    public func compileWithEpilog(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
+    public override func run(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
         var children: [AbstractSyntaxTreeNode] = []
         
         let compiledModules = try collectCompiledModuleCode()
-        let compiledNode = try visit(node0)
+        let compiledNode = try super.run(node0)
         let compiledFunctions = try compileFunctions()
         
         children += compiledModules

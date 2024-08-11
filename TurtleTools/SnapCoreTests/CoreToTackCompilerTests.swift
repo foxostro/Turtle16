@@ -43,13 +43,13 @@ class CoreToTackCompilerTests: XCTestCase {
     
     func testLabelDeclaration() throws {
         let compiler = makeCompiler()
-        let result = try compiler.compileWithEpilog(LabelDeclaration(identifier: "foo"))
+        let result = try compiler.run(LabelDeclaration(identifier: "foo"))
         XCTAssertEqual(result, LabelDeclaration(identifier: "foo"))
     }
     
     func testBlockWithOneInstruction() throws {
         let compiler = makeCompiler()
-        let result = try compiler.compileWithEpilog(Block(children: [
+        let result = try compiler.run(Block(children: [
             LabelDeclaration(identifier: "foo")
         ]))
         XCTAssertEqual(result, LabelDeclaration(identifier: "foo"))
@@ -57,7 +57,7 @@ class CoreToTackCompilerTests: XCTestCase {
     
     func testBlockWithTwoInstructions() throws {
         let compiler = makeCompiler()
-        let result = try compiler.compileWithEpilog(Block(children: [
+        let result = try compiler.run(Block(children: [
             LabelDeclaration(identifier: "foo"),
             LabelDeclaration(identifier: "bar")
         ]))
@@ -69,7 +69,7 @@ class CoreToTackCompilerTests: XCTestCase {
     
     func testBlockWithNestedSeq() throws {
         let compiler = makeCompiler()
-        let result = try compiler.compileWithEpilog(Block(children: [
+        let result = try compiler.run(Block(children: [
             LabelDeclaration(identifier: "foo"),
             Seq(children: [
                 LabelDeclaration(identifier: "bar"),
@@ -85,13 +85,13 @@ class CoreToTackCompilerTests: XCTestCase {
     
     func testGoto() throws {
         let compiler = makeCompiler()
-        let result = try compiler.compileWithEpilog(Goto(target: "foo"))
+        let result = try compiler.run(Goto(target: "foo"))
         XCTAssertEqual(result, TackInstructionNode(.jmp("foo")))
     }
     
     func testGotoIfFalse() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.compileWithEpilog(GotoIfFalse(condition: Expression.LiteralBool(false), target: "bar"))
+        let actual = try compiler.run(GotoIfFalse(condition: Expression.LiteralBool(false), target: "bar"))
         let expected = Seq(children: [
             TackInstructionNode(.lio(.o(0), false)),
             TackInstructionNode(.bz(.o(0), "bar"))
@@ -102,7 +102,7 @@ class CoreToTackCompilerTests: XCTestCase {
 
     func testRet() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.compileWithEpilog(Return())
+        let actual = try compiler.run(Return())
         let expected = Seq(children: [
             TackInstructionNode(.leave),
             TackInstructionNode(.ret)
@@ -128,7 +128,7 @@ class CoreToTackCompilerTests: XCTestCase {
         let compiler = CoreToTackCompiler(symbols: symbols,
                                           globalEnvironment: globalEnvironment,
                                           options: opts)
-        let actual = try compiler.compileWithEpilog(nil)
+        let actual = try compiler.run(nil)
         let expected = Subroutine(identifier: "foo", children: [
             TackInstructionNode(.enter(0)),
             TackInstructionNode(.leave),
@@ -139,7 +139,7 @@ class CoreToTackCompilerTests: XCTestCase {
 
     func testExpr_LiteralBoolFalse() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.compileWithEpilog(Expression.LiteralBool(false))
+        let actual = try compiler.run(Expression.LiteralBool(false))
         let expected = TackInstructionNode(.lio(.o(0), false))
         XCTAssertEqual(actual, expected)
         XCTAssertNil(compiler.registerStack.last)

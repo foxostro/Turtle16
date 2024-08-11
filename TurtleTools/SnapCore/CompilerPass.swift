@@ -208,7 +208,8 @@ public class CompilerPass: NSObject {
             structTypeExpr: try visit(expr: node.structTypeExpr)!,
             children: try node.children.compactMap {
                 try visit($0) as? FunctionDeclaration
-            })
+            },
+            id: node.id)
     }
     
     public func visit(implFor node: ImplFor) throws -> AbstractSyntaxTreeNode? {

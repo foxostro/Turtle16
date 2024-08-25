@@ -17,10 +17,7 @@ public class Asm: AbstractSyntaxTreeNode {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Asm {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return Asm(sourceAnchor: sourceAnchor, assemblyCode: assemblyCode)
+        Asm(sourceAnchor: sourceAnchor, assemblyCode: assemblyCode)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

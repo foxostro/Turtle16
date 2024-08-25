@@ -95,10 +95,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> LiteralBool {
-            if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-                return self
-            }
-            return LiteralBool(sourceAnchor: sourceAnchor, value: value)
+            LiteralBool(sourceAnchor: sourceAnchor, value: value)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {

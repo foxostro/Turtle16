@@ -897,8 +897,8 @@ public class Expression: AbstractSyntaxTreeNode {
         
         public init(sourceAnchor: SourceAnchor? = nil, name: String? = nil, returnType: Expression, arguments: [Expression]) {
             self.name = name
-            self.returnType = returnType.withSourceAnchor(sourceAnchor)
-            self.arguments = arguments.map { $0.withSourceAnchor(sourceAnchor) }
+            self.returnType = returnType
+            self.arguments = arguments
             super.init(sourceAnchor: sourceAnchor)
         }
         

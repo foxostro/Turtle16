@@ -24,13 +24,10 @@ public class Typealias: AbstractSyntaxTreeNode {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Typealias {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return Typealias(sourceAnchor: sourceAnchor,
-                         lexpr: lexpr,
-                         rexpr: rexpr,
-                         visibility: visibility)
+        Typealias(sourceAnchor: sourceAnchor,
+                  lexpr: lexpr,
+                  rexpr: rexpr,
+                  visibility: visibility)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

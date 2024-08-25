@@ -807,7 +807,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public init(sourceAnchor: SourceAnchor?, elementType: Expression) {
-            self.elementType = elementType.withSourceAnchor(sourceAnchor)
+            self.elementType = elementType
             super.init(sourceAnchor: sourceAnchor)
         }
         

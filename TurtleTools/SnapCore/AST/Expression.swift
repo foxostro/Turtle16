@@ -221,7 +221,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public init(sourceAnchor: SourceAnchor?, expression: Expression) {
-            self.expression = expression.withSourceAnchor(sourceAnchor)
+            self.expression = expression
             super.init(sourceAnchor: sourceAnchor)
         }
         

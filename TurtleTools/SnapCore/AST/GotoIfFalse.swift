@@ -21,12 +21,9 @@ public class GotoIfFalse: AbstractSyntaxTreeNode {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> GotoIfFalse {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return GotoIfFalse(sourceAnchor: sourceAnchor,
-                           condition: condition,
-                           target: target)
+        GotoIfFalse(sourceAnchor: sourceAnchor,
+                    condition: condition,
+                    target: target)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

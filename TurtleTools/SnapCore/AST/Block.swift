@@ -25,15 +25,10 @@ public class Block: AbstractSyntaxTreeNode {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Block {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            self
-        }
-        else {
-            Block(sourceAnchor: sourceAnchor,
-                  symbols: symbols,
-                  children: children,
-                  id: id)
-        }
+        Block(sourceAnchor: sourceAnchor,
+              symbols: symbols,
+              children: children,
+              id: id)
     }
     
     public func withSymbols(_ symbols: SymbolTable) -> Block {

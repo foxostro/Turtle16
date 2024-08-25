@@ -533,8 +533,8 @@ public class Expression: AbstractSyntaxTreeNode {
         public let targetType: Expression
         
         public init(sourceAnchor: SourceAnchor? = nil, expr: Expression, targetType: Expression) {
-            self.expr = expr.withSourceAnchor(sourceAnchor)
-            self.targetType = targetType.withSourceAnchor(sourceAnchor)
+            self.expr = expr
+            self.targetType = targetType
             super.init(sourceAnchor: sourceAnchor)
         }
         

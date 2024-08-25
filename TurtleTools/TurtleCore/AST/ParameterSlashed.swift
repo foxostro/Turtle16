@@ -21,10 +21,7 @@ public class ParameterSlashed: Parameter {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> ParameterSlashed {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return ParameterSlashed(sourceAnchor: sourceAnchor, child: child)
+        ParameterSlashed(sourceAnchor: sourceAnchor, child: child)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

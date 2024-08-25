@@ -17,10 +17,7 @@ public class Import: AbstractSyntaxTreeNode {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Import {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return Import(sourceAnchor: sourceAnchor, moduleName: moduleName)
+        Import(sourceAnchor: sourceAnchor, moduleName: moduleName)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

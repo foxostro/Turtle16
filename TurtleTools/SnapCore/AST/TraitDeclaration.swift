@@ -89,15 +89,12 @@ public class TraitDeclaration: AbstractSyntaxTreeNode {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> TraitDeclaration {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return TraitDeclaration(sourceAnchor: sourceAnchor,
-                                identifier: identifier,
-                                typeArguments: typeArguments,
-                                members: members,
-                                visibility: visibility,
-                                mangledName: mangledName)
+        TraitDeclaration(sourceAnchor: sourceAnchor,
+                         identifier: identifier,
+                         typeArguments: typeArguments,
+                         members: members,
+                         visibility: visibility,
+                         mangledName: mangledName)
     }
     
     public func withMangledName(_ mangledName: String) -> TraitDeclaration {

@@ -1343,7 +1343,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public init(sourceAnchor: SourceAnchor?, typ: Expression) {
-            self.typ = typ.withSourceAnchor(sourceAnchor)
+            self.typ = typ
             super.init(sourceAnchor: sourceAnchor)
         }
         

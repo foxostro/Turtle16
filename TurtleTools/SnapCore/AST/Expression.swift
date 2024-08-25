@@ -29,10 +29,7 @@ public class Expression: AbstractSyntaxTreeNode {
     // Useful for testing
     public class UnsupportedExpression : Expression {
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> UnsupportedExpression {
-            if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-                return self
-            }
-            return UnsupportedExpression(sourceAnchor: sourceAnchor)
+            UnsupportedExpression(sourceAnchor: sourceAnchor)
         }
     }
     

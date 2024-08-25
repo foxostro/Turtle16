@@ -16,10 +16,7 @@ public class CommentNode: AbstractSyntaxTreeNode {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> CommentNode {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return CommentNode(sourceAnchor: sourceAnchor, string: string)
+        CommentNode(sourceAnchor: sourceAnchor, string: string)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

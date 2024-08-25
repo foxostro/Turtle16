@@ -23,9 +23,9 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
                 storage: SymbolStorage,
                 isMutable: Bool,
                 visibility: SymbolVisibility = .privateVisibility) {
-        self.identifier = identifier.withSourceAnchor(sourceAnchor)
-        self.explicitType = explicitType?.withSourceAnchor(sourceAnchor)
-        self.expression = expression?.withSourceAnchor(sourceAnchor)
+        self.identifier = identifier
+        self.explicitType = explicitType
+        self.expression = expression
         self.storage = storage
         self.isMutable = isMutable
         self.visibility = visibility

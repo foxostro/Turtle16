@@ -75,15 +75,12 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> StructDeclaration {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return StructDeclaration(sourceAnchor: sourceAnchor,
-                                 identifier: identifier,
-                                 typeArguments: typeArguments,
-                                 members: members,
-                                 visibility: visibility,
-                                 isConst: isConst)
+        StructDeclaration(sourceAnchor: sourceAnchor,
+                          identifier: identifier,
+                          typeArguments: typeArguments,
+                          members: members,
+                          visibility: visibility,
+                          isConst: isConst)
     }
     
     public func eraseTypeArguments() -> StructDeclaration {

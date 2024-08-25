@@ -39,14 +39,11 @@ public class Impl: AbstractSyntaxTreeNode {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Impl {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return Impl(sourceAnchor: sourceAnchor,
-                    typeArguments: typeArguments,
-                    structTypeExpr: structTypeExpr,
-                    children: children,
-                    id: id)
+        Impl(sourceAnchor: sourceAnchor,
+             typeArguments: typeArguments,
+             structTypeExpr: structTypeExpr,
+             children: children,
+             id: id)
     }
     
     public func eraseTypeArguments() -> Impl {

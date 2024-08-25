@@ -13,7 +13,7 @@ public class Seq: AbstractSyntaxTreeNode {
     
     public init(sourceAnchor: SourceAnchor? = nil,
                 children: [AbstractSyntaxTreeNode] = []) {
-        self.children = children.map { $0.withSourceAnchor(sourceAnchor) }
+        self.children = children
         super.init(sourceAnchor: sourceAnchor)
     }
     

@@ -21,10 +21,7 @@ public class ParameterString: Parameter {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> ParameterString {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return ParameterString(sourceAnchor: sourceAnchor, value: value)
+        ParameterString(sourceAnchor: sourceAnchor, value: value)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

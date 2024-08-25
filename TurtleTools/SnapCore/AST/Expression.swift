@@ -226,10 +226,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Group {
-            if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-                return self
-            }
-            return Group(sourceAnchor: sourceAnchor, expression: expression)
+            Group(sourceAnchor: sourceAnchor, expression: expression)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {

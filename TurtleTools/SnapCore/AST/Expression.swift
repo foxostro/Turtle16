@@ -1642,7 +1642,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public init(sourceAnchor: SourceAnchor?, expr: Expression) {
-            self.expr = expr.withSourceAnchor(sourceAnchor)
+            self.expr = expr
             super.init(sourceAnchor: sourceAnchor)
         }
         

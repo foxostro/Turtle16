@@ -19,10 +19,7 @@ public class LabelDeclaration: AbstractSyntaxTreeNode {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> LabelDeclaration {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return LabelDeclaration(sourceAnchor: sourceAnchor, identifier: identifier)
+        LabelDeclaration(sourceAnchor: sourceAnchor, identifier: identifier)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

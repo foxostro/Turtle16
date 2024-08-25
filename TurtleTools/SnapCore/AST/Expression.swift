@@ -609,8 +609,8 @@ public class Expression: AbstractSyntaxTreeNode {
         public let argument: Expression
         
         public init(sourceAnchor: SourceAnchor? = nil, subscriptable: Expression, argument: Expression) {
-            self.subscriptable = subscriptable.withSourceAnchor(sourceAnchor)
-            self.argument = argument.withSourceAnchor(sourceAnchor)
+            self.subscriptable = subscriptable
+            self.argument = argument
             super.init(sourceAnchor: sourceAnchor)
         }
         

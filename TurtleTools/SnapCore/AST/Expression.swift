@@ -312,8 +312,8 @@ public class Expression: AbstractSyntaxTreeNode {
                     left: Expression,
                     right: Expression) {
             self.op = op
-            self.left = left.withSourceAnchor(sourceAnchor)
-            self.right = right.withSourceAnchor(sourceAnchor)
+            self.left = left
+            self.right = right
             super.init(sourceAnchor: sourceAnchor)
         }
         

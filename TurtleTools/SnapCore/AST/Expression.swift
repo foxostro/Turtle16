@@ -660,8 +660,8 @@ public class Expression: AbstractSyntaxTreeNode {
         public init(sourceAnchor: SourceAnchor? = nil,
                     arrayType: Expression,
                     elements: [Expression] = []) {
-            self.arrayType = arrayType.withSourceAnchor(sourceAnchor)
-            self.elements = elements.map { $0.withSourceAnchor(sourceAnchor) }
+            self.arrayType = arrayType
+            self.elements = elements
             super.init(sourceAnchor: sourceAnchor)
         }
         

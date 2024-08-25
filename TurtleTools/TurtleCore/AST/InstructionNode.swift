@@ -29,12 +29,9 @@ public class InstructionNode: AbstractSyntaxTreeNode {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> InstructionNode {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return InstructionNode(sourceAnchor: sourceAnchor,
-                               instruction: instruction,
-                               parameters: parameters)
+        InstructionNode(sourceAnchor: sourceAnchor,
+                        instruction: instruction,
+                        parameters: parameters)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

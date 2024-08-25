@@ -24,13 +24,10 @@ public class If: AbstractSyntaxTreeNode {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> If {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return If(sourceAnchor: sourceAnchor,
-                  condition: condition,
-                  then: thenBranch,
-                  else: elseBranch)
+        If(sourceAnchor: sourceAnchor,
+           condition: condition,
+           then: thenBranch,
+           else: elseBranch)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

@@ -16,7 +16,7 @@ public class Return: AbstractSyntaxTreeNode {
     }
     
     public init(sourceAnchor: SourceAnchor? = nil, expression: Expression? = nil) {
-        self.expression = expression?.withSourceAnchor(sourceAnchor)
+        self.expression = expression
         super.init(sourceAnchor: sourceAnchor)
     }
     

@@ -19,12 +19,9 @@ public class While: AbstractSyntaxTreeNode {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> While {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return While(sourceAnchor: sourceAnchor,
-                     condition: condition,
-                     body: body)
+        While(sourceAnchor: sourceAnchor,
+              condition: condition,
+              body: body)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

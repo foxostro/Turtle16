@@ -21,10 +21,9 @@ public class Subroutine: AbstractSyntaxTreeNode {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Subroutine {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return Subroutine(sourceAnchor: sourceAnchor, identifier: identifier, children: children)
+        Subroutine(sourceAnchor: sourceAnchor,
+                   identifier: identifier,
+                   children: children)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

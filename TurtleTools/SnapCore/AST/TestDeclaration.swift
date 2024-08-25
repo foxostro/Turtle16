@@ -19,12 +19,9 @@ public class TestDeclaration: AbstractSyntaxTreeNode {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> TestDeclaration {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return TestDeclaration(sourceAnchor: sourceAnchor,
-                               name: name,
-                               body: body)
+        TestDeclaration(sourceAnchor: sourceAnchor,
+                        name: name,
+                        body: body)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

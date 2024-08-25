@@ -19,7 +19,7 @@ public class Block: AbstractSyntaxTreeNode {
                 id: ID = ID()) {
         self.symbols = symbols
         symbols.associatedNodeId = id
-        self.children = children.map { $0.withSourceAnchor(sourceAnchor) }
+        self.children = children
         self.id = id
         super.init(sourceAnchor: sourceAnchor)
     }

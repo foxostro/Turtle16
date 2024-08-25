@@ -847,8 +847,8 @@ public class Expression: AbstractSyntaxTreeNode {
         public let elementType: Expression
         
         public init(sourceAnchor: SourceAnchor? = nil, count: Expression?, elementType: Expression) {
-            self.count = count?.withSourceAnchor(sourceAnchor)
-            self.elementType = elementType.withSourceAnchor(sourceAnchor)
+            self.count = count
+            self.elementType = elementType
             super.init(sourceAnchor: sourceAnchor)
         }
         

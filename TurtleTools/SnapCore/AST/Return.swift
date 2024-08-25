@@ -21,10 +21,7 @@ public class Return: AbstractSyntaxTreeNode {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Return {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return Return(sourceAnchor: sourceAnchor, expression: expression)
+        Return(sourceAnchor: sourceAnchor, expression: expression)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

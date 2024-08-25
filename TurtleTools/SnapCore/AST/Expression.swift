@@ -431,8 +431,8 @@ public class Expression: AbstractSyntaxTreeNode {
         public let arguments: [Expression]
         
         public init(sourceAnchor: SourceAnchor? = nil, callee: Expression, arguments: [Expression] = []) {
-            self.callee = callee.withSourceAnchor(sourceAnchor)
-            self.arguments = arguments.map { $0.withSourceAnchor(sourceAnchor) }
+            self.callee = callee
+            self.arguments = arguments
             super.init(sourceAnchor: sourceAnchor)
         }
         

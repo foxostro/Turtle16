@@ -18,10 +18,7 @@ public class Seq: AbstractSyntaxTreeNode {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Seq {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return Seq(sourceAnchor: sourceAnchor, children: children)
+        Seq(sourceAnchor: sourceAnchor, children: children)
     }
     
     public func appending(child: AbstractSyntaxTreeNode) -> Seq {

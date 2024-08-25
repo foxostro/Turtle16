@@ -24,13 +24,10 @@ public class Assert: AbstractSyntaxTreeNode {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Assert {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return Assert(sourceAnchor: sourceAnchor,
-                      condition: condition,
-                      message: message,
-                      enclosingTestName: enclosingTestName)
+        Assert(sourceAnchor: sourceAnchor,
+               condition: condition,
+               message: message,
+               enclosingTestName: enclosingTestName)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

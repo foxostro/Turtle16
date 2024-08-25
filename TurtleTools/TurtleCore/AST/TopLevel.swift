@@ -10,20 +10,16 @@ public class TopLevel: AbstractSyntaxTreeNode {
     public let children: [AbstractSyntaxTreeNode]
     
     public init(sourceAnchor: SourceAnchor? = nil, children: [AbstractSyntaxTreeNode]) {
-        self.children = children.map { $0.withSourceAnchor(sourceAnchor) }
+        self.children = children
         super.init(sourceAnchor: sourceAnchor)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> TopLevel {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return TopLevel(sourceAnchor: sourceAnchor, children: children)
+        TopLevel(sourceAnchor: sourceAnchor, children: children)
     }
     
     public func withChildren(_ children: [AbstractSyntaxTreeNode]) -> TopLevel {
-        TopLevel(sourceAnchor: sourceAnchor,
-                 children: children)
+        TopLevel(sourceAnchor: sourceAnchor, children: children)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

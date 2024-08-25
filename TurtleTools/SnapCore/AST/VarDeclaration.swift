@@ -33,16 +33,13 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> VarDeclaration {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return VarDeclaration(sourceAnchor: sourceAnchor,
-                              identifier: identifier,
-                              explicitType: explicitType,
-                              expression: expression,
-                              storage: storage,
-                              isMutable: isMutable,
-                              visibility: visibility)
+        VarDeclaration(sourceAnchor: sourceAnchor,
+                       identifier: identifier,
+                       explicitType: explicitType,
+                       expression: expression,
+                       storage: storage,
+                       isMutable: isMutable,
+                       visibility: visibility)
     }
     
     public func withExpression(_ expression: Expression?) -> VarDeclaration {

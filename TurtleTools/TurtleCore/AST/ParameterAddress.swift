@@ -19,12 +19,9 @@ public class ParameterAddress: Parameter {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> ParameterAddress {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return ParameterAddress(sourceAnchor: sourceAnchor,
-                                offset: offset,
-                                identifier: identifier)
+        ParameterAddress(sourceAnchor: sourceAnchor,
+                         offset: offset,
+                         identifier: identifier)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

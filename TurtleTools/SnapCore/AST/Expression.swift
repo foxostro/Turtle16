@@ -1399,7 +1399,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public init(sourceAnchor: SourceAnchor?, members: [Expression]) {
-            self.members = members.map { $0.withSourceAnchor(sourceAnchor) }
+            self.members = members
             super.init(sourceAnchor: sourceAnchor)
         }
         

@@ -76,13 +76,10 @@ public class Match: AbstractSyntaxTreeNode {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Match {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return Match(sourceAnchor: sourceAnchor,
-                     expr: expr,
-                     clauses: clauses,
-                     elseClause: elseClause)
+        Match(sourceAnchor: sourceAnchor,
+              expr: expr,
+              clauses: clauses,
+              elseClause: elseClause)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

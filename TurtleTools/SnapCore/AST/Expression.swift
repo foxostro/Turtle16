@@ -385,8 +385,8 @@ public class Expression: AbstractSyntaxTreeNode {
         public let rexpr: Expression
         
         public init(sourceAnchor: SourceAnchor? = nil, lexpr: Expression, rexpr: Expression) {
-            self.lexpr = lexpr.withSourceAnchor(sourceAnchor)
-            self.rexpr = rexpr.withSourceAnchor(sourceAnchor)
+            self.lexpr = lexpr
+            self.rexpr = rexpr
             super.init(sourceAnchor: sourceAnchor)
         }
         

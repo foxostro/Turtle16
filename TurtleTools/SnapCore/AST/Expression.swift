@@ -173,7 +173,7 @@ public class Expression: AbstractSyntaxTreeNode {
         
         public init(sourceAnchor: SourceAnchor? = nil, op: TokenOperator.Operator, expression: Expression) {
             self.op = op
-            self.child = expression.withSourceAnchor(sourceAnchor)
+            self.child = expression
             super.init(sourceAnchor: sourceAnchor)
         }
         

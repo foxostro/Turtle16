@@ -1515,9 +1515,9 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public init(sourceAnchor: SourceAnchor? = nil, expr: Expression, arguments: [Argument]) {
-            self.expr = expr.withSourceAnchor(sourceAnchor)
+            self.expr = expr
             self.arguments = arguments.map {
-                Argument(name: $0.name, expr: $0.expr.withSourceAnchor(sourceAnchor))
+                Argument(name: $0.name, expr: $0.expr)
             }
             super.init(sourceAnchor: sourceAnchor)
         }

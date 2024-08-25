@@ -40,17 +40,14 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> FunctionDeclaration {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return FunctionDeclaration(sourceAnchor: sourceAnchor,
-                                   identifier: identifier,
-                                   functionType: functionType,
-                                   argumentNames: argumentNames,
-                                   typeArguments: typeArguments,
-                                   body: body,
-                                   visibility: visibility,
-                                   symbols: symbols)
+        FunctionDeclaration(sourceAnchor: sourceAnchor,
+                            identifier: identifier,
+                            functionType: functionType,
+                            argumentNames: argumentNames,
+                            typeArguments: typeArguments,
+                            body: body,
+                            visibility: visibility,
+                            symbols: symbols)
     }
     
     public func withBody(_ body: Block) -> FunctionDeclaration {

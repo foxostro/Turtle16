@@ -24,13 +24,10 @@ public class ForIn: AbstractSyntaxTreeNode {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> ForIn {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return ForIn(sourceAnchor: sourceAnchor,
-                     identifier: identifier,
-                     sequenceExpr: sequenceExpr,
-                     body: body)
+        ForIn(sourceAnchor: sourceAnchor,
+              identifier: identifier,
+              sequenceExpr: sequenceExpr,
+              body: body)
     }
     
     public static func ==(lhs: ForIn, rhs: ForIn) -> Bool {

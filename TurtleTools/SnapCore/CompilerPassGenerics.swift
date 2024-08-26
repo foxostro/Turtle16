@@ -204,3 +204,12 @@ public class CompilerPassGenerics: CompilerPass {
         }
     }
 }
+
+extension AbstractSyntaxTreeNode {
+    /// Erase generics, rewriting in terms of new concrete types
+    public func genericsPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
+        let compiler = CompilerPassGenerics(symbols: nil, globalEnvironment: globalEnvironment)
+        let result = try compiler.run(self)
+        return result
+    }
+}

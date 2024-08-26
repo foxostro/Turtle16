@@ -124,12 +124,4 @@ extension AbstractSyntaxTreeNode {
             runtimeSupport: runtimeSupport)
         return try compiler.run(self)
     }
-    
-    // Erase generics, rewriting in terms of new concrete types
-    fileprivate func genericsPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        
-        let compiler = CompilerPassGenerics(symbols: nil, globalEnvironment: globalEnvironment)
-        let result = try compiler.run(self)
-        return result
-    }
 }

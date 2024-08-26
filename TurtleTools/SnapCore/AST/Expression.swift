@@ -861,13 +861,10 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> FunctionType {
-            if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-                return self
-            }
-            return FunctionType(sourceAnchor: sourceAnchor,
-                                name: name,
-                                returnType: returnType,
-                                arguments: arguments)
+            FunctionType(sourceAnchor: sourceAnchor,
+                         name: name,
+                         returnType: returnType,
+                         arguments: arguments)
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {

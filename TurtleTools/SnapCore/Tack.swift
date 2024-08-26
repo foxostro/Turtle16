@@ -369,10 +369,7 @@ public class TackInstructionNode: AbstractSyntaxTreeNode {
     }
     
     public func withSymbols(_ symbols: SymbolTable?) -> TackInstructionNode {
-        if (self.symbols != nil) || (self.symbols == symbols) {
-            return self
-        }
-        return TackInstructionNode(
+        TackInstructionNode(
             instruction: instruction,
             sourceAnchor: sourceAnchor,
             symbols: symbols)

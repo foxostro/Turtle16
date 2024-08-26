@@ -517,10 +517,9 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Bitcast {
-            if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-                return self
-            }
-            return Bitcast(sourceAnchor: sourceAnchor, expr: expr, targetType: targetType)
+            Bitcast(sourceAnchor: sourceAnchor,
+                    expr: expr,
+                    targetType: targetType)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {

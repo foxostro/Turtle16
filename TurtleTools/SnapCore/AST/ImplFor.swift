@@ -39,11 +39,11 @@ public class ImplFor: AbstractSyntaxTreeNode {
     }
     
     public func eraseTypeArguments() -> ImplFor {
-        return ImplFor(sourceAnchor: sourceAnchor,
-                       typeArguments: [],
-                       traitTypeExpr: traitTypeExpr,
-                       structTypeExpr: structTypeExpr,
-                       children: children)
+        ImplFor(sourceAnchor: sourceAnchor,
+                typeArguments: [],
+                traitTypeExpr: traitTypeExpr,
+                structTypeExpr: structTypeExpr,
+                children: children)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

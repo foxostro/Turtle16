@@ -667,6 +667,8 @@ public class GenericStructType: NSObject {
     public let template: StructDeclaration
     public var instantiations: [ [SymbolType] : SymbolType ] = [:]
     
+    public var name: String { template.name }
+    
     // Compilation of Impl nodes is deferred until the generic struct is
     // instantiated with concrete types.
     public var implNodes: [Impl] = []

@@ -171,6 +171,10 @@ public class CoreToTackCompiler: CompilerPass {
         return node2
     }
     
+    public override func visit(module: Module) throws -> AbstractSyntaxTreeNode? {
+        nil // TODO: Add support for Module nodes
+    }
+    
     public override func visit(block node0: Block) throws -> AbstractSyntaxTreeNode? {
         env.push(node0.symbols)
         let children: [AbstractSyntaxTreeNode] = try node0.children.compactMap { try visit($0) }

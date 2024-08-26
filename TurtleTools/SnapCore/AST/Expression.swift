@@ -421,12 +421,9 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Call {
-            if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-                return self
-            }
-            return Call(sourceAnchor: sourceAnchor,
-                        callee: callee,
-                        arguments: arguments)
+            Call(sourceAnchor: sourceAnchor,
+                 callee: callee,
+                 arguments: arguments)
         }
         
         public func withCallee(_ callee: Expression) -> Call {

@@ -1460,12 +1460,9 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> StructInitializer {
-            if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-                return self
-            }
-            return StructInitializer(sourceAnchor: sourceAnchor,
-                                     expr: expr,
-                                     arguments: arguments)
+            StructInitializer(sourceAnchor: sourceAnchor,
+                              expr: expr,
+                              arguments: arguments)
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {

@@ -19,10 +19,11 @@ public class SnapSubcompilerVarDeclaration: NSObject {
     
     public func compile(_ node: VarDeclaration) throws -> Expression.InitialAssignment? {
         guard symbols.existsAndCannotBeShadowed(identifier: node.identifier.identifier) == false else {
-            throw CompilerError(sourceAnchor: node.identifier.sourceAnchor,
-                                format: "%@ redefines existing symbol: `%@'",
-                                node.isMutable ? "variable" : "constant",
-                                node.identifier.identifier)
+            let variable = node.isMutable ? "variable" : "constant"
+            let ident = node.identifier.identifier
+            throw CompilerError(
+                sourceAnchor: node.identifier.sourceAnchor,
+                message: "\(variable) redefines existing symbol: `\(ident)'")
         }
         
         let result: Expression.InitialAssignment?

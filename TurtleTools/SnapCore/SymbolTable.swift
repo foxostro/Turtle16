@@ -632,9 +632,17 @@ struct \(name) {
         guard name == rhs.name else {
             return false
         }
+        
+        // TODO: StructType can persist in the AST across compiler passes. This makes it possible to have an AST node which refers to an outdated version of StructType from a previous compiler pass. To work around this, we're forced to ignore function symbols when comparing the two StructType instances. It might be better to instead refuse to ever put fully resolved struct types into the AST at all. This jives with other plans I've written about involving replacing SymbolType with type expressions completely.
+        #if false
         guard symbols == rhs.symbols else {
             return false
         }
+        #else
+        guard symbols.isEqualExceptFunctions(rhs.symbols)  else {
+            return false
+        }
+        #endif
         return true
     }
     
@@ -1243,6 +1251,32 @@ public class SymbolTable: NSObject {
             return false
         }
         guard frameLookupMode == rhs.frameLookupMode else {
+            return false
+        }
+        return true
+    }
+    
+    // TODO: Remove isEqualExceptFunctions(). This is part of a workaround for an issue with StructType persisting in the AST across compiler passes. This is described in more detail in StructType, above.
+    public func isEqualExceptFunctions(_ rhs: SymbolTable) -> Bool {
+        let rejectFunctions = { (ident: String, sym: Symbol) in
+            switch sym.type {
+            case .function, .genericFunction: false
+            default: true
+            }
+        }
+        guard symbolTable.filter(rejectFunctions) == rhs.symbolTable.filter(rejectFunctions) else {
+            return false
+        }
+        guard typeTable == rhs.typeTable else {
+            return false
+        }
+        guard parent == rhs.parent else {
+            return false
+        }
+        guard enclosingFunctionType == rhs.enclosingFunctionType else {
+            return false
+        }
+        guard frameLookupMode.isSet == rhs.frameLookupMode.isSet else {
             return false
         }
         return true

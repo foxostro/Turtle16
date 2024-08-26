@@ -134,10 +134,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Identifier {
-            if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-                return self
-            }
-            return Identifier(sourceAnchor: sourceAnchor, identifier: identifier)
+            Identifier(sourceAnchor: sourceAnchor, identifier: identifier)
         }
         
         public func withIdentifier(_ identifier: String) -> Identifier {

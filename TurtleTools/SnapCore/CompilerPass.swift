@@ -179,7 +179,7 @@ public class CompilerPass: NSObject {
     }
     
     public func visit(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
-        env.push(node.symbols)
+        try willVisit(func: node)
         let result = FunctionDeclaration(
             sourceAnchor: node.sourceAnchor,
             identifier: try visit(identifier: node.identifier) as! Expression.Identifier,
@@ -191,8 +191,16 @@ public class CompilerPass: NSObject {
             body: try visit(node.body) as! Block,
             visibility: node.visibility,
             symbols: node.symbols)
-        env.pop()
+        didVisit(func: node)
         return result
+    }
+    
+    public func willVisit(func node: FunctionDeclaration) throws {
+        env.push(node.symbols)
+    }
+    
+    public func didVisit(func node: FunctionDeclaration) {
+        env.pop()
     }
     
     public func visit(struct node: StructDeclaration) throws -> AbstractSyntaxTreeNode? {

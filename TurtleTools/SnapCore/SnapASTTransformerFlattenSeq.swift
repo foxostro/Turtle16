@@ -45,3 +45,11 @@ public class SnapASTTransformerFlattenSeq: CompilerPass {
         return children2
     }
 }
+
+extension AbstractSyntaxTreeNode {
+    /// Flatten Seq nodes in the AST
+    public func flatten() throws -> AbstractSyntaxTreeNode? {
+        try SnapASTTransformerFlattenSeq().visit(self)
+    }
+}
+

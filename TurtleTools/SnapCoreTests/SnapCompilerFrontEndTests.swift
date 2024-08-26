@@ -2843,7 +2843,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             }
 
             impl[T] Foo@[T] {
-                func baz(self: *Foo@[T]) -> T {
+                func baz(self: *const Foo@[T]) -> T {
                     return self.val + 1
                 }
             }

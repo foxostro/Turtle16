@@ -29,11 +29,11 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
                 body: Block,
                 visibility: SymbolVisibility = .privateVisibility,
                 symbols: SymbolTable = SymbolTable()) {
-        self.identifier = identifier.withSourceAnchor(sourceAnchor)
-        self.functionType = functionType.withSourceAnchor(sourceAnchor)
+        self.identifier = identifier
+        self.functionType = functionType
         self.argumentNames = argumentNames
         self.typeArguments = typeArguments
-        self.body = body.withSourceAnchor(sourceAnchor)
+        self.body = body
         self.visibility = visibility
         self.symbols = symbols
         super.init(sourceAnchor: sourceAnchor)

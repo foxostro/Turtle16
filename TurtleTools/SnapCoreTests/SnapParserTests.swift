@@ -1253,7 +1253,7 @@ while 1 {}
         XCTAssertEqual(parser.syntaxTree, TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 13), children: [
             FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 13),
                                 identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo"),
-                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
+                                functionType: Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(0, 13), name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
                                 argumentNames: [],
                                 body: Block(sourceAnchor: parser.lineMapper.anchor(11, 13), children: []))
         ]))
@@ -1265,7 +1265,7 @@ while 1 {}
         XCTAssertEqual(parser.syntaxTree, TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 20), children: [
             FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 20),
                                 identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo"),
-                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(14, 17), identifier: "wat"), arguments: []),
+                                functionType: Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(0, 20), name: "foo", returnType: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(14, 17), identifier: "wat"), arguments: []),
                                 argumentNames: [],
                                 body: Block(sourceAnchor: parser.lineMapper.anchor(18, 20), children: []))
         ]))
@@ -1277,7 +1277,7 @@ while 1 {}
         XCTAssertEqual(parser.syntaxTree, TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 19), children: [
             FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 19),
                                 identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo"),
-                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 16), typ: .arithmeticType(.mutableInt(.u8))), arguments: []),
+                                functionType: Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(0, 19), name: "foo", returnType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 16), typ: .arithmeticType(.mutableInt(.u8))), arguments: []),
                                 argumentNames: [],
                                 body: Block(sourceAnchor: parser.lineMapper.anchor(17, 19), children: []))
         ]))
@@ -1289,7 +1289,7 @@ while 1 {}
         XCTAssertEqual(parser.syntaxTree, TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 21), children: [
             FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 21),
                                 identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo"),
-                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 18), typ: .void), arguments: []),
+                                functionType: Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(0, 21), name: "foo", returnType: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 18), typ: .void), arguments: []),
                                 argumentNames: [],
                                 body: Block(sourceAnchor: parser.lineMapper.anchor(19, 21), children: []))
         ]))
@@ -1319,7 +1319,7 @@ while 1 {}
         let expected = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 20), children: [
             FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 20),
                                 identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo"),
-                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: [Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 16), typ: .arithmeticType(.mutableInt(.u8)))]),
+                                functionType: Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(0, 20), name: "foo", returnType: Expression.PrimitiveType(.void), arguments: [Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 16), typ: .arithmeticType(.mutableInt(.u8)))]),
                                 argumentNames: ["bar"],
                                 body: Block(sourceAnchor: parser.lineMapper.anchor(18, 20), children: []))
         ])
@@ -1332,7 +1332,7 @@ while 1 {}
         let expected = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 31), children: [
             FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 31),
                                 identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo"),
-                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: [Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 16), typ: .arithmeticType(.mutableInt(.u8))), Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(23, 27), typ: .bool(.mutableBool))]),
+                                functionType: Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(0, 31), name: "foo", returnType: Expression.PrimitiveType(.void), arguments: [Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 16), typ: .arithmeticType(.mutableInt(.u8))), Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(23, 27), typ: .bool(.mutableBool))]),
                                 argumentNames: ["bar", "baz"],
                                 body: Block(sourceAnchor: parser.lineMapper.anchor(29, 31), children: []))
         ])
@@ -1347,7 +1347,7 @@ while 1 {}
         let expected = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 22), children: [
             FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 22),
                                 identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo"),
-                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: [Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 18), typ: .void)]),
+                                functionType: Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(0, 22), name: "foo", returnType: Expression.PrimitiveType(.void), arguments: [Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 18), typ: .void)]),
                                 argumentNames: ["bar"],
                                 body: Block(sourceAnchor: parser.lineMapper.anchor(20, 22), children: []))
         ])
@@ -2074,7 +2074,7 @@ impl Foo {
                  children: [
                     FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(15, 41),
                                         identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(20, 31), identifier: "doSomething"),
-                                        functionType: Expression.FunctionType(name: "doSomething", returnType: Expression.PrimitiveType(.void), arguments: []),
+                                        functionType: Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(15, 41), name: "doSomething", returnType: Expression.PrimitiveType(.void), arguments: []),
                                         argumentNames: [],
                                         body: Block(sourceAnchor: parser.lineMapper.anchor(34, 41), children: []))
                  ])
@@ -2100,12 +2100,12 @@ impl Foo {
                  children: [
                     FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(15, 42),
                                         identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(20, 32), identifier: "doSomething1"),
-                                        functionType: Expression.FunctionType(name: "doSomething1", returnType: Expression.PrimitiveType(.void), arguments: []),
+                                        functionType: Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(15, 42), name: "doSomething1", returnType: Expression.PrimitiveType(.void), arguments: []),
                                         argumentNames: [],
                                         body: Block(sourceAnchor: parser.lineMapper.anchor(35, 42), children: [])),
                     FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(49, 76),
                                         identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(54, 66), identifier: "doSomething2"),
-                                        functionType: Expression.FunctionType(name: "doSomething2", returnType: Expression.PrimitiveType(.void), arguments: []),
+                                        functionType: Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(49, 76), name: "doSomething2", returnType: Expression.PrimitiveType(.void), arguments: []),
                                         argumentNames: [],
                                         body: Block(sourceAnchor: parser.lineMapper.anchor(69, 76), children: []))
                  ])
@@ -2506,7 +2506,7 @@ private struct foo {
         XCTAssertEqual(parser.syntaxTree, TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 20), children: [
             FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 20),
                                 identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(12, 15), identifier: "foo"),
-                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
+                                functionType: Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(0, 20), name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
                                 argumentNames: [],
                                 body: Block(sourceAnchor: parser.lineMapper.anchor(18, 20), children: []),
                                 visibility: .publicVisibility)
@@ -2519,7 +2519,7 @@ private struct foo {
         XCTAssertEqual(parser.syntaxTree, TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 21), children: [
             FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 21),
                                 identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(13, 16), identifier: "foo"),
-                                functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
+                                functionType: Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(0, 21), name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
                                 argumentNames: [],
                                 body: Block(sourceAnchor: parser.lineMapper.anchor(19, 21), children: []),
                                 visibility: .privateVisibility)
@@ -2722,7 +2722,7 @@ impl Serial for SerialFake {
                     children: [
                         FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(33, 84),
                                             identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(38, 42), identifier: "puts"),
-                                            functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [
+                                            functionType: Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(33, 84), name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [
                                                 Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(49, 60), typ: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(50, 60), identifier: "SerialFake")),
                                                 Expression.DynamicArrayType(sourceAnchor: parser.lineMapper.anchor(65, 75), elementType: Expression.ConstType(sourceAnchor: parser.lineMapper.anchor(67, 75), typ: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(73, 75), typ: .arithmeticType(.mutableInt(.u8)))))
                                             ]),

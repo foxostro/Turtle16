@@ -557,7 +557,7 @@ public class SnapParser: Parser {
         let sourceAnchor = firstToken.sourceAnchor?.union(previous?.sourceAnchor)
         return [FunctionDeclaration(sourceAnchor: sourceAnchor,
                                     identifier: Expression.Identifier(sourceAnchor: tokenIdentifier.sourceAnchor, identifier: tokenIdentifier.lexeme),
-                                    functionType: Expression.FunctionType(name: tokenIdentifier.lexeme, returnType: returnType, arguments: argumentTypes),
+                                    functionType: Expression.FunctionType(sourceAnchor: sourceAnchor, name: tokenIdentifier.lexeme, returnType: returnType, arguments: argumentTypes),
                                     argumentNames: argumentNames,
                                     typeArguments: typeArguments,
                                     body: body,

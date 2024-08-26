@@ -376,10 +376,9 @@ public class TackInstructionNode: AbstractSyntaxTreeNode {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> TackInstructionNode {
-        TackInstructionNode(
-            instruction: instruction,
-            sourceAnchor: sourceAnchor,
-            symbols: symbols)
+        TackInstructionNode(instruction: instruction,
+                            sourceAnchor: sourceAnchor,
+                            symbols: symbols)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

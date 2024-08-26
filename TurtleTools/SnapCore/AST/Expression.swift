@@ -175,10 +175,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Unary {
-            if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-                return self
-            }
-            return Unary(sourceAnchor: sourceAnchor, op: op, expression: child)
+            Unary(sourceAnchor: sourceAnchor, op: op, expression: child)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {

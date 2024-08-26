@@ -148,6 +148,15 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         }
     }
     
+    public func unwrapGenericTraitType() -> GenericTraitType {
+        switch self {
+        case .genericTraitType(let typ):
+            return typ
+        default:
+            abort()
+        }
+    }
+    
     public var isFunctionType: Bool {
         switch self {
         case .function:

@@ -591,12 +591,9 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Subscript {
-            if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-                return self
-            }
-            return Subscript(sourceAnchor: sourceAnchor,
-                             subscriptable: subscriptable,
-                             argument: argument)
+            Subscript(sourceAnchor: sourceAnchor,
+                      subscriptable: subscriptable,
+                      argument: argument)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {

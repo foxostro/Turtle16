@@ -62,6 +62,8 @@ public class CompilerPass: NSObject {
             try visit(forIn: node)
         case let node as Block:
             try visit(block: node)
+        case let node as Module:
+            try visit(module: node)
         case let node as Return:
             try visit(return: node)
         case let node as FunctionDeclaration:
@@ -168,6 +170,10 @@ public class CompilerPass: NSObject {
     
     public func didVisit(block node: Block) {
         env.pop()
+    }
+    
+    public func visit(module node0: Module) throws -> AbstractSyntaxTreeNode? {
+        node0.withBlock(try visit(block: node0.block) as! Block)
     }
     
     public func visit(return node: Return) throws -> AbstractSyntaxTreeNode? {

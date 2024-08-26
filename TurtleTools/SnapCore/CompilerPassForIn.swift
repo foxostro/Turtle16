@@ -108,3 +108,10 @@ public class CompilerPassForIn: CompilerPass {
         return ast.reconnect(parent: symbols)
     }
 }
+
+extension AbstractSyntaxTreeNode {
+    /// Lower and rewrite ForIn statements
+    public func forInPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassForIn(globalEnvironment: globalEnvironment).run(self)
+    }
+}

@@ -113,11 +113,6 @@ extension AbstractSyntaxTreeNode {
         return result
     }
     
-    // Lower and rewrite ForIn statements
-    fileprivate func forInPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassForIn(globalEnvironment: globalEnvironment).run(self)
-    }
-    
     // Collect type declarations and variable declarations
     fileprivate func declPass(
         injectModules: [(String, String)],

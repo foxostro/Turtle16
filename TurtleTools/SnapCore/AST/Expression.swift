@@ -1030,12 +1030,9 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> GenericTypeApplication {
-            if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-                return self
-            }
-            return GenericTypeApplication(sourceAnchor: sourceAnchor,
-                                          identifier: identifier,
-                                          arguments: arguments)
+            GenericTypeApplication(sourceAnchor: sourceAnchor,
+                                   identifier: identifier,
+                                   arguments: arguments)
         }
         
         public var shortDescription: String {

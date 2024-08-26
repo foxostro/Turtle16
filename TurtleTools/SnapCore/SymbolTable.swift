@@ -798,6 +798,8 @@ public class GenericTraitType: NSObject {
     public let template: TraitDeclaration
     public var instantiations: [ [SymbolType] : SymbolType ] = [:]
     
+    public var name: String { template.name }
+    
     public init(template: TraitDeclaration) {
         self.template = template
     }

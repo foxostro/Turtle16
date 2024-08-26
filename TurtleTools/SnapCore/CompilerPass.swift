@@ -43,62 +43,60 @@ public class CompilerPass: NSObject {
     }
     
     public func visit(_ genericNode: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
-        let result: AbstractSyntaxTreeNode?
         switch genericNode {
         case let node as TopLevel:
-            result = try visit(topLevel: node)
+            try visit(topLevel: node)
         case let node as Subroutine:
-            result = try visit(subroutine: node)
+            try visit(subroutine: node)
         case let node as Seq:
-            result = try visit(seq: node)
+            try visit(seq: node)
         case let node as VarDeclaration:
-            result = try visit(varDecl: node)
+            try visit(varDecl: node)
         case let node as Expression:
-            result = try visit(expressionStatement: node)
+            try visit(expressionStatement: node)
         case let node as If:
-            result = try visit(if: node)
+            try visit(if: node)
         case let node as While:
-            result = try visit(while: node)
+            try visit(while: node)
         case let node as ForIn:
-            result = try visit(forIn: node)
+            try visit(forIn: node)
         case let node as Block:
-            result = try visit(block: node)
+            try visit(block: node)
         case let node as Return:
-            result = try visit(return: node)
+            try visit(return: node)
         case let node as FunctionDeclaration:
-            result = try visit(func: node)
+            try visit(func: node)
         case let node as StructDeclaration:
-            result = try visit(struct: node)
+            try visit(struct: node)
         case let node as Impl:
-            result = try visit(impl: node)
+            try visit(impl: node)
         case let node as ImplFor:
-            result = try visit(implFor: node)
+            try visit(implFor: node)
         case let node as Match:
-            result = try visit(match: node)
+            try visit(match: node)
         case let node as Assert:
-            result = try visit(assert: node)
+            try visit(assert: node)
         case let node as TraitDeclaration:
-            result = try visit(trait: node)
+            try visit(trait: node)
         case let node as TestDeclaration:
-            result = try visit(testDecl: node)
+            try visit(testDecl: node)
         case let node as Typealias:
-            result = try visit(typealias: node)
+            try visit(typealias: node)
         case let node as Import:
-            result = try visit(import: node)
+            try visit(import: node)
         case let node as Asm:
-            result = try visit(asm: node)
+            try visit(asm: node)
         case let node as Goto:
-            result = try visit(goto: node)
+            try visit(goto: node)
         case let node as GotoIfFalse:
-            result = try visit(gotoIfFalse: node)
+            try visit(gotoIfFalse: node)
         case let node as InstructionNode:
-            result = try visit(instruction: node)
+            try visit(instruction: node)
         case let node as TackInstructionNode:
-            result = try visit(tack: node)
+            try visit(tack: node)
         default:
-            result = genericNode
+            genericNode
         }
-        return result
     }
     
     public func visit(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {

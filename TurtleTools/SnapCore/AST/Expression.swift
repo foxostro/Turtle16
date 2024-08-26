@@ -814,12 +814,9 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> ArrayType {
-            if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-                return self
-            }
-            return ArrayType(sourceAnchor: sourceAnchor,
-                             count: count,
-                             elementType: elementType)
+            ArrayType(sourceAnchor: sourceAnchor,
+                      count: count,
+                      elementType: elementType)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {

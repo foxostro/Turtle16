@@ -98,12 +98,12 @@ public class TraitDeclaration: AbstractSyntaxTreeNode {
     }
     
     public func withMangledName(_ mangledName: String) -> TraitDeclaration {
-        return TraitDeclaration(sourceAnchor: sourceAnchor,
-                                identifier: identifier,
-                                typeArguments: typeArguments,
-                                members: members,
-                                visibility: visibility,
-                                mangledName: mangledName)
+        TraitDeclaration(sourceAnchor: sourceAnchor,
+                         identifier: identifier,
+                         typeArguments: typeArguments,
+                         members: members,
+                         visibility: visibility,
+                         mangledName: mangledName)
     }
     
     public func eraseTypeArguments() -> TraitDeclaration {

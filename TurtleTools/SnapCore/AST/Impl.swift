@@ -24,8 +24,8 @@ public class Impl: AbstractSyntaxTreeNode {
                 children: [FunctionDeclaration],
                 id: ID = ID()) {
         self.typeArguments = typeArguments
-        self.structTypeExpr = structTypeExpr.withSourceAnchor(sourceAnchor)
-        self.children = children.map { $0.withSourceAnchor(sourceAnchor) }
+        self.structTypeExpr = structTypeExpr
+        self.children = children
         self.id = id
         super.init(sourceAnchor: sourceAnchor)
     }

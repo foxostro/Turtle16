@@ -57,6 +57,26 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
         !typeArguments.isEmpty
     }
     
+    public convenience init(_ structType: StructType) {
+        let rejectFunctions = { (ident: String, sym: Symbol) in
+            switch sym.type {
+            case .function, .genericFunction: false
+            default: true
+            }
+        }
+        let nonFunctionSymbols = structType.symbols.symbolTable.filter(rejectFunctions)
+        
+        self.init(
+            identifier: Expression.Identifier(structType.name),
+            members: nonFunctionSymbols.map {
+                StructDeclaration.Member(
+                    name: $0.key,
+                    type: Expression.PrimitiveType($0.value.type))
+            },
+            visibility: .privateVisibility,
+            isConst: false)
+    }
+    
     public init(sourceAnchor: SourceAnchor? = nil,
                 identifier: Expression.Identifier,
                 typeArguments: [Expression.GenericTypeArgument] = [],

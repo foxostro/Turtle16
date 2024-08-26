@@ -72,6 +72,17 @@ public class TraitDeclaration: AbstractSyntaxTreeNode {
         !typeArguments.isEmpty
     }
     
+    public convenience init(_ traitType: TraitType) {
+        self.init(
+            identifier: Expression.Identifier(traitType.name),
+            members: traitType.symbols.symbolTable.map {
+                TraitDeclaration.Member(
+                    name: $0.key,
+                    type: Expression.PrimitiveType($0.value.type))
+            },
+            visibility: .privateVisibility)
+    }
+    
     public required init(sourceAnchor: SourceAnchor? = nil,
                          identifier: Expression.Identifier,
                          typeArguments: [Expression.GenericTypeArgument] = [],

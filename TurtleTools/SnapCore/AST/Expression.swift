@@ -1539,10 +1539,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> LiteralString {
-            if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-                return self
-            }
-            return LiteralString(sourceAnchor: sourceAnchor, value: value)
+            LiteralString(sourceAnchor: sourceAnchor, value: value)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {

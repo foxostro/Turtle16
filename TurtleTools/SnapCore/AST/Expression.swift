@@ -404,10 +404,9 @@ public class Expression: AbstractSyntaxTreeNode {
     
     public class InitialAssignment: Assignment {
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> InitialAssignment {
-            if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-                return self
-            }
-            return InitialAssignment(sourceAnchor: sourceAnchor, lexpr: lexpr, rexpr: rexpr)
+            InitialAssignment(sourceAnchor: sourceAnchor,
+                              lexpr: lexpr,
+                              rexpr: rexpr)
         }
     }
     

@@ -84,12 +84,12 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
     }
     
     public func eraseTypeArguments() -> StructDeclaration {
-        return StructDeclaration(sourceAnchor: sourceAnchor,
-                                 identifier: identifier,
-                                 typeArguments: [],
-                                 members: members,
-                                 visibility: visibility,
-                                 isConst: isConst)
+        StructDeclaration(sourceAnchor: sourceAnchor,
+                          identifier: identifier,
+                          typeArguments: [],
+                          members: members,
+                          visibility: visibility,
+                          isConst: isConst)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

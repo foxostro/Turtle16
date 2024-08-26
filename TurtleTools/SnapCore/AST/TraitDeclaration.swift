@@ -107,12 +107,12 @@ public class TraitDeclaration: AbstractSyntaxTreeNode {
     }
     
     public func eraseTypeArguments() -> TraitDeclaration {
-        return TraitDeclaration(sourceAnchor: sourceAnchor,
-                                identifier: identifier,
-                                typeArguments: [],
-                                members: members,
-                                visibility: visibility,
-                                mangledName: mangledName)
+        TraitDeclaration(sourceAnchor: sourceAnchor,
+                         identifier: identifier,
+                         typeArguments: [],
+                         members: members,
+                         visibility: visibility,
+                         mangledName: mangledName)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

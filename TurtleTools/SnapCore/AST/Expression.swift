@@ -370,10 +370,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Assignment {
-            if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-                return self
-            }
-            return Assignment(sourceAnchor: sourceAnchor, lexpr: lexpr, rexpr: rexpr)
+            Assignment(sourceAnchor: sourceAnchor, lexpr: lexpr, rexpr: rexpr)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {

@@ -158,16 +158,4 @@ extension AbstractSyntaxTreeNode {
         let result = try compiler.run(self)
         return result
     }
-    
-    // Clear all symbols from the AST and reconnect all symbol tables, lexically
-    fileprivate func clearSymbols(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        
-        let result = try CompilerPassClearSymbols().run(self)
-        
-        globalEnvironment.staticStorageFrame.reset()
-        globalEnvironment.functionsToCompile.removeAll()
-        globalEnvironment.modules = [:]
-        
-        return result
-    }
 }

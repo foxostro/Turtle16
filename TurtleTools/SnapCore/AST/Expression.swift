@@ -695,6 +695,18 @@ public class Expression: AbstractSyntaxTreeNode {
                 member: member)
         }
         
+        public func withExpr(_ expr: Expression) -> Get {
+            Get(sourceAnchor: sourceAnchor,
+                expr: expr,
+                member: member)
+        }
+        
+        public func withMember(_ member: Expression) -> Get {
+            Get(sourceAnchor: sourceAnchor,
+                expr: expr,
+                member: member)
+        }
+        
         public override func isEqual(_ rhs: Any?) -> Bool {
             guard rhs != nil else { return false }
             guard type(of: rhs!) == type(of: self) else { return false }

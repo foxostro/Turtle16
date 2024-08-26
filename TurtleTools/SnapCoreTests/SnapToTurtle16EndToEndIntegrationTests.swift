@@ -84,7 +84,12 @@ func foo() {
             let error = CompilerError.makeOmnibusError(fileName: nil, errors: compiler.errors)
             print(error.description)
         }
-        XCTAssertEqual(AssemblerListingMaker().makeListing(try compiler.assembly.get()), """
+        guard nil != compiler.assembly else {
+            XCTFail("compiler.assembly is unexpectedly nil")
+            return
+        }
+        let assembly = try compiler.assembly.get()
+        XCTAssertEqual(AssemblerListingMaker().makeListing(assembly), """
             NOP
             HLT
             foo:

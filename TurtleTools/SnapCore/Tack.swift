@@ -379,10 +379,7 @@ public class TackInstructionNode: AbstractSyntaxTreeNode {
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> TackInstructionNode {
-        if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-            return self
-        }
-        return TackInstructionNode(
+        TackInstructionNode(
             instruction: instruction,
             sourceAnchor: sourceAnchor,
             symbols: symbols)

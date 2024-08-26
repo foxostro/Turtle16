@@ -16,7 +16,7 @@ public class Subroutine: AbstractSyntaxTreeNode {
                 identifier: String,
                 children: [AbstractSyntaxTreeNode] = []) {
         self.identifier = identifier
-        self.children = children.map { $0.withSourceAnchor(sourceAnchor) }
+        self.children = children
         super.init(sourceAnchor: sourceAnchor)
     }
     

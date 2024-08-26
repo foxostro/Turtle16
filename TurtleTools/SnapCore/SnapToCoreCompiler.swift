@@ -99,20 +99,6 @@ extension AbstractSyntaxTreeNode {
         }
     }
     
-    // Erase test declarations and replace with a synthesized test runner.
-    fileprivate func desugarTestDeclarations(
-        testNames: inout [String],
-        globalEnvironment: GlobalEnvironment,
-        shouldRunSpecificTest: String?) throws -> AbstractSyntaxTreeNode? {
-        
-        let compiler = SnapASTTransformerTestDeclaration(
-            globalEnvironment: globalEnvironment,
-            shouldRunSpecificTest: shouldRunSpecificTest)
-        let result = try compiler.run(self)
-        testNames = compiler.testNames
-        return result
-    }
-    
     // Collect type declarations and variable declarations
     fileprivate func declPass(
         injectModules: [(String, String)],

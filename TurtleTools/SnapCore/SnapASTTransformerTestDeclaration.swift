@@ -105,3 +105,19 @@ public class SnapASTTransformerTestDeclaration: CompilerPass {
                       enclosingTestName: currentTest?.name)
     }
 }
+
+extension AbstractSyntaxTreeNode {
+    /// Erase test declarations and replace with a synthesized test runner.
+    public func desugarTestDeclarations(
+        testNames: inout [String],
+        globalEnvironment: GlobalEnvironment,
+        shouldRunSpecificTest: String?) throws -> AbstractSyntaxTreeNode? {
+        
+        let compiler = SnapASTTransformerTestDeclaration(
+            globalEnvironment: globalEnvironment,
+            shouldRunSpecificTest: shouldRunSpecificTest)
+        let result = try compiler.run(self)
+        testNames = compiler.testNames
+        return result
+    }
+}

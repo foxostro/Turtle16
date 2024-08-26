@@ -690,12 +690,9 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Get {
-            if (self.sourceAnchor != nil) || (self.sourceAnchor == sourceAnchor) {
-                return self
-            }
-            return Get(sourceAnchor: sourceAnchor,
-                       expr: expr,
-                       member: member)
+            Get(sourceAnchor: sourceAnchor,
+                expr: expr,
+                member: member)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {

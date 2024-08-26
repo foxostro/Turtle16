@@ -153,13 +153,21 @@ public class CompilerPass: NSObject {
             body: try visit(node.body) as! Block)
     }
     
-    public func visit(block node: Block) throws -> AbstractSyntaxTreeNode? {
-        env.push(node.symbols)
-        let result = node.withChildren(try node.children.compactMap {
+    public func visit(block node0: Block) throws -> AbstractSyntaxTreeNode? {
+        try willVisit(block: node0)
+        let node1 = node0.withChildren(try node0.children.compactMap {
             try visit($0)
         })
+        didVisit(block: node0)
+        return node1
+    }
+    
+    public func willVisit(block node: Block) throws {
+        env.push(node.symbols)
+    }
+    
+    public func didVisit(block node: Block) {
         env.pop()
-        return result
     }
     
     public func visit(return node: Return) throws -> AbstractSyntaxTreeNode? {

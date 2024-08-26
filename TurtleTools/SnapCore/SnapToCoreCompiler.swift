@@ -125,13 +125,6 @@ extension AbstractSyntaxTreeNode {
         return try compiler.run(self)
     }
     
-    // Rewrite higher-level nodes in terms of trees of lower-level nodes.
-    fileprivate func implPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        
-        let compiler = SnapAbstractSyntaxTreeCompilerImplPass(globalEnvironment: globalEnvironment)
-        return try compiler.run(self)
-    }
-    
     // Erase generics, rewriting in terms of new concrete types
     fileprivate func genericsPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
         

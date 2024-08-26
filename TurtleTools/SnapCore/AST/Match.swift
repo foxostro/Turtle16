@@ -20,9 +20,9 @@ public class Match: AbstractSyntaxTreeNode {
                     valueType: Expression,
                     block: Block) {
             self.sourceAnchor = sourceAnchor
-            self.valueIdentifier = valueIdentifier.withSourceAnchor(sourceAnchor)
-            self.valueType = valueType.withSourceAnchor(sourceAnchor)
-            self.block = block.withSourceAnchor(sourceAnchor)
+            self.valueIdentifier = valueIdentifier
+            self.valueType = valueType
+            self.block = block
         }
         
         public static func ==(lhs: Clause, rhs: Clause) -> Bool {
@@ -69,9 +69,9 @@ public class Match: AbstractSyntaxTreeNode {
                 expr: Expression,
                 clauses: [Clause],
                 elseClause: Block?) {
-        self.expr = expr.withSourceAnchor(sourceAnchor)
+        self.expr = expr
         self.clauses = clauses
-        self.elseClause = elseClause?.withSourceAnchor(sourceAnchor)
+        self.elseClause = elseClause
         super.init(sourceAnchor: sourceAnchor)
     }
     

@@ -52,9 +52,12 @@ public class CompilerPassImport: CompilerPass {
                 moduleName: moduleName,
                 text: moduleSource,
                 url: moduleURL)
-            let module1 = try visit(module: module0) as! Module
-            let module2 = module1.reconnect(parent: nil)
-            pendingInsertions.append(module2)
+            let module1 = module0.reconnect(parent: nil)
+            let module2 = (runtimeSupport == moduleName)
+                ? module1
+                : module1.withImplicitImport(moduleName: runtimeSupport)! as! Module
+            let module3 = try visit(module: module2) as! Module
+            pendingInsertions.append(module3)
             modulesAlreadySeen.insert(moduleName)
         }
         return node0

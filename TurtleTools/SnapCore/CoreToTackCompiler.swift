@@ -97,7 +97,7 @@ public class CoreToTackCompiler: CompilerPass {
         children += compiledFunctions
         
         let seq = Seq(sourceAnchor: node0?.sourceAnchor, children: children)
-        let result = flatten(seq)
+        let result = try seq.flatten()
         return result
     }
     
@@ -158,13 +158,9 @@ public class CoreToTackCompiler: CompilerPass {
         return subroutine
     }
     
-    func flatten(_ node: AbstractSyntaxTreeNode?) -> AbstractSyntaxTreeNode? {
-        return try! SnapASTTransformerFlattenSeq().visit(node)
-    }
-    
     public override func visit(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
         let node1 = try super.visit(node0)
-        let node2 = flatten(node1)
+        let node2 = try node1?.flatten()
         return node2
     }
     
@@ -276,7 +272,7 @@ public class CoreToTackCompiler: CompilerPass {
         default:
             throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "internal compiler error: unimplemented support for expression in CoreToTackCompiler: `\(expr)'")
         }
-        return flatten(result) ?? Seq(sourceAnchor: result.sourceAnchor, children: [])
+        return try result.flatten() ?? Seq(sourceAnchor: result.sourceAnchor, children: [])
     }
     
     func lvalue(identifier node: Expression.Identifier) throws -> AbstractSyntaxTreeNode {
@@ -1063,7 +1059,7 @@ public class CoreToTackCompiler: CompilerPass {
         default:
             throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "internal compiler error: unimplemented support for expression in CoreToTackCompiler: `\(expr)'")
         }
-        return flatten(result) ?? Seq(sourceAnchor: result.sourceAnchor, children: [])
+        return try result.flatten() ?? Seq(sourceAnchor: result.sourceAnchor, children: [])
     }
     
     func rvalue(literalInt node: Expression.LiteralInt) -> AbstractSyntaxTreeNode {

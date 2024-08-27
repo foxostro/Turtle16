@@ -90,16 +90,19 @@ extension AbstractSyntaxTreeNode {
     }
     
     // Insert an import statement for an implicit import
-    fileprivate func withImplicitImport(moduleName: String?) -> AbstractSyntaxTreeNode? {
-        if let moduleName, let top = self as? TopLevel {
-            top.withChildren([Import(moduleName: moduleName)] + top.children)
-        }
-        else if let moduleName, let block = self as? Block {
-            block.withChildren([Import(moduleName: moduleName)] + block.children)
-        }
-        else {
+    public func withImplicitImport(moduleName: String?) -> AbstractSyntaxTreeNode? {
+        guard let moduleName else { return self }
+        let result = switch self {
+        case let top as TopLevel:
+            top.inserting(children: [Import(moduleName: moduleName)], at: 0)
+        case let block as Block:
+            block.inserting(children: [Import(moduleName: moduleName)], at: 0)
+        case let module as Module:
+            module.inserting(children: [Import(moduleName: moduleName)], at: 0)
+        default:
             self
         }
+        return result
     }
     
     // Collect type declarations and variable declarations

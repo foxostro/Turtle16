@@ -15,15 +15,7 @@ import TurtleCore
 //
 // SnapAbstractSyntaxTreeCompilerImplPass delegates most the specific work to
 // various subcompilers classes.
-public class SnapAbstractSyntaxTreeCompilerImplPass: CompilerPass {
-    public let globalEnvironment: GlobalEnvironment
-    
-    public init(symbols: SymbolTable? = nil,
-                globalEnvironment: GlobalEnvironment) {
-        self.globalEnvironment = globalEnvironment
-        super.init(symbols)
-    }
-    
+public class SnapAbstractSyntaxTreeCompilerImplPass: CompilerPassWithDeclScan {
     public override func visit(expressionStatement node: Expression) throws -> AbstractSyntaxTreeNode? {
         try RvalueExpressionTypeChecker(symbols: symbols!, globalEnvironment: globalEnvironment).check(expression: node)
         return node
@@ -36,9 +28,23 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: CompilerPass {
     }
     
     public override func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
-        let subcompiler = SnapSubcompilerVarDeclaration(symbols: symbols!, globalEnvironment: globalEnvironment)
-        let node1 = try subcompiler.compile(node0)
-        return node1
+        let node1 = VarDeclaration(
+            sourceAnchor: node0.sourceAnchor,
+            identifier: try visit(identifier: node0.identifier) as! Expression.Identifier,
+            explicitType: try node0.explicitType.flatMap {
+                try visit(expr: $0)
+            },
+            expression: try node0.expression.flatMap {
+                try visit(expr: $0)
+            },
+            storage: node0.storage,
+            isMutable: node0.isMutable,
+            visibility: node0.visibility)
+        let node2 = try SnapSubcompilerVarDeclaration(
+            symbols: symbols!,
+            globalEnvironment: globalEnvironment)
+        .compile(node1)
+        return node2
     }
     
     public override func visit(match node0: Match) throws -> AbstractSyntaxTreeNode? {
@@ -107,7 +113,9 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: CompilerPass {
 extension AbstractSyntaxTreeNode {
     // Rewrite higher-level nodes in terms of trees of lower-level nodes
     public func implPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        let compiler = SnapAbstractSyntaxTreeCompilerImplPass(globalEnvironment: globalEnvironment)
-        return try compiler.run(self)
+        let node0 = self
+        let node1 = try node0.clearSymbols(globalEnvironment)
+        let node2 = try SnapAbstractSyntaxTreeCompilerImplPass(globalEnvironment: globalEnvironment).run(node1)
+        return node2
     }
 }

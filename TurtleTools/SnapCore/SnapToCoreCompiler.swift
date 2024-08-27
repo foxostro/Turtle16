@@ -55,10 +55,6 @@ public class SnapToCoreCompiler: NSObject {
                     runtimeSupport: runtimeSupport,
                     globalEnvironment: globalEnvironment)?
                 .forInPass(globalEnvironment)?
-                .declPass(
-                    injectModules: injectModules,
-                    globalEnvironment: globalEnvironment,
-                    runtimeSupport: runtimeSupport)?
                 .implPass(globalEnvironment)?
                 .genericsPass(globalEnvironment)
         }
@@ -104,31 +100,5 @@ extension AbstractSyntaxTreeNode {
             self
         }
         return result
-    }
-    
-    // Collect type declarations and variable declarations
-    fileprivate func declPass(
-        injectModules: [(String, String)],
-        globalEnvironment: GlobalEnvironment,
-        runtimeSupport: String?) throws -> AbstractSyntaxTreeNode? {
-            
-        try self
-            .clearSymbols(globalEnvironment)?
-            .declPass_(
-                injectModules: injectModules,
-                globalEnvironment: globalEnvironment,
-                runtimeSupport: runtimeSupport)
-    }
-    
-    fileprivate func declPass_(
-        injectModules: [(String, String)],
-        globalEnvironment: GlobalEnvironment,
-        runtimeSupport: String?) throws -> AbstractSyntaxTreeNode? {
-        
-        let compiler = SnapAbstractSyntaxTreeCompilerDeclPass(
-            injectModules: injectModules,
-            globalEnvironment: globalEnvironment,
-            runtimeSupport: runtimeSupport)
-        return try compiler.run(self)
     }
 }

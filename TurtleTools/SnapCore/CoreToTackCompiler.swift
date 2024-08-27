@@ -88,11 +88,9 @@ public class CoreToTackCompiler: CompilerPass {
     public override func run(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
         var children: [AbstractSyntaxTreeNode] = []
         
-        let compiledModules = try collectCompiledModuleCode()
         let compiledNode = try super.run(node0)
         let compiledFunctions = try compileFunctions()
         
-        children += compiledModules
         if let compiledNode {
             children.append(compiledNode)
         }
@@ -143,9 +141,8 @@ public class CoreToTackCompiler: CompilerPass {
         let stackFrame = ast.symbols.frame!
         assert(ast.symbols.frameLookupMode == .set(stackFrame))
         let body0 = ast.body
-        let body1 = try SnapAbstractSyntaxTreeCompilerDeclPass(symbols: ast.symbols, globalEnvironment: globalEnvironment).visit(body0) as! Block
-        let body2 = try SnapAbstractSyntaxTreeCompilerImplPass(symbols: ast.symbols, globalEnvironment: globalEnvironment).visit(body1) as! Block
-        let body3 = try visit(body2) ?? Seq()
+        let body1 = try SnapAbstractSyntaxTreeCompilerImplPass(symbols: ast.symbols, globalEnvironment: globalEnvironment).visit(body0) as! Block
+        let body2 = try visit(body1) ?? Seq()
         let sizeOfLocalVariables = stackFrame.storagePointer
         
         let subroutine = Subroutine(
@@ -156,7 +153,7 @@ public class CoreToTackCompiler: CompilerPass {
                     instruction: .enter(sizeOfLocalVariables),
                     sourceAnchor: ast.sourceAnchor,
                     symbols: symbols),
-                body3
+                body2
             ])
         return subroutine
     }
@@ -169,10 +166,6 @@ public class CoreToTackCompiler: CompilerPass {
         let node1 = try super.visit(node0)
         let node2 = flatten(node1)
         return node2
-    }
-    
-    public override func visit(module: Module) throws -> AbstractSyntaxTreeNode? {
-        nil // TODO: Add support for Module nodes
     }
     
     public override func visit(block node0: Block) throws -> AbstractSyntaxTreeNode? {

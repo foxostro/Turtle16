@@ -61,6 +61,7 @@
 		6F15423626B92AB500BA9572 /* SnapSubcompilerStructDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F15423526B92AB500BA9572 /* SnapSubcompilerStructDeclaration.swift */; };
 		6F15423826B92ADB00BA9572 /* SnapSubcompilerStructDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F15423726B92ADB00BA9572 /* SnapSubcompilerStructDeclarationTests.swift */; };
 		6F1800A7251D9079005D9D36 /* Import.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1800A6251D9079005D9D36 /* Import.swift */; };
+		6F1AD7E52C7CFCFD009AC825 /* CompilerPassReturn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1AD7E42C7CFCFD009AC825 /* CompilerPassReturn.swift */; };
 		6F1D24C524823DD90095D7B4 /* If.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1D24C424823DD90095D7B4 /* If.swift */; };
 		6F1D24C724823EC60095D7B4 /* IfTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1D24C624823EC60095D7B4 /* IfTests.swift */; };
 		6F1EC340265EB66800465075 /* AssemblerCompiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1EC33F265EB66800465075 /* AssemblerCompiler.swift */; };
@@ -595,6 +596,7 @@
 		6F15423526B92AB500BA9572 /* SnapSubcompilerStructDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerStructDeclaration.swift; sourceTree = "<group>"; };
 		6F15423726B92ADB00BA9572 /* SnapSubcompilerStructDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerStructDeclarationTests.swift; sourceTree = "<group>"; };
 		6F1800A6251D9079005D9D36 /* Import.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Import.swift; sourceTree = "<group>"; };
+		6F1AD7E42C7CFCFD009AC825 /* CompilerPassReturn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassReturn.swift; sourceTree = "<group>"; };
 		6F1D24B82482245E0095D7B4 /* TokenMisc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenMisc.swift; sourceTree = "<group>"; };
 		6F1D24C424823DD90095D7B4 /* If.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = If.swift; sourceTree = "<group>"; };
 		6F1D24C624823EC60095D7B4 /* IfTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IfTests.swift; sourceTree = "<group>"; };
@@ -1217,6 +1219,7 @@
 				6F058A302C59837E00B3FA82 /* CompilerPassGenerics.swift */,
 				6FBC1F132C72BFDA00CAC35E /* CompilerPassMatch.swift */,
 				6FE41A762C7C4642002ED26F /* CompilerPassImport.swift */,
+				6F1AD7E42C7CFCFD009AC825 /* CompilerPassReturn.swift */,
 				6FBC1F172C72F9F200CAC35E /* CompilerPassWithDeclScan.swift */,
 				6F40730626B1D5ED007D8382 /* CoreToTackCompiler.swift */,
 				6FBB8D902B97DDD600FEEF1F /* Frame.swift */,
@@ -2058,6 +2061,7 @@
 				6F40732126B2AD72007D8382 /* CompilerPass.swift in Sources */,
 				6F15423226B91BCC00BA9572 /* SnapSubcompilerFunctionDeclaration.swift in Sources */,
 				6F469DFB26BB808A0004613B /* Seq.swift in Sources */,
+				6F1AD7E52C7CFCFD009AC825 /* CompilerPassReturn.swift in Sources */,
 				6FD2735C26C9C29E00749CDA /* GotoIfFalse.swift in Sources */,
 				6F83480B26FD3B0100EB466E /* RegisterAllocatorNaive.swift in Sources */,
 				6F2B443626D9ACFE009ACF08 /* SnapASTTransformerFlattenSeq.swift in Sources */,

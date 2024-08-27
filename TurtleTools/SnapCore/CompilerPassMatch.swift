@@ -8,7 +8,7 @@
 
 import TurtleCore
 
-// Discrete compiler pass to lower and erase Match statements
+/// Compiler pass to lower and erase Match statements
 public class CompilerPassMatch: CompilerPassWithDeclScan {
     public override func visit(match node0: Match) throws -> AbstractSyntaxTreeNode? {
         let node1 = try super.visit(match: node0) as! Match
@@ -130,9 +130,9 @@ public class CompilerPassMatch: CompilerPassWithDeclScan {
 }
 
 extension AbstractSyntaxTreeNode {
-    // Lower and rewrite Match statements
+    /// Compiler pass to lower and erase Match statements
     public func matchPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        let node1 = try self.clearSymbols(globalEnvironment)
+        let node1 = try clearSymbols(globalEnvironment)
         let node2 = try CompilerPassMatch(globalEnvironment: globalEnvironment).run(node1)
         return node2
     }

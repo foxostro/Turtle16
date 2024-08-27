@@ -32,6 +32,10 @@ public class Module: AbstractSyntaxTreeNode {
                block: block)
     }
     
+    public func inserting(children toInsert: [AbstractSyntaxTreeNode], at index: Int) -> Module {
+        withBlock(block.inserting(children: toInsert, at: 0))
+    }
+    
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else {
             return false

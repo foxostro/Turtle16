@@ -166,5 +166,14 @@ public class CompilerPassWithDeclScan: CompilerPass {
     public override func visit(module node: Module) throws -> AbstractSyntaxTreeNode? {
         modules[node.name]
     }
+    
+    public override func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
+        let node1 = try super.visit(varDecl: node0) as! VarDeclaration
+        _ = try SnapSubcompilerVarDeclaration(
+            symbols: symbols!,
+            globalEnvironment: globalEnvironment)
+        .compile(node1)
+        return node1
+    }
 }
 

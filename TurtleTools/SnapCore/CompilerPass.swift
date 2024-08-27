@@ -173,7 +173,13 @@ public class CompilerPass: NSObject {
     }
     
     public func visit(module node0: Module) throws -> AbstractSyntaxTreeNode? {
-        node0.withBlock(try visit(block: node0.block) as! Block)
+        let compiledBlock = try visit(block: node0.block)
+        return switch compiledBlock {
+        case let block as Block:
+            node0.withBlock(block)
+        default:
+            compiledBlock
+        }
     }
     
     public func visit(return node: Return) throws -> AbstractSyntaxTreeNode? {

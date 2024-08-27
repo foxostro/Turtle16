@@ -253,26 +253,26 @@ public class CoreToTackCompiler: CompilerPass {
         return try typeChecker.check(expression: lexpr)
     }
     
-    public func lvalue(expr: Expression) throws -> AbstractSyntaxTreeNode {
-        guard try typeCheck(lexpr: expr) != nil else {
-            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "lvalue required")
+    public func lvalue(expr expr0: Expression) throws -> AbstractSyntaxTreeNode {
+        guard try typeCheck(lexpr: expr0) != nil else {
+            throw CompilerError(sourceAnchor: expr0.sourceAnchor, message: "lvalue required")
         }
-        let result: AbstractSyntaxTreeNode
-        switch expr {
+        let expr1 = switch expr0 {
         case let node as Expression.Identifier:
-            result = try lvalue(identifier: node)
+            try lvalue(identifier: node)
         case let node as Expression.Subscript:
-            result = try lvalue(subscript: node)
+            try lvalue(subscript: node)
         case let node as Expression.Get:
-            result = try lvalue(get: node)
+            try lvalue(get: node)
         case let node as Expression.Bitcast:
-            result = try lvalue(expr: node.expr)
+            try lvalue(expr: node.expr)
         case let node as Expression.GenericTypeApplication:
             throw CompilerError(sourceAnchor: node.sourceAnchor, message: "internal compiler error: expected generics to have been erased by this point: `\(node)'")
         default:
-            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "internal compiler error: unimplemented support for expression in CoreToTackCompiler: `\(expr)'")
+            throw CompilerError(sourceAnchor: expr0.sourceAnchor, message: "internal compiler error: unimplemented support for expression in CoreToTackCompiler: `\(expr0)'")
         }
-        return try result.flatten() ?? Seq(sourceAnchor: result.sourceAnchor, children: [])
+        let expr2 = try expr1.flatten() ?? Seq(sourceAnchor: expr1.sourceAnchor, children: [])
+        return expr2
     }
     
     func lvalue(identifier node: Expression.Identifier) throws -> AbstractSyntaxTreeNode {
@@ -1014,52 +1014,52 @@ public class CoreToTackCompiler: CompilerPass {
         return Seq(sourceAnchor: expr.sourceAnchor, children: children)
     }
     
-    public func rvalue(expr: Expression) throws -> AbstractSyntaxTreeNode {
-        try typeCheck(rexpr: expr)
-        let result: AbstractSyntaxTreeNode
-        switch expr {
+    public func rvalue(expr expr0: Expression) throws -> AbstractSyntaxTreeNode {
+        try typeCheck(rexpr: expr0)
+        let expr1 = switch expr0 {
         case let group as Expression.Group:
-            result = try rvalue(expr: group.expression)
+            try rvalue(expr: group.expression)
         case let literal as Expression.LiteralInt:
-            result = rvalue(literalInt: literal)
+            rvalue(literalInt: literal)
         case let literal as Expression.LiteralBool:
-            result = rvalue(literalBoolean: literal)
+            rvalue(literalBoolean: literal)
         case let literal as Expression.LiteralArray:
-            result = try rvalue(literalArray: literal)
+            try rvalue(literalArray: literal)
         case let literal as Expression.LiteralString:
-            result = try rvalue(literalString: literal)
+            try rvalue(literalString: literal)
         case let node as Expression.Identifier:
-            result = try rvalue(identifier: node)
+            try rvalue(identifier: node)
         case let node as Expression.As:
-            result = try rvalue(as: node)
+            try rvalue(as: node)
         case let node as Expression.Bitcast:
-            result = try rvalue(bitcast: node)
+            try rvalue(bitcast: node)
         case let node as Expression.Unary:
-            result = try rvalue(unary: node)
+            try rvalue(unary: node)
         case let node as Expression.Binary:
-            result = try rvalue(binary: node)
+            try rvalue(binary: node)
         case let expr as Expression.Is:
-            result = try rvalue(is: expr)
+            try rvalue(is: expr)
         case let expr as Expression.Assignment:
-            result = try rvalue(assignment: expr)
+            try rvalue(assignment: expr)
         case let expr as Expression.Subscript:
-            result = try rvalue(subscript: expr)
+            try rvalue(subscript: expr)
         case let expr as Expression.Get:
-            result = try rvalue(get: expr)
+            try rvalue(get: expr)
         case let node as Expression.StructInitializer:
-            result = try rvalue(structInitializer: node)
+            try rvalue(structInitializer: node)
         case let node as Expression.Call:
-            result = try rvalue(call: node)
+            try rvalue(call: node)
         case let node as Expression.SizeOf:
-            result = try rvalue(sizeof: node)
+            try rvalue(sizeof: node)
         case let eseq as Expression.Eseq:
-            result = try rvalue(eseq: eseq)
+            try rvalue(eseq: eseq)
         case let node as Expression.GenericTypeApplication:
             throw CompilerError(sourceAnchor: node.sourceAnchor, message: "internal compiler error: expected generics to have been erased by this point: `\(node)'")
         default:
-            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "internal compiler error: unimplemented support for expression in CoreToTackCompiler: `\(expr)'")
+            throw CompilerError(sourceAnchor: expr0.sourceAnchor, message: "internal compiler error: unimplemented support for expression in CoreToTackCompiler: `\(expr0)'")
         }
-        return try result.flatten() ?? Seq(sourceAnchor: result.sourceAnchor, children: [])
+        let expr2 = try expr1.flatten() ?? Seq(sourceAnchor: expr1.sourceAnchor, children: [])
+        return expr2
     }
     
     func rvalue(literalInt node: Expression.LiteralInt) -> AbstractSyntaxTreeNode {

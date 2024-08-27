@@ -66,6 +66,7 @@
 		6F1D24C724823EC60095D7B4 /* IfTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1D24C624823EC60095D7B4 /* IfTests.swift */; };
 		6F1EC340265EB66800465075 /* AssemblerCompiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1EC33F265EB66800465075 /* AssemblerCompiler.swift */; };
 		6F1F3B782C7D0001008C2EEB /* CompilerPassAssert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1F3B772C7D0001008C2EEB /* CompilerPassAssert.swift */; };
+		6F1F3B7A2C7D00CA008C2EEB /* CompilerPassIf.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1F3B792C7D00CA008C2EEB /* CompilerPassIf.swift */; };
 		6F20F9382C73BF4100415E35 /* Module.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F20F9372C73BF4100415E35 /* Module.swift */; };
 		6F20F93A2C744D4300415E35 /* CompilerPassEraseSourceAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F20F9392C744D4300415E35 /* CompilerPassEraseSourceAnchor.swift */; };
 		6F238AD9248C6A560040250D /* Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F238AD8248C6A560040250D /* Block.swift */; };
@@ -603,6 +604,7 @@
 		6F1D24C624823EC60095D7B4 /* IfTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IfTests.swift; sourceTree = "<group>"; };
 		6F1EC33F265EB66800465075 /* AssemblerCompiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCompiler.swift; sourceTree = "<group>"; };
 		6F1F3B772C7D0001008C2EEB /* CompilerPassAssert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassAssert.swift; sourceTree = "<group>"; };
+		6F1F3B792C7D00CA008C2EEB /* CompilerPassIf.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassIf.swift; sourceTree = "<group>"; };
 		6F20F9372C73BF4100415E35 /* Module.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Module.swift; sourceTree = "<group>"; };
 		6F20F9392C744D4300415E35 /* CompilerPassEraseSourceAnchor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassEraseSourceAnchor.swift; sourceTree = "<group>"; };
 		6F238AD8248C6A560040250D /* Block.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Block.swift; sourceTree = "<group>"; };
@@ -1220,6 +1222,7 @@
 				6F20F9392C744D4300415E35 /* CompilerPassEraseSourceAnchor.swift */,
 				6F7CCE692C67FA9D00F435F1 /* CompilerPassForIn.swift */,
 				6F058A302C59837E00B3FA82 /* CompilerPassGenerics.swift */,
+				6F1F3B792C7D00CA008C2EEB /* CompilerPassIf.swift */,
 				6FBC1F132C72BFDA00CAC35E /* CompilerPassMatch.swift */,
 				6FE41A762C7C4642002ED26F /* CompilerPassImport.swift */,
 				6F1AD7E42C7CFCFD009AC825 /* CompilerPassReturn.swift */,

@@ -125,4 +125,70 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
         XCTAssertTrue(symbols.modulesAlreadyImported.contains("Foo"))
         XCTAssertNoThrow(try symbols.resolveType(identifier: "None"))
     }
+    
+    func testCompileImplForTrait() throws {
+        
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
+        let symbols = SymbolTable()
+        
+        func compileSerialTrait() throws {
+            let bar = TraitDeclaration.Member(name: "puts", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.void), arguments: [
+                Expression.PointerType(Expression.Identifier("Serial")),
+                Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
+            ])))
+            let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Serial"),
+                                             members: [bar],
+                                             visibility: .privateVisibility)
+            _ = try SnapSubcompilerTraitDeclaration(
+                globalEnvironment: globalEnvironment,
+                symbols: symbols)
+            .compile(traitDecl)
+        }
+        
+        func compileSerialFake() throws {
+            let fake = StructDeclaration(identifier: Expression.Identifier("SerialFake"), members: [])
+            try SnapSubcompilerStructDeclaration(
+                symbols: symbols,
+                globalEnvironment: globalEnvironment)
+            .compile(fake)
+        }
+        
+        try compileSerialTrait()
+        try compileSerialFake()
+        
+        let ast = Block(
+            symbols: symbols,
+            children: [
+                ImplFor(
+                    typeArguments: [],
+                    traitTypeExpr: Expression.Identifier("Serial"),
+                    structTypeExpr: Expression.Identifier("SerialFake"),
+                    children: [
+                        FunctionDeclaration(
+                            identifier: Expression.Identifier("puts"),
+                            functionType: Expression.FunctionType(
+                                name: "puts",
+                                returnType: Expression.PrimitiveType(.void),
+                                arguments: [
+                                    Expression.PointerType(Expression.Identifier("Serial")),
+                                    Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
+                                ]),
+                            argumentNames: ["self", "s"],
+                            body: Block())
+                    ])
+            ])
+        .reconnect(parent: nil)
+        
+        _ = try CompilerPassWithDeclScan(globalEnvironment: globalEnvironment).run(ast)
+        
+        // Let's examine, for correctness, the vtable symbol
+        let nameOfVtableInstance = "__Serial_SerialFake_vtable_instance"
+        let vtableInstance = try symbols.resolve(identifier: nameOfVtableInstance)
+        let vtableStructType = vtableInstance.type.unwrapStructType()
+        XCTAssertEqual(vtableStructType.name, "__Serial_vtable")
+        XCTAssertEqual(vtableStructType.symbols.exists(identifier: "puts"), true)
+        let putsSymbol = try vtableStructType.symbols.resolve(identifier: "puts")
+        XCTAssertEqual(putsSymbol.type, .pointer(.function(FunctionType(returnType: .void, arguments: [.pointer(.void), .dynamicArray(elementType: .arithmeticType(.mutableInt(.u8)))]))))
+        XCTAssertEqual(putsSymbol.offset, 0)
+    }
 }

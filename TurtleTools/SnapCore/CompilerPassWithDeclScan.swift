@@ -43,6 +43,8 @@ public class CompilerPassWithDeclScan: CompilerPass {
             try scan(trait: node)
         case let node as Impl:
             try scan(impl: node)
+        case let node as ImplFor:
+            try scan(implFor: node)
         case let node as Module:
             try scan(module: node)
         case let node as Import:
@@ -79,6 +81,13 @@ public class CompilerPassWithDeclScan: CompilerPass {
     
     func scan(impl node: Impl) throws {
         try SnapSubcompilerImpl(
+            symbols: symbols!,
+            globalEnvironment: globalEnvironment)
+        .compile(node)
+    }
+    
+    func scan(implFor node: ImplFor) throws {
+        try SnapSubcompilerImplFor(
             symbols: symbols!,
             globalEnvironment: globalEnvironment)
         .compile(node)

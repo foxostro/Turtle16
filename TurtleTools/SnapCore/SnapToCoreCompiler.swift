@@ -52,6 +52,7 @@ public class SnapToCoreCompiler: NSObject {
                     shouldRunSpecificTest: shouldRunSpecificTest)?
                 .importPass(
                     injectModules: injectModules,
+                    runtimeSupport: runtimeSupport,
                     globalEnvironment: globalEnvironment)?
                 .forInPass(globalEnvironment)?
                 .declPass(

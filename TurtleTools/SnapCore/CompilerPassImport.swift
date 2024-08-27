@@ -138,7 +138,15 @@ public func parse(text: String, url: URL) throws -> TopLevel {
 extension AbstractSyntaxTreeNode {
     // Insert module nodes into the AST for any modules that are imported
     // injectModules -- A list of module name and module source code which overrides modules found on the file system.
-    public func importPass(injectModules: [(String, String)], globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassImport(injectModules: injectModules, globalEnvironment: globalEnvironment).run(self)
+    public func importPass(
+        injectModules: [(String, String)],
+        runtimeSupport: String? = nil,
+        globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
+        
+        let result = try CompilerPassImport(
+            injectModules: injectModules,
+            globalEnvironment: globalEnvironment,
+            runtimeSupport: runtimeSupport).run(self)
+        return result
     }
 }

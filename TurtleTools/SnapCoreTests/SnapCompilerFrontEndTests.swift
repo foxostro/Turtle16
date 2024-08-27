@@ -24,6 +24,19 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         return compiler
     }
     
+    fileprivate func compile(program: String) throws -> TackProgram {
+        let compiler = makeCompiler()
+        let result = compiler.compile(program: program)
+        do {
+            return try result.get()
+        }
+        catch (let error as CompilerError) {
+            let omnibusError = CompilerError.makeOmnibusError(fileName: nil, errors: [error])
+            print("compile error: \(omnibusError.message)")
+            throw error
+        }
+    }
+    
     fileprivate func expectError(_ result: Result<TackProgram, Error>, _ block: (CompilerError) -> Void) {
         switch result {
         case .failure(let error as CompilerError):
@@ -84,13 +97,12 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     }
 
     func testFunctionDefinition() throws {
-        let compiler = makeCompiler()
-        let result = compiler.compile(program: """
+        let tackProgram = try compile(program: """
             func foo() {
                 let a = 1
             }
             """)
-        let tackProgram = try result.get()
+        
         XCTAssertEqual(tackProgram.listing, """
             0000       HLT
             0001  foo: ENTER 1

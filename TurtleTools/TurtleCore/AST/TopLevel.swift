@@ -22,6 +22,12 @@ public class TopLevel: AbstractSyntaxTreeNode {
         TopLevel(sourceAnchor: sourceAnchor, children: children)
     }
     
+    public func inserting(children toInsert: [AbstractSyntaxTreeNode], at index: Int) -> TopLevel {
+        var children1 = children
+        children1.insert(contentsOf: toInsert, at: index)
+        return withChildren(children1)
+    }
+    
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else {
             return false

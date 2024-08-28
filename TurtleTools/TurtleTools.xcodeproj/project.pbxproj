@@ -94,6 +94,7 @@
 		6F300DCB266A90CC00BFBAC4 /* TurtleCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; };
 		6F300DCC266A90CC00BFBAC4 /* TurtleCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB0D28B24710C26003B5D5C /* TurtleCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6F300DD1266A913B00BFBAC4 /* AssemblerCommandLineDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F300DD0266A913B00BFBAC4 /* AssemblerCommandLineDriver.swift */; };
+		6F3227562C7F85CE00BF3CE2 /* CompilerPassEraseSeq.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3227552C7F85CE00BF3CE2 /* CompilerPassEraseSeq.swift */; };
 		6F3443FD2B5F55EE002593F2 /* DebugConsoleActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3443FC2B5F55EE002593F2 /* DebugConsoleActor.swift */; };
 		6F35B4362628ABF6004EA0AB /* DebugConsole.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F35B4352628ABF6004EA0AB /* DebugConsole.swift */; };
 		6F35B4552628AC80004EA0AB /* TextViewLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F790AEA22EEE6C400B38267 /* TextViewLogger.swift */; };
@@ -622,6 +623,7 @@
 		6F300DC0266A906F00BFBAC4 /* TurtleAssembler */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TurtleAssembler; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F300DC2266A906F00BFBAC4 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		6F300DD0266A913B00BFBAC4 /* AssemblerCommandLineDriver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCommandLineDriver.swift; sourceTree = "<group>"; };
+		6F3227552C7F85CE00BF3CE2 /* CompilerPassEraseSeq.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassEraseSeq.swift; sourceTree = "<group>"; };
 		6F3443FC2B5F55EE002593F2 /* DebugConsoleActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugConsoleActor.swift; sourceTree = "<group>"; };
 		6F35B4352628ABF6004EA0AB /* DebugConsole.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugConsole.swift; sourceTree = "<group>"; };
 		6F3987652814BBF600C601AE /* InstructionDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionDecoder.swift; sourceTree = "<group>"; };
@@ -1214,6 +1216,7 @@
 				6F1F3B772C7D0001008C2EEB /* CompilerPassAssert.swift */,
 				6F6A2EED2C5C5C6C004A25F5 /* CompilerPassClearSymbols.swift */,
 				6F20F9392C744D4300415E35 /* CompilerPassEraseSourceAnchor.swift */,
+				6F3227552C7F85CE00BF3CE2 /* CompilerPassEraseSeq.swift */,
 				6F7CCE692C67FA9D00F435F1 /* CompilerPassForIn.swift */,
 				6F058A302C59837E00B3FA82 /* CompilerPassGenerics.swift */,
 				6F1F3B792C7D00CA008C2EEB /* CompilerPassIf.swift */,
@@ -2049,6 +2052,7 @@
 				6F2940A9248306EC00C50ABA /* While.swift in Sources */,
 				6F3F00F8274F736C00875339 /* SnapSubcompilerSubroutine.swift in Sources */,
 				6FBCFA5626F5121A00193819 /* StructMemberFunctionCallMatcher.swift in Sources */,
+				6F3227562C7F85CE00BF3CE2 /* CompilerPassEraseSeq.swift in Sources */,
 				6FD2735826C9BAD400749CDA /* SnapSubcompilerIf.swift in Sources */,
 				6F2940CF2483A13B00C50ABA /* Expression.swift in Sources */,
 				6FF75BA62486C31000F55625 /* SnapCommandLineArgumentParser.swift in Sources */,

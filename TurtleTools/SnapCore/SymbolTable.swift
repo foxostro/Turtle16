@@ -984,7 +984,7 @@ public class SymbolTable: NSObject {
     
     // This is a code sequence which needs to execute when entering this scope.
     // Used to insert code for setting up vtables and such.
-    public var scopePrologue: Seq = Seq()
+    public var scopePrologue: Seq = Seq(tags: [.scopePrologue])
     
     public enum EnclosingFunctionType: Hashable, Equatable {
         case inherit, set(FunctionType?)

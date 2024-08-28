@@ -1315,7 +1315,7 @@ public class SymbolTable: NSObject {
         declarationOrder = []
         symbolTable.removeAll()
         typeTable.removeAll()
-        scopePrologue = Seq()
+        scopePrologue = Seq(tags: [.scopePrologue])
         modulesAlreadyImported = []
     }
 }

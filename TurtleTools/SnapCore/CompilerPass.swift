@@ -111,9 +111,10 @@ public class CompilerPass: NSObject {
         return Subroutine(sourceAnchor: node.sourceAnchor, identifier: node.identifier, children: children)
     }
     
-    public func visit(seq node: Seq) throws -> AbstractSyntaxTreeNode? {
-        let children = try node.children.compactMap { try visit($0) }
-        return Seq(sourceAnchor: node.sourceAnchor, children: children)
+    public func visit(seq seq0: Seq) throws -> AbstractSyntaxTreeNode? {
+        let children = try seq0.children.compactMap { try visit($0) }
+        let seq1 = seq0.withChildren(children)
+        return seq1
     }
     
     public func visit(varDecl node: VarDeclaration) throws -> AbstractSyntaxTreeNode? {

@@ -11,6 +11,21 @@ import TurtleCore
 import SnapCore
 
 final class CompilerPassWithDeclScanTests: XCTestCase {
+    var testName: String {
+        let regex = try! NSRegularExpression(pattern: #"\[\w+\s+(?<testName>\w+)\]"#)
+        if let match = regex.firstMatch(in: name, range: NSRange(name.startIndex..., in: name)) {
+            let nsRange = match.range(withName: "testName")
+            if let range = Range(nsRange, in: name) {
+                return String(name[range])
+            }
+        }
+        return ""
+    }
+    
+    func parse(_ text: String) throws -> TopLevel {
+        try SnapCore.parse(text: text, url: URL(fileURLWithPath: testName))
+    }
+    
     func testInit() {
         let _ = CompilerPassWithDeclScan()
     }
@@ -190,5 +205,28 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
         let putsSymbol = try vtableStructType.symbols.resolve(identifier: "puts")
         XCTAssertEqual(putsSymbol.type, .pointer(.function(FunctionType(returnType: .void, arguments: [.pointer(.void), .dynamicArray(elementType: .arithmeticType(.mutableInt(.u8)))]))))
         XCTAssertEqual(putsSymbol.offset, 0)
+    }
+    
+    func testScanMatchClause() throws {
+        let input = try parse("""
+            let foo: bool | u16 = true
+            match foo {
+                (bar: bool) -> { let qux = false }
+                else -> { let quux = false }
+            }
+            """)
+            .replaceTopLevelWithBlock()
+            .reconnect(parent: nil)
+        
+        let children = (input as! Block).children
+        let match = children.last as! Match
+        let clauseSymbols = match.clauses.first!.block.symbols
+        let elseSymbols = match.elseClause!.symbols
+        
+        _ = try CompilerPassWithDeclScan(globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())).run(input)
+        
+        XCTAssertNoThrow(try elseSymbols.resolve(identifier: "quux"))
+        XCTAssertNoThrow(try clauseSymbols.resolve(identifier: "qux"))
+        XCTAssertNoThrow(try clauseSymbols.resolve(identifier: "bar"))
     }
 }

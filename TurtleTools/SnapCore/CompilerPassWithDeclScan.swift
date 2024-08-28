@@ -153,6 +153,14 @@ public class CompilerPassWithDeclScan: CompilerPass {
         symbols.modulesAlreadyImported.insert(name)
     }
     
+    public func scan(block: Block, clause: Match.Clause, in match: Match) throws {
+        let symbols = clause.block.symbols
+        let clauseType = try TypeContextTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment).check(expression: clause.valueType)
+        symbols.bind(identifier: clause.valueIdentifier.identifier,
+                     symbol: Symbol(type: clauseType))
+        try scan(block: clause.block)
+    }
+    
     public override func willVisit(block node: Block) throws {
         try super.willVisit(block: node)
         try scan(block: node)
@@ -174,6 +182,11 @@ public class CompilerPassWithDeclScan: CompilerPass {
             globalEnvironment: globalEnvironment)
         .compile(node1)
         return node1
+    }
+    
+    public override func willVisit(block: Block, clause: Match.Clause, in match: Match) throws {
+        try super.willVisit(block: block, clause: clause, in: match)
+        try scan(block: block, clause: clause, in: match)
     }
 }
 

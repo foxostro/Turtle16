@@ -81,6 +81,7 @@ final class CompilerPassMatchTests: XCTestCase {
                          valueType: Expression.Identifier("None"),
                          block: Block(children: []))
         ], elseClause: nil)
+            .reconnect(parent: symbols)
         let compiler = CompilerPassMatch(symbols: symbols, globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL()))
         XCTAssertThrowsError(try compiler.run(input)) {
             let compilerError = $0 as? CompilerError

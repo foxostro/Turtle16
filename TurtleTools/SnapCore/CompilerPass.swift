@@ -266,9 +266,29 @@ public class CompilerPass: NSObject {
                     sourceAnchor: $0.sourceAnchor,
                     valueIdentifier: try visit(identifier: $0.valueIdentifier) as! Expression.Identifier,
                     valueType: try visit(expr: $0.valueType)!,
-                    block: try visit(block: $0.block) as! Block)
+                    block: try visit(clause: $0, in: node))
             },
             elseClause: try visit(node.elseClause) as? Block)
+    }
+    
+    private func visit(clause: Match.Clause, in match: Match) throws -> Block {
+        let node0 = clause.block
+        try willVisit(block: node0, clause: clause, in: match)
+        let node1 = node0.withChildren(try node0.children.compactMap {
+            try visit($0)
+        })
+        didVisit(block: node0, clause: clause, in: match)
+        return node1
+    }
+    
+    /// Called when the compiler pass is about to visit the specified match clause's block
+    public func willVisit(block: Block, clause: Match.Clause, in match: Match) throws {
+        env.push(block.symbols)
+    }
+    
+    /// Called when the compiler pass has just visited the specified match clause's block
+    public func didVisit(block: Block, clause: Match.Clause, in match: Match) {
+        env.pop()
     }
     
     public func visit(assert node: Assert) throws -> AbstractSyntaxTreeNode? {

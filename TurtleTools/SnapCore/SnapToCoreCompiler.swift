@@ -78,7 +78,7 @@ public class SnapToCoreCompiler: NSObject {
 extension AbstractSyntaxTreeNode {
     // The parser gives us an AST with a TopLevel node at the root. This node
     // should be replaced by a Block node.
-    fileprivate func replaceTopLevelWithBlock() -> AbstractSyntaxTreeNode {
+    public func replaceTopLevelWithBlock() -> AbstractSyntaxTreeNode {
         guard let top = self as? TopLevel else { return self }
         let block = Block(sourceAnchor: top.sourceAnchor,
                           symbols: SymbolTable(),

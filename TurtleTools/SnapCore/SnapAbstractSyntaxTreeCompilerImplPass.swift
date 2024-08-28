@@ -114,7 +114,9 @@ extension AbstractSyntaxTreeNode {
     // Rewrite higher-level nodes in terms of trees of lower-level nodes
     public func implPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
         let node0 = self
-        let node1 = try node0.clearSymbols(globalEnvironment)
+        let node1 = try node0
+            .clearSymbols(globalEnvironment)?
+            .eraseSeq { $0.tags.contains(.scopePrologue) }
         let node2 = try SnapAbstractSyntaxTreeCompilerImplPass(globalEnvironment: globalEnvironment).run(node1)
         return node2
     }

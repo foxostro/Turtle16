@@ -161,6 +161,23 @@ public class CompilerPassWithDeclScan: CompilerPass {
         try scan(block: clause.block)
     }
     
+    public override func visit(block block0: Block) throws -> AbstractSyntaxTreeNode? {
+        try willVisit(block: block0)
+        let block1 = block0.withChildren(try block0.children.compactMap {
+            try visit($0)
+        })
+        let block2 = try consumeScopePrologue(block1)
+        didVisit(block: block0)
+        return block2
+    }
+    
+    private func consumeScopePrologue(_ block1: Block) throws -> Block {
+        guard let symbols else { return block1 }
+        let block2 = block1.inserting(seq: symbols.scopePrologue, at: 0)
+        symbols.scopePrologue = symbols.scopePrologue.withChildren([])
+        return block2
+    }
+    
     public override func willVisit(block node: Block) throws {
         try super.willVisit(block: node)
         try scan(block: node)

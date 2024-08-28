@@ -3300,18 +3300,18 @@ class CoreToTackCompilerTests: XCTestCase {
         .visit(ast1)
 
         let expected = Seq(children: [
-            TackInstructionNode(.lip(.p(8), 0x0110)), // TODO: make sure the optimizer can remove dead stores like this one
-            TackInstructionNode(.lip(.p(0), 0x0110)),
-            TackInstructionNode(.lip(.p(1), 0x0112)),
-            TackInstructionNode(.addip(.p(2), .p(1), 0)),
-            TackInstructionNode(.lip(.p(3), 0x0110)),
-            TackInstructionNode(.sp(.p(3), .p(2), 0)),
-            TackInstructionNode(.lip(.p(4), 0x0112)),
-            TackInstructionNode(.addip(.p(5), .p(4), 1)),
-            TackInstructionNode(.lip(.p(6), 0x0110)),
-            TackInstructionNode(.sp(.p(6), .p(5), 0)),
-            TackInstructionNode(.lip(.p(7), 0x0112)),
-            TackInstructionNode(.memcpy(.p(0), .p(7), 2))
+            TackInstructionNode(.lip(.p(0), 0x0110)), // TODO: make sure the optimizer can remove dead stores like this one
+            TackInstructionNode(.lip(.p(1), 0x0110)),
+            TackInstructionNode(.lip(.p(2), 0x0112)),
+            TackInstructionNode(.addip(.p(3), .p(2), 0)),
+            TackInstructionNode(.lip(.p(4), 0x0110)),
+            TackInstructionNode(.sp(.p(4), .p(3), 0)),
+            TackInstructionNode(.lip(.p(5), 0x0112)),
+            TackInstructionNode(.addip(.p(6), .p(5), 1)),
+            TackInstructionNode(.lip(.p(7), 0x0110)),
+            TackInstructionNode(.sp(.p(7), .p(6), 0)),
+            TackInstructionNode(.lip(.p(8), 0x0112)),
+            TackInstructionNode(.memcpy(.p(1), .p(8), 2))
         ])
         XCTAssertEqual(actual, expected)
     }
@@ -3352,18 +3352,18 @@ class CoreToTackCompilerTests: XCTestCase {
         .visit(ast1)
 
         let expected = Seq(children: [
-            TackInstructionNode(.lip(.p(8), 0x0110)), // TODO: make sure the optimizer can remove dead stores like this one
-            TackInstructionNode(.lip(.p(0), 0x0110)),
-            TackInstructionNode(.lip(.p(1), 0x0112)),
-            TackInstructionNode(.addip(.p(2), .p(1), 0)),
-            TackInstructionNode(.lip(.p(3), 0x0110)),
-            TackInstructionNode(.sp(.p(3), .p(2), 0)),
-            TackInstructionNode(.lip(.p(4), 0x0112)),
-            TackInstructionNode(.addip(.p(5), .p(4), 1)),
-            TackInstructionNode(.lip(.p(6), 0x0110)),
-            TackInstructionNode(.sp(.p(6), .p(5), 0)),
-            TackInstructionNode(.lip(.p(7), 0x0112)),
-            TackInstructionNode(.memcpy(.p(0), .p(7), 2))
+            TackInstructionNode(.lip(.p(0), 0x0110)), // TODO: make sure the optimizer can remove dead stores like this one
+            TackInstructionNode(.lip(.p(1), 0x0110)),
+            TackInstructionNode(.lip(.p(2), 0x0112)),
+            TackInstructionNode(.addip(.p(3), .p(2), 0)),
+            TackInstructionNode(.lip(.p(4), 0x0110)),
+            TackInstructionNode(.sp(.p(4), .p(3), 0)),
+            TackInstructionNode(.lip(.p(5), 0x0112)),
+            TackInstructionNode(.addip(.p(6), .p(5), 1)),
+            TackInstructionNode(.lip(.p(7), 0x0110)),
+            TackInstructionNode(.sp(.p(7), .p(6), 0)),
+            TackInstructionNode(.lip(.p(8), 0x0112)),
+            TackInstructionNode(.memcpy(.p(1), .p(8), 2))
         ])
         XCTAssertEqual(actual, expected)
     }

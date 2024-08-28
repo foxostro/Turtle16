@@ -8,6 +8,7 @@
 
 import TurtleCore
 
+/// Represents a code block with associated symbols
 public class Block: AbstractSyntaxTreeNode {
     public let symbols: SymbolTable
     public let children: [AbstractSyntaxTreeNode]
@@ -24,6 +25,7 @@ public class Block: AbstractSyntaxTreeNode {
         super.init(sourceAnchor: sourceAnchor)
     }
     
+    /// Returns a new block, replacing the block's source anchor
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Block {
         Block(sourceAnchor: sourceAnchor,
               symbols: symbols,
@@ -31,6 +33,7 @@ public class Block: AbstractSyntaxTreeNode {
               id: id)
     }
     
+    /// Returns a new block, replacing the block's symbols
     public func withSymbols(_ symbols: SymbolTable) -> Block {
         Block(sourceAnchor: sourceAnchor,
               symbols: symbols,
@@ -38,6 +41,7 @@ public class Block: AbstractSyntaxTreeNode {
               id: id)
     }
     
+    /// Returns a new block, replacing the block's children
     public func withChildren(_ children: [AbstractSyntaxTreeNode]) -> Block {
         Block(sourceAnchor: sourceAnchor,
               symbols: symbols,
@@ -45,6 +49,7 @@ public class Block: AbstractSyntaxTreeNode {
               id: id)
     }
     
+    /// Returns a new block, which is a copy of this one, assigning a new ID to the block.
     public func withNewId() -> Block {
         Block(sourceAnchor: sourceAnchor,
               symbols: symbols,
@@ -52,6 +57,7 @@ public class Block: AbstractSyntaxTreeNode {
               id: ID())
     }
     
+    /// Returns a new block, which is a copy of this one, assigning new IDs to the block, and to each descendant block.
     public func clone() -> Block {
         class BlockCloner: CompilerPass {
             public override func visit(block block0: Block) throws -> AbstractSyntaxTreeNode? {
@@ -64,10 +70,21 @@ public class Block: AbstractSyntaxTreeNode {
         return try! BlockCloner().run(self) as! Block
     }
     
+    /// Returns a new block, inserting the children at the specified index.
     public func inserting(children toInsert: [AbstractSyntaxTreeNode], at index: Int) -> Block {
         var children1 = children
         children1.insert(contentsOf: toInsert, at: index)
         return withChildren(children1)
+    }
+    
+    /// Returns a new block which inserts the given Seq at the specified index, provided it is not empty.
+    public func inserting(seq toInsert: Seq, at index: Int) -> Block {
+        if toInsert.children.isEmpty {
+            self
+        }
+        else {
+            inserting(children: [toInsert], at: index)
+        }
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

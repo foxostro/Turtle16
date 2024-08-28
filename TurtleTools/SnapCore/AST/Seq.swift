@@ -66,8 +66,9 @@ public class Seq: AbstractSyntaxTreeNode {
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let leading = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let selfDesc = String(describing: type(of: self))
+        let tagsDesc = tags.isEmpty ? "" : "(tags: [\(tags.joined(separator: ", "))])"
         let childDesc = makeChildDescriptions(depth: depth + 1)
-        let result = "\(leading)\(selfDesc)\(childDesc)"
+        let result = "\(leading)\(selfDesc)\(tagsDesc)\(childDesc)"
         return result
     }
     

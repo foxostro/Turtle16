@@ -748,12 +748,10 @@ trait \(name) {
     }
     
     public func makeMembersDescription() -> String {
-        var members: [String] = []
-        for (name, symbol) in symbols.symbolTable {
-            members.append("\(name): \(symbol.type)")
+        members.map { name, type in
+            "\t\(name): \(type)"
         }
-        let result = members.map({"\t\($0)"}).joined(separator: ",\n")
-        return result
+        .joined(separator: ",\n")
     }
     
     public static func ==(lhs: TraitType, rhs: TraitType) -> Bool {
@@ -799,6 +797,12 @@ trait \(name) {
         hasher.combine(nameOfVtableType)
         hasher.combine(symbols)
         return hasher.finalize()
+    }
+    
+    var members: [(name: String, type: SymbolType)] {
+        symbols.symbolTable.map { name, symbol in
+            (name: name, type: symbol.type)
+        }
     }
 }
 

@@ -118,37 +118,6 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
             globalEnvironment: globalEnvironment).compile(structDecl)
     }
     
-    private func rewriteTraitMemberTypeForVtable(_ traitName: String, _ expr: Expression) -> Expression {
-        if let functionType = (expr as? Expression.PointerType)?.typ as? Expression.FunctionType {
-            if let arg0 = functionType.arguments.first {
-                if ((arg0 as? Expression.PointerType)?.typ as? Expression.Identifier)?.identifier == traitName {
-                    var arguments: [Expression] = functionType.arguments
-                    arguments[0] = Expression.PointerType(Expression.PrimitiveType(.void))
-                    let modifiedFunctionType = Expression.FunctionType(returnType: functionType.returnType, arguments: arguments)
-                    return Expression.PointerType(modifiedFunctionType)
-                }
-                
-                if (((arg0 as? Expression.PointerType)?.typ as? Expression.ConstType)?.typ as? Expression.Identifier)?.identifier == traitName {
-                    var arguments: [Expression] = functionType.arguments
-                    arguments[0] = Expression.PointerType(Expression.PrimitiveType(.void))
-                    let modifiedFunctionType = Expression.FunctionType(returnType: functionType.returnType, arguments: arguments)
-                    return Expression.PointerType(modifiedFunctionType)
-                }
-                
-                if let pointerType = arg0 as? Expression.PointerType,
-                   let app = pointerType.typ as? Expression.GenericTypeApplication,
-                   app.identifier.identifier == traitName {
-                    var arguments: [Expression] = functionType.arguments
-                    arguments[0] = Expression.PointerType(Expression.PrimitiveType(.void))
-                    let modifiedFunctionType = Expression.FunctionType(returnType: functionType.returnType, arguments: arguments)
-                    return Expression.PointerType(modifiedFunctionType)
-                }
-            }
-        }
-        
-        return expr
-    }
-    
     private func declareTraitObjectType(_ traitDecl: TraitDeclaration) throws {
         let members: [StructDeclaration.Member] = [
             StructDeclaration.Member(name: "object", type: Expression.PointerType(Expression.PrimitiveType(.void))),
@@ -237,4 +206,35 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
         
         return functionType
     }
+}
+
+func rewriteTraitMemberTypeForVtable(_ traitName: String, _ expr: Expression) -> Expression {
+    if let functionType = (expr as? Expression.PointerType)?.typ as? Expression.FunctionType {
+        if let arg0 = functionType.arguments.first {
+            if ((arg0 as? Expression.PointerType)?.typ as? Expression.Identifier)?.identifier == traitName {
+                var arguments: [Expression] = functionType.arguments
+                arguments[0] = Expression.PointerType(Expression.PrimitiveType(.void))
+                let modifiedFunctionType = Expression.FunctionType(returnType: functionType.returnType, arguments: arguments)
+                return Expression.PointerType(modifiedFunctionType)
+            }
+            
+            if (((arg0 as? Expression.PointerType)?.typ as? Expression.ConstType)?.typ as? Expression.Identifier)?.identifier == traitName {
+                var arguments: [Expression] = functionType.arguments
+                arguments[0] = Expression.PointerType(Expression.PrimitiveType(.void))
+                let modifiedFunctionType = Expression.FunctionType(returnType: functionType.returnType, arguments: arguments)
+                return Expression.PointerType(modifiedFunctionType)
+            }
+            
+            if let pointerType = arg0 as? Expression.PointerType,
+               let app = pointerType.typ as? Expression.GenericTypeApplication,
+               app.identifier.identifier == traitName {
+                var arguments: [Expression] = functionType.arguments
+                arguments[0] = Expression.PointerType(Expression.PrimitiveType(.void))
+                let modifiedFunctionType = Expression.FunctionType(returnType: functionType.returnType, arguments: arguments)
+                return Expression.PointerType(modifiedFunctionType)
+            }
+        }
+    }
+    
+    return expr
 }

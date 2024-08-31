@@ -17,7 +17,8 @@ final class CompilerPassGenericsTests: XCTestCase {
     fileprivate func makeGenericFunctionDeclaration(_ parentSymbols: SymbolTable = SymbolTable()) -> FunctionDeclaration {
         parse("""
             func foo[T](a: T) -> T {
-                return a
+                let b: T = a
+                return b
             }
             """)
             .children.last!

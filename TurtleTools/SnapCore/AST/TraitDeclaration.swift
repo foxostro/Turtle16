@@ -78,7 +78,7 @@ public class TraitDeclaration: AbstractSyntaxTreeNode {
             members: traitType.symbols.symbolTable.map {
                 TraitDeclaration.Member(
                     name: $0.key,
-                    type: Expression.PrimitiveType($0.value.type))
+                    type: $0.value.type.lift)
             },
             visibility: .privateVisibility)
     }

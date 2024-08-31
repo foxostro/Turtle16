@@ -321,11 +321,11 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         case .constTraitType:
             Expression.ConstType(Expression.PrimitiveType(self.correspondingMutableType))
             
-        case .traitType:
-            Expression.PrimitiveType(self)
+        case .traitType(let typ):
+            Expression.Identifier(typ.name)
             
-        case .genericTraitType:
-            Expression.PrimitiveType(self)
+        case .genericTraitType(let typ):
+            Expression.Identifier(typ.name)
             
         case .unionType(let typ):
             Expression.UnionType(typ.members.map { $0.lift })

@@ -15,24 +15,13 @@ final class CompilerPassGenericsTests: XCTestCase {
     fileprivate let u16 = SymbolType.arithmeticType(.mutableInt(.u16))
     
     fileprivate func makeGenericFunctionDeclaration(_ parentSymbols: SymbolTable = SymbolTable()) -> FunctionDeclaration {
-        let funSym = SymbolTable(parent: parentSymbols, frameLookupMode: .set(Frame()))
-        return FunctionDeclaration(
-            identifier: Expression.Identifier("foo"),
-            functionType: Expression.FunctionType(
-                name: "foo",
-                returnType: Expression.Identifier("T"),
-                arguments: [Expression.Identifier("T")]),
-            argumentNames: ["a"],
-            typeArguments: [
-                Expression.GenericTypeArgument(
-                    identifier: Expression.Identifier("T"),
-                    constraints: [])
-            ],
-            body: Block(symbols: SymbolTable(parent: funSym), children: [
-                Return(Expression.Identifier("a"))
-            ]),
-            visibility: .privateVisibility,
-            symbols: funSym)
+        parse("""
+            func foo[T](a: T) -> T {
+                return a
+            }
+            """)
+            .children.last!
+            .reconnect(parent: parentSymbols) as! FunctionDeclaration
     }
     
     fileprivate func addGenericFunctionSymbol(_ symbols: SymbolTable) -> SymbolTable {
@@ -575,5 +564,22 @@ final class CompilerPassGenericsTests: XCTestCase {
         let ast1 = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).run(ast0)
         
         XCTAssertEqual(ast1, expected)
+    }
+}
+
+fileprivate extension XCTestCase {
+    var testName: String {
+        let regex = try! NSRegularExpression(pattern: #"\[\w+\s+(?<testName>\w+)\]"#)
+        if let match = regex.firstMatch(in: name, range: NSRange(name.startIndex..., in: name)) {
+            let nsRange = match.range(withName: "testName")
+            if let range = Range(nsRange, in: name) {
+                return String(name[range])
+            }
+        }
+        return ""
+    }
+    
+    func parse(_ text: String) -> TopLevel {
+        try! SnapCore.parse(text: text, url: URL(fileURLWithPath: testName))
     }
 }

@@ -804,6 +804,18 @@ trait \(name) {
             (name: name, type: symbol.type)
         }
     }
+    
+    var vtableStructDeclaration: StructDeclaration {
+        let structDecl = StructDeclaration(
+            identifier: Expression.Identifier(nameOfVtableType),
+            members: members.map { name, type in
+                StructDeclaration.Member(
+                    name: name,
+                    type: rewriteTraitMemberTypeForVtable(name, Expression.PrimitiveType(type)))
+            },
+            isConst: true)
+        return structDecl
+    }
 }
 
 public class GenericTraitType: NSObject {

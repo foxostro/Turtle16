@@ -517,15 +517,12 @@ public class RvalueExpressionTypeChecker: NSObject {
              (.pointer(let a), .traitType(let b)),
              (.constPointer(let a), .constTraitType(let b)),
              (.pointer(let a), .constTraitType(let b)):
+            let traitType: TraitType = b
             switch a {
             case .constStructType(let structType), .structType(let structType):
-                let nameOfVtableInstance = "__\(b.name)_\(structType.name)_vtable_instance"
-                let vtableInstance = symbols.maybeResolve(identifier: nameOfVtableInstance)
-                if vtableInstance != nil {
+                let conforms = doesStructConformToVtable(structType, traitType)
+                if conforms {
                     return .acceptable(ltype)
-                }
-                else {
-                    print("missing vtable: \(nameOfVtableInstance)")
                 }
             
             default:
@@ -569,6 +566,20 @@ public class RvalueExpressionTypeChecker: NSObject {
             return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
         default:
             return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
+        }
+    }
+    
+    private func areTypesConvertible(ltype: SymbolType, rtype: SymbolType) -> Bool {
+        let status = convertBetweenTypes(
+            ltype: ltype,
+            rtype: rtype,
+            sourceAnchor: nil,
+            messageWhenNotConvertible: "",
+            isExplicitCast: false)
+        
+        return switch status {
+        case .acceptable:   false
+        case .unacceptable: true
         }
     }
     
@@ -1287,5 +1298,25 @@ public class RvalueExpressionTypeChecker: NSObject {
     func unsupportedError(expression: Expression) -> Error {
         return CompilerError(sourceAnchor: expression.sourceAnchor,
                              message: "unsupported expression: \(expression)")
+    }
+    
+    private func doesStructConformToVtable(_ structType: StructType,
+                                           _ traitType: TraitType) -> Bool {
+        vtableType(traitType).symbols.symbolTable
+            .allSatisfy { name, traitSymbol in
+                let structSymbol = structType.symbols.symbolTable[name]
+                guard let structSymbol else { return false }
+                let conforms = areTypesConvertible(ltype: traitSymbol.type,
+                                                   rtype: structSymbol.type)
+                return conforms
+            }
+    }
+    
+    private func vtableType(_ traitType: TraitType) -> StructType {
+        try! SnapSubcompilerStructDeclaration(
+            symbols: SymbolTable(parent: symbols),
+            globalEnvironment: globalEnvironment)
+            .compile(traitType.vtableStructDeclaration)
+            .unwrapStructType()
     }
 }

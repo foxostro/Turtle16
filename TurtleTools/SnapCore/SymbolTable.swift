@@ -255,6 +255,82 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             return typ.description
         }
     }
+    
+    public var lift: Expression {
+        switch self {
+        case .void:
+            Expression.PrimitiveType(.void)
+            
+        case .function(let typ):
+            Expression.FunctionType(
+                name: typ.name,
+                returnType: typ.returnType.lift,
+                arguments: typ.arguments.map { $0.lift })
+            
+        case .genericFunction(let typ):
+            Expression.GenericFunctionType(
+                template: typ.template,
+                enclosingImplId: typ.enclosingImplId)
+            
+        case .bool(let typ):
+            switch typ {
+            case .compTimeBool(let val):
+                Expression.LiteralBool(val)
+            case .immutableBool:
+                Expression.ConstType(Expression.PrimitiveType(.bool(.mutableBool)))
+            case .mutableBool:
+                Expression.PrimitiveType(.bool(.mutableBool))
+            }
+            
+        case .arithmeticType(let typ):
+            switch typ {
+            case .compTimeInt(let val):
+                Expression.LiteralInt(val)
+            case .immutableInt(let cls):
+                Expression.ConstType(Expression.PrimitiveType(.arithmeticType(.mutableInt(cls))))
+            case .mutableInt(let cls):
+                Expression.PrimitiveType(.arithmeticType(.mutableInt(cls)))
+            }
+            
+        case .array(count: let count, elementType: let elementType):
+            Expression.ArrayType(
+                count: count == nil ? nil : Expression.LiteralInt(count!),
+                elementType: elementType.lift)
+            
+        case .constDynamicArray(elementType: let elementType):
+            Expression.ConstType(Expression.DynamicArrayType(elementType.lift))
+            
+        case .dynamicArray(elementType: let elementType):
+            Expression.DynamicArrayType(elementType.lift)
+            
+        case .constPointer(let typ):
+            Expression.ConstType(typ.correspondingMutableType.lift)
+            
+        case .pointer(let typ):
+            typ.lift
+            
+        case .constStructType:
+            Expression.ConstType(Expression.PrimitiveType(self.correspondingMutableType))
+                                 
+        case .structType:
+            Expression.PrimitiveType(self)
+            
+        case .genericStructType:
+            Expression.PrimitiveType(self)
+            
+        case .constTraitType:
+            Expression.ConstType(Expression.PrimitiveType(self.correspondingMutableType))
+            
+        case .traitType:
+            Expression.PrimitiveType(self)
+            
+        case .genericTraitType:
+            Expression.PrimitiveType(self)
+            
+        case .unionType(let typ):
+            Expression.UnionType(typ.members.map { $0.lift })
+        }
+    }
 }
 
 public enum SymbolStorage: Equatable {
@@ -811,7 +887,7 @@ trait \(name) {
             members: members.map { name, type in
                 StructDeclaration.Member(
                     name: name,
-                    type: rewriteTraitMemberTypeForVtable(name, Expression.PrimitiveType(type)))
+                    type: rewriteTraitMemberTypeForVtable(name, type.lift))
             },
             isConst: true)
         return structDecl

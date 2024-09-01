@@ -13,6 +13,22 @@ import SnapCore
 final class CompilerPassGenericsTests: XCTestCase {
     fileprivate let constU16 = SymbolType.arithmeticType(.immutableInt(.u16))
     fileprivate let u16 = SymbolType.arithmeticType(.mutableInt(.u16))
+    fileprivate let u8 = SymbolType.arithmeticType(.mutableInt(.u8))
+    
+    fileprivate var testName: String {
+        let regex = try! NSRegularExpression(pattern: #"\[\w+\s+(?<testName>\w+)\]"#)
+        if let match = regex.firstMatch(in: name, range: NSRange(name.startIndex..., in: name)) {
+            let nsRange = match.range(withName: "testName")
+            if let range = Range(nsRange, in: name) {
+                return String(name[range])
+            }
+        }
+        return ""
+    }
+    
+    fileprivate func parse(_ text: String) -> TopLevel {
+        try! SnapCore.parse(text: text, url: URL(fileURLWithPath: testName))
+    }
     
     fileprivate func makeGenericFunctionDeclaration(_ parentSymbols: SymbolTable = SymbolTable()) -> FunctionDeclaration {
         parse("""
@@ -46,25 +62,6 @@ final class CompilerPassGenericsTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
     
-    // The concrete instantiation of the function is inserted into the queue
-    // to be compiled later.
-    func testGenericFunctionApplicationCausesConcreteFunctionToBeQueued() throws {
-        let symbols = addGenericFunctionSymbol(SymbolTable())
-        let expr = Expression.GenericTypeApplication(
-            identifier: Expression.Identifier("foo"),
-            arguments: [Expression.PrimitiveType(constU16)])
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        let compiler = CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment)
-        _ = try compiler.visit(expr: expr)
-        
-        XCTAssertFalse(globalEnvironment.functionsToCompile.isEmpty)
-        let funTyp = globalEnvironment.functionsToCompile.removeFirst()
-        XCTAssertEqual(funTyp.mangledName, "__foo_const_u16")
-        XCTAssertEqual(funTyp.name, "foo")
-        XCTAssertEqual(funTyp.arguments, [constU16])
-        XCTAssertEqual(funTyp.returnType, constU16)
-    }
-    
     // The concrete instantiation of the function is added to the symbol table.
     func testGenericFunctionApplicationCausesConcreteFunctionToBeAddedToSymbolTable() throws {
         let symbols = addGenericFunctionSymbol(SymbolTable())
@@ -79,7 +76,7 @@ final class CompilerPassGenericsTests: XCTestCase {
         switch sym.type {
         case .function(let funTyp):
             XCTAssertEqual(funTyp.mangledName, "__foo_const_u16")
-            XCTAssertEqual(funTyp.name, "foo")
+            XCTAssertEqual(funTyp.name, "__foo_const_u16")
             XCTAssertEqual(funTyp.arguments, [constU16])
             XCTAssertEqual(funTyp.returnType, constU16)
             
@@ -88,7 +85,8 @@ final class CompilerPassGenericsTests: XCTestCase {
         }
     }
     
-    // The generic function declaration is erased from the AST.
+    // The generic function declaration is erased from the AST
+    // The body of a generic function is not compiled before concrete instantiation
     func testGenericFunctionDeclarationIsErasedFromAST() throws {
         let ast0 = Block(children: [
             makeGenericFunctionDeclaration()
@@ -146,9 +144,6 @@ final class CompilerPassGenericsTests: XCTestCase {
         ])
         
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        
-        _ = try CompilerPassWithDeclScan(globalEnvironment: globalEnvironment).run(ast0)
-        
         let ast1 = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).run(ast0)
         
         XCTAssertEqual(ast1, expected)
@@ -203,7 +198,6 @@ final class CompilerPassGenericsTests: XCTestCase {
         ])
         
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        _ = try CompilerPassWithDeclScan(globalEnvironment: globalEnvironment).run(ast0)
         let ast1 = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).run(ast0)
         
         XCTAssertEqual(ast1, expected)
@@ -343,7 +337,6 @@ final class CompilerPassGenericsTests: XCTestCase {
         ])
         
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        _ = try CompilerPassWithDeclScan(globalEnvironment: globalEnvironment).run(ast0)
         let _ = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).run(ast0)
         
         switch try symbols.resolveType(identifier: "__foo_u16") {
@@ -404,7 +397,191 @@ final class CompilerPassGenericsTests: XCTestCase {
         ])
         
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        _ = try CompilerPassWithDeclScan(globalEnvironment: globalEnvironment).run(ast0)
+        let ast1 = try CompilerPassGenerics(symbols: nil, globalEnvironment: globalEnvironment).run(ast0)
+        
+        XCTAssertEqual(ast1, expected)
+    }
+    
+    // Instantiating a generic struct with methods will emit AST nodes for the
+    // concrete struct as well as an Impl node for the methods.
+    // This test is for the case where the methods are not themselves generic.
+    func testInstantiatingGenericStructEmitsImplNodesForMethods_1() throws {
+        let symbols = SymbolTable()
+        let funSym = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))
+        let bodySym = SymbolTable(parent: funSym)
+        
+        let expected = Block(
+            symbols: symbols,
+            children: [
+                StructDeclaration(
+                    identifier: Expression.Identifier("__MyStruct_u16"),
+                    members: []),
+                Impl(
+                    typeArguments: [],
+                    structTypeExpr: Expression.Identifier("__MyStruct_u16"),
+                    children: [
+                        FunctionDeclaration(
+                            identifier: Expression.Identifier("foo"),
+                            functionType: Expression.FunctionType(
+                                name: "foo",
+                                returnType: Expression.PrimitiveType(u8),
+                                arguments: [Expression.PrimitiveType(u8)]),
+                            argumentNames: ["arg1"],
+                            typeArguments: [],
+                            body: Block(
+                                symbols: bodySym,
+                                children: [
+                                    Return(Expression.Identifier("arg1"))
+                                ]),
+                            symbols: funSym)
+                    ]),
+                Expression.StructInitializer(
+                    expr: Expression.Identifier("__MyStruct_u16"),
+                    arguments: [])
+            ])
+        
+        let ast0 = Block(
+            symbols: symbols,
+            children: [
+                StructDeclaration(
+                    identifier: Expression.Identifier("MyStruct"),
+                    typeArguments: [
+                        Expression.GenericTypeArgument(
+                            identifier: Expression.Identifier("T"),
+                            constraints: [])
+                    ],
+                    members: []),
+                Impl(
+                    typeArguments: [
+                        Expression.GenericTypeArgument(
+                            identifier: Expression.Identifier("T"),
+                            constraints: [])
+                    ],
+                    structTypeExpr: Expression.GenericTypeApplication(
+                        identifier: Expression.Identifier("MyStruct"),
+                        arguments: [
+                            Expression.Identifier("T")
+                        ]),
+                    children: [
+                        FunctionDeclaration(
+                            identifier: Expression.Identifier("foo"),
+                            functionType: Expression.FunctionType(
+                                name: "foo",
+                                returnType: Expression.PrimitiveType(u8),
+                                arguments: [Expression.PrimitiveType(u8)]),
+                            argumentNames: ["arg1"],
+                            typeArguments: [],
+                            body: Block(
+                                symbols: bodySym,
+                                children: [
+                                    Return(Expression.Identifier("arg1"))
+                                ]),
+                            symbols: funSym)
+                    ]),
+                Expression.StructInitializer(
+                    expr: Expression.GenericTypeApplication(
+                        identifier: Expression.Identifier("MyStruct"),
+                        arguments: [
+                            Expression.PrimitiveType(u16)
+                        ]),
+                    arguments: []),
+            ],
+            id: expected.id)
+        
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
+        let ast1 = try CompilerPassGenerics(symbols: nil, globalEnvironment: globalEnvironment).run(ast0)
+        
+        XCTAssertEqual(ast1, expected)
+    }
+    
+    // Instantiating a generic struct with methods will emit AST nodes for the
+    // concrete struct as well as an Impl node for the methods.
+    // This test is for the case where the methods use the Impl's generic type
+    // argument but are not otherwise generic themselves.
+    func testInstantiatingGenericStructEmitsImplNodesForMethods_2() throws {
+        let symbols = SymbolTable()
+        let funSym = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))
+        let bodySym = SymbolTable(parent: funSym)
+        
+        let expected = Block(
+            symbols: symbols,
+            children: [
+                StructDeclaration(
+                    identifier: Expression.Identifier("__MyStruct_u16"),
+                    members: []),
+                Impl(
+                    typeArguments: [],
+                    structTypeExpr: Expression.Identifier("__MyStruct_u16"),
+                    children: [
+                        FunctionDeclaration(
+                            identifier: Expression.Identifier("foo"),
+                            functionType: Expression.FunctionType(
+                                name: "foo",
+                                returnType: Expression.PrimitiveType(u16),
+                                arguments: [Expression.PrimitiveType(u16)]),
+                            argumentNames: ["arg1"],
+                            typeArguments: [],
+                            body: Block(
+                                symbols: bodySym,
+                                children: [
+                                    Return(Expression.Identifier("arg1"))
+                                ]),
+                            symbols: funSym)
+                    ]),
+                Expression.StructInitializer(
+                    expr: Expression.Identifier("__MyStruct_u16"),
+                    arguments: [])
+            ])
+        
+        let ast0 = Block(
+            symbols: symbols,
+            children: [
+                StructDeclaration(
+                    identifier: Expression.Identifier("MyStruct"),
+                    typeArguments: [
+                        Expression.GenericTypeArgument(
+                            identifier: Expression.Identifier("T"),
+                            constraints: [])
+                    ],
+                    members: []),
+                Impl(
+                    typeArguments: [
+                        Expression.GenericTypeArgument(
+                            identifier: Expression.Identifier("T"),
+                            constraints: [])
+                    ],
+                    structTypeExpr: Expression.GenericTypeApplication(
+                        identifier: Expression.Identifier("MyStruct"),
+                        arguments: [
+                            Expression.Identifier("T")
+                        ]),
+                    children: [
+                        FunctionDeclaration(
+                            identifier: Expression.Identifier("foo"),
+                            functionType: Expression.FunctionType(
+                                name: "foo",
+                                returnType: Expression.Identifier("T"),
+                                arguments: [Expression.Identifier("T")]),
+                            argumentNames: ["arg1"],
+                            typeArguments: [],
+                            body: Block(
+                                symbols: bodySym,
+                                children: [
+                                    Return(Expression.Identifier("arg1"))
+                                ]),
+                            symbols: funSym)
+                    ]),
+                Expression.StructInitializer(
+                    expr: Expression.GenericTypeApplication(
+                        identifier: Expression.Identifier("MyStruct"),
+                        arguments: [
+                            Expression.PrimitiveType(u16)
+                        ]),
+                    arguments: []),
+            ],
+            id: expected.id)
+        
+        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
         let ast1 = try CompilerPassGenerics(symbols: nil, globalEnvironment: globalEnvironment).run(ast0)
         
         XCTAssertEqual(ast1, expected)
@@ -464,7 +641,6 @@ final class CompilerPassGenericsTests: XCTestCase {
         ])
         
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        _ = try CompilerPassWithDeclScan(globalEnvironment: globalEnvironment).run(ast0)
         _ = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).run(ast0)
         
         switch try symbols.resolveType(identifier: "__MyTrait_u16") {
@@ -488,11 +664,11 @@ final class CompilerPassGenericsTests: XCTestCase {
                 members: [
                     TraitDeclaration.Member(
                         name: "foo",
-                        type: Expression.PrimitiveType(.pointer(.function(FunctionType(
+                        type: Expression.PointerType(Expression.FunctionType(
                             name: "foo",
-                            mangledName: "__MyTrait_u16_foo",
-                            returnType: u16,
-                            arguments: [u16])))))
+                            returnType: Expression.PrimitiveType(u16),
+                            arguments: [Expression.PrimitiveType(u16)]
+                        )))
                 ]),
             StructDeclaration(
                 identifier: Expression.Identifier("MyStruct"),
@@ -560,27 +736,176 @@ final class CompilerPassGenericsTests: XCTestCase {
                 ])
         ], id: expected.id)
         
+        let compiler = CompilerPassGenerics(symbols: symbols, globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()))
+        let ast1 = try compiler
+            .run(ast0)? // perform the actual compiler pass
+            .eraseSeq {
+                // remove scopePrologue because its irrelevant to this test
+                $0.tags.contains(.scopePrologue)
+            }
+        
+        XCTAssertEqual(ast1, expected)
+    }
+    
+    func testGetWhereMemberIsGenericTypeApp() throws {
+        let symbols = SymbolTable()
+        let funSym = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))
+        let bodySym = SymbolTable(parent: funSym)
+        
+        let blockId = AbstractSyntaxTreeNode.ID()
+        let implId = AbstractSyntaxTreeNode.ID()
+        
+        let expected = Block(
+            symbols: symbols,
+            children: [
+                StructDeclaration(
+                    identifier: Expression.Identifier("MyStruct"),
+                    members: []),
+                Impl(
+                    typeArguments: [],
+                    structTypeExpr: Expression.Identifier("MyStruct"),
+                    children: [
+                        FunctionDeclaration(
+                            identifier: Expression.Identifier("__foo_const_u16"),
+                            functionType: Expression.FunctionType(
+                                name: "__foo_const_u16",
+                                returnType: Expression.PrimitiveType(constU16),
+                                arguments: [Expression.PrimitiveType(constU16)]),
+                            argumentNames: ["arg1"],
+                            body: Block(
+                                symbols: bodySym,
+                                children: [
+                                    Return(Expression.Identifier("arg1"))
+                                ]),
+                            symbols: funSym)
+                    ],
+                    id: implId),
+                Expression.Call(
+                    callee: Expression.Get(
+                        expr: Expression.Identifier("MyStruct"),
+                        member: Expression.Identifier("__foo_const_u16")),
+                    arguments: [
+                        Expression.LiteralInt(0)
+                    ])
+            ],
+            id: blockId)
+        
+        let ast0 = Block(
+            symbols: symbols,
+            children: [
+                StructDeclaration(
+                    identifier: Expression.Identifier("MyStruct"),
+                    members: []),
+                Impl(
+                    typeArguments: [],
+                    structTypeExpr: Expression.Identifier("MyStruct"),
+                    children: [
+                        FunctionDeclaration(
+                            identifier: Expression.Identifier("foo"),
+                            functionType: Expression.FunctionType(
+                                name: "foo",
+                                returnType: Expression.Identifier("T"),
+                                arguments: [Expression.Identifier("T")]),
+                            argumentNames: ["arg1"],
+                            typeArguments: [
+                                Expression.GenericTypeArgument(
+                                    identifier: Expression.Identifier("T"),
+                                    constraints: [])
+                            ],
+                            body: Block(
+                                symbols: bodySym,
+                                children: [
+                                    Return(Expression.Identifier("arg1"))
+                                ]),
+                            symbols: funSym)
+                    ],
+                    id: implId),
+                Expression.Call(
+                    callee: Expression.Get(
+                        expr: Expression.Identifier("MyStruct"),
+                        member: Expression.GenericTypeApplication(
+                            identifier: Expression.Identifier("foo"),
+                            arguments: [
+                                Expression.PrimitiveType(constU16)
+                            ])),
+                    arguments: [
+                        Expression.LiteralInt(0)
+                    ])
+            ],
+            id: blockId)
+        
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        _ = try CompilerPassWithDeclScan(globalEnvironment: globalEnvironment).run(ast0)
         let ast1 = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).run(ast0)
         
         XCTAssertEqual(ast1, expected)
     }
-}
-
-fileprivate extension XCTestCase {
-    var testName: String {
-        let regex = try! NSRegularExpression(pattern: #"\[\w+\s+(?<testName>\w+)\]"#)
-        if let match = regex.firstMatch(in: name, range: NSRange(name.startIndex..., in: name)) {
-            let nsRange = match.range(withName: "testName")
-            if let range = Range(nsRange, in: name) {
-                return String(name[range])
-            }
-        }
-        return ""
-    }
     
-    func parse(_ text: String) -> TopLevel {
-        try! SnapCore.parse(text: text, url: URL(fileURLWithPath: testName))
+    // Instantiating a concrete function from a generic will partially evaluate
+    // the generic function AST with concrete values for the type arguments
+    // bound in the symbol table.
+    func testConcreteFunctionInstantiation() throws {
+        let symbols = SymbolTable()
+        let genericFnSym = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))
+        let genericFnBodySym = SymbolTable(parent: genericFnSym)
+        let template = FunctionDeclaration(
+            identifier: Expression.Identifier("foo"),
+            functionType: Expression.FunctionType(
+                name: "foo",
+                returnType: Expression.Identifier("T"),
+                arguments: [Expression.Identifier("T")]),
+            argumentNames: ["a"],
+            typeArguments: [
+                Expression.GenericTypeArgument(
+                    identifier: Expression.Identifier("T"),
+                    constraints: [])
+            ],
+            body: Block(
+                symbols: genericFnBodySym,
+                children: [
+                    Return(Expression.Binary(
+                        op: .plus,
+                        left: Expression.Identifier("a"),
+                        right: Expression.LiteralInt(1)))
+                ]),
+            visibility: .privateVisibility,
+            symbols: genericFnSym)
+        
+        let concreteFnSym = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))
+        let concreteFnBodySym = SymbolTable(parent: concreteFnSym)
+        let expected = Block(
+            symbols: symbols,
+            children: [
+                FunctionDeclaration(
+                    identifier: Expression.Identifier("__foo_const_u16"),
+                    functionType: Expression.FunctionType(
+                        name: "__foo_const_u16",
+                        returnType: Expression.PrimitiveType(constU16),
+                        arguments: [Expression.PrimitiveType(constU16)]),
+                    argumentNames: ["a"],
+                    body: Block(
+                        symbols: concreteFnBodySym,
+                        children: [
+                            Return(Expression.Binary(
+                                op: .plus,
+                                left: Expression.Identifier("a"),
+                                right: Expression.LiteralInt(1)))
+                        ]),
+                    visibility: .privateVisibility,
+                    symbols: genericFnSym),
+                Expression.Identifier("__foo_const_u16")
+                ])
+        
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .genericFunction(Expression.GenericFunctionType(template: template))))
+        
+        let ast0 = Block(
+            symbols: symbols,
+            children: [
+                Expression.GenericTypeApplication(
+                    identifier: Expression.Identifier("foo"),
+                    arguments: [Expression.PrimitiveType(constU16)])
+            ],
+            id: expected.id)
+        let ast1 = try CompilerPassGenerics(symbols: nil, globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())).run(ast0)
+        XCTAssertEqual(ast1, expected)
     }
 }

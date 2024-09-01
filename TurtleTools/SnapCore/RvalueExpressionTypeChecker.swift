@@ -1055,7 +1055,21 @@ public class RvalueExpressionTypeChecker: NSObject {
         
         switch typeOfIdentifier {
         case .genericFunction(let typ):
-            return try apply(genericTypeApplication: expr, genericFunctionType: typ)
+            let resolvedType = try apply(
+                genericTypeApplication: expr,
+                genericFunctionType: typ)
+            
+            // We must update the symbol table to include this new function.
+            let funTyp = resolvedType.unwrapFunctionType()
+            let scopeWhereItAlreadyExists = symbols.lookupScopeEnclosingType(identifier: funTyp.name!)
+            if scopeWhereItAlreadyExists === symbols || scopeWhereItAlreadyExists == nil {
+                
+                symbols.bind(
+                    identifier: funTyp.name!,
+                    symbol: Symbol(type: .function(funTyp)))
+            }
+            
+            return resolvedType
             
         case .genericStructType(let typ):
             return try apply(genericTypeApplication: expr, genericStructType: typ)
@@ -1070,22 +1084,27 @@ public class RvalueExpressionTypeChecker: NSObject {
     
     fileprivate func apply(genericTypeApplication expr: Expression.GenericTypeApplication,
                            genericFunctionType: Expression.GenericFunctionType) throws -> SymbolType {
+        
         guard expr.arguments.count == genericFunctionType.typeArguments.count else {
             throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "incorrect number of type arguments in application of generic function type `\(expr.shortDescription)'")
         }
         
         // TODO: check type constraints on the type variables here too
         
-        let originalFunctionDeclaration = genericFunctionType.template.clone()
-        let symbolsWithTypeArguments = originalFunctionDeclaration.symbols
+        let template0 = genericFunctionType.template
+        let template1 = template0.clone()
+        let template2 = template1.withTypeArguments([])
         
         // Bind types in a new symbol table to apply the type arguments.
+        let symbolsWithTypeArguments = template2.symbols
         var evaluatedTypeArguments: [SymbolType] = []
+        var replacementMap: [String : Expression] = [:]
         for i in 0..<expr.arguments.count {
             let typeVariable = genericFunctionType.typeArguments[i]
             let typeArgument = try check(expression: expr.arguments[i])
             symbolsWithTypeArguments.bind(identifier: typeVariable.identifier, symbolType: typeArgument)
             evaluatedTypeArguments.append(typeArgument)
+            replacementMap[typeVariable.identifier] = Expression.PrimitiveType(typeArgument)
         }
         let inner = RvalueExpressionTypeChecker(symbols: symbolsWithTypeArguments)
         
@@ -1093,21 +1112,26 @@ public class RvalueExpressionTypeChecker: NSObject {
         // the concrete function type result.
         let returnType = try inner.check(expression: genericFunctionType.returnType)
         let arguments = try inner.evaluateFunctionArguments(genericFunctionType.arguments)
-        let mangledName = inner.mangleFunctionName(genericFunctionType.name, evaluatedTypeArguments: evaluatedTypeArguments)
-        let functionType = FunctionType(name: genericFunctionType.name,
+        let mangledName = inner.mangleFunctionName(genericFunctionType.name, evaluatedTypeArguments: evaluatedTypeArguments)!
+        let template3 = template2.withIdentifier(mangledName)
+        let functionType = FunctionType(name: mangledName,
                                         mangledName: mangledName,
                                         returnType: returnType,
                                         arguments: arguments,
-                                        ast: originalFunctionDeclaration)
-        let result = SymbolType.function(functionType)
+                                        ast: template3)
         
         try SnapSubcompilerFunctionDeclaration()
             .instantiate(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy,
                          functionType: functionType,
-                         functionDeclaration: originalFunctionDeclaration)
+                         functionDeclaration: template3)
+        
+        let ast0 = functionType.ast!
+        let ast1 = try GenericFunctionPartialEvaluator(symbols: nil, map: replacementMap).visit(func: ast0) as! FunctionDeclaration
+        functionType.ast = ast1
         
         globalEnvironment.functionsToCompile.enqueue(functionType)
         
+        let result = SymbolType.function(functionType)
         return result
     }
     

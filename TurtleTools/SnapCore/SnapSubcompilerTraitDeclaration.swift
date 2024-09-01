@@ -208,7 +208,16 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
     }
 }
 
-func rewriteTraitMemberTypeForVtable(_ traitName: String, _ expr: Expression) -> Expression {
+func rewriteTraitMemberTypeForVtable(_ traitName: String, _ expr0: Expression) -> Expression {
+    let expr: Expression
+    
+    if let primitiveType = expr0 as? Expression.PrimitiveType {
+        expr = primitiveType.typ.lift
+    }
+    else {
+        expr = expr0
+    }
+    
     if let functionType = (expr as? Expression.PointerType)?.typ as? Expression.FunctionType {
         if let arg0 = functionType.arguments.first {
             if ((arg0 as? Expression.PointerType)?.typ as? Expression.Identifier)?.identifier == traitName {

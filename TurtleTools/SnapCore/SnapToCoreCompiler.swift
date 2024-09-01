@@ -55,8 +55,8 @@ public class SnapToCoreCompiler: NSObject {
                     runtimeSupport: runtimeSupport,
                     globalEnvironment: globalEnvironment)?
                 .forInPass(globalEnvironment)?
-                .implPass(globalEnvironment)?
-                .genericsPass(globalEnvironment)
+                .genericsPass(globalEnvironment)?
+                .implPass(globalEnvironment)
         }
         .flatMap { ast in
             if let block = ast as? Block {

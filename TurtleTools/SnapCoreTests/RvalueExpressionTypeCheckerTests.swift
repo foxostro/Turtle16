@@ -5297,7 +5297,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment)
         let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
                                                      arguments: [Expression.PrimitiveType(constU16)])
-        let expected = SymbolType.function(FunctionType(name: "foo",
+        let expected = SymbolType.function(FunctionType(name: "__foo_const_u16",
                                                         mangledName: "__foo_const_u16",
                                                         returnType: constU16,
                                                         arguments: [constU16],

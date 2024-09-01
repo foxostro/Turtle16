@@ -68,41 +68,43 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
     
     public func instantiate(memoryLayoutStrategy: MemoryLayoutStrategy,
                             functionType: FunctionType,
-                            functionDeclaration node: FunctionDeclaration) throws {
-        let name = node.identifier.identifier
+                            functionDeclaration node0: FunctionDeclaration) throws {
         
-        node.symbols.enclosingFunctionTypeMode = .set(functionType)
-        node.symbols.enclosingFunctionNameMode = .set(name)
-        node.body.symbols.parent = node.symbols
+        let name = node0.identifier.identifier
+        
+        node0.symbols.enclosingFunctionTypeMode = .set(functionType)
+        node0.symbols.enclosingFunctionNameMode = .set(name)
+        node0.body.symbols.parent = node0.symbols
         
         bindFunctionArguments(memoryLayoutStrategy: memoryLayoutStrategy,
-                              symbols: node.symbols,
+                              symbols: node0.symbols,
                               functionType: functionType,
-                              argumentNames: node.argumentNames)
-        try expectFunctionReturnExpressionIsCorrectType(symbols: node.symbols,
+                              argumentNames: node0.argumentNames)
+        try expectFunctionReturnExpressionIsCorrectType(symbols: node0.symbols,
                                                         functionType: functionType,
-                                                        func: node)
+                                                        func: node0)
         
         let body: Block
-        if try shouldSynthesizeTerminalReturnStatement(symbols: node.symbols,
+        if try shouldSynthesizeTerminalReturnStatement(symbols: node0.symbols,
                                                        functionType: functionType,
-                                                       func: node) {
-            let ret = Return(sourceAnchor: node.sourceAnchor, expression: nil)
-            body = Block(sourceAnchor: node.body.sourceAnchor,
-                         symbols: node.body.symbols,
-                         children: node.body.children + [ret])
+                                                       func: node0) {
+            let ret = Return(sourceAnchor: node0.sourceAnchor, expression: nil)
+            body = node0.body.inserting(children: [ret], at: node0.body.children.count)
         } else {
-            body = node.body
+            body = node0.body
         }
         
-        let rewrittenFunctionDeclaration = FunctionDeclaration(sourceAnchor: node.sourceAnchor,
-                                                               identifier: node.identifier,
-                                                               functionType: node.functionType,
-                                                               argumentNames: node.argumentNames,
-                                                               body: body,
-                                                               visibility: node.visibility,
-                                                               symbols: node.symbols)
-        functionType.ast = rewrittenFunctionDeclaration
+        let node1 = node0.withBody(body)
+        
+        let node2 = node1.withFunctionType(Expression.FunctionType(
+            sourceAnchor: node1.functionType.sourceAnchor,
+            name: functionType.name,
+            returnType: Expression.PrimitiveType(functionType.returnType),
+            arguments: functionType.arguments.map{
+                Expression.PrimitiveType($0)
+            }))
+        
+        functionType.ast = node2
     }
     
     private func evaluateFunctionTypeExpression(_ symbols: SymbolTable,

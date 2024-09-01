@@ -18,9 +18,16 @@ import TurtleCore
 // * Every reference to a generic trait is rewritten to instead reference the
 //   concrete instantiation of the trait. The concrete trait type is inserted
 //   into the AST.
-public class CompilerPassGenerics: CompilerPass {
-    fileprivate let globalEnvironment: GlobalEnvironment
+public class CompilerPassGenerics: CompilerPassWithDeclScan {
     fileprivate var pendingInsertions: [AbstractSyntaxTreeNode.ID : [AbstractSyntaxTreeNode]] = [:]
+    
+    fileprivate func appendPendingInsertion(_ node: AbstractSyntaxTreeNode, at id: AbstractSyntaxTreeNode.ID) {
+        pendingInsertions[id, default: []].append(node)
+    }
+    
+    fileprivate func appendPendingInsertions(_ nodes: [AbstractSyntaxTreeNode], at id: AbstractSyntaxTreeNode.ID) {
+        pendingInsertions[id, default: []].append(contentsOf: nodes)
+    }
     
     fileprivate class BlockRewriter: CompilerPass {
         fileprivate let pendingInsertions: [AbstractSyntaxTreeNode.ID : [AbstractSyntaxTreeNode]]
@@ -55,135 +62,193 @@ public class CompilerPassGenerics: CompilerPass {
         return try typeChecker.check(expression: rexpr)
     }
     
-    public init(symbols: SymbolTable?, globalEnvironment: GlobalEnvironment) {
-        self.globalEnvironment = globalEnvironment
-        super.init(symbols)
-    }
-    
     public override func run(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
         let node1 = try super.run(node0)
         let node2 = try BlockRewriter(pendingInsertions).run(node1)
         return node2
     }
     
-    public override func visit(func node0: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
-        node0.isGeneric ? nil : node0
+    public override func visit(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
+        if node.isGeneric {
+            nil
+        }
+        else {
+            try super.visit(func: node) as! FunctionDeclaration
+        }
     }
     
-    public override func visit(struct node0: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
-        node0.isGeneric ? nil : node0
+    public override func visit(struct node: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
+        if node.isGeneric {
+            nil
+        }
+        else {
+            try super.visit(struct: node) as! StructDeclaration
+        }
     }
     
-    public override func visit(trait node0: TraitDeclaration) throws -> AbstractSyntaxTreeNode? {
-        node0.isGeneric ? nil : node0
+    public override func visit(trait node: TraitDeclaration) throws -> AbstractSyntaxTreeNode? {
+        if node.isGeneric {
+            return nil
+        }
+        else {
+            let node1 = try super.visit(trait: node) as! TraitDeclaration
+            return node1
+        }
+    }
+    
+    public override func visit(impl node: Impl) throws -> AbstractSyntaxTreeNode? {
+        if node.isGeneric {
+            nil
+        }
+        else {
+            try super.visit(impl: node) as! Impl
+        }
+    }
+    
+    public override func visit(implFor node: ImplFor) throws -> AbstractSyntaxTreeNode? {
+        if node.isGeneric {
+            nil
+        }
+        else {
+            try super.visit(implFor: node) as! ImplFor
+        }
     }
     
     public override func visit(genericTypeApplication expr: Expression.GenericTypeApplication) throws -> Expression? {
-        let exprTyp = try typeCheck(rexpr: expr)
+        try visit(genericTypeApplication: expr, symbols: symbols!)
+    }
+    
+    fileprivate func visit(genericTypeApplication expr: Expression.GenericTypeApplication, symbols: SymbolTable) throws -> Expression? {
+        
+        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment)
+        let exprTyp = try typeChecker.check(expression: expr)
         
         switch exprTyp {
         case .function(let typ):
-            return try visit(genericTypeApplication: expr, functionType: typ)
+            return try visit(expr: expr,
+                             symbols: symbols,
+                             concreteFunctionType: typ)
             
         case .structType(let typ), .constStructType(let typ):
-            return try visit(genericTypeApplication: expr, structType: typ)
+            return try visit(expr: expr,
+                             symbols: symbols,
+                             concreteStructType: typ)
             
         case .traitType(let typ), .constTraitType(let typ):
-            return try visit(genericTypeApplication: expr, traitType: typ)
+            return try visit(expr: expr,
+                             symbols: symbols,
+                             concreteTraitType: typ)
             
         default:
             throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "internal compiler error: expected expression to have a function type: `\(expr)'")
         }
     }
     
-    fileprivate func visit(genericTypeApplication expr: Expression.GenericTypeApplication, functionType: FunctionType) throws -> Expression? {
+    fileprivate func visit(expr: Expression.GenericTypeApplication,
+                           symbols: SymbolTable,
+                           concreteFunctionType: FunctionType) throws -> Expression? {
         
-        guard let mangledName = functionType.mangledName else {
-            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "internal compiler error: concrete instance of generic function has no mangled name: `\(functionType)'")
+        let genericFunctionType = try symbols.resolveTypeOfIdentifier(
+            sourceAnchor: expr.identifier.sourceAnchor,
+            identifier: expr.identifier.identifier)
+            .unwrapGenericFunctionType()
+        
+        // The compiler must an emit AST node for the concrete instantiaton of
+        // the generic function.
+        if let scope = symbols.lookupScopeEnclosingSymbol(identifier: genericFunctionType.name),
+           let id = genericFunctionType.enclosingImplId ?? scope.associatedNodeId,
+           let ast = concreteFunctionType.ast {
+            
+            appendPendingInsertion(ast, at: id)
         }
         
-        let symbol = Symbol(type: .function(functionType),
-                            offset: 0,
-                            storage: .automaticStorage,
-                            visibility: .privateVisibility)
-        symbols!.bind(identifier: mangledName, symbol: symbol)
+        return Expression.Identifier(concreteFunctionType.mangledName!)
+    }
+    
+    fileprivate func visit(expr: Expression.GenericTypeApplication,
+                           symbols: SymbolTable,
+                           concreteStructType: StructType) throws -> Expression? {
         
-        // The compiler pass must insert the concrete instantiation of the
-        // function into the AST that it produces.
-        if let scope = symbols!.lookupScopeEnclosingSymbol(identifier: functionType.name!), let id = scope.associatedNodeId {
-            let decl = makeConcreteFunctionDeclaration(
-                parentSymbols: scope,
-                functionType: functionType)
-            pendingInsertions[id, default: []].append(decl)
+        let genericStructType = try symbols.resolveTypeOfIdentifier(
+            sourceAnchor: expr.identifier.sourceAnchor,
+            identifier: expr.identifier.identifier)
+            .unwrapGenericStructType()
+        
+        // The compiler must emit AST nodes for the the concrete instantiation
+        // of the generic struct and all of its impl nodes.
+        if let scope = symbols.lookupScopeEnclosingType(identifier: genericStructType.name),
+           let id = scope.associatedNodeId {
+            
+            // TODO: Would this fail if we had two generic type applications for this generic struct? If we had two then we would insert the same StructDeclaration twice.
+            // TODO: This inserts the concrete impl nodes right after the struct declaration, but this may not be correct. Some symbols used in the impl block might not be defined at this point in the program. (maybe?)
+            let nodes = makeNodesForConcreteStruct(concreteStructType)
+            appendPendingInsertions(nodes, at: id)
         }
         
-        return Expression.Identifier(mangledName)
+        return Expression.Identifier(concreteStructType.name)
     }
     
-    fileprivate func makeConcreteFunctionDeclaration(parentSymbols: SymbolTable, functionType: FunctionType) -> FunctionDeclaration {
-        let mangledName = functionType.mangledName!
-        let funSym = SymbolTable(parent: parentSymbols, frameLookupMode: .set(Frame()))
-        let bodySyms = SymbolTable(parent: funSym)
-        let decl = FunctionDeclaration(
-            identifier: Expression.Identifier(mangledName),
-            functionType: Expression.FunctionType(
-                name: mangledName,
-                returnType: Expression.PrimitiveType(functionType.returnType),
-                arguments: functionType.arguments.map { Expression.PrimitiveType($0) }),
-            argumentNames: ["a"],
-            body: Block(symbols: bodySyms, children: [
-                Return(Expression.Identifier("a"))
-            ]),
-            visibility: .privateVisibility,
-            symbols: funSym)
-        return decl
-    }
-    
-    fileprivate func visit(genericTypeApplication expr: Expression.GenericTypeApplication, structType: StructType) throws -> Expression? {
+    func makeNodesForConcreteStruct(_ concreteStructType: StructType) -> [AbstractSyntaxTreeNode] {
+        var result: [AbstractSyntaxTreeNode] = [
+            StructDeclaration(concreteStructType)
+        ]
         
-        symbols!.bind(
-            identifier: structType.name,
-            symbolType: .structType(structType))
+        let methods = concreteStructType
+            .symbols
+            .symbolTable
+            .values
+            .compactMap { symbol in
+                switch symbol.type {
+                case .function(let typ):
+                    typ.ast
+                    
+                case .genericFunction(let typ):
+                    #if false
+                    let template = typ.template
+                    let impl = Impl(
+                        typeArguments: [],
+                        structTypeExpr: Expression.Identifier(),
+                        children: [
+                            template
+                        ])
+                    return impl
+                    #else
+                    typ.template
+                    #endif
+                    
+                default:
+                    nil
+                }
+            }
         
-        // The compiler pass must insert the concrete instantiation of the
-        // struct into the AST that it produces.
-        if let scope = symbols!.lookupScopeEnclosingType(identifier: structType.name), let id = scope.associatedNodeId {
-            let decl = StructDeclaration(
-                identifier: Expression.Identifier(structType.name),
-                members: structType.symbols.symbolTable.map {
-                    StructDeclaration.Member(
-                        name: $0.key,
-                        type: Expression.PrimitiveType($0.value.type))
-                },
-                visibility: .privateVisibility,
-                isConst: false)
-            pendingInsertions[id, default: []].append(decl)
+        if !methods.isEmpty {
+            result.append(Impl(
+                typeArguments: [],
+                structTypeExpr: Expression.Identifier(concreteStructType.name),
+                children: methods))
         }
         
-        return Expression.Identifier(structType.name)
+        return result
     }
     
-    fileprivate func visit(genericTypeApplication expr: Expression.GenericTypeApplication, traitType: TraitType) throws -> Expression? {
+    fileprivate func visit(expr: Expression.GenericTypeApplication,
+                           symbols: SymbolTable,
+                           concreteTraitType: TraitType) throws -> Expression? {
         
-        symbols!.bind(
-            identifier: traitType.name,
-            symbolType: .traitType(traitType))
+        let genericTraitType = try symbols.resolveTypeOfIdentifier(
+            sourceAnchor: expr.identifier.sourceAnchor,
+            identifier: expr.identifier.identifier)
+            .unwrapGenericTraitType()
         
         // The compiler pass must insert the concrete instantiation of the
         // trait into the AST that it produces.
-        if let scope = symbols!.lookupScopeEnclosingType(identifier: traitType.name), let id = scope.associatedNodeId {
-            let decl = TraitDeclaration(
-                identifier: Expression.Identifier(traitType.name),
-                members: traitType.symbols.symbolTable.map {
-                    TraitDeclaration.Member(
-                        name: $0.key,
-                        type: Expression.PrimitiveType($0.value.type))
-                },
-                visibility: .privateVisibility)
-            pendingInsertions[id, default: []].append(decl)
+        if let scope = symbols.lookupScopeEnclosingType(identifier: genericTraitType.name),
+           let id = scope.associatedNodeId {
+            
+            appendPendingInsertion(TraitDeclaration(concreteTraitType), at: id)
         }
         
-        return Expression.Identifier(traitType.name)
+        return Expression.Identifier(concreteTraitType.name)
     }
     
     public override func visit(call expr0: Expression.Call) throws -> Expression? {
@@ -205,16 +270,40 @@ public class CompilerPassGenerics: CompilerPass {
             return expr1
             
         default:
-            return expr0
+            let callee1 = try visit(expr: expr0.callee)!
+            let expr1 = expr0.withCallee(callee1)
+            return expr1
         }
+    }
+    
+    public override func visit(get expr0: Expression.Get) throws -> Expression? {
+        guard let app = expr0.member as? Expression.GenericTypeApplication else {
+            let expr1 = try super.visit(get: expr0)
+            return expr1
+        }
+        
+        let name = app.identifier.identifier
+        let resultType = try typeCheck(rexpr: expr0.expr)
+        
+        switch resultType {
+        case .constStructType(let typ), .structType(let typ):
+            let member = try visit(genericTypeApplication: app, symbols: typ.symbols)!
+            let expr1 = expr0.withMember(member)
+            return expr1
+            
+        default:
+            break
+        }
+        
+        throw CompilerError(sourceAnchor: expr0.sourceAnchor, message: "value of type `\(resultType)' has no member `\(name)'")
     }
 }
 
 extension AbstractSyntaxTreeNode {
     /// Erase generics, rewriting in terms of new concrete types
     public func genericsPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        let compiler = CompilerPassGenerics(symbols: nil, globalEnvironment: globalEnvironment)
-        let result = try compiler.run(self)
-        return result
+        let node1 = try clearSymbols(globalEnvironment)
+        let node2 = try CompilerPassGenerics(globalEnvironment: globalEnvironment).run(node1)
+        return node2
     }
 }

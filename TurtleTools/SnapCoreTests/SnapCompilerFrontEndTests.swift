@@ -2892,7 +2892,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             }
 
             var realIncrementer = RealIncrementer@[u16] { .val = 41 }
-            let incrementer: Incrementer = &realIncrementer
+            var incrementer: Incrementer = &realIncrementer
             incrementer.increment()
             let p = realIncrementer.val
             """)

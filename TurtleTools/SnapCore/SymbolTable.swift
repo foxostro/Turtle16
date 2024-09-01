@@ -304,10 +304,10 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             Expression.DynamicArrayType(elementType.lift)
             
         case .constPointer(let typ):
-            Expression.ConstType(typ.correspondingMutableType.lift)
+            Expression.ConstType(Expression.PointerType(typ.correspondingMutableType.lift))
             
         case .pointer(let typ):
-            typ.lift
+            Expression.PointerType(typ.lift)
             
         case .constStructType:
             Expression.ConstType(Expression.PrimitiveType(self.correspondingMutableType))

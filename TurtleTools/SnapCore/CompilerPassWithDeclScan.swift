@@ -153,7 +153,7 @@ public class CompilerPassWithDeclScan: CompilerPass {
         symbols.modulesAlreadyImported.insert(name)
     }
     
-    public func scan(block: Block, clause: Match.Clause, in match: Match) throws {
+    func scan(block: Block, clause: Match.Clause, in match: Match) throws {
         let symbols = clause.block.symbols
         let clauseType = try TypeContextTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment).check(expression: clause.valueType)
         symbols.bind(identifier: clause.valueIdentifier.identifier,
@@ -173,7 +173,20 @@ public class CompilerPassWithDeclScan: CompilerPass {
     
     private func consumeScopePrologue(_ block1: Block) throws -> Block {
         guard let symbols else { return block1 }
-        let block2 = block1.inserting(seq: symbols.scopePrologue, at: 0)
+        let index = block1.children.firstIndex {
+            ($0 as? Seq)?.tags.contains(.scopePrologue) ?? false
+        }
+        let block2: Block
+        if let index {
+            var children = block1.children
+            let scopePrologue0 = children[index] as! Seq
+            let scopePrologue1 = scopePrologue0.appending(children: symbols.scopePrologue.children)
+            children[index] = scopePrologue1
+            block2 = block1.withChildren(children)
+        }
+        else {
+            block2 = block1.inserting(seq: symbols.scopePrologue, at: 0)
+        }
         symbols.scopePrologue = symbols.scopePrologue.withChildren([])
         return block2
     }

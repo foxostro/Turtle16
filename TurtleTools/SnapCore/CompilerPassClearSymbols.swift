@@ -30,7 +30,6 @@ extension AbstractSyntaxTreeNode {
         
         globalEnvironment.staticStorageFrame.reset()
         globalEnvironment.functionsToCompile.removeAll()
-        globalEnvironment.modules = [:]
         
         return result
     }

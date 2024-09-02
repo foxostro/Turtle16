@@ -101,18 +101,6 @@ public class CoreToTackCompiler: CompilerPass {
         return result
     }
     
-    fileprivate func collectCompiledModuleCode() throws -> [AbstractSyntaxTreeNode] {
-        var nodes: [AbstractSyntaxTreeNode] = []
-        
-        for (_, module) in globalEnvironment.modules {
-            if let compiledModuleNode = try super.visit(module) {
-                nodes.append(compiledModuleNode)
-            }
-        }
-        
-        return nodes
-    }
-    
     fileprivate func compileFunctions() throws -> [Subroutine] {
         // Compile functions collected earlier for deferred compilation.
         

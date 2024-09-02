@@ -16,6 +16,12 @@ import TurtleCore
 // SnapAbstractSyntaxTreeCompilerImplPass delegates most the specific work to
 // various subcompilers classes.
 public class SnapAbstractSyntaxTreeCompilerImplPass: CompilerPassWithDeclScan {
+    public override func run(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
+        let node1 = try node0?.clearSymbols(globalEnvironment)
+        let node2 = try super.run(node1)
+        return node2
+    }
+    
     public override func visit(expressionStatement node: Expression) throws -> AbstractSyntaxTreeNode? {
         try RvalueExpressionTypeChecker(symbols: symbols!, globalEnvironment: globalEnvironment).check(expression: node)
         return node
@@ -113,9 +119,6 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: CompilerPassWithDeclScan {
 extension AbstractSyntaxTreeNode {
     // Rewrite higher-level nodes in terms of trees of lower-level nodes
     public func implPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        let node0 = self
-        let node1 = try node0.clearSymbols(globalEnvironment)
-        let node2 = try SnapAbstractSyntaxTreeCompilerImplPass(globalEnvironment: globalEnvironment).run(node1)
-        return node2
+        try SnapAbstractSyntaxTreeCompilerImplPass(globalEnvironment: globalEnvironment).run(self)
     }
 }

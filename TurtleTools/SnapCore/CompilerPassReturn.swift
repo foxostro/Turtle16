@@ -10,6 +10,12 @@ import TurtleCore
 
 /// Compiler pass to lower and erase "return" statements
 public class CompilerPassReturn: CompilerPassWithDeclScan {
+    public override func run(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
+        let node1 = try node0?.clearSymbols(globalEnvironment)
+        let node2 = try super.run(node1)
+        return node2
+    }
+    
     public override func visit(return node0: Return) throws -> AbstractSyntaxTreeNode? {
         let node1 = try super.visit(return: node0) as! Return
         let subcompiler = SnapSubcompilerReturn(symbols!)
@@ -21,8 +27,6 @@ public class CompilerPassReturn: CompilerPassWithDeclScan {
 extension AbstractSyntaxTreeNode {
     /// Compiler pass to lower and erase "return" statements
     public func returnPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        let node1 = try clearSymbols(globalEnvironment)
-        let node2 = try CompilerPassReturn(globalEnvironment: globalEnvironment).run(node1)
-        return node2
+        try CompilerPassReturn(globalEnvironment: globalEnvironment).run(self)
     }
 }

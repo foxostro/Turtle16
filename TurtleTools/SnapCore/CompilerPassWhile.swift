@@ -10,12 +10,6 @@ import TurtleCore
 
 /// Compiler pass to lower and erase "while" statements
 public class CompilerPassWhile: CompilerPassWithDeclScan {
-    public override func run(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
-        let node1 = try node0?.clearSymbols(globalEnvironment)
-        let node2 = try super.run(node1)
-        return node2
-    }
-    
     public override func visit(while node0: While) throws -> AbstractSyntaxTreeNode? {
         let node1 = try SnapSubcompilerWhile().compile(
             while: node0,

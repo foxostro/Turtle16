@@ -22,7 +22,9 @@ public class CompilerPassWithDeclScan: CompilerPass {
     }
     
     public override func run(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
-        try visit(node0)
+        let node1 = try node0?.clearSymbols(globalEnvironment)
+        let node2 = try super.run(node1)
+        return node2
     }
     
     func scan(block: Block) throws {

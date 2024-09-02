@@ -63,10 +63,9 @@ public class CompilerPassGenerics: CompilerPassWithDeclScan {
     }
     
     public override func run(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
-        let node1 = try node0?.clearSymbols(globalEnvironment)
-        let node2 = try super.run(node1)
-        let node3 = try BlockRewriter(pendingInsertions).run(node2)
-        return node3
+        let node1 = try super.run(node0)
+        let node2 = try BlockRewriter(pendingInsertions).run(node1)
+        return node2
     }
     
     public override func visit(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {

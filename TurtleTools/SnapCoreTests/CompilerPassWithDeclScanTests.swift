@@ -194,7 +194,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
             ])
         .reconnect(parent: nil)
         
-        _ = try CompilerPassWithDeclScan(globalEnvironment: globalEnvironment).run(ast)
+        _ = try CompilerPassWithDeclScan(globalEnvironment: globalEnvironment).visit(ast)
         
         // Let's examine, for correctness, the vtable symbol
         let nameOfVtableInstance = "__Serial_SerialFake_vtable_instance"

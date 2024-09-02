@@ -37,10 +37,6 @@ public class Seq: AbstractSyntaxTreeNode {
             children: children)
     }
     
-    public func appending(child: AbstractSyntaxTreeNode) -> Seq {
-        appending(children: [child])
-    }
-    
     public func appending(children moreChildren: [AbstractSyntaxTreeNode]) -> Seq {
         withChildren(children + moreChildren)
     }

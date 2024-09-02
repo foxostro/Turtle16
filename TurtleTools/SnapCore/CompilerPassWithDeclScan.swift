@@ -197,19 +197,37 @@ public class CompilerPassWithDeclScan: CompilerPass {
     // TODO: Remove this hack. This hack prevents duplicate vtable declarations in the scopePrologue. It would be better to have an ImplFor compiler pass which rewrites the AST to insert this code instead.
     private func removeDuplicateVtableDeclarations(_ scopePrologue0: Seq) -> Seq {
         var vtableDeclarations: [VarDeclaration] = []
+        var vtableStructDeclarations: [StructDeclaration] = []
+        
         let scopePrologue1 = scopePrologue0.withChildren(scopePrologue0.children.compactMap {
-            guard let varDecl = $0 as? VarDeclaration else { return $0 }
-            
-            let ident = varDecl.identifier.identifier
-            let isVtableDeclaration = ident.hasPrefix("__") && ident.hasSuffix("_vtable_instance")
-            if isVtableDeclaration {
-                let alreadyHaveIt = vtableDeclarations.contains { ident == $0.identifier.identifier }
-                if alreadyHaveIt {
-                    return nil
+            switch $0 {
+            case let varDecl as VarDeclaration:
+                let ident = varDecl.identifier.identifier
+                let isVtableDeclaration = ident.hasPrefix("__") && ident.hasSuffix("_vtable_instance")
+                if isVtableDeclaration {
+                    let alreadyHaveIt = vtableDeclarations.contains { ident == $0.identifier.identifier }
+                    if alreadyHaveIt {
+                        return nil
+                    }
                 }
+                vtableDeclarations.append(varDecl)
+                return varDecl
+                
+            case let structDecl as StructDeclaration:
+                let ident = structDecl.identifier.identifier
+                let isVtableStructDeclaration = ident.hasPrefix("__") && ident.hasSuffix("_vtable")
+                if isVtableStructDeclaration {
+                    let alreadyHaveIt = vtableStructDeclarations.contains { ident == $0.identifier.identifier }
+                    if alreadyHaveIt {
+                        return nil
+                    }
+                }
+                vtableStructDeclarations.append(structDecl)
+                return structDecl
+                
+            default:
+                return $0
             }
-            vtableDeclarations.append(varDecl)
-            return varDecl
         })
         return scopePrologue1
     }

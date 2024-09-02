@@ -141,6 +141,9 @@ public class SnapSubcompilerImplFor: NSObject {
             symbols: symbols,
             globalEnvironment: globalEnvironment).compile(vtableDeclaration)!
         
-        symbols.scopePrologue = symbols.scopePrologue.appending(child: vtableDeclaration)
+        symbols.scopePrologue = symbols.scopePrologue.appending(children: [
+            traitType.vtableStructDeclaration,
+            vtableDeclaration
+        ])
     }
 }

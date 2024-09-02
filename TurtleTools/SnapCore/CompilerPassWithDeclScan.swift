@@ -183,7 +183,8 @@ public class CompilerPassWithDeclScan: CompilerPass {
             var children = block1.children
             let scopePrologue0 = children[index] as! Seq
             let scopePrologue1 = scopePrologue0.appending(children: symbols.scopePrologue.children)
-            children[index] = scopePrologue1
+            let scopePrologue2 = removeDuplicateVtableDeclarations(scopePrologue1)
+            children[index] = scopePrologue2
             block2 = block1.withChildren(children)
         }
         else {
@@ -191,6 +192,26 @@ public class CompilerPassWithDeclScan: CompilerPass {
         }
         symbols.scopePrologue = symbols.scopePrologue.withChildren([])
         return block2
+    }
+    
+    // TODO: Remove this hack. This hack prevents duplicate vtable declarations in the scopePrologue. It would be better to have an ImplFor compiler pass which rewrites the AST to insert this code instead.
+    private func removeDuplicateVtableDeclarations(_ scopePrologue0: Seq) -> Seq {
+        var vtableDeclarations: [VarDeclaration] = []
+        let scopePrologue1 = scopePrologue0.withChildren(scopePrologue0.children.compactMap {
+            guard let varDecl = $0 as? VarDeclaration else { return $0 }
+            
+            let ident = varDecl.identifier.identifier
+            let isVtableDeclaration = ident.hasPrefix("__") && ident.hasSuffix("_vtable_instance")
+            if isVtableDeclaration {
+                let alreadyHaveIt = vtableDeclarations.contains { ident == $0.identifier.identifier }
+                if alreadyHaveIt {
+                    return nil
+                }
+            }
+            vtableDeclarations.append(varDecl)
+            return varDecl
+        })
+        return scopePrologue1
     }
     
     public override func willVisit(block node: Block) throws {

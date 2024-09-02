@@ -63,9 +63,10 @@ public class CompilerPassGenerics: CompilerPassWithDeclScan {
     }
     
     public override func run(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
-        let node1 = try super.run(node0)
-        let node2 = try BlockRewriter(pendingInsertions).run(node1)
-        return node2
+        let node1 = try node0?.clearSymbols(globalEnvironment)
+        let node2 = try super.run(node1)
+        let node3 = try BlockRewriter(pendingInsertions).run(node2)
+        return node3
     }
     
     public override func visit(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
@@ -302,8 +303,6 @@ public class CompilerPassGenerics: CompilerPassWithDeclScan {
 extension AbstractSyntaxTreeNode {
     /// Erase generics, rewriting in terms of new concrete types
     public func genericsPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        let node1 = try clearSymbols(globalEnvironment)
-        let node2 = try CompilerPassGenerics(globalEnvironment: globalEnvironment).run(node1)
-        return node2
+        try CompilerPassGenerics(globalEnvironment: globalEnvironment).run(self)
     }
 }

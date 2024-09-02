@@ -844,36 +844,7 @@ final class CompilerPassGenericsTests: XCTestCase {
     // the generic function AST with concrete values for the type arguments
     // bound in the symbol table.
     func testConcreteFunctionInstantiation() throws {
-        let symbols = SymbolTable()
-        let genericFnSym = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))
-        let genericFnBodySym = SymbolTable(parent: genericFnSym)
-        let template = FunctionDeclaration(
-            identifier: Expression.Identifier("foo"),
-            functionType: Expression.FunctionType(
-                name: "foo",
-                returnType: Expression.Identifier("T"),
-                arguments: [Expression.Identifier("T")]),
-            argumentNames: ["a"],
-            typeArguments: [
-                Expression.GenericTypeArgument(
-                    identifier: Expression.Identifier("T"),
-                    constraints: [])
-            ],
-            body: Block(
-                symbols: genericFnBodySym,
-                children: [
-                    Return(Expression.Binary(
-                        op: .plus,
-                        left: Expression.Identifier("a"),
-                        right: Expression.LiteralInt(1)))
-                ]),
-            visibility: .privateVisibility,
-            symbols: genericFnSym)
-        
-        let concreteFnSym = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))
-        let concreteFnBodySym = SymbolTable(parent: concreteFnSym)
         let expected = Block(
-            symbols: symbols,
             children: [
                 FunctionDeclaration(
                     identifier: Expression.Identifier("__foo_const_u16"),
@@ -883,28 +854,26 @@ final class CompilerPassGenericsTests: XCTestCase {
                         arguments: [Expression.PrimitiveType(constU16)]),
                     argumentNames: ["a"],
                     body: Block(
-                        symbols: concreteFnBodySym,
                         children: [
                             Return(Expression.Binary(
                                 op: .plus,
                                 left: Expression.Identifier("a"),
                                 right: Expression.LiteralInt(1)))
                         ]),
-                    visibility: .privateVisibility,
-                    symbols: genericFnSym),
+                    visibility: .privateVisibility),
                 Expression.Identifier("__foo_const_u16")
-                ])
+            ])
+            .reconnect(parent: nil)
         
-        symbols.bind(identifier: "foo", symbol: Symbol(type: .genericFunction(Expression.GenericFunctionType(template: template))))
-        
-        let ast0 = Block(
-            symbols: symbols,
-            children: [
-                Expression.GenericTypeApplication(
-                    identifier: Expression.Identifier("foo"),
-                    arguments: [Expression.PrimitiveType(constU16)])
-            ],
-            id: expected.id)
+        let ast0 = try parse("""
+            func foo[T](a: T) -> T {
+                return a + 1
+            }
+            foo@[const u16]
+            """)
+            .eraseSourceAnchors()?
+            .replaceTopLevelWithBlock()
+            .reconnect(parent: nil)
         let ast1 = try CompilerPassGenerics(symbols: nil, globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())).run(ast0)
         XCTAssertEqual(ast1, expected)
     }

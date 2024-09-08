@@ -91,6 +91,8 @@ public class CompilerPassWithDeclScan: CompilerPass {
     
     func scan(genericNode: AbstractSyntaxTreeNode) throws {
         switch genericNode {
+        case let node as Seq:
+            try scan(seq: node)
         case let node as FunctionDeclaration:
             try scan(func: node)
         case let node as StructDeclaration:
@@ -109,6 +111,12 @@ public class CompilerPassWithDeclScan: CompilerPass {
             try scan(import: node)
         default:
             break
+        }
+    }
+    
+    func scan(seq: Seq) throws {
+        for child in seq.children {
+            try scan(genericNode: child)
         }
     }
     

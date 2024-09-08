@@ -159,21 +159,28 @@ public class CompilerPassWithDeclScan: CompilerPass {
         .compile(node)
     }
     
-    func scan(module node0: Module) throws {
-        let block0 = node0.block
-        let block1 = try visit(block: block0) as! Block
-        let node1 = node0.withBlock(block1)
+    func scan(module module0: Module) throws {
+        let block0 = module0.block
+        let blockOrSeq = try visit(block: block0)
+        let block1: Block = switch blockOrSeq {
+        case let block as Block:
+            block
+            
+        default:
+            block0.withChildren([blockOrSeq!])
+        }
+        let module1 = module0.withBlock(block1)
         
-        guard modules[node1.name] == nil else {
-            let message = if let existing = modules[node1.name]?.sourceAnchor {
-                "module duplicates existing module \"\(node1.name)\" declared at \(existing)"
+        guard modules[module1.name] == nil else {
+            let message = if let existing = modules[module1.name]?.sourceAnchor {
+                "module duplicates existing module \"\(module1.name)\" declared at \(existing)"
             }
             else {
-                "module duplicates existing module \"\(node1.name)\""
+                "module duplicates existing module \"\(module1.name)\""
             }
-            throw CompilerError(sourceAnchor: node1.sourceAnchor, message: message)
+            throw CompilerError(sourceAnchor: module1.sourceAnchor, message: message)
         }
-        modules[node1.name] = node1
+        modules[module1.name] = module1
     }
     
     func scan(import node: Import) throws {
@@ -237,8 +244,8 @@ public class CompilerPassWithDeclScan: CompilerPass {
         try super.willVisit(func: node)
     }
     
-    public override func visit(module node: Module) throws -> AbstractSyntaxTreeNode? {
-        modules[node.name]
+    public override func visit(module: Module) throws -> AbstractSyntaxTreeNode? {
+        modules[module.name]
     }
     
     public override func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {

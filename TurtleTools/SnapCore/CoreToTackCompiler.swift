@@ -192,14 +192,14 @@ public class CoreToTackCompiler: CompilerPass {
     }
     
     public override func visit(asm node: Asm) throws -> AbstractSyntaxTreeNode? {
-        return TackInstructionNode(
+        TackInstructionNode(
             instruction: .inlineAssembly(node.assemblyCode),
             sourceAnchor: node.sourceAnchor,
             symbols: symbols)
     }
     
     public override func visit(goto node: Goto) throws -> AbstractSyntaxTreeNode? {
-        return TackInstructionNode(
+        TackInstructionNode(
             instruction: .jmp(node.target),
             sourceAnchor: node.sourceAnchor,
             symbols: symbols)

@@ -1249,7 +1249,11 @@ public class RvalueExpressionTypeChecker: NSObject {
             symbols.bind(identifier: symbolName, symbol: symbol)
         }
         
-        symbols.scopePrologue = symbols.scopePrologue.appending(children: symbolsWithTypeArguments.scopePrologue.children)
+        symbols.pendingInsertions = symbols.pendingInsertions
+            .merging(symbolsWithTypeArguments.pendingInsertions,
+                     uniquingKeysWith: {
+                $0.appending(children: $1.children).removeDuplicateVtableDeclarations()
+            })
     }
     
     public func check(pointerType expr: Expression.PointerType) throws -> SymbolType {

@@ -113,6 +113,7 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: CompilerPassWithDeclScan {
 extension AbstractSyntaxTreeNode {
     // Rewrite higher-level nodes in terms of trees of lower-level nodes
     public func implPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        try SnapAbstractSyntaxTreeCompilerImplPass(globalEnvironment: globalEnvironment).run(self)
+        let result = try SnapAbstractSyntaxTreeCompilerImplPass(globalEnvironment: globalEnvironment).run(self)
+        return result
     }
 }

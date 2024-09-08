@@ -38,12 +38,9 @@ public class CompilerPassGenerics: CompilerPassWithDeclScan {
         
         public override func visit(block block0: Block) throws -> AbstractSyntaxTreeNode? {
             let block1 = try super.visit(block: block0) as! Block
-            let index = block1.children.firstIndex {
-                ($0 as? Seq)?.tags.contains(.scopePrologue) ?? false
-            }
             let block2 = block1.inserting(
                 children: pendingInsertions[block1.id, default: []],
-                at: index ?? 0)
+                at: 0)
             return block2
         }
         
@@ -62,9 +59,9 @@ public class CompilerPassGenerics: CompilerPassWithDeclScan {
         return try typeChecker.check(expression: rexpr)
     }
     
-    public override func run(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
-        let node1 = try super.run(node0)
-        let node2 = try BlockRewriter(pendingInsertions).run(node1)
+    public override func postProcess(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
+        let node1 = try BlockRewriter(pendingInsertions).run(node0)
+        let node2 = try super.postProcess(node1)
         return node2
     }
     

@@ -1074,9 +1074,11 @@ public class SymbolTable: NSObject {
         return index
     }
     
-    // This is a code sequence which needs to execute when entering this scope.
-    // Used to insert code for setting up vtables and such.
-    public var scopePrologue: Seq = Seq(tags: [.scopePrologue])
+    /// Record insertions to be made in the block to insert vtable declarations
+    /// The vtable setup sequence is inserted after the trait declaration with
+    /// the name given by the dictionary key.
+    // TODO: Remove `pendingInsertions'. This is a hack to rewrite the AST to insert vtable declarations without a dedicated compiler pass for ImplFor nodes. Add a compiler pass to erase ImplFor nodes and then remove this.
+    public var pendingInsertions: [String : Seq] = [:]
     
     public enum EnclosingFunctionType: Hashable, Equatable {
         case inherit, set(FunctionType?)
@@ -1393,7 +1395,7 @@ public class SymbolTable: NSObject {
         result.typeTable = typeTable
         result.parent = parent
         result.frameLookupMode = frameLookupMode
-        result.scopePrologue = scopePrologue
+        result.pendingInsertions = pendingInsertions
         result.enclosingFunctionTypeMode = enclosingFunctionTypeMode
         result.enclosingFunctionNameMode = enclosingFunctionNameMode
         result.modulesAlreadyImported = modulesAlreadyImported
@@ -1407,7 +1409,7 @@ public class SymbolTable: NSObject {
         declarationOrder = []
         symbolTable.removeAll()
         typeTable.removeAll()
-        scopePrologue = Seq(tags: [.scopePrologue])
+        pendingInsertions = [:]
         modulesAlreadyImported = []
     }
 }

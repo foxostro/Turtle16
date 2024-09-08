@@ -740,8 +740,8 @@ final class CompilerPassGenericsTests: XCTestCase {
         let ast1 = try compiler
             .run(ast0)? // perform the actual compiler pass
             .eraseSeq {
-                // remove scopePrologue because its irrelevant to this test
-                $0.tags.contains(.scopePrologue)
+                // remove vtable setup code because it's irrelevant to this test
+                $0.tags.contains(.vtable)
             }
         
         XCTAssertEqual(ast1, expected)

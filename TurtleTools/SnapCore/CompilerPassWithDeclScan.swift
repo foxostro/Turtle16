@@ -12,6 +12,51 @@ public class CompilerPassWithDeclScan: CompilerPass {
     let globalEnvironment: GlobalEnvironment
     var modules: [String : Module] = [:]
     
+    fileprivate class BlockRewriter: CompilerPass {
+        public override func visit(block block0: Block) throws -> AbstractSyntaxTreeNode? {
+            let block1 = try super.visit(block: block0) as! Block
+            let block2 = insertVtableDeclarations(block1)
+            return block2
+        }
+        
+        func insertVtableDeclarations(_ block0: Block) -> Block {
+            let pendingInsertions = block0.symbols.pendingInsertions
+            
+            var children = block0.children
+            
+            for (traitName, toInsert) in pendingInsertions {
+                assert(toInsert.tags.contains(.vtable))
+                
+                let indexOfTraitDecl = children.firstIndex {
+                    let traitDecl = $0 as? TraitDeclaration
+                    return traitDecl?.name == traitName
+                }
+                let insertionIndex = if let indexOfTraitDecl {
+                    children.index(after: indexOfTraitDecl)
+                }
+                else {
+                    children.startIndex
+                }
+                
+                if insertionIndex < children.count,
+                   let existingSeq = children[insertionIndex] as? Seq,
+                   existingSeq.tags.contains(.vtable) {
+                    
+                    children[insertionIndex] = existingSeq
+                        .appending(children: toInsert.children)
+                        .removeDuplicateVtableDeclarations()
+                }
+                else {
+                    children.insert(toInsert, at: insertionIndex)
+                }
+            }
+            
+            let block1 = block0.withChildren(children)
+            block1.symbols.pendingInsertions.removeAll()
+            return block1
+        }
+    }
+    
     public convenience init(_ env: GlobalEnvironment = GlobalEnvironment()) {
         self.init(globalEnvironment: env)
     }
@@ -22,9 +67,20 @@ public class CompilerPassWithDeclScan: CompilerPass {
     }
     
     public override func run(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
-        let node1 = try node0?.clearSymbols(globalEnvironment)
+        let node1 = try preProcess(node0)
         let node2 = try super.run(node1)
-        return node2
+        let node3 = try postProcess(node2)
+        return node3
+    }
+    
+    /// Transformation to apply to the program AST before the compiler pass runs
+    public func preProcess(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
+        try node0?.clearSymbols(globalEnvironment)
+    }
+    
+    /// Transformation to apply to the program AST after the compiler pass runs
+    public func postProcess(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
+        try BlockRewriter().run(node0)
     }
     
     func scan(block: Block) throws {
@@ -163,75 +219,6 @@ public class CompilerPassWithDeclScan: CompilerPass {
         try scan(block: clause.block)
     }
     
-    public override func visit(block block0: Block) throws -> AbstractSyntaxTreeNode? {
-        try willVisit(block: block0)
-        let block1 = block0.withChildren(try block0.children.compactMap {
-            try visit($0)
-        })
-        let block2 = try consumeScopePrologue(block1)
-        didVisit(block: block0)
-        return block2
-    }
-    
-    private func consumeScopePrologue(_ block1: Block) throws -> Block {
-        guard let symbols else { return block1 }
-        let index = block1.children.firstIndex {
-            ($0 as? Seq)?.tags.contains(.scopePrologue) ?? false
-        }
-        let block2: Block
-        if let index {
-            var children = block1.children
-            let scopePrologue0 = children[index] as! Seq
-            let scopePrologue1 = scopePrologue0.appending(children: symbols.scopePrologue.children)
-            let scopePrologue2 = removeDuplicateVtableDeclarations(scopePrologue1)
-            children[index] = scopePrologue2
-            block2 = block1.withChildren(children)
-        }
-        else {
-            block2 = block1.inserting(seq: symbols.scopePrologue, at: 0)
-        }
-        symbols.scopePrologue = symbols.scopePrologue.withChildren([])
-        return block2
-    }
-    
-    // TODO: Remove this hack. This hack prevents duplicate vtable declarations in the scopePrologue. It would be better to have an ImplFor compiler pass which rewrites the AST to insert this code instead.
-    private func removeDuplicateVtableDeclarations(_ scopePrologue0: Seq) -> Seq {
-        var vtableDeclarations: [VarDeclaration] = []
-        var vtableStructDeclarations: [StructDeclaration] = []
-        
-        let scopePrologue1 = scopePrologue0.withChildren(scopePrologue0.children.compactMap {
-            switch $0 {
-            case let varDecl as VarDeclaration:
-                let ident = varDecl.identifier.identifier
-                let isVtableDeclaration = ident.hasPrefix("__") && ident.hasSuffix("_vtable_instance")
-                if isVtableDeclaration {
-                    let alreadyHaveIt = vtableDeclarations.contains { ident == $0.identifier.identifier }
-                    if alreadyHaveIt {
-                        return nil
-                    }
-                }
-                vtableDeclarations.append(varDecl)
-                return varDecl
-                
-            case let structDecl as StructDeclaration:
-                let ident = structDecl.identifier.identifier
-                let isVtableStructDeclaration = ident.hasPrefix("__") && ident.hasSuffix("_vtable")
-                if isVtableStructDeclaration {
-                    let alreadyHaveIt = vtableStructDeclarations.contains { ident == $0.identifier.identifier }
-                    if alreadyHaveIt {
-                        return nil
-                    }
-                }
-                vtableStructDeclarations.append(structDecl)
-                return structDecl
-                
-            default:
-                return $0
-            }
-        })
-        return scopePrologue1
-    }
-    
     public override func willVisit(block node: Block) throws {
         try super.willVisit(block: node)
         try scan(block: node)
@@ -260,4 +247,3 @@ public class CompilerPassWithDeclScan: CompilerPass {
         try scan(block: block, clause: clause, in: match)
     }
 }
-

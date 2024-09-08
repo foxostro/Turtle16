@@ -162,23 +162,9 @@ public class CoreToTackCompiler: CompilerPass {
         return nil
     }
     
-    public override func visit(block node0: Block) throws -> AbstractSyntaxTreeNode? {
-        env.push(node0.symbols)
-        let children: [AbstractSyntaxTreeNode] = try node0.children.compactMap { try visit($0) }
-        let seq: Seq
-        if let scopePrologue = symbols?.scopePrologue,
-           !scopePrologue.children.isEmpty,
-           let compiledPrologue = try visit(seq: scopePrologue) {
-            seq = Seq(
-                sourceAnchor: node0.sourceAnchor,
-                children: [compiledPrologue] + children)
-        }
-        else {
-            seq = Seq(
-                sourceAnchor: node0.sourceAnchor,
-                children: children)
-        }
-        env.pop()
+    public override func visit(block block0: Block) throws -> AbstractSyntaxTreeNode? {
+        let block1 = try super.visit(block: block0) as! Block
+        let seq = Seq(sourceAnchor: block1.sourceAnchor, children: block1.children)
         return seq
     }
     

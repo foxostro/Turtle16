@@ -9,8 +9,8 @@
 import TurtleCore
 
 extension String {
-    /// A tag to mark the "scopePrologue" code sequence, recorded in the symbol table
-    public static let scopePrologue = "scopePrologue"
+    /// A tag to mark code sequences used to setup vtables
+    public static let vtable = "vtable"
 }
 
 public class Seq: AbstractSyntaxTreeNode {
@@ -77,6 +77,45 @@ public class Seq: AbstractSyntaxTreeNode {
                 $0.makeIndentedDescription(depth: depth, wantsLeadingWhitespace: true)
             }.joined(separator: "\n")
         }
+        return result
+    }
+    
+    // TODO: Remove this hack. This hack prevents duplicate vtable declarations in the SymbolTable.pendingInsertions. It would be better to have an ImplFor compiler pass which rewrites the AST to insert this code instead.
+    public func removeDuplicateVtableDeclarations() -> Seq {
+        var vtableDeclarations: [VarDeclaration] = []
+        var vtableStructDeclarations: [StructDeclaration] = []
+        
+        let result = self.withChildren(children.compactMap {
+            switch $0 {
+            case let varDecl as VarDeclaration:
+                let ident = varDecl.identifier.identifier
+                let isVtableDeclaration = ident.hasPrefix("__") && ident.hasSuffix("_vtable_instance")
+                if isVtableDeclaration {
+                    let alreadyHaveIt = vtableDeclarations.contains { ident == $0.identifier.identifier }
+                    if alreadyHaveIt {
+                        return nil
+                    }
+                }
+                vtableDeclarations.append(varDecl)
+                return varDecl
+                
+            case let structDecl as StructDeclaration:
+                let ident = structDecl.identifier.identifier
+                let isVtableStructDeclaration = ident.hasPrefix("__") && ident.hasSuffix("_vtable")
+                if isVtableStructDeclaration {
+                    let alreadyHaveIt = vtableStructDeclarations.contains { ident == $0.identifier.identifier }
+                    if alreadyHaveIt {
+                        return nil
+                    }
+                }
+                vtableStructDeclarations.append(structDecl)
+                return structDecl
+                
+            default:
+                return $0
+            }
+        })
+        
         return result
     }
 }

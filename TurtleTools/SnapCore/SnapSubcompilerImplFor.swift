@@ -122,28 +122,53 @@ public class SnapSubcompilerImplFor: NSObject {
         
         let visibility: SymbolVisibility
         if let identifier = node.traitTypeExpr as? Expression.Identifier {
-            let typeRecord = try symbols.resolveTypeRecord(sourceAnchor: node.sourceAnchor,
-                                                           identifier: identifier.identifier)
+            let typeRecord = try symbols.resolveTypeRecord(
+                sourceAnchor: node.sourceAnchor,
+                identifier: identifier.identifier)
             visibility = typeRecord.visibility
         }
         else {
             visibility = .privateVisibility
         }
         
-        let vtableDeclaration = VarDeclaration(identifier: Expression.Identifier(nameOfVtableInstance),
-                                               explicitType: Expression.Identifier(traitType.nameOfVtableType),
-                                               expression: initializer,
-                                               storage: .staticStorage,
-                                               isMutable: false,
-                                               visibility: visibility)
+        let vtableDeclaration = VarDeclaration(
+            identifier: Expression.Identifier(nameOfVtableInstance),
+            explicitType: Expression.Identifier(vtableType.name),
+            expression: initializer,
+            storage: .staticStorage,
+            isMutable: false,
+            visibility: visibility)
         
         _ = try SnapSubcompilerVarDeclaration(
             symbols: symbols,
             globalEnvironment: globalEnvironment).compile(vtableDeclaration)!
         
-        symbols.scopePrologue = symbols.scopePrologue.appending(children: [
-            traitType.vtableStructDeclaration,
-            vtableDeclaration
-        ])
+        let traitScope = symbols.lookupScopeEnclosingType(identifier: traitType.name)!
+        
+        recordVtableDeclInsertion(
+            pendingInsertions: &traitScope.pendingInsertions,
+            traitName: traitType.name,
+            toInsert: [
+                StructDeclaration(vtableType),
+                vtableDeclaration
+            ])
+    }
+    
+    /// Record an edit to the block AST to insert vtable declarations
+    private func recordVtableDeclInsertion(
+        pendingInsertions: inout [String : Seq],
+        traitName: String,
+        toInsert: [AbstractSyntaxTreeNode]) {
+            
+        guard !toInsert.isEmpty else { return }
+        
+        if pendingInsertions[traitName] == nil {
+            pendingInsertions[traitName] = Seq(tags: [.vtable], children: toInsert)
+        }
+        else {
+            pendingInsertions[traitName] = pendingInsertions[traitName]!
+                .appending(children: toInsert)
+                .removeDuplicateVtableDeclarations()
+        }
     }
 }

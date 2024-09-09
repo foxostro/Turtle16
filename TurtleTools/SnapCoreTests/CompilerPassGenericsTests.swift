@@ -587,7 +587,7 @@ final class CompilerPassGenericsTests: XCTestCase {
         XCTAssertEqual(ast1, expected)
     }
     
-    // The concrete instantiation of the generic trait is erased from the AST.
+    // Generic trait declarations are erased from the AST.
     func testGenericTraitDeclarationsAreErasedFromAST() throws {
         let ast0 = Block(children: [
             TraitDeclaration(
@@ -652,7 +652,7 @@ final class CompilerPassGenericsTests: XCTestCase {
         }
     }
     
-    // The concrete instantiation of the generic trait is inserted into the AST
+    // The concrete instantiation of the generic trait is inserted into the AST.
     func testGenericTypeApplicationCausesConcreteTraitToBeAddedToAST() throws {
         let symbols = SymbolTable()
         let funSym = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))

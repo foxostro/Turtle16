@@ -103,6 +103,15 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
                           isConst: isConst)
     }
     
+    public func withVisibility(_ visibility: SymbolVisibility) -> StructDeclaration {
+        StructDeclaration(sourceAnchor: sourceAnchor,
+                          identifier: identifier,
+                          typeArguments: typeArguments,
+                          members: members,
+                          visibility: visibility,
+                          isConst: isConst)
+    }
+    
     public func eraseTypeArguments() -> StructDeclaration {
         StructDeclaration(sourceAnchor: sourceAnchor,
                           identifier: identifier,

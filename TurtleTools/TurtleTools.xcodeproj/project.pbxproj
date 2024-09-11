@@ -39,6 +39,8 @@
 		6F000C462626A52A00C5DFDE /* TokenLiteralString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F000C452626A52A00C5DFDE /* TokenLiteralString.swift */; };
 		6F058A312C59837E00B3FA82 /* CompilerPassGenerics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F058A302C59837E00B3FA82 /* CompilerPassGenerics.swift */; };
 		6F058A332C59839000B3FA82 /* CompilerPassGenericsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F058A322C59839000B3FA82 /* CompilerPassGenericsTests.swift */; };
+		6F0943EF2C8FDC1D00A24FAC /* CompilerPassTraits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0943EE2C8FDC1D00A24FAC /* CompilerPassTraits.swift */; };
+		6F0943F12C8FDE9B00A24FAC /* CompilerPassTraitsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0943F02C8FDE9B00A24FAC /* CompilerPassTraitsTests.swift */; };
 		6F0943F32C8FDFAB00A24FAC /* TraitScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0943F22C8FDFAB00A24FAC /* TraitScanner.swift */; };
 		6F0943F52C8FDFB500A24FAC /* TraitScannerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F0943F42C8FDFB500A24FAC /* TraitScannerTests.swift */; };
 		6F095C402B6D8DCC00F15111 /* AssemblerCommandLineArgumentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F095C3F2B6D8DCC00F15111 /* AssemblerCommandLineArgumentParser.swift */; };
@@ -576,6 +578,8 @@
 		6F088090230F6E6A00AB2339 /* LabelDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelDeclarationTests.swift; sourceTree = "<group>"; };
 		6F0880A0230FBDFF00AB2339 /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		6F0880A2230FC09B00AB2339 /* TokenTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenTests.swift; sourceTree = "<group>"; };
+		6F0943EE2C8FDC1D00A24FAC /* CompilerPassTraits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassTraits.swift; sourceTree = "<group>"; };
+		6F0943F02C8FDE9B00A24FAC /* CompilerPassTraitsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassTraitsTests.swift; sourceTree = "<group>"; };
 		6F0943F22C8FDFAB00A24FAC /* TraitScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraitScanner.swift; sourceTree = "<group>"; };
 		6F0943F42C8FDFB500A24FAC /* TraitScannerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraitScannerTests.swift; sourceTree = "<group>"; };
 		6F095C3F2B6D8DCC00F15111 /* AssemblerCommandLineArgumentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblerCommandLineArgumentParser.swift; sourceTree = "<group>"; };
@@ -1224,9 +1228,10 @@
 				6F7CCE692C67FA9D00F435F1 /* CompilerPassForIn.swift */,
 				6F058A302C59837E00B3FA82 /* CompilerPassGenerics.swift */,
 				6F1F3B792C7D00CA008C2EEB /* CompilerPassIf.swift */,
-				6FBC1F132C72BFDA00CAC35E /* CompilerPassMatch.swift */,
 				6FE41A762C7C4642002ED26F /* CompilerPassImport.swift */,
+				6FBC1F132C72BFDA00CAC35E /* CompilerPassMatch.swift */,
 				6F1AD7E42C7CFCFD009AC825 /* CompilerPassReturn.swift */,
+				6F0943EE2C8FDC1D00A24FAC /* CompilerPassTraits.swift */,
 				6FBC1F172C72F9F200CAC35E /* CompilerPassWithDeclScan.swift */,
 				6F1F3B7B2C7D011B008C2EEB /* CompilerPassWhile.swift */,
 				6F40730626B1D5ED007D8382 /* CoreToTackCompiler.swift */,
@@ -2072,6 +2077,7 @@
 				6FD2735C26C9C29E00749CDA /* GotoIfFalse.swift in Sources */,
 				6F83480B26FD3B0100EB466E /* RegisterAllocatorNaive.swift in Sources */,
 				6F2B443626D9ACFE009ACF08 /* SnapASTTransformerFlattenSeq.swift in Sources */,
+				6F0943EF2C8FDC1D00A24FAC /* CompilerPassTraits.swift in Sources */,
 				6FBCFA5C26F7F52400193819 /* TackToTurtle16Compiler.swift in Sources */,
 				6F3F0108275FEC5700875339 /* RegisterSpiller.swift in Sources */,
 				6F15422226B5EBA800BA9572 /* SnapASTTransformerTestDeclaration.swift in Sources */,
@@ -2150,6 +2156,7 @@
 				6F25325A24CB5D0C00339332 /* LvalueExpressionTypeCheckerTests.swift in Sources */,
 				6F469E0B26BEF5220004613B /* GlobalEnvironmentTests.swift in Sources */,
 				6F840516291808E100C9B957 /* TackFlattenerTests.swift in Sources */,
+				6F0943F12C8FDE9B00A24FAC /* CompilerPassTraitsTests.swift in Sources */,
 				6F13826526C0E893002CF167 /* SnapSubcompilerReturnTests.swift in Sources */,
 				6F1D24C724823EC60095D7B4 /* IfTests.swift in Sources */,
 				6FCB68202472064800798905 /* SnapParserTests.swift in Sources */,

@@ -317,6 +317,8 @@
 		6FDC6AAE27331640003A8ABF /* SnapToTurtle16EndToEndIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDC6AAD27331640003A8ABF /* SnapToTurtle16EndToEndIntegrationTests.swift */; };
 		6FDF61E1266D86DC002E7A17 /* Disassembler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDF61E0266D86DC002E7A17 /* Disassembler.swift */; };
 		6FDF61E3266D86E8002E7A17 /* DisassemblerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDF61E2266D86E8002E7A17 /* DisassemblerTests.swift */; };
+		6FDFAA8B2C97B66200F7A68D /* FunctionScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFAA8A2C97B66200F7A68D /* FunctionScanner.swift */; };
+		6FDFAA8D2C97B67900F7A68D /* FunctionScannerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFAA8C2C97B67900F7A68D /* FunctionScannerTests.swift */; };
 		6FE41A772C7C4642002ED26F /* CompilerPassImport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE41A762C7C4642002ED26F /* CompilerPassImport.swift */; };
 		6FE41A792C7C4650002ED26F /* CompilerPassImportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE41A782C7C4650002ED26F /* CompilerPassImportTests.swift */; };
 		6FEC3DFE24D78CF800E9C299 /* LabelMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEC3DFD24D78CF800E9C299 /* LabelMaker.swift */; };
@@ -884,6 +886,8 @@
 		6FDC6AAD27331640003A8ABF /* SnapToTurtle16EndToEndIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapToTurtle16EndToEndIntegrationTests.swift; sourceTree = "<group>"; };
 		6FDF61E0266D86DC002E7A17 /* Disassembler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Disassembler.swift; sourceTree = "<group>"; };
 		6FDF61E2266D86E8002E7A17 /* DisassemblerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisassemblerTests.swift; sourceTree = "<group>"; };
+		6FDFAA8A2C97B66200F7A68D /* FunctionScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionScanner.swift; sourceTree = "<group>"; };
+		6FDFAA8C2C97B67900F7A68D /* FunctionScannerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionScannerTests.swift; sourceTree = "<group>"; };
 		6FE0465F2405119D001461C4 /* NullLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NullLogger.swift; sourceTree = "<group>"; };
 		6FE41A762C7C4642002ED26F /* CompilerPassImport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompilerPassImport.swift; sourceTree = "<group>"; };
 		6FE41A782C7C4650002ED26F /* CompilerPassImportTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompilerPassImportTests.swift; sourceTree = "<group>"; };
@@ -1220,6 +1224,7 @@
 			isa = PBXGroup;
 			children = (
 				6F53372F2474BE0B00CFD33C /* AST */,
+				6FDFAA8F2C97B6A400F7A68D /* DeclScanner */,
 				6F5337322474BE4B00CFD33C /* Token */,
 				6F1F3B772C7D0001008C2EEB /* CompilerPassAssert.swift */,
 				6F6A2EED2C5C5C6C004A25F5 /* CompilerPassClearSymbols.swift */,
@@ -1287,7 +1292,6 @@
 				6F840513291808D900C9B957 /* TackFlattener.swift */,
 				6FBCFA5B26F7F52400193819 /* TackToTurtle16Compiler.swift */,
 				6F84050F2918050400C9B957 /* TackVirtualMachine.swift */,
-				6F0943F22C8FDFAB00A24FAC /* TraitScanner.swift */,
 				6F0D519A2506D0B100AB1C7E /* TypeContextTypeChecker.swift */,
 				6F9201E72471DAC7009E1410 /* SnapCore.h */,
 				6F9201E82471DAC7009E1410 /* Info.plist */,
@@ -1302,6 +1306,7 @@
 			isa = PBXGroup;
 			children = (
 				6F5337332474BE7100CFD33C /* AST */,
+				6FDFAA8E2C97B68100F7A68D /* DeclScanner */,
 				6F058A322C59839000B3FA82 /* CompilerPassGenericsTests.swift */,
 				6FE41A782C7C4650002ED26F /* CompilerPassImportTests.swift */,
 				6FBC1F152C72BFE200CAC35E /* CompilerPassMatchTests.swift */,
@@ -1353,7 +1358,6 @@
 				6F840515291808E100C9B957 /* TackFlattenerTests.swift */,
 				6FBCFA5D26F7F5FC00193819 /* TackToTurtle16CompilerTests.swift */,
 				6F8405112918051500C9B957 /* TackVirtualMachineTests.swift */,
-				6F0943F42C8FDFB500A24FAC /* TraitScannerTests.swift */,
 				6F0D519E2506D57F00AB1C7E /* TypeContextTypeCheckerTests.swift */,
 				6F9201F42471DAC7009E1410 /* Info.plist */,
 			);
@@ -1471,6 +1475,24 @@
 				6FDA167D2B1FAC9D00FD1FC0 /* TurtleSimulatorUITestsLaunchTests.swift */,
 			);
 			path = TurtleSimulatorAppUITests;
+			sourceTree = "<group>";
+		};
+		6FDFAA8E2C97B68100F7A68D /* DeclScanner */ = {
+			isa = PBXGroup;
+			children = (
+				6FDFAA8C2C97B67900F7A68D /* FunctionScannerTests.swift */,
+				6F0943F42C8FDFB500A24FAC /* TraitScannerTests.swift */,
+			);
+			path = DeclScanner;
+			sourceTree = "<group>";
+		};
+		6FDFAA8F2C97B6A400F7A68D /* DeclScanner */ = {
+			isa = PBXGroup;
+			children = (
+				6FDFAA8A2C97B66200F7A68D /* FunctionScanner.swift */,
+				6F0943F22C8FDFAB00A24FAC /* TraitScanner.swift */,
+			);
+			path = DeclScanner;
 			sourceTree = "<group>";
 		};
 		6FF1994A22ECB36F00C255A2 = {
@@ -2077,6 +2099,7 @@
 				6FD2735C26C9C29E00749CDA /* GotoIfFalse.swift in Sources */,
 				6F83480B26FD3B0100EB466E /* RegisterAllocatorNaive.swift in Sources */,
 				6F2B443626D9ACFE009ACF08 /* SnapASTTransformerFlattenSeq.swift in Sources */,
+				6FDFAA8B2C97B66200F7A68D /* FunctionScanner.swift in Sources */,
 				6F0943EF2C8FDC1D00A24FAC /* CompilerPassTraits.swift in Sources */,
 				6FBCFA5C26F7F52400193819 /* TackToTurtle16Compiler.swift in Sources */,
 				6F3F0108275FEC5700875339 /* RegisterSpiller.swift in Sources */,
@@ -2160,6 +2183,7 @@
 				6F13826526C0E893002CF167 /* SnapSubcompilerReturnTests.swift in Sources */,
 				6F1D24C724823EC60095D7B4 /* IfTests.swift in Sources */,
 				6FCB68202472064800798905 /* SnapParserTests.swift in Sources */,
+				6FDFAA8D2C97B67900F7A68D /* FunctionScannerTests.swift in Sources */,
 				6FCB681C2472051200798905 /* SnapLexerTests.swift in Sources */,
 				6F4F3C45249EAF700018BBBC /* FunctionDeclarationTests.swift in Sources */,
 				6F15422026B34E4400BA9572 /* SymbolTablesReconnectorTests.swift in Sources */,

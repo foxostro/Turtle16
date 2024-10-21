@@ -882,12 +882,13 @@ trait \(name) {
     }
     
     var vtableStructDeclaration: StructDeclaration {
+        let traitName = name
         let structDecl = StructDeclaration(
             identifier: Expression.Identifier(nameOfVtableType),
             members: members.map { name, type in
                 StructDeclaration.Member(
                     name: name,
-                    type: rewriteTraitMemberTypeForVtable(name, type.lift))
+                    type: rewriteTraitMemberTypeForVtable(traitName, type.lift))
             },
             isConst: true)
         return structDecl

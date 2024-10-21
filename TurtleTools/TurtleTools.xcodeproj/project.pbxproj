@@ -321,6 +321,8 @@
 		6FDFAA8D2C97B67900F7A68D /* FunctionScannerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFAA8C2C97B67900F7A68D /* FunctionScannerTests.swift */; };
 		6FDFAA912C97BBF400F7A68D /* ImplScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFAA902C97BBF400F7A68D /* ImplScanner.swift */; };
 		6FDFAA932C97BBFE00F7A68D /* ImplScannerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFAA922C97BBFE00F7A68D /* ImplScannerTests.swift */; };
+		6FDFAA952C97BEDF00F7A68D /* ImplForScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFAA942C97BEDF00F7A68D /* ImplForScanner.swift */; };
+		6FDFAA972C97BEEB00F7A68D /* ImplForScannerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDFAA962C97BEEB00F7A68D /* ImplForScannerTests.swift */; };
 		6FE41A772C7C4642002ED26F /* CompilerPassImport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE41A762C7C4642002ED26F /* CompilerPassImport.swift */; };
 		6FE41A792C7C4650002ED26F /* CompilerPassImportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE41A782C7C4650002ED26F /* CompilerPassImportTests.swift */; };
 		6FEC3DFE24D78CF800E9C299 /* LabelMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEC3DFD24D78CF800E9C299 /* LabelMaker.swift */; };
@@ -892,6 +894,8 @@
 		6FDFAA8C2C97B67900F7A68D /* FunctionScannerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionScannerTests.swift; sourceTree = "<group>"; };
 		6FDFAA902C97BBF400F7A68D /* ImplScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImplScanner.swift; sourceTree = "<group>"; };
 		6FDFAA922C97BBFE00F7A68D /* ImplScannerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImplScannerTests.swift; sourceTree = "<group>"; };
+		6FDFAA942C97BEDF00F7A68D /* ImplForScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImplForScanner.swift; sourceTree = "<group>"; };
+		6FDFAA962C97BEEB00F7A68D /* ImplForScannerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImplForScannerTests.swift; sourceTree = "<group>"; };
 		6FE0465F2405119D001461C4 /* NullLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NullLogger.swift; sourceTree = "<group>"; };
 		6FE41A762C7C4642002ED26F /* CompilerPassImport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompilerPassImport.swift; sourceTree = "<group>"; };
 		6FE41A782C7C4650002ED26F /* CompilerPassImportTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompilerPassImportTests.swift; sourceTree = "<group>"; };
@@ -1486,6 +1490,7 @@
 			children = (
 				6FDFAA8C2C97B67900F7A68D /* FunctionScannerTests.swift */,
 				6FDFAA922C97BBFE00F7A68D /* ImplScannerTests.swift */,
+				6FDFAA962C97BEEB00F7A68D /* ImplForScannerTests.swift */,
 				6F0943F42C8FDFB500A24FAC /* TraitScannerTests.swift */,
 			);
 			path = DeclScanner;
@@ -1496,6 +1501,7 @@
 			children = (
 				6FDFAA8A2C97B66200F7A68D /* FunctionScanner.swift */,
 				6FDFAA902C97BBF400F7A68D /* ImplScanner.swift */,
+				6FDFAA942C97BEDF00F7A68D /* ImplForScanner.swift */,
 				6F0943F22C8FDFAB00A24FAC /* TraitScanner.swift */,
 			);
 			path = DeclScanner;
@@ -2119,6 +2125,7 @@
 				6F4F3C47249EBC3A0018BBBC /* TokenType.swift in Sources */,
 				6F469E0926BEF5020004613B /* GlobalEnvironment.swift in Sources */,
 				6F5462F3253C0560005DDAB6 /* TraitDeclaration.swift in Sources */,
+				6FDFAA952C97BEDF00F7A68D /* ImplForScanner.swift in Sources */,
 				6F870FEB2505913900FE2B25 /* StructDeclaration.swift in Sources */,
 				6F1D24C524823DD90095D7B4 /* If.swift in Sources */,
 				6F1F3B782C7D0001008C2EEB /* CompilerPassAssert.swift in Sources */,
@@ -2184,6 +2191,7 @@
 				6FC0E650291AD4E600DFDE8B /* SnapCompilerBackEndTurtle16Tests.swift in Sources */,
 				6F40731F26B2A194007D8382 /* SnapSubcompilerAssertTests.swift in Sources */,
 				6F25325A24CB5D0C00339332 /* LvalueExpressionTypeCheckerTests.swift in Sources */,
+				6FDFAA972C97BEEB00F7A68D /* ImplForScannerTests.swift in Sources */,
 				6F469E0B26BEF5220004613B /* GlobalEnvironmentTests.swift in Sources */,
 				6F840516291808E100C9B957 /* TackFlattenerTests.swift in Sources */,
 				6F0943F12C8FDE9B00A24FAC /* CompilerPassTraitsTests.swift in Sources */,

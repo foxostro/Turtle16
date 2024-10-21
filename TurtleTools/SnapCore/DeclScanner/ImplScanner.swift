@@ -9,7 +9,7 @@
 import Foundation
 import TurtleCore
 
-/// Scans a impl declaration and binds the function symbols in the environment
+/// Scans an Impl declaration and binds the function symbols in the environment
 public class ImplScanner: NSObject {
     public let globalEnvironment: GlobalEnvironment
     public let parent: SymbolTable

@@ -87,7 +87,7 @@ final class CompilerPassTraitsTests: XCTestCase {
                                 Expression.FunctionType(
                                     returnType: Expression.PrimitiveType(.void),
                                     arguments: [
-                                        Expression.PointerType(Expression.Identifier("Serial")),
+                                        Expression.PointerType(Expression.PrimitiveType(.void)),
                                         Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
                                     ])))
                     ],

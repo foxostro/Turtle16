@@ -24,7 +24,7 @@ public class InstructionNode: AbstractSyntaxTreeNode {
                 instruction: String,
                 parameters: [Parameter] = []) {
         self.instruction = instruction
-        self.parameters = parameters.map { $0.withSourceAnchor(sourceAnchor) as! Parameter }
+        self.parameters = parameters
         super.init(sourceAnchor: sourceAnchor)
     }
     

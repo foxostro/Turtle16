@@ -91,8 +91,8 @@ class SnapBenchmarkDriver: NSObject {
         }
         
         if isVerboseLogging {
-            logger?.append(AssemblerListingMaker().makeListing(try! compiler.assembly.get()))
-            logger?.append((try! compiler.tack.get() as! Seq).makeChildDescriptions())
+            logger?.append(AssemblerListingMaker().makeListing(try compiler.assembly.get()))
+            logger?.append(try compiler.tack.get().listing)
         }
         
         let computer = TurtleComputer(SchematicLevelCPUModel())

@@ -89,7 +89,7 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
                                                        functionType: functionType,
                                                        func: node0) {
             let ret = Return(sourceAnchor: node0.sourceAnchor, expression: nil)
-            body = node0.body.inserting(children: [ret], at: node0.body.children.count)
+            body = node0.body.appending(children: [ret])
         } else {
             body = node0.body
         }

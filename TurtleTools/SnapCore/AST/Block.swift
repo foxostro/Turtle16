@@ -70,6 +70,11 @@ public class Block: AbstractSyntaxTreeNode {
         return try! BlockCloner().run(self) as! Block
     }
     
+    /// Returns a new block, appending the children to the end
+    public func appending(children toInsert: [AbstractSyntaxTreeNode]) -> Block {
+        inserting(children: toInsert, at: children.count)
+    }
+    
     /// Returns a new block, inserting the children at the specified index.
     public func inserting(children toInsert: [AbstractSyntaxTreeNode], at index: Int) -> Block {
         var children1 = children

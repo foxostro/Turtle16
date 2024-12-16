@@ -25,10 +25,10 @@ public class ImplFor: AbstractSyntaxTreeNode {
                 structTypeExpr: Expression,
                 children: [FunctionDeclaration],
                 id: ID = ID()) {
-        self.typeArguments = typeArguments.map { $0.withSourceAnchor(sourceAnchor) }
-        self.traitTypeExpr = traitTypeExpr.withSourceAnchor(sourceAnchor)
-        self.structTypeExpr = structTypeExpr.withSourceAnchor(sourceAnchor)
-        self.children = children.map { $0.withSourceAnchor(sourceAnchor) }
+        self.typeArguments = typeArguments
+        self.traitTypeExpr = traitTypeExpr
+        self.structTypeExpr = structTypeExpr
+        self.children = children
         self.id = id
         super.init(sourceAnchor: sourceAnchor)
     }

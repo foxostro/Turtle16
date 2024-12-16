@@ -1171,7 +1171,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         
         // Apply the deferred impl-for nodes now.
         for node0 in genericStructType.implForNodes {
-            let node1 = node0.eraseTypeArguments()
+            let node1 = node0.eraseTypeArguments().clone()
             try SnapSubcompilerImplFor(symbols: symbolsWithTypeArguments,
                                        globalEnvironment: globalEnvironment)
             .compile(node1)

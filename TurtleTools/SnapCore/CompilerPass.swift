@@ -255,7 +255,8 @@ public class CompilerPass: NSObject {
             structTypeExpr: try visit(expr: node.structTypeExpr)!,
             children: try node.children.compactMap {
                 try visit($0) as? FunctionDeclaration
-            })
+            },
+            id: node.id)
     }
     
     public func visit(match node: Match) throws -> AbstractSyntaxTreeNode? {

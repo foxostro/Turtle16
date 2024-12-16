@@ -65,7 +65,7 @@ final class CompilerPassImplForTests: XCTestCase {
         ])
             .reconnect(parent: nil)
         
-        XCTAssertThrowsError(try ast.implForPass(GlobalEnvironment())) {
+        XCTAssertThrowsError(try ast.implForPass(GlobalEnvironment(enableVtableHack: false))) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "`SerialFake' does not implement all trait methods; missing `puts'.")
@@ -93,7 +93,7 @@ final class CompilerPassImplForTests: XCTestCase {
         ])
             .reconnect(parent: nil)
         
-        XCTAssertThrowsError(try ast.implForPass(GlobalEnvironment())) {
+        XCTAssertThrowsError(try ast.implForPass(GlobalEnvironment(enableVtableHack: false))) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "`SerialFake' method `puts' has 1 parameter but the declaration in the `Serial' trait has 2.")
@@ -122,7 +122,7 @@ final class CompilerPassImplForTests: XCTestCase {
         ])
             .reconnect(parent: nil)
         
-        XCTAssertThrowsError(try ast.implForPass(GlobalEnvironment())) {
+        XCTAssertThrowsError(try ast.implForPass(GlobalEnvironment(enableVtableHack: false))) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "`SerialFake' method `puts' has incompatible type for trait `Serial'; expected `[]u8' argument, got `u8' instead")
@@ -151,7 +151,7 @@ final class CompilerPassImplForTests: XCTestCase {
         ])
             .reconnect(parent: nil)
         
-        XCTAssertThrowsError(try ast.implForPass(GlobalEnvironment())) {
+        XCTAssertThrowsError(try ast.implForPass(GlobalEnvironment(enableVtableHack: false))) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "`SerialFake' method `puts' has incompatible type for trait `Serial'; expected `*SerialFake' argument, got `u8' instead")
@@ -182,7 +182,7 @@ final class CompilerPassImplForTests: XCTestCase {
         ])
             .reconnect(parent: nil)
         
-        XCTAssertThrowsError(try ast.implForPass(GlobalEnvironment())) {
+        XCTAssertThrowsError(try ast.implForPass(GlobalEnvironment(enableVtableHack: false))) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "`SerialFake' method `puts' has incompatible type for trait `Serial'; expected `void' return value, got `bool' instead")
@@ -219,46 +219,6 @@ final class CompilerPassImplForTests: XCTestCase {
         // vtable instance following the declaration of the vtable type itself.
         // We expect that the ImplFor node is rewritten to a plain Impl node.
         let expected = Block(children: [
-            Seq(tags: [.vtable], children: [
-                StructDeclaration(
-                    identifier: Expression.Identifier("__Serial_vtable"),
-                    members: [
-                        StructDeclaration.Member(
-                            name: "puts",
-                            type: Expression.PrimitiveType(.pointer(.function(FunctionType(
-                                returnType: .void,
-                                arguments: [
-                                    .pointer(.void),
-                                    .dynamicArray(elementType: .arithmeticType(.mutableInt(.u8)))
-                                ])))))
-                    ],
-                    visibility: .privateVisibility,
-                    isConst: false),
-                VarDeclaration(
-                    identifier: Expression.Identifier("__Serial_SerialFake_vtable_instance"),
-                    explicitType: Expression.Identifier("__Serial_vtable"),
-                    expression: Expression.StructInitializer(
-                        expr: Expression.Identifier("__Serial_vtable"),
-                        arguments: [
-                            Expression.StructInitializer.Argument(
-                                name: "puts",
-                                expr: Expression.Bitcast(
-                                    expr: Expression.Unary(
-                                        op: .ampersand,
-                                        expression: Expression.Get(
-                                            expr: Expression.Identifier("SerialFake"),
-                                            member: Expression.Identifier("puts"))),
-                                    targetType: Expression.PrimitiveType(.pointer(.function(FunctionType(
-                                        returnType: .void,
-                                        arguments: [
-                                            .pointer(.void),
-                                            .dynamicArray(elementType: .arithmeticType(.mutableInt(.u8)))
-                                        ]))))))
-                        ]),
-                    storage: .staticStorage,
-                    isMutable: false,
-                    visibility: .privateVisibility)
-            ]),
             Seq(children: [
                 TraitDeclaration(
                     identifier: Expression.Identifier("Serial"),
@@ -296,6 +256,30 @@ final class CompilerPassImplForTests: XCTestCase {
                     ],
                     isConst: true)
             ]),
+            VarDeclaration(
+                identifier: Expression.Identifier("__Serial_SerialFake_vtable_instance"),
+                explicitType: Expression.Identifier("__Serial_vtable"),
+                expression: Expression.StructInitializer(
+                    expr: Expression.Identifier("__Serial_vtable"),
+                    arguments: [
+                        Expression.StructInitializer.Argument(
+                            name: "puts",
+                            expr: Expression.Bitcast(
+                                expr: Expression.Unary(
+                                    op: .ampersand,
+                                    expression: Expression.Get(
+                                        expr: Expression.Identifier("SerialFake"),
+                                        member: Expression.Identifier("puts"))),
+                                targetType: Expression.PrimitiveType(.pointer(.function(FunctionType(
+                                    returnType: .void,
+                                    arguments: [
+                                        .pointer(.void),
+                                        .dynamicArray(elementType: .arithmeticType(.mutableInt(.u8)))
+                                    ]))))))
+                    ]),
+                storage: .staticStorage,
+                isMutable: false,
+                visibility: .privateVisibility),
             StructDeclaration(
                 identifier: Expression.Identifier("SerialFake"),
                 members: []),
@@ -319,7 +303,7 @@ final class CompilerPassImplForTests: XCTestCase {
         ], id: ast0.id)
             .reconnect(parent: nil)
         
-        let actual = try ast0.implForPass(GlobalEnvironment())
+        let actual = try ast0.implForPass(GlobalEnvironment(enableVtableHack: false))
         
         XCTAssertEqual(actual, expected)
     }

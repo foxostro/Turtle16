@@ -13,9 +13,17 @@ public class CompilerPassWithDeclScan: CompilerPass {
     var modules: [String : Module] = [:]
     
     fileprivate class BlockRewriter: CompilerPass {
+        let globalEnvironment: GlobalEnvironment
+        
+        init(_ globalEnvironment: GlobalEnvironment) {
+            self.globalEnvironment = globalEnvironment
+        }
+        
         public override func visit(block block0: Block) throws -> AbstractSyntaxTreeNode? {
             let block1 = try super.visit(block: block0) as! Block
-            let block2 = insertVtableDeclarations(block1)
+            let block2 = globalEnvironment.enableVtableHack
+                ? insertVtableDeclarations(block1)
+                : block1
             return block2
         }
         
@@ -80,7 +88,7 @@ public class CompilerPassWithDeclScan: CompilerPass {
     
     /// Transformation to apply to the program AST after the compiler pass runs
     public func postProcess(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
-        try BlockRewriter().run(node0)
+        try BlockRewriter(globalEnvironment).run(node0)
     }
     
     func scan(block: Block) throws {

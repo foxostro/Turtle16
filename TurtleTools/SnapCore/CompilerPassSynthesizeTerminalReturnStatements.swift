@@ -25,6 +25,7 @@ public class CompilerPassSynthesizeTerminalReturnStatements: CompilerPassWithDec
     }
     
     private func visitFunctionBody(func fn: FunctionDeclaration) throws -> Block {
+        try expectFunctionReturnExpressionIsCorrectType(fn)
         let body0 = fn.body
         let body1 = if try shouldSynthesizeTerminalReturnStatement(fn) {
             body0.appending(children: [
@@ -36,6 +37,24 @@ public class CompilerPassSynthesizeTerminalReturnStatements: CompilerPassWithDec
             body0
         }
         return body1
+    }
+    
+    private func expectFunctionReturnExpressionIsCorrectType(_ node: FunctionDeclaration) throws {
+        let functionType = try TypeContextTypeChecker(symbols: symbols!)
+            .check(expression: node.functionType)
+            .unwrapFunctionType()
+        guard functionType.returnType != .void else { return }
+        for trace in try trace(node) {
+            if trace.last != .Return {
+                throw CompilerError(
+                    sourceAnchor: node.identifier.sourceAnchor,
+                    message: "missing return in a function expected to return `\(functionType.returnType)'")
+            }
+        }
+    }
+    
+    private func trace(_ node: FunctionDeclaration) throws -> [StatementTracer.Trace] {
+        try StatementTracer(symbols: symbols!).trace(ast: node.body)
     }
     
     private func shouldSynthesizeTerminalReturnStatement(_ node: FunctionDeclaration) throws -> Bool {

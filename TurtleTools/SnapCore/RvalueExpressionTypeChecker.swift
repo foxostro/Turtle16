@@ -1090,6 +1090,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         }
         
         // TODO: check type constraints on the type variables here too
+        // TODO: instantiation of the body of generic functions should not happen here at all
         
         let template0 = genericFunctionType.template
         let template1 = template0.clone()

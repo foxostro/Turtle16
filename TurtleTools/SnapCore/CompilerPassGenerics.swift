@@ -29,6 +29,7 @@ public class CompilerPassGenerics: CompilerPassWithDeclScan {
         pendingInsertions[id, default: []].append(contentsOf: nodes)
     }
     
+    /// Rewrites blocks in the AST by inserting the given nodes
     fileprivate class BlockRewriter: CompilerPass {
         fileprivate let pendingInsertions: [AbstractSyntaxTreeNode.ID : [AbstractSyntaxTreeNode]]
         
@@ -117,46 +118,57 @@ public class CompilerPassGenerics: CompilerPassWithDeclScan {
     
     fileprivate func visit(genericTypeApplication expr: Expression.GenericTypeApplication, symbols: SymbolTable) throws -> Expression? {
         
-        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment)
+        let typeChecker = RvalueExpressionTypeChecker(
+            symbols: symbols,
+            globalEnvironment: globalEnvironment)
         let exprTyp = try typeChecker.check(expression: expr)
-        
-        switch exprTyp {
+        let concreteDeclaration = switch exprTyp {
         case .function(let typ):
-            return try visit(expr: expr,
-                             symbols: symbols,
-                             concreteFunctionType: typ)
-            
+            try visit(expr: expr, symbols: symbols, concreteFunctionType: typ)
         case .structType(let typ), .constStructType(let typ):
-            return try visit(expr: expr,
-                             symbols: symbols,
-                             concreteStructType: typ)
-            
+            try visit(expr: expr, symbols: symbols, concreteStructType: typ)
         case .traitType(let typ), .constTraitType(let typ):
-            return try visit(expr: expr,
-                             symbols: symbols,
-                             concreteTraitType: typ)
-            
+            try visit(expr: expr, symbols: symbols, concreteTraitType: typ)
         default:
-            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "internal compiler error: expected expression to have a function type: `\(expr)'")
+            throw CompilerError(
+                sourceAnchor: expr.sourceAnchor,
+                message: "internal compiler error: expected expression to have a function type: `\(expr)'")
         }
+        return concreteDeclaration
     }
     
     fileprivate func visit(expr: Expression.GenericTypeApplication,
                            symbols: SymbolTable,
                            concreteFunctionType: FunctionType) throws -> Expression? {
         
+        // Instantiate the generic function with concrete type arguments
         let genericFunctionType = try symbols.resolveTypeOfIdentifier(
             sourceAnchor: expr.identifier.sourceAnchor,
             identifier: expr.identifier.identifier)
             .unwrapGenericFunctionType()
+        let mangledName = concreteFunctionType.mangledName!
+        let functionType = genericFunctionType.template.functionType
+            .withName(mangledName)
+        let ast0 = genericFunctionType.template
+            .clone()
+            .withTypeArguments([])
+            .withIdentifier(mangledName)
+            .withFunctionType(functionType)
+        let pairs = zip(
+            genericFunctionType.typeArguments.map(\.identifier),
+            try expr.arguments.map {
+                Expression.PrimitiveType(try typeCheck(rexpr: $0))
+            })
+        let ast1 = try GenericFunctionPartialEvaluator.eval(ast0, replacements: pairs)
         
         // The compiler must an emit AST node for the concrete instantiaton of
-        // the generic function.
+        // the generic function. Emit at the point where the generic function
+        // was initially defined.
+        // TODO: The compiler must instead insert the node at the widest lexical scope accessible to the generic type application which includes both the generic function declaration and all type arguments.
         if let scope = symbols.lookupScopeEnclosingSymbol(identifier: genericFunctionType.name),
-           let id = genericFunctionType.enclosingImplId ?? scope.associatedNodeId,
-           let ast = concreteFunctionType.ast {
+           let id = genericFunctionType.enclosingImplId ?? scope.associatedNodeId {
             
-            appendPendingInsertion(ast, at: id)
+            appendPendingInsertion(ast1, at: id)
         }
         
         return Expression.Identifier(concreteFunctionType.mangledName!)

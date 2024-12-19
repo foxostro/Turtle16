@@ -1,0 +1,70 @@
+//
+//  CompilerPassSynthesizeTerminalReturnStatements.swift
+//  SnapCore
+//
+//  Created by Andrew Fox on 12/16/24.
+//  Copyright © 2024 Andrew Fox. All rights reserved.
+//
+
+import TurtleCore
+
+/// Synthesize an explicit terminal return statement on functions with an implicit return
+public class CompilerPassSynthesizeTerminalReturnStatements: CompilerPassWithDeclScan {
+    public override func visit(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
+        FunctionDeclaration(
+            sourceAnchor: node.sourceAnchor,
+            identifier: try visit(identifier: node.identifier) as! Expression.Identifier,
+            functionType: try visit(expr: node.functionType) as! Expression.FunctionType,
+            argumentNames: node.argumentNames,
+            typeArguments: try node.typeArguments.compactMap {
+                try visit(genericTypeArgument: $0) as! Expression.GenericTypeArgument?
+            },
+            body: try visitFunctionBody(func: node),
+            visibility: node.visibility,
+            symbols: node.symbols)
+    }
+    
+    private func visitFunctionBody(func fn: FunctionDeclaration) throws -> Block {
+        let body0 = fn.body
+        let body1 = if try shouldSynthesizeTerminalReturnStatement(fn) {
+            body0.appending(children: [
+                Return(
+                    sourceAnchor: body0.sourceAnchor,
+                    expression: nil)
+            ])
+        } else {
+            body0
+        }
+        return body1
+    }
+    
+    private func shouldSynthesizeTerminalReturnStatement(_ node: FunctionDeclaration) throws -> Bool {
+        let functionType = try TypeContextTypeChecker(symbols: symbols!)
+            .check(expression: node.functionType)
+            .unwrapFunctionType()
+        guard functionType.returnType == .void else { return false }
+        let tracer = StatementTracer(symbols: symbols!)
+        let traces = try! tracer.trace(ast: node.body)
+        var allTracesEndInReturnStatement = true
+        for trace in traces {
+            if let last = trace.last {
+                switch last {
+                case .Return:
+                    break
+                default:
+                    allTracesEndInReturnStatement = false
+                }
+            } else {
+                allTracesEndInReturnStatement = false
+            }
+        }
+        return !allTracesEndInReturnStatement
+    }
+}
+
+extension AbstractSyntaxTreeNode {
+    /// Synthesize an explicit terminal return statement on functions with an implicit return
+    public func synthesizeTerminalReturnStatements(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassSynthesizeTerminalReturnStatements(globalEnvironment: globalEnvironment).run(self)
+    }
+}

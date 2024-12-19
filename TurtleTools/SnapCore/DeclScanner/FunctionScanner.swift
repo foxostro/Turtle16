@@ -53,6 +53,11 @@ public class FunctionScanner: NSObject {
         }
     }
     
+    public func scanInside(func node: FunctionDeclaration) throws {
+        assert(!node.isGeneric)
+        try doNonGeneric(node: node)
+    }
+    
     private func doGeneric(node: FunctionDeclaration) throws {
         try checkDoesNotShadowExistingSymbolOrType(typeParameters: node.typeArguments)
         

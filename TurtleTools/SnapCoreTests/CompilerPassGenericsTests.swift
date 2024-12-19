@@ -42,7 +42,7 @@ final class CompilerPassGenericsTests: XCTestCase {
     }
     
     fileprivate func addGenericFunctionSymbol(_ symbols: SymbolTable) -> SymbolTable {
-        let template = makeGenericFunctionDeclaration()
+        let template = makeGenericFunctionDeclaration(symbols)
         let genericFunctionType = Expression.GenericFunctionType(template: template)
         symbols.bind(identifier: "foo", symbol: Symbol(type: .genericFunction(genericFunctionType)))
         return symbols

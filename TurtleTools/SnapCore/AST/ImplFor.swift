@@ -100,6 +100,7 @@ public class ImplFor: AbstractSyntaxTreeNode {
             \(leading)\(typeDesc)
             \(indent)id: \(id)
             \(indent)typeArguments: \(typeArgumentsDesc)
+            \(indent)traitTypeExpr: \(traitTypeExpr)
             \(indent)structTypeExpr: \(structTypeExprDesc)\(childDesc)
             """
         return result

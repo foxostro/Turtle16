@@ -176,7 +176,7 @@ func foo() {
         computer.reset()
         
         let debugger = SnapDebugConsole(computer: computer)
-        debugger.logger = PrintLogger()
+        debugger.logger = options.isVerboseLogging ? PrintLogger() : NullLogger()
         debugger.symbols = compiler.symbolsOfTopLevelScope
         
         return debugger

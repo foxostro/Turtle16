@@ -106,9 +106,10 @@ public class CompilerPass: NSObject {
         return TopLevel(sourceAnchor: node.sourceAnchor, children: children)
     }
     
-    public func visit(subroutine node: Subroutine) throws -> AbstractSyntaxTreeNode? {
-        let children = try node.children.compactMap { try visit($0) }
-        return Subroutine(sourceAnchor: node.sourceAnchor, identifier: node.identifier, children: children)
+    public func visit(subroutine subroutine0: Subroutine) throws -> AbstractSyntaxTreeNode? {
+        let children = try subroutine0.children.compactMap { try visit($0) }
+        let subroutine1 = subroutine0.withChildren(children)
+        return subroutine1
     }
     
     public func visit(seq seq0: Seq) throws -> AbstractSyntaxTreeNode? {
@@ -117,48 +118,45 @@ public class CompilerPass: NSObject {
         return seq1
     }
     
-    public func visit(varDecl node: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
-        guard let identifier = try visit(identifier: node.identifier) as? Expression.Identifier else {
+    public func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
+        guard let identifier = try visit(identifier: node0.identifier) as? Expression.Identifier else {
             throw CompilerError(
-                sourceAnchor: node.identifier.sourceAnchor,
-                message: "expected identifier: `\(node.identifier)'")
+                sourceAnchor: node0.identifier.sourceAnchor,
+                message: "expected identifier: `\(node0.identifier)'")
         }
-        return VarDeclaration(
-            sourceAnchor: node.sourceAnchor,
+        let node1 = VarDeclaration(
+            sourceAnchor: node0.sourceAnchor,
             identifier: identifier,
-            explicitType: try node.explicitType.flatMap {
-                try visit(expr: $0)
-            },
-            expression: try node.expression.flatMap {
-                try visit(expr: $0)
-            },
-            storage: node.storage,
-            isMutable: node.isMutable,
-            visibility: node.visibility)
+            explicitType: try node0.explicitType.flatMap { try visit(expr: $0) },
+            expression: try node0.expression.flatMap { try visit(expr: $0) },
+            storage: node0.storage,
+            isMutable: node0.isMutable,
+            visibility: node0.visibility,
+            id: node0.id)
+        return node1
     }
     
     public func visit(if node: If) throws -> AbstractSyntaxTreeNode? {
         If(sourceAnchor: node.sourceAnchor,
            condition: try visit(expr: node.condition)!,
            then: try visit(node.thenBranch)!,
-           else: try node.elseBranch.flatMap {
-            try visit($0)
-        })
+           else: try node.elseBranch.flatMap { try visit($0) },
+           id: node.id)
     }
     
     public func visit(while node: While) throws -> AbstractSyntaxTreeNode? {
-        While(
-            sourceAnchor: node.sourceAnchor,
-            condition: try visit(expr: node.condition)!,
-            body: try visit(node.body)!)
+        While(sourceAnchor: node.sourceAnchor,
+              condition: try visit(expr: node.condition)!,
+              body: try visit(node.body)!,
+              id: node.id)
     }
     
     public func visit(forIn node: ForIn) throws -> AbstractSyntaxTreeNode? {
-        ForIn(
-            sourceAnchor: node.sourceAnchor,
-            identifier: try visit(identifier: node.identifier) as! Expression.Identifier,
-            sequenceExpr: try visit(expr: node.sequenceExpr)!,
-            body: try visit(node.body) as! Block)
+        ForIn(sourceAnchor: node.sourceAnchor,
+              identifier: try visit(identifier: node.identifier) as! Expression.Identifier,
+              sequenceExpr: try visit(expr: node.sequenceExpr)!,
+              body: try visit(node.body) as! Block,
+              id: node.id)
     }
     
     public func visit(block node0: Block) throws -> AbstractSyntaxTreeNode? {
@@ -189,11 +187,9 @@ public class CompilerPass: NSObject {
     }
     
     public func visit(return node: Return) throws -> AbstractSyntaxTreeNode? {
-        Return(
-            sourceAnchor: node.sourceAnchor,
-            expression: try node.expression.flatMap {
-                try visit(expr: $0)
-            })
+        node.withExpression(try node.expression.flatMap {
+            try visit(expr: $0)
+        })
     }
     
     private func outerVisit(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
@@ -215,7 +211,8 @@ public class CompilerPass: NSObject {
             },
             body: try visit(node.body) as! Block,
             visibility: node.visibility,
-            symbols: node.symbols)
+            symbols: node.symbols,
+            id: node.id)
     }
     
     public func willVisit(func node: FunctionDeclaration) throws {
@@ -239,7 +236,8 @@ public class CompilerPass: NSObject {
                     type: try visit(expr: $0.memberType)!)
             },
             visibility: node.visibility,
-            isConst: node.isConst)
+            isConst: node.isConst,
+            id: node.id)
     }
     
     public func visit(impl node: Impl) throws -> AbstractSyntaxTreeNode? {
@@ -280,7 +278,8 @@ public class CompilerPass: NSObject {
                     valueType: try visit(expr: $0.valueType)!,
                     block: try visit(clause: $0, in: node))
             },
-            elseClause: try visit(node.elseClause) as? Block)
+            elseClause: try visit(node.elseClause) as? Block,
+            id: node.id)
     }
     
     private func visit(clause: Match.Clause, in match: Match) throws -> Block {
@@ -304,11 +303,7 @@ public class CompilerPass: NSObject {
     }
     
     public func visit(assert node: Assert) throws -> AbstractSyntaxTreeNode? {
-        Assert(
-            sourceAnchor: node.sourceAnchor,
-            condition: try visit(expr: node.condition)!,
-            message: node.message,
-            enclosingTestName: node.enclosingTestName)
+        node.withCondition(try visit(expr: node.condition)!)
     }
     
     public func visit(trait node: TraitDeclaration) throws -> AbstractSyntaxTreeNode? {
@@ -324,14 +319,12 @@ public class CompilerPass: NSObject {
                     type: try visit(expr: $0.memberType)!)
             },
             visibility: node.visibility,
-            mangledName: node.mangledName)
+            mangledName: node.mangledName,
+            id: node.id)
     }
     
     public func visit(testDecl node: TestDeclaration) throws -> AbstractSyntaxTreeNode? {
-        TestDeclaration(
-            sourceAnchor: node.sourceAnchor,
-            name: node.name,
-            body: try visit(node.body) as! Block)
+        node.withBody(try visit(node.body) as! Block)
     }
     
     public func visit(typealias node: Typealias) throws -> AbstractSyntaxTreeNode? {
@@ -339,7 +332,8 @@ public class CompilerPass: NSObject {
             sourceAnchor: node.sourceAnchor,
             lexpr: try visit(identifier: node.lexpr) as! Expression.Identifier,
             rexpr: try visit(expr: node.rexpr)!,
-            visibility: node.visibility)
+            visibility: node.visibility,
+            id: node.id)
     }
     
     public func visit(import node: Import) throws -> AbstractSyntaxTreeNode? {
@@ -355,10 +349,7 @@ public class CompilerPass: NSObject {
     }
     
     public func visit(gotoIfFalse node: GotoIfFalse) throws -> AbstractSyntaxTreeNode? {
-        GotoIfFalse(
-            sourceAnchor: node.sourceAnchor,
-            condition: try visit(expr: node.condition)!,
-            target: node.target)
+        node.withCondition(try visit(expr: node.condition)!)
     }
     
     public func visit(instruction node: InstructionNode) throws -> AbstractSyntaxTreeNode? {
@@ -462,7 +453,8 @@ public class CompilerPass: NSObject {
             arrayType: try visit(expr: expr.arrayType)!,
             elements: try expr.elements.compactMap {
                 try visit(expr: $0)
-            })
+            },
+            id: expr.id)
     }
     
     public func visit(literalString expr: Expression.LiteralString) throws -> Expression? {
@@ -477,21 +469,20 @@ public class CompilerPass: NSObject {
         Expression.As(
             sourceAnchor: expr.sourceAnchor,
             expr: try visit(expr: expr.expr)!,
-            targetType: try visit(expr: expr.targetType)!)
+            targetType: try visit(expr: expr.targetType)!,
+            id: expr.id)
     }
     
     public func visit(bitcast node: Expression.Bitcast) throws -> Expression? {
         Expression.Bitcast(
             sourceAnchor: node.sourceAnchor,
             expr: try visit(expr: node.expr)!,
-            targetType: try visit(expr: node.targetType)!)
+            targetType: try visit(expr: node.targetType)!,
+            id: node.id)
     }
     
     public func visit(unary node: Expression.Unary) throws -> Expression? {
-        Expression.Unary(
-            sourceAnchor: node.sourceAnchor,
-            op: node.op,
-            expression: try visit(expr: node.child)!)
+        node.withExpression(try visit(expr: node.child)!)
     }
     
     public func visit(binary node: Expression.Binary) throws -> Expression? {
@@ -499,35 +490,40 @@ public class CompilerPass: NSObject {
             sourceAnchor: node.sourceAnchor,
             op: node.op,
             left: try visit(expr: node.left)!,
-            right: try visit(expr: node.right)!)
+            right: try visit(expr: node.right)!,
+            id: node.id)
     }
     
     public func visit(is node: Expression.Is) throws -> Expression? {
         Expression.Is(
             sourceAnchor: node.sourceAnchor,
             expr: try visit(expr: node.expr)!,
-            testType: try visit(expr: node.testType)!)
+            testType: try visit(expr: node.testType)!,
+            id: node.id)
     }
     
     public func visit(initialAssignment node: Expression.InitialAssignment) throws -> Expression? {
         Expression.InitialAssignment(
             sourceAnchor: node.sourceAnchor,
             lexpr: try visit(expr: node.lexpr)!,
-            rexpr: try visit(expr: node.rexpr)!)
+            rexpr: try visit(expr: node.rexpr)!,
+            id: node.id)
     }
     
     public func visit(assignment node: Expression.Assignment) throws -> Expression? {
         Expression.Assignment(
             sourceAnchor: node.sourceAnchor,
             lexpr: try visit(expr: node.lexpr)!,
-            rexpr: try visit(expr: node.rexpr)!)
+            rexpr: try visit(expr: node.rexpr)!,
+            id: node.id)
     }
     
     public func visit(subscript node: Expression.Subscript) throws -> Expression? {
         Expression.Subscript(
             sourceAnchor: node.sourceAnchor,
             subscriptable: try visit(expr: node.subscriptable)!,
-            argument: try visit(expr: node.argument)!)
+            argument: try visit(expr: node.argument)!,
+            id: node.id)
     }
     
     public func visit(get node: Expression.Get) throws -> Expression? {
@@ -545,7 +541,8 @@ public class CompilerPass: NSObject {
                 Expression.StructInitializer.Argument(
                     name: $0.name,
                     expr: try visit(expr: $0.expr)!)
-            })
+            },
+            id: node.id)
     }
     
     public func visit(call node: Expression.Call) throws -> Expression? {
@@ -554,19 +551,16 @@ public class CompilerPass: NSObject {
             callee: try visit(expr: node.callee)!,
             arguments: try node.arguments.compactMap {
                 try visit(expr: $0)
-            })
+            },
+            id: node.id)
     }
     
     public func visit(typeof node: Expression.TypeOf) throws -> Expression? {
-        Expression.TypeOf(
-            sourceAnchor: node.sourceAnchor,
-            expr: try visit(expr: node.expr)!)
+        node.withExpr(try visit(expr: node.expr)!)
     }
     
     public func visit(sizeof node: Expression.SizeOf) throws -> Expression? {
-        Expression.SizeOf(
-            sourceAnchor: node.sourceAnchor,
-            expr: try visit(expr: node.expr)!)
+        node.withExpr(try visit(expr: node.expr)!)
     }
     
     public func visit(genericTypeApplication expr: Expression.GenericTypeApplication) throws -> Expression? {
@@ -575,7 +569,8 @@ public class CompilerPass: NSObject {
             identifier: try visit(identifier: expr.identifier) as! Expression.Identifier,
             arguments: try expr.arguments.compactMap {
                 try visit(expr: $0)
-            })
+            },
+            id: expr.id)
     }
     
     public func visit(genericTypeArgument node: Expression.GenericTypeArgument) throws -> Expression? {
@@ -584,15 +579,14 @@ public class CompilerPass: NSObject {
             identifier: try visit(identifier: node.identifier) as! Expression.Identifier,
             constraints: try node.constraints.compactMap {
                 try visit(expr: $0) as! Expression.Identifier?
-            })
+            },
+            id: node.id)
     }
     
     public func visit(eseq node: Expression.Eseq) throws -> Expression? {
-        Expression.Eseq(
-            sourceAnchor: node.sourceAnchor,
-            children: try node.children.compactMap {
-                try visit(expr: $0)
-            })
+        node.withChildren(try node.children.compactMap {
+            try visit(expr: $0)
+        })
     }
     
     public func visit(primitiveType node: Expression.PrimitiveType) throws -> Expression? {
@@ -600,35 +594,25 @@ public class CompilerPass: NSObject {
     }
     
     public func visit(pointerType node: Expression.PointerType) throws -> Expression? {
-        Expression.PointerType(
-            sourceAnchor: node.sourceAnchor,
-            typ: try visit(expr: node.typ)!)
+        node.withTyp(try visit(expr: node.typ)!)
     }
     
     public func visit(constType node: Expression.ConstType) throws -> Expression? {
-        Expression.ConstType(
-            sourceAnchor: node.sourceAnchor,
-            typ: try visit(expr: node.typ)!)
+        node.withTyp(try visit(expr: node.typ)!)
     }
     
     public func visit(mutableType node: Expression.MutableType) throws -> Expression? {
-        Expression.MutableType(
-            sourceAnchor: node.sourceAnchor,
-            typ: try visit(expr: node.typ)!)
+        node.withTyp(try visit(expr: node.typ)!)
     }
     
     public func visit(unionType node: Expression.UnionType) throws -> Expression? {
-        Expression.UnionType(
-            sourceAnchor: node.sourceAnchor,
-            members: try node.members.compactMap {
-                try visit(expr: $0)
-            })
+        node.withMembers(try node.members.compactMap {
+            try visit(expr: $0)
+        })
     }
     
     public func visit(dynamicArrayType node: Expression.DynamicArrayType) throws -> Expression? {
-        Expression.DynamicArrayType(
-            sourceAnchor: node.sourceAnchor,
-            elementType: try visit(expr: node.elementType)!)
+        node.withElementType(try visit(expr: node.elementType)!)
     }
     
     public func visit(arrayType node: Expression.ArrayType) throws -> Expression? {
@@ -637,7 +621,8 @@ public class CompilerPass: NSObject {
             count: try node.count.flatMap {
                 try visit(expr: $0)
             },
-            elementType: try visit(expr: node.elementType)!)
+            elementType: try visit(expr: node.elementType)!,
+            id: node.id)
     }
     
     public func visit(functionType node: Expression.FunctionType) throws -> Expression? {
@@ -647,11 +632,11 @@ public class CompilerPass: NSObject {
             returnType: try visit(expr: node.returnType)!,
             arguments: try node.arguments.compactMap {
                 try visit(expr: $0)
-            })
+            },
+            id: node.id)
     }
     
     public func visit(genericFunctionType node0: Expression.GenericFunctionType) throws -> Expression? {
-        
         let template0 = node0.template
         let template1 = try visit(func: template0) as! FunctionDeclaration
         let node1 = node0.withTemplate(template1)

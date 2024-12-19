@@ -1233,7 +1233,12 @@ public class RvalueExpressionTypeChecker: NSObject {
         for typeName in symbolsWithTypeArguments.typeTable.keys {
             let typeRecord = symbolsWithTypeArguments.typeTable[typeName]!
             let symbolType = typeRecord.symbolType
-            guard !symbols.existsAsTypeAndCannotBeShadowed(identifier: typeName) else {
+            guard !symbols.exists(identifier: typeName) else {
+                throw CompilerError(
+                    sourceAnchor: expr.sourceAnchor,
+                    message: "generic type application redefines existing symbol: `\(typeName)'")
+            }
+            guard !symbols.existsAsType(identifier: typeName) else {
                 throw CompilerError(sourceAnchor: expr.sourceAnchor,
                                     message: "generic type application redefines existing type: `\(typeName)'")
             }
@@ -1246,6 +1251,11 @@ public class RvalueExpressionTypeChecker: NSObject {
                 throw CompilerError(
                     sourceAnchor: expr.sourceAnchor,
                     message: "generic type application redefines existing symbol: `\(symbolName)'")
+            }
+            guard !symbols.existsAsType(identifier: symbolName) else {
+                throw CompilerError(
+                    sourceAnchor: expr.sourceAnchor,
+                    message: "generic type application redefines existing type: `\(symbolName)'")
             }
             symbols.bind(identifier: symbolName, symbol: symbol)
         }

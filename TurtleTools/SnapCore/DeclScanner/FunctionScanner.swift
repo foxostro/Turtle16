@@ -39,6 +39,12 @@ public class FunctionScanner: NSObject {
                 message: "function redefines existing symbol: `\(name)'")
         }
         
+        guard !symbols.existsAsType(identifier: name) else {
+            throw CompilerError(
+                sourceAnchor: node.identifier.sourceAnchor,
+                message: "function redefines existing type: `\(name)'")
+        }
+        
         if node.isGeneric {
             try doGeneric(node: node)
         }

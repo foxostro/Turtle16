@@ -16,9 +16,15 @@ public class SnapSubcompilerTypealias: NSObject {
     }
     
     public func compile(_ node: Typealias) throws {
-        guard false == symbols.existsAsTypeAndCannotBeShadowed(identifier: node.lexpr.identifier) else {
-            throw CompilerError(sourceAnchor: node.lexpr.sourceAnchor,
-                                message: "typealias redefines existing type: `\(node.lexpr.identifier)'")
+        guard !symbols.exists(identifier: node.lexpr.identifier) else {
+            throw CompilerError(
+                sourceAnchor: node.lexpr.sourceAnchor,
+                message: "typealias redefines existing symbol: `\(node.lexpr.identifier)'")
+        }
+        guard !symbols.existsAsType(identifier: node.lexpr.identifier) else {
+            throw CompilerError(
+                sourceAnchor: node.lexpr.sourceAnchor,
+                message: "typealias redefines existing type: `\(node.lexpr.identifier)'")
         }
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         let symbolType = try typeChecker.check(expression: node.rexpr)

@@ -29,6 +29,13 @@ public class SnapSubcompilerVarDeclaration: NSObject {
                 message: "\(variable) redefines existing symbol: `\(ident)'")
         }
         
+        guard !symbols.existsAsType(identifier: node.identifier.identifier) else {
+            let variable = node.isMutable ? "variable" : "constant"
+            throw CompilerError(
+                sourceAnchor: node.identifier.sourceAnchor,
+                message: "\(variable) redefines existing type: `\(ident)'")
+        }
+        
         let result: Expression.InitialAssignment?
 
         // If the variable declaration provided an explicit type expression then

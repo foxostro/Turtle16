@@ -1137,13 +1137,6 @@ public class SymbolTable: NSObject {
         return true
     }
     
-    public func existsAsTypeAndCannotBeShadowed(identifier: String) -> Bool {
-        guard let resolution = maybeResolveTypeWithScopeDepth(identifier: identifier) else {
-            return false
-        }
-        return resolution.1 == 0
-    }
-    
     private func maybeResolveTypeWithScopeDepth(sourceAnchor: SourceAnchor? = nil, identifier: String) -> (SymbolType, Int)? {
         if let symbolType = typeTable[identifier] {
             return (symbolType.symbolType, 0)

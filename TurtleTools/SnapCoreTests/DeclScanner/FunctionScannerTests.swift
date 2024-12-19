@@ -32,6 +32,30 @@ final class FunctionScannerTests: XCTestCase {
         }
     }
     
+    func testFunctionRedefinesExistingType() throws {
+        let symbols = SymbolTable()
+        symbols.bind(
+            identifier: "foo",
+            symbolType: .bool(.mutableBool),
+            visibility: .privateVisibility)
+        
+        let input = FunctionDeclaration(
+            identifier: Expression.Identifier("foo"),
+            functionType: Expression.FunctionType(
+                name: "foo",
+                returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
+                arguments: []),
+            argumentNames: [],
+            body: Block(children: []))
+            .reconnect(parent: nil)
+        
+        let scanner = FunctionScanner(symbols: symbols)
+        XCTAssertThrowsError(try scanner.scan(func: input)) {
+            let error = $0 as? CompilerError
+            XCTAssertEqual(error?.message, "function redefines existing type: `foo\'")
+        }
+    }
+    
     func testDeclareFunction() throws {
         let input = FunctionDeclaration(
             identifier: Expression.Identifier("foo"),

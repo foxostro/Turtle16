@@ -215,6 +215,13 @@ public class CompilerPassWithDeclScan: CompilerPass {
                         sourceAnchor: sourceAnchor,
                         message: "import of module `\(name)' redefines existing symbol: `\(identifier)'")
                 }
+                
+                guard !symbols.existsAsType(identifier: identifier) else {
+                    throw CompilerError(
+                        sourceAnchor: sourceAnchor,
+                        message: "import of module `\(name)' redefines existing type: `\(identifier)'")
+                }
+                
                 symbols.bind(identifier: identifier,
                              symbol: Symbol(type: symbol.type,
                                             offset: symbol.offset,

@@ -22,7 +22,7 @@ public class SnapSubcompilerVarDeclaration: NSObject {
         let ident = node.identifier.identifier
         let allowRedefinition = ident.hasPrefix("__") && ident.hasSuffix("_vtable_instance")
         
-        guard allowRedefinition || symbols.existsAndCannotBeShadowed(identifier: node.identifier.identifier) == false else {
+        guard allowRedefinition || !symbols.exists(identifier: node.identifier.identifier) else {
             let variable = node.isMutable ? "variable" : "constant"
             throw CompilerError(
                 sourceAnchor: node.identifier.sourceAnchor,

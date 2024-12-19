@@ -15,6 +15,10 @@ public class LabelMaker: NSObject {
     }
     
     public func next() -> String {
+        next(prefix: self.prefix)
+    }
+    
+    public func next(prefix: String) -> String {
         let label = "\(prefix)\(tempLabelCounter)"
         tempLabelCounter += 1
         return label

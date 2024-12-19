@@ -23,7 +23,7 @@ class SnapSubcompilerAssertTests: XCTestCase {
     }
     
     fileprivate func makeAssertFalseResult() -> AbstractSyntaxTreeNode {
-        let panic = Expression.Call(callee: Expression.Identifier("panic"), arguments: [
+        let panic = Expression.Call(callee: Expression.Identifier("__panic"), arguments: [
             Expression.LiteralString("false")
         ])
         let condition = Expression.Binary(op: .eq,

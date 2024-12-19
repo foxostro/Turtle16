@@ -1153,13 +1153,6 @@ public class SymbolTable: NSObject {
         return nil
     }
     
-    public func existsAndCannotBeShadowed(identifier: String) -> Bool {
-        guard let resolution = maybeResolveWithScopeDepth(identifier: identifier) else {
-            return false
-        }
-        return resolution.1 == 0
-    }
-    
     public func bind(identifier: String, symbol: Symbol) {
 #if false
         let offset = symbol.maybeOffset == nil ? "nil" : "\(symbol.offset)"

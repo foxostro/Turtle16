@@ -21,9 +21,10 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
         assert(node.symbols.frameLookupMode.isSet)
         let name = node.identifier.identifier
         
-        guard symbols.existsAndCannotBeShadowed(identifier: name) == false else {
-            throw CompilerError(sourceAnchor: node.identifier.sourceAnchor,
-                                message: "function redefines existing symbol: `\(name)'")
+        guard !symbols.exists(identifier: name) else {
+            throw CompilerError(
+                sourceAnchor: node.identifier.sourceAnchor,
+                message: "function redefines existing symbol: `\(name)'")
         }
         
         if node.isGeneric {

@@ -84,19 +84,6 @@ class SymbolTableTests: XCTestCase {
         XCTAssertTrue(symbols.exists(identifier: "foo"))
     }
     
-    func testSymbolCanBeShadowedInLocalScope() {
-        let parent = SymbolTable()
-        parent.bind(identifier: "foo", symbol: Symbol(type: .bool(.immutableBool), offset: 0x10))
-        let symbols = SymbolTable(parent: parent)
-        XCTAssertFalse(symbols.existsAndCannotBeShadowed(identifier: "foo"))
-    }
-    
-    func testSymbolCannotBeShadowedInLocalScope() {
-        let symbols = SymbolTable()
-        symbols.bind(identifier: "foo", symbol: Symbol(type: .bool(.immutableBool), offset: 0x10))
-        XCTAssertTrue(symbols.existsAndCannotBeShadowed(identifier: "foo"))
-    }
-    
     func testResolveSymbolInParentScope() {
         let parent = SymbolTable()
         parent.bind(identifier: "foo", symbol: Symbol(type: .bool(.immutableBool), offset: 0x10))

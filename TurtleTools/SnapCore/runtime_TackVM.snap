@@ -15,7 +15,7 @@ public func __syscall(syscallNumber: u16, arg: *void) {
     asm("SYSCALL")
 }
 
-public func getc() -> u8 {
+public func __getc() -> u8 {
     struct Arguments {
         character: u8
     }
@@ -26,7 +26,7 @@ public func getc() -> u8 {
     return args.character
 }
 
-public func putc(c: u8) {
+public func __putc(c: u8) {
     struct Arguments {
         character: u8
     }
@@ -36,26 +36,26 @@ public func putc(c: u8) {
     __syscall(kSyscallWrite, &args bitcastAs *void)
 }
 
-public func puts(s: []const u8) {
+public func __puts(s: []const u8) {
     for c in s {
-        putc(c)
+        __putc(c)
     }
 }
 
-public func hlt() {
+public func __hlt() {
     asm("HLT")
 }
 
-public func panic(message: []const u8) {
+public func __panic(message: []const u8) {
     static let kPanicPrefix = "PANIC: "
     static let kPanicSuffix = "\n"
-    puts(kPanicPrefix)
-    puts(message)
-    puts(kPanicSuffix)
-    hlt()
+    __puts(kPanicPrefix)
+    __puts(message)
+    __puts(kPanicSuffix)
+    __hlt()
 }
 
 public func __oob() {
     static let kPanicMessageOOB = "array access is out of bounds"
-    panic(kPanicMessageOOB)
+    __panic(kPanicMessageOOB)
 }

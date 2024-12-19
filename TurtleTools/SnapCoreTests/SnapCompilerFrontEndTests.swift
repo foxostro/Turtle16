@@ -431,6 +431,21 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         }
     }
     
+    func testCannotShadowALocalVariable() throws {
+        let compiler = makeCompiler()
+        let result = compiler.compile(program: """
+            let a = 1
+            {
+                let a = false
+            }
+            """)
+        expectError(result) { error in
+            XCTAssertEqual(error.sourceAnchor?.text, "a")
+            XCTAssertEqual(error.sourceAnchor?.lineNumbers, 2..<3)
+            XCTAssertEqual(error.message, "constant redefines existing symbol: `a'")
+        }
+    }
+    
     func test_EndToEndIntegration_SimpleFunctionCall() throws {
         let debugger = try run(program: """
             var a: u16 = 0
@@ -879,7 +894,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         let debugger = try run(options: opts, program: """
             var p: *u16 = 0x8000 bitcastAs *u16
             p.pointee = 0
-            hlt()
+            __hlt()
             p.pointee = 1
             """)
         let word = debugger.vm.loadw(address: 0x8000)
@@ -1230,7 +1245,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         let options = Options(runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = try run(options: options, program: """
-            puts("Hello, World!")
+            __puts("Hello, World!")
             """)
         
         let str = String(bytes: serialOutput, encoding: .utf8)
@@ -1245,8 +1260,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         let options = Options(runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = try run(options: options, program: """
-            panic("oops!")
-            puts("Hello, World!")
+            __panic("oops!")
+            __puts("Hello, World!")
             """)
 
         let str = String(bytes: serialOutput, encoding: .utf8)
@@ -1681,7 +1696,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             let helloWorld = "Hello, World!"
             let helloComma = helloWorld[0..6]
             let hello = helloComma[0..(helloComma.count-1)]
-            puts(hello)
+            __puts(hello)
             """)
 
         let str = String(bytes: serialOutput, encoding: .utf8)
@@ -1827,7 +1842,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
                               onSerialOutput: onSerialOutput,
                               injectModules: ["MyModule" : """
                                   public func foo() {
-                                      puts("Hello, World!")
+                                      __puts("Hello, World!")
                                   }
                                   """])
         _ = try run(options: options, program: """
@@ -1848,7 +1863,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
                               runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = try run(options: options, program: """
-            let ptr = &puts
+            let ptr = &__puts
             ptr("Hello, World!")
             """)
 
@@ -1883,9 +1898,9 @@ final class SnapCompilerFrontEndTests: XCTestCase {
                               onSerialOutput: onSerialOutput)
         _ = try run(options: options, program: """
             public func fakePuts(s: []const u8) {
-                puts("fake")
+                __puts("fake")
             }
-            var ptr = &puts
+            var ptr = &__puts
             ptr = &fakePuts
             ptr("Hello, World!")
             """)
@@ -1906,7 +1921,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
                 puts: func ([]const u8) -> void
             }
             let serial = Serial {
-                .puts = &puts
+                .puts = &__puts
             }
             serial.puts("Hello, World!")
             """)
@@ -1927,7 +1942,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
                 bar: func (*const Foo, []const u8) -> void
             }
             func baz(self: *const Foo, s: []const u8) -> void {
-                puts(s)
+                __puts(s)
             }
             let foo = Foo {
                 .bar = &baz
@@ -2189,9 +2204,9 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
             impl Foo {
                 func init() -> Foo {
-                    var foo: Foo = undefined
+                    var baz: Foo = undefined
                     bar = 42
-                    return foo
+                    return baz
                 }
             }
 
@@ -2219,7 +2234,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
                 .buffer = "Hello, World!"
             }
             foo.buffer = foo.buffer[0..5]
-            puts(foo.buffer)
+            __puts(foo.buffer)
             """)
 
         let str = String(bytes: serialOutput, encoding: .utf8)
@@ -2314,7 +2329,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             let range = 0..6
             let helloComma = helloWorld[range]
             let hello = helloComma[0..(helloComma.count-1)]
-            puts(hello)
+            __puts(hello)
             """)
 
         let str = String(bytes: serialOutput, encoding: .utf8)
@@ -2612,7 +2627,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             test "foo" {
                 let pad1: u16 = 0
                 let a = "A"
-                puts(a)
+                __puts(a)
             }
             """)
 
@@ -3014,7 +3029,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             runtimeSupport: kRuntime,
             onSerialInput: { 65 })
         let debugger = try run(options: opts, program: """
-            let result = getc()
+            let result = __getc()
             """)
         
         XCTAssertEqual(65, debugger.loadSymbolU8("result"))
@@ -3026,7 +3041,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             runtimeSupport: kRuntime,
             onSerialOutput: { output = $0 })
         _ = try run(options: opts, program: """
-            putc(65)
+            __putc(65)
             """)
         
         XCTAssertEqual(output, 65)

@@ -37,7 +37,7 @@ public class SnapASTTransformerTestDeclaration: CompilerPass {
                 testDeclaration.body.symbols.parent = bodySymbols
                 let body = Block(symbols: bodySymbols, children: [
                     testDeclaration.body,
-                    Expression.Call(callee: Expression.Identifier("puts"), arguments: [Expression.LiteralString("passed\n")])
+                    Expression.Call(callee: Expression.Identifier("__puts"), arguments: [Expression.LiteralString("passed\n")])
                 ])
                 let testRunnerMain = FunctionDeclaration(
                     identifier: Expression.Identifier(kTestMainFunctionName),

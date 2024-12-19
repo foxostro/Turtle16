@@ -210,8 +210,10 @@ public class CompilerPassWithDeclScan: CompilerPass {
         
         for (identifier, symbol) in src.symbolTable {
             if symbol.visibility == .publicVisibility {
-                guard symbols.existsAndCannotBeShadowed(identifier: identifier) == false else {
-                    throw CompilerError(sourceAnchor: sourceAnchor, message: "import of module `\(name)' redefines existing symbol: `\(identifier)'")
+                guard !symbols.exists(identifier: identifier) else {
+                    throw CompilerError(
+                        sourceAnchor: sourceAnchor,
+                        message: "import of module `\(name)' redefines existing symbol: `\(identifier)'")
                 }
                 symbols.bind(identifier: identifier,
                              symbol: Symbol(type: symbol.type,

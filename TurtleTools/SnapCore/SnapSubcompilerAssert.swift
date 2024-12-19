@@ -13,7 +13,7 @@ public class SnapSubcompilerAssert: NSObject {
         let s = node.sourceAnchor
         let panic = Expression.Call(
             sourceAnchor: s,
-            callee: Expression.Identifier("panic"),
+            callee: Expression.Identifier("__panic"),
             arguments: [Expression.LiteralString(node.finalMessage)])
         let then = Block(
             symbols: SymbolTable(parent: symbols),

@@ -1242,9 +1242,10 @@ public class RvalueExpressionTypeChecker: NSObject {
         
         for symbolName in symbolsWithTypeArguments.symbolTable.keys {
             let symbol = symbolsWithTypeArguments.symbolTable[symbolName]!
-            guard !symbols.existsAndCannotBeShadowed(identifier: symbolName) else {
-                throw CompilerError(sourceAnchor: expr.sourceAnchor,
-                                    message: "generic type application redefines existing symbol: `\(symbolName)'")
+            guard !symbols.exists(identifier: symbolName) else {
+                throw CompilerError(
+                    sourceAnchor: expr.sourceAnchor,
+                    message: "generic type application redefines existing symbol: `\(symbolName)'")
             }
             symbols.bind(identifier: symbolName, symbol: symbol)
         }

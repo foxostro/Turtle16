@@ -140,7 +140,7 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
                     Expression.Assignment(lexpr: Expression.Identifier("foo"),
                                           rexpr: Expression.LiteralInt(42))
                 ]),
-                Expression.Call(callee: Expression.Identifier("puts"), arguments: [Expression.LiteralString("passed\n")])
+                Expression.Call(callee: Expression.Identifier("__puts"), arguments: [Expression.LiteralString("passed\n")])
             ])),
             Expression.Call(callee: Expression.Identifier("__testMain"), arguments: [])
         ])
@@ -181,7 +181,7 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
                     Expression.Assignment(lexpr: Expression.Identifier("foo"),
                                           rexpr: Expression.LiteralInt(42))
                 ]),
-                Expression.Call(callee: Expression.Identifier("puts"), arguments: [Expression.LiteralString("passed\n")])
+                Expression.Call(callee: Expression.Identifier("__puts"), arguments: [Expression.LiteralString("passed\n")])
             ])),
             Expression.Call(callee: Expression.Identifier("__testMain"), arguments: [])
         ])
@@ -226,7 +226,7 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
                     Expression.Assignment(lexpr: Expression.Identifier("foo"),
                                           rexpr: Expression.LiteralInt(42))
                 ]),
-                Expression.Call(callee: Expression.Identifier("puts"), arguments: [Expression.LiteralString("passed\n")])
+                Expression.Call(callee: Expression.Identifier("__puts"), arguments: [Expression.LiteralString("passed\n")])
             ])),
             Expression.Call(callee: Expression.Identifier("__testMain"), arguments: [])
         ])

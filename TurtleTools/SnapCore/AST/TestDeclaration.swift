@@ -28,6 +28,13 @@ public class TestDeclaration: AbstractSyntaxTreeNode {
                         id: id)
     }
     
+    public func withBody(_ body: Block) -> TestDeclaration {
+        TestDeclaration(sourceAnchor: sourceAnchor,
+                        name: name,
+                        body: body,
+                        id: id)
+    }
+    
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else { return false }
         guard type(of: rhs!) == type(of: self) else { return false }

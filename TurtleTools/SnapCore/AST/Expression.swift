@@ -184,6 +184,13 @@ public class Expression: AbstractSyntaxTreeNode {
                   id: id)
         }
         
+        public func withExpression(_ expression: Expression) -> Unary {
+            Unary(sourceAnchor: sourceAnchor,
+                  op: op,
+                  expression: child,
+                  id: id)
+        }
+        
         public override func isEqual(_ rhs: Any?) -> Bool {
             guard rhs != nil else { return false }
             guard type(of: rhs!) == type(of: self) else { return false }
@@ -269,6 +276,12 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Eseq {
+            Eseq(sourceAnchor: sourceAnchor,
+                 children: children,
+                 id: id)
+        }
+        
+        public func withChildren(_ children: [Expression]) -> Eseq {
             Eseq(sourceAnchor: sourceAnchor,
                  children: children,
                  id: id)
@@ -839,6 +852,12 @@ public class Expression: AbstractSyntaxTreeNode {
                              id: id)
         }
         
+        public func withElementType(_ elementType: Expression) -> DynamicArrayType {
+            DynamicArrayType(sourceAnchor: sourceAnchor,
+                             elementType: elementType,
+                             id: id)
+        }
+        
         public override func isEqual(_ rhs: Any?) -> Bool {
             guard rhs != nil else { return false }
             guard type(of: rhs!) == type(of: self) else { return false }
@@ -1227,6 +1246,12 @@ public class Expression: AbstractSyntaxTreeNode {
                         id: id)
         }
         
+        public func withTyp(_ typ: Expression) -> PointerType {
+            PointerType(sourceAnchor: sourceAnchor,
+                        typ: typ,
+                        id: id)
+        }
+        
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
             return String(format: "%@%@(%@)",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
@@ -1269,6 +1294,12 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> ConstType {
+            ConstType(sourceAnchor: sourceAnchor,
+                      typ: typ,
+                      id: id)
+        }
+        
+        public func withTyp(_ typ: Expression) -> ConstType {
             ConstType(sourceAnchor: sourceAnchor,
                       typ: typ,
                       id: id)
@@ -1321,6 +1352,12 @@ public class Expression: AbstractSyntaxTreeNode {
                         id: id)
         }
         
+        public func withTyp(_ typ: Expression) -> MutableType {
+            MutableType(sourceAnchor: sourceAnchor,
+                        typ: typ,
+                        id: id)
+        }
+        
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
             return String(format: "%@%@(%@)",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
@@ -1363,6 +1400,12 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> UnionType {
+            UnionType(sourceAnchor: sourceAnchor,
+                      members: members,
+                      id: id)
+        }
+        
+        public func withMembers(_ members: [Expression]) -> UnionType {
             UnionType(sourceAnchor: sourceAnchor,
                       members: members,
                       id: id)
@@ -1586,6 +1629,12 @@ public class Expression: AbstractSyntaxTreeNode {
                    id: id)
         }
         
+        public func withExpr(_ expr: Expression) -> TypeOf {
+            TypeOf(sourceAnchor: sourceAnchor,
+                   expr: expr,
+                   id: id)
+        }
+        
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
             return String(format: "%@%@(%@)",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
@@ -1628,6 +1677,12 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> SizeOf {
+            SizeOf(sourceAnchor: sourceAnchor,
+                   expr: expr,
+                   id: id)
+        }
+        
+        public func withExpr(_ expr: Expression) -> SizeOf {
             SizeOf(sourceAnchor: sourceAnchor,
                    expr: expr,
                    id: id)

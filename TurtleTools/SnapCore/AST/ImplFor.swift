@@ -58,6 +58,15 @@ public class ImplFor: AbstractSyntaxTreeNode {
                 id: id)
     }
     
+    public func withStructTypeExpr(_ structTypeExpr: Expression) -> ImplFor {
+        ImplFor(sourceAnchor: sourceAnchor,
+                typeArguments: typeArguments,
+                traitTypeExpr: traitTypeExpr,
+                structTypeExpr: structTypeExpr,
+                children: children,
+                id: id)
+    }
+    
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else { return false }
         guard type(of: rhs!) == type(of: self) else { return false }

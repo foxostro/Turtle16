@@ -52,6 +52,14 @@ public class Impl: AbstractSyntaxTreeNode {
              id: id)
     }
     
+    public func withStructTypeExpr(_ structTypeExpr: Expression) -> Impl {
+        Impl(sourceAnchor: sourceAnchor,
+             typeArguments: typeArguments,
+             structTypeExpr: structTypeExpr,
+             children: children,
+             id: id)
+    }
+    
     public func inserting(children toInsert: [FunctionDeclaration], at index: Int) -> Impl {
         var children1 = children
         children1.insert(contentsOf: toInsert, at: index)

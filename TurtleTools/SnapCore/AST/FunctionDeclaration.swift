@@ -88,6 +88,10 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
                             id: id)
     }
     
+    public func eraseTypeArguments() -> FunctionDeclaration {
+        withTypeArguments([])
+    }
+    
     public func withTypeArguments(_ typeArguments: [Expression.GenericTypeArgument]) -> FunctionDeclaration {
         FunctionDeclaration(sourceAnchor: sourceAnchor,
                             identifier: identifier,

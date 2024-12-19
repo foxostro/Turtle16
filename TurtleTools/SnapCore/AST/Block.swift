@@ -117,7 +117,7 @@ public class Block: AbstractSyntaxTreeNode {
             else {
                 "nil"
             }
-        let selfDesc = "(symbols=\(symbols); parent=\(parentStr); id=\(id.uuidString))"
+        let selfDesc = "(symbols=\(symbols); parent=\(parentStr); id=\(id))"
         let childDesc = makeChildDescriptions(depth: depth + 1)
         let fullDesc = "\(indent)\(typeDesc)\(selfDesc)\(childDesc)"
         return fullDesc

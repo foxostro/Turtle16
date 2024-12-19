@@ -6,9 +6,47 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
+/// Abstract base class for a node in the AST manipulated by the compiler
+/// Each node is intended to be an immutable object. Rewriting the tree requires
+/// creating new nodes and a new tree.
 open class AbstractSyntaxTreeNode : NSObject {
-    public typealias ID = UUID
+    /// Source anchor connects the AST node to an exercept of the original
+    /// source code from which it was derived. This is useful for producing
+    /// diagnostic messages for the user.
     public let sourceAnchor: SourceAnchor?
+    
+    public struct CountingID: Equatable, Hashable, CustomStringConvertible, Sendable {
+        private static var counter: Int = 0
+        private static func next() -> Int {
+            let result: Int
+            objc_sync_enter(ID.self)
+            result = CountingID.counter
+            CountingID.counter += 1
+            objc_sync_exit(ID.self)
+            return result
+        }
+        private let val: Int
+        
+        public init() {
+            self.val = CountingID.next()
+        }
+        
+        public static func ==(lhs: CountingID, rhs: CountingID) -> Bool {
+            lhs.val == rhs.val
+        }
+        
+        public func hash(into hasher: inout Hasher) {
+            hasher.combine(val)
+        }
+        
+        public var description: String {
+            "ID(\(val))"
+        }
+    }
+    public typealias ID = CountingID
+    
+    /// Each AST node has a unique identifier, preserved across transformations
+    /// As each node is immutable, a change to the AST requires rewriting
     public let id: ID
     
     public init(sourceAnchor: SourceAnchor? = nil, id: ID = ID()) {

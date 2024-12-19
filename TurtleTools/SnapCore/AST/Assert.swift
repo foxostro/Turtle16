@@ -18,7 +18,7 @@ public class Assert: AbstractSyntaxTreeNode {
                 message: String,
                 enclosingTestName: String? = nil,
                 id: ID = ID()) {
-        self.condition = condition.withSourceAnchor(sourceAnchor)
+        self.condition = condition.withSourceAnchor(sourceAnchor) // TODO: Remove call to withSourceAnchor?
         self.message = message
         self.enclosingTestName = enclosingTestName
         super.init(sourceAnchor: sourceAnchor, id: id)

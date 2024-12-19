@@ -1365,7 +1365,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public static func ==(lhs: MutableType, rhs: MutableType) -> Bool {
-            return lhs.isEqual(rhs)
+            lhs.isEqual(rhs)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -1434,7 +1434,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public static func ==(lhs: UnionType, rhs: UnionType) -> Bool {
-            return lhs.isEqual(rhs)
+            lhs.isEqual(rhs)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {

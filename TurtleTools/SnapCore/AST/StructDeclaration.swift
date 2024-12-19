@@ -135,6 +135,16 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
                           id: id)
     }
     
+    public func withNewId() -> StructDeclaration {
+        StructDeclaration(sourceAnchor: sourceAnchor,
+                          identifier: identifier,
+                          typeArguments: typeArguments,
+                          members: members,
+                          visibility: visibility,
+                          isConst: isConst,
+                          id: ID())
+    }
+    
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else { return false }
         guard type(of: rhs!) == type(of: self) else { return false }

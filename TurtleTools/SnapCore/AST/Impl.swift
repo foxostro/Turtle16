@@ -60,15 +60,18 @@ public class Impl: AbstractSyntaxTreeNode {
              id: id)
     }
     
+    public func withChildren(_ children: [FunctionDeclaration]) -> Impl {
+        Impl(sourceAnchor: sourceAnchor,
+             typeArguments: typeArguments,
+             structTypeExpr: structTypeExpr,
+             children: children,
+             id: id)
+    }
+    
     public func inserting(children toInsert: [FunctionDeclaration], at index: Int) -> Impl {
-        var children1 = children
-        children1.insert(contentsOf: toInsert, at: index)
-        
-        return Impl(sourceAnchor: sourceAnchor,
-                    typeArguments: typeArguments,
-                    structTypeExpr: structTypeExpr,
-                    children: children1,
-                    id: id)
+        var children = self.children
+        children.insert(contentsOf: toInsert, at: index)
+        return withChildren(children)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

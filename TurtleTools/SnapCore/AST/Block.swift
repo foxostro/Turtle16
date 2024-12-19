@@ -60,7 +60,9 @@ public class Block: AbstractSyntaxTreeNode {
         class BlockCloner: CompilerPass {
             public override func visit(block block0: Block) throws -> AbstractSyntaxTreeNode? {
                 let block1 = try super.visit(block: block0) as! Block
-                let block2 = block1.withNewId()
+                let block2 = block1
+                    .withSymbols(block1.symbols.clone())
+                    .withNewId()
                 return block2
             }
         }

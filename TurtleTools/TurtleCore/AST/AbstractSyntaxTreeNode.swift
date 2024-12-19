@@ -51,16 +51,17 @@ open class AbstractSyntaxTreeNode : NSObject {
     }
     
     public override var description: String {
-        return makeIndentedDescription(depth: 0)
+        makeIndentedDescription(depth: 0)
     }
     
     open func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)))
+        let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let selfDesc = String(describing: type(of: self))
+        let result = "\(indent)\(selfDesc)"
+        return result
     }
     
     public func makeIndent(depth: Int) -> String {
-        return String(repeating: "\t", count: depth)
+        String(repeating: "\t", count: depth)
     }
 }

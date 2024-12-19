@@ -875,10 +875,10 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@%@(%@)",
-                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                          String(describing: type(of: self)),
-                          elementType.description)
+            let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+            let selfDesc = String(describing: type(of: self))
+            let result = "\(indent)\(selfDesc)(\(elementType))"
+            return result
         }
     }
     
@@ -1359,10 +1359,11 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@%@(%@)",
-                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                          String(describing: type(of: self)),
-                          typ.makeIndentedDescription(depth: depth+1))
+            let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+            let selfDesc = String(describing: type(of: self))
+            let typDesc = typ.makeIndentedDescription(depth: depth+1)
+            let result = "\(indent)\(selfDesc)(\(typDesc))"
+            return result
         }
         
         public static func ==(lhs: MutableType, rhs: MutableType) -> Bool {
@@ -1412,11 +1413,12 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@%@\n%@members: %@",
-                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                          String(describing: type(of: self)),
-                          makeIndent(depth: depth + 1),
-                          makeMembersDescription(depth: depth + 1))
+            let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+            let selfDesc = String(describing: type(of: self))
+            let indent1 = makeIndent(depth: depth + 1)
+            let membersDesc = makeMembersDescription(depth: depth + 1)
+            let result = "\(indent0)\(selfDesc)\n\(indent1)members: \(membersDesc)"
+            return result
         }
         
         private func makeMembersDescription(depth: Int) -> String {

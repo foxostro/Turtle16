@@ -159,7 +159,7 @@ public class CompilerPassGenerics: CompilerPassWithDeclScan {
             try expr.arguments.map {
                 Expression.PrimitiveType(try typeCheck(rexpr: $0))
             })
-        let ast1 = try GenericFunctionPartialEvaluator.eval(ast0, replacements: pairs)
+        let ast1 = try GenericsPartialEvaluator.eval(ast0, replacements: pairs)
         
         // The compiler must an emit AST node for the concrete instantiaton of
         // the generic function. Emit at the point where the generic function

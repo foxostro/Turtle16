@@ -877,4 +877,84 @@ final class CompilerPassGenericsTests: XCTestCase {
         let ast1 = try CompilerPassGenerics(symbols: nil, globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())).run(ast0)
         XCTAssertEqual(ast1, expected)
     }
+    
+    // Do not a function's generic type parameter to shadow an existing type.
+    func testDoNotAllowGenericTypeParamInFunctionToShadowExistingType() throws {
+        let ast = Block(
+            children: [
+                StructDeclaration(
+                    identifier: Expression.Identifier("T"),
+                    members: []),
+                FunctionDeclaration(
+                    identifier: Expression.Identifier("foo"),
+                    functionType: Expression.FunctionType(
+                        name: "foo",
+                        returnType: Expression.PrimitiveType(.void),
+                        arguments: [Expression.PrimitiveType(.void)]),
+                    argumentNames: ["arg1"],
+                    typeArguments: [
+                        Expression.GenericTypeArgument(
+                            identifier: Expression.Identifier("T"), // Shadows the variable, "T"
+                            constraints: [])
+                    ],
+                    body: Block()),
+                Expression.GenericTypeApplication(
+                    identifier: Expression.Identifier("foo"),
+                    arguments: [
+                        Expression.PrimitiveType(u16)
+                    ])
+            ])
+            .reconnect(parent: nil)
+        
+        let compiler = CompilerPassGenerics(
+            symbols: nil,
+            globalEnvironment: GlobalEnvironment())
+        
+        XCTAssertThrowsError(try compiler.run(ast)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+        }
+    }
+    
+    // Do not allow shadowing of a function's generic type parameter.
+    func testDoNotAllowShadowingGenericTypeParamInFunction() throws {
+        let ast = Block(
+            children: [
+                FunctionDeclaration(
+                    identifier: Expression.Identifier("foo"),
+                    functionType: Expression.FunctionType(
+                        name: "foo",
+                        returnType: Expression.PrimitiveType(.void),
+                        arguments: [Expression.PrimitiveType(.void)]),
+                    argumentNames: ["arg1"],
+                    typeArguments: [
+                        Expression.GenericTypeArgument(
+                            identifier: Expression.Identifier("T"),
+                            constraints: [])
+                    ],
+                    body: Block(children: [
+                        VarDeclaration(
+                            identifier: Expression.Identifier("T"), // Shadows the generic type parameter, "T"
+                            explicitType: Expression.PrimitiveType(.bool(.mutableBool)),
+                            expression: Expression.LiteralBool(true),
+                            storage: .automaticStorage,
+                            isMutable: false)
+                    ])),
+                Expression.GenericTypeApplication(
+                    identifier: Expression.Identifier("foo"),
+                    arguments: [
+                        Expression.PrimitiveType(u16)
+                    ])
+            ])
+            .reconnect(parent: nil)
+        
+        let compiler = CompilerPassGenerics(
+            symbols: nil,
+            globalEnvironment: GlobalEnvironment())
+        
+        XCTAssertThrowsError(try compiler.run(ast)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+        }
+    }
 }

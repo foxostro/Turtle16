@@ -111,7 +111,7 @@ final class CompilerPassTraitsTests: XCTestCase {
                 TraitDeclaration(
                     identifier: traitIdent,
                     members: [
-                        TraitDeclaration.Member(name: "puts", type:  putsFnType)
+                        TraitDeclaration.Member(name: "puts", type: putsFnType)
                     ])
             ],
             id: expected.id)

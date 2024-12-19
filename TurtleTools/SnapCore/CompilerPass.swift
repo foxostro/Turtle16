@@ -118,9 +118,14 @@ public class CompilerPass: NSObject {
     }
     
     public func visit(varDecl node: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
-        VarDeclaration(
+        guard let identifier = try visit(identifier: node.identifier) as? Expression.Identifier else {
+            throw CompilerError(
+                sourceAnchor: node.identifier.sourceAnchor,
+                message: "expected identifier: `\(node.identifier)'")
+        }
+        return VarDeclaration(
             sourceAnchor: node.sourceAnchor,
-            identifier: try visit(identifier: node.identifier) as! Expression.Identifier,
+            identifier: identifier,
             explicitType: try node.explicitType.flatMap {
                 try visit(expr: $0)
             },

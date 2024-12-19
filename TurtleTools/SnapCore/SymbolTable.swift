@@ -765,8 +765,8 @@ public class GenericStructType: NSObject {
         self.template = template
     }
     
-    public var typeArguments: [Expression.GenericTypeArgument] {
-        template.typeArguments
+    public var typeArguments: [Expression.Identifier] {
+        template.typeArguments.map(\.identifier)
     }
     
     public override var description: String {

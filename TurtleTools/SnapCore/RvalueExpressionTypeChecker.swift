@@ -1150,7 +1150,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         for i in 0..<expr.arguments.count {
             let typeVariable = genericStructType.typeArguments[i]
             let typeArgument = try check(expression: expr.arguments[i])
-            symbolsWithTypeArguments.bind(identifier: typeVariable.identifier.identifier, symbolType: typeArgument)
+            symbolsWithTypeArguments.bind(identifier: typeVariable.identifier, symbolType: typeArgument)
             evaluatedTypeArguments.append(typeArgument)
         }
         
@@ -1178,7 +1178,7 @@ public class RvalueExpressionTypeChecker: NSObject {
             .compile(node1)
         }
         
-        try exportSymbols(typeArguments: genericStructType.typeArguments,
+        try exportSymbols(typeArguments: genericStructType.template.typeArguments,
                           symbolsWithTypeArguments: symbolsWithTypeArguments,
                           expr: expr)
         

@@ -10,15 +10,9 @@ import TurtleCore
 
 public class Expression: AbstractSyntaxTreeNode {
     public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else {
-            return false
-        }
-        guard rhs is Expression else {
-            return false
-        }
-        guard super.isEqual(rhs) else {
-            return false
-        }
+        guard rhs != nil else { return false }
+        guard rhs is Expression else { return false }
+        guard super.isEqual(rhs) else { return false }
         return true
     }
     
@@ -29,7 +23,9 @@ public class Expression: AbstractSyntaxTreeNode {
     // Useful for testing
     public class UnsupportedExpression : Expression {
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> UnsupportedExpression {
-            UnsupportedExpression(sourceAnchor: sourceAnchor)
+            UnsupportedExpression(
+                sourceAnchor: sourceAnchor,
+                id: id)
         }
     }
     
@@ -40,31 +36,24 @@ public class Expression: AbstractSyntaxTreeNode {
             self.init(sourceAnchor: nil, value: value)
         }
         
-        public init(sourceAnchor: SourceAnchor?, value: Int) {
+        public init(sourceAnchor: SourceAnchor?, value: Int, id: ID = ID()) {
             self.value = value
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> LiteralInt {
-            LiteralInt(sourceAnchor: sourceAnchor, value: value)
+            LiteralInt(
+                sourceAnchor: sourceAnchor,
+                value: value,
+                id: id)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else {
-                return false
-            }
-            guard type(of: rhs!) == type(of: self) else {
-                return false
-            }
-            guard super.isEqual(rhs) else {
-                return false
-            }
-            guard let rhs = rhs as? LiteralInt else {
-                return false
-            }
-            guard value == rhs.value else {
-                return false
-            }
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
+            guard let rhs = rhs as? LiteralInt else { return false }
+            guard value == rhs.value else { return false }
             return true
         }
         
@@ -76,9 +65,9 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@%d",
-                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                          value)
+            let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+            let result = "\(indent)\(value)"
+            return result
         }
     }
     
@@ -89,13 +78,17 @@ public class Expression: AbstractSyntaxTreeNode {
             self.init(sourceAnchor: nil, value: value)
         }
         
-        public init(sourceAnchor: SourceAnchor?, value: Bool) {
+        public init(sourceAnchor: SourceAnchor? = nil,
+                    value: Bool,
+                    id: ID = ID()) {
             self.value = value
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> LiteralBool {
-            LiteralBool(sourceAnchor: sourceAnchor, value: value)
+            LiteralBool(sourceAnchor: sourceAnchor,
+                        value: value,
+                        id: id)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -115,9 +108,10 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@%@",
-                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                          value ? "true" : "false")
+            let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+            let valStr = value ? "true" : "false"
+            let result = "\(indent)\(valStr)"
+            return result
         }
     }
     
@@ -125,20 +119,26 @@ public class Expression: AbstractSyntaxTreeNode {
         public let identifier: String
         
         public convenience init(_ identifier: String) {
-            self.init(sourceAnchor: nil, identifier: identifier)
+            self.init(identifier: identifier)
         }
         
-        public init(sourceAnchor: SourceAnchor?, identifier: String) {
+        public init(sourceAnchor: SourceAnchor? = nil,
+                    identifier: String,
+                    id: ID = ID()) {
             self.identifier = identifier
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Identifier {
-            Identifier(sourceAnchor: sourceAnchor, identifier: identifier)
+            Identifier(sourceAnchor: sourceAnchor,
+                       identifier: identifier,
+                       id: id)
         }
         
         public func withIdentifier(_ identifier: String) -> Identifier {
-            Identifier(sourceAnchor: sourceAnchor, identifier: identifier)
+            Identifier(sourceAnchor: sourceAnchor,
+                       identifier: identifier,
+                       id: id)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -158,9 +158,9 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@%@",
-                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                          identifier)
+            let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+            let result = "\(indent)\(identifier)"
+            return result
         }
     }
     
@@ -168,14 +168,20 @@ public class Expression: AbstractSyntaxTreeNode {
         public let op: TokenOperator.Operator
         public let child: Expression
         
-        public init(sourceAnchor: SourceAnchor? = nil, op: TokenOperator.Operator, expression: Expression) {
+        public init(sourceAnchor: SourceAnchor? = nil,
+                    op: TokenOperator.Operator,
+                    expression: Expression,
+                    id: ID = ID()) {
             self.op = op
             self.child = expression
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Unary {
-            Unary(sourceAnchor: sourceAnchor, op: op, expression: child)
+            Unary(sourceAnchor: sourceAnchor,
+                  op: op,
+                  expression: child,
+                  id: id)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -197,13 +203,13 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@%@\n%@op: %@\n%@expr: %@",
-                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                          String(describing: type(of: self)),
-                          makeIndent(depth: depth+1),
-                          String(describing: op),
-                          makeIndent(depth: depth+1),
-                          child.makeIndentedDescription(depth: depth+1))
+            String(format: "%@%@\n%@op: %@\n%@expr: %@",
+                   wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+                   String(describing: type(of: self)),
+                   makeIndent(depth: depth+1),
+                   String(describing: op),
+                   makeIndent(depth: depth+1),
+                   child.makeIndentedDescription(depth: depth+1))
         }
     }
     
@@ -214,13 +220,17 @@ public class Expression: AbstractSyntaxTreeNode {
             self.init(sourceAnchor: nil, expression: expression)
         }
         
-        public init(sourceAnchor: SourceAnchor?, expression: Expression) {
+        public init(sourceAnchor: SourceAnchor? = nil,
+                    expression: Expression,
+                    id: ID = ID()) {
             self.expression = expression
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Group {
-            Group(sourceAnchor: sourceAnchor, expression: expression)
+            Group(sourceAnchor: sourceAnchor,
+                  expression: expression,
+                  id: id)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -240,10 +250,10 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@%@\n%@",
-                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                          String(describing: type(of: self)),
-                          expression.makeIndentedDescription(depth: depth+1, wantsLeadingWhitespace: true))
+            String(format: "%@%@\n%@",
+                   wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+                   String(describing: type(of: self)),
+                   expression.makeIndentedDescription(depth: depth+1, wantsLeadingWhitespace: true))
         }
     }
     
@@ -251,13 +261,17 @@ public class Expression: AbstractSyntaxTreeNode {
     public class Eseq: Expression {
         public let children: [Expression]
         
-        public init(sourceAnchor: SourceAnchor? = nil, children: [Expression]) {
+        public init(sourceAnchor: SourceAnchor? = nil,
+                    children: [Expression],
+                    id: ID = ID()) {
             self.children = children
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Eseq {
-            Eseq(sourceAnchor: sourceAnchor, children: children)
+            Eseq(sourceAnchor: sourceAnchor,
+                 children: children,
+                 id: id)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -301,39 +315,29 @@ public class Expression: AbstractSyntaxTreeNode {
         public init(sourceAnchor: SourceAnchor? = nil,
                     op: TokenOperator.Operator,
                     left: Expression,
-                    right: Expression) {
+                    right: Expression,
+                    id: ID = ID()) {
             self.op = op
             self.left = left
             self.right = right
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Binary {
             Binary(sourceAnchor: sourceAnchor,
                    op: op,
                    left: left,
-                   right: right)
+                   right: right,
+                   id: id)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else {
-                return false
-            }
-            guard super.isEqual(rhs) else {
-                return false
-            }
-            guard let rhs = rhs as? Binary else {
-                return false
-            }
-            guard op == rhs.op else {
-                return false
-            }
-            guard left == rhs.left else {
-                return false
-            }
-            guard right == rhs.right else {
-                return false
-            }
+            guard rhs != nil else { return false }
+            guard super.isEqual(rhs) else { return false }
+            guard let rhs = rhs as? Binary else { return false }
+            guard op == rhs.op else { return false }
+            guard left == rhs.left else { return false }
+            guard right == rhs.right else { return false }
             return true
         }
         
@@ -347,15 +351,15 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@%@\n%@op: %@\n%@left: %@\n%@right: %@",
-                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                          String(describing: type(of: self)),
-                          makeIndent(depth: depth + 1),
-                          String(describing: op),
-                          makeIndent(depth: depth + 1),
-                          left.makeIndentedDescription(depth: depth + 1),
-                          makeIndent(depth: depth + 1),
-                          right.makeIndentedDescription(depth: depth + 1))
+            String(format: "%@%@\n%@op: %@\n%@left: %@\n%@right: %@",
+                   wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+                   String(describing: type(of: self)),
+                   makeIndent(depth: depth + 1),
+                   String(describing: op),
+                   makeIndent(depth: depth + 1),
+                   left.makeIndentedDescription(depth: depth + 1),
+                   makeIndent(depth: depth + 1),
+                   right.makeIndentedDescription(depth: depth + 1))
         }
     }
     
@@ -363,14 +367,20 @@ public class Expression: AbstractSyntaxTreeNode {
         public let lexpr: Expression
         public let rexpr: Expression
         
-        public init(sourceAnchor: SourceAnchor? = nil, lexpr: Expression, rexpr: Expression) {
+        public init(sourceAnchor: SourceAnchor? = nil,
+                    lexpr: Expression,
+                    rexpr: Expression,
+                    id: ID = ID()) {
             self.lexpr = lexpr
             self.rexpr = rexpr
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Assignment {
-            Assignment(sourceAnchor: sourceAnchor, lexpr: lexpr, rexpr: rexpr)
+            Assignment(sourceAnchor: sourceAnchor,
+                       lexpr: lexpr,
+                       rexpr: rexpr,
+                       id: id)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -392,13 +402,13 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@%@\n%@lexpr: %@\n%@rexpr: %@",
-                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                          String(describing: type(of: self)),
-                          makeIndent(depth: depth+1),
-                          lexpr.makeIndentedDescription(depth: depth + 1),
-                          makeIndent(depth: depth+1),
-                          rexpr.makeIndentedDescription(depth: depth + 1))
+            String(format: "%@%@\n%@lexpr: %@\n%@rexpr: %@",
+                   wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+                   String(describing: type(of: self)),
+                   makeIndent(depth: depth+1),
+                   lexpr.makeIndentedDescription(depth: depth + 1),
+                   makeIndent(depth: depth+1),
+                   rexpr.makeIndentedDescription(depth: depth + 1))
         }
     }
     
@@ -406,7 +416,8 @@ public class Expression: AbstractSyntaxTreeNode {
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> InitialAssignment {
             InitialAssignment(sourceAnchor: sourceAnchor,
                               lexpr: lexpr,
-                              rexpr: rexpr)
+                              rexpr: rexpr,
+                              id: id)
         }
     }
     
@@ -414,22 +425,27 @@ public class Expression: AbstractSyntaxTreeNode {
         public let callee: Expression
         public let arguments: [Expression]
         
-        public init(sourceAnchor: SourceAnchor? = nil, callee: Expression, arguments: [Expression] = []) {
+        public init(sourceAnchor: SourceAnchor? = nil,
+                    callee: Expression,
+                    arguments: [Expression] = [],
+                    id: ID = ID()) {
             self.callee = callee
             self.arguments = arguments
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Call {
             Call(sourceAnchor: sourceAnchor,
                  callee: callee,
-                 arguments: arguments)
+                 arguments: arguments,
+                 id: id)
         }
         
         public func withCallee(_ callee: Expression) -> Call {
             Call(sourceAnchor: sourceAnchor,
                  callee: callee,
-                 arguments: arguments)
+                 arguments: arguments,
+                 id: id)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -473,16 +489,20 @@ public class Expression: AbstractSyntaxTreeNode {
         public let expr: Expression
         public let targetType: Expression
         
-        public init(sourceAnchor: SourceAnchor? = nil, expr: Expression, targetType: Expression) {
+        public init(sourceAnchor: SourceAnchor? = nil,
+                    expr: Expression,
+                    targetType: Expression,
+                    id: ID = ID()) {
             self.expr = expr
             self.targetType = targetType
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> As {
             As(sourceAnchor: sourceAnchor,
                expr: expr,
-               targetType: targetType)
+               targetType: targetType,
+               id: id)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -510,16 +530,20 @@ public class Expression: AbstractSyntaxTreeNode {
         public let expr: Expression
         public let targetType: Expression
         
-        public init(sourceAnchor: SourceAnchor? = nil, expr: Expression, targetType: Expression) {
+        public init(sourceAnchor: SourceAnchor? = nil,
+                    expr: Expression,
+                    targetType: Expression,
+                    id: ID = ID()) {
             self.expr = expr
             self.targetType = targetType
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Bitcast {
             Bitcast(sourceAnchor: sourceAnchor,
                     expr: expr,
-                    targetType: targetType)
+                    targetType: targetType,
+                    id: id)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -547,16 +571,20 @@ public class Expression: AbstractSyntaxTreeNode {
         public let expr: Expression
         public let testType: Expression
         
-        public init(sourceAnchor: SourceAnchor? = nil, expr: Expression, testType: Expression) {
+        public init(sourceAnchor: SourceAnchor? = nil,
+                    expr: Expression,
+                    testType: Expression,
+                    id: ID = ID()) {
             self.expr = expr
             self.testType = testType
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Is {
             Is(sourceAnchor: sourceAnchor,
                expr: expr,
-               testType: testType)
+               testType: testType,
+               id: id)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -584,16 +612,20 @@ public class Expression: AbstractSyntaxTreeNode {
         public let subscriptable: Expression
         public let argument: Expression
         
-        public init(sourceAnchor: SourceAnchor? = nil, subscriptable: Expression, argument: Expression) {
+        public init(sourceAnchor: SourceAnchor? = nil,
+                    subscriptable: Expression,
+                    argument: Expression,
+                    id: ID = ID()) {
             self.subscriptable = subscriptable
             self.argument = argument
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Subscript {
             Subscript(sourceAnchor: sourceAnchor,
                       subscriptable: subscriptable,
-                      argument: argument)
+                      argument: argument,
+                      id: id)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -623,16 +655,18 @@ public class Expression: AbstractSyntaxTreeNode {
         
         public init(sourceAnchor: SourceAnchor? = nil,
                     arrayType: Expression,
-                    elements: [Expression] = []) {
+                    elements: [Expression] = [],
+                    id: ID = ID()) {
             self.arrayType = arrayType
             self.elements = elements
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> LiteralArray {
             LiteralArray(sourceAnchor: sourceAnchor,
                          arrayType: arrayType,
-                         elements: elements)
+                         elements: elements,
+                         id: id)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -683,28 +717,34 @@ public class Expression: AbstractSyntaxTreeNode {
         public let expr: Expression
         public let member: Expression
         
-        public init(sourceAnchor: SourceAnchor? = nil, expr: Expression, member: Expression) {
+        public init(sourceAnchor: SourceAnchor? = nil,
+                    expr: Expression,
+                    member: Expression,
+                    id: ID = ID()) {
             self.expr = expr
             self.member = member
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Get {
             Get(sourceAnchor: sourceAnchor,
                 expr: expr,
-                member: member)
+                member: member,
+                id: id)
         }
         
         public func withExpr(_ expr: Expression) -> Get {
             Get(sourceAnchor: sourceAnchor,
                 expr: expr,
-                member: member)
+                member: member,
+                id: id)
         }
         
         public func withMember(_ member: Expression) -> Get {
             Get(sourceAnchor: sourceAnchor,
                 expr: expr,
-                member: member)
+                member: member,
+                id: id)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -740,16 +780,20 @@ public class Expression: AbstractSyntaxTreeNode {
         public let typ: SymbolType
         
         public convenience init(_ typ: SymbolType) {
-            self.init(sourceAnchor: nil, typ: typ)
+            self.init(typ: typ)
         }
         
-        public init(sourceAnchor: SourceAnchor?, typ: SymbolType) {
+        public init(sourceAnchor: SourceAnchor? = nil,
+                    typ: SymbolType,
+                    id: ID = ID()) {
             self.typ = typ
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> PrimitiveType {
-            PrimitiveType(sourceAnchor: sourceAnchor, typ: typ)
+            PrimitiveType(sourceAnchor: sourceAnchor,
+                          typ: typ,
+                          id: id)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -779,16 +823,20 @@ public class Expression: AbstractSyntaxTreeNode {
         public let elementType: Expression
         
         public convenience init(_ elementType: Expression) {
-            self.init(sourceAnchor: nil, elementType: elementType)
+            self.init(elementType: elementType)
         }
         
-        public init(sourceAnchor: SourceAnchor?, elementType: Expression) {
+        public init(sourceAnchor: SourceAnchor? = nil,
+                    elementType: Expression,
+                    id: ID = ID()) {
             self.elementType = elementType
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> DynamicArrayType {
-            DynamicArrayType(sourceAnchor: sourceAnchor, elementType: elementType)
+            DynamicArrayType(sourceAnchor: sourceAnchor,
+                             elementType: elementType,
+                             id: id)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -819,16 +867,20 @@ public class Expression: AbstractSyntaxTreeNode {
         public let count: Expression?
         public let elementType: Expression
         
-        public init(sourceAnchor: SourceAnchor? = nil, count: Expression?, elementType: Expression) {
+        public init(sourceAnchor: SourceAnchor? = nil,
+                    count: Expression?,
+                    elementType: Expression,
+                    id: ID = ID()) {
             self.count = count
             self.elementType = elementType
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> ArrayType {
             ArrayType(sourceAnchor: sourceAnchor,
                       count: count,
-                      elementType: elementType)
+                      elementType: elementType,
+                      id: id)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -865,25 +917,31 @@ public class Expression: AbstractSyntaxTreeNode {
         public let returnType: Expression
         public let arguments: [Expression]
         
-        public init(sourceAnchor: SourceAnchor? = nil, name: String? = nil, returnType: Expression, arguments: [Expression]) {
+        public init(sourceAnchor: SourceAnchor? = nil,
+                    name: String? = nil,
+                    returnType: Expression,
+                    arguments: [Expression],
+                    id: ID = ID()) {
             self.name = name
             self.returnType = returnType
             self.arguments = arguments
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> FunctionType {
             FunctionType(sourceAnchor: sourceAnchor,
                          name: name,
                          returnType: returnType,
-                         arguments: arguments)
+                         arguments: arguments,
+                         id: id)
         }
         
         public func withName(_ name: String) -> FunctionType {
             FunctionType(sourceAnchor: sourceAnchor,
                          name: name,
                          returnType: returnType,
-                         arguments: arguments)
+                         arguments: arguments,
+                         id: id)
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
@@ -919,27 +977,13 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else {
-                return false
-            }
-            guard type(of: rhs!) == type(of: self) else {
-                return false
-            }
-            guard super.isEqual(rhs) else {
-                return false
-            }
-            guard let rhs = rhs as? FunctionType else {
-                return false
-            }
-            guard name == rhs.name else {
-                return false
-            }
-            guard returnType == rhs.returnType else {
-                return false
-            }
-            guard arguments == rhs.arguments else {
-                return false
-            }
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
+            guard let rhs = rhs as? FunctionType else { return false }
+            guard name == rhs.name else { return false }
+            guard returnType == rhs.returnType else { return false }
+            guard arguments == rhs.arguments else { return false }
             return true
         }
         
@@ -983,17 +1027,19 @@ public class Expression: AbstractSyntaxTreeNode {
         
         public init(sourceAnchor: SourceAnchor? = nil,
                     template: FunctionDeclaration,
-                    enclosingImplId: AbstractSyntaxTreeNode.ID? = nil) {
+                    enclosingImplId: AbstractSyntaxTreeNode.ID? = nil,
+                    id: ID = ID()) {
             self.template = template
             self.enclosingImplId = enclosingImplId
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public func withTemplate(_ template: FunctionDeclaration) -> GenericFunctionType {
             GenericFunctionType(
                 sourceAnchor: sourceAnchor,
                 template: template,
-                enclosingImplId: enclosingImplId)
+                enclosingImplId: enclosingImplId,
+                id: id)
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
@@ -1008,21 +1054,11 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else {
-                return false
-            }
-            guard type(of: rhs!) == type(of: self) else {
-                return false
-            }
-            guard super.isEqual(rhs) else {
-                return false
-            }
-            guard let rhs = rhs as? GenericFunctionType else {
-                return false
-            }
-            guard template == rhs.template else {
-                return false
-            }
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
+            guard let rhs = rhs as? GenericFunctionType else { return false }
+            guard template == rhs.template else { return false }
             return true
         }
         
@@ -1042,16 +1078,18 @@ public class Expression: AbstractSyntaxTreeNode {
         
         public init(sourceAnchor: SourceAnchor? = nil,
                     identifier: Identifier,
-                    arguments: [Expression]) {
+                    arguments: [Expression],
+                    id: ID = ID()) {
             self.identifier = identifier
             self.arguments = arguments
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> GenericTypeApplication {
             GenericTypeApplication(sourceAnchor: sourceAnchor,
                                    identifier: identifier,
-                                   arguments: arguments)
+                                   arguments: arguments,
+                                   id: id)
         }
         
         public var shortDescription: String {
@@ -1094,24 +1132,12 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else {
-                return false
-            }
-            guard type(of: rhs!) == type(of: self) else {
-                return false
-            }
-            guard super.isEqual(rhs) else {
-                return false
-            }
-            guard let rhs = rhs as? GenericTypeApplication else {
-                return false
-            }
-            guard identifier == rhs.identifier else {
-                return false
-            }
-            guard arguments == rhs.arguments else {
-                return false
-            }
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
+            guard let rhs = rhs as? GenericTypeApplication else { return false }
+            guard identifier == rhs.identifier else { return false }
+            guard arguments == rhs.arguments else { return false }
             return true
         }
         
@@ -1129,16 +1155,18 @@ public class Expression: AbstractSyntaxTreeNode {
         
         public init(sourceAnchor: SourceAnchor? = nil,
                     identifier: Identifier,
-                    constraints: [Identifier]) {
+                    constraints: [Identifier],
+                    id: ID = ID()) {
             self.identifier = identifier
             self.constraints = constraints
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> GenericTypeArgument {
             GenericTypeArgument(sourceAnchor: sourceAnchor,
                                 identifier: identifier,
-                                constraints: constraints)
+                                constraints: constraints,
+                                id: id)
         }
         
         public var shortDescription: String {
@@ -1162,24 +1190,12 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else {
-                return false
-            }
-            guard type(of: rhs!) == type(of: self) else {
-                return false
-            }
-            guard super.isEqual(rhs) else {
-                return false
-            }
-            guard let rhs = rhs as? GenericTypeArgument else {
-                return false
-            }
-            guard identifier == rhs.identifier else {
-                return false
-            }
-            guard constraints == rhs.constraints else {
-                return false
-            }
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
+            guard let rhs = rhs as? GenericTypeArgument else { return false }
+            guard identifier == rhs.identifier else { return false }
+            guard constraints == rhs.constraints else { return false }
             return true
         }
         
@@ -1198,13 +1214,17 @@ public class Expression: AbstractSyntaxTreeNode {
             self.init(sourceAnchor: nil, typ: typ)
         }
         
-        public init(sourceAnchor: SourceAnchor?, typ: Expression) {
+        public init(sourceAnchor: SourceAnchor?,
+                    typ: Expression,
+                    id: ID = ID()) {
             self.typ = typ
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> PointerType {
-            PointerType(sourceAnchor: sourceAnchor, typ: typ)
+            PointerType(sourceAnchor: sourceAnchor,
+                        typ: typ,
+                        id: id)
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
@@ -1219,21 +1239,11 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else {
-                return false
-            }
-            guard type(of: rhs!) == type(of: self) else {
-                return false
-            }
-            guard super.isEqual(rhs) else {
-                return false
-            }
-            guard let rhs = rhs as? PointerType else {
-                return false
-            }
-            guard typ == rhs.typ else {
-                return false
-            }
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
+            guard let rhs = rhs as? PointerType else { return false }
+            guard typ == rhs.typ else { return false }
             return true
         }
         
@@ -1251,13 +1261,17 @@ public class Expression: AbstractSyntaxTreeNode {
             self.init(sourceAnchor: nil, typ: typ)
         }
         
-        public init(sourceAnchor: SourceAnchor?, typ: Expression) {
+        public init(sourceAnchor: SourceAnchor?,
+                    typ: Expression,
+                    id: ID = ID()) {
             self.typ = typ
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> ConstType {
-            ConstType(sourceAnchor: sourceAnchor, typ: typ)
+            ConstType(sourceAnchor: sourceAnchor,
+                      typ: typ,
+                      id: id)
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
@@ -1272,21 +1286,11 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else {
-                return false
-            }
-            guard type(of: rhs!) == type(of: self) else {
-                return false
-            }
-            guard super.isEqual(rhs) else {
-                return false
-            }
-            guard let rhs = rhs as? ConstType else {
-                return false
-            }
-            guard typ == rhs.typ else {
-                return false
-            }
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
+            guard let rhs = rhs as? ConstType else { return false }
+            guard typ == rhs.typ else { return false }
             return true
         }
         
@@ -1304,13 +1308,17 @@ public class Expression: AbstractSyntaxTreeNode {
             self.init(sourceAnchor: nil, typ: typ)
         }
         
-        public init(sourceAnchor: SourceAnchor?, typ: Expression) {
+        public init(sourceAnchor: SourceAnchor?,
+                    typ: Expression,
+                    id: ID = ID()) {
             self.typ = typ
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> MutableType {
-            MutableType(sourceAnchor: sourceAnchor, typ: typ)
+            MutableType(sourceAnchor: sourceAnchor,
+                        typ: typ,
+                        id: id)
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
@@ -1325,21 +1333,11 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else {
-                return false
-            }
-            guard type(of: rhs!) == type(of: self) else {
-                return false
-            }
-            guard super.isEqual(rhs) else {
-                return false
-            }
-            guard let rhs = rhs as? MutableType else {
-                return false
-            }
-            guard typ == rhs.typ else {
-                return false
-            }
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
+            guard let rhs = rhs as? MutableType else { return false }
+            guard typ == rhs.typ else { return false }
             return true
         }
         
@@ -1354,16 +1352,20 @@ public class Expression: AbstractSyntaxTreeNode {
         public let members: [Expression]
         
         public convenience init(_ members: [Expression]) {
-            self.init(sourceAnchor: nil, members: members)
+            self.init(members: members)
         }
         
-        public init(sourceAnchor: SourceAnchor?, members: [Expression]) {
+        public init(sourceAnchor: SourceAnchor? = nil,
+                    members: [Expression],
+                    id: ID = ID()) {
             self.members = members
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> UnionType {
-            UnionType(sourceAnchor: sourceAnchor, members: members)
+            UnionType(sourceAnchor: sourceAnchor,
+                      members: members,
+                      id: id)
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
@@ -1393,21 +1395,11 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else {
-                return false
-            }
-            guard type(of: rhs!) == type(of: self) else {
-                return false
-            }
-            guard super.isEqual(rhs) else {
-                return false
-            }
-            guard let rhs = rhs as? UnionType else {
-                return false
-            }
-            guard members == rhs.members else {
-                return false
-            }
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
+            guard let rhs = rhs as? UnionType else { return false }
+            guard members == rhs.members else { return false }
             return true
         }
         
@@ -1433,21 +1425,11 @@ public class Expression: AbstractSyntaxTreeNode {
             }
             
             public override func isEqual(_ rhs: Any?) -> Bool {
-                guard rhs != nil else {
-                    return false
-                }
-                guard type(of: rhs!) == type(of: self) else {
-                    return false
-                }
-                guard let rhs = rhs as? Argument else {
-                    return false
-                }
-                guard name == rhs.name else {
-                    return false
-                }
-                guard expr == rhs.expr else {
-                    return false
-                }
+                guard rhs != nil else { return false }
+                guard type(of: rhs!) == type(of: self) else { return false }
+                guard let rhs = rhs as? Argument else { return false }
+                guard name == rhs.name else { return false }
+                guard expr == rhs.expr else { return false }
                 return true
             }
             
@@ -1466,22 +1448,30 @@ public class Expression: AbstractSyntaxTreeNode {
         public let expr: Expression
         public let arguments: [Argument]
         
-        public convenience init(sourceAnchor: SourceAnchor? = nil, identifier: Expression, arguments: [Argument]) {
-            self.init(sourceAnchor: sourceAnchor, expr: identifier, arguments: arguments)
+        public convenience init(sourceAnchor: SourceAnchor? = nil,
+                                identifier: Expression,
+                                arguments: [Argument]) {
+            self.init(sourceAnchor: sourceAnchor,
+                      expr: identifier,
+                      arguments: arguments)
         }
         
-        public init(sourceAnchor: SourceAnchor? = nil, expr: Expression, arguments: [Argument]) {
+        public init(sourceAnchor: SourceAnchor? = nil,
+                    expr: Expression,
+                    arguments: [Argument],
+                    id: ID = ID()) {
             self.expr = expr
             self.arguments = arguments.map {
                 Argument(name: $0.name, expr: $0.expr)
             }
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> StructInitializer {
             StructInitializer(sourceAnchor: sourceAnchor,
                               expr: expr,
-                              arguments: arguments)
+                              arguments: arguments,
+                              id: id)
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
@@ -1516,24 +1506,12 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else {
-                return false
-            }
-            guard type(of: rhs!) == type(of: self) else {
-                return false
-            }
-            guard super.isEqual(rhs) else {
-                return false
-            }
-            guard let rhs = rhs as? StructInitializer else {
-                return false
-            }
-            guard expr == rhs.expr else {
-                return false
-            }
-            guard arguments == rhs.arguments else {
-                return false
-            }
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
+            guard let rhs = rhs as? StructInitializer else { return false }
+            guard expr == rhs.expr else { return false }
+            guard arguments == rhs.arguments else { return false }
             return true
         }
         
@@ -1552,13 +1530,17 @@ public class Expression: AbstractSyntaxTreeNode {
             self.init(sourceAnchor: nil, value: value)
         }
         
-        public init(sourceAnchor: SourceAnchor?, value: String) {
+        public init(sourceAnchor: SourceAnchor? = nil,
+                    value: String,
+                    id: ID = ID()) {
             self.value = value
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> LiteralString {
-            LiteralString(sourceAnchor: sourceAnchor, value: value)
+            LiteralString(sourceAnchor: sourceAnchor,
+                          value: value,
+                          id: id)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -1591,13 +1573,17 @@ public class Expression: AbstractSyntaxTreeNode {
             self.init(sourceAnchor: nil, expr: expr)
         }
         
-        public init(sourceAnchor: SourceAnchor?, expr: Expression) {
+        public init(sourceAnchor: SourceAnchor?,
+                    expr: Expression,
+                    id: ID = ID()) {
             self.expr = expr
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> TypeOf {
-            TypeOf(sourceAnchor: sourceAnchor, expr: expr)
+            TypeOf(sourceAnchor: sourceAnchor,
+                   expr: expr,
+                   id: id)
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
@@ -1612,21 +1598,11 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else {
-                return false
-            }
-            guard type(of: rhs!) == type(of: self) else {
-                return false
-            }
-            guard super.isEqual(rhs) else {
-                return false
-            }
-            guard let rhs = rhs as? TypeOf else {
-                return false
-            }
-            guard expr == rhs.expr else {
-                return false
-            }
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
+            guard let rhs = rhs as? TypeOf else { return false }
+            guard expr == rhs.expr else { return false }
             return true
         }
         
@@ -1641,16 +1617,20 @@ public class Expression: AbstractSyntaxTreeNode {
         public let expr: Expression
         
         public convenience init(_ expr: Expression) {
-            self.init(sourceAnchor: nil, expr: expr)
+            self.init(expr: expr)
         }
         
-        public init(sourceAnchor: SourceAnchor? = nil, expr: Expression) {
+        public init(sourceAnchor: SourceAnchor? = nil,
+                    expr: Expression,
+                    id: ID = ID()) {
             self.expr = expr
-            super.init(sourceAnchor: sourceAnchor)
+            super.init(sourceAnchor: sourceAnchor, id: id)
         }
         
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> SizeOf {
-            SizeOf(sourceAnchor: sourceAnchor, expr: expr)
+            SizeOf(sourceAnchor: sourceAnchor,
+                   expr: expr,
+                   id: id)
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
@@ -1665,21 +1645,11 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else {
-                return false
-            }
-            guard type(of: rhs!) == type(of: self) else {
-                return false
-            }
-            guard super.isEqual(rhs) else {
-                return false
-            }
-            guard let rhs = rhs as? SizeOf else {
-                return false
-            }
-            guard expr == rhs.expr else {
-                return false
-            }
+            guard rhs != nil else { return false }
+            guard type(of: rhs!) == type(of: self) else { return false }
+            guard super.isEqual(rhs) else { return false }
+            guard let rhs = rhs as? SizeOf else { return false }
+            guard expr == rhs.expr else { return false }
             return true
         }
         

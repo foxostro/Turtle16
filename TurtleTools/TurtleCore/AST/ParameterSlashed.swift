@@ -15,13 +15,17 @@ public class ParameterSlashed: Parameter {
         self.init(sourceAnchor: nil, child: child)
     }
     
-    public init(sourceAnchor: SourceAnchor? = nil, child: Parameter) {
+    public init(sourceAnchor: SourceAnchor? = nil,
+                child: Parameter,
+                id: ID = ID()) {
         self.child = child.withSourceAnchor(sourceAnchor) as! Parameter
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> ParameterSlashed {
-        ParameterSlashed(sourceAnchor: sourceAnchor, child: child)
+        ParameterSlashed(sourceAnchor: sourceAnchor,
+                         child: child,
+                         id: id)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

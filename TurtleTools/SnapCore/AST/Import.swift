@@ -11,13 +11,17 @@ import TurtleCore
 public class Import: AbstractSyntaxTreeNode {
     public let moduleName: String
     
-    public init(sourceAnchor: SourceAnchor? = nil, moduleName: String) {
+    public init(sourceAnchor: SourceAnchor? = nil,
+                moduleName: String,
+                id: ID = ID()) {
         self.moduleName = moduleName
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Import {
-        Import(sourceAnchor: sourceAnchor, moduleName: moduleName)
+        Import(sourceAnchor: sourceAnchor,
+               moduleName: moduleName,
+               id: id)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
@@ -37,9 +41,9 @@ public class Import: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@(%@)",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      moduleName)
+        String(format: "%@%@(%@)",
+               wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+               String(describing: type(of: self)),
+               moduleName)
     }
 }

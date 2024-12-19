@@ -12,16 +12,20 @@ public class While: AbstractSyntaxTreeNode {
     public let condition: Expression
     public let body: AbstractSyntaxTreeNode
     
-    public init(sourceAnchor: SourceAnchor? = nil, condition: Expression, body: AbstractSyntaxTreeNode) {
+    public init(sourceAnchor: SourceAnchor? = nil,
+                condition: Expression,
+                body: AbstractSyntaxTreeNode,
+                id: ID = ID()) {
         self.condition = condition.withSourceAnchor(sourceAnchor)
         self.body = body.withSourceAnchor(sourceAnchor)
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> While {
         While(sourceAnchor: sourceAnchor,
               condition: condition,
-              body: body)
+              body: body,
+              id: id)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
@@ -43,12 +47,12 @@ public class While: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@\n%@condition: %@\n%@body: %@",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      makeIndent(depth: depth + 1),
-                      condition.makeIndentedDescription(depth: depth + 1),
-                      makeIndent(depth: depth + 1),
-                      body.makeIndentedDescription(depth: depth + 1))
+        String(format: "%@%@\n%@condition: %@\n%@body: %@",
+               wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+               String(describing: type(of: self)),
+               makeIndent(depth: depth + 1),
+               condition.makeIndentedDescription(depth: depth + 1),
+               makeIndent(depth: depth + 1),
+               body.makeIndentedDescription(depth: depth + 1))
     }
 }

@@ -12,7 +12,6 @@ public class Impl: AbstractSyntaxTreeNode {
     public let typeArguments: [Expression.GenericTypeArgument]
     public let structTypeExpr: Expression
     public let children: [FunctionDeclaration]
-    public let id: ID
     
     public var isGeneric: Bool {
         !typeArguments.isEmpty
@@ -26,8 +25,7 @@ public class Impl: AbstractSyntaxTreeNode {
         self.typeArguments = typeArguments
         self.structTypeExpr = structTypeExpr
         self.children = children
-        self.id = id
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public func clone() -> Impl {

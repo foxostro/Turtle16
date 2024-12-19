@@ -11,13 +11,15 @@ import TurtleCore
 public class Asm: AbstractSyntaxTreeNode {
     public let assemblyCode: String
     
-    public init(sourceAnchor: SourceAnchor? = nil, assemblyCode: String) {
+    public init(sourceAnchor: SourceAnchor? = nil, assemblyCode: String, id: ID = ID()) {
         self.assemblyCode = assemblyCode
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Asm {
-        Asm(sourceAnchor: sourceAnchor, assemblyCode: assemblyCode)
+        Asm(sourceAnchor: sourceAnchor,
+            assemblyCode: assemblyCode,
+            id: id)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

@@ -14,16 +14,18 @@ public class Subroutine: AbstractSyntaxTreeNode {
     
     public init(sourceAnchor: SourceAnchor? = nil,
                 identifier: String,
-                children: [AbstractSyntaxTreeNode] = []) {
+                children: [AbstractSyntaxTreeNode] = [],
+                id: ID = ID()) {
         self.identifier = identifier
         self.children = children
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Subroutine {
         Subroutine(sourceAnchor: sourceAnchor,
                    identifier: identifier,
-                   children: children)
+                   children: children,
+                   id: id)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
@@ -45,11 +47,11 @@ public class Subroutine: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@(%@):%@",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      identifier,
-                      makeChildDescriptions(depth: depth + 1))
+        String(format: "%@%@(%@):%@",
+               wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+               String(describing: type(of: self)),
+               identifier,
+               makeChildDescriptions(depth: depth + 1))
     }
     
     public func makeChildDescriptions(depth: Int = 0) -> String {

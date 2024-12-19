@@ -82,7 +82,8 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
                 typeArguments: [Expression.GenericTypeArgument] = [],
                 members: [Member],
                 visibility: SymbolVisibility = .privateVisibility,
-                isConst: Bool = false) {
+                isConst: Bool = false,
+                id: ID = ID()) {
         self.identifier = identifier.withSourceAnchor(sourceAnchor)
         self.typeArguments = typeArguments
         self.members = members.map {
@@ -91,7 +92,7 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
         }
         self.visibility = visibility
         self.isConst = isConst
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> StructDeclaration {
@@ -100,7 +101,8 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
                           typeArguments: typeArguments,
                           members: members,
                           visibility: visibility,
-                          isConst: isConst)
+                          isConst: isConst,
+                          id: id)
     }
     
     public func withVisibility(_ visibility: SymbolVisibility) -> StructDeclaration {
@@ -109,7 +111,8 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
                           typeArguments: typeArguments,
                           members: members,
                           visibility: visibility,
-                          isConst: isConst)
+                          isConst: isConst,
+                          id: id)
     }
     
     public func eraseTypeArguments() -> StructDeclaration {
@@ -118,7 +121,8 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
                           typeArguments: [],
                           members: members,
                           visibility: visibility,
-                          isConst: isConst)
+                          isConst: isConst,
+                          id: id)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

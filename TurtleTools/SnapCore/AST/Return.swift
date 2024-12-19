@@ -12,16 +12,20 @@ public class Return: AbstractSyntaxTreeNode {
     public let expression: Expression?
     
     public convenience init(_ expr: Expression?) {
-        self.init(sourceAnchor: nil, expression: expr)
+        self.init(expression: expr)
     }
     
-    public init(sourceAnchor: SourceAnchor? = nil, expression: Expression? = nil) {
+    public init(sourceAnchor: SourceAnchor? = nil,
+                expression: Expression? = nil,
+                id: ID = ID()) {
         self.expression = expression
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Return {
-        Return(sourceAnchor: sourceAnchor, expression: expression)
+        Return(sourceAnchor: sourceAnchor,
+               expression: expression,
+               id: id)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
@@ -41,10 +45,10 @@ public class Return: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@\n%@expression: %@",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      makeIndent(depth: depth + 1),
-                      expression?.makeIndentedDescription(depth: depth + 1) ?? "nil")
+        String(format: "%@%@\n%@expression: %@",
+               wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+               String(describing: type(of: self)),
+               makeIndent(depth: depth + 1),
+               expression?.makeIndentedDescription(depth: depth + 1) ?? "nil")
     }
 }

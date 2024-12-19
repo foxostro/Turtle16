@@ -14,22 +14,25 @@ public class Module: AbstractSyntaxTreeNode {
     
     public init(sourceAnchor: SourceAnchor? = nil,
                 name: String,
-                block: Block) {
+                block: Block,
+                id: ID = ID()) {
         self.name = name
         self.block = block
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Module {
         Module(sourceAnchor: sourceAnchor,
                name: name,
-               block: block)
+               block: block,
+               id: id)
     }
     
     public func withBlock(_ block: Block) -> Module {
         Module(sourceAnchor: sourceAnchor,
                name: name,
-               block: block)
+               block: block,
+               id: id)
     }
     
     public func inserting(children toInsert: [AbstractSyntaxTreeNode], at index: Int) -> Module {
@@ -37,24 +40,12 @@ public class Module: AbstractSyntaxTreeNode {
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else {
-            return false
-        }
-        guard type(of: rhs!) == type(of: self) else {
-            return false
-        }
-        guard super.isEqual(rhs) else {
-            return false
-        }
-        guard let rhs = rhs as? Module else {
-            return false
-        }
-        guard name == rhs.name else {
-            return false
-        }
-        guard block == rhs.block else {
-            return false
-        }
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
+        guard super.isEqual(rhs) else { return false }
+        guard let rhs = rhs as? Module else { return false }
+        guard name == rhs.name else { return false }
+        guard block == rhs.block else { return false }
         return true
     }
     

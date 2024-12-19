@@ -362,38 +362,33 @@ public class TackInstructionNode: AbstractSyntaxTreeNode {
     
     public init(instruction: TackInstruction,
                 sourceAnchor: SourceAnchor?,
-                symbols: SymbolTable?) {
+                symbols: SymbolTable?,
+                id: ID = ID()) {
         self.instruction = instruction
         self.symbols = symbols
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public func withSymbols(_ symbols: SymbolTable?) -> TackInstructionNode {
         TackInstructionNode(
             instruction: instruction,
             sourceAnchor: sourceAnchor,
-            symbols: symbols)
+            symbols: symbols,
+            id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> TackInstructionNode {
         TackInstructionNode(instruction: instruction,
                             sourceAnchor: sourceAnchor,
-                            symbols: symbols)
+                            symbols: symbols,
+                            id: id)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else {
-            return false
-        }
-        guard type(of: rhs!) == type(of: self) else {
-            return false
-        }
-        guard let rhs = rhs as? TackInstructionNode else {
-            return false
-        }
-        guard instruction == rhs.instruction else {
-            return false
-        }
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
+        guard let rhs = rhs as? TackInstructionNode else { return false }
+        guard instruction == rhs.instruction else { return false }
         
         // Symbol tables do not affect equality.
         

@@ -12,7 +12,6 @@ import TurtleCore
 public class Block: AbstractSyntaxTreeNode {
     public let symbols: SymbolTable
     public let children: [AbstractSyntaxTreeNode]
-    public let id: ID
     
     public init(sourceAnchor: SourceAnchor? = nil,
                 symbols: SymbolTable = SymbolTable(),
@@ -21,8 +20,7 @@ public class Block: AbstractSyntaxTreeNode {
         self.symbols = symbols
         symbols.associatedNodeId = id
         self.children = children
-        self.id = id
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     /// Returns a new block, replacing the block's source anchor

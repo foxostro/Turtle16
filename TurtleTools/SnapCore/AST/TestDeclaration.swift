@@ -12,16 +12,20 @@ public class TestDeclaration: AbstractSyntaxTreeNode {
     public let name: String
     public let body: Block
     
-    public init(sourceAnchor: SourceAnchor? = nil, name: String, body: Block) {
+    public init(sourceAnchor: SourceAnchor? = nil,
+                name: String,
+                body: Block,
+                id: ID = ID()) {
         self.name = name
         self.body = body.withSourceAnchor(sourceAnchor)
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> TestDeclaration {
         TestDeclaration(sourceAnchor: sourceAnchor,
                         name: name,
-                        body: body)
+                        body: body,
+                        id: id)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
@@ -43,12 +47,12 @@ public class TestDeclaration: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@\n%@name: %@\n%@body: %@",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      makeIndent(depth: depth + 1),
-                      name,
-                      makeIndent(depth: depth + 1),
-                      body.makeIndentedDescription(depth: depth + 1))
+        String(format: "%@%@\n%@name: %@\n%@body: %@",
+               wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+               String(describing: type(of: self)),
+               makeIndent(depth: depth + 1),
+               name,
+               makeIndent(depth: depth + 1),
+               body.makeIndentedDescription(depth: depth + 1))
     }
 }

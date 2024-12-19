@@ -12,16 +12,20 @@ public class ParameterAddress: Parameter {
     public let offset: ParameterNumber
     public let identifier: ParameterIdentifier
     
-    public init(sourceAnchor: SourceAnchor? = nil, offset: ParameterNumber, identifier: ParameterIdentifier) {
+    public init(sourceAnchor: SourceAnchor? = nil,
+                offset: ParameterNumber,
+                identifier: ParameterIdentifier,
+                id: ID = ID()) {
         self.offset = offset.withSourceAnchor(sourceAnchor)
         self.identifier = identifier.withSourceAnchor(sourceAnchor)
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> ParameterAddress {
         ParameterAddress(sourceAnchor: sourceAnchor,
                          offset: offset,
-                         identifier: identifier)
+                         identifier: identifier,
+                         id: id)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

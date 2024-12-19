@@ -88,7 +88,8 @@ public class TraitDeclaration: AbstractSyntaxTreeNode {
                          typeArguments: [Expression.GenericTypeArgument] = [],
                          members: [Member],
                          visibility: SymbolVisibility = .privateVisibility,
-                         mangledName: String? = nil) {
+                         mangledName: String? = nil,
+                         id: ID = ID()) {
         self.identifier = identifier.withSourceAnchor(sourceAnchor)
         self.typeArguments = typeArguments
         self.members = members.map {
@@ -96,7 +97,7 @@ public class TraitDeclaration: AbstractSyntaxTreeNode {
         }
         self.visibility = visibility
         self.mangledName = mangledName ?? identifier.identifier
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> TraitDeclaration {
@@ -105,7 +106,8 @@ public class TraitDeclaration: AbstractSyntaxTreeNode {
                          typeArguments: typeArguments,
                          members: members,
                          visibility: visibility,
-                         mangledName: mangledName)
+                         mangledName: mangledName,
+                         id: id)
     }
     
     public func withMangledName(_ mangledName: String) -> TraitDeclaration {
@@ -114,7 +116,8 @@ public class TraitDeclaration: AbstractSyntaxTreeNode {
                          typeArguments: typeArguments,
                          members: members,
                          visibility: visibility,
-                         mangledName: mangledName)
+                         mangledName: mangledName,
+                         id: id)
     }
     
     public func eraseTypeArguments() -> TraitDeclaration {
@@ -123,7 +126,8 @@ public class TraitDeclaration: AbstractSyntaxTreeNode {
                          typeArguments: [],
                          members: members,
                          visibility: visibility,
-                         mangledName: mangledName)
+                         mangledName: mangledName,
+                         id: id)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

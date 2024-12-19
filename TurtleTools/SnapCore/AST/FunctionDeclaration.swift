@@ -28,7 +28,8 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
                 typeArguments: [Expression.GenericTypeArgument] = [],
                 body: Block,
                 visibility: SymbolVisibility = .privateVisibility,
-                symbols: SymbolTable = SymbolTable()) {
+                symbols: SymbolTable = SymbolTable(),
+                id: ID = ID()) {
         self.identifier = identifier
         self.functionType = functionType
         self.argumentNames = argumentNames
@@ -36,7 +37,7 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
         self.body = body
         self.visibility = visibility
         self.symbols = symbols
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> FunctionDeclaration {
@@ -47,7 +48,8 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
                             typeArguments: typeArguments,
                             body: body,
                             visibility: visibility,
-                            symbols: symbols)
+                            symbols: symbols,
+                            id: id)
     }
     
     public func withBody(_ body: Block) -> FunctionDeclaration {
@@ -58,7 +60,8 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
                             typeArguments: typeArguments,
                             body: body,
                             visibility: visibility,
-                            symbols: symbols)
+                            symbols: symbols,
+                            id: id)
     }
     
     public func withFunctionType(_ functionType: Expression.FunctionType) -> FunctionDeclaration {
@@ -69,7 +72,8 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
                             typeArguments: typeArguments,
                             body: body,
                             visibility: visibility,
-                            symbols: symbols)
+                            symbols: symbols,
+                            id: id)
     }
     
     public func withIdentifier(_ name: String) -> FunctionDeclaration {
@@ -80,7 +84,8 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
                             typeArguments: typeArguments,
                             body: body,
                             visibility: visibility,
-                            symbols: symbols)
+                            symbols: symbols,
+                            id: id)
     }
     
     public func withTypeArguments(_ typeArguments: [Expression.GenericTypeArgument]) -> FunctionDeclaration {
@@ -91,7 +96,8 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
                             typeArguments: typeArguments,
                             body: body,
                             visibility: visibility,
-                            symbols: symbols)
+                            symbols: symbols,
+                            id: id)
     }
     
     public func clone() -> FunctionDeclaration {
@@ -103,43 +109,21 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
             typeArguments: typeArguments,
             body: body.clone(),
             visibility: visibility,
-            symbols: symbols.clone())
+            symbols: symbols.clone(),
+            id: ID())
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else {
-            return false
-        }
-        guard type(of: rhs!) == type(of: self) else {
-            return false
-        }
-        guard super.isEqual(rhs) else {
-            return false
-        }
-        guard let rhs = rhs as? FunctionDeclaration else {
-            return false
-        }
-        guard identifier == rhs.identifier else {
-            return false
-        }
-        guard functionType == rhs.functionType else {
-            return false
-        }
-        guard typeArguments == rhs.typeArguments else {
-            return false
-        }
-        guard argumentNames == rhs.argumentNames else {
-            return false
-        }
-        guard body == rhs.body else {
-            return false
-        }
-        guard visibility == rhs.visibility else {
-            return false
-        }
-//        guard symbols == rhs.symbols else {
-//            return false
-//        }
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
+        guard super.isEqual(rhs) else { return false }
+        guard let rhs = rhs as? FunctionDeclaration else { return false }
+        guard identifier == rhs.identifier else { return false }
+        guard functionType == rhs.functionType else { return false }
+        guard typeArguments == rhs.typeArguments else { return false }
+        guard argumentNames == rhs.argumentNames else { return false }
+        guard body == rhs.body else { return false }
+        guard visibility == rhs.visibility else { return false }
         return true
     }
     
@@ -151,7 +135,6 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
         hasher.combine(typeArguments)
         hasher.combine(body)
         hasher.combine(visibility)
-//        hasher.combine(symbols)
         hasher.combine(super.hash)
         return hasher.finalize()
     }

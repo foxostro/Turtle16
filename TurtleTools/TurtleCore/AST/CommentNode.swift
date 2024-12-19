@@ -10,9 +10,11 @@
 public class CommentNode: AbstractSyntaxTreeNode {
     public let string: String
     
-    public required init(sourceAnchor: SourceAnchor? = nil, string: String) {
+    public required init(sourceAnchor: SourceAnchor? = nil,
+                         string: String,
+                         id: ID = ID()) {
         self.string = string
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> CommentNode {

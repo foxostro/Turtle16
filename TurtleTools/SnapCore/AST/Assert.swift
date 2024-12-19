@@ -16,18 +16,20 @@ public class Assert: AbstractSyntaxTreeNode {
     public init(sourceAnchor: SourceAnchor? = nil,
                 condition: Expression,
                 message: String,
-                enclosingTestName: String? = nil) {
+                enclosingTestName: String? = nil,
+                id: ID = ID()) {
         self.condition = condition.withSourceAnchor(sourceAnchor)
         self.message = message
         self.enclosingTestName = enclosingTestName
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Assert {
         Assert(sourceAnchor: sourceAnchor,
                condition: condition,
                message: message,
-               enclosingTestName: enclosingTestName)
+               enclosingTestName: enclosingTestName,
+               id: id)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

@@ -13,13 +13,17 @@ public class LabelDeclaration: AbstractSyntaxTreeNode {
         self.init(sourceAnchor: sourceAnchor, identifier: ident.value)
     }
     
-    public required init(sourceAnchor: SourceAnchor? = nil, identifier: String) {
+    public required init(sourceAnchor: SourceAnchor? = nil,
+                         identifier: String,
+                         id: ID = ID()) {
         self.identifier = identifier
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> LabelDeclaration {
-        LabelDeclaration(sourceAnchor: sourceAnchor, identifier: identifier)
+        LabelDeclaration(sourceAnchor: sourceAnchor,
+                         identifier: identifier,
+                         id: id)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

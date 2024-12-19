@@ -9,9 +9,11 @@
 open class AbstractSyntaxTreeNode : NSObject {
     public typealias ID = UUID
     public let sourceAnchor: SourceAnchor?
+    public let id: ID
     
-    public init(sourceAnchor: SourceAnchor? = nil) {
+    public init(sourceAnchor: SourceAnchor? = nil, id: ID = ID()) {
         self.sourceAnchor = sourceAnchor
+        self.id = id
     }
     
     open func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> AbstractSyntaxTreeNode {

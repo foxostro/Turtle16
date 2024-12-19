@@ -16,18 +16,20 @@ public class Typealias: AbstractSyntaxTreeNode {
     public init(sourceAnchor: SourceAnchor? = nil,
                 lexpr: Expression.Identifier,
                 rexpr: Expression,
-                visibility: SymbolVisibility = .privateVisibility) {
+                visibility: SymbolVisibility = .privateVisibility,
+                id: ID = ID()) {
         self.lexpr = lexpr.withSourceAnchor(sourceAnchor)
         self.rexpr = rexpr.withSourceAnchor(sourceAnchor)
         self.visibility = visibility
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Typealias {
         Typealias(sourceAnchor: sourceAnchor,
                   lexpr: lexpr,
                   rexpr: rexpr,
-                  visibility: visibility)
+                  visibility: visibility,
+                  id: id)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
@@ -51,14 +53,14 @@ public class Typealias: AbstractSyntaxTreeNode {
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@\n%@lexpr: %@\n%@rexpr: %@\n%@visibility: %@",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      makeIndent(depth: depth + 1),
-                      lexpr.makeIndentedDescription(depth: depth),
-                      makeIndent(depth: depth + 1),
-                      rexpr.makeIndentedDescription(depth: depth),
-                      makeIndent(depth: depth + 1),
-                      visibility.description)
+        String(format: "%@%@\n%@lexpr: %@\n%@rexpr: %@\n%@visibility: %@",
+               wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+               String(describing: type(of: self)),
+               makeIndent(depth: depth + 1),
+               lexpr.makeIndentedDescription(depth: depth),
+               makeIndent(depth: depth + 1),
+               rexpr.makeIndentedDescription(depth: depth),
+               makeIndent(depth: depth + 1),
+               visibility.description)
     }
 }

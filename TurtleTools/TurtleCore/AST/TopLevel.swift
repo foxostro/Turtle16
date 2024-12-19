@@ -9,17 +9,23 @@
 public class TopLevel: AbstractSyntaxTreeNode {
     public let children: [AbstractSyntaxTreeNode]
     
-    public init(sourceAnchor: SourceAnchor? = nil, children: [AbstractSyntaxTreeNode]) {
+    public init(sourceAnchor: SourceAnchor? = nil,
+                children: [AbstractSyntaxTreeNode],
+                id: ID = ID()) {
         self.children = children
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> TopLevel {
-        TopLevel(sourceAnchor: sourceAnchor, children: children)
+        TopLevel(sourceAnchor: sourceAnchor,
+                 children: children,
+                 id: id)
     }
     
     public func withChildren(_ children: [AbstractSyntaxTreeNode]) -> TopLevel {
-        TopLevel(sourceAnchor: sourceAnchor, children: children)
+        TopLevel(sourceAnchor: sourceAnchor,
+                 children: children,
+                 id: id)
     }
     
     public func inserting(children toInsert: [AbstractSyntaxTreeNode], at index: Int) -> TopLevel {
@@ -29,21 +35,11 @@ public class TopLevel: AbstractSyntaxTreeNode {
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else {
-            return false
-        }
-        guard type(of: rhs!) == type(of: self) else {
-            return false
-        }
-        guard super.isEqual(rhs) else {
-            return false
-        }
-        guard let rhs = rhs as? TopLevel else {
-            return false
-        }
-        guard children == rhs.children else {
-            return false
-        }
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
+        guard super.isEqual(rhs) else { return false }
+        guard let rhs = rhs as? TopLevel else { return false }
+        guard children == rhs.children else { return false }
         return true
     }
     
@@ -55,10 +51,10 @@ public class TopLevel: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@%@",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      makeChildDescriptions(depth: depth))
+        String(format: "%@%@%@",
+               wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+               String(describing: type(of: self)),
+               makeChildDescriptions(depth: depth))
     }
     
     public func makeChildDescriptions(depth: Int = 0) -> String {

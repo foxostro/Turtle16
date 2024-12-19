@@ -15,13 +15,17 @@ public class ParameterString: Parameter {
         self.init(value: value)
     }
     
-    public init(sourceAnchor: SourceAnchor? = nil, value: String) {
+    public init(sourceAnchor: SourceAnchor? = nil,
+                value: String,
+                id: ID = ID()) {
         self.value = value
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> ParameterString {
-        ParameterString(sourceAnchor: sourceAnchor, value: value)
+        ParameterString(sourceAnchor: sourceAnchor,
+                        value: value,
+                        id: id)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

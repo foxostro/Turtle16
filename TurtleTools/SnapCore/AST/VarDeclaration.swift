@@ -22,14 +22,15 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
                 expression: Expression?,
                 storage: SymbolStorage,
                 isMutable: Bool,
-                visibility: SymbolVisibility = .privateVisibility) {
+                visibility: SymbolVisibility = .privateVisibility,
+                id: ID = ID()) {
         self.identifier = identifier
         self.explicitType = explicitType
         self.expression = expression
         self.storage = storage
         self.isMutable = isMutable
         self.visibility = visibility
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> VarDeclaration {
@@ -39,7 +40,8 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
                        expression: expression,
                        storage: storage,
                        isMutable: isMutable,
-                       visibility: visibility)
+                       visibility: visibility,
+                       id: id)
     }
     
     public func withExpression(_ expression: Expression?) -> VarDeclaration {
@@ -49,7 +51,8 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
                        expression: expression,
                        storage: storage,
                        isMutable: isMutable,
-                       visibility: visibility)
+                       visibility: visibility,
+                       id: id)
     }
     
     public func withExplicitType(_ explicitType: Expression?) -> VarDeclaration {
@@ -59,40 +62,21 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
                        expression: expression,
                        storage: storage,
                        isMutable: isMutable,
-                       visibility: visibility)
+                       visibility: visibility,
+                       id: id)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else {
-            return false
-        }
-        guard type(of: rhs!) == type(of: self) else {
-            return false
-        }
-        guard super.isEqual(rhs) else {
-            return false
-        }
-        guard let rhs = rhs as? VarDeclaration else {
-            return false
-        }
-        guard identifier == rhs.identifier else {
-            return false
-        }
-        guard explicitType == rhs.explicitType else {
-            return false
-        }
-        guard isMutable == rhs.isMutable else {
-            return false
-        }
-        guard storage == rhs.storage else {
-            return false
-        }
-        guard expression == rhs.expression else {
-            return false
-        }
-        guard visibility == rhs.visibility else {
-            return false
-        }
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
+        guard super.isEqual(rhs) else { return false }
+        guard let rhs = rhs as? VarDeclaration else { return false }
+        guard identifier == rhs.identifier else { return false }
+        guard explicitType == rhs.explicitType else { return false }
+        guard isMutable == rhs.isMutable else { return false }
+        guard storage == rhs.storage else { return false }
+        guard expression == rhs.expression else { return false }
+        guard visibility == rhs.visibility else { return false }
         return true
     }
     
@@ -109,20 +93,20 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@\n%@identifier: %@\n%@explicitType: %@\n%@storage: %@\n%@isMutable: %@\n%@visibility: %@\n%@expression: %@",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      makeIndent(depth: depth + 1),
-                      identifier.makeIndentedDescription(depth: depth + 1),
-                      makeIndent(depth: depth + 1),
-                      explicitType?.makeIndentedDescription(depth: depth + 1) ?? "nil",
-                      makeIndent(depth: depth + 1),
-                      String(describing: storage),
-                      makeIndent(depth: depth + 1),
-                      isMutable ? "true" : "false",
-                      makeIndent(depth: depth + 1),
-                      visibility.description,
-                      makeIndent(depth: depth + 1),
-                      expression?.makeIndentedDescription(depth: depth + 1) ?? "nil")
+        String(format: "%@%@\n%@identifier: %@\n%@explicitType: %@\n%@storage: %@\n%@isMutable: %@\n%@visibility: %@\n%@expression: %@",
+               wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+               String(describing: type(of: self)),
+               makeIndent(depth: depth + 1),
+               identifier.makeIndentedDescription(depth: depth + 1),
+               makeIndent(depth: depth + 1),
+               explicitType?.makeIndentedDescription(depth: depth + 1) ?? "nil",
+               makeIndent(depth: depth + 1),
+               String(describing: storage),
+               makeIndent(depth: depth + 1),
+               isMutable ? "true" : "false",
+               makeIndent(depth: depth + 1),
+               visibility.description,
+               makeIndent(depth: depth + 1),
+               expression?.makeIndentedDescription(depth: depth + 1) ?? "nil")
     }
 }

@@ -14,16 +14,18 @@ public class GotoIfFalse: AbstractSyntaxTreeNode {
     
     public init(sourceAnchor: SourceAnchor? = nil,
                 condition: Expression,
-                target: String) {
+                target: String,
+                id: ID = ID()) {
         self.condition = condition.withSourceAnchor(sourceAnchor)
         self.target = target
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> GotoIfFalse {
         GotoIfFalse(sourceAnchor: sourceAnchor,
                     condition: condition,
-                    target: target)
+                    target: target,
+                    id: id)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

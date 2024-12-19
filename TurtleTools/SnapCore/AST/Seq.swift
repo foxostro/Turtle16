@@ -19,22 +19,25 @@ public class Seq: AbstractSyntaxTreeNode {
     
     public init(sourceAnchor: SourceAnchor? = nil,
                 tags: Set<String> = Set<String>(),
-                children: [AbstractSyntaxTreeNode] = []) {
+                children: [AbstractSyntaxTreeNode] = [],
+                id: ID = ID()) {
         self.tags = tags
         self.children = children
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Seq {
         Seq(sourceAnchor: sourceAnchor,
             tags: tags,
-            children: children)
+            children: children,
+            id: id)
     }
     
     public func withChildren(_ children: [AbstractSyntaxTreeNode]) -> Seq {
         Seq(sourceAnchor: sourceAnchor,
             tags: tags,
-            children: children)
+            children: children,
+            id: id)
     }
     
     public func appending(children moreChildren: [AbstractSyntaxTreeNode]) -> Seq {

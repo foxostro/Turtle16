@@ -30,24 +30,12 @@ public class Match: AbstractSyntaxTreeNode {
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else {
-                return false
-            }
-            guard let rhs = rhs as? Clause else {
-                return false
-            }
-            guard sourceAnchor == rhs.sourceAnchor else {
-                return false
-            }
-            guard valueIdentifier == rhs.valueIdentifier else {
-                return false
-            }
-            guard valueType == rhs.valueType else {
-                return false
-            }
-            guard block == rhs.block else {
-                return false
-            }
+            guard rhs != nil else { return false }
+            guard let rhs = rhs as? Clause else { return false }
+            guard sourceAnchor == rhs.sourceAnchor else { return false }
+            guard valueIdentifier == rhs.valueIdentifier else { return false }
+            guard valueType == rhs.valueType else { return false }
+            guard block == rhs.block else { return false }
             return true
         }
         
@@ -68,47 +56,31 @@ public class Match: AbstractSyntaxTreeNode {
     public init(sourceAnchor: SourceAnchor? = nil,
                 expr: Expression,
                 clauses: [Clause],
-                elseClause: Block?) {
+                elseClause: Block?,
+                id: ID = ID()) {
         self.expr = expr
         self.clauses = clauses
         self.elseClause = elseClause
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Match {
         Match(sourceAnchor: sourceAnchor,
               expr: expr,
               clauses: clauses,
-              elseClause: elseClause)
+              elseClause: elseClause,
+              id: id)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else {
-            return false
-        }
-        guard type(of: rhs!) == type(of: self) else {
-            return false
-        }
-        guard super.isEqual(rhs) else {
-            return false
-        }
-        guard let rhs = rhs as? Match else {
-            return false
-        }
-        guard sourceAnchor == rhs.sourceAnchor else {
-            print("lhs sourceAnchor: \(String(describing: sourceAnchor))")
-            print("rhs sourceAnchor: \(String(describing: rhs.sourceAnchor))")
-            return false
-        }
-        guard expr == rhs.expr else {
-            return false
-        }
-        guard clauses == rhs.clauses else {
-            return false
-        }
-        guard elseClause == rhs.elseClause else {
-            return false
-        }
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
+        guard super.isEqual(rhs) else { return false }
+        guard let rhs = rhs as? Match else { return false }
+        guard sourceAnchor == rhs.sourceAnchor else { return false }
+        guard expr == rhs.expr else { return false }
+        guard clauses == rhs.clauses else { return false }
+        guard elseClause == rhs.elseClause else { return false }
         return true
     }
     
@@ -123,15 +95,15 @@ public class Match: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@\n%@expr: %@\n%@clauses: %@\n%@elseClause: %@",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      makeIndent(depth: depth + 1),
-                      expr.makeIndentedDescription(depth: depth + 1),
-                      makeIndent(depth: depth + 1),
-                      makeClausesDescription(depth: depth + 1),
-                      makeIndent(depth: depth + 1),
-                      elseClause==nil ? "nil" : elseClause!.makeIndentedDescription(depth: depth + 1))
+        String(format: "%@%@\n%@expr: %@\n%@clauses: %@\n%@elseClause: %@",
+               wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+               String(describing: type(of: self)),
+               makeIndent(depth: depth + 1),
+               expr.makeIndentedDescription(depth: depth + 1),
+               makeIndent(depth: depth + 1),
+               makeClausesDescription(depth: depth + 1),
+               makeIndent(depth: depth + 1),
+               elseClause==nil ? "nil" : elseClause!.makeIndentedDescription(depth: depth + 1))
     }
     
     private func makeClausesDescription(depth: Int) -> String {

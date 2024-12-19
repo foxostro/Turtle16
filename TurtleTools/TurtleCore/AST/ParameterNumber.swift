@@ -13,13 +13,17 @@ public class ParameterNumber: Parameter {
         self.init(value: value)
     }
     
-    public init(sourceAnchor: SourceAnchor? = nil, value: Int) {
+    public init(sourceAnchor: SourceAnchor? = nil,
+                value: Int,
+                id: ID = ID()) {
         self.value = value
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> ParameterNumber {
-        ParameterNumber(sourceAnchor: sourceAnchor, value: value)
+        ParameterNumber(sourceAnchor: sourceAnchor,
+                        value: value,
+                        id: id)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

@@ -16,18 +16,20 @@ public class ForIn: AbstractSyntaxTreeNode {
     public init(sourceAnchor: SourceAnchor? = nil,
                 identifier: Expression.Identifier,
                 sequenceExpr: Expression,
-                body: Block) {
+                body: Block,
+                id: ID = ID()) {
         self.identifier = identifier.withSourceAnchor(sourceAnchor)
         self.sequenceExpr = sequenceExpr.withSourceAnchor(sourceAnchor)
         self.body = body.withSourceAnchor(sourceAnchor)
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> ForIn {
         ForIn(sourceAnchor: sourceAnchor,
               identifier: identifier,
               sequenceExpr: sequenceExpr,
-              body: body)
+              body: body,
+              id: id)
     }
     
     public static func ==(lhs: ForIn, rhs: ForIn) -> Bool {
@@ -35,27 +37,13 @@ public class ForIn: AbstractSyntaxTreeNode {
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else {
-            return false
-        }
-        guard type(of: rhs!) == type(of: self) else {
-            return false
-        }
-        guard super.isEqual(rhs) else {
-            return false
-        }
-        guard let rhs = rhs as? ForIn else {
-            return false
-        }
-        guard identifier == rhs.identifier else {
-            return false
-        }
-        guard sequenceExpr == rhs.sequenceExpr else {
-            return false
-        }
-        guard body == rhs.body else {
-            return false
-        }
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
+        guard super.isEqual(rhs) else { return false }
+        guard let rhs = rhs as? ForIn else { return false }
+        guard identifier == rhs.identifier else { return false }
+        guard sequenceExpr == rhs.sequenceExpr else { return false }
+        guard body == rhs.body else { return false }
         return true
     }
     
@@ -69,14 +57,14 @@ public class ForIn: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@\n%@identifier: %@\n%@sequenceExpr: %@\n%@body: %@",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      makeIndent(depth: depth + 1),
-                      identifier.makeIndentedDescription(depth: depth + 1),
-                      makeIndent(depth: depth + 1),
-                      sequenceExpr.makeIndentedDescription(depth: depth + 1),
-                      makeIndent(depth: depth + 1),
-                      body.makeIndentedDescription(depth: depth + 1))
+        String(format: "%@%@\n%@identifier: %@\n%@sequenceExpr: %@\n%@body: %@",
+               wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
+               String(describing: type(of: self)),
+               makeIndent(depth: depth + 1),
+               identifier.makeIndentedDescription(depth: depth + 1),
+               makeIndent(depth: depth + 1),
+               sequenceExpr.makeIndentedDescription(depth: depth + 1),
+               makeIndent(depth: depth + 1),
+               body.makeIndentedDescription(depth: depth + 1))
     }
 }

@@ -22,34 +22,26 @@ public class InstructionNode: AbstractSyntaxTreeNode {
     
     public init(sourceAnchor: SourceAnchor? = nil,
                 instruction: String,
-                parameters: [Parameter] = []) {
+                parameters: [Parameter] = [],
+                id: ID = ID()) {
         self.instruction = instruction
         self.parameters = parameters
-        super.init(sourceAnchor: sourceAnchor)
+        super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> InstructionNode {
         InstructionNode(sourceAnchor: sourceAnchor,
                         instruction: instruction,
-                        parameters: parameters)
+                        parameters: parameters,
+                        id: id)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else {
-            return false
-        }
-        guard type(of: rhs!) == type(of: self) else {
-            return false
-        }
-        guard let rhs = rhs as? InstructionNode else {
-            return false
-        }
-        guard instruction == rhs.instruction else {
-            return false
-        }
-        guard parameters == rhs.parameters else {
-            return false
-        }
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
+        guard let rhs = rhs as? InstructionNode else { return false }
+        guard instruction == rhs.instruction else { return false }
+        guard parameters == rhs.parameters else { return false }
         return true
     }
     

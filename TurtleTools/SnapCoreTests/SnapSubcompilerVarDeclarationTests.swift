@@ -82,6 +82,38 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
         }
     }
     
+    func testConstantRedefinesExistingType() throws {
+        let symbols = SymbolTable()
+        symbols.bind(identifier: "foo", symbolType: .bool(.mutableBool))
+        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: GlobalEnvironment())
+        let input = VarDeclaration(
+            identifier: Expression.Identifier("foo"),
+            explicitType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
+            expression: nil,
+            storage: .staticStorage,
+            isMutable: false)
+        XCTAssertThrowsError(try compiler.compile(input)) {
+            let error = $0 as? CompilerError
+            XCTAssertEqual(error?.message, "constant redefines existing type: `foo\'")
+        }
+    }
+    
+    func testVariableRedefinesExistingType() throws {
+        let symbols = SymbolTable()
+        symbols.bind(identifier: "foo", symbolType: .bool(.mutableBool))
+        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: GlobalEnvironment())
+        let input = VarDeclaration(
+            identifier: Expression.Identifier("foo"),
+            explicitType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
+            expression: nil,
+            storage: .staticStorage,
+            isMutable: true)
+        XCTAssertThrowsError(try compiler.compile(input)) {
+            let error = $0 as? CompilerError
+            XCTAssertEqual(error?.message, "variable redefines existing type: `foo\'")
+        }
+    }
+    
     func testDeclareVariableWithExpressionAndExplicitType() throws {
         let symbols = SymbolTable()
         let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())

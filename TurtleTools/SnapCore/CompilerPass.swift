@@ -67,7 +67,7 @@ public class CompilerPass: NSObject {
         case let node as Return:
             try visit(return: node)
         case let node as FunctionDeclaration:
-            try visit(func: node)
+            try outerVisit(func: node)
         case let node as StructDeclaration:
             try visit(struct: node)
         case let node as Impl:
@@ -191,9 +191,16 @@ public class CompilerPass: NSObject {
             })
     }
     
-    public func visit(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
+    private func outerVisit(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
+        let val: AbstractSyntaxTreeNode?
         try willVisit(func: node)
-        let result = FunctionDeclaration(
+        val = try visit(func: node)
+        didVisit(func: node)
+        return val
+    }
+    
+    public func visit(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
+        FunctionDeclaration(
             sourceAnchor: node.sourceAnchor,
             identifier: try visit(identifier: node.identifier) as! Expression.Identifier,
             functionType: try visit(expr: node.functionType) as! Expression.FunctionType,
@@ -204,8 +211,6 @@ public class CompilerPass: NSObject {
             body: try visit(node.body) as! Block,
             visibility: node.visibility,
             symbols: node.symbols)
-        didVisit(func: node)
-        return result
     }
     
     public func willVisit(func node: FunctionDeclaration) throws {

@@ -233,7 +233,7 @@ public class SchematicLevelCPUModel: NSObject, CPU {
     }
     
     public static func ==(lhs: SchematicLevelCPUModel, rhs: SchematicLevelCPUModel) -> Bool {
-        return lhs.isEqual(rhs)
+        lhs.isEqual(rhs)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

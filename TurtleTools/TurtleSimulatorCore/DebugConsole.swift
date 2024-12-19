@@ -124,7 +124,7 @@ open class DebugConsole: NSObject, NSSecureCoding {
     }
     
     public static func ==(lhs: DebugConsole, rhs: DebugConsole) -> Bool {
-        return lhs.isEqual(rhs)
+        lhs.isEqual(rhs)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

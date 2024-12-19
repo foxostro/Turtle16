@@ -23,7 +23,7 @@ open class Token : NSObject {
     }
     
     public static func ==(lhs: Token, rhs: Token) -> Bool {
-        return lhs.isEqual(rhs)
+        lhs.isEqual(rhs)
     }
     
     open override func isEqual(_ rhs: Any?) -> Bool {

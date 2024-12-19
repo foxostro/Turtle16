@@ -230,7 +230,7 @@ public class TurtleComputer: NSObject, NSSecureCoding {
     }
     
     public static func ==(lhs: TurtleComputer, rhs: TurtleComputer) -> Bool {
-        return lhs.isEqual(rhs)
+        lhs.isEqual(rhs)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

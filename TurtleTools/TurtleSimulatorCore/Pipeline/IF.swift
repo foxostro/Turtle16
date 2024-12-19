@@ -45,7 +45,7 @@ public class IF_Output: NSObject, NSSecureCoding {
     }
     
     public static func ==(lhs: IF_Output, rhs: IF_Output) -> Bool {
-        return lhs.isEqual(rhs)
+        lhs.isEqual(rhs)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
@@ -188,7 +188,7 @@ public class IF: NSObject, NSSecureCoding {
     }
     
     public static func ==(lhs: IF, rhs: IF) -> Bool {
-        return lhs.isEqual(rhs)
+        lhs.isEqual(rhs)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

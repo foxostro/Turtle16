@@ -596,7 +596,7 @@ public class FunctionType: NSObject {
     }
     
     public static func ==(lhs: FunctionType, rhs: FunctionType) -> Bool {
-        return lhs.isEqual(rhs)
+        lhs.isEqual(rhs)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
@@ -681,7 +681,7 @@ struct \(name) {
     }
     
     public static func ==(lhs: StructType, rhs: StructType) -> Bool {
-        return lhs.isEqual(rhs)
+        lhs.isEqual(rhs)
     }
     
     private var isDoingEqualityTest = false
@@ -774,7 +774,7 @@ public class GenericStructType: NSObject {
     }
     
     public static func ==(lhs: GenericStructType, rhs: GenericStructType) -> Bool {
-        return lhs.isEqual(rhs)
+        lhs.isEqual(rhs)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
@@ -831,7 +831,7 @@ trait \(name) {
     }
     
     public static func ==(lhs: TraitType, rhs: TraitType) -> Bool {
-        return lhs.isEqual(rhs)
+        lhs.isEqual(rhs)
     }
     
     private var isDoingEqualityTest = false
@@ -914,7 +914,7 @@ public class GenericTraitType: NSObject {
     }
     
     public static func ==(lhs: GenericTraitType, rhs: GenericTraitType) -> Bool {
-        return lhs.isEqual(rhs)
+        lhs.isEqual(rhs)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
@@ -953,7 +953,7 @@ public class UnionType: NSObject {
     }
     
     public static func ==(lhs: UnionType, rhs: UnionType) -> Bool {
-        return lhs.isEqual(rhs)
+        lhs.isEqual(rhs)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
@@ -1300,7 +1300,7 @@ public class SymbolTable: NSObject {
     }
     
     public static func ==(lhs: SymbolTable, rhs: SymbolTable) -> Bool {
-        return lhs.isEqual(rhs)
+        lhs.isEqual(rhs)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

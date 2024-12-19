@@ -39,7 +39,7 @@ public class OpcodeDecoderROM : NSObject, InstructionDecoder {
     }
     
     public static func ==(lhs: OpcodeDecoderROM, rhs: OpcodeDecoderROM) -> Bool {
-        return lhs.isEqual(rhs)
+        lhs.isEqual(rhs)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
@@ -105,7 +105,7 @@ public class ProgrammableLogicDecoder : NSObject, InstructionDecoder {
     }
     
     public static func ==(lhs: ProgrammableLogicDecoder, rhs: ProgrammableLogicDecoder) -> Bool {
-        return lhs.isEqual(rhs)
+        lhs.isEqual(rhs)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

@@ -63,7 +63,7 @@ public class ID_Output: NSObject, NSSecureCoding {
     }
     
     public static func ==(lhs: ID_Output, rhs: ID_Output) -> Bool {
-        return lhs.isEqual(rhs)
+        lhs.isEqual(rhs)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
@@ -320,7 +320,7 @@ public class ID: NSObject, NSSecureCoding {
     }
     
     public static func ==(lhs: ID, rhs: ID) -> Bool {
-        return lhs.isEqual(rhs)
+        lhs.isEqual(rhs)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

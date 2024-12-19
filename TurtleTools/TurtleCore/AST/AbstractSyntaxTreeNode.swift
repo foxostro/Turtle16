@@ -59,7 +59,7 @@ open class AbstractSyntaxTreeNode : NSObject {
     }
     
     public static func ==(lhs: AbstractSyntaxTreeNode, rhs: AbstractSyntaxTreeNode) -> Bool {
-        return lhs.isEqual(rhs)
+        lhs.isEqual(rhs)
     }
     
     open override func isEqual(_ rhs: Any?) -> Bool {

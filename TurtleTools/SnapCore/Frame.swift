@@ -35,7 +35,7 @@ public class Frame: NSObject {
     }
     
     public static func ==(lhs: Frame, rhs: Frame) -> Bool {
-        return lhs.isEqual(rhs)
+        lhs.isEqual(rhs)
     }
     
     open override func isEqual(_ rhs: Any?) -> Bool {

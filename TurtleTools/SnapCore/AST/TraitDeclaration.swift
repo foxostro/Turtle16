@@ -19,7 +19,7 @@ public class TraitDeclaration: AbstractSyntaxTreeNode {
         }
         
         public static func ==(lhs: Member, rhs: Member) -> Bool {
-            return lhs.isEqual(rhs)
+            lhs.isEqual(rhs)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {

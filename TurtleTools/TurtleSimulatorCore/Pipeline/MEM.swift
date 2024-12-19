@@ -53,7 +53,7 @@ public class MEM_Output: NSObject, NSSecureCoding {
     }
     
     public static func ==(lhs: MEM_Output, rhs: MEM_Output) -> Bool {
-        return lhs.isEqual(rhs)
+        lhs.isEqual(rhs)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
@@ -169,7 +169,7 @@ public class MEM: NSObject, NSSecureCoding {
     }
     
     public static func ==(lhs: MEM, rhs: MEM) -> Bool {
-        return lhs.isEqual(rhs)
+        lhs.isEqual(rhs)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

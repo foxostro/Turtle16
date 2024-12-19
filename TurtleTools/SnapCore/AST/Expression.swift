@@ -992,7 +992,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public static func ==(lhs: FunctionType, rhs: FunctionType) -> Bool {
-            return lhs.isEqual(rhs)
+            lhs.isEqual(rhs)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -1067,7 +1067,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public static func ==(lhs: GenericFunctionType, rhs: GenericFunctionType) -> Bool {
-            return lhs.isEqual(rhs)
+            lhs.isEqual(rhs)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -1145,7 +1145,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public static func ==(lhs: GenericTypeApplication, rhs: GenericTypeApplication) -> Bool {
-            return lhs.isEqual(rhs)
+            lhs.isEqual(rhs)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -1203,7 +1203,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public static func ==(lhs: GenericTypeArgument, rhs: GenericTypeArgument) -> Bool {
-            return lhs.isEqual(rhs)
+            lhs.isEqual(rhs)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -1258,7 +1258,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public static func ==(lhs: PointerType, rhs: PointerType) -> Bool {
-            return lhs.isEqual(rhs)
+            lhs.isEqual(rhs)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -1311,7 +1311,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public static func ==(lhs: ConstType, rhs: ConstType) -> Bool {
-            return lhs.isEqual(rhs)
+            lhs.isEqual(rhs)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -1464,7 +1464,7 @@ public class Expression: AbstractSyntaxTreeNode {
             }
             
             public static func ==(lhs: Argument, rhs: Argument) -> Bool {
-                return lhs.isEqual(rhs)
+                lhs.isEqual(rhs)
             }
             
             public override func isEqual(_ rhs: Any?) -> Bool {
@@ -1545,7 +1545,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public static func ==(lhs: StructInitializer, rhs: StructInitializer) -> Bool {
-            return lhs.isEqual(rhs)
+            lhs.isEqual(rhs)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -1643,7 +1643,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public static func ==(lhs: TypeOf, rhs: TypeOf) -> Bool {
-            return lhs.isEqual(rhs)
+            lhs.isEqual(rhs)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {
@@ -1696,7 +1696,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public static func ==(lhs: SizeOf, rhs: SizeOf) -> Bool {
-            return lhs.isEqual(rhs)
+            lhs.isEqual(rhs)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {

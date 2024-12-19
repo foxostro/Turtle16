@@ -33,7 +33,7 @@ public class ForIn: AbstractSyntaxTreeNode {
     }
     
     public static func ==(lhs: ForIn, rhs: ForIn) -> Bool {
-        return lhs.isEqual(rhs)
+        lhs.isEqual(rhs)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

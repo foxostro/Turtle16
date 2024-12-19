@@ -287,7 +287,7 @@ public class IDT7381: NSObject, NSSecureCoding {
     }
     
     public static func ==(lhs: IDT7381, rhs: IDT7381) -> Bool {
-        return lhs.isEqual(rhs)
+        lhs.isEqual(rhs)
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {

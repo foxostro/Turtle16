@@ -26,7 +26,7 @@ public class Match: AbstractSyntaxTreeNode {
         }
         
         public static func ==(lhs: Clause, rhs: Clause) -> Bool {
-            return lhs.isEqual(rhs)
+            lhs.isEqual(rhs)
         }
         
         public override func isEqual(_ rhs: Any?) -> Bool {

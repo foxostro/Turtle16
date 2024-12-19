@@ -99,10 +99,7 @@ public class SnapASTTransformerTestDeclaration: CompilerPass {
     }
     
     public override func visit(assert node: Assert) throws -> AbstractSyntaxTreeNode {
-        return Assert(sourceAnchor: node.sourceAnchor,
-                      condition: node.condition,
-                      message: node.message,
-                      enclosingTestName: currentTest?.name)
+        node.withEnclosingTestName(currentTest?.name)
     }
 }
 

@@ -13,27 +13,27 @@ public class RegisterAllocatorNaive: CompilerPass {
     public override func visit(instruction node: InstructionNode) throws -> AbstractSyntaxTreeNode? {
         switch node.instruction {
         case kLOAD, kSTORE, kLI, kLUI, kCMP, kADD, kSUB, kAND, kOR, kXOR, kNOT, kCMPI, kADDI, kSUBI, kANDI, kORI, kXORI, kJR, kJALR, kADC, kSBC, kCALLPTR:
-            return try rewriteInstructionWithRegisterIdentifiers(node)
+            try rewriteInstructionWithRegisterIdentifiers(node)
             
         case kLA:
-            return try la(node)
+            try la(node)
             
         default:
-            return node
+            node
         }
     }
     
     func rewriteRegisterIdentifier(_ input: String) -> String? {
         switch input {
-        case "vr0": return "r0"
-        case "vr1": return "r1"
-        case "vr2": return "r2"
-        case "vr3": return "r3"
-        case "vr4": return "r4"
-        case "vr5", "ra":  return "r5"
-        case "vr6", "sp":  return "r6"
-        case "vr7", "fp":  return "r7"
-        default: return nil
+        case "vr0": "r0"
+        case "vr1": "r1"
+        case "vr2": "r2"
+        case "vr3": "r3"
+        case "vr4": "r4"
+        case "vr5", "ra":  "r5"
+        case "vr6", "sp":  "r6"
+        case "vr7", "fp":  "r7"
+        default: nil
         }
     }
     
@@ -44,13 +44,18 @@ public class RegisterAllocatorNaive: CompilerPass {
         guard let rewritten = rewriteRegisterIdentifier(ident.value) else {
             throw CompilerError(sourceAnchor: param.sourceAnchor, message: "unable to map virtual register to physical register: `\(param)'")
         }
-        return ParameterIdentifier(sourceAnchor: param.sourceAnchor, value: rewritten)
+        return ParameterIdentifier(
+            sourceAnchor: param.sourceAnchor,
+            value: rewritten,
+            id: param.id)
     }
     
     func rewriteInstructionWithRegisterIdentifiers(_ node: InstructionNode) throws -> AbstractSyntaxTreeNode? {
-        return InstructionNode(sourceAnchor: node.sourceAnchor,
-                               instruction: node.instruction,
-                               parameters: try node.parameters.map(rewriteRegisterIdentifier))
+        InstructionNode(
+            sourceAnchor: node.sourceAnchor,
+            instruction: node.instruction,
+            parameters: try node.parameters.map(rewriteRegisterIdentifier),
+            id: node.id)
     }
     
     func la(_ node: InstructionNode) throws -> AbstractSyntaxTreeNode? {
@@ -58,6 +63,7 @@ public class RegisterAllocatorNaive: CompilerPass {
         parameters[0] = try rewriteRegisterIdentifier(parameters[0])
         return InstructionNode(sourceAnchor: node.sourceAnchor,
                                instruction: node.instruction,
-                               parameters: parameters)
+                               parameters: parameters,
+                               id: node.id)
     }
 }

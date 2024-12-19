@@ -129,10 +129,11 @@ public class CompilerPassWithDeclScan: CompilerPass {
     }
     
     func scan(func node: FunctionDeclaration) throws {
-        try SnapSubcompilerFunctionDeclaration().compile(
+        try FunctionScanner(
             globalEnvironment: globalEnvironment,
             symbols: symbols!,
-            node: node)
+            enclosingImplId: nil)
+        .scan(func: node)
     }
     
     func scan(struct node: StructDeclaration) throws {

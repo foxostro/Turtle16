@@ -879,6 +879,13 @@ public class Expression: AbstractSyntaxTreeNode {
                          arguments: arguments)
         }
         
+        public func withName(_ name: String) -> FunctionType {
+            FunctionType(sourceAnchor: sourceAnchor,
+                         name: name,
+                         returnType: returnType,
+                         arguments: arguments)
+        }
+        
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
             return String(format: "%@%@\n%@name: %@\n%@returnType: %@\n%@arguments: %@",
                           wantsLeadingWhitespace ? makeIndent(depth: depth) : "",

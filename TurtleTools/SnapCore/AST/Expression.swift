@@ -1027,9 +1027,7 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         public var typeArguments: [Expression.Identifier] {
-            template.typeArguments.map {
-                $0.identifier
-            }
+            template.typeArguments.map(\.identifier)
         }
         
         public var functionType: Expression.FunctionType {

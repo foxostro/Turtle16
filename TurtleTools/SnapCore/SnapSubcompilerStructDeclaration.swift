@@ -32,6 +32,16 @@ public class SnapSubcompilerStructDeclaration: NSObject {
     private func doGeneric(_ node: StructDeclaration) throws -> SymbolType {
         assert(node.isGeneric)
         let name = node.identifier.identifier
+        guard !symbols.exists(identifier: name) else {
+            throw CompilerError(
+                sourceAnchor: node.identifier.sourceAnchor,
+                message: "struct declaration redefines existing symbol: `\(name)'")
+        }
+        guard !symbols.existsAsType(identifier: name) else {
+            throw CompilerError(
+                sourceAnchor: node.identifier.sourceAnchor,
+                message: "struct declaration redefines existing type: `\(name)'")
+        }
         let type = SymbolType.genericStructType(GenericStructType(template: node))
         symbols.bind(identifier: name,
                      symbolType: type,
@@ -48,6 +58,21 @@ public class SnapSubcompilerStructDeclaration: NSObject {
         let mangledName = typeChecker.mangleStructName(name, evaluatedTypeArguments: evaluatedTypeArguments)!
         let fullyQualifiedStructType = StructType(name: mangledName, symbols: members)
         let type: SymbolType = node.isConst ? .constStructType(fullyQualifiedStructType) : .structType(fullyQualifiedStructType)
+        
+        guard !symbols.exists(identifier: mangledName) else {
+            throw CompilerError(
+                sourceAnchor: node.identifier.sourceAnchor,
+                message: "struct declaration redefines existing symbol: `\(mangledName)'")
+        }
+        
+        // TODO: This is a hack to get vtable StructDeclarations to work across compiler passes before we've implemented an ImplFor compiler pass. Do that and then remove this hack.
+        let allowRedefinition = mangledName.hasPrefix("__") && (mangledName.hasSuffix("_vtable") || mangledName.hasSuffix("_object"))
+        guard allowRedefinition || !symbols.existsAsType(identifier: mangledName) else {
+            throw CompilerError(
+                sourceAnchor: node.identifier.sourceAnchor,
+                message: "struct declaration redefines existing type: `\(mangledName)'")
+        }
+        
         symbols.bind(identifier: mangledName,
                      symbolType: type,
                      visibility: node.visibility)

@@ -16,6 +16,86 @@ class SnapSubcompilerStructDeclarationTests: XCTestCase {
         return SnapSubcompilerStructDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
     }
     
+    func testStructDeclarationMayNotRedefineExistingSymbol() throws {
+        let symbols = SymbolTable()
+        symbols.bind(
+            identifier: "foo",
+            symbol: Symbol(
+                type: .void,
+                offset: 0,
+                storage: .staticStorage,
+                visibility: .privateVisibility))
+        let input = StructDeclaration(
+            identifier: Expression.Identifier("foo"),
+            members: [])
+        let compiler = makeCompiler(symbols)
+        XCTAssertThrowsError(try compiler.compile(input)) {
+            let error = $0 as? CompilerError
+            XCTAssertEqual(error?.message, "struct declaration redefines existing symbol: `foo'")
+        }
+    }
+    
+    func testStructDeclarationMayNotRedefineExistingType() throws {
+        let symbols = SymbolTable()
+        symbols.bind(
+            identifier: "foo",
+            symbolType: .void,
+            visibility: .privateVisibility)
+        let input = StructDeclaration(
+            identifier: Expression.Identifier("foo"),
+            members: [])
+        let compiler = makeCompiler(symbols)
+        XCTAssertThrowsError(try compiler.compile(input)) {
+            let error = $0 as? CompilerError
+            XCTAssertEqual(error?.message, "struct declaration redefines existing type: `foo'")
+        }
+    }
+    
+    func testGenericStructDeclarationMayNotRedefineExistingSymbol() throws {
+        let symbols = SymbolTable()
+        symbols.bind(
+            identifier: "foo",
+            symbol: Symbol(
+                type: .void,
+                offset: 0,
+                storage: .staticStorage,
+                visibility: .privateVisibility))
+        let input = StructDeclaration(
+            identifier: Expression.Identifier("foo"),
+            typeArguments: [
+                Expression.GenericTypeArgument(
+                    identifier: Expression.Identifier("T"),
+                    constraints: [])
+            ],
+            members: [])
+        let compiler = makeCompiler(symbols)
+        XCTAssertThrowsError(try compiler.compile(input)) {
+            let error = $0 as? CompilerError
+            XCTAssertEqual(error?.message, "struct declaration redefines existing symbol: `foo'")
+        }
+    }
+    
+    func testGenericStructDeclarationMayNotRedefineExistingType() throws {
+        let symbols = SymbolTable()
+        symbols.bind(
+            identifier: "foo",
+            symbolType: .void,
+            visibility: .privateVisibility)
+        let input = StructDeclaration(
+            identifier: Expression.Identifier("foo"),
+            typeArguments: [
+                Expression.GenericTypeArgument(
+                    identifier: Expression.Identifier("T"),
+                    constraints: [])
+            ],
+            members: [])
+        let compiler = makeCompiler(symbols)
+        XCTAssertThrowsError(try compiler.compile(input)) {
+            let error = $0 as? CompilerError
+            XCTAssertEqual(error?.message, "struct declaration redefines existing type: `foo'")
+        }
+    }
+    
     func testEmptyStruct() throws {
         let symbols = SymbolTable()
         let input = StructDeclaration(identifier: Expression.Identifier("None"), members: [])

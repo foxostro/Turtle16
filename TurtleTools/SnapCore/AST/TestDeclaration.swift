@@ -17,7 +17,7 @@ public class TestDeclaration: AbstractSyntaxTreeNode {
                 body: Block,
                 id: ID = ID()) {
         self.name = name
-        self.body = body.withSourceAnchor(sourceAnchor)
+        self.body = body.withSourceAnchor(sourceAnchor) // TODO: I don't think I should remap the source anchor here. Remove this.
         super.init(sourceAnchor: sourceAnchor, id: id)
     }
     

@@ -10,13 +10,11 @@ import TurtleCore
 
 public class SnapASTTransformerFlattenSeq: CompilerPass {
     public override func visit(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {
-        let flatChildren = flatten(node.children)
-        return TopLevel(sourceAnchor: node.sourceAnchor, children: flatChildren)
+        node.withChildren(flatten(node.children))
     }
     
     public override func visit(subroutine node: Subroutine) throws -> AbstractSyntaxTreeNode? {
-        let flatChildren = flatten(node.children)
-        return Subroutine(sourceAnchor: node.sourceAnchor, identifier: node.identifier, children: flatChildren)
+        node.withChildren(flatten(node.children))
     }
     
     public override func visit(seq node: Seq) throws -> AbstractSyntaxTreeNode? {
@@ -24,7 +22,7 @@ public class SnapASTTransformerFlattenSeq: CompilerPass {
         if flatChildren.count < 2 {
             return flatChildren.first
         } else {
-            return Seq(sourceAnchor: node.sourceAnchor, children: flatChildren)
+            return node.withChildren(flatChildren)
         }
     }
     

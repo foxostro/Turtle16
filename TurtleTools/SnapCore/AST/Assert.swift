@@ -69,22 +69,23 @@ public class Assert: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@\n%@condition: %@\n%@message: %@",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      makeIndent(depth: depth + 1),
-                      condition.makeIndentedDescription(depth: depth + 1),
-                      makeIndent(depth: depth + 1),
-                      finalMessage)
+        let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let selfDesc = String(describing: type(of: self))
+        let indent1 = makeIndent(depth: depth + 1)
+        let conditionDesc = condition.makeIndentedDescription(depth: depth + 1)
+        let result = """
+            \(indent0)\(selfDesc)
+            \(indent1)condition: \(conditionDesc)
+            \(indent1)message: \(finalMessage)
+            """
+        return result
     }
     
     public var finalMessage: String {
-        let result: String
         if let enclosingTestName = enclosingTestName {
-            result = "\(message) in test \"\(enclosingTestName)\""
+            "\(message) in test \"\(enclosingTestName)\""
         } else {
-            result = message
+            message
         }
-        return result
     }
 }

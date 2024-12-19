@@ -604,6 +604,188 @@ final class CompilerPassGenericsTests: XCTestCase {
         XCTAssertEqual(ast1, expected)
     }
     
+    // If the generic struct has multiple Impl nodes associated with it then
+    // instantiating that generic struct will result in the compiler pass
+    // emitting one Impl node on the concrete struct for each Impl node on the
+    // generic struct.
+    func testInstantiatingGenericStructEmitsImplNodesForMethods_3() throws {
+        let ast0 = Block(
+            children: [
+                StructDeclaration(
+                    identifier: Expression.Identifier("MyStruct"),
+                    typeArguments: [
+                        Expression.GenericTypeArgument(
+                            identifier: Expression.Identifier("T"),
+                            constraints: [])
+                    ],
+                    members: []),
+                Impl(
+                    typeArguments: [
+                        Expression.GenericTypeArgument(
+                            identifier: Expression.Identifier("T"),
+                            constraints: [])
+                    ],
+                    structTypeExpr: Expression.GenericTypeApplication(
+                        identifier: Expression.Identifier("MyStruct"),
+                        arguments: [
+                            Expression.Identifier("T")
+                        ]),
+                    children: [
+                        FunctionDeclaration(
+                            identifier: Expression.Identifier("foo"),
+                            functionType: Expression.FunctionType(
+                                name: "foo",
+                                returnType: Expression.Identifier("T"),
+                                arguments: [Expression.Identifier("T")]),
+                            argumentNames: ["arg1"],
+                            typeArguments: [],
+                            body: Block(children: [
+                                Return(Expression.Identifier("arg1"))
+                            ]))
+                    ]),
+                Impl(
+                    typeArguments: [
+                        Expression.GenericTypeArgument(
+                            identifier: Expression.Identifier("T"),
+                            constraints: [])
+                    ],
+                    structTypeExpr: Expression.GenericTypeApplication(
+                        identifier: Expression.Identifier("MyStruct"),
+                        arguments: [
+                            Expression.Identifier("T")
+                        ]),
+                    children: [
+                        FunctionDeclaration(
+                            identifier: Expression.Identifier("bar"),
+                            functionType: Expression.FunctionType(
+                                name: "bar",
+                                returnType: Expression.Identifier("T"),
+                                arguments: [Expression.Identifier("T")]),
+                            argumentNames: ["arg1"],
+                            typeArguments: [],
+                            body: Block(children: [
+                                Return(Expression.Identifier("arg1"))
+                            ]))
+                    ]),
+                Expression.StructInitializer(
+                    expr: Expression.GenericTypeApplication(
+                        identifier: Expression.Identifier("MyStruct"),
+                        arguments: [
+                            Expression.PrimitiveType(u16)
+                        ]),
+                    arguments: []),
+            ])
+            .reconnect(parent: nil)
+        
+        let expected = Block(
+            children: [
+                StructDeclaration(
+                    identifier: Expression.Identifier("__MyStruct_u16"),
+                    members: []),
+                Impl(
+                    typeArguments: [],
+                    structTypeExpr: Expression.Identifier("__MyStruct_u16"),
+                    children: [
+                        FunctionDeclaration(
+                            identifier: Expression.Identifier("foo"),
+                            functionType: Expression.FunctionType(
+                                name: "foo",
+                                returnType: Expression.PrimitiveType(u16),
+                                arguments: [Expression.PrimitiveType(u16)]),
+                            argumentNames: ["arg1"],
+                            typeArguments: [],
+                            body: Block(children: [
+                                Return(Expression.Identifier("arg1"))
+                            ]))
+                    ]),
+                Impl(
+                    typeArguments: [],
+                    structTypeExpr: Expression.Identifier("__MyStruct_u16"),
+                    children: [
+                        FunctionDeclaration(
+                            identifier: Expression.Identifier("bar"),
+                            functionType: Expression.FunctionType(
+                                name: "bar",
+                                returnType: Expression.PrimitiveType(u16),
+                                arguments: [Expression.PrimitiveType(u16)]),
+                            argumentNames: ["arg1"],
+                            typeArguments: [],
+                            body: Block(children: [
+                                Return(Expression.Identifier("arg1"))
+                            ]))
+                    ]),
+                Expression.StructInitializer(
+                    expr: Expression.Identifier("__MyStruct_u16"),
+                    arguments: [])
+            ],
+            id: ast0.id)
+            .reconnect(parent: nil)
+        
+        let ast1 = try CompilerPassGenerics(
+            symbols: nil,
+            globalEnvironment: GlobalEnvironment())
+            .run(ast0)
+        
+        XCTAssertEqual(ast1, expected)
+    }
+    
+    // Declaration of a type must not shadow a generic type parameter.
+    func testSymbolDeclarationMustNotShadowGenericTypeParameter() throws {
+        let ast = Block(
+            children: [
+                StructDeclaration(
+                    identifier: Expression.Identifier("MyStruct"),
+                    typeArguments: [
+                        Expression.GenericTypeArgument(
+                            identifier: Expression.Identifier("T"),
+                            constraints: [])
+                    ],
+                    members: []),
+                Impl(
+                    typeArguments: [
+                        Expression.GenericTypeArgument(
+                            identifier: Expression.Identifier("T"),
+                            constraints: [])
+                    ],
+                    structTypeExpr: Expression.GenericTypeApplication(
+                        identifier: Expression.Identifier("MyStruct"),
+                        arguments: [
+                            Expression.Identifier("T")
+                        ]),
+                    children: [
+                        FunctionDeclaration(
+                            identifier: Expression.Identifier("foo"),
+                            functionType: Expression.FunctionType(
+                                name: "foo",
+                                returnType: Expression.Identifier("T"),
+                                arguments: [Expression.Identifier("T")]),
+                            argumentNames: ["arg1"],
+                            typeArguments: [],
+                            body: Block(children: [
+                                StructDeclaration(StructType(name: "T", symbols: SymbolTable())),
+                                Return(Expression.Identifier("arg1"))
+                            ]))
+                    ]),
+                Expression.StructInitializer(
+                    expr: Expression.GenericTypeApplication(
+                        identifier: Expression.Identifier("MyStruct"),
+                        arguments: [
+                            Expression.PrimitiveType(u16)
+                        ]),
+                    arguments: []),
+            ])
+            .reconnect(parent: nil)
+        
+        let compiler = CompilerPassGenerics(
+            symbols: nil,
+            globalEnvironment: GlobalEnvironment())
+        
+        XCTAssertThrowsError(try compiler.run(ast)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+        }
+    }
+    
     // Generic trait declarations are erased from the AST.
     func testGenericTraitDeclarationsAreErasedFromAST() throws {
         let ast0 = Block(children: [

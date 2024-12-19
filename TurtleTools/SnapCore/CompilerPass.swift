@@ -223,21 +223,27 @@ public class CompilerPass: NSObject {
         env.pop()
     }
     
-    public func visit(struct node: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
-        StructDeclaration(
-            sourceAnchor: node.sourceAnchor,
-            identifier: try visit(identifier: node.identifier) as! Expression.Identifier,
-            typeArguments: try node.typeArguments.compactMap {
+    public func visit(struct node0: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
+        guard let identifier = try visit(identifier: node0.identifier) as? Expression.Identifier else {
+            throw CompilerError(
+                sourceAnchor: node0.identifier.sourceAnchor,
+                message: "expected identifier: `\(node0.identifier)'")
+        }
+        let node1 = StructDeclaration(
+            sourceAnchor: node0.sourceAnchor,
+            identifier: identifier,
+            typeArguments: try node0.typeArguments.compactMap {
                 try visit(genericTypeArgument: $0) as! Expression.GenericTypeArgument?
             },
-            members: try node.members.map {
+            members: try node0.members.map {
                 StructDeclaration.Member(
                     name: $0.name,
                     type: try visit(expr: $0.memberType)!)
             },
-            visibility: node.visibility,
-            isConst: node.isConst,
-            id: node.id)
+            visibility: node0.visibility,
+            isConst: node0.isConst,
+            id: node0.id)
+        return node1
     }
     
     public func visit(impl node: Impl) throws -> AbstractSyntaxTreeNode? {

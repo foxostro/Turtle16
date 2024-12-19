@@ -376,69 +376,69 @@ public class CompilerPass: NSObject {
     public func visit(expr: Expression) throws -> Expression? {
         switch expr {
         case let node as Expression.UnsupportedExpression:
-            return try visit(unsupported: node)
+            try visit(unsupported: node)
         case let literal as Expression.LiteralInt:
-            return try visit(literalInt: literal)
+            try visit(literalInt: literal)
         case let literal as Expression.LiteralBool:
-            return try visit(literalBoolean: literal)
+            try visit(literalBoolean: literal)
         case let node as Expression.Identifier:
-            return try visit(identifier: node)
+            try visit(identifier: node)
         case let node as Expression.Unary:
-            return try visit(unary: node)
+            try visit(unary: node)
         case let group as Expression.Group:
-            return try visit(expr: group.expression)
+            try visit(expr: group.expression)
         case let eseq as Expression.Eseq:
-            return try visit(eseq: eseq)
+            try visit(eseq: eseq)
         case let node as Expression.Binary:
-            return try visit(binary: node)
+            try visit(binary: node)
         case let expr as Expression.InitialAssignment:
-            return try visit(initialAssignment: expr)
+            try visit(initialAssignment: expr)
         case let expr as Expression.Assignment:
-            return try visit(assignment: expr)
+            try visit(assignment: expr)
         case let node as Expression.Call:
-            return try visit(call: node)
+            try visit(call: node)
         case let node as Expression.As:
-            return try visit(as: node)
+            try visit(as: node)
         case let node as Expression.Bitcast:
-            return try visit(bitcast: node)
+            try visit(bitcast: node)
         case let expr as Expression.Is:
-            return try visit(is: expr)
+            try visit(is: expr)
         case let expr as Expression.Subscript:
-            return try visit(subscript: expr)
+            try visit(subscript: expr)
         case let literal as Expression.LiteralArray:
-            return try visit(literalArray: literal)
+            try visit(literalArray: literal)
         case let expr as Expression.Get:
-            return try visit(get: expr)
+            try visit(get: expr)
         case let expr as Expression.PrimitiveType:
-            return try visit(primitiveType: expr)
+            try visit(primitiveType: expr)
         case let expr as Expression.DynamicArrayType:
-            return try visit(dynamicArrayType: expr)
+            try visit(dynamicArrayType: expr)
         case let expr as Expression.ArrayType:
-            return try visit(arrayType: expr)
+            try visit(arrayType: expr)
         case let expr as Expression.FunctionType:
-            return try visit(functionType: expr)
+            try visit(functionType: expr)
         case let expr as Expression.GenericFunctionType:
-            return try visit(genericFunctionType: expr)
+            try visit(genericFunctionType: expr)
         case let node as Expression.GenericTypeApplication:
-            return try visit(genericTypeApplication: node)
+            try visit(genericTypeApplication: node)
         case let node as Expression.GenericTypeArgument:
-            return try visit(genericTypeArgument: node)
+            try visit(genericTypeArgument: node)
         case let node as Expression.PointerType:
-            return try visit(pointerType: node)
+            try visit(pointerType: node)
         case let node as Expression.ConstType:
-            return try visit(constType: node)
+            try visit(constType: node)
         case let node as Expression.MutableType:
-            return try visit(mutableType: node)
+            try visit(mutableType: node)
         case let node as Expression.UnionType:
-            return try visit(unionType: node)
+            try visit(unionType: node)
         case let node as Expression.StructInitializer:
-            return try visit(structInitializer: node)
+            try visit(structInitializer: node)
         case let literal as Expression.LiteralString:
-            return try visit(literalString: literal)
+            try visit(literalString: literal)
         case let node as Expression.TypeOf:
-            return try visit(typeof: node)
+            try visit(typeof: node)
         case let node as Expression.SizeOf:
-            return try visit(sizeof: node)
+            try visit(sizeof: node)
         default:
             throw CompilerError(message: "unimplemented: `\(expr)'")
         }

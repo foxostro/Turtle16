@@ -21,7 +21,8 @@ public class CompilerPassSynthesizeTerminalReturnStatements: CompilerPassWithDec
             },
             body: try visitFunctionBody(func: node),
             visibility: node.visibility,
-            symbols: node.symbols)
+            symbols: node.symbols,
+            id: node.id)
     }
     
     private func visitFunctionBody(func fn: FunctionDeclaration) throws -> Block {

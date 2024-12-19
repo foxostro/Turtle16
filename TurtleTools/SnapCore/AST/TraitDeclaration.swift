@@ -130,6 +130,26 @@ public class TraitDeclaration: AbstractSyntaxTreeNode {
                          id: id)
     }
     
+    public func withNewId() -> TraitDeclaration {
+        TraitDeclaration(sourceAnchor: sourceAnchor,
+                         identifier: identifier,
+                         typeArguments: typeArguments,
+                         members: members,
+                         visibility: visibility,
+                         mangledName: mangledName,
+                         id: ID())
+    }
+    
+    public func withIdentifier(_ identifier: Expression.Identifier) -> TraitDeclaration {
+        TraitDeclaration(sourceAnchor: sourceAnchor,
+                         identifier: identifier,
+                         typeArguments: typeArguments,
+                         members: members,
+                         visibility: visibility,
+                         mangledName: mangledName,
+                         id: id)
+    }
+    
     public override func isEqual(_ rhs: Any?) -> Bool {
         guard rhs != nil else { return false }
         guard type(of: rhs!) == type(of: self) else { return false }

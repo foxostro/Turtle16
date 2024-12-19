@@ -55,8 +55,7 @@ final class CompilerPassGenericsTests: XCTestCase {
         let expr = Expression.GenericTypeApplication(
             identifier: Expression.Identifier("foo"),
             arguments: [Expression.PrimitiveType(constU16)])
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        let compiler = CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment)
+        let compiler = CompilerPassGenerics(symbols: symbols, globalEnvironment: GlobalEnvironment())
         let actual = try compiler.visit(expr: expr)
         let expected = Expression.Identifier("__foo_const_u16")
         XCTAssertEqual(actual, expected)
@@ -68,8 +67,7 @@ final class CompilerPassGenericsTests: XCTestCase {
         let expr = Expression.GenericTypeApplication(
             identifier: Expression.Identifier("foo"),
             arguments: [Expression.PrimitiveType(constU16)])
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        let compiler = CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment)
+        let compiler = CompilerPassGenerics(symbols: symbols, globalEnvironment: GlobalEnvironment())
         _ = try compiler.visit(expr: expr)
         
         let sym = try symbols.resolve(identifier: "__foo_const_u16")
@@ -92,7 +90,7 @@ final class CompilerPassGenericsTests: XCTestCase {
             makeGenericFunctionDeclaration()
         ])
         
-        let compiler = CompilerPassGenerics(symbols: SymbolTable(), globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()))
+        let compiler = CompilerPassGenerics(symbols: SymbolTable(), globalEnvironment: GlobalEnvironment())
         let ast1 = try compiler.run(ast0)
         
         XCTAssertEqual(ast1, Block())
@@ -143,8 +141,10 @@ final class CompilerPassGenericsTests: XCTestCase {
                 arguments: [Expression.PrimitiveType(constU16)])
         ])
         
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        let ast1 = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).run(ast0)
+        let ast1 = try CompilerPassGenerics(
+            symbols: symbols,
+            globalEnvironment: GlobalEnvironment())
+            .run(ast0)
         
         XCTAssertEqual(ast1, expected)
     }
@@ -197,8 +197,9 @@ final class CompilerPassGenericsTests: XCTestCase {
                 arguments: [Expression.PrimitiveType(u16)])
         ])
         
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        let ast1 = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).run(ast0)
+        let ast1 = try CompilerPassGenerics(
+            symbols: symbols,
+            globalEnvironment: GlobalEnvironment()).run(ast0)
         
         XCTAssertEqual(ast1, expected)
     }
@@ -226,7 +227,7 @@ final class CompilerPassGenericsTests: XCTestCase {
             identifier: "foo",
             symbol: Symbol(type: .genericFunction(genericFunctionType)))
         
-        let compiler = CompilerPassGenerics(symbols: symbols, globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()))
+        let compiler = CompilerPassGenerics(symbols: symbols, globalEnvironment: GlobalEnvironment())
         let expr = Expression.GenericTypeApplication(
             identifier: Expression.Identifier("foo"),
             arguments: [
@@ -271,7 +272,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                     Expression.PrimitiveType(constU16),
                     Expression.PrimitiveType(constU16)
                 ]))
-        let compiler = CompilerPassGenerics(symbols: symbols, globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()))
+        let compiler = CompilerPassGenerics(symbols: symbols, globalEnvironment: GlobalEnvironment())
         XCTAssertThrowsError(try compiler.visit(expr: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -336,8 +337,10 @@ final class CompilerPassGenericsTests: XCTestCase {
                 ])
         ])
         
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        let _ = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).run(ast0)
+        let _ = try CompilerPassGenerics(
+            symbols: symbols,
+            globalEnvironment: GlobalEnvironment())
+            .run(ast0)
         
         switch try symbols.resolveType(identifier: "__foo_u16") {
         case .structType(let typ):
@@ -396,8 +399,10 @@ final class CompilerPassGenericsTests: XCTestCase {
                 ])
         ])
         
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        let ast1 = try CompilerPassGenerics(symbols: nil, globalEnvironment: globalEnvironment).run(ast0)
+        let ast1 = try CompilerPassGenerics(
+            symbols: nil,
+            globalEnvironment: GlobalEnvironment())
+            .run(ast0)
         
         XCTAssertEqual(ast1, expected)
     }
@@ -409,6 +414,10 @@ final class CompilerPassGenericsTests: XCTestCase {
         let symbols = SymbolTable()
         let funSym = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))
         let bodySym = SymbolTable(parent: funSym)
+        
+        let outerBlockID = AbstractSyntaxTreeNode.ID()
+        let myStructFooID = AbstractSyntaxTreeNode.ID()
+        let structInitializerID = AbstractSyntaxTreeNode.ID()
         
         let expected = Block(
             symbols: symbols,
@@ -437,8 +446,10 @@ final class CompilerPassGenericsTests: XCTestCase {
                     ]),
                 Expression.StructInitializer(
                     expr: Expression.Identifier("__MyStruct_u16"),
-                    arguments: [])
-            ])
+                    arguments: [],
+                    id: structInitializerID)
+            ],
+            id: outerBlockID)
         
         let ast0 = Block(
             symbols: symbols,
@@ -476,7 +487,8 @@ final class CompilerPassGenericsTests: XCTestCase {
                                 children: [
                                     Return(Expression.Identifier("arg1"))
                                 ]),
-                            symbols: funSym)
+                            symbols: funSym,
+                            id: myStructFooID)
                     ]),
                 Expression.StructInitializer(
                     expr: Expression.GenericTypeApplication(
@@ -484,12 +496,15 @@ final class CompilerPassGenericsTests: XCTestCase {
                         arguments: [
                             Expression.PrimitiveType(u16)
                         ]),
-                    arguments: []),
+                    arguments: [],
+                    id: structInitializerID),
             ],
-            id: expected.id)
+            id: outerBlockID)
         
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        let ast1 = try CompilerPassGenerics(symbols: nil, globalEnvironment: globalEnvironment).run(ast0)
+        let ast1 = try CompilerPassGenerics(
+            symbols: nil,
+            globalEnvironment: GlobalEnvironment())
+            .run(ast0)
         
         XCTAssertEqual(ast1, expected)
     }
@@ -581,8 +596,10 @@ final class CompilerPassGenericsTests: XCTestCase {
             ],
             id: expected.id)
         
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        let ast1 = try CompilerPassGenerics(symbols: nil, globalEnvironment: globalEnvironment).run(ast0)
+        let ast1 = try CompilerPassGenerics(
+            symbols: nil,
+            globalEnvironment: GlobalEnvironment())
+            .run(ast0)
         
         XCTAssertEqual(ast1, expected)
     }
@@ -640,8 +657,10 @@ final class CompilerPassGenericsTests: XCTestCase {
                 children: [])
         ])
         
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        _ = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).run(ast0)
+        _ = try CompilerPassGenerics(
+            symbols: symbols,
+            globalEnvironment: GlobalEnvironment())
+            .run(ast0)
         
         switch try symbols.resolveType(identifier: "__MyTrait_u16") {
         case .traitType(let typ):
@@ -736,7 +755,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 ])
         ], id: expected.id)
         
-        let compiler = CompilerPassGenerics(symbols: symbols, globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()))
+        let compiler = CompilerPassGenerics(symbols: symbols, globalEnvironment: GlobalEnvironment())
         let ast1 = try compiler
             .run(ast0)? // perform the actual compiler pass
             .eraseSeq {
@@ -834,8 +853,10 @@ final class CompilerPassGenericsTests: XCTestCase {
             ],
             id: blockId)
         
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        let ast1 = try CompilerPassGenerics(symbols: symbols, globalEnvironment: globalEnvironment).run(ast0)
+        let ast1 = try CompilerPassGenerics(
+            symbols: symbols,
+            globalEnvironment: GlobalEnvironment())
+            .run(ast0)
         
         XCTAssertEqual(ast1, expected)
     }
@@ -874,7 +895,7 @@ final class CompilerPassGenericsTests: XCTestCase {
             .eraseSourceAnchors()?
             .replaceTopLevelWithBlock()
             .reconnect(parent: nil)
-        let ast1 = try CompilerPassGenerics(symbols: nil, globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())).run(ast0)
+        let ast1 = try CompilerPassGenerics(symbols: nil, globalEnvironment: GlobalEnvironment()).run(ast0)
         XCTAssertEqual(ast1, expected)
     }
     

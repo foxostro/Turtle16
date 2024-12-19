@@ -287,16 +287,16 @@ public class CompilerPassGenerics: CompilerPassWithDeclScan {
         
         let concreteIdent = Expression.Identifier(concreteStructType.name)
         
-        let genericStructType = try symbols.resolveTypeOfIdentifier(
-            sourceAnchor: expr.identifier.sourceAnchor,
-            identifier: expr.identifier.identifier)
-            .unwrapGenericStructType()
-        
         // Prevent recursive instantiation
         guard !alreadyInstantiated(concreteIdent.identifier) else {
             return concreteIdent
         }
         markAlreadyInstantiated(concreteIdent.identifier)
+        
+        let genericStructType = try symbols.resolveTypeOfIdentifier(
+            sourceAnchor: expr.identifier.sourceAnchor,
+            identifier: expr.identifier.identifier)
+            .unwrapGenericStructType()
         
         // The compiler must an emit AST node for the concrete instantiaton of
         // the generic struct. Emit at the point where the generic struct
@@ -348,6 +348,14 @@ public class CompilerPassGenerics: CompilerPassWithDeclScan {
                            symbols: SymbolTable,
                            concreteTraitType: TraitType) throws -> Expression? {
         
+        let concreteIdent = Expression.Identifier(concreteTraitType.name)
+        
+        // Prevent recursive instantiation
+        guard !alreadyInstantiated(concreteIdent.identifier) else {
+            return concreteIdent
+        }
+        markAlreadyInstantiated(concreteIdent.identifier)
+        
         let genericTraitType = try symbols.resolveTypeOfIdentifier(
             sourceAnchor: expr.identifier.sourceAnchor,
             identifier: expr.identifier.identifier)
@@ -358,11 +366,22 @@ public class CompilerPassGenerics: CompilerPassWithDeclScan {
         // Emit at the point where the generic trait was initially defined.
         // TODO: The compiler must instead insert the node at the widest lexical scope accessible to the generic type application which includes both the generic trait declaration and all type arguments.
         let destination = genericTraitType.template.id
-        appendPendingInsertion(
-            TraitDeclaration(concreteTraitType),
-            after: destination)
         
-        return Expression.Identifier(concreteTraitType.name)
+        let ast0 = genericTraitType.template
+            .withNewId()
+            .eraseTypeArguments()
+            .withIdentifier(concreteIdent)
+            .withMangledName(concreteTraitType.name)
+        let pairs = zip(
+            genericTraitType.typeArguments.map(\.identifier.identifier),
+            try expr.arguments.map {
+                Expression.PrimitiveType(try typeCheck(rexpr: $0))
+            })
+        let ast1 = try GenericsPartialEvaluator.eval(ast0, replacements: pairs)
+        let ast2 = try visit(ast1)!
+        appendPendingInsertion(ast2, after: destination)
+        
+        return concreteIdent
     }
     
     public override func visit(call expr0: Expression.Call) throws -> Expression? {

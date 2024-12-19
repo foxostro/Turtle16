@@ -25,7 +25,7 @@ public class SnapSubcompilerSubroutine: CompilerPass {
             children += subroutine.children
         }
         
-        return TopLevel(sourceAnchor: node.sourceAnchor, children: children)
+        return node.withChildren(children)
     }
     
     public override func visit(subroutine node: Subroutine) throws -> AbstractSyntaxTreeNode? {

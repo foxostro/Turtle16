@@ -38,7 +38,10 @@ final class CompilerPassTraitsTests: XCTestCase {
                             name: "vtable",
                             type: vtableType)
                     ],
-                    isConst: true)
+                    isConst: true),
+                Impl(typeArguments: [],
+                     structTypeExpr: traitObjectIdent,
+                     children: [])
             ])
         ])
         
@@ -76,7 +79,7 @@ final class CompilerPassTraitsTests: XCTestCase {
                 TraitDeclaration(
                     identifier: traitIdent,
                     members: [
-                        TraitDeclaration.Member(name: "puts", type:  putsFnType)
+                        TraitDeclaration.Member(name: "puts", type: putsFnType)
                     ]),
                 StructDeclaration(
                     identifier: vtableIdent,
@@ -102,7 +105,39 @@ final class CompilerPassTraitsTests: XCTestCase {
                             name: "vtable",
                             type: vtableType)
                     ],
-                    isConst: true)
+                    isConst: true),
+                Impl(
+                    typeArguments: [],
+                    structTypeExpr: traitObjectIdent,
+                    children: [
+                        FunctionDeclaration(
+                            identifier: Expression.Identifier("puts"),
+                            functionType: Expression.FunctionType(
+                                name: "puts",
+                                returnType: Expression.PrimitiveType(.void),
+                                arguments: [
+                                    Expression.PointerType(
+                                        Expression.Identifier("__Serial_object")),
+                                    Expression.DynamicArrayType(
+                                        Expression.PrimitiveType(
+                                            .arithmeticType(.mutableInt(.u8))))
+                                ]),
+                            argumentNames: ["self", "arg1"],
+                            body: Block(children: [
+                                Expression.Call(
+                                    callee: Expression.Get(
+                                        expr: Expression.Get(
+                                            expr: Expression.Identifier("self"),
+                                            member: Expression.Identifier("vtable")),
+                                        member: Expression.Identifier("puts")),
+                                    arguments: [
+                                        Expression.Get(
+                                            expr: Expression.Identifier("self"),
+                                            member: Expression.Identifier("object")),
+                                        Expression.Identifier("arg1")
+                                    ])
+                            ]))
+                    ])
             ])
         ])
         

@@ -88,82 +88,96 @@ public class CompilerPassTraits: CompilerPassWithDeclScan {
     private var typeChecker: TypeContextTypeChecker {
         TypeContextTypeChecker(symbols: symbols!)
     }
+}
+
+func rewriteTraitMemberTypeForVtable(_ traitName: String, _ expr0: Expression) -> Expression {
+    let expr: Expression
     
-    private func rewriteTraitMemberTypeForThunk(_ traitDecl: TraitDeclaration, _ method: TraitDeclaration.Member) -> Expression.FunctionType {
-        let traitName = traitDecl.identifier.identifier
-        let traitObjectName = traitDecl.nameOfTraitObjectType
-        let functionType = (method.memberType as! Expression.PointerType).typ as! Expression.FunctionType
-        
+    if let primitiveType = expr0 as? Expression.PrimitiveType {
+        expr = primitiveType.typ.lift
+    }
+    else {
+        expr = expr0
+    }
+    
+    if let functionType = (expr as? Expression.PointerType)?.typ as? Expression.FunctionType {
         if let arg0 = functionType.arguments.first {
             if ((arg0 as? Expression.PointerType)?.typ as? Expression.Identifier)?.identifier == traitName {
                 var arguments: [Expression] = functionType.arguments
-                arguments[0] = Expression.PointerType(Expression.Identifier(traitObjectName))
-                let modifiedFunctionType = Expression.FunctionType(name: method.name, returnType: functionType.returnType, arguments: arguments)
-                return modifiedFunctionType
+                arguments[0] = Expression.PointerType(Expression.PrimitiveType(.void))
+                let modifiedFunctionType = Expression.FunctionType(returnType: functionType.returnType, arguments: arguments)
+                return Expression.PointerType(modifiedFunctionType)
             }
             
             if (((arg0 as? Expression.PointerType)?.typ as? Expression.ConstType)?.typ as? Expression.Identifier)?.identifier == traitName {
                 var arguments: [Expression] = functionType.arguments
-                arguments[0] = Expression.PointerType(Expression.ConstType(Expression.Identifier(traitObjectName)))
-                let modifiedFunctionType = Expression.FunctionType(name: method.name, returnType: functionType.returnType, arguments: arguments)
-                return modifiedFunctionType
+                arguments[0] = Expression.PointerType(Expression.PrimitiveType(.void))
+                let modifiedFunctionType = Expression.FunctionType(returnType: functionType.returnType, arguments: arguments)
+                return Expression.PointerType(modifiedFunctionType)
             }
             
             if let pointerType = arg0 as? Expression.PointerType,
                let app = pointerType.typ as? Expression.GenericTypeApplication,
                app.identifier.identifier == traitName {
                 var arguments: [Expression] = functionType.arguments
-                arguments[0] = Expression.PointerType(Expression.Identifier(traitObjectName))
-                let modifiedFunctionType = Expression.FunctionType(
-                    name: method.name,
-                    returnType: functionType.returnType,
-                    arguments: arguments)
-                return modifiedFunctionType
+                arguments[0] = Expression.PointerType(Expression.PrimitiveType(.void))
+                let modifiedFunctionType = Expression.FunctionType(returnType: functionType.returnType, arguments: arguments)
+                return Expression.PointerType(modifiedFunctionType)
             }
         }
-        
-        return functionType
     }
     
-    private func rewriteTraitMemberTypeForVtable(_ traitName: String, _ expr0: Expression) -> Expression {
-        let expr: Expression
+    return expr
+}
+
+func rewriteTraitMemberTypeForThunk(
+    _ traitDecl: TraitDeclaration,
+    _ method: TraitDeclaration.Member) -> Expression.FunctionType {
+    
+    rewriteTraitMemberTypeForThunk(
+        traitName: traitDecl.identifier.identifier,
+        traitObjectName: traitDecl.nameOfTraitObjectType,
+        methodName: method.name,
+        methodType: method.memberType)
+}
+
+func rewriteTraitMemberTypeForThunk(
+    traitName: String,
+    traitObjectName: String,
+    methodName: String,
+    methodType: Expression) -> Expression.FunctionType {
         
-        if let primitiveType = expr0 as? Expression.PrimitiveType {
-            expr = primitiveType.typ.lift
-        }
-        else {
-            expr = expr0
-        }
-        
-        if let functionType = (expr as? Expression.PointerType)?.typ as? Expression.FunctionType {
-            if let arg0 = functionType.arguments.first {
-                if ((arg0 as? Expression.PointerType)?.typ as? Expression.Identifier)?.identifier == traitName {
-                    var arguments: [Expression] = functionType.arguments
-                    arguments[0] = Expression.PointerType(Expression.PrimitiveType(.void))
-                    let modifiedFunctionType = Expression.FunctionType(returnType: functionType.returnType, arguments: arguments)
-                    return Expression.PointerType(modifiedFunctionType)
-                }
-                
-                if (((arg0 as? Expression.PointerType)?.typ as? Expression.ConstType)?.typ as? Expression.Identifier)?.identifier == traitName {
-                    var arguments: [Expression] = functionType.arguments
-                    arguments[0] = Expression.PointerType(Expression.PrimitiveType(.void))
-                    let modifiedFunctionType = Expression.FunctionType(returnType: functionType.returnType, arguments: arguments)
-                    return Expression.PointerType(modifiedFunctionType)
-                }
-                
-                if let pointerType = arg0 as? Expression.PointerType,
-                   let app = pointerType.typ as? Expression.GenericTypeApplication,
-                   app.identifier.identifier == traitName {
-                    var arguments: [Expression] = functionType.arguments
-                    arguments[0] = Expression.PointerType(Expression.PrimitiveType(.void))
-                    let modifiedFunctionType = Expression.FunctionType(returnType: functionType.returnType, arguments: arguments)
-                    return Expression.PointerType(modifiedFunctionType)
-                }
-            }
+    let functionType = (methodType as! Expression.PointerType).typ as! Expression.FunctionType
+    
+    if let arg0 = functionType.arguments.first {
+        if ((arg0 as? Expression.PointerType)?.typ as? Expression.Identifier)?.identifier == traitName {
+            var arguments: [Expression] = functionType.arguments
+            arguments[0] = Expression.PointerType(Expression.Identifier(traitObjectName))
+            let modifiedFunctionType = Expression.FunctionType(name: methodName, returnType: functionType.returnType, arguments: arguments)
+            return modifiedFunctionType
         }
         
-        return expr
+        if (((arg0 as? Expression.PointerType)?.typ as? Expression.ConstType)?.typ as? Expression.Identifier)?.identifier == traitName {
+            var arguments: [Expression] = functionType.arguments
+            arguments[0] = Expression.PointerType(Expression.ConstType(Expression.Identifier(traitObjectName)))
+            let modifiedFunctionType = Expression.FunctionType(name: methodName, returnType: functionType.returnType, arguments: arguments)
+            return modifiedFunctionType
+        }
+        
+        if let pointerType = arg0 as? Expression.PointerType,
+           let app = pointerType.typ as? Expression.GenericTypeApplication,
+           app.identifier.identifier == traitName {
+            var arguments: [Expression] = functionType.arguments
+            arguments[0] = Expression.PointerType(Expression.Identifier(traitObjectName))
+            let modifiedFunctionType = Expression.FunctionType(
+                name: methodName,
+                returnType: functionType.returnType,
+                arguments: arguments)
+            return modifiedFunctionType
+        }
     }
+    
+    return functionType
 }
 
 extension AbstractSyntaxTreeNode {

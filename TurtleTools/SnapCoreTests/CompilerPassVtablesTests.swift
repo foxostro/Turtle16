@@ -1,5 +1,5 @@
 //
-//  CompilerPassTraitsTests.swift
+//  CompilerPassVtablesTests.swift
 //  SnapCoreTests
 //
 //  Created by Andrew Fox on 9/9/24.
@@ -10,7 +10,7 @@ import XCTest
 import TurtleCore
 import SnapCore
 
-final class CompilerPassTraitsTests: XCTestCase {
+final class CompilerPassVtablesTests: XCTestCase {
 
     func testEmptyTrait() throws {
         let traitIdent = Expression.Identifier("Foo")
@@ -53,7 +53,7 @@ final class CompilerPassTraitsTests: XCTestCase {
             ],
             id: expected.id)
         
-        let actual = try input.traitsPass(GlobalEnvironment())
+        let actual = try input.vtablesPass(GlobalEnvironment())
         XCTAssertEqual(actual, expected)
     }
     
@@ -151,7 +151,7 @@ final class CompilerPassTraitsTests: XCTestCase {
             ],
             id: expected.id)
         
-        let actual = try input.traitsPass(GlobalEnvironment())
+        let actual = try input.vtablesPass(GlobalEnvironment())
         XCTAssertEqual(actual, expected)
     }
 

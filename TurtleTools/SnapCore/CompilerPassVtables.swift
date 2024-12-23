@@ -10,7 +10,7 @@ import TurtleCore
 
 /// Compiler pass to emit vtable and such for traits
 // TODO: Add another compiler pass after the implForInPass() to erase traits. This one would rewrite expressions that refer to traits and would erase the trait declarations themselves.
-public class CompilerPassTraits: CompilerPassWithDeclScan {
+public class CompilerPassVtables: CompilerPassWithDeclScan {
     override func scan(trait node: TraitDeclaration) throws {
         // TODO: remove the scan(trait:) override when we change the super class to replace SnapSubcompilerTraitDeclaration with TraitScanner
         let scanner = TraitScanner(globalEnvironment: globalEnvironment, symbols: symbols!)
@@ -182,7 +182,7 @@ func rewriteTraitMemberTypeForThunk(
 
 extension AbstractSyntaxTreeNode {
     /// Compiler pass to emit vtable and such for traits
-    public func traitsPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassTraits(globalEnvironment: globalEnvironment).run(self)
+    public func vtablesPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassVtables(globalEnvironment: globalEnvironment).run(self)
     }
 }

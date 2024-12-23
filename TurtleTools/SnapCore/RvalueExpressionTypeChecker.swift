@@ -881,8 +881,8 @@ public class RvalueExpressionTypeChecker: NSObject {
         }
         
         let name = member.identifier
-        let resultType = try check(expression: expr.expr)
-        switch resultType {
+        let objectType = try check(expression: expr.expr)
+        switch objectType {
         case .array, .constDynamicArray, .dynamicArray:
             if name == "count" {
                 return .arithmeticType(.mutableInt(.u16))
@@ -930,7 +930,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         default:
             break
         }
-        throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "value of type `\(resultType)' has no member `\(name)'")
+        throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "value of type `\(objectType)' has no member `\(name)'")
     }
     
     private func check(getApp expr: Expression.Get) throws -> SymbolType {

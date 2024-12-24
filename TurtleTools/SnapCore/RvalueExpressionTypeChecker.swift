@@ -1349,10 +1349,14 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
     
     private func vtableType(_ traitType: TraitType) -> StructType {
-        try! SnapSubcompilerStructDeclaration(
-            symbols: SymbolTable(parent: symbols),
-            globalEnvironment: globalEnvironment)
+        if let typ = symbols.maybeResolveType(identifier: traitType.nameOfVtableType) {
+            typ.unwrapStructType()
+        } else {
+            try! SnapSubcompilerStructDeclaration(
+                symbols: symbols,
+                globalEnvironment: globalEnvironment)
             .compile(traitType.vtableStructDeclaration)
             .unwrapStructType()
+        }
     }
 }

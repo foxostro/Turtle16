@@ -114,6 +114,11 @@ public class SnapSubcompilerImplFor: NSObject {
         
         let traitScope = symbols.lookupScopeEnclosingType(identifier: traitType.name)!
         
+        try SnapSubcompilerStructDeclaration(
+            symbols: symbols,
+            globalEnvironment: globalEnvironment)
+            .compile(StructDeclaration(vtableType))
+        
         let nameOfVtableInstance = "__\(traitType.name)_\(structType.name)_vtable_instance"
         var arguments: [Expression.StructInitializer.Argument] = []
         let sortedVtableSymbols = vtableType.symbols.symbolTable.sorted { $0.0 < $1.0 }

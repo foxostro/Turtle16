@@ -1265,11 +1265,12 @@ public class SymbolTable: NSObject {
         }
     }
     
-    public func resolveType(identifier: String) throws -> SymbolType {
-        return try resolveType(sourceAnchor: nil, identifier: identifier)
+    public func maybeResolveType(sourceAnchor: SourceAnchor? = nil, identifier: String) -> SymbolType? {
+        let maybeResolution = maybeResolveTypeWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier)
+        return maybeResolution?.0
     }
     
-    public func resolveType(sourceAnchor: SourceAnchor?, identifier: String) throws -> SymbolType {
+    public func resolveType(sourceAnchor: SourceAnchor? = nil, identifier: String) throws -> SymbolType {
         guard let resolution = maybeResolveTypeWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier) else {
             throw CompilerError(sourceAnchor: sourceAnchor,
                                 message: "use of undeclared type `\(identifier)'")

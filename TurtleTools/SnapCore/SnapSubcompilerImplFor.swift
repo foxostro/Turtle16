@@ -111,6 +111,9 @@ public class SnapSubcompilerImplFor: NSObject {
                                        _ structType: StructType,
                                        _ vtableType: StructType,
                                        _ node: ImplFor) throws {
+        
+        let traitScope = symbols.lookupScopeEnclosingType(identifier: traitType.name)!
+        
         let nameOfVtableInstance = "__\(traitType.name)_\(structType.name)_vtable_instance"
         var arguments: [Expression.StructInitializer.Argument] = []
         let sortedVtableSymbols = vtableType.symbols.symbolTable.sorted { $0.0 < $1.0 }
@@ -120,18 +123,17 @@ public class SnapSubcompilerImplFor: NSObject {
         }
         let initializer = Expression.StructInitializer(identifier: Expression.Identifier(traitType.nameOfVtableType), arguments: arguments)
         
-        let visibility: SymbolVisibility
-        if let identifier = node.traitTypeExpr as? Expression.Identifier {
-            let typeRecord = try symbols.resolveTypeRecord(
-                sourceAnchor: node.sourceAnchor,
-                identifier: identifier.identifier)
-            visibility = typeRecord.visibility
-        }
-        else {
-            visibility = .privateVisibility
-        }
+        let visibility = if let identifier = node.traitTypeExpr as? Expression.Identifier {
+                try symbols.resolveTypeRecord(
+                    sourceAnchor: node.sourceAnchor,
+                    identifier: identifier.identifier)
+                .visibility
+            }
+            else {
+                SymbolVisibility.privateVisibility
+            }
         
-        let vtableDeclaration = VarDeclaration(
+        let vtableInstanceDecl = VarDeclaration(
             identifier: Expression.Identifier(nameOfVtableInstance),
             explicitType: Expression.Identifier(vtableType.name),
             expression: initializer,
@@ -141,16 +143,14 @@ public class SnapSubcompilerImplFor: NSObject {
         
         _ = try SnapSubcompilerVarDeclaration(
             symbols: symbols,
-            globalEnvironment: globalEnvironment).compile(vtableDeclaration)!
-        
-        let traitScope = symbols.lookupScopeEnclosingType(identifier: traitType.name)!
+            globalEnvironment: globalEnvironment).compile(vtableInstanceDecl)!
         
         recordVtableDeclInsertion(
             pendingInsertions: &traitScope.pendingInsertions,
             traitName: traitType.name,
             toInsert: [
                 StructDeclaration(vtableType),
-                vtableDeclaration
+                vtableInstanceDecl
             ])
     }
     

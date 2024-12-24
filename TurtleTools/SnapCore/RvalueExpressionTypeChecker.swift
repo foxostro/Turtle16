@@ -1239,10 +1239,6 @@ public class RvalueExpressionTypeChecker: NSObject {
                     sourceAnchor: expr.sourceAnchor,
                     message: "generic type application redefines existing symbol: `\(typeName)'")
             }
-            guard !symbols.existsAsType(identifier: typeName) else {
-                throw CompilerError(sourceAnchor: expr.sourceAnchor,
-                                    message: "generic type application redefines existing type: `\(typeName)'")
-            }
             symbols.bind(identifier: typeName, symbolType: symbolType)
         }
         

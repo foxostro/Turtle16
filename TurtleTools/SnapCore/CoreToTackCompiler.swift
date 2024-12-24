@@ -152,14 +152,8 @@ public class CoreToTackCompiler: CompilerPass {
         return node2
     }
     
-    // TODO: Remove this hack. This is a hack to get CoreToTackCompiler to ignore VarDeclaration in the scope prologue before we've been able to migrate it to CompilerPassWithDeclScan. Do that and then remove this hack.
     public override func visit(varDecl node: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
-        let ident = node.identifier.identifier
-        let shouldIgnore = ident.hasPrefix("__") && ident.hasSuffix("_vtable_instance")
-        guard shouldIgnore else {
-            throw CompilerError(sourceAnchor: node.sourceAnchor, message: "internal compiler error: VarDeclaration should have been erased before reaching CoreToTackCompiler")
-        }
-        return nil
+        throw CompilerError(sourceAnchor: node.sourceAnchor, message: "internal compiler error: VarDeclaration should have been erased before reaching CoreToTackCompiler")
     }
     
     public override func visit(block block0: Block) throws -> AbstractSyntaxTreeNode? {

@@ -118,7 +118,7 @@ public class SnapSubcompilerImplFor: NSObject {
             symbols: symbols,
             globalEnvironment: globalEnvironment)
             .compile(StructDeclaration(vtableType))
-            
+        
         let nameOfVtableInstance = "__\(traitType.name)_\(structType.name)_vtable_instance"
         var arguments: [Expression.StructInitializer.Argument] = []
         let sortedVtableSymbols = vtableType.symbols.symbolTable.sorted { $0.0 < $1.0 }
@@ -147,7 +147,7 @@ public class SnapSubcompilerImplFor: NSObject {
             expression: initializer,
             storage: .staticStorage,
             isMutable: false,
-            visibility: visibility))!
+                visibility: visibility))!
         
         recordVtableDeclInsertion(
             pendingInsertions: &traitScope.pendingInsertions,

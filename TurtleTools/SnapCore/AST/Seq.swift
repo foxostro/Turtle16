@@ -85,11 +85,24 @@ public class Seq: AbstractSyntaxTreeNode {
     
     // TODO: Remove this hack. This hack prevents duplicate vtable declarations in the SymbolTable.pendingInsertions. It would be better to have an ImplFor compiler pass which rewrites the AST to insert this code instead.
     public func removeDuplicateVtableDeclarations() -> Seq {
+        var vtableInitialAssignments: [Expression.InitialAssignment] = []
         var vtableDeclarations: [VarDeclaration] = []
         var vtableStructDeclarations: [StructDeclaration] = []
         
         let result = self.withChildren(children.compactMap {
             switch $0 {
+            case let initialAssignment as Expression.InitialAssignment:
+                let ident = (initialAssignment.lexpr as! Expression.Identifier).identifier
+                let isVtableInstanceAssignment = ident.hasPrefix("__") && ident.hasSuffix("_vtable_instance")
+                if isVtableInstanceAssignment {
+                    let alreadyHaveIt = vtableInitialAssignments.contains { ident == ($0.lexpr as! Expression.Identifier).identifier }
+                    if alreadyHaveIt {
+                        return nil
+                    }
+                }
+                vtableInitialAssignments.append(initialAssignment)
+                return initialAssignment
+                
             case let varDecl as VarDeclaration:
                 let ident = varDecl.identifier.identifier
                 let isVtableDeclaration = ident.hasPrefix("__") && ident.hasSuffix("_vtable_instance")

@@ -149,7 +149,7 @@ public class ImplForScanner: NSObject {
             visibility = .privateVisibility
         }
         
-        let vtableDeclaration = VarDeclaration(
+        let vtableInstanceDecl = VarDeclaration(
             identifier: Expression.Identifier(nameOfVtableInstance),
             explicitType: Expression.Identifier(vtableType.name),
             expression: Expression.StructInitializer(
@@ -162,6 +162,6 @@ public class ImplForScanner: NSObject {
         _ = try SnapSubcompilerVarDeclaration(
             symbols: symbols,
             globalEnvironment: globalEnvironment)
-        .compile(vtableDeclaration)!
+        .compile(vtableInstanceDecl)!
     }
 }

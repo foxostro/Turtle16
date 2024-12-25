@@ -248,6 +248,8 @@
 		6FA6B5B024DE77C700695BFB /* ProgramDebugInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA6B5AF24DE77C700695BFB /* ProgramDebugInfo.swift */; };
 		6FA6B5B124DE77F500695BFB /* SourceLineRangeMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7F356F24D33CC800BA8E37 /* SourceLineRangeMapper.swift */; };
 		6FA6B5B224DE77F500695BFB /* SourceAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F7F356D24D33C7700BA8E37 /* SourceAnchor.swift */; };
+		6FA939C52D1B885A00E611BE /* CompilerPassImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA939C42D1B885900E611BE /* CompilerPassImpl.swift */; };
+		6FA939C72D1B887300E611BE /* CompilerPassImplTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FA939C62D1B887300E611BE /* CompilerPassImplTests.swift */; };
 		6FAABCA125318CDB00A66FAF /* TestDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FAABCA025318CDB00A66FAF /* TestDeclaration.swift */; };
 		6FAC109525A25E9300BB3836 /* DecoderGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FAC109425A25E9300BB3836 /* DecoderGenerator.swift */; };
 		6FAC10A725A25EA600BB3836 /* DecoderGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FAC10A625A25EA600BB3836 /* DecoderGeneratorTests.swift */; };
@@ -817,6 +819,8 @@
 		6FA5D2CE2593FAAA00044B17 /* IDT7381.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDT7381.swift; sourceTree = "<group>"; };
 		6FA5D2E02593FAB500044B17 /* IDT7381Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IDT7381Tests.swift; sourceTree = "<group>"; };
 		6FA6B5AF24DE77C700695BFB /* ProgramDebugInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramDebugInfo.swift; sourceTree = "<group>"; };
+		6FA939C42D1B885900E611BE /* CompilerPassImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassImpl.swift; sourceTree = "<group>"; };
+		6FA939C62D1B887300E611BE /* CompilerPassImplTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassImplTests.swift; sourceTree = "<group>"; };
 		6FAABCA025318CDB00A66FAF /* TestDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDeclaration.swift; sourceTree = "<group>"; };
 		6FAC109425A25E9300BB3836 /* DecoderGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecoderGenerator.swift; sourceTree = "<group>"; };
 		6FAC10A625A25EA600BB3836 /* DecoderGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecoderGeneratorTests.swift; sourceTree = "<group>"; };
@@ -1249,6 +1253,7 @@
 				6F7CCE692C67FA9D00F435F1 /* CompilerPassForIn.swift */,
 				6F058A302C59837E00B3FA82 /* CompilerPassGenerics.swift */,
 				6F1F3B792C7D00CA008C2EEB /* CompilerPassIf.swift */,
+				6FA939C42D1B885900E611BE /* CompilerPassImpl.swift */,
 				6F8508E02D0FA5F600B57518 /* CompilerPassImplFor.swift */,
 				6FE41A762C7C4642002ED26F /* CompilerPassImport.swift */,
 				6FBC1F132C72BFDA00CAC35E /* CompilerPassMatch.swift */,
@@ -1326,6 +1331,7 @@
 				6F5337332474BE7100CFD33C /* AST */,
 				6FDFAA8E2C97B68100F7A68D /* DeclScanner */,
 				6F058A322C59839000B3FA82 /* CompilerPassGenericsTests.swift */,
+				6FA939C62D1B887300E611BE /* CompilerPassImplTests.swift */,
 				6F8508E22D0FA61000B57518 /* CompilerPassImplForTests.swift */,
 				6FE41A782C7C4650002ED26F /* CompilerPassImportTests.swift */,
 				6FBC1F152C72BFE200CAC35E /* CompilerPassMatchTests.swift */,
@@ -2112,6 +2118,7 @@
 				6FBCFA5626F5121A00193819 /* StructMemberFunctionCallMatcher.swift in Sources */,
 				6F3227562C7F85CE00BF3CE2 /* CompilerPassEraseSeq.swift in Sources */,
 				6FD2735826C9BAD400749CDA /* SnapSubcompilerIf.swift in Sources */,
+				6FA939C52D1B885A00E611BE /* CompilerPassImpl.swift in Sources */,
 				6F2940CF2483A13B00C50ABA /* Expression.swift in Sources */,
 				6FF75BA62486C31000F55625 /* SnapCommandLineArgumentParser.swift in Sources */,
 				6F469DFF26BBAC3B0004613B /* SnapSubcompilerImpl.swift in Sources */,
@@ -2249,6 +2256,7 @@
 				6FBC1F1A2C72FA0800CAC35E /* CompilerPassWithDeclScanTests.swift in Sources */,
 				6F0943F52C8FDFB500A24FAC /* TraitScannerTests.swift in Sources */,
 				6F40730526ADE0EF007D8382 /* MemoryLayoutStrategyTurtleTTLTests.swift in Sources */,
+				6FA939C72D1B887300E611BE /* CompilerPassImplTests.swift in Sources */,
 				6F3F0100275F45F200875339 /* LinearScanRegisterAllocatorTests.swift in Sources */,
 				6FF75BA82486C35400F55625 /* SnapCommandLineArgumentParserTests.swift in Sources */,
 				6F3F010E2760676000875339 /* RegisterUtilsTests.swift in Sources */,

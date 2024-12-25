@@ -113,20 +113,28 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     }
     
     public func unwrapFunctionType() -> FunctionType {
+        maybeUnwrapFunctionType()!
+    }
+    
+    public func maybeUnwrapFunctionType() -> FunctionType? {
         switch self {
         case .function(let typ):
-            return typ
+            typ
         default:
-            abort()
+            nil
         }
     }
     
     public func unwrapStructType() -> StructType {
+        maybeUnwrapStructType()!
+    }
+    
+    public func maybeUnwrapStructType() -> StructType? {
         switch self {
         case .constStructType(let typ), .structType(let typ):
-            return typ
+            typ
         default:
-            abort()
+            nil
         }
     }
     
@@ -191,6 +199,10 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         default:
             return false
         }
+    }
+    
+    public var isStructType: Bool {
+        maybeUnwrapStructType() != nil
     }
     
     public var arrayCount: Int? {

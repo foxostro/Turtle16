@@ -38,17 +38,19 @@ public class CompilerPassVtables: CompilerPassWithDeclScan {
             ],
             visibility: traitDecl1.visibility,
             isConst: true)
-        let traitObjectImpl = try makeTraitObjectImpl(traitDecl1)
-        let seq = Seq(children: [
+        
+        var children: [AbstractSyntaxTreeNode] = [
             traitDecl1,
             vtableDecl,
-            traitObjectDecl,
-            traitObjectImpl
-        ])
-        return seq
+            traitObjectDecl
+        ]
+        if let traitObjectImpl = try makeTraitObjectImpl(traitDecl1) {
+            children.append(traitObjectImpl)
+        }
+        return Seq(children: children)
     }
     
-    private func makeTraitObjectImpl(_ traitDecl: TraitDeclaration) throws -> Impl {
+    private func makeTraitObjectImpl(_ traitDecl: TraitDeclaration) throws -> Impl? {
         var thunks: [FunctionDeclaration] = []
         for method in traitDecl.members {
             let functionType = rewriteTraitMemberTypeForThunk(traitDecl, method)
@@ -77,6 +79,7 @@ public class CompilerPassVtables: CompilerPassWithDeclScan {
                                              symbols: outer)
             thunks.append(fnDecl)
         }
+        guard !thunks.isEmpty else { return nil }
         let impl = Impl(
             sourceAnchor: traitDecl.sourceAnchor,
             typeArguments: [],

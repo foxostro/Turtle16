@@ -38,10 +38,7 @@ final class CompilerPassVtablesTests: XCTestCase {
                             name: "vtable",
                             type: vtableType)
                     ],
-                    isConst: true),
-                Impl(typeArguments: [],
-                     structTypeExpr: traitObjectIdent,
-                     children: [])
+                    isConst: true)
             ])
         ])
         

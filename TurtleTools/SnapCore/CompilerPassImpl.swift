@@ -10,6 +10,7 @@ import TurtleCore
 
 /// Compiler pass to lower and erase Impl blocks
 public class CompilerPassImpl: CompilerPassWithDeclScan {
+#if false // TODO: enable this block of code after adopting vtablesPass() and implForPass()
     override func scan(trait node: TraitDeclaration) throws {
         // TODO: remove the scan(trait:) override when we change the super class to replace SnapSubcompilerTraitDeclaration with TraitScanner
         try TraitScanner(globalEnvironment: globalEnvironment, symbols: symbols!)
@@ -27,6 +28,7 @@ public class CompilerPassImpl: CompilerPassWithDeclScan {
         try ImplForScanner(globalEnvironment: globalEnvironment, symbols: symbols!)
             .scan(implFor: node)
     }
+#endif
     
     var typeChecker: RvalueExpressionTypeChecker {
         RvalueExpressionTypeChecker(
@@ -42,11 +44,22 @@ public class CompilerPassImpl: CompilerPassWithDeclScan {
                 sourceAnchor: node1.sourceAnchor,
                 message: "unsupported expression: \(node1)")
         }
-        let node2 = Seq(sourceAnchor: node1.sourceAnchor,
-            children: try node1.children.map { child in
-            let mangledName = try typ.symbols.resolve(identifier: child.identifier.identifier).type.unwrapFunctionType().mangledName!
-            return child.withIdentifier(mangledName)
-        })
+        let children1 = node1.children
+        let children2 = try children1
+            .map { child0 in
+                let mangledName = try typ.symbols.resolve(identifier: child0.identifier.identifier).type.unwrapFunctionType().mangledName!
+                let child1 = child0.withIdentifier(mangledName)
+                return child1
+            }
+        try children2
+            .forEach { child in
+                try FunctionScanner(
+                    globalEnvironment: globalEnvironment,
+                    symbols: symbols!,
+                    enclosingImplId: nil)
+                .scan(func: child)
+            }
+        let node2 = Seq(sourceAnchor: node1.sourceAnchor, children: children2)
         return node2
     }
     

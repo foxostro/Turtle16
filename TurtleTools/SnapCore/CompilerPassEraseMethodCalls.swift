@@ -40,9 +40,11 @@ public class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
         // A method call looks like a Call expression where the callee is a Get
         // expression, the Get expression itself resolves to a function on the
         // struct, the Get expression's object is an instance of a struct.
-        guard let getExpr = node0.callee as? Expression.Get,
-              !isTypeName(expr: getExpr.expr),
-              let structTyp = try typeChecker.check(expression: getExpr.expr).maybeUnwrapStructType(),
+        guard let getExpr = node0.callee as? Expression.Get else {
+            return node0
+        }
+        guard !isTypeName(expr: getExpr.expr),
+              let structTyp = try maybeUnwrapStructType(getExpr),
               let fnTyp = try typeChecker.check(expression: getExpr).maybeUnwrapFunctionType() else {
             return node0
         }
@@ -79,6 +81,18 @@ public class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
         }
         else {
             false
+        }
+    }
+    
+    func maybeUnwrapStructType(_ getExpr: Expression.Get) throws -> StructType? {
+        switch try typeChecker.check(expression: getExpr.expr) {
+        case .constStructType(let typ), .structType(let typ),
+             .constPointer(.constStructType(let typ)), .constPointer(.structType(let typ)),
+             .pointer(.constStructType(let typ)), .pointer(.structType(let typ)):
+            typ
+            
+        default:
+            nil
         }
     }
 }

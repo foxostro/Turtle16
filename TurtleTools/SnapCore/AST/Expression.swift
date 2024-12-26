@@ -461,6 +461,19 @@ public class Expression: AbstractSyntaxTreeNode {
                  id: id)
         }
         
+        public func withArguments(_ arguments: [Expression]) -> Call {
+            Call(sourceAnchor: sourceAnchor,
+                 callee: callee,
+                 arguments: arguments,
+                 id: id)
+        }
+        
+        public func inserting(arguments toInsert: [Expression], at index: Int) -> Call {
+            var arguments = self.arguments
+            arguments.insert(contentsOf: toInsert, at: index)
+            return withArguments(arguments)
+        }
+        
         public override func isEqual(_ rhs: Any?) -> Bool {
             guard rhs != nil else { return false }
             guard type(of: rhs!) == type(of: self) else { return false }

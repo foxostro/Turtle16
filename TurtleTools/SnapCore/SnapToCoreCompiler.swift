@@ -57,6 +57,7 @@ public class SnapToCoreCompiler: NSObject {
                 .forInPass(globalEnvironment)?
                 .genericsPass(globalEnvironment)?
                 .synthesizeTerminalReturnStatements(globalEnvironment)?
+                .eraseMethodCalls(globalEnvironment)? //.eraseImplPass(globalEnvironment)?
                 .implPass(globalEnvironment)
         }
         .flatMap { ast in

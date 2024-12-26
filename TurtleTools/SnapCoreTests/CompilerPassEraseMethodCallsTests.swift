@@ -180,7 +180,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 ]),
             VarDeclaration(
                 identifier: Identifier("instance"),
-                explicitType: Identifier("Foo"),
+                explicitType: PointerType(Identifier("Foo")),
                 expression: nil,
                 storage: .automaticStorage,
                 isMutable: false,

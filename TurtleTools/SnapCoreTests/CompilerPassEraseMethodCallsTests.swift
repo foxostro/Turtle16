@@ -159,4 +159,88 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
         
         XCTAssertEqual(ast0, actual)
     }
+    
+    func testNoSelfParameter() throws {
+        let ast0 = Block(children: [
+            StructDeclaration(
+                identifier: Identifier("Foo"),
+                members: [
+                    StructDeclaration.Member(
+                        name: "val",
+                        type: PrimitiveType(i16))
+                ],
+                visibility: .privateVisibility),
+            Impl(
+                typeArguments: [],
+                structTypeExpr: Identifier("Foo"),
+                children: [
+                    FunctionDeclaration(
+                        identifier: Identifier("bar"),
+                        functionType: Expression.FunctionType(
+                            name: "bar",
+                            returnType: PrimitiveType(u8),
+                            arguments: []),
+                        argumentNames: ["baz"],
+                        typeArguments: [],
+                        body: Block(children: [
+                            Return(LiteralInt(0))
+                        ]))
+                ]),
+            VarDeclaration(
+                identifier: Identifier("instance"),
+                explicitType: Identifier("Foo"),
+                expression: nil,
+                storage: .automaticStorage,
+                isMutable: false,
+                visibility: .privateVisibility),
+            Call(callee: Get(expr: Identifier("instance"),
+                             member: Identifier("bar")),
+                 arguments: [])
+        ])
+            .reconnect(parent: nil)
+        
+        let expected = Block(children: [
+            StructDeclaration(
+                identifier: Identifier("Foo"),
+                members: [
+                    StructDeclaration.Member(
+                        name: "val",
+                        type: PrimitiveType(i16))
+                ],
+                visibility: .privateVisibility),
+            Impl(
+                typeArguments: [],
+                structTypeExpr: Identifier("Foo"),
+                children: [
+                    FunctionDeclaration(
+                        identifier: Identifier("bar"),
+                        functionType: Expression.FunctionType(
+                            name: "bar",
+                            returnType: PrimitiveType(u8),
+                            arguments: []),
+                        argumentNames: ["baz"],
+                        typeArguments: [],
+                        body: Block(children: [
+                            Return(LiteralInt(0))
+                        ]))
+                ]),
+            VarDeclaration(
+                identifier: Identifier("instance"),
+                explicitType: Identifier("Foo"),
+                expression: nil,
+                storage: .automaticStorage,
+                isMutable: false,
+                visibility: .privateVisibility),
+            Call(callee: Get(expr: Identifier("Foo"),
+                             member: Identifier("bar")),
+                 arguments: [])
+        ])
+            .reconnect(parent: nil)
+        
+        let actual = try ast0
+            .eraseMethodCalls(GlobalEnvironment())?
+            .flatten()
+        
+        XCTAssertEqual(actual, expected)
+    }
 }

@@ -47,9 +47,16 @@ public class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
             return node0
         }
         
-        // Additional requirements for a rewritable method call are that the
-        // number of arguments accepted by the function is exactly one more than
-        // the number of arguments given in the call expression, (The object is
+        let node1 = node0
+            .withCallee(Expression.Get(
+                expr: Expression.Identifier(
+                    sourceAnchor: node0.sourceAnchor,
+                    identifier: structTyp.name),
+                member: getExpr.member))
+        
+        // Additional requirements for a method call are that the number of
+        // arguments accepted by the function is exactly one more than the
+        // number of arguments given in the call expression, (The object is
         // given by the Get expression.) and the object may be implicitly
         // converted to the type of the first function paramter.
         // TODO: While these requirements match those in StructMemberFunctionCallMatcher and rewriteStructMemberFunctionCallIfPossible, I'm not sure right now if that's the right approach to take. Maybe remove these conditions. Also, remove StructMemberFunctionCallMatcher and rewriteStructMemberFunctionCallIfPossible in favor of having this compiler pass do all struct method call erasure.
@@ -58,16 +65,10 @@ public class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
                 ltype: fnTyp.arguments[0],
                 rtype: try typeChecker.check(expression: getExpr.expr),
                 isExplicitCast: false) else {
-            return node0
+            return node1
         }
         
-        return node0
-            .withCallee(Expression.Get(
-                expr: Expression.Identifier(
-                    sourceAnchor: node0.sourceAnchor,
-                    identifier: structTyp.name),
-                member: getExpr.member))
-            .inserting(arguments: [getExpr.expr], at: 0)
+        return node1.inserting(arguments: [getExpr.expr], at: 0)
     }
     
     func isTypeName(expr: Expression) -> Bool {

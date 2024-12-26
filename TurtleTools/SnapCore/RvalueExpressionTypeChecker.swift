@@ -601,6 +601,23 @@ public class RvalueExpressionTypeChecker: NSObject {
         }
     }
     
+    /// Return true if it is acceptable to convert from rtype to ltype
+    public func areTypesAreConvertible(
+        ltype: SymbolType,
+        rtype: SymbolType,
+        isExplicitCast: Bool) -> Bool {
+        
+        switch convertBetweenTypes(
+            ltype: ltype,
+            rtype: rtype,
+            sourceAnchor: nil,
+            messageWhenNotConvertible: "",
+            isExplicitCast: isExplicitCast) {
+        case .acceptable:   true
+        case .unacceptable: false
+        }
+    }
+    
     @discardableResult public func checkTypesAreConvertibleInAssignment(ltype: SymbolType,
                                                                         rtype: SymbolType,
                                                                         sourceAnchor: SourceAnchor?,

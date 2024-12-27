@@ -36,6 +36,21 @@ public class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
             globalEnvironment: globalEnvironment)
     }
     
+    public override func visit(get node0: Expression.Get) throws -> Expression? {
+        guard !isTypeName(expr: node0.expr),
+              let structTyp = try maybeUnwrapStructType(node0),
+              let _ = try typeChecker.check(expression: node0).maybeUnwrapFunctionType() else {
+            return node0
+        }
+        let node1 = Expression.Get(
+            sourceAnchor: node0.sourceAnchor,
+            expr: Expression.Identifier(
+                sourceAnchor: node0.sourceAnchor,
+                identifier: structTyp.name),
+            member: node0.member)
+        return node1
+    }
+    
     public override func visit(call node0: Expression.Call) throws -> Expression? {
         // A method call looks like a Call expression where the callee is a Get
         // expression, the Get expression itself resolves to a function on the

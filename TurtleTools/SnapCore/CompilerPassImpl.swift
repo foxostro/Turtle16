@@ -48,7 +48,9 @@ public class CompilerPassImpl: CompilerPassWithDeclScan {
         let children2 = try children1
             .map { child0 in
                 let mangledName = try typ.symbols.resolve(identifier: child0.identifier.identifier).type.unwrapFunctionType().mangledName!
-                let child1 = child0.withIdentifier(mangledName)
+                let child1 = child0
+                    .withIdentifier(mangledName)
+                    .withFunctionType(child0.functionType.withName(mangledName))
                 return child1
             }
         try children2

@@ -64,7 +64,7 @@ final class CompilerPassImplTests: XCTestCase {
             FunctionDeclaration(
                 identifier: Identifier("__Foo_bar"),
                 functionType: Expression.FunctionType(
-                    name: "bar",
+                    name: "__Foo_bar",
                     returnType: PrimitiveType(u8),
                     arguments: [
                         PointerType(Identifier("Foo"))

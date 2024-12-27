@@ -664,6 +664,14 @@ public class FunctionType: NSObject {
                      arguments: arguments,
                      ast: ast?.withBody(body))
     }
+    
+    public func withName(_ name: String) -> FunctionType {
+        FunctionType(name: name,
+                     mangledName: mangledName,
+                     returnType: returnType,
+                     arguments: arguments,
+                     ast: ast)
+    }
 }
 
 public class StructType: NSObject {

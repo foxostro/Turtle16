@@ -184,7 +184,7 @@ public class Expression: AbstractSyntaxTreeNode {
                   id: id)
         }
         
-        public func withExpression(_ expression: Expression) -> Unary {
+        public func withExpression(_ child: Expression) -> Unary {
             Unary(sourceAnchor: sourceAnchor,
                   op: op,
                   expression: child,

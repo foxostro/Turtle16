@@ -88,6 +88,7 @@ public class CompilerPassImpl: CompilerPassWithDeclScan {
 extension AbstractSyntaxTreeNode {
     /// Compiler pass to lower and erase Impl blocks
     public func eraseImplPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassImpl(globalEnvironment: globalEnvironment).run(self)
+        let result = try CompilerPassImpl(globalEnvironment: globalEnvironment).run(self)
+        return result
     }
 }

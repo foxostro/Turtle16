@@ -70,7 +70,8 @@ public class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
             return node1
         }
         
-        return node1.inserting(arguments: [getExpr.expr], at: 0)
+        let node2 = node1.inserting(arguments: [getExpr.expr], at: 0)
+        return node2
     }
     
     func isTypeName(expr: Expression) -> Bool {
@@ -100,6 +101,7 @@ public class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
 extension AbstractSyntaxTreeNode {
     /// Method calls written in the dot syntax are rewritten to plain function calls
     public func eraseMethodCalls(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassEraseMethodCalls(globalEnvironment: globalEnvironment).run(self)
+        let result = try CompilerPassEraseMethodCalls(globalEnvironment: globalEnvironment).run(self)
+        return result
     }
 }

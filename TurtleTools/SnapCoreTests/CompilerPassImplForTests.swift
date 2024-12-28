@@ -10,48 +10,65 @@ import XCTest
 import TurtleCore
 import SnapCore
 
+fileprivate let u8: SymbolType = .arithmeticType(.mutableInt(.u8))
+
 final class CompilerPassImplForTests: XCTestCase {
+    typealias Identifier = Expression.Identifier
+    typealias PointerType = Expression.PointerType
+    typealias FunctionType = Expression.FunctionType
+    typealias PrimitiveType = Expression.PrimitiveType
+    typealias DynamicArrayType = Expression.DynamicArrayType
+    typealias ConstType = Expression.ConstType
+    typealias LiteralBool = Expression.LiteralBool
+    typealias StructInitializer = Expression.StructInitializer
+    typealias Bitcast = Expression.Bitcast
+    typealias Unary = Expression.Unary
+    typealias Get = Expression.Get
+    
     let serialFakeAST = Block(children: [
-        // Normally, traits are compiled to such a Seq such by traitsPass()
         Seq(children: [
             TraitDeclaration(
-                identifier: Expression.Identifier("Serial"),
+                identifier: Identifier("Serial"),
                 members: [
-                    TraitDeclaration.Member(name: "puts", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.void), arguments: [
-                        Expression.PointerType(Expression.Identifier("Serial")),
-                        Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
-                    ])))
+                    TraitDeclaration.Member(
+                        name: "puts",
+                        type: PointerType(FunctionType(
+                            name: nil,
+                            returnType: PrimitiveType(.void),
+                            arguments: [
+                                PointerType(Identifier("Serial")),
+                                DynamicArrayType(PrimitiveType(u8))
+                            ])))
                 ],
                 visibility: .privateVisibility),
             StructDeclaration(
-                identifier: Expression.Identifier("__Serial_vtable"),
+                identifier: Identifier("__Serial_vtable"),
                 members: [
                     StructDeclaration.Member(
                         name: "puts",
-                        type: Expression.PointerType(
-                            Expression.FunctionType(
-                                returnType: Expression.PrimitiveType(.void),
+                        type: PointerType(
+                            FunctionType(
+                                returnType: PrimitiveType(.void),
                                 arguments: [
-                                    Expression.PointerType(Expression.PrimitiveType(.void)),
-                                    Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
+                                    PointerType(PrimitiveType(.void)),
+                                    DynamicArrayType(PrimitiveType(u8))
                                 ])))
                 ],
                 isConst: true),
             StructDeclaration(
-                identifier: Expression.Identifier("__Serial_object"),
+                identifier: Identifier("__Serial_object"),
                 members: [
                     StructDeclaration.Member(
                         name: "object",
-                        type: Expression.PointerType(Expression.PrimitiveType(.void))),
+                        type: PointerType(PrimitiveType(.void))),
                     StructDeclaration.Member(
                         name: "vtable",
-                        type: Expression.PointerType(Expression.ConstType(
-                            Expression.Identifier("__Serial_vtable"))))
+                        type: PointerType(ConstType(Identifier("__Serial_vtable"))))
                 ],
                 isConst: true)
         ]),
         StructDeclaration(
-            identifier: Expression.Identifier("SerialFake"),
+            identifier: Identifier("SerialFake"),
             members: [])
     ])
     
@@ -59,8 +76,8 @@ final class CompilerPassImplForTests: XCTestCase {
         let ast = serialFakeAST.appending(children: [
             ImplFor(
                 typeArguments: [],
-                traitTypeExpr: Expression.Identifier("Serial"),
-                structTypeExpr: Expression.Identifier("SerialFake"),
+                traitTypeExpr: Identifier("Serial"),
+                structTypeExpr: Identifier("SerialFake"),
                 children: [])
         ])
             .reconnect(parent: nil)
@@ -76,16 +93,16 @@ final class CompilerPassImplForTests: XCTestCase {
         let ast = serialFakeAST.appending(children: [
             ImplFor(
                 typeArguments: [],
-                traitTypeExpr: Expression.Identifier("Serial"),
-                structTypeExpr: Expression.Identifier("SerialFake"),
+                traitTypeExpr: Identifier("Serial"),
+                structTypeExpr: Identifier("SerialFake"),
                 children: [
                     FunctionDeclaration(
-                        identifier: Expression.Identifier("puts"),
-                        functionType: Expression.FunctionType(
+                        identifier: Identifier("puts"),
+                        functionType: FunctionType(
                             name: "puts",
-                            returnType: Expression.PrimitiveType(.void),
+                            returnType: PrimitiveType(.void),
                             arguments: [
-                                Expression.PointerType(Expression.Identifier("SerialFake"))
+                                PointerType(Identifier("SerialFake"))
                             ]),
                         argumentNames: ["self"],
                         body: Block())
@@ -104,17 +121,17 @@ final class CompilerPassImplForTests: XCTestCase {
         let ast = serialFakeAST.appending(children: [
             ImplFor(
                 typeArguments: [],
-                traitTypeExpr: Expression.Identifier("Serial"),
-                structTypeExpr: Expression.Identifier("SerialFake"),
+                traitTypeExpr: Identifier("Serial"),
+                structTypeExpr: Identifier("SerialFake"),
                 children: [
                     FunctionDeclaration(
-                        identifier: Expression.Identifier("puts"),
-                        functionType: Expression.FunctionType(
+                        identifier: Identifier("puts"),
+                        functionType: FunctionType(
                             name: "puts",
-                            returnType: Expression.PrimitiveType(.void),
+                            returnType: PrimitiveType(.void),
                             arguments: [
-                                Expression.PointerType(Expression.Identifier("SerialFake")),
-                                Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8)))
+                                PointerType(Identifier("SerialFake")),
+                                PrimitiveType(u8)
                             ]),
                         argumentNames: ["self", "s"],
                         body: Block())
@@ -133,17 +150,17 @@ final class CompilerPassImplForTests: XCTestCase {
         let ast = serialFakeAST.appending(children: [
             ImplFor(
                 typeArguments: [],
-                traitTypeExpr: Expression.Identifier("Serial"),
-                structTypeExpr: Expression.Identifier("SerialFake"),
+                traitTypeExpr: Identifier("Serial"),
+                structTypeExpr: Identifier("SerialFake"),
                 children: [
                     FunctionDeclaration(
-                        identifier: Expression.Identifier("puts"),
-                        functionType: Expression.FunctionType(
+                        identifier: Identifier("puts"),
+                        functionType: FunctionType(
                             name: "puts",
-                            returnType: Expression.PrimitiveType(.void),
+                            returnType: PrimitiveType(.void),
                             arguments: [
-                                Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
-                                Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
+                                PrimitiveType(u8),
+                                DynamicArrayType(PrimitiveType(u8))
                             ]),
                         argumentNames: ["self", "s"],
                         body: Block())
@@ -162,21 +179,21 @@ final class CompilerPassImplForTests: XCTestCase {
         let ast = serialFakeAST.appending(children: [
             ImplFor(
                 typeArguments: [],
-                traitTypeExpr: Expression.Identifier("Serial"),
-                structTypeExpr: Expression.Identifier("SerialFake"),
+                traitTypeExpr: Identifier("Serial"),
+                structTypeExpr: Identifier("SerialFake"),
                 children: [
                     FunctionDeclaration(
-                        identifier: Expression.Identifier("puts"),
-                        functionType: Expression.FunctionType(
+                        identifier: Identifier("puts"),
+                        functionType: FunctionType(
                             name: "puts",
-                            returnType: Expression.PrimitiveType(.bool(.mutableBool)),
+                            returnType: PrimitiveType(.bool(.mutableBool)),
                             arguments: [
-                                Expression.PointerType(Expression.Identifier("SerialFake")),
-                                Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
+                                PointerType(Identifier("SerialFake")),
+                                DynamicArrayType(PrimitiveType(u8))
                             ]),
                         argumentNames: ["self", "s"],
                         body: Block(children: [
-                            Return(Expression.LiteralBool(false))
+                            Return(LiteralBool(false))
                         ]))
                 ])
         ])
@@ -196,17 +213,17 @@ final class CompilerPassImplForTests: XCTestCase {
         let ast0 = serialFakeAST.appending(children: [
             ImplFor(
                 typeArguments: [],
-                traitTypeExpr: Expression.Identifier("Serial"),
-                structTypeExpr: Expression.Identifier("SerialFake"),
+                traitTypeExpr: Identifier("Serial"),
+                structTypeExpr: Identifier("SerialFake"),
                 children: [
                     FunctionDeclaration(
-                        identifier: Expression.Identifier("puts"),
-                        functionType: Expression.FunctionType(
+                        identifier: Identifier("puts"),
+                        functionType: FunctionType(
                             name: "puts",
-                            returnType: Expression.PrimitiveType(.void),
+                            returnType: PrimitiveType(.void),
                             arguments: [
-                                Expression.PointerType(Expression.Identifier("Serial")),
-                                Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
+                                PointerType(Identifier("Serial")),
+                                DynamicArrayType(PrimitiveType(u8))
                             ]),
                         argumentNames: ["self", "s"],
                         body: Block(id: innerBlockID))
@@ -221,80 +238,83 @@ final class CompilerPassImplForTests: XCTestCase {
         let expected = Block(children: [
             Seq(children: [
                 TraitDeclaration(
-                    identifier: Expression.Identifier("Serial"),
+                    identifier: Identifier("Serial"),
                     members: [
-                        TraitDeclaration.Member(name: "puts", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.void), arguments: [
-                            Expression.PointerType(Expression.Identifier("Serial")),
-                            Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
-                        ])))
+                        TraitDeclaration.Member(
+                            name: "puts",
+                            type: PointerType(FunctionType(
+                                name: nil,
+                                returnType: PrimitiveType(.void),
+                                arguments: [
+                                    PointerType(Identifier("Serial")),
+                                    DynamicArrayType(PrimitiveType(u8))
+                                ])))
                     ],
                     visibility: .privateVisibility),
                 StructDeclaration(
-                    identifier: Expression.Identifier("__Serial_vtable"),
+                    identifier: Identifier("__Serial_vtable"),
                     members: [
                         StructDeclaration.Member(
                             name: "puts",
-                            type: Expression.PointerType(
-                                Expression.FunctionType(
-                                    returnType: Expression.PrimitiveType(.void),
-                                    arguments: [
-                                        Expression.PointerType(Expression.PrimitiveType(.void)),
-                                        Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
-                                    ])))
+                            type: PointerType(FunctionType(
+                                returnType: PrimitiveType(.void),
+                                arguments: [
+                                    PointerType(PrimitiveType(.void)),
+                                    DynamicArrayType(PrimitiveType(u8))
+                                ])))
                     ],
                     isConst: true),
                 StructDeclaration(
-                    identifier: Expression.Identifier("__Serial_object"),
+                    identifier: Identifier("__Serial_object"),
                     members: [
                         StructDeclaration.Member(
                             name: "object",
-                            type: Expression.PointerType(Expression.PrimitiveType(.void))),
+                            type: PointerType(PrimitiveType(.void))),
                         StructDeclaration.Member(
                             name: "vtable",
-                            type: Expression.PointerType(Expression.ConstType(
-                                Expression.Identifier("__Serial_vtable"))))
+                            type: PointerType(ConstType(Identifier("__Serial_vtable"))))
                     ],
                     isConst: true)
             ]),
             VarDeclaration(
-                identifier: Expression.Identifier("__Serial_SerialFake_vtable_instance"),
-                explicitType: Expression.Identifier("__Serial_vtable"),
-                expression: Expression.StructInitializer(
-                    expr: Expression.Identifier("__Serial_vtable"),
+                identifier: Identifier("__Serial_SerialFake_vtable_instance"),
+                explicitType: Identifier("__Serial_vtable"),
+                expression: StructInitializer(
+                    expr: Identifier("__Serial_vtable"),
                     arguments: [
-                        Expression.StructInitializer.Argument(
+                        StructInitializer.Argument(
                             name: "puts",
-                            expr: Expression.Bitcast(
-                                expr: Expression.Unary(
+                            expr: Bitcast(
+                                expr: Unary(
                                     op: .ampersand,
-                                    expression: Expression.Get(
-                                        expr: Expression.Identifier("SerialFake"),
-                                        member: Expression.Identifier("puts"))),
-                                targetType: Expression.PrimitiveType(.pointer(.function(FunctionType(
-                                    returnType: .void,
-                                    arguments: [
-                                        .pointer(.void),
-                                        .dynamicArray(elementType: .arithmeticType(.mutableInt(.u8)))
-                                    ]))))))
+                                    expression: Get(
+                                        expr: Identifier("SerialFake"),
+                                        member: Identifier("puts"))),
+                                targetType: PrimitiveType(.pointer(.function(SnapCore.FunctionType(
+                                        returnType: .void,
+                                        arguments: [
+                                            .pointer(.void),
+                                            .dynamicArray(elementType: u8)
+                                        ]))))))
                     ]),
                 storage: .staticStorage,
                 isMutable: false,
                 visibility: .privateVisibility),
             StructDeclaration(
-                identifier: Expression.Identifier("SerialFake"),
+                identifier: Identifier("SerialFake"),
                 members: []),
             Impl(
                 typeArguments: [],
-                structTypeExpr: Expression.Identifier("SerialFake"),
+                structTypeExpr: Identifier("SerialFake"),
                 children: [
                     FunctionDeclaration(
-                        identifier: Expression.Identifier("puts"),
-                        functionType: Expression.FunctionType(
+                        identifier: Identifier("puts"),
+                        functionType: FunctionType(
                             name: "puts",
-                            returnType: Expression.PrimitiveType(.void),
+                            returnType: PrimitiveType(.void),
                             arguments: [
-                                Expression.PointerType(Expression.Identifier("Serial")),
-                                Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
+                                PointerType(Identifier("Serial")),
+                                DynamicArrayType(PrimitiveType(u8))
                             ]),
                         argumentNames: ["self", "s"],
                         body: Block(id: innerBlockID))

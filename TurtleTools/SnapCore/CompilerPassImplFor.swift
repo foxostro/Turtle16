@@ -13,6 +13,14 @@ import TurtleCore
 /// concepts. The ImplFor AST node is replaced with an appropriate Impl node
 /// and an appropriate vtable declaration.
 public class CompilerPassImplFor: CompilerPassWithDeclScan {
+    fileprivate typealias Identifier = Expression.Identifier
+    fileprivate typealias Bitcast = Expression.Bitcast
+    fileprivate typealias Unary = Expression.Unary
+    fileprivate typealias Get = Expression.Get
+    fileprivate typealias PrimitiveType = Expression.PrimitiveType
+    fileprivate typealias GenericTypeArgument = Expression.GenericTypeArgument
+    fileprivate typealias StructInitializer = Expression.StructInitializer
+    
     fileprivate var pendingInsertions: [AbstractSyntaxTreeNode.ID : [(String, VarDeclaration)]] = [:]
     
     fileprivate var typeChecker: RvalueExpressionTypeChecker {
@@ -61,30 +69,30 @@ public class CompilerPassImplFor: CompilerPassWithDeclScan {
     public override func visit(implFor node: ImplFor) throws -> AbstractSyntaxTreeNode? {
         let traitType = try typeChecker.check(expression: node.traitTypeExpr).unwrapTraitType()
         let structType = try typeChecker.check(expression: node.structTypeExpr).unwrapStructType()
-        let vtableType = try typeChecker.check(identifier: Expression.Identifier(traitType.nameOfVtableType)).unwrapStructType()
+        let vtableType = try typeChecker.check(identifier: Identifier(traitType.nameOfVtableType)).unwrapStructType()
         let vtableTypeScope = symbols!.lookupScopeEnclosingType(identifier: vtableType.name)!
         
         let nameOfVtableInstance = "__\(traitType.name)_\(structType.name)_vtable_instance"
-        var arguments: [Expression.StructInitializer.Argument] = []
+        var arguments: [StructInitializer.Argument] = []
         let sortedVtableSymbols = vtableType.symbols.symbolTable.sorted { $0.0 < $1.0 }
         for (methodName, methodSymbol) in sortedVtableSymbols {
-            let arg = Expression.StructInitializer.Argument(
+            let arg = StructInitializer.Argument(
                 name: methodName,
-                expr: Expression.Bitcast(
-                    expr: Expression.Unary(
+                expr: Bitcast(
+                    expr: Unary(
                         op: .ampersand,
-                        expression: Expression.Get(
-                            expr: Expression.Identifier(structType.name),
-                            member: Expression.Identifier(methodName))),
-                    targetType: Expression.PrimitiveType(methodSymbol.type)))
+                        expression: Get(
+                            expr: Identifier(structType.name),
+                            member: Identifier(methodName))),
+                    targetType: PrimitiveType(methodSymbol.type)))
             arguments.append(arg)
         }
         
-        let initializer = Expression.StructInitializer(
-            identifier: Expression.Identifier(traitType.nameOfVtableType),
+        let initializer = StructInitializer(
+            identifier: Identifier(traitType.nameOfVtableType),
             arguments: arguments)
         
-        let visibility = if let identifier = node.traitTypeExpr as? Expression.Identifier {
+        let visibility = if let identifier = node.traitTypeExpr as? Identifier {
             try symbols!.resolveTypeRecord(
                 sourceAnchor: node.sourceAnchor,
                 identifier: identifier.identifier).visibility
@@ -94,8 +102,8 @@ public class CompilerPassImplFor: CompilerPassWithDeclScan {
         }
         
         let vtableInstanceDecl = VarDeclaration(
-            identifier: Expression.Identifier(nameOfVtableInstance),
-            explicitType: Expression.Identifier(vtableType.name),
+            identifier: Identifier(nameOfVtableInstance),
+            explicitType: Identifier(vtableType.name),
             expression: initializer,
             storage: .staticStorage,
             isMutable: false,
@@ -108,7 +116,7 @@ public class CompilerPassImplFor: CompilerPassWithDeclScan {
         let impl = Impl(
             sourceAnchor: node.sourceAnchor,
             typeArguments: try node.typeArguments.compactMap {
-                try visit(genericTypeArgument: $0) as! Expression.GenericTypeArgument?
+                try visit(genericTypeArgument: $0) as! GenericTypeArgument?
             },
             structTypeExpr: try visit(expr: node.structTypeExpr)!,
             children: try node.children.compactMap {

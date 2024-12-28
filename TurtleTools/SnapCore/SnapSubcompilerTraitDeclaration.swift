@@ -104,7 +104,8 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
     private func declareVtableType(_ traitDecl: TraitDeclaration) throws {
         let traitName = traitDecl.identifier.identifier
         let members: [StructDeclaration.Member] = traitDecl.members.map {
-            let memberType = rewriteTraitMemberTypeForVtable(traitName, $0.memberType)
+            let memberType = TraitObjectDeclarationsBuilder()
+                .rewriteTraitMemberTypeForVtable(traitName, $0.memberType)
             let member = StructDeclaration.Member(name: $0.name, type: memberType)
             return member
         }
@@ -136,8 +137,11 @@ public class SnapSubcompilerTraitDeclaration: NSObject {
     private func declareTraitObjectThunks(_ traitDecl: TraitDeclaration) throws {
         var thunks: [FunctionDeclaration] = []
         for method in traitDecl.members {
-            let functionType = rewriteTraitMemberTypeForThunk(traitDecl, method)
-            let argumentNames = (0..<functionType.arguments.count).map { ($0 == 0) ? "self" : "arg\($0)" }
+            let functionType = TraitObjectDeclarationsBuilder()
+                .rewriteTraitMemberTypeForThunk(traitDecl, method)
+            let argumentNames = (0..<functionType.arguments.count).map {
+                ($0 == 0) ? "self" : "arg\($0)"
+            }
             let callee = Expression.Get(expr: Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("vtable")), member: Expression.Identifier(method.name))
             let arguments = [Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("object"))] + argumentNames[1...].map({Expression.Identifier($0)})
             

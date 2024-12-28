@@ -291,6 +291,7 @@
 		6FC0E652291AD4FF00DFDE8B /* SnapCompilerBackEndTurtle16.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FC0E651291AD4FF00DFDE8B /* SnapCompilerBackEndTurtle16.swift */; };
 		6FC4E6ED28FBEB900079A88C /* GenericFunctionTypeArgumentSolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FC4E6EC28FBEB900079A88C /* GenericFunctionTypeArgumentSolver.swift */; };
 		6FC4E6EF28FBEBA30079A88C /* GenericFunctionTypeArgumentSolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FC4E6EE28FBEBA30079A88C /* GenericFunctionTypeArgumentSolverTests.swift */; };
+		6FC87B682D2092C3006D6CD8 /* TraitObjectDeclarationsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FC87B672D2092C3006D6CD8 /* TraitObjectDeclarationsBuilder.swift */; };
 		6FCA0B842B229E41000BB22C /* DebugConsoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCA0B822B229E37000BB22C /* DebugConsoleView.swift */; };
 		6FCA0B872B22A49C000BB22C /* DebugConsoleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCA0B852B22A49C000BB22C /* DebugConsoleViewController.swift */; };
 		6FCA0B882B22A49C000BB22C /* DebugConsoleViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6FCA0B862B22A49C000BB22C /* DebugConsoleViewController.xib */; };
@@ -863,6 +864,7 @@
 		6FC0E651291AD4FF00DFDE8B /* SnapCompilerBackEndTurtle16.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapCompilerBackEndTurtle16.swift; sourceTree = "<group>"; };
 		6FC4E6EC28FBEB900079A88C /* GenericFunctionTypeArgumentSolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericFunctionTypeArgumentSolver.swift; sourceTree = "<group>"; };
 		6FC4E6EE28FBEBA30079A88C /* GenericFunctionTypeArgumentSolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericFunctionTypeArgumentSolverTests.swift; sourceTree = "<group>"; };
+		6FC87B672D2092C3006D6CD8 /* TraitObjectDeclarationsBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraitObjectDeclarationsBuilder.swift; sourceTree = "<group>"; };
 		6FC9262025045F5E006FAE8C /* AudioRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRenderer.swift; sourceTree = "<group>"; };
 		6FCA0B822B229E37000BB22C /* DebugConsoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugConsoleView.swift; sourceTree = "<group>"; };
 		6FCA0B852B22A49C000BB22C /* DebugConsoleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugConsoleViewController.swift; sourceTree = "<group>"; };
@@ -1265,6 +1267,7 @@
 				6F1AD7E42C7CFCFD009AC825 /* CompilerPassReturn.swift */,
 				6F8508E42D10A09B00B57518 /* CompilerPassSynthesizeTerminalReturnStatements.swift */,
 				6F0943EE2C8FDC1D00A24FAC /* CompilerPassVtables.swift */,
+				6FC87B672D2092C3006D6CD8 /* TraitObjectDeclarationsBuilder.swift */,
 				6FBC1F172C72F9F200CAC35E /* CompilerPassWithDeclScan.swift */,
 				6F1F3B7B2C7D011B008C2EEB /* CompilerPassWhile.swift */,
 				6F40730626B1D5ED007D8382 /* CoreToTackCompiler.swift */,
@@ -2178,6 +2181,7 @@
 				6F8405102918050400C9B957 /* TackVirtualMachine.swift in Sources */,
 				6F3F00F4274F651C00875339 /* Subroutine.swift in Sources */,
 				6FC0E652291AD4FF00DFDE8B /* SnapCompilerBackEndTurtle16.swift in Sources */,
+				6FC87B682D2092C3006D6CD8 /* TraitObjectDeclarationsBuilder.swift in Sources */,
 				6FD2735A26C9C1E800749CDA /* Goto.swift in Sources */,
 				6F469E0326BD9E940004613B /* SnapSubcompilerImplFor.swift in Sources */,
 				6FCB681E2472063900798905 /* SnapParser.swift in Sources */,

@@ -900,19 +900,6 @@ trait \(name) {
             (name: name, type: symbol.type)
         }
     }
-    
-    var vtableStructDeclaration: StructDeclaration {
-        let traitName = name
-        let structDecl = StructDeclaration(
-            identifier: Expression.Identifier(nameOfVtableType),
-            members: members.map { name, type in
-                StructDeclaration.Member(
-                    name: name,
-                    type: rewriteTraitMemberTypeForVtable(traitName, type.lift))
-            },
-            isConst: true)
-        return structDecl
-    }
 }
 
 public class GenericTraitType: NSObject {

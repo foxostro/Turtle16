@@ -120,17 +120,7 @@ public class ImplForScanner: NSObject {
     private func makeVtableDeclaration(_ traitType: TraitType,
                                        _ structType: StructType,
                                        _ node: ImplFor) throws {
-        // TODO: Remove this hack. This exists because SnapSubcompilerImplFor may have inserted vtable types into the symbol table before we get to this point. However, the eventual goal is to remove SnapSubcompilerImplFor. Remove this hack when this is done.
-        let vtableType: StructType = if let typ = symbols.maybeResolveType(identifier: traitType.nameOfVtableType) {
-            typ.unwrapStructType()
-        } else {
-            try SnapSubcompilerStructDeclaration(
-                symbols: symbols,
-                globalEnvironment: globalEnvironment)
-            .compile(traitType.vtableStructDeclaration)
-            .unwrapStructType()
-        }
-        
+        let vtableType = try symbols.resolveType(identifier: traitType.nameOfVtableType).unwrapStructType()
         var arguments: [Expression.StructInitializer.Argument] = []
         let sortedVtableSymbols = vtableType.symbols.symbolTable.sorted { $0.0 < $1.0 }
         for (methodName, methodSymbol) in sortedVtableSymbols {

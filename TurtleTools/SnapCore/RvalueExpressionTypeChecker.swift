@@ -1353,9 +1353,15 @@ public class RvalueExpressionTypeChecker: NSObject {
                              message: "unsupported expression: \(expression)")
     }
     
-    private func doesStructConformToVtable(_ structType: StructType,
-                                           _ traitType: TraitType) -> Bool {
-        vtableType(traitType).symbols.symbolTable
+    private func doesStructConformToVtable(
+        _ structType: StructType,
+        _ traitType: TraitType) -> Bool {
+        
+        try! symbols
+            .resolveType(identifier: traitType.nameOfVtableType)
+            .unwrapStructType()
+            .symbols
+            .symbolTable
             .allSatisfy { name, traitSymbol in
                 let structSymbol = structType.symbols.symbolTable[name]
                 guard let structSymbol else { return false }
@@ -1363,17 +1369,5 @@ public class RvalueExpressionTypeChecker: NSObject {
                                                    rtype: structSymbol.type)
                 return conforms
             }
-    }
-    
-    private func vtableType(_ traitType: TraitType) -> StructType {
-        if let typ = symbols.maybeResolveType(identifier: traitType.nameOfVtableType) {
-            typ.unwrapStructType()
-        } else {
-            try! SnapSubcompilerStructDeclaration(
-                symbols: symbols,
-                globalEnvironment: globalEnvironment)
-            .compile(traitType.vtableStructDeclaration)
-            .unwrapStructType()
-        }
     }
 }

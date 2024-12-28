@@ -81,7 +81,30 @@ public class TraitScanner: NSObject {
         }
         members.parent = nil
         
+        // Put types into the environment for the vtable and trait-object
+        try scan(decls: try TraitObjectDeclarationsBuilder().declarations(
+            for: node0,
+            symbols: symbols))
+        
         return traitType
+    }
+    
+    /// Put types into the environment for the vtable and trait-object
+    private func scan(decls: TraitObjectDeclarationsBuilder.Declarations) throws {
+        try SnapSubcompilerStructDeclaration(
+            symbols: symbols,
+            globalEnvironment: globalEnvironment)
+        .compile(decls.vtableDecl)
+        try SnapSubcompilerStructDeclaration(
+            symbols: symbols,
+            globalEnvironment: globalEnvironment)
+        .compile(decls.traitObjectDecl)
+        if let traitObjectImpl = decls.traitObjectImpl {
+            try ImplScanner(
+                globalEnvironment: globalEnvironment,
+                symbols: symbols)
+            .scan(impl: traitObjectImpl)
+        }
     }
     
     /// Mangle the name of a concrete instance of a generic trait, given its evaluated type arguments

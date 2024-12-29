@@ -396,6 +396,20 @@ public class Expression: AbstractSyntaxTreeNode {
                        id: id)
         }
         
+        public func withLexpr(_ lexpr: Expression) -> Assignment {
+            Assignment(sourceAnchor: sourceAnchor,
+                       lexpr: lexpr,
+                       rexpr: rexpr,
+                       id: id)
+        }
+        
+        public func withRexpr(_ rexpr: Expression) -> Assignment {
+            Assignment(sourceAnchor: sourceAnchor,
+                       lexpr: lexpr,
+                       rexpr: rexpr,
+                       id: id)
+        }
+        
         public override func isEqual(_ rhs: Any?) -> Bool {
             guard rhs != nil else { return false }
             guard type(of: rhs!) == type(of: self) else { return false }
@@ -427,6 +441,20 @@ public class Expression: AbstractSyntaxTreeNode {
     
     public class InitialAssignment: Assignment {
         public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> InitialAssignment {
+            InitialAssignment(sourceAnchor: sourceAnchor,
+                              lexpr: lexpr,
+                              rexpr: rexpr,
+                              id: id)
+        }
+        
+        public override func withLexpr(_ lexpr: Expression) -> InitialAssignment {
+            InitialAssignment(sourceAnchor: sourceAnchor,
+                              lexpr: lexpr,
+                              rexpr: rexpr,
+                              id: id)
+        }
+        
+        public override func withRexpr(_ rexpr: Expression) -> InitialAssignment {
             InitialAssignment(sourceAnchor: sourceAnchor,
                               lexpr: lexpr,
                               rexpr: rexpr,

@@ -9,26 +9,55 @@
 import TurtleCore
 
 struct TraitObjectDeclarationsBuilder {
+    fileprivate typealias PointerType = Expression.PointerType
+    fileprivate typealias ConstType = Expression.ConstType
+    fileprivate typealias PrimitiveType = Expression.PrimitiveType
+    fileprivate typealias Identifier = Expression.Identifier
+    fileprivate typealias Get = Expression.Get
+    fileprivate typealias Call = Expression.Call
+    fileprivate typealias FunctionType = Expression.FunctionType
+    fileprivate typealias GenericTypeApplication = Expression.GenericTypeApplication
+    
     struct Declarations {
         let vtableDecl: StructDeclaration
         let traitObjectDecl: StructDeclaration
         let traitObjectImpl: Impl?
     }
     
-    func declarations(
-        for traitDecl: TraitDeclaration,
-        symbols: SymbolTable) throws -> Declarations {
-        
+    func declarations(for traitDecl: TraitDeclaration,
+                      symbols: SymbolTable) throws -> Declarations {
         assert(!traitDecl.isGeneric)
-        let traitType = try symbols.resolveType(identifier: traitDecl.identifier.identifier).unwrapTraitType()
-            let vtableDecl = vtable(for: traitType)
-            .withSourceAnchor(traitDecl.sourceAnchor)
-            .withVisibility(traitDecl.visibility)
-        let voidPtr = Expression.PointerType(Expression.PrimitiveType(.void))
-        let vtableType = Expression.PointerType(Expression.ConstType(Expression.Identifier(traitDecl.nameOfVtableType)))
+        let vtableDecl = vtable(for: traitDecl)
+        let traitObjectDecl = traitObjectDecl(for: traitDecl)
+        let traitObjectImpl = try traitObjectImpl(for: traitDecl, symbols)
+        return Declarations(
+            vtableDecl: vtableDecl,
+            traitObjectDecl: traitObjectDecl,
+            traitObjectImpl: traitObjectImpl)
+    }
+    
+    func vtable(for traitDecl: TraitDeclaration) -> StructDeclaration {
+        StructDeclaration(
+            sourceAnchor: traitDecl.sourceAnchor,
+            identifier: traitDecl.identifier
+                .withIdentifier(traitDecl.nameOfVtableType),
+            members: traitDecl.members.map { member in
+                StructDeclaration.Member(
+                    name: member.name,
+                    type: rewriteTraitMemberTypeForVtable(
+                        traitDecl.name,
+                        member.memberType))
+            },
+            visibility: traitDecl.visibility,
+            isConst: true)
+    }
+    
+    func traitObjectDecl(for traitDecl: TraitDeclaration) -> StructDeclaration {
+        let voidPtr = PointerType(PrimitiveType(.void))
+        let vtableType = PointerType(ConstType(Identifier(traitDecl.nameOfVtableType)))
         let traitObjectDecl = StructDeclaration(
             sourceAnchor: traitDecl.sourceAnchor,
-            identifier: Expression.Identifier(
+            identifier: Identifier(
                 sourceAnchor: traitDecl.identifier.sourceAnchor,
                 identifier: traitDecl.nameOfTraitObjectType),
             members: [
@@ -37,29 +66,25 @@ struct TraitObjectDeclarationsBuilder {
             ],
             visibility: traitDecl.visibility,
             isConst: true)
-        let traitObjectImpl = try makeTraitObjectImpl(traitDecl, symbols)
-        return Declarations(
-            vtableDecl: vtableDecl,
-            traitObjectDecl: traitObjectDecl,
-            traitObjectImpl: traitObjectImpl)
+        return traitObjectDecl
     }
     
-    func makeTraitObjectImpl(
-        _ traitDecl: TraitDeclaration,
+    func traitObjectImpl(
+        for traitDecl: TraitDeclaration,
         _ symbols: SymbolTable) throws -> Impl? {
         
         var thunks: [FunctionDeclaration] = []
         for method in traitDecl.members {
             let functionType = rewriteTraitMemberTypeForThunk(traitDecl, method)
             let argumentNames = (0..<functionType.arguments.count).map { ($0 == 0) ? "self" : "arg\($0)" }
-            let callee = Expression.Get(expr: Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("vtable")), member: Expression.Identifier(method.name))
-            let arguments = [Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("object"))] + argumentNames[1...].map({Expression.Identifier($0)})
+            let callee = Get(expr: Get(expr: Identifier("self"), member: Identifier("vtable")), member: Identifier(method.name))
+            let arguments = [Get(expr: Identifier("self"), member: Identifier("object"))] + argumentNames[1...].map({Identifier($0)})
             let outer = SymbolTable(
                 parent: symbols,
                 frameLookupMode: .set(Frame(growthDirection: .down)))
             let typeChecker = TypeContextTypeChecker(symbols: symbols)
             let returnType = try typeChecker.check(expression: functionType.returnType)
-            let callExpr0 = Expression.Call(
+            let callExpr0 = Call(
                 callee: callee,
                 arguments: arguments)
             let callExpr1 = (returnType == .void)
@@ -69,7 +94,7 @@ struct TraitObjectDeclarationsBuilder {
                 symbols: SymbolTable(parent: outer),
                 children: [callExpr1])
             let fnDecl = FunctionDeclaration(
-                identifier: Expression.Identifier(method.name),
+                identifier: Identifier(method.name),
                 functionType: functionType,
                 argumentNames: argumentNames,
                 body: fnBody,
@@ -80,47 +105,47 @@ struct TraitObjectDeclarationsBuilder {
         let impl = Impl(
             sourceAnchor: traitDecl.sourceAnchor,
             typeArguments: [],
-            structTypeExpr: Expression.Identifier(traitDecl.nameOfTraitObjectType),
+            structTypeExpr: Identifier(traitDecl.nameOfTraitObjectType),
             children: thunks)
         return impl
     }
     
-    func rewriteTraitMemberTypeForVtable(
+    func rewriteTraitMemberTypeForVtable( // TODO: The `rewriteTraitMemberTypeForVtable` method should be fileprivate
         _ traitName: String,
-        _ expr0: Expression) -> Expression {
-        
+        _ expr0: Expression
+    ) -> Expression {
         let expr: Expression
         
-        if let primitiveType = expr0 as? Expression.PrimitiveType {
+        if let primitiveType = expr0 as? PrimitiveType {
             expr = primitiveType.typ.lift
         }
         else {
             expr = expr0
         }
         
-        if let functionType = (expr as? Expression.PointerType)?.typ as? Expression.FunctionType {
+        if let functionType = (expr as? PointerType)?.typ as? FunctionType {
             if let arg0 = functionType.arguments.first {
-                if ((arg0 as? Expression.PointerType)?.typ as? Expression.Identifier)?.identifier == traitName {
+                if ((arg0 as? PointerType)?.typ as? Identifier)?.identifier == traitName {
                     var arguments: [Expression] = functionType.arguments
-                    arguments[0] = Expression.PointerType(Expression.PrimitiveType(.void))
-                    let modifiedFunctionType = Expression.FunctionType(returnType: functionType.returnType, arguments: arguments)
-                    return Expression.PointerType(modifiedFunctionType)
+                    arguments[0] = PointerType(PrimitiveType(.void))
+                    let modifiedFunctionType = FunctionType(returnType: functionType.returnType, arguments: arguments)
+                    return PointerType(modifiedFunctionType)
                 }
                 
-                if (((arg0 as? Expression.PointerType)?.typ as? Expression.ConstType)?.typ as? Expression.Identifier)?.identifier == traitName {
+                if (((arg0 as? PointerType)?.typ as? ConstType)?.typ as? Identifier)?.identifier == traitName {
                     var arguments: [Expression] = functionType.arguments
-                    arguments[0] = Expression.PointerType(Expression.PrimitiveType(.void))
-                    let modifiedFunctionType = Expression.FunctionType(returnType: functionType.returnType, arguments: arguments)
-                    return Expression.PointerType(modifiedFunctionType)
+                    arguments[0] = PointerType(PrimitiveType(.void))
+                    let modifiedFunctionType = FunctionType(returnType: functionType.returnType, arguments: arguments)
+                    return PointerType(modifiedFunctionType)
                 }
                 
-                if let pointerType = arg0 as? Expression.PointerType,
-                   let app = pointerType.typ as? Expression.GenericTypeApplication,
+                if let pointerType = arg0 as? PointerType,
+                   let app = pointerType.typ as? GenericTypeApplication,
                    app.identifier.identifier == traitName {
                     var arguments: [Expression] = functionType.arguments
-                    arguments[0] = Expression.PointerType(Expression.PrimitiveType(.void))
-                    let modifiedFunctionType = Expression.FunctionType(returnType: functionType.returnType, arguments: arguments)
-                    return Expression.PointerType(modifiedFunctionType)
+                    arguments[0] = PointerType(PrimitiveType(.void))
+                    let modifiedFunctionType = FunctionType(returnType: functionType.returnType, arguments: arguments)
+                    return PointerType(modifiedFunctionType)
                 }
             }
         }
@@ -128,7 +153,7 @@ struct TraitObjectDeclarationsBuilder {
         return expr
     }
 
-    func rewriteTraitMemberTypeForThunk(
+    func rewriteTraitMemberTypeForThunk( // TODO: The `rewriteTraitMemberTypeForThunk` method should be fileprivate
         _ traitDecl: TraitDeclaration,
         _ method: TraitDeclaration.Member) -> Expression.FunctionType {
         
@@ -139,35 +164,35 @@ struct TraitObjectDeclarationsBuilder {
             methodType: method.memberType)
     }
 
-    func rewriteTraitMemberTypeForThunk(
+    fileprivate func rewriteTraitMemberTypeForThunk(
         traitName: String,
         traitObjectName: String,
         methodName: String,
         methodType: Expression) -> Expression.FunctionType {
             
-        let functionType = (methodType as! Expression.PointerType).typ as! Expression.FunctionType
+        let functionType = (methodType as! PointerType).typ as! FunctionType
         
         if let arg0 = functionType.arguments.first {
-            if ((arg0 as? Expression.PointerType)?.typ as? Expression.Identifier)?.identifier == traitName {
+            if ((arg0 as? PointerType)?.typ as? Identifier)?.identifier == traitName {
                 var arguments: [Expression] = functionType.arguments
-                arguments[0] = Expression.PointerType(Expression.Identifier(traitObjectName))
-                let modifiedFunctionType = Expression.FunctionType(name: methodName, returnType: functionType.returnType, arguments: arguments)
+                arguments[0] = PointerType(Identifier(traitObjectName))
+                let modifiedFunctionType = FunctionType(name: methodName, returnType: functionType.returnType, arguments: arguments)
                 return modifiedFunctionType
             }
             
-            if (((arg0 as? Expression.PointerType)?.typ as? Expression.ConstType)?.typ as? Expression.Identifier)?.identifier == traitName {
+            if (((arg0 as? PointerType)?.typ as? ConstType)?.typ as? Identifier)?.identifier == traitName {
                 var arguments: [Expression] = functionType.arguments
-                arguments[0] = Expression.PointerType(Expression.ConstType(Expression.Identifier(traitObjectName)))
-                let modifiedFunctionType = Expression.FunctionType(name: methodName, returnType: functionType.returnType, arguments: arguments)
+                arguments[0] = PointerType(ConstType(Identifier(traitObjectName)))
+                let modifiedFunctionType = FunctionType(name: methodName, returnType: functionType.returnType, arguments: arguments)
                 return modifiedFunctionType
             }
             
-            if let pointerType = arg0 as? Expression.PointerType,
-               let app = pointerType.typ as? Expression.GenericTypeApplication,
+            if let pointerType = arg0 as? PointerType,
+               let app = pointerType.typ as? GenericTypeApplication,
                app.identifier.identifier == traitName {
                 var arguments: [Expression] = functionType.arguments
-                arguments[0] = Expression.PointerType(Expression.Identifier(traitObjectName))
-                let modifiedFunctionType = Expression.FunctionType(
+                arguments[0] = PointerType(Identifier(traitObjectName))
+                let modifiedFunctionType = FunctionType(
                     name: methodName,
                     returnType: functionType.returnType,
                     arguments: arguments)
@@ -176,16 +201,5 @@ struct TraitObjectDeclarationsBuilder {
         }
         
         return functionType
-    }
-    
-    func vtable(for traitType: TraitType) -> StructDeclaration {
-        StructDeclaration(
-            identifier: Expression.Identifier(traitType.nameOfVtableType),
-            members: traitType.members.map { name, type in
-                StructDeclaration.Member(
-                    name: name,
-                    type: rewriteTraitMemberTypeForVtable(traitType.name, type.lift))
-            },
-            isConst: true)
     }
 }

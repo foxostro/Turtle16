@@ -339,10 +339,6 @@ public class RvalueExpressionTypeChecker: NSObject {
                                 message: "lvalue required in assignment")
         }
         
-        if case .traitType = ltype, case .constTraitType = ltype {
-            print("trait here")
-        }
-        
         guard !ltype.isConst || (assignment is Expression.InitialAssignment) else {
             switch assignment.lexpr {
             case let identifier as Expression.Identifier:

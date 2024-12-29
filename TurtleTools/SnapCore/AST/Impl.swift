@@ -105,7 +105,8 @@ public class Impl: AbstractSyntaxTreeNode {
             \(leading)\(typeDesc)
             \(indent)id: \(id)
             \(indent)typeArguments: \(typeArgumentsDesc)
-            \(indent)structTypeExpr: \(structTypeExprDesc)\(childDesc)
+            \(indent)structTypeExpr: \(structTypeExprDesc)
+            \(indent)children: \(childDesc)
             """
         return result
     }

@@ -148,12 +148,20 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     }
     
     public func unwrapTraitType() -> TraitType {
+        maybeUnwrapTraitType()!
+    }
+    
+    public func maybeUnwrapTraitType() -> TraitType? {
         switch self {
         case .constTraitType(let typ), .traitType(let typ):
-            return typ
+            typ
         default:
-            abort()
+            nil
         }
+    }
+    
+    public var isTraitType: Bool {
+        maybeUnwrapTraitType() != nil
     }
     
     public func unwrapGenericTraitType() -> GenericTraitType {

@@ -1571,13 +1571,17 @@ public class Expression: AbstractSyntaxTreeNode {
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-            return String(format: "%@%@\n%@expr: %@\n%@arguments: %@",
-                          wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                          String(describing: type(of: self)),
-                          makeIndent(depth: depth + 1),
-                          expr.makeIndentedDescription(depth: depth + 1),
-                          makeIndent(depth: depth + 1),
-                          makeArgumentsDescription(depth: depth + 1))
+            let leadingWhitespace = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+            let selfDesc = String(describing: type(of: self))
+            let indent = makeIndent(depth: depth + 1)
+            let exprDesc = expr.makeIndentedDescription(depth: depth + 1)
+            let argsDesc = makeArgumentsDescription(depth: depth + 1)
+            let result = """
+                \(leadingWhitespace)\(selfDesc)
+                \(indent)expr: \(exprDesc)
+                \(indent)arguments: \(argsDesc)
+                """
+            return result
         }
         
         private func makeArgumentsDescription(depth: Int) -> String {

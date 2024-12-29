@@ -276,7 +276,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         }
     }
     
-    public var lift: Expression {
+    public var lift: Expression { // TODO: Remove the `SymbolType.lift` property entirely
         switch self {
         case .void:
             Expression.PrimitiveType(.void)

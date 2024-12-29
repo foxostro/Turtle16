@@ -56,7 +56,10 @@ public class SnapSubcompilerStructDeclaration: NSObject {
         let typeChecker = TypeContextTypeChecker(symbols: members, globalEnvironment: globalEnvironment)
         let name = node.identifier.identifier
         let mangledName = typeChecker.mangleStructName(name, evaluatedTypeArguments: evaluatedTypeArguments)!
-        let fullyQualifiedStructType = StructType(name: mangledName, symbols: members)
+        let fullyQualifiedStructType = StructType(
+            name: mangledName,
+            symbols: members,
+            associatedTraitType: node.associatedTraitType)
         let type: SymbolType = node.isConst ? .constStructType(fullyQualifiedStructType) : .structType(fullyQualifiedStructType)
         
         guard !symbols.exists(identifier: mangledName) else {

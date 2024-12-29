@@ -11,7 +11,7 @@ import TurtleCore
 import SnapCore
 
 final class CompilerPassVtablesTests: XCTestCase {
-
+    
     func testEmptyTrait() throws {
         let traitIdent = Expression.Identifier("Foo")
         let traitObjectIdent = Expression.Identifier("__Foo_object")
@@ -27,7 +27,7 @@ final class CompilerPassVtablesTests: XCTestCase {
                 StructDeclaration(
                     identifier: vtableIdent,
                     members: [],
-                    isConst: true),
+                    isConst: false),
                 StructDeclaration(
                     identifier: traitObjectIdent,
                     members: [
@@ -38,7 +38,8 @@ final class CompilerPassVtablesTests: XCTestCase {
                             name: "vtable",
                             type: vtableType)
                     ],
-                    isConst: true)
+                    isConst: false,
+                    associatedTraitType: traitIdent.identifier)
             ])
         ])
         
@@ -91,7 +92,7 @@ final class CompilerPassVtablesTests: XCTestCase {
                                         Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
                                     ])))
                     ],
-                    isConst: true),
+                    isConst: false),
                 StructDeclaration(
                     identifier: traitObjectIdent,
                     members: [
@@ -102,7 +103,8 @@ final class CompilerPassVtablesTests: XCTestCase {
                             name: "vtable",
                             type: vtableType)
                     ],
-                    isConst: true),
+                    isConst: false,
+                    associatedTraitType: traitIdent.identifier),
                 Impl(
                     typeArguments: [],
                     structTypeExpr: traitObjectIdent,

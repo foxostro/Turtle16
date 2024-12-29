@@ -8,10 +8,11 @@
 
 import TurtleCore
 
-/// Snap compiler pass to erase ImplFor declarations
+/// Snap compiler pass to erase ImplFor declarations and traits
 /// ImplFor declarations are erased and rewritten in terms of lower-level
 /// concepts. The ImplFor AST node is replaced with an appropriate Impl node
-/// and an appropriate vtable declaration.
+/// and an appropriate vtable declaration. Traits are erased and rewritten into
+/// direct manipulation of trait-objects.
 public class CompilerPassImplFor: CompilerPassWithDeclScan {
     fileprivate typealias Identifier = Expression.Identifier
     fileprivate typealias Bitcast = Expression.Bitcast
@@ -20,6 +21,26 @@ public class CompilerPassImplFor: CompilerPassWithDeclScan {
     fileprivate typealias PrimitiveType = Expression.PrimitiveType
     fileprivate typealias GenericTypeArgument = Expression.GenericTypeArgument
     fileprivate typealias StructInitializer = Expression.StructInitializer
+    fileprivate typealias Assignment = Expression.Assignment
+    fileprivate typealias PointerType = Expression.PointerType
+    
+    override func scan(trait node: TraitDeclaration) throws {
+        // TODO: remove the scan(trait:) override when we change the super class to replace SnapSubcompilerTraitDeclaration with TraitScanner
+        try TraitScanner(globalEnvironment: globalEnvironment, symbols: symbols!)
+            .scan(trait: node)
+    }
+    
+    override func scan(impl node: Impl) throws {
+        // TODO: remove the scan(impl:) override when we change the super class to replace SnapSubcompilerImpl with ImplScanner
+        try ImplScanner(globalEnvironment: globalEnvironment, symbols: symbols!)
+            .scan(impl: node)
+    }
+    
+    override func scan(implFor node: ImplFor) throws {
+        // TODO: remove the scan(impl:) override when we change the super class to replace SnapSubcompilerImplFor with ImplForScanner
+        try ImplForScanner(globalEnvironment: globalEnvironment, symbols: symbols!)
+            .scan(implFor: node)
+    }
     
     fileprivate var pendingInsertions: [AbstractSyntaxTreeNode.ID : [(String, VarDeclaration)]] = [:]
     
@@ -125,6 +146,122 @@ public class CompilerPassImplFor: CompilerPassWithDeclScan {
             id: node.id)
         
         return impl
+    }
+    
+    /// All trait declarations are erased
+    public override func visit(trait: TraitDeclaration) throws -> AbstractSyntaxTreeNode? {
+        nil
+    }
+    
+    /// All references to trait types are rewritten to direct manipulation of trait objects
+    public override func visit(identifier node0: Expression.Identifier) throws -> Expression? {
+        guard let typ = symbols?.maybeResolveType(identifier: node0.identifier),
+              let traitType = typ.maybeUnwrapTraitType() else {
+            return node0
+        }
+        let node1 = node0.withIdentifier(traitType.nameOfTraitObjectType)
+        return node1
+    }
+    
+    /// VarDeclaration is rewritten to instantiate a trait-object
+    public override func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
+        let node1 = try super.visit(varDecl: node0) as! VarDeclaration
+        guard let expr1 = node1.expression,
+              let explicitType = node1.explicitType,
+              let traitType = try maybeLookupCorrespondingTraitType(expr: explicitType),
+              let expr2 = try convertToTraitObject(traitType, expr: expr1) else {
+            return node1
+        }
+        let node2 = node1
+            .withExplicitType(Identifier(
+                sourceAnchor: expr1.sourceAnchor,
+                identifier: traitType.nameOfTraitObjectType))
+            .withExpression(expr2)
+        return node2
+    }
+    
+    /// InitialAssignment is rewritten to populate a trait-object
+    public override func visit(initialAssignment node0: Expression.InitialAssignment) throws -> Expression? {
+        guard let traitType = try maybeLookupCorrespondingTraitType(expr: node0.lexpr),
+              let rexpr1 = try convertToTraitObject(traitType, expr: node0.rexpr) else {
+            return try super.visit(initialAssignment: node0)
+        }
+        let node1 = node0.withRexpr(rexpr1)
+        return node1
+    }
+    
+    /// Assignment is rewritten to populate a trait-object
+    public override func visit(assignment node0: Expression.Assignment) throws -> Expression? {
+        guard let traitType = try maybeLookupCorrespondingTraitType(expr: node0.lexpr),
+              let rexpr1 = try convertToTraitObject(traitType, expr: node0.rexpr) else {
+            return try super.visit(assignment: node0)
+        }
+        let node1 = node0.withRexpr(rexpr1)
+        return node1
+    }
+    
+    /// If the expression refers resolves to the type of a trait-object then
+    /// return the name of the associated trait, else return nil.
+    fileprivate func maybeLookupCorrespondingTraitType(expr: Expression) throws -> TraitType? {
+        guard let traitObjectType = try typeChecker.check(expression: expr).maybeUnwrapStructType(),
+              let traitName = traitObjectType.associatedTraitType,
+              let traitType = symbols?
+                  .maybeResolveType(identifier: traitName)?
+                  .maybeUnwrapTraitType() else {
+            return nil
+        }
+        return traitType
+    }
+    
+    /// Return an expression which converts the given expression and evaluates
+    /// to an appropriate trait-object
+    fileprivate func convertToTraitObject(
+        _ traitType: TraitType,
+        expr expr0: Expression) throws -> StructInitializer? {
+        
+        let exprTyp0 = try typeChecker.check(expression: expr0)
+        return switch exprTyp0 {
+        case .constStructType(let typ), .structType(let typ):
+            makeTraitObject(traitType, typ, expr: Unary(
+                sourceAnchor: expr0.sourceAnchor,
+                op: .ampersand,
+                expression: expr0))
+            
+        case .constPointer(.constStructType(let typ)),
+             .constPointer(.structType(let typ)),
+             .pointer(.constStructType(let typ)),
+             .pointer(.structType(let typ)):
+            makeTraitObject(traitType, typ, expr: expr0)
+        
+        default:
+            nil
+        }
+    }
+    
+    /// Returns an expression which populates a trait-object
+    fileprivate func makeTraitObject(
+        _ traitType: TraitType,
+        _ structType: StructType,
+        expr: Expression) -> StructInitializer {
+        
+        StructInitializer(
+            sourceAnchor: expr.sourceAnchor,
+            expr: Identifier(
+                sourceAnchor: expr.sourceAnchor,
+                identifier: traitType.nameOfTraitObjectType),
+            arguments: [
+                StructInitializer.Argument(
+                    name: "object",
+                    expr: Expression.Bitcast(
+                        sourceAnchor: expr.sourceAnchor,
+                        expr: expr,
+                        targetType: PointerType(PrimitiveType(.void)))),
+                StructInitializer.Argument(
+                    name: "vtable",
+                    expr: Identifier(
+                        sourceAnchor: expr.sourceAnchor,
+                        identifier: "__\(traitType.name)_\(structType.name)_vtable_instance"))
+            ])
     }
 }
 

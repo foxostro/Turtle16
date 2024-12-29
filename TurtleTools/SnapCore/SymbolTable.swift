@@ -685,18 +685,26 @@ public class FunctionType: NSObject {
 public class StructType: NSObject {
     public let name: String
     public let symbols: SymbolTable
+    public let associatedTraitType: String?
     
-    public init(name: String, symbols: SymbolTable) {
+    public init(name: String,
+                symbols: SymbolTable,
+                associatedTraitType: String? = nil) {
         self.name = name
         self.symbols = symbols
+        self.associatedTraitType = associatedTraitType
     }
     
     public override var description: String {
-        return """
-struct \(name) {
-\(makeMembersDescription())
-}
-"""
+        var result = """
+            struct \(name) {
+            \(makeMembersDescription())
+            }
+            """
+        if let associatedTraitType {
+            result += "\n(Associated Trait Type: \(associatedTraitType))"
+        }
+        return result
     }
     
     public func makeMembersDescription() -> String {
@@ -743,7 +751,10 @@ struct \(name) {
             return false
         }
         #else
-        guard symbols.isEqualExceptFunctions(rhs.symbols)  else {
+        guard symbols.isEqualExceptFunctions(rhs.symbols) else {
+            return false
+        }
+        guard associatedTraitType == rhs.associatedTraitType else {
             return false
         }
         #endif
@@ -771,6 +782,7 @@ struct \(name) {
         var hasher = Hasher()
         hasher.combine(name)
         hasher.combine(symbols)
+        hasher.combine(associatedTraitType)
         return hasher.finalize()
     }
 }

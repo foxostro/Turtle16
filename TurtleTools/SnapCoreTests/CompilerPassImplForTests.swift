@@ -24,6 +24,8 @@ final class CompilerPassImplForTests: XCTestCase {
     typealias Bitcast = Expression.Bitcast
     typealias Unary = Expression.Unary
     typealias Get = Expression.Get
+    typealias Assignment = Expression.Assignment
+    typealias InitialAssignment = Expression.InitialAssignment
     
     let serialFakeAST = Block(children: [
         Seq(children: [
@@ -65,12 +67,134 @@ final class CompilerPassImplForTests: XCTestCase {
                         name: "vtable",
                         type: PointerType(ConstType(Identifier("__Serial_vtable"))))
                 ],
-                isConst: true)
+                isConst: true,
+                associatedTraitType: "Serial")
         ]),
         StructDeclaration(
             identifier: Identifier("SerialFake"),
             members: [])
     ])
+    
+    let innerBlockID = AbstractSyntaxTreeNode.ID()
+    let implForID = AbstractSyntaxTreeNode.ID()
+    
+    var serialFakeWithImplForAST: Block {
+        serialFakeAST.appending(children: [
+            ImplFor(
+                typeArguments: [],
+                traitTypeExpr: Identifier("Serial"),
+                structTypeExpr: Identifier("SerialFake"),
+                children: [
+                    FunctionDeclaration(
+                        identifier: Identifier("puts"),
+                        functionType: FunctionType(
+                            name: "puts",
+                            returnType: PrimitiveType(.void),
+                            arguments: [
+                                PointerType(Identifier("Serial")),
+                                DynamicArrayType(PrimitiveType(u8))
+                            ]),
+                        argumentNames: ["self", "s"],
+                        body: Block(id: innerBlockID))
+                ],
+                id: implForID),
+            VarDeclaration(
+                identifier: Expression.Identifier("serialFake"),
+                explicitType: Expression.Identifier("SerialFake"),
+                expression: Expression.StructInitializer(
+                    identifier: Expression.Identifier("SerialFake"),
+                    arguments: []),
+                storage: .automaticStorage,
+                isMutable: false,
+                visibility: .privateVisibility)
+        ])
+            .reconnect(parent: nil)
+    }
+    
+    var compiledSerialFakeWithImplForAST: Block {
+        Block(children: [
+            Seq(children: [
+                StructDeclaration(
+                    identifier: Identifier("__Serial_vtable"),
+                    members: [
+                        StructDeclaration.Member(
+                            name: "puts",
+                            type: PointerType(FunctionType(
+                                returnType: PrimitiveType(.void),
+                                arguments: [
+                                    PointerType(PrimitiveType(.void)),
+                                    DynamicArrayType(PrimitiveType(u8))
+                                ])))
+                    ],
+                    isConst: true),
+                StructDeclaration(
+                    identifier: Identifier("__Serial_object"),
+                    members: [
+                        StructDeclaration.Member(
+                            name: "object",
+                            type: PointerType(PrimitiveType(.void))),
+                        StructDeclaration.Member(
+                            name: "vtable",
+                            type: PointerType(ConstType(Identifier("__Serial_vtable"))))
+                    ],
+                    isConst: true,
+                    associatedTraitType: "Serial")
+            ]),
+            VarDeclaration(
+                identifier: Identifier("__Serial_SerialFake_vtable_instance"),
+                explicitType: Identifier("__Serial_vtable"),
+                expression: StructInitializer(
+                    expr: Identifier("__Serial_vtable"),
+                    arguments: [
+                        StructInitializer.Argument(
+                            name: "puts",
+                            expr: Bitcast(
+                                expr: Unary(
+                                    op: .ampersand,
+                                    expression: Get(
+                                        expr: Identifier("SerialFake"),
+                                        member: Identifier("puts"))),
+                                targetType: PrimitiveType(.pointer(.function(SnapCore.FunctionType(
+                                    returnType: .void,
+                                    arguments: [
+                                        .pointer(.void),
+                                        .dynamicArray(elementType: u8)
+                                    ]))))))
+                    ]),
+                storage: .staticStorage,
+                isMutable: false,
+                visibility: .privateVisibility),
+            StructDeclaration(
+                identifier: Identifier("SerialFake"),
+                members: []),
+            Impl(
+                typeArguments: [],
+                structTypeExpr: Identifier("SerialFake"),
+                children: [
+                    FunctionDeclaration(
+                        identifier: Identifier("puts"),
+                        functionType: FunctionType(
+                            name: "puts",
+                            returnType: PrimitiveType(.void),
+                            arguments: [
+                                PointerType(Identifier("__Serial_object")),
+                                DynamicArrayType(PrimitiveType(u8))
+                            ]),
+                        argumentNames: ["self", "s"],
+                        body: Block(id: innerBlockID))
+                ],
+                id: implForID),
+            VarDeclaration(
+                identifier: Identifier("serialFake"),
+                explicitType: Identifier("SerialFake"),
+                expression: StructInitializer(
+                    identifier: Identifier("SerialFake"),
+                    arguments: []),
+                storage: .automaticStorage,
+                isMutable: false,
+                visibility: .privateVisibility)
+        ])
+    }
     
     func testFailToCompileImplForTraitBecauseMethodsAreMissing() throws {
         let ast = serialFakeAST.appending(children: [
@@ -207,124 +331,272 @@ final class CompilerPassImplForTests: XCTestCase {
     }
     
     func testCompileImplForTrait() throws {
-        let innerBlockID = AbstractSyntaxTreeNode.ID()
-        let implForID = AbstractSyntaxTreeNode.ID()
-        
-        let ast0 = serialFakeAST.appending(children: [
-            ImplFor(
-                typeArguments: [],
-                traitTypeExpr: Identifier("Serial"),
-                structTypeExpr: Identifier("SerialFake"),
-                children: [
-                    FunctionDeclaration(
-                        identifier: Identifier("puts"),
-                        functionType: FunctionType(
-                            name: "puts",
-                            returnType: PrimitiveType(.void),
-                            arguments: [
-                                PointerType(Identifier("Serial")),
-                                DynamicArrayType(PrimitiveType(u8))
-                            ]),
-                        argumentNames: ["self", "s"],
-                        body: Block(id: innerBlockID))
-                ],
-                id: implForID)
-        ])
-            .reconnect(parent: nil)
-        
-        // We expect that the AST is rewritten to include the declaration of the
-        // vtable instance following the declaration of the vtable type itself.
-        // We expect that the ImplFor node is rewritten to a plain Impl node.
-        let expected = Block(children: [
-            Seq(children: [
-                TraitDeclaration(
-                    identifier: Identifier("Serial"),
-                    members: [
-                        TraitDeclaration.Member(
-                            name: "puts",
-                            type: PointerType(FunctionType(
-                                name: nil,
-                                returnType: PrimitiveType(.void),
-                                arguments: [
-                                    PointerType(Identifier("Serial")),
-                                    DynamicArrayType(PrimitiveType(u8))
-                                ])))
-                    ],
-                    visibility: .privateVisibility),
-                StructDeclaration(
-                    identifier: Identifier("__Serial_vtable"),
-                    members: [
-                        StructDeclaration.Member(
-                            name: "puts",
-                            type: PointerType(FunctionType(
-                                returnType: PrimitiveType(.void),
-                                arguments: [
-                                    PointerType(PrimitiveType(.void)),
-                                    DynamicArrayType(PrimitiveType(u8))
-                                ])))
-                    ],
-                    isConst: true),
-                StructDeclaration(
-                    identifier: Identifier("__Serial_object"),
-                    members: [
-                        StructDeclaration.Member(
-                            name: "object",
-                            type: PointerType(PrimitiveType(.void))),
-                        StructDeclaration.Member(
-                            name: "vtable",
-                            type: PointerType(ConstType(Identifier("__Serial_vtable"))))
-                    ],
-                    isConst: true)
-            ]),
+        // We expect...
+        // * Trait declarations are erased
+        // * The vtable instance is inserted following the declaration of the
+        //   vtable type itself
+        // * ImplFor nodes are rewritten as plain Impl nodes
+        let ast0 = serialFakeWithImplForAST
+        let expected = compiledSerialFakeWithImplForAST
+        let actual = try ast0.implForPass(GlobalEnvironment(enableVtableHack: false))
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testRewriteVarDeclaration_DirectAssignmentOfConcreteInstance() throws {
+        // VarDeclarations which assign to an instance of a trait are rewritten
+        // to direct manipulation of a trait object instead
+        let ast0 = serialFakeWithImplForAST.appending(children: [
             VarDeclaration(
-                identifier: Identifier("__Serial_SerialFake_vtable_instance"),
-                explicitType: Identifier("__Serial_vtable"),
+                identifier: Identifier("serial"),
+                explicitType: Identifier("Serial"),
+                expression: Identifier("serialFake"),
+                storage: .automaticStorage,
+                isMutable: false,
+                visibility: .privateVisibility)
+            ])
+        let expected = compiledSerialFakeWithImplForAST.appending(children: [
+            VarDeclaration(
+                identifier: Identifier("serial"),
+                explicitType: Identifier("__Serial_object"),
                 expression: StructInitializer(
-                    expr: Identifier("__Serial_vtable"),
+                    identifier: Identifier("__Serial_object"),
                     arguments: [
                         StructInitializer.Argument(
-                            name: "puts",
+                            name: "object",
                             expr: Bitcast(
                                 expr: Unary(
                                     op: .ampersand,
-                                    expression: Get(
-                                        expr: Identifier("SerialFake"),
-                                        member: Identifier("puts"))),
-                                targetType: PrimitiveType(.pointer(.function(SnapCore.FunctionType(
-                                        returnType: .void,
-                                        arguments: [
-                                            .pointer(.void),
-                                            .dynamicArray(elementType: u8)
-                                        ]))))))
+                                    expression: Identifier("serialFake")),
+                                targetType: PointerType(PrimitiveType(.void)))),
+                        StructInitializer.Argument(
+                            name: "vtable",
+                            expr: Identifier("__Serial_SerialFake_vtable_instance"))
                     ]),
-                storage: .staticStorage,
+                storage: .automaticStorage,
+                isMutable: false,
+                visibility: .privateVisibility)
+        ])
+        let actual = try ast0.implForPass(GlobalEnvironment(enableVtableHack: false))
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testRewriteVarDeclaration_TakeAddressOfConcreteInstance() throws {
+        // VarDeclarations which assign to an instance of a trait are rewritten
+        // to direct manipulation of a trait object instead
+        let ast0 = serialFakeWithImplForAST.appending(children: [
+            VarDeclaration(
+                identifier: Identifier("serial"),
+                explicitType: Identifier("Serial"),
+                expression: Unary(
+                    op: .ampersand,
+                    expression: Identifier("serialFake")),
+                storage: .automaticStorage,
+                isMutable: false,
+                visibility: .privateVisibility)
+            ])
+        let expected = compiledSerialFakeWithImplForAST.appending(children: [
+            VarDeclaration(
+                identifier: Identifier("serial"),
+                explicitType: Identifier("__Serial_object"),
+                expression: StructInitializer(
+                    identifier: Identifier("__Serial_object"),
+                    arguments: [
+                        StructInitializer.Argument(
+                            name: "object",
+                            expr: Bitcast(
+                                expr: Unary(
+                                    op: .ampersand,
+                                    expression: Identifier("serialFake")),
+                                targetType: PointerType(PrimitiveType(.void)))),
+                        StructInitializer.Argument(
+                            name: "vtable",
+                            expr: Identifier("__Serial_SerialFake_vtable_instance"))
+                    ]),
+                storage: .automaticStorage,
+                isMutable: false,
+                visibility: .privateVisibility)
+        ])
+        let actual = try ast0.implForPass(GlobalEnvironment(enableVtableHack: false))
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testRewriteInitialAssignment_DirectAssignmentOfConcreteInstance() throws {
+        // InitialAssignment expressions which assign to an instance of a trait
+        // are rewritten to direct manipulation of a trait object
+        let ast0 = serialFakeWithImplForAST.appending(children: [
+            VarDeclaration(
+                identifier: Identifier("serial"),
+                explicitType: Identifier("Serial"),
+                expression: nil,
+                storage: .automaticStorage,
                 isMutable: false,
                 visibility: .privateVisibility),
-            StructDeclaration(
-                identifier: Identifier("SerialFake"),
-                members: []),
-            Impl(
-                typeArguments: [],
-                structTypeExpr: Identifier("SerialFake"),
-                children: [
-                    FunctionDeclaration(
-                        identifier: Identifier("puts"),
-                        functionType: FunctionType(
-                            name: "puts",
-                            returnType: PrimitiveType(.void),
-                            arguments: [
-                                PointerType(Identifier("Serial")),
-                                DynamicArrayType(PrimitiveType(u8))
-                            ]),
-                        argumentNames: ["self", "s"],
-                        body: Block(id: innerBlockID))
-                ],
-                id: implForID)
-        ], id: ast0.id)
-            .reconnect(parent: nil)
-        
+            InitialAssignment(
+                lexpr: Identifier("serial"),
+                rexpr: Identifier("serialFake"))
+            ])
+        let expected = compiledSerialFakeWithImplForAST.appending(children: [
+            VarDeclaration(
+                identifier: Identifier("serial"),
+                explicitType: Identifier("__Serial_object"),
+                expression: nil,
+                storage: .automaticStorage,
+                isMutable: false,
+                visibility: .privateVisibility),
+            Expression.InitialAssignment(
+                lexpr: Identifier("serial"),
+                rexpr: StructInitializer(
+                    identifier: Identifier("__Serial_object"),
+                    arguments: [
+                        StructInitializer.Argument(
+                            name: "object",
+                            expr: Bitcast(
+                                expr: Unary(
+                                    op: .ampersand,
+                                    expression: Identifier("serialFake")),
+                                targetType: PointerType(PrimitiveType(.void)))),
+                        StructInitializer.Argument(
+                            name: "vtable",
+                            expr: Identifier("__Serial_SerialFake_vtable_instance"))
+                    ]))
+        ])
         let actual = try ast0.implForPass(GlobalEnvironment(enableVtableHack: false))
-        
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testRewriteInitialAssignment_TakeAddressOfConcreteInstance() throws {
+        // InitialAssignment expressions which assign to an instance of a trait
+        // are rewritten to direct manipulation of a trait object
+        let ast0 = serialFakeWithImplForAST.appending(children: [
+            VarDeclaration(
+                identifier: Identifier("serial"),
+                explicitType: Identifier("Serial"),
+                expression: nil,
+                storage: .automaticStorage,
+                isMutable: false,
+                visibility: .privateVisibility),
+            InitialAssignment(
+                lexpr: Identifier("serial"),
+                rexpr: Unary(
+                    op: .ampersand,
+                    expression: Identifier("serialFake")))
+            ])
+        let expected = compiledSerialFakeWithImplForAST.appending(children: [
+            VarDeclaration(
+                identifier: Identifier("serial"),
+                explicitType: Identifier("__Serial_object"),
+                expression: nil,
+                storage: .automaticStorage,
+                isMutable: false,
+                visibility: .privateVisibility),
+            InitialAssignment(
+                lexpr: Identifier("serial"),
+                rexpr: StructInitializer(
+                    identifier: Identifier("__Serial_object"),
+                    arguments: [
+                        StructInitializer.Argument(
+                            name: "object",
+                            expr: Bitcast(
+                                expr: Unary(
+                                    op: .ampersand,
+                                    expression: Identifier("serialFake")),
+                                targetType: PointerType(PrimitiveType(.void)))),
+                        StructInitializer.Argument(
+                            name: "vtable",
+                            expr: Identifier("__Serial_SerialFake_vtable_instance"))
+                    ]))
+        ])
+        let actual = try ast0.implForPass(GlobalEnvironment(enableVtableHack: false))
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testRewriteAssignment_DirectAssignmentOfConcreteInstance() throws {
+        // InitialAssignment expressions which assign to an instance of a trait
+        // are rewritten to direct manipulation of a trait object
+        let ast0 = serialFakeWithImplForAST.appending(children: [
+            VarDeclaration(
+                identifier: Identifier("serial"),
+                explicitType: Identifier("Serial"),
+                expression: nil,
+                storage: .automaticStorage,
+                isMutable: false,
+                visibility: .privateVisibility),
+            Assignment(
+                lexpr: Identifier("serial"),
+                rexpr: Identifier("serialFake"))
+            ])
+        let expected = compiledSerialFakeWithImplForAST.appending(children: [
+            VarDeclaration(
+                identifier: Identifier("serial"),
+                explicitType: Identifier("__Serial_object"),
+                expression: nil,
+                storage: .automaticStorage,
+                isMutable: false,
+                visibility: .privateVisibility),
+            Assignment(
+                lexpr: Identifier("serial"),
+                rexpr: StructInitializer(
+                    identifier: Identifier("__Serial_object"),
+                    arguments: [
+                        StructInitializer.Argument(
+                            name: "object",
+                            expr: Bitcast(
+                                expr: Unary(
+                                    op: .ampersand,
+                                    expression: Identifier("serialFake")),
+                                targetType: PointerType(PrimitiveType(.void)))),
+                        StructInitializer.Argument(
+                            name: "vtable",
+                            expr: Identifier("__Serial_SerialFake_vtable_instance"))
+                    ]))
+        ])
+        let actual = try ast0.implForPass(GlobalEnvironment(enableVtableHack: false))
+        XCTAssertEqual(actual, expected)
+    }
+    
+    func testRewriteAssignment_TakeAddressOfConcreteInstance() throws {
+        // InitialAssignment expressions which assign to an instance of a trait
+        // are rewritten to direct manipulation of a trait object
+        let ast0 = serialFakeWithImplForAST.appending(children: [
+            VarDeclaration(
+                identifier: Identifier("serial"),
+                explicitType: Identifier("Serial"),
+                expression: nil,
+                storage: .automaticStorage,
+                isMutable: false,
+                visibility: .privateVisibility),
+            Assignment(
+                lexpr: Identifier("serial"),
+                rexpr: Unary(
+                    op: .ampersand,
+                    expression: Identifier("serialFake")))
+            ])
+        let expected = compiledSerialFakeWithImplForAST.appending(children: [
+            VarDeclaration(
+                identifier: Identifier("serial"),
+                explicitType: Identifier("__Serial_object"),
+                expression: nil,
+                storage: .automaticStorage,
+                isMutable: false,
+                visibility: .privateVisibility),
+            Assignment(
+                lexpr: Identifier("serial"),
+                rexpr: StructInitializer(
+                    identifier: Identifier("__Serial_object"),
+                    arguments: [
+                        StructInitializer.Argument(
+                            name: "object",
+                            expr: Bitcast(
+                                expr: Unary(
+                                    op: .ampersand,
+                                    expression: Identifier("serialFake")),
+                                targetType: PointerType(PrimitiveType(.void)))),
+                        StructInitializer.Argument(
+                            name: "vtable",
+                            expr: Identifier("__Serial_SerialFake_vtable_instance"))
+                    ]))
+        ])
+        let actual = try ast0.implForPass(GlobalEnvironment(enableVtableHack: false))
         XCTAssertEqual(actual, expected)
     }
 }

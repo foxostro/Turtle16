@@ -10,7 +10,6 @@ import TurtleCore
 
 /// Method calls written in the dot syntax are rewritten to plain function calls
 public class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
-#if false // TODO: enable this block of code after adopting vtablesPass() and implForPass()
     override func scan(trait node: TraitDeclaration) throws {
         // TODO: remove the scan(trait:) override when we change the super class to replace SnapSubcompilerTraitDeclaration with TraitScanner
         try TraitScanner(globalEnvironment: globalEnvironment, symbols: symbols!)
@@ -28,7 +27,6 @@ public class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
         try ImplForScanner(globalEnvironment: globalEnvironment, symbols: symbols!)
             .scan(implFor: node)
     }
-#endif
     
     var typeChecker: RvalueExpressionTypeChecker {
         RvalueExpressionTypeChecker(

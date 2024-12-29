@@ -2394,13 +2394,13 @@ func foo() {
             let serial: Serial = &obj
             """)
         
-        let serial = try debugger?.symbols?.resolve(identifier: "serial")
-        switch serial?.type {
-        case .constTraitType(let typ):
-            XCTAssertEqual(typ.name, "Serial")
-            
+        let serialType = try debugger?.symbols?.resolve(identifier: "serial").type
+        switch serialType {
+        case .constStructType(let typ):
+            XCTAssertEqual(typ.associatedTraitType, "Serial")
+
         default:
-            XCTFail()
+            XCTFail("unexpected type: \(serialType?.description ?? "nil")")
         }
     }
     
@@ -2420,13 +2420,13 @@ func foo() {
             let serial: Serial = obj
             """)
         
-        let serial = try debugger?.symbols?.resolve(identifier: "serial")
-        switch serial?.type {
-        case .constTraitType(let typ):
-            XCTAssertEqual(typ.name, "Serial")
-            
+        let serialType = try debugger?.symbols?.resolve(identifier: "serial").type
+        switch serialType {
+        case .constStructType(let typ):
+            XCTAssertEqual(typ.associatedTraitType, "Serial")
+
         default:
-            XCTFail()
+            XCTFail("unexpected type: \(serialType?.description ?? "nil")")
         }
     }
     
@@ -2447,13 +2447,13 @@ func foo() {
             serial = obj
             """)
         
-        let serial = try debugger?.symbols?.resolve(identifier: "serial")
-        switch serial?.type {
-        case .traitType(let typ):
-            XCTAssertEqual(typ.name, "Serial")
-            
+        let serialType = try debugger?.symbols?.resolve(identifier: "serial").type
+        switch serialType {
+        case .structType(let typ):
+            XCTAssertEqual(typ.associatedTraitType, "Serial")
+
         default:
-            XCTFail()
+            XCTFail("unexpected type: \(serialType?.description ?? "nil")")
         }
     }
     

@@ -56,19 +56,27 @@ class SnapToCoreCompilerTests: XCTestCase {
         ])
         
         let expected = Block(children: [
-            Seq(tags: [.vtable],
-                children: [
-                    Expression.InitialAssignment(
-                        lexpr: Expression.Identifier("__Serial_SerialFake_vtable_instance"),
-                        rexpr: Expression.StructInitializer(
-                            expr: Expression.Identifier("__Serial_vtable"),
-                            arguments: []))
-                ]),
+            Expression.InitialAssignment(
+                lexpr: Expression.Identifier("__Serial_SerialFake_vtable_instance"),
+                rexpr: Expression.StructInitializer(
+                    expr: Expression.Identifier("__Serial_vtable"),
+                    arguments: [])),
             Expression.InitialAssignment(
                 lexpr: Expression.Identifier("serial"),
-                rexpr: Expression.Unary(
-                    op: .ampersand,
-                    expression: Expression.Identifier("serialFake")))
+                rexpr: Expression.StructInitializer(
+                    identifier: Expression.Identifier("__Serial_object"),
+                    arguments: [
+                        Expression.StructInitializer.Argument(
+                            name: "object",
+                            expr: Expression.Bitcast(
+                                expr: Expression.Unary(
+                                    op: .ampersand,
+                                    expression: Expression.Identifier("serialFake")),
+                                targetType: Expression.PointerType(Expression.PrimitiveType(.void)))),
+                        Expression.StructInitializer.Argument(
+                            name: "vtable",
+                            expr: Expression.Identifier("__Serial_SerialFake_vtable_instance"))
+                    ]))
         ])
             .reconnect(parent: nil)
         

@@ -49,7 +49,7 @@ struct TraitObjectDeclarationsBuilder {
                         member.memberType))
             },
             visibility: traitDecl.visibility,
-            isConst: true)
+            isConst: false)
     }
     
     func traitObjectDecl(for traitDecl: TraitDeclaration) -> StructDeclaration {
@@ -65,7 +65,8 @@ struct TraitObjectDeclarationsBuilder {
                 StructDeclaration.Member(name: "vtable", type: vtableType)
             ],
             visibility: traitDecl.visibility,
-            isConst: true)
+            isConst: false,
+            associatedTraitType: traitDecl.name)
         return traitObjectDecl
     }
     

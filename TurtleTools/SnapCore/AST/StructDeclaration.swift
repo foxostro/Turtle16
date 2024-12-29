@@ -48,6 +48,7 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
     public let members: [Member]
     public let visibility: SymbolVisibility
     public let isConst: Bool
+    public let associatedTraitType: String?
     
     public var name: String {
         identifier.identifier
@@ -74,7 +75,8 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
                     type: Expression.PrimitiveType($0.value.type))
             },
             visibility: .privateVisibility,
-            isConst: false)
+            isConst: false,
+            associatedTraitType: structType.associatedTraitType)
     }
     
     public init(sourceAnchor: SourceAnchor? = nil,
@@ -83,15 +85,17 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
                 members: [Member],
                 visibility: SymbolVisibility = .privateVisibility,
                 isConst: Bool = false,
+                associatedTraitType: String? = nil,
                 id: ID = ID()) {
-        self.identifier = identifier.withSourceAnchor(sourceAnchor)
+        self.identifier = identifier.withSourceAnchor(sourceAnchor) // TODO: I don't think I should overwrite the identifier's source anchor here
         self.typeArguments = typeArguments
         self.members = members.map {
             Member(name: $0.name,
-                   type: $0.memberType.withSourceAnchor(sourceAnchor))
+                   type: $0.memberType.withSourceAnchor(sourceAnchor)) // TODO: I don't think I should overwrite the member type's source anchor here
         }
         self.visibility = visibility
         self.isConst = isConst
+        self.associatedTraitType = associatedTraitType
         super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
@@ -102,6 +106,7 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
                           members: members,
                           visibility: visibility,
                           isConst: isConst,
+                          associatedTraitType: associatedTraitType,
                           id: id)
     }
     
@@ -112,6 +117,7 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
                           members: members,
                           visibility: visibility,
                           isConst: isConst,
+                          associatedTraitType: associatedTraitType,
                           id: id)
     }
     
@@ -122,6 +128,7 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
                           members: members,
                           visibility: visibility,
                           isConst: isConst,
+                          associatedTraitType: associatedTraitType,
                           id: id)
     }
     
@@ -132,6 +139,18 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
                           members: members,
                           visibility: visibility,
                           isConst: isConst,
+                          associatedTraitType: associatedTraitType,
+                          id: id)
+    }
+    
+    public func withAssociatedTraitType(_ associatedTraitType: String?) -> StructDeclaration {
+        StructDeclaration(sourceAnchor: sourceAnchor,
+                          identifier: identifier,
+                          typeArguments: typeArguments,
+                          members: members,
+                          visibility: visibility,
+                          isConst: isConst,
+                          associatedTraitType: associatedTraitType,
                           id: id)
     }
     
@@ -142,6 +161,7 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
                           members: members,
                           visibility: visibility,
                           isConst: isConst,
+                          associatedTraitType: associatedTraitType,
                           id: ID())
     }
     
@@ -155,6 +175,7 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
         guard members == rhs.members else { return false }
         guard visibility == rhs.visibility else { return false }
         guard isConst == rhs.isConst else { return false }
+        guard associatedTraitType == rhs.associatedTraitType else { return false }
         return true
     }
     
@@ -165,6 +186,7 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
         hasher.combine(members)
         hasher.combine(visibility)
         hasher.combine(isConst)
+        hasher.combine(associatedTraitType)
         hasher.combine(super.hash)
         return hasher.finalize()
     }

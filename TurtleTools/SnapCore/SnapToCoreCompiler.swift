@@ -56,9 +56,12 @@ public class SnapToCoreCompiler: NSObject {
                     globalEnvironment: globalEnvironment)?
                 .forInPass(globalEnvironment)?
                 .genericsPass(globalEnvironment)?
+                .vtablesPass(globalEnvironment)?
+                .implForPass(globalEnvironment)?
+                .eraseMethodCalls(globalEnvironment)?
                 .synthesizeTerminalReturnStatements(globalEnvironment)?
-                .eraseMethodCalls(globalEnvironment)? //.eraseImplPass(globalEnvironment)?
-                .implPass(globalEnvironment)
+                .implPass(globalEnvironment)?
+                .flatten()
         }
         .flatMap { ast in
             if let block = ast as? Block {

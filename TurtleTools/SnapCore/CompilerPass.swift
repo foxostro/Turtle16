@@ -242,6 +242,7 @@ public class CompilerPass: NSObject {
             },
             visibility: node0.visibility,
             isConst: node0.isConst,
+            associatedTraitType: node0.associatedTraitType,
             id: node0.id)
         return node1
     }

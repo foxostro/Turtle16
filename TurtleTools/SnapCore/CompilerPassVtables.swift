@@ -13,8 +13,20 @@ import TurtleCore
 public class CompilerPassVtables: CompilerPassWithDeclScan {
     override func scan(trait node: TraitDeclaration) throws {
         // TODO: remove the scan(trait:) override when we change the super class to replace SnapSubcompilerTraitDeclaration with TraitScanner
-        let scanner = TraitScanner(globalEnvironment: globalEnvironment, symbols: symbols!)
-        try scanner.scan(trait: node)
+        try TraitScanner(globalEnvironment: globalEnvironment, symbols: symbols!)
+            .scan(trait: node)
+    }
+    
+    override func scan(impl node: Impl) throws {
+        // TODO: remove the scan(impl:) override when we change the super class to replace SnapSubcompilerImpl with ImplScanner
+        try ImplScanner(globalEnvironment: globalEnvironment, symbols: symbols!)
+            .scan(impl: node)
+    }
+    
+    override func scan(implFor node: ImplFor) throws {
+        // TODO: remove the scan(impl:) override when we change the super class to replace SnapSubcompilerImplFor with ImplForScanner
+        try ImplForScanner(globalEnvironment: globalEnvironment, symbols: symbols!)
+            .scan(implFor: node)
     }
     
     public override func visit(trait traitDecl0: TraitDeclaration) throws -> AbstractSyntaxTreeNode? {

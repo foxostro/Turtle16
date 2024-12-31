@@ -60,6 +60,7 @@ public class SnapToCoreCompiler: NSObject {
                 .implForPass(globalEnvironment)?
                 .eraseMethodCalls(globalEnvironment)?
                 .synthesizeTerminalReturnStatements(globalEnvironment)?
+                .eraseImplPass(globalEnvironment)?
                 .implPass(globalEnvironment)?
                 .flatten()
         }

@@ -529,7 +529,9 @@ public class RvalueExpressionTypeChecker: NSObject {
              (.structType(let a), .traitType(let b)),
              (.constStructType(let a), .constTraitType(let b)),
              (.structType(let a), .constTraitType(let b)):
-            let nameOfVtableInstance = "__\(b.name)_\(a.name)_vtable_instance"
+            let nameOfVtableInstance = nameOfVtableInstance(
+                traitName: b.name,
+                structName: a.name)
             let vtableInstance = symbols.maybeResolve(identifier: nameOfVtableInstance)
             if vtableInstance != nil {
                 return .acceptable(ltype)
@@ -1017,7 +1019,10 @@ public class RvalueExpressionTypeChecker: NSObject {
             arg.description.replacingOccurrences(of: " ", with: "_")
         }
         
-        let arr = Array(NSOrderedSet(array: symbols.allEnclosingFunctionNames() + [name] + typeNameList))
+        let allEnclosingFunctionNames = symbols.allEnclosingFunctionNames().map {
+            $0.hasPrefix("__") ? String($0.dropFirst(2)) : $0
+        }
+        let arr = Array(NSOrderedSet(array: allEnclosingFunctionNames + [name] + typeNameList))
         var mangledName = arr.map{$0 as! String}.joined(separator: "_")
         
         if arr.count > 1 && !mangledName.hasPrefix("__") {
@@ -1046,7 +1051,7 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
     
     public func mangleTraitName(_ name: String?, evaluatedTypeArguments: [SymbolType] = []) -> String? {
-        return mangleStructName(name, evaluatedTypeArguments: evaluatedTypeArguments)
+        mangleStructName(name, evaluatedTypeArguments: evaluatedTypeArguments)
     }
     
     fileprivate func evaluateFunctionArguments(_ argsToEvaluate: [Expression]) throws -> [SymbolType] {

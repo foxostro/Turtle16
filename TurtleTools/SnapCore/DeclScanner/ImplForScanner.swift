@@ -147,10 +147,10 @@ public class ImplForScanner: NSObject {
             visibility = .privateVisibility
         }
         
-        let nameOfVtableInstance = "__\(traitType.name)_\(structType.name)_vtable_instance"
-        
         let vtableInstanceDecl = VarDeclaration(
-            identifier: Expression.Identifier(nameOfVtableInstance),
+            identifier: Expression.Identifier(nameOfVtableInstance(
+                traitName: traitType.name,
+                structName: structType.name)),
             explicitType: Expression.Identifier(vtableType.name),
             expression: Expression.StructInitializer(
                 identifier: Expression.Identifier(traitType.nameOfVtableType),
@@ -164,4 +164,13 @@ public class ImplForScanner: NSObject {
             globalEnvironment: globalEnvironment)
         .compile(vtableInstanceDecl)!
     }
+}
+
+// TODO: where should the `nameOfVtableInstance(traitName:,structName:)` function live?
+func nameOfVtableInstance(traitName: String, structName structName0: String) -> String {
+    let structName1 = structName0.hasPrefix("__")
+        ? String(structName0.dropFirst(2))
+        : structName0
+    let nameOfVtableInstance = "__\(traitName)_\(structName1)_vtable_instance"
+    return nameOfVtableInstance
 }

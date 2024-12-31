@@ -93,7 +93,9 @@ public class CompilerPassImplFor: CompilerPassWithDeclScan {
         let vtableType = try typeChecker.check(identifier: Identifier(traitType.nameOfVtableType)).unwrapStructType()
         let vtableTypeScope = symbols!.lookupScopeEnclosingType(identifier: vtableType.name)!
         
-        let nameOfVtableInstance = "__\(traitType.name)_\(structType.name)_vtable_instance"
+        let nameOfVtableInstance = nameOfVtableInstance(
+            traitName: traitType.name,
+            structName: structType.name)
         var arguments: [StructInitializer.Argument] = []
         let sortedVtableSymbols = vtableType.symbols.symbolTable.sorted { $0.0 < $1.0 }
         for (methodName, methodSymbol) in sortedVtableSymbols {
@@ -260,7 +262,9 @@ public class CompilerPassImplFor: CompilerPassWithDeclScan {
                     name: "vtable",
                     expr: Identifier(
                         sourceAnchor: expr.sourceAnchor,
-                        identifier: "__\(traitType.name)_\(structType.name)_vtable_instance"))
+                        identifier: nameOfVtableInstance(
+                            traitName: traitType.name,
+                            structName: structType.name)))
             ])
     }
 }

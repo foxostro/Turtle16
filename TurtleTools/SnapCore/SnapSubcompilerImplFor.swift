@@ -119,7 +119,9 @@ public class SnapSubcompilerImplFor: NSObject {
             globalEnvironment: globalEnvironment)
             .compile(StructDeclaration(vtableType))
         
-        let nameOfVtableInstance = "__\(traitType.name)_\(structType.name)_vtable_instance"
+        let nameOfVtableInstance = nameOfVtableInstance(
+            traitName: traitType.name,
+            structName: structType.name)
         var arguments: [Expression.StructInitializer.Argument] = []
         let sortedVtableSymbols = vtableType.symbols.symbolTable.sorted { $0.0 < $1.0 }
         for (methodName, methodSymbol) in sortedVtableSymbols {

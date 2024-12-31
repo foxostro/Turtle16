@@ -28,16 +28,17 @@ public class CompilerPassSynthesizeTerminalReturnStatements: CompilerPassWithDec
     private func visitFunctionBody(func fn: FunctionDeclaration) throws -> Block {
         try expectFunctionReturnExpressionIsCorrectType(fn)
         let body0 = fn.body
-        let body1 = if try shouldSynthesizeTerminalReturnStatement(fn) {
-            body0.appending(children: [
+        let body1 = try super.visit(block: body0) as! Block
+        let body2 = if try shouldSynthesizeTerminalReturnStatement(fn) {
+            body1.appending(children: [
                 Return(
-                    sourceAnchor: body0.sourceAnchor,
+                    sourceAnchor: body1.sourceAnchor,
                     expression: nil)
             ])
         } else {
-            body0
+            body1
         }
-        return body1
+        return body2
     }
     
     private func expectFunctionReturnExpressionIsCorrectType(_ node: FunctionDeclaration) throws {

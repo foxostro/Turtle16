@@ -1640,7 +1640,9 @@ public class CoreToTackCompiler: CompilerPass {
              (.constPointer(let a), .constTraitType(let b)),
              (.pointer(let a), .constTraitType(let b)):
             let structType = a.unwrapStructType()
-            let nameOfVtableInstance = "__\(b.name)_\(structType.name)_vtable_instance"
+            let nameOfVtableInstance = nameOfVtableInstance(
+                traitName: b.name,
+                structName: structType.name)
             result = try rvalue(expr: Expression.StructInitializer(
                 sourceAnchor: rexpr.sourceAnchor,
                 expr: Expression.Identifier(
@@ -1674,7 +1676,9 @@ public class CoreToTackCompiler: CompilerPass {
              (.structType(let structType), .traitType(let b)),
              (.constStructType(let structType), .constTraitType(let b)),
              (.structType(let structType), .constTraitType(let b)):
-            let nameOfVtableInstance = "__\(b.name)_\(structType.name)_vtable_instance"
+            let nameOfVtableInstance = nameOfVtableInstance(
+                traitName: b.name,
+                structName: structType.name)
             let objectPointer = Expression.Unary(
                 sourceAnchor: rexpr.sourceAnchor,
                 op: .ampersand,

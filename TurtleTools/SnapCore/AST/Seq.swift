@@ -92,6 +92,7 @@ public class Seq: AbstractSyntaxTreeNode {
         let result = self.withChildren(children.compactMap {
             switch $0 {
             case let initialAssignment as Expression.InitialAssignment:
+                // TODO: Remove this vtable-related hack too
                 let ident = (initialAssignment.lexpr as! Expression.Identifier).identifier
                 let isVtableInstanceAssignment = ident.hasPrefix("__") && ident.hasSuffix("_vtable_instance")
                 if isVtableInstanceAssignment {
@@ -104,6 +105,7 @@ public class Seq: AbstractSyntaxTreeNode {
                 return initialAssignment
                 
             case let varDecl as VarDeclaration:
+                // TODO: Remove this vtable-related hack too
                 let ident = varDecl.identifier.identifier
                 let isVtableDeclaration = ident.hasPrefix("__") && ident.hasSuffix("_vtable_instance")
                 if isVtableDeclaration {

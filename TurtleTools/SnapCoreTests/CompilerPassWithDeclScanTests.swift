@@ -151,13 +151,14 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
                 Expression.PointerType(Expression.Identifier("Serial")),
                 Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
             ])))
-            let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Serial"),
-                                             members: [bar],
-                                             visibility: .privateVisibility)
-            _ = try SnapSubcompilerTraitDeclaration(
+            let traitDecl = TraitDeclaration(
+                identifier: Expression.Identifier("Serial"),
+                members: [bar],
+                visibility: .privateVisibility)
+            try TraitScanner(
                 globalEnvironment: globalEnvironment,
                 symbols: symbols)
-            .compile(traitDecl)
+            .scan(trait: traitDecl)
         }
         
         func compileSerialFake() throws {

@@ -19,23 +19,6 @@ import TurtleCore
 //   concrete instantiation of the trait. The concrete trait type is inserted
 //   into the AST.
 public class CompilerPassGenerics: CompilerPassWithDeclScan {
-    override func scan(trait node: TraitDeclaration) throws {
-        // TODO: remove the scan(trait:) override when we change the super class to replace SnapSubcompilerTraitDeclaration with TraitScanner
-        try TraitScanner(globalEnvironment: globalEnvironment, symbols: symbols!)
-            .scan(trait: node)
-    }
-    
-    override func scan(impl node: Impl) throws {
-        // TODO: remove the scan(impl:) override when we change the super class to replace SnapSubcompilerImpl with ImplScanner
-        try ImplScanner(globalEnvironment: globalEnvironment, symbols: symbols!)
-            .scan(impl: node)
-    }
-    
-    override func scan(implFor node: ImplFor) throws {
-        // TODO: remove the scan(impl:) override when we change the super class to replace SnapSubcompilerImplFor with ImplForScanner
-        try ImplForScanner(globalEnvironment: globalEnvironment, symbols: symbols!)
-            .scan(implFor: node)
-    }
     
     /// Maps an ID which uniquely identifies a point in the AST to a list of
     /// nodes to be inserted just after this point.

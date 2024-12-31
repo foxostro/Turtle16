@@ -41,14 +41,9 @@ public class GlobalEnvironment: NSObject {
     public let tempNameMaker = LabelMaker(prefix: "__temp")
     public let functionsToCompile: FunctionsToCompile
     
-    /// The vtable hack involves use SymbolTable.pendingInsertions to record vtables that must be inserted into a block during a compiler pass. This is a hack which should be removed and replaced by a new ImplFor compiler pass.
-    public let enableVtableHack: Bool
-    
     public init(memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16(),
-                functionsToCompile: FunctionsToCompile = FunctionsToCompile(),
-                enableVtableHack: Bool = true) {
+                functionsToCompile: FunctionsToCompile = FunctionsToCompile()) {
         self.memoryLayoutStrategy = memoryLayoutStrategy
         self.functionsToCompile = functionsToCompile
-        self.enableVtableHack = enableVtableHack
     }
 }

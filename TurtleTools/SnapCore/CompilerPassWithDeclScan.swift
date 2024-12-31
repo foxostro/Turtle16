@@ -12,59 +12,6 @@ public class CompilerPassWithDeclScan: CompilerPass {
     let globalEnvironment: GlobalEnvironment
     var modules: [String : Module] = [:]
     
-    fileprivate class BlockRewriter: CompilerPass {
-        let globalEnvironment: GlobalEnvironment
-        
-        init(_ globalEnvironment: GlobalEnvironment) {
-            self.globalEnvironment = globalEnvironment
-        }
-        
-        public override func visit(block block0: Block) throws -> AbstractSyntaxTreeNode? {
-            let block1 = try super.visit(block: block0) as! Block
-            let block2 = globalEnvironment.enableVtableHack
-                ? insertVtableDeclarations(block1)
-                : block1
-            return block2
-        }
-        
-        func insertVtableDeclarations(_ block0: Block) -> Block {
-            let pendingInsertions = block0.symbols.pendingInsertions
-            
-            var children = block0.children
-            
-            for (traitName, toInsert) in pendingInsertions {
-                assert(toInsert.tags.contains(.vtable))
-                
-                let indexOfTraitDecl = children.firstIndex {
-                    let traitDecl = $0 as? TraitDeclaration
-                    return traitDecl?.name == traitName
-                }
-                let insertionIndex = if let indexOfTraitDecl {
-                    children.index(after: indexOfTraitDecl)
-                }
-                else {
-                    children.startIndex
-                }
-                
-                if insertionIndex < children.count,
-                   let existingSeq = children[insertionIndex] as? Seq,
-                   existingSeq.tags.contains(.vtable) {
-                    
-                    children[insertionIndex] = existingSeq
-                        .appending(children: toInsert.children)
-                        .removeDuplicateVtableDeclarations()
-                }
-                else {
-                    children.insert(toInsert, at: insertionIndex)
-                }
-            }
-            
-            let block1 = block0.withChildren(children)
-            block1.symbols.pendingInsertions.removeAll()
-            return block1
-        }
-    }
-    
     public convenience init(_ env: GlobalEnvironment = GlobalEnvironment()) {
         self.init(globalEnvironment: env)
     }
@@ -88,7 +35,7 @@ public class CompilerPassWithDeclScan: CompilerPass {
     
     /// Transformation to apply to the program AST after the compiler pass runs
     public func postProcess(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
-        try BlockRewriter(globalEnvironment).run(node0)
+        node0
     }
     
     func scan(block: Block) throws {
@@ -148,24 +95,24 @@ public class CompilerPassWithDeclScan: CompilerPass {
     }
     
     func scan(trait node: TraitDeclaration) throws {
-        _ = try SnapSubcompilerTraitDeclaration(
+        try TraitScanner(
             globalEnvironment: globalEnvironment,
             symbols: symbols!)
-        .compile(node)
+        .scan(trait: node)
     }
     
     func scan(impl node: Impl) throws {
-        try SnapSubcompilerImpl(
-            symbols: symbols!,
-            globalEnvironment: globalEnvironment)
-        .compile(node)
+        try ImplScanner(
+            globalEnvironment: globalEnvironment,
+            symbols: symbols!)
+        .scan(impl: node)
     }
     
     func scan(implFor node: ImplFor) throws {
-        try SnapSubcompilerImplFor(
-            symbols: symbols!,
-            globalEnvironment: globalEnvironment)
-        .compile(node)
+        try ImplForScanner(
+            globalEnvironment: globalEnvironment,
+            symbols: symbols!)
+        .scan(implFor: node)
     }
     
     func scan(module module0: Module) throws {

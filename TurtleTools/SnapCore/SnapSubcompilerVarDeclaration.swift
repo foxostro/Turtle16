@@ -18,11 +18,9 @@ public class SnapSubcompilerVarDeclaration: NSObject {
     }
     
     public func compile(_ node: VarDeclaration) throws -> Expression.InitialAssignment? {
-        // TODO: This is a hack to get vtable VarDeclarations to work across compiler passes before we've implemented an ImplFor compiler pass. Do that and then remove this hack.
         let ident = node.identifier.identifier
-        let allowRedefinition = ident.hasPrefix("__") && ident.hasSuffix("_vtable_instance")
         
-        guard allowRedefinition || !symbols.exists(identifier: node.identifier.identifier) else {
+        guard !symbols.exists(identifier: node.identifier.identifier) else {
             let variable = node.isMutable ? "variable" : "constant"
             throw CompilerError(
                 sourceAnchor: node.identifier.sourceAnchor,

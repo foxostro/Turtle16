@@ -937,13 +937,10 @@ final class CompilerPassGenericsTests: XCTestCase {
                 ])
         ], id: expected.id)
         
-        let compiler = CompilerPassGenerics(symbols: symbols, globalEnvironment: GlobalEnvironment())
-        let ast1 = try compiler
-            .run(ast0)? // perform the actual compiler pass
-            .eraseSeq {
-                // remove vtable setup code because it's irrelevant to this test
-                $0.tags.contains(.vtable)
-            }
+        let ast1 = try CompilerPassGenerics(
+            symbols: symbols,
+            globalEnvironment: GlobalEnvironment())
+        .run(ast0)
         
         XCTAssertEqual(ast1, expected)
     }

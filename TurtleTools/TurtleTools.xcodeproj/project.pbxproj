@@ -168,10 +168,6 @@
 		6F452B8726261704003732B3 /* fib.bin in Resources */ = {isa = PBXBuildFile; fileRef = 6F452B8626261704003732B3 /* fib.bin */; };
 		6F469DFB26BB808A0004613B /* Seq.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F469DFA26BB808A0004613B /* Seq.swift */; };
 		6F469DFD26BBA5DB0004613B /* SnapASTTransformerBaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F469DFC26BBA5DB0004613B /* SnapASTTransformerBaseTests.swift */; };
-		6F469DFF26BBAC3B0004613B /* SnapSubcompilerImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F469DFE26BBAC3B0004613B /* SnapSubcompilerImpl.swift */; };
-		6F469E0126BBAC450004613B /* SnapSubcompilerImplTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F469E0026BBAC450004613B /* SnapSubcompilerImplTests.swift */; };
-		6F469E0326BD9E940004613B /* SnapSubcompilerImplFor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F469E0226BD9E940004613B /* SnapSubcompilerImplFor.swift */; };
-		6F469E0526BD9EA90004613B /* SnapSubcompilerImplForTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F469E0426BD9EA90004613B /* SnapSubcompilerImplForTests.swift */; };
 		6F469E0926BEF5020004613B /* GlobalEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F469E0826BEF5020004613B /* GlobalEnvironment.swift */; };
 		6F469E0B26BEF5220004613B /* GlobalEnvironmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F469E0A26BEF5220004613B /* GlobalEnvironmentTests.swift */; };
 		6F47D8AF261CC129008EFFF2 /* FuseListMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F47D8AE261CC129008EFFF2 /* FuseListMaker.swift */; };
@@ -335,8 +331,6 @@
 		6FE41A772C7C4642002ED26F /* CompilerPassImport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE41A762C7C4642002ED26F /* CompilerPassImport.swift */; };
 		6FE41A792C7C4650002ED26F /* CompilerPassImportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FE41A782C7C4650002ED26F /* CompilerPassImportTests.swift */; };
 		6FEC3DFE24D78CF800E9C299 /* LabelMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FEC3DFD24D78CF800E9C299 /* LabelMaker.swift */; };
-		6FF179C126B9F97C0026F284 /* SnapSubcompilerTraitDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF179C026B9F97C0026F284 /* SnapSubcompilerTraitDeclaration.swift */; };
-		6FF179C326B9F9EE0026F284 /* SnapSubcompilerTraitDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF179C226B9F9EE0026F284 /* SnapSubcompilerTraitDeclarationTests.swift */; };
 		6FF75BA62486C31000F55625 /* SnapCommandLineArgumentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF75BA52486C31000F55625 /* SnapCommandLineArgumentParser.swift */; };
 		6FF75BA82486C35400F55625 /* SnapCommandLineArgumentParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF75BA72486C35400F55625 /* SnapCommandLineArgumentParserTests.swift */; };
 /* End PBXBuildFile section */
@@ -713,10 +707,6 @@
 		6F452BB82626227D003732B3 /* ParameterString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterString.swift; sourceTree = "<group>"; };
 		6F469DFA26BB808A0004613B /* Seq.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Seq.swift; sourceTree = "<group>"; };
 		6F469DFC26BBA5DB0004613B /* SnapASTTransformerBaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapASTTransformerBaseTests.swift; sourceTree = "<group>"; };
-		6F469DFE26BBAC3B0004613B /* SnapSubcompilerImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerImpl.swift; sourceTree = "<group>"; };
-		6F469E0026BBAC450004613B /* SnapSubcompilerImplTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerImplTests.swift; sourceTree = "<group>"; };
-		6F469E0226BD9E940004613B /* SnapSubcompilerImplFor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerImplFor.swift; sourceTree = "<group>"; };
-		6F469E0426BD9EA90004613B /* SnapSubcompilerImplForTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerImplForTests.swift; sourceTree = "<group>"; };
 		6F469E0826BEF5020004613B /* GlobalEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalEnvironment.swift; sourceTree = "<group>"; };
 		6F469E0A26BEF5220004613B /* GlobalEnvironmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalEnvironmentTests.swift; sourceTree = "<group>"; };
 		6F47D8AE261CC129008EFFF2 /* FuseListMaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuseListMaker.swift; sourceTree = "<group>"; };
@@ -919,8 +909,6 @@
 		6FE41A782C7C4650002ED26F /* CompilerPassImportTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompilerPassImportTests.swift; sourceTree = "<group>"; };
 		6FEBE3E223F77F0200E42B66 /* ThrottledQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThrottledQueue.swift; sourceTree = "<group>"; };
 		6FEC3DFD24D78CF800E9C299 /* LabelMaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelMaker.swift; sourceTree = "<group>"; };
-		6FF179C026B9F97C0026F284 /* SnapSubcompilerTraitDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerTraitDeclaration.swift; sourceTree = "<group>"; };
-		6FF179C226B9F9EE0026F284 /* SnapSubcompilerTraitDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerTraitDeclarationTests.swift; sourceTree = "<group>"; };
 		6FF75BA52486C31000F55625 /* SnapCommandLineArgumentParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapCommandLineArgumentParser.swift; sourceTree = "<group>"; };
 		6FF75BA72486C35400F55625 /* SnapCommandLineArgumentParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapCommandLineArgumentParserTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1302,13 +1290,10 @@
 				6F40731C26B2A187007D8382 /* SnapSubcompilerAssert.swift */,
 				6F15423126B91BCC00BA9572 /* SnapSubcompilerFunctionDeclaration.swift */,
 				6FD2735726C9BAD400749CDA /* SnapSubcompilerIf.swift */,
-				6F469DFE26BBAC3B0004613B /* SnapSubcompilerImpl.swift */,
-				6F469E0226BD9E940004613B /* SnapSubcompilerImplFor.swift */,
 				6F2E5B1D251AFB5700928DD1 /* SnapSubcompilerMatch.swift */,
 				6F13826226C0E878002CF167 /* SnapSubcompilerReturn.swift */,
 				6F15423526B92AB500BA9572 /* SnapSubcompilerStructDeclaration.swift */,
 				6F3F00F7274F736C00875339 /* SnapSubcompilerSubroutine.swift */,
-				6FF179C026B9F97C0026F284 /* SnapSubcompilerTraitDeclaration.swift */,
 				6F9E8F7E26B9A90F00FE25E4 /* SnapSubcompilerTypealias.swift */,
 				6F15422D26B897BA00BA9572 /* SnapSubcompilerVarDeclaration.swift */,
 				6FD2735F26C9C92900749CDA /* SnapSubcompilerWhile.swift */,
@@ -1376,12 +1361,9 @@
 				6F40731E26B2A194007D8382 /* SnapSubcompilerAssertTests.swift */,
 				6F15423326B91BD800BA9572 /* SnapSubcompilerFunctionDeclarationTests.swift */,
 				6FD2735D26C9C73A00749CDA /* SnapSubcompilerIfTests.swift */,
-				6F469E0026BBAC450004613B /* SnapSubcompilerImplTests.swift */,
-				6F469E0426BD9EA90004613B /* SnapSubcompilerImplForTests.swift */,
 				6F13826026C0DA01002CF167 /* SnapSubcompilerMatchTests.swift */,
 				6F13826426C0E893002CF167 /* SnapSubcompilerReturnTests.swift */,
 				6F15423726B92ADB00BA9572 /* SnapSubcompilerStructDeclarationTests.swift */,
-				6FF179C226B9F9EE0026F284 /* SnapSubcompilerTraitDeclarationTests.swift */,
 				6F9E8F8026B9A91900FE25E4 /* SnapSubcompilerTypealiasTests.swift */,
 				6F15422F26B897D200BA9572 /* SnapSubcompilerVarDeclarationTests.swift */,
 				6FD2736126C9C94600749CDA /* SnapSubcompilerWhileTests.swift */,
@@ -2131,7 +2113,6 @@
 				6FA939C52D1B885A00E611BE /* CompilerPassImpl.swift in Sources */,
 				6F2940CF2483A13B00C50ABA /* Expression.swift in Sources */,
 				6FF75BA62486C31000F55625 /* SnapCommandLineArgumentParser.swift in Sources */,
-				6F469DFF26BBAC3B0004613B /* SnapSubcompilerImpl.swift in Sources */,
 				6F546311253D3B5F005DDAB6 /* ImplFor.swift in Sources */,
 				6F40732126B2AD72007D8382 /* CompilerPass.swift in Sources */,
 				6F15423226B91BCC00BA9572 /* SnapSubcompilerFunctionDeclaration.swift in Sources */,
@@ -2171,7 +2152,6 @@
 				6F2E5B1E251AFB5700928DD1 /* SnapSubcompilerMatch.swift in Sources */,
 				6F2E5B0E251AA46B00928DD1 /* Match.swift in Sources */,
 				6F8508E12D0FA5F600B57518 /* CompilerPassImplFor.swift in Sources */,
-				6FF179C126B9F97C0026F284 /* SnapSubcompilerTraitDeclaration.swift in Sources */,
 				6F1800A7251D9079005D9D36 /* Import.swift in Sources */,
 				6FCA942525264C61000C2A2D /* Assert.swift in Sources */,
 				6F2940C5248399BE00C50ABA /* SymbolTable.swift in Sources */,
@@ -2183,7 +2163,6 @@
 				6FC0E652291AD4FF00DFDE8B /* SnapCompilerBackEndTurtle16.swift in Sources */,
 				6FC87B682D2092C3006D6CD8 /* TraitObjectDeclarationsBuilder.swift in Sources */,
 				6FD2735A26C9C1E800749CDA /* Goto.swift in Sources */,
-				6F469E0326BD9E940004613B /* SnapSubcompilerImplFor.swift in Sources */,
 				6FCB681E2472063900798905 /* SnapParser.swift in Sources */,
 				6F3F010C2760675400875339 /* RegisterUtils.swift in Sources */,
 				6F20F9382C73BF4100415E35 /* Module.swift in Sources */,
@@ -2256,15 +2235,12 @@
 				6F3F010A275FEC8000875339 /* RegisterSpillerTests.swift in Sources */,
 				6F8508E72D10A0A900B57518 /* CompilerPassSynthesizeTerminalReturnStatementsTests.swift in Sources */,
 				6F40731926B281C1007D8382 /* SnapToCoreCompilerTests.swift in Sources */,
-				6F469E0126BBAC450004613B /* SnapSubcompilerImplTests.swift in Sources */,
 				6F469DFD26BBA5DB0004613B /* SnapASTTransformerBaseTests.swift in Sources */,
 				6F2940BF2483995500C50ABA /* SymbolTableTests.swift in Sources */,
 				6FD2735E26C9C73A00749CDA /* SnapSubcompilerIfTests.swift in Sources */,
 				6F24AC8D24A07CBC005193BB /* StatementTracerTests.swift in Sources */,
 				6F058A332C59839000B3FA82 /* CompilerPassGenericsTests.swift in Sources */,
-				6F469E0526BD9EA90004613B /* SnapSubcompilerImplForTests.swift in Sources */,
 				6FE41A792C7C4650002ED26F /* CompilerPassImportTests.swift in Sources */,
-				6FF179C326B9F9EE0026F284 /* SnapSubcompilerTraitDeclarationTests.swift in Sources */,
 				6FBC1F1A2C72FA0800CAC35E /* CompilerPassWithDeclScanTests.swift in Sources */,
 				6F0943F52C8FDFB500A24FAC /* TraitScannerTests.swift in Sources */,
 				6F40730526ADE0EF007D8382 /* MemoryLayoutStrategyTurtleTTLTests.swift in Sources */,

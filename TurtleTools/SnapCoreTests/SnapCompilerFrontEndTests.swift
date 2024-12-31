@@ -2984,20 +2984,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     }
 
     func test_EndToEndIntegration_GenericTrait() throws {
-        #warning("""
-TODO: The test_EndToEndIntegration_GenericTrait test is failing with current changes...
-
-```
-compile error: 17: cannot assign value of type `*__MyAdder_u16' to type `const __Adder_u16_object'
-    let adder: Adder@[u16] = &myAdder
-                             ^~~~~~~~
-```
-
-To fix this problem, CompilerPassImplFor should rewrite expressions which assign
-a struct to a trait. The rewritten expression should put a trait-object on the
-left hand side, and should populate it with a StructInitializer on the right-
-hand side.
-""")
         let debugger = try run(program: """
             trait Adder[T] {
                 func add(self: *Adder@[T], amount: T) -> T

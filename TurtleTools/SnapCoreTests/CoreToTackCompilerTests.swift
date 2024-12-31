@@ -2194,13 +2194,14 @@ class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Assignment_automatic_conversion_from_trait_to_pointer() throws {
         let globalEnvironment = GlobalEnvironment()
         let symbols = SymbolTable()
-        let traitDecl = TraitDeclaration(identifier: Expression.Identifier("Foo"),
-                                         members: [],
-                                         visibility: .privateVisibility)
-        _ = try SnapSubcompilerTraitDeclaration(
+        let traitDecl = TraitDeclaration(
+            identifier: Expression.Identifier("Foo"),
+            members: [],
+            visibility: .privateVisibility)
+        try TraitScanner(
             globalEnvironment: globalEnvironment,
             symbols: symbols)
-        .compile(traitDecl)
+        .scan(trait: traitDecl)
 
         let traitObjectType = try symbols.resolveType(identifier: traitDecl.nameOfTraitObjectType)
         symbols.bind(identifier: "foo", symbol: Symbol(type: .pointer(traitObjectType), offset: 0x1000, storage: .staticStorage))

@@ -18,26 +18,54 @@ public class CoreToTackCompiler: CompilerPass {
     private let options: Options
     private let globalEnvironment: GlobalEnvironment
     public internal(set) var registerStack: [Register] = []
-    var nextRegisterIndex = 0
-    let kOOB = "__oob"
-    let kHalt = "hlt"
-    let kSyscall = "__syscall"
+    private var nextRegisterIndex = 0
+    private let kOOB = "__oob"
+    private let kHalt = "hlt"
+    private let kSyscall = "__syscall"
     
-    let kUnionPayloadOffset: Int
-    let kUnionTypeTagOffset: Int
+    private let kUnionPayloadOffset: Int
+    private let kUnionTypeTagOffset: Int
     
-    let kSliceName = "Slice"
-    let kSliceBase = "base"
-    let kSliceBaseAddressOffset: Int
-    let kSliceBaseAddressType = SymbolType.arithmeticType(.mutableInt(.u16))
-    let kSliceCount = "count"
-    let kSliceCountOffset: Int
-    let kSliceCountType = SymbolType.arithmeticType(.mutableInt(.u16))
-    let kSliceType: SymbolType
+    private let kSliceName = "Slice"
+    private let kSliceBase = "base"
+    private let kSliceBaseAddressOffset: Int
+    private let kSliceBaseAddressType = SymbolType.arithmeticType(.mutableInt(.u16))
+    private let kSliceCount = "count"
+    private let kSliceCountOffset: Int
+    private let kSliceCountType = SymbolType.arithmeticType(.mutableInt(.u16))
+    private let kSliceType: SymbolType
     
-    let kRangeName = "Range"
-    let kRangeBegin = "begin"
-    let kRangeLimit = "limit"
+    private let kRangeName = "Range"
+    private let kRangeBegin = "begin"
+    private let kRangeLimit = "limit"
+    
+    private class FunctionsToCompile: NSObject {
+        private var queue: [FunctionType] = []
+        private var alreadyQueued = Set<String>()
+        
+        public var isEmpty: Bool {
+            queue.isEmpty
+        }
+        
+        public func removeFirst() -> FunctionType {
+            queue.removeFirst()
+        }
+        
+        public func removeAll() {
+            queue.removeAll()
+            alreadyQueued.removeAll()
+        }
+        
+        public func enqueue(_ fn: FunctionType) {
+            let mangledName = fn.mangledName!
+            if !alreadyQueued.contains(mangledName) { // skip duplicates
+                queue.append(fn)
+                alreadyQueued.insert(mangledName)
+            }
+        }
+    }
+    
+    private let functionsToCompile = FunctionsToCompile()
     
     func pushRegister(_ identifier: Register) {
         registerStack.append(identifier)
@@ -108,8 +136,8 @@ public class CoreToTackCompiler: CompilerPass {
         // items are being appending to the end of the functionsToCompile list
         // as we process it.
         var result: [Subroutine] = []
-        while !globalEnvironment.functionsToCompile.isEmpty {
-            let m = globalEnvironment.functionsToCompile.removeFirst()
+        while !functionsToCompile.isEmpty {
+            let m = functionsToCompile.removeFirst()
             let subroutine = try compileFunction(concreteInstance: m)
             result.append(subroutine)
         }
@@ -180,8 +208,10 @@ public class CoreToTackCompiler: CompilerPass {
     
     public override func visit(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
         // Record the function (by type) so we can revisit and compile it later.
+        // This allows us to flatten nested functions.
+        // TODO: I wonder if perhaps function flattening should be done in a separate compiler pass?
         let functionType = try symbols!.resolve(identifier: node.identifier.identifier).type.unwrapFunctionType()
-        globalEnvironment.functionsToCompile.enqueue(functionType)
+        functionsToCompile.enqueue(functionType)
         return nil
     }
     

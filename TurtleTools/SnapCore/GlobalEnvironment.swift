@@ -8,42 +8,13 @@
 
 import TurtleCore
 
-public class FunctionsToCompile: NSObject {
-    private var queue: [FunctionType] = []
-    private var alreadyQueued = Set<String>()
-    
-    public var isEmpty: Bool {
-        queue.isEmpty
-    }
-    
-    public func removeFirst() -> FunctionType {
-        queue.removeFirst()
-    }
-    
-    public func removeAll() {
-        queue.removeAll()
-        alreadyQueued.removeAll()
-    }
-    
-    public func enqueue(_ fn: FunctionType) {
-        let mangledName = fn.mangledName!
-        if !alreadyQueued.contains(mangledName) { // skip duplicates
-            queue.append(fn)
-            alreadyQueued.insert(mangledName)
-        }
-    }
-}
-
 public class GlobalEnvironment: NSObject {
     public let staticStorageFrame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
     public let memoryLayoutStrategy: MemoryLayoutStrategy
     public let labelMaker = LabelMaker()
     public let tempNameMaker = LabelMaker(prefix: "__temp")
-    public let functionsToCompile: FunctionsToCompile
     
-    public init(memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16(),
-                functionsToCompile: FunctionsToCompile = FunctionsToCompile()) {
+    public init(memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()) {
         self.memoryLayoutStrategy = memoryLayoutStrategy
-        self.functionsToCompile = functionsToCompile
     }
 }

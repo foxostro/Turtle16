@@ -30,7 +30,6 @@ extension AbstractSyntaxTreeNode {
         
         if let globalEnvironment {
             globalEnvironment.staticStorageFrame.reset()
-            globalEnvironment.functionsToCompile.removeAll()
         }
         
         return result

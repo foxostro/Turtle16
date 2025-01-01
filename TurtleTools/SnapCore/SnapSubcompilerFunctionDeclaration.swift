@@ -69,8 +69,6 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
                             storage: .automaticStorage,
                             visibility: node.visibility)
         symbols.bind(identifier: name, symbol: symbol)
-        
-        globalEnvironment.functionsToCompile.enqueue(functionType)
     }
     
     public func instantiate(memoryLayoutStrategy: MemoryLayoutStrategy,

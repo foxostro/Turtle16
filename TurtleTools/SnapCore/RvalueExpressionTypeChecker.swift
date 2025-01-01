@@ -1148,10 +1148,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         let ast1 = try GenericsPartialEvaluator(symbols: nil, map: replacementMap).visit(func: ast0) as! FunctionDeclaration
         functionType.ast = ast1
         
-        globalEnvironment.functionsToCompile.enqueue(functionType)
-        
-        let result = SymbolType.function(functionType)
-        return result
+        return .function(functionType)
     }
     
     fileprivate func apply(genericTypeApplication expr: Expression.GenericTypeApplication,

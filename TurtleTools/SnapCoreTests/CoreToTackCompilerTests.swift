@@ -111,29 +111,28 @@ class CoreToTackCompilerTests: XCTestCase {
     }
 
     func testCompileFunctionDeclaration_Simplest() throws {
-        let fn1 = FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                     functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
-                                     argumentNames: [],
-                                     body: Block(children: [
-                                        Return()
-                                     ]))
+        let expected = Subroutine(identifier: "foo",
+                                  children: [
+                                    TackInstructionNode(.enter(0)),
+                                    TackInstructionNode(.leave),
+                                    TackInstructionNode(.ret)
+                                  ])
+        let globalEnvironment = GlobalEnvironment()
+        let ast0 = Block(children: [
+                FunctionDeclaration(
+                    identifier: Expression.Identifier("foo"),
+                    functionType: Expression.FunctionType(
+                        name: "foo",
+                        returnType: Expression.PrimitiveType(.void),
+                        arguments: []),
+                    argumentNames: [],
+                    body: Block(children: [
+                        Return()
+                    ]))
+            ])
             .reconnect(parent: nil)
-        let symbols = SymbolTable()
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        try SnapSubcompilerFunctionDeclaration()
-            .compile(globalEnvironment: globalEnvironment,
-                     symbols: symbols,
-                     node: fn1)
-        let opts = CoreToTackCompiler.Options(isBoundsCheckEnabled: true)
-        let compiler = CoreToTackCompiler(symbols: symbols,
-                                          globalEnvironment: globalEnvironment,
-                                          options: opts)
-        let actual = try compiler.run(nil)
-        let expected = Subroutine(identifier: "foo", children: [
-            TackInstructionNode(.enter(0)),
-            TackInstructionNode(.leave),
-            TackInstructionNode(.ret)
-        ])
+        let ast1 = try CompilerPassWithDeclScan(globalEnvironment).run(ast0)
+        let actual = try CoreToTackCompiler(globalEnvironment: globalEnvironment).run(ast1)
         XCTAssertEqual(actual, expected)
     }
 

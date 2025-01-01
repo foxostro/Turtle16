@@ -64,6 +64,7 @@ public class SnapToCoreCompiler: NSObject {
                 .matchPass(globalEnvironment)?
                 .assertPass(globalEnvironment)?
                 .returnPass(globalEnvironment)?
+                .whilePass(globalEnvironment)?
                 .ifPass(globalEnvironment)?
                 .implPass(globalEnvironment)?
                 .flatten()

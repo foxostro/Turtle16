@@ -41,16 +41,6 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: CompilerPassWithDeclScan {
         return node2
     }
     
-    public override func visit(match node0: Match) throws -> AbstractSyntaxTreeNode? {
-        let node1 = try SnapSubcompilerMatch(
-            memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy,
-            symbols: symbols!)
-        .compile(node0)
-        
-        let node2 = try super.visit(node1)
-        return node2
-    }
-    
     public override func visit(if node0: If) throws -> AbstractSyntaxTreeNode? {
         let node1 = try SnapSubcompilerIf().compile(
             if: node0,

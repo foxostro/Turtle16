@@ -139,11 +139,15 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     }
     
     public func unwrapGenericStructType() -> GenericStructType {
+        maybeUnwrapGenericStructType()!
+    }
+    
+    public func maybeUnwrapGenericStructType() -> GenericStructType? {
         switch self {
         case .genericStructType(let typ):
-            return typ
+            typ
         default:
-            abort()
+            nil
         }
     }
     
@@ -806,6 +810,10 @@ public class GenericStructType: NSObject {
     // Compilation of ImplFor nodes is deferred until the generic struct is
     // instantiated with concrete types.
     public var implForNodes: [ImplFor] = []
+    
+    public func clone() -> GenericStructType {
+        GenericStructType(template: template)
+    }
     
     public init(template: StructDeclaration) {
         self.template = template

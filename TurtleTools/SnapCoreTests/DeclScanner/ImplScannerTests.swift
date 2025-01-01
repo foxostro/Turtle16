@@ -16,6 +16,7 @@ final class ImplScannerTests: XCTestCase {
     typealias PrimitiveType = Expression.PrimitiveType
     typealias PointerType = Expression.PointerType
     typealias LiteralInt = Expression.LiteralInt
+    typealias GenericTypeArgument = Expression.GenericTypeArgument
     
     func testExample() throws {
         let symbols = SymbolTable()
@@ -175,7 +176,7 @@ final class ImplScannerTests: XCTestCase {
             .scan(impl: impl)
         
         let tryResolveBar = { (block: Block) in
-            _ = try block
+            try block
                 .symbols
                 .resolveType(identifier: "Foo")
                 .maybeUnwrapStructType()?
@@ -188,5 +189,83 @@ final class ImplScannerTests: XCTestCase {
             let error = $0 as? CompilerError
             XCTAssertEqual(error?.message, "use of unresolved identifier: `bar'")
         }
+    }
+    
+    // The methods declared in an Impl block exist only in the current scope.
+    // When execution exits the scope, the methods disappear in the same manner
+    // as any other type or symbol defined within that scope.
+    func testGenericImplScoping() throws {
+        let globalEnvironment = GlobalEnvironment()
+        
+        let outerBlock = Block(children: [
+                StructDeclaration(
+                    identifier: Identifier("Foo"),
+                    typeArguments: [
+                        GenericTypeArgument(
+                            identifier: Identifier("T"),
+                            constraints: [])
+                    ],
+                    members: [],
+                    visibility: .privateVisibility),
+                Block(children: [
+                    Impl(
+                        typeArguments: [
+                            GenericTypeArgument(
+                                identifier: Identifier("T"),
+                                constraints: [])
+                        ],
+                        structTypeExpr: Expression.GenericTypeApplication(
+                            identifier: Identifier("Foo"),
+                            arguments: [
+                                Identifier("T")
+                            ]),
+                        children: [
+                            FunctionDeclaration(
+                                identifier: Identifier("bar"),
+                                functionType: Expression.FunctionType(
+                                    name: "bar",
+                                    returnType: Identifier("T"),
+                                    arguments: [
+                                        PointerType(Identifier("Foo"))
+                                    ]),
+                                argumentNames: ["baz"],
+                                typeArguments: [],
+                                body: Block(children: [
+                                    Return(LiteralInt(0))
+                                ]))
+                        ])
+                ])
+            ])
+            .reconnect(parent: nil)
+        
+        let foo = outerBlock.children[0] as! StructDeclaration
+        let innerBlock = outerBlock.children[1] as! Block
+        let impl = innerBlock.children[0] as! Impl
+        
+        _ = try SnapSubcompilerStructDeclaration(
+            symbols: outerBlock.symbols,
+            globalEnvironment: globalEnvironment)
+        .compile(foo)
+        
+        try ImplScanner(
+            globalEnvironment: globalEnvironment,
+            symbols: innerBlock.symbols)
+            .scan(impl: impl)
+        
+        let tryResolveBar = { (block: Block) in
+            try block
+                .symbols
+                .resolveType(identifier: "Foo")
+                .unwrapGenericStructType()
+                .implNodes
+                .contains { impl in
+                    impl.children.contains { method in
+                        method.identifier.identifier == "bar"
+                    }
+                }
+        }
+        
+        XCTAssertTrue(try tryResolveBar(innerBlock))
+        XCTAssertFalse(try tryResolveBar(outerBlock))
     }
 }

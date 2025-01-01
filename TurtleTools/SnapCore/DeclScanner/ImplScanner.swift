@@ -43,12 +43,28 @@ public class ImplScanner: NSObject {
                 message: "expected a generic type application: `\(node.structTypeExpr)'")
         }
         
-        let typ = try parent.resolveTypeOfIdentifier(
-            sourceAnchor: app.sourceAnchor,
-            identifier: app.identifier.identifier)
+        let originalStructType = try parent
+            .resolveTypeOfIdentifier(
+                sourceAnchor: app.sourceAnchor,
+                identifier: app.identifier.identifier)
             .unwrapGenericStructType()
+        let name = originalStructType.name
         
-        typ.implNodes.append(node)
+        // If the struct type was not defined in the current scope then
+        // clone it for the current scope. This ensures that changes we make
+        // in an Impl block do not propagate outside the current scope.
+        let structType: GenericStructType
+        if parent.typeTable.contains(where: { $0.key == name }) {
+            structType = originalStructType
+        }
+        else {
+            structType = originalStructType.clone()
+            parent.bind(
+                identifier: name,
+                symbolType: .genericStructType(structType))
+        }
+        
+        structType.implNodes.append(node)
     }
     
     private func doNonGenericCase(_ node: Impl) throws {
@@ -99,7 +115,9 @@ public class ImplScanner: NSObject {
             try scanner.scan(func: child)
             
             // Put the symbol back into the struct type's symbol table too.
-            typ.symbols.bind(identifier: identifier, symbol: symbols.symbolTable[identifier]!)
+            typ.symbols.bind(
+                identifier: identifier,
+                symbol: symbols.symbolTable[identifier]!)
         }
     }
 }

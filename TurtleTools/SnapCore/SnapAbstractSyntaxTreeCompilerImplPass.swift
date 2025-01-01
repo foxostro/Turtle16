@@ -40,10 +40,6 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: CompilerPassWithDeclScan {
         .compile(node1)
         return node2
     }
-    
-    public override func visit(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
-        node // We defer compilation of the function body until later.
-    }
 
     public override func visit(struct node0: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
         nil

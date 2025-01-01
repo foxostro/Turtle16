@@ -17,6 +17,7 @@ public class CoreToTackCompiler: CompilerPass {
     
     private let options: Options
     private let globalEnvironment: GlobalEnvironment
+    private var subroutines: [Subroutine] = []
     public internal(set) var registerStack: [Register] = []
     private var nextRegisterIndex = 0
     private let kOOB = "__oob"
@@ -38,34 +39,6 @@ public class CoreToTackCompiler: CompilerPass {
     private let kRangeName = "Range"
     private let kRangeBegin = "begin"
     private let kRangeLimit = "limit"
-    
-    private class FunctionsToCompile: NSObject {
-        private var queue: [FunctionType] = []
-        private var alreadyQueued = Set<String>()
-        
-        public var isEmpty: Bool {
-            queue.isEmpty
-        }
-        
-        public func removeFirst() -> FunctionType {
-            queue.removeFirst()
-        }
-        
-        public func removeAll() {
-            queue.removeAll()
-            alreadyQueued.removeAll()
-        }
-        
-        public func enqueue(_ fn: FunctionType) {
-            let mangledName = fn.mangledName!
-            if !alreadyQueued.contains(mangledName) { // skip duplicates
-                queue.append(fn)
-                alreadyQueued.insert(mangledName)
-            }
-        }
-    }
-    
-    private let functionsToCompile = FunctionsToCompile()
     
     func pushRegister(_ identifier: Register) {
         registerStack.append(identifier)
@@ -114,64 +87,18 @@ public class CoreToTackCompiler: CompilerPass {
     }
     
     public override func run(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
+        
         var children: [AbstractSyntaxTreeNode] = []
         
-        let compiledNode = try super.run(node0)
-        let compiledFunctions = try compileFunctions()
-        
-        if let compiledNode {
+        if let compiledNode = try super.run(node0) {
             children.append(compiledNode)
         }
-        children += compiledFunctions
+        
+        children += subroutines
         
         let seq = Seq(sourceAnchor: node0?.sourceAnchor, children: children)
         let result = try seq.flatten()
         return result
-    }
-    
-    fileprivate func compileFunctions() throws -> [Subroutine] {
-        // Compile functions collected earlier for deferred compilation.
-        
-        // Note that since functions can contain functions, we have to assume
-        // items are being appending to the end of the functionsToCompile list
-        // as we process it.
-        var result: [Subroutine] = []
-        while !functionsToCompile.isEmpty {
-            let m = functionsToCompile.removeFirst()
-            let subroutine = try compileFunction(concreteInstance: m)
-            result.append(subroutine)
-        }
-        
-        return result
-    }
-    
-    fileprivate func compileFunction(concreteInstance m: FunctionType) throws -> Subroutine {
-        guard let mangledName = m.mangledName else {
-            fatalError("missing mangledName for function: \(m)")
-        }
-        
-        guard let ast = m.ast else {
-            fatalError("missing AST for function: \(m)")
-        }
-        
-        let stackFrame = ast.symbols.frame!
-        assert(ast.symbols.frameLookupMode == .set(stackFrame))
-        let body0 = ast.body
-        let body1 = try SnapAbstractSyntaxTreeCompilerImplPass(symbols: ast.symbols, globalEnvironment: globalEnvironment).visit(body0) as! Block
-        let body2 = try visit(body1) ?? Seq()
-        let sizeOfLocalVariables = stackFrame.storagePointer
-        
-        let subroutine = Subroutine(
-            sourceAnchor: ast.sourceAnchor,
-            identifier: mangledName,
-            children: [
-                TackInstructionNode(
-                    instruction: .enter(sizeOfLocalVariables),
-                    sourceAnchor: ast.sourceAnchor,
-                    symbols: symbols),
-                body2
-            ])
-        return subroutine
     }
     
     public override func visit(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
@@ -207,11 +134,29 @@ public class CoreToTackCompiler: CompilerPass {
     }
     
     public override func visit(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
-        // Record the function (by type) so we can revisit and compile it later.
-        // This allows us to flatten nested functions.
-        // TODO: I wonder if perhaps function flattening should be done in a separate compiler pass?
-        let functionType = try symbols!.resolve(identifier: node.identifier.identifier).type.unwrapFunctionType()
-        functionsToCompile.enqueue(functionType)
+        let symbols = symbols!
+        let mangledName = try symbols
+            .resolve(
+                sourceAnchor: node.sourceAnchor,
+                identifier: node.identifier.identifier)
+            .type
+            .unwrapFunctionType()
+            .mangledName! // TODO: Should a function's mangled name also be stored in the AST in the FunctionDeclaration node itself?
+        let stackFrame = symbols.frame!
+        assert(symbols.frameLookupMode == .set(stackFrame))
+        let subroutineBody = try visit(node.body) ?? Seq()
+        let sizeOfLocalVariables = stackFrame.storagePointer
+        let subroutine = Subroutine(
+            sourceAnchor: node.sourceAnchor,
+            identifier: mangledName,
+            children: [
+                TackInstructionNode(
+                    instruction: .enter(sizeOfLocalVariables),
+                    sourceAnchor: node.sourceAnchor,
+                    symbols: symbols),
+                subroutineBody
+            ])
+        subroutines.append(subroutine)
         return nil
     }
     

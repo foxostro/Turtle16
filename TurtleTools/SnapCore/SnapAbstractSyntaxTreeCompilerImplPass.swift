@@ -57,12 +57,6 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: CompilerPassWithDeclScan {
         return node2
     }
     
-    public override func visit(return node0: Return) throws -> AbstractSyntaxTreeNode? {
-        let subcompiler = SnapSubcompilerReturn(symbols!)
-        let node1 = try subcompiler.compile(node0)
-        return node1
-    }
-    
     public override func visit(if node0: If) throws -> AbstractSyntaxTreeNode? {
         let node1 = try SnapSubcompilerIf().compile(
             if: node0,
@@ -93,19 +87,7 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: CompilerPassWithDeclScan {
         nil
     }
 
-    public override func visit(trait node0: TraitDeclaration) throws -> AbstractSyntaxTreeNode? {
-        nil
-    }
-
-    public override func visit(impl node0: Impl) throws -> AbstractSyntaxTreeNode? {
-        nil
-    }
-
     public override func visit(import node0: Import) throws -> AbstractSyntaxTreeNode? {
-        nil
-    }
-
-    public override func visit(implFor node0: ImplFor) throws -> AbstractSyntaxTreeNode? {
         nil
     }
 }

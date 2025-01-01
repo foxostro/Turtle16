@@ -13,19 +13,19 @@ import SnapCore
 fileprivate let u8: SymbolType = .arithmeticType(.mutableInt(.u8))
 
 final class CompilerPassImplForTests: XCTestCase {
-    typealias Identifier = Expression.Identifier
-    typealias PointerType = Expression.PointerType
-    typealias FunctionType = Expression.FunctionType
-    typealias PrimitiveType = Expression.PrimitiveType
-    typealias DynamicArrayType = Expression.DynamicArrayType
-    typealias ConstType = Expression.ConstType
-    typealias LiteralBool = Expression.LiteralBool
-    typealias StructInitializer = Expression.StructInitializer
-    typealias Bitcast = Expression.Bitcast
-    typealias Unary = Expression.Unary
-    typealias Get = Expression.Get
-    typealias Assignment = Expression.Assignment
-    typealias InitialAssignment = Expression.InitialAssignment
+    fileprivate typealias Assignment = Expression.Assignment
+    fileprivate typealias Bitcast = Expression.Bitcast
+    fileprivate typealias ConstType = Expression.ConstType
+    fileprivate typealias DynamicArrayType = Expression.DynamicArrayType
+    fileprivate typealias FunctionType = Expression.FunctionType
+    fileprivate typealias Get = Expression.Get
+    fileprivate typealias Identifier = Expression.Identifier
+    fileprivate typealias InitialAssignment = Expression.InitialAssignment
+    fileprivate typealias LiteralBool = Expression.LiteralBool
+    fileprivate typealias PointerType = Expression.PointerType
+    fileprivate typealias PrimitiveType = Expression.PrimitiveType
+    fileprivate typealias StructInitializer = Expression.StructInitializer
+    fileprivate typealias Unary = Expression.Unary
     
     let serialFakeAST = Block(children: [
         Seq(children: [

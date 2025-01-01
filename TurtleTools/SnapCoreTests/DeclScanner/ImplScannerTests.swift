@@ -11,12 +11,13 @@ import SnapCore
 import TurtleCore
 
 final class ImplScannerTests: XCTestCase {
-    let u8: SymbolType = .arithmeticType(.mutableInt(.u8))
-    typealias Identifier = Expression.Identifier
-    typealias PrimitiveType = Expression.PrimitiveType
-    typealias PointerType = Expression.PointerType
-    typealias LiteralInt = Expression.LiteralInt
-    typealias GenericTypeArgument = Expression.GenericTypeArgument
+    fileprivate typealias GenericTypeArgument = Expression.GenericTypeArgument
+    fileprivate typealias Identifier = Expression.Identifier
+    fileprivate typealias LiteralInt = Expression.LiteralInt
+    fileprivate typealias PointerType = Expression.PointerType
+    fileprivate typealias PrimitiveType = Expression.PrimitiveType
+    
+    fileprivate let u8: SymbolType = .arithmeticType(.mutableInt(.u8))
     
     func testExample() throws {
         let symbols = SymbolTable()

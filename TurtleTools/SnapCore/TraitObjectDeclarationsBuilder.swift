@@ -9,14 +9,14 @@
 import TurtleCore
 
 struct TraitObjectDeclarationsBuilder {
-    fileprivate typealias PointerType = Expression.PointerType
-    fileprivate typealias ConstType = Expression.ConstType
-    fileprivate typealias PrimitiveType = Expression.PrimitiveType
-    fileprivate typealias Identifier = Expression.Identifier
-    fileprivate typealias Get = Expression.Get
     fileprivate typealias Call = Expression.Call
+    fileprivate typealias ConstType = Expression.ConstType
     fileprivate typealias FunctionType = Expression.FunctionType
     fileprivate typealias GenericTypeApplication = Expression.GenericTypeApplication
+    fileprivate typealias Get = Expression.Get
+    fileprivate typealias Identifier = Expression.Identifier
+    fileprivate typealias PointerType = Expression.PointerType
+    fileprivate typealias PrimitiveType = Expression.PrimitiveType
     
     struct Declarations {
         let vtableDecl: StructDeclaration

@@ -14,15 +14,15 @@ import TurtleCore
 /// and an appropriate vtable declaration. Traits are erased and rewritten into
 /// direct manipulation of trait-objects.
 public class CompilerPassImplFor: CompilerPassWithDeclScan {
-    fileprivate typealias Identifier = Expression.Identifier
-    fileprivate typealias Bitcast = Expression.Bitcast
-    fileprivate typealias Unary = Expression.Unary
-    fileprivate typealias Get = Expression.Get
-    fileprivate typealias PrimitiveType = Expression.PrimitiveType
-    fileprivate typealias GenericTypeArgument = Expression.GenericTypeArgument
-    fileprivate typealias StructInitializer = Expression.StructInitializer
     fileprivate typealias Assignment = Expression.Assignment
+    fileprivate typealias Bitcast = Expression.Bitcast
+    fileprivate typealias Get = Expression.Get
+    fileprivate typealias GenericTypeArgument = Expression.GenericTypeArgument
+    fileprivate typealias Identifier = Expression.Identifier
     fileprivate typealias PointerType = Expression.PointerType
+    fileprivate typealias PrimitiveType = Expression.PrimitiveType
+    fileprivate typealias StructInitializer = Expression.StructInitializer
+    fileprivate typealias Unary = Expression.Unary
     
     fileprivate var pendingInsertions: [AbstractSyntaxTreeNode.ID : [(String, VarDeclaration)]] = [:]
     

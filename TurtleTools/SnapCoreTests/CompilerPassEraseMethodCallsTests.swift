@@ -11,14 +11,15 @@ import TurtleCore
 import SnapCore
 
 final class CompilerPassEraseMethodCallsTests: XCTestCase {
-    typealias Identifier = Expression.Identifier
-    typealias PrimitiveType = Expression.PrimitiveType
-    typealias PointerType = Expression.PointerType
-    typealias LiteralInt = Expression.LiteralInt
-    typealias Get = Expression.Get
-    typealias Call = Expression.Call
-    let i16: SymbolType = .arithmeticType(.mutableInt(.i16))
-    let u8: SymbolType = .arithmeticType(.mutableInt(.u8))
+    fileprivate typealias Call = Expression.Call
+    fileprivate typealias Get = Expression.Get
+    fileprivate typealias LiteralInt = Expression.LiteralInt
+    fileprivate typealias Identifier = Expression.Identifier
+    fileprivate typealias PrimitiveType = Expression.PrimitiveType
+    fileprivate typealias PointerType = Expression.PointerType
+    
+    fileprivate let i16: SymbolType = .arithmeticType(.mutableInt(.i16))
+    fileprivate let u8: SymbolType = .arithmeticType(.mutableInt(.u8))
     
     func testEraseMethodCalls() throws {
         let ast0 = Block(children: [

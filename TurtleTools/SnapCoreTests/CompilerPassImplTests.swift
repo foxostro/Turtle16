@@ -11,18 +11,19 @@ import TurtleCore
 import SnapCore
 
 final class CompilerPassImplTests: XCTestCase {
-    fileprivate typealias Identifier = Expression.Identifier
-    fileprivate typealias PrimitiveType = Expression.PrimitiveType
-    fileprivate typealias PointerType = Expression.PointerType
-    fileprivate typealias ConstType = Expression.ConstType
-    fileprivate typealias LiteralInt = Expression.LiteralInt
-    fileprivate typealias Get = Expression.Get
-    fileprivate typealias Call = Expression.Call
-    fileprivate typealias StructInitializer = Expression.StructInitializer
-    fileprivate typealias Bitcast = Expression.Bitcast
-    fileprivate typealias Unary = Expression.Unary
-    fileprivate typealias Binary = Expression.Binary
     fileprivate typealias Assignment = Expression.Assignment
+    fileprivate typealias Binary = Expression.Binary
+    fileprivate typealias Bitcast = Expression.Bitcast
+    fileprivate typealias Call = Expression.Call
+    fileprivate typealias ConstType = Expression.ConstType
+    fileprivate typealias Get = Expression.Get
+    fileprivate typealias Identifier = Expression.Identifier
+    fileprivate typealias LiteralInt = Expression.LiteralInt
+    fileprivate typealias PointerType = Expression.PointerType
+    fileprivate typealias PrimitiveType = Expression.PrimitiveType
+    fileprivate typealias StructInitializer = Expression.StructInitializer
+    fileprivate typealias Unary = Expression.Unary
+    
     fileprivate let i16: SymbolType = .arithmeticType(.mutableInt(.i16))
     fileprivate let u8: SymbolType = .arithmeticType(.mutableInt(.u8))
     fileprivate let u16: SymbolType = .arithmeticType(.mutableInt(.u16))

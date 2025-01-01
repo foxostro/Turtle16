@@ -1,26 +1,15 @@
 //
-//  SnapAbstractSyntaxTreeCompilerImplPass.swift
+//  CompilerPassEraseVar.swift
 //  SnapCore
 //
-//  Created by Andrew Fox on 8/3/21.
-//  Copyright © 2021 Andrew Fox. All rights reserved.
+//  Created by Andrew Fox on 1/1/25.
+//  Copyright © 2025 Andrew Fox. All rights reserved.
 //
 
 import TurtleCore
 
-// Compiles an Abstract Syntax Tree to another, simpler AST and symbol table.
-// Accepts an AST and walks the tree. For each matched node, it may rewrite
-// that node in terms of simpler concepts, and it may update the symbol table
-// to record additional information derived from the program.
-//
-// SnapAbstractSyntaxTreeCompilerImplPass delegates most the specific work to
-// various subcompilers classes.
-public class SnapAbstractSyntaxTreeCompilerImplPass: CompilerPassWithDeclScan {
-    public override func visit(expressionStatement node: Expression) throws -> AbstractSyntaxTreeNode? {
-        try RvalueExpressionTypeChecker(symbols: symbols!, globalEnvironment: globalEnvironment).check(expression: node)
-        return node
-    }
-    
+/// Compiler pass to lower and erase VarDeclaration (e.g., var and let)
+public class CompilerPassEraseVar: CompilerPassWithDeclScan {
     public override func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
         let node1 = VarDeclaration(
             sourceAnchor: node0.sourceAnchor,
@@ -40,7 +29,7 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: CompilerPassWithDeclScan {
         .compile(node1)
         return node2
     }
-
+    
     public override func visit(struct node0: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
         nil
     }
@@ -55,9 +44,8 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: CompilerPassWithDeclScan {
 }
 
 extension AbstractSyntaxTreeNode {
-    // Rewrite higher-level nodes in terms of trees of lower-level nodes
-    public func implPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        let result = try SnapAbstractSyntaxTreeCompilerImplPass(globalEnvironment: globalEnvironment).run(self)
-        return result
+    /// Compiler pass to lower and erase VarDeclaration (e.g., var and let)
+    public func eraseVarPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassEraseVar(globalEnvironment: globalEnvironment).run(self)
     }
 }

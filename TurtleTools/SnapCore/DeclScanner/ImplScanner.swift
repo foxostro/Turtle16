@@ -27,25 +27,57 @@ public class ImplScanner: NSObject {
     
     public func scan(impl node: Impl) throws {
         if node.isGeneric {
-            guard let app = node.structTypeExpr as? Expression.GenericTypeApplication else {
-                throw CompilerError(sourceAnchor: node.structTypeExpr.sourceAnchor, message: "expected a generic type application: `\(node.structTypeExpr)'")
-            }
-            
-            let genericStructType = try parent.resolveTypeOfIdentifier(sourceAnchor: app.sourceAnchor, identifier: app.identifier.identifier)
-            let typ = genericStructType.unwrapGenericStructType()
-            typ.implNodes.append(node)
+            try doGenericCase(node)
         }
         else {
-            let implWhat = try typeChecker.check(expression: node.structTypeExpr)
-            
-            switch implWhat {
-            case .constStructType(let typ), .structType(let typ):
-                try scanImplStruct(node, typ)
-                
-            default:
-                fatalError("unsupported expression: \(node)")
-            }
+            try doNonGenericCase(node)
         }
+    }
+    
+    private func doGenericCase(_ node: Impl) throws {
+        assert(node.isGeneric)
+        
+        guard let app = node.structTypeExpr as? Expression.GenericTypeApplication else {
+            throw CompilerError(
+                sourceAnchor: node.structTypeExpr.sourceAnchor,
+                message: "expected a generic type application: `\(node.structTypeExpr)'")
+        }
+        
+        let typ = try parent.resolveTypeOfIdentifier(
+            sourceAnchor: app.sourceAnchor,
+            identifier: app.identifier.identifier)
+            .unwrapGenericStructType()
+        
+        typ.implNodes.append(node)
+    }
+    
+    private func doNonGenericCase(_ node: Impl) throws {
+        assert(!node.isGeneric)
+        
+        let type = try typeChecker.check(expression: node.structTypeExpr)
+        guard let originalStructType = type.maybeUnwrapStructType() else {
+            fatalError("unsupported expression: \(node)")
+        }
+        let name = originalStructType.name
+        
+        // If the struct type was not defined in the current scope then
+        // clone it for the current scope. This ensures that changes we make
+        // in an Impl block do not propagate outside the current scope.
+        let structType: StructType
+        if parent.typeTable.contains(where: { $0.key == name }) {
+            structType = originalStructType
+        }
+        else {
+            let shadower: SymbolType = switch type {
+            case .constStructType(let typ): .constStructType(typ.clone())
+            case .structType(let typ): .structType(typ.clone())
+            default: fatalError("unreachable")
+            }
+            parent.bind(identifier: name, symbolType: shadower)
+            structType = shadower.unwrapStructType()
+        }
+        
+        try scanImplStruct(node, structType)
     }
     
     private func scanImplStruct(_ node: Impl, _ typ: StructType) throws {
@@ -55,12 +87,12 @@ public class ImplScanner: NSObject {
         
         for child in node.children {
             let identifier = child.identifier.identifier
-            if typ.symbols.exists(identifier: identifier) {
-                throw CompilerError(sourceAnchor: child.sourceAnchor,
-                                    message: "function redefines existing symbol: `\(identifier)'")
+            guard !typ.symbols.exists(identifier: identifier) else {
+                throw CompilerError(
+                    sourceAnchor: child.sourceAnchor,
+                    message: "function redefines existing symbol: `\(identifier)'")
             }
             
-            // Enqueue the function to be compiled later
             let scanner = FunctionScanner(
                 globalEnvironment: globalEnvironment,
                 symbols: symbols, enclosingImplId: node.id)

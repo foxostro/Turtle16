@@ -695,6 +695,12 @@ public class StructType: NSObject {
         self.associatedTraitType = associatedTraitType
     }
     
+    public func clone() -> StructType {
+        StructType(name: name,
+                   symbols: symbols.clone(),
+                   associatedTraitType: associatedTraitType)
+    }
+    
     public override var description: String {
         var result = """
             struct \(name) {

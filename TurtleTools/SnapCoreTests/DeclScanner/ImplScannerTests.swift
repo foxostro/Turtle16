@@ -11,12 +11,18 @@ import SnapCore
 import TurtleCore
 
 final class ImplScannerTests: XCTestCase {
+    let u8: SymbolType = .arithmeticType(.mutableInt(.u8))
+    typealias Identifier = Expression.Identifier
+    typealias PrimitiveType = Expression.PrimitiveType
+    typealias PointerType = Expression.PointerType
+    typealias LiteralInt = Expression.LiteralInt
+    
     func testExample() throws {
         let symbols = SymbolTable()
         let globalEnvironment = GlobalEnvironment()
         
         let foo = StructDeclaration(
-            identifier: Expression.Identifier("Foo"),
+            identifier: Identifier("Foo"),
             members: [],
             visibility: .privateVisibility)
         let functionSymbols = SymbolTable(
@@ -27,22 +33,22 @@ final class ImplScannerTests: XCTestCase {
             frameLookupMode: .inherit)
         let impl = Impl(
             typeArguments: [],
-            structTypeExpr: Expression.Identifier("Foo"),
+            structTypeExpr: Identifier("Foo"),
             children: [
                 FunctionDeclaration(
-                    identifier: Expression.Identifier("bar"),
+                    identifier: Identifier("bar"),
                     functionType: Expression.FunctionType(
                         name: "bar",
-                        returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
+                        returnType: PrimitiveType(u8),
                         arguments: [
-                            Expression.PointerType(Expression.Identifier("Foo"))
+                            PointerType(Identifier("Foo"))
                         ]),
                     argumentNames: ["baz"],
                     typeArguments: [],
                     body: Block(
                         symbols: functionBodySymbols,
                         children: [
-                            Return(Expression.LiteralInt(0))
+                            Return(LiteralInt(0))
                         ]),
                     symbols: functionSymbols)
             ])
@@ -52,27 +58,22 @@ final class ImplScannerTests: XCTestCase {
             globalEnvironment: globalEnvironment)
         .compile(foo)
         
-        let scanner = ImplScanner(globalEnvironment: globalEnvironment, symbols: symbols)
-        try scanner.scan(impl: impl)
+        try ImplScanner(
+            globalEnvironment: globalEnvironment,
+            symbols: symbols)
+            .scan(impl: impl)
         
         let fooType = try symbols.resolveType(identifier: "Foo")
-        let fooStructType: StructType? = switch fooType {
-        case .structType(let typ):
-            typ
-        default:
-            nil
-        }
-        let barTyp = try fooStructType?.symbols.resolve(identifier: "bar").type
-        let funTyp: FunctionType? = switch barTyp {
-        case .function(let typ):
-            typ
-        default:
-            nil
-        }
+        let funTyp = try fooType
+            .maybeUnwrapStructType()?
+            .symbols
+            .resolve(identifier: "bar")
+            .type
+            .maybeUnwrapFunctionType()
         
         XCTAssertEqual(funTyp?.name, "bar")
         XCTAssertEqual(funTyp?.arguments, [.pointer(fooType)])
-        XCTAssertEqual(funTyp?.returnType, .arithmeticType(.mutableInt(.u8)))
+        XCTAssertEqual(funTyp?.returnType, u8)
     }
     
     func testRedefinesExistingSymbol() throws {
@@ -80,11 +81,11 @@ final class ImplScannerTests: XCTestCase {
         let globalEnvironment = GlobalEnvironment()
         
         let foo = StructDeclaration(
-            identifier: Expression.Identifier("Foo"),
+            identifier: Identifier("Foo"),
             members: [
                 StructDeclaration.Member(
                     name: "bar",
-                    type: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
+                    type: PrimitiveType(.arithmeticType(.mutableInt(.u8))))
             ],
             visibility: .privateVisibility)
         _ = try SnapSubcompilerStructDeclaration(
@@ -98,31 +99,94 @@ final class ImplScannerTests: XCTestCase {
         
         let impl = Impl(
             typeArguments: [],
-            structTypeExpr: Expression.Identifier("Foo"),
+            structTypeExpr: Identifier("Foo"),
             children: [
                 FunctionDeclaration(
-                    identifier: Expression.Identifier("bar"),
+                    identifier: Identifier("bar"),
                     functionType: Expression.FunctionType(
                         name: "bar",
-                        returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
+                        returnType: PrimitiveType(u8),
                         arguments: [
-                            Expression.PointerType(Expression.Identifier("Foo"))
+                            PointerType(Identifier("Foo"))
                         ]),
                     argumentNames: ["baz"],
                     typeArguments: [],
                     body: Block(
                         symbols: functionBodySymbols,
                         children: [
-                            Return(Expression.LiteralInt(0))
+                            Return(LiteralInt(0))
                         ]),
                     symbols: functionSymbols)
             ])
         
         let scanner = ImplScanner(globalEnvironment: globalEnvironment, symbols: symbols)
         XCTAssertThrowsError(try scanner.scan(impl: impl)) {
-            
             let error = $0 as? CompilerError
             XCTAssertEqual(error?.message, "function redefines existing symbol: `bar'")
+        }
+    }
+    
+    // The methods declared in an Impl block exist only in the current scope.
+    // When execution exits the scope, the methods disappear in the same manner
+    // as any other type or symbol defined within that scope.
+    func testImplScoping() throws {
+        let globalEnvironment = GlobalEnvironment()
+        
+        let outerBlock = Block(children: [
+                StructDeclaration(
+                    identifier: Identifier("Foo"),
+                    members: [],
+                    visibility: .privateVisibility),
+                Block(children: [
+                    Impl(
+                        typeArguments: [],
+                        structTypeExpr: Identifier("Foo"),
+                        children: [
+                            FunctionDeclaration(
+                                identifier: Identifier("bar"),
+                                functionType: Expression.FunctionType(
+                                    name: "bar",
+                                    returnType: PrimitiveType(u8),
+                                    arguments: [
+                                        PointerType(Identifier("Foo"))
+                                    ]),
+                                argumentNames: ["baz"],
+                                typeArguments: [],
+                                body: Block(children: [
+                                    Return(LiteralInt(0))
+                                ]))
+                        ])
+                ])
+            ])
+            .reconnect(parent: nil)
+        
+        let foo = outerBlock.children[0] as! StructDeclaration
+        let innerBlock = outerBlock.children[1] as! Block
+        let impl = innerBlock.children[0] as! Impl
+        
+        _ = try SnapSubcompilerStructDeclaration(
+            symbols: outerBlock.symbols,
+            globalEnvironment: globalEnvironment)
+        .compile(foo)
+        
+        try ImplScanner(
+            globalEnvironment: globalEnvironment,
+            symbols: innerBlock.symbols)
+            .scan(impl: impl)
+        
+        let tryResolveBar = { (block: Block) in
+            _ = try block
+                .symbols
+                .resolveType(identifier: "Foo")
+                .maybeUnwrapStructType()?
+                .symbols
+                .resolve(identifier: "bar")
+        }
+        
+        XCTAssertNoThrow(try tryResolveBar(innerBlock))
+        XCTAssertThrowsError(try tryResolveBar(outerBlock)) {
+            let error = $0 as? CompilerError
+            XCTAssertEqual(error?.message, "use of unresolved identifier: `bar'")
         }
     }
 }

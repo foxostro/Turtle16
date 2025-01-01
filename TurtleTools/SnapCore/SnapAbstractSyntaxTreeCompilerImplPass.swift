@@ -21,12 +21,6 @@ public class SnapAbstractSyntaxTreeCompilerImplPass: CompilerPassWithDeclScan {
         return node
     }
     
-    public override func visit(assert node0: Assert) throws -> AbstractSyntaxTreeNode? {
-        let node1 = try SnapSubcompilerAssert().compile(symbols, node0)
-        let node2 = try super.visit(node1)
-        return node2
-    }
-    
     public override func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
         let node1 = VarDeclaration(
             sourceAnchor: node0.sourceAnchor,

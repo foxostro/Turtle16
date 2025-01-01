@@ -1,5 +1,5 @@
 //
-//  CompilerPassEraseVar.swift
+//  CompilerPassLowerVarDecl.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 1/1/25.
@@ -9,8 +9,12 @@
 import TurtleCore
 
 /// Compiler pass to lower and erase VarDeclaration (e.g., var and let)
-public class CompilerPassEraseVar: CompilerPassWithDeclScan {
+public class CompilerPassLowerVarDecl: CompilerPassWithDeclScan {
     public override func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
+        // Our super class wants to return the VarDeclaration unmodified after
+        // scanning it and updating the environment with the new symbol. Here,
+        // however, we need to lower the node to include the appropriate
+        // assignment expression.
         let node1 = VarDeclaration(
             sourceAnchor: node0.sourceAnchor,
             identifier: try visit(identifier: node0.identifier) as! Expression.Identifier,
@@ -23,29 +27,24 @@ public class CompilerPassEraseVar: CompilerPassWithDeclScan {
             storage: node0.storage,
             isMutable: node0.isMutable,
             visibility: node0.visibility)
-        let node2 = try SnapSubcompilerVarDeclaration(
+        let assignment = try SnapSubcompilerVarDeclaration(
             symbols: symbols!,
             globalEnvironment: globalEnvironment)
-        .compile(node1)
-        return node2
-    }
-    
-    public override func visit(struct node0: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
-        nil
-    }
-
-    public override func visit(typealias node0: Typealias) throws -> AbstractSyntaxTreeNode? {
-        nil
-    }
-
-    public override func visit(import node0: Import) throws -> AbstractSyntaxTreeNode? {
-        nil
+            .compile(node1)
+        var children: [AbstractSyntaxTreeNode] = [
+            node1.withExpression(nil)
+        ]
+        if let assignment {
+            children.append(assignment)
+        }
+        let seq = Seq(sourceAnchor: node0.sourceAnchor, children: children)
+        return seq
     }
 }
 
 extension AbstractSyntaxTreeNode {
     /// Compiler pass to lower and erase VarDeclaration (e.g., var and let)
-    public func eraseVarPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassEraseVar(globalEnvironment: globalEnvironment).run(self)
+    public func lowerVarDeclPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassLowerVarDecl(globalEnvironment: globalEnvironment).run(self)
     }
 }

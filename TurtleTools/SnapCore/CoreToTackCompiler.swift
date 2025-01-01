@@ -107,10 +107,6 @@ public class CoreToTackCompiler: CompilerPass {
         return node2
     }
     
-    public override func visit(varDecl node: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
-        throw CompilerError(sourceAnchor: node.sourceAnchor, message: "internal compiler error: VarDeclaration should have been erased before reaching CoreToTackCompiler")
-    }
-    
     public override func visit(block block0: Block) throws -> AbstractSyntaxTreeNode? {
         let block1 = try super.visit(block: block0) as! Block
         let seq = Seq(sourceAnchor: block1.sourceAnchor, children: block1.children)
@@ -3074,7 +3070,24 @@ public class CoreToTackCompiler: CompilerPass {
         return Seq(sourceAnchor: eseq.sourceAnchor, children: children)
     }
     
-    public override func visit(struct: StructDeclaration) -> AbstractSyntaxTreeNode? {
+    public override func visit(varDecl node: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
+        guard node.expression == nil else {
+            throw CompilerError(
+                sourceAnchor: node.sourceAnchor,
+                message: "internal compiler error: VarDeclaration's expression should have been erased already: `\(node)'")
+        }
+        return nil
+    }
+    
+    public override func visit(struct node0: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
+        nil
+    }
+
+    public override func visit(typealias node0: Typealias) throws -> AbstractSyntaxTreeNode? {
+        nil
+    }
+
+    public override func visit(import node0: Import) throws -> AbstractSyntaxTreeNode? {
         nil
     }
 }

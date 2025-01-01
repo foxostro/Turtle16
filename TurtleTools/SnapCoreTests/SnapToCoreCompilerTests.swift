@@ -10,11 +10,26 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class SnapToCoreCompilerTests: XCTestCase {
+final class SnapToCoreCompilerTests: XCTestCase {
+    fileprivate typealias Bitcast = Expression.Bitcast
+    fileprivate typealias ConstType = Expression.ConstType
+    fileprivate typealias Identifier = Expression.Identifier
+    fileprivate typealias InitialAssignment = Expression.InitialAssignment
+    fileprivate typealias PointerType = Expression.PointerType
+    fileprivate typealias PrimitiveType = Expression.PrimitiveType
+    fileprivate typealias StructInitializer = Expression.StructInitializer
+    fileprivate typealias Unary = Expression.Unary
+    
     func testExample() throws {
-        let input = TopLevel(children: [CommentNode(string: "")])
-        let expected = Block(symbols: SymbolTable(),
-                             children: [CommentNode(string: "")])
+        let input = TopLevel(
+            children: [
+                CommentNode(string: "")
+            ])
+        let expected = Block(
+            symbols: SymbolTable(),
+            children: [
+                CommentNode(string: "")
+            ])
         
         let actual = try SnapToCoreCompiler()
             .compile(input)
@@ -30,52 +45,94 @@ class SnapToCoreCompilerTests: XCTestCase {
     }
     
     func testRvalue_convert_pointer_to_trait() throws {
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
+        let globalEnvironment = GlobalEnvironment()
         let symbols = SymbolTable()
 
         let ast0 = Block(symbols: symbols, children: [
-            TraitDeclaration(identifier: Expression.Identifier("Serial"),
-                             members: [],
-                             visibility: .privateVisibility),
-            StructDeclaration(identifier: Expression.Identifier("SerialFake"),
-                              members: []),
-            ImplFor(typeArguments: [],
-                    traitTypeExpr: Expression.Identifier("Serial"),
-                    structTypeExpr: Expression.Identifier("SerialFake"),
-                    children: []),
-            VarDeclaration(identifier: Expression.Identifier("serialFake"),
-                           explicitType: Expression.Identifier("SerialFake"),
-                           expression: nil,
-                           storage: .staticStorage,
-                           isMutable: true),
-            VarDeclaration(identifier: Expression.Identifier("serial"),
-                           explicitType: Expression.Identifier("Serial"),
-                           expression: Expression.Unary(op: .ampersand, expression: Expression.Identifier("serialFake")),
-                           storage: .staticStorage,
-                           isMutable: false)
+            TraitDeclaration(
+                identifier: Identifier("Serial"),
+                members: [],
+                visibility: .privateVisibility),
+            StructDeclaration(
+                identifier: Identifier("SerialFake"),
+                members: []),
+            ImplFor(
+                typeArguments: [],
+                traitTypeExpr: Identifier("Serial"),
+                structTypeExpr: Identifier("SerialFake"),
+                children: []),
+            VarDeclaration(
+                identifier: Identifier("serialFake"),
+                explicitType: Identifier("SerialFake"),
+                expression: nil,
+                storage: .staticStorage,
+                isMutable: true),
+            VarDeclaration(
+                identifier: Identifier("serial"),
+                explicitType: Identifier("Serial"),
+                expression: Unary(
+                    op: .ampersand,
+                    expression: Identifier("serialFake")),
+                storage: .staticStorage,
+                isMutable: false)
         ])
         
         let expected = Block(children: [
-            Expression.InitialAssignment(
-                lexpr: Expression.Identifier("__Serial_SerialFake_vtable_instance"),
-                rexpr: Expression.StructInitializer(
-                    expr: Expression.Identifier("__Serial_vtable"),
+            StructDeclaration(
+                identifier: Identifier("__Serial_vtable"),
+                members: []),
+            StructDeclaration(
+                identifier: Identifier("__Serial_object"),
+                members: [
+                    StructDeclaration.Member(
+                        name: "object",
+                        type: PointerType(PrimitiveType(.void))),
+                    StructDeclaration.Member(
+                        name: "vtable",
+                        type: PointerType(ConstType(Identifier("__Serial_vtable"))))
+                ],
+                associatedTraitType: "Serial"),
+            VarDeclaration(
+                identifier: Identifier("__Serial_SerialFake_vtable_instance"),
+                explicitType: Identifier("__Serial_vtable"),
+                expression: nil,
+                storage: .staticStorage,
+                isMutable: false),
+            InitialAssignment(
+                lexpr: Identifier("__Serial_SerialFake_vtable_instance"),
+                rexpr: StructInitializer(
+                    expr: Identifier("__Serial_vtable"),
                     arguments: [])),
-            Expression.InitialAssignment(
-                lexpr: Expression.Identifier("serial"),
-                rexpr: Expression.StructInitializer(
-                    identifier: Expression.Identifier("__Serial_object"),
+            StructDeclaration(
+                identifier: Identifier("SerialFake"),
+                members: []),
+            VarDeclaration(
+                identifier: Identifier("serialFake"),
+                explicitType: Identifier("SerialFake"),
+                expression: nil,
+                storage: .staticStorage,
+                isMutable: true),
+            VarDeclaration(
+                identifier: Identifier("serial"),
+                explicitType: Identifier("__Serial_object"),
+                expression: nil,
+                storage: .staticStorage,
+                isMutable: false),
+            InitialAssignment(
+                lexpr: Identifier("serial"),
+                rexpr: StructInitializer(
+                    identifier: Identifier("__Serial_object"),
                     arguments: [
-                        Expression.StructInitializer.Argument(
+                        StructInitializer.Argument(
                             name: "object",
-                            expr: Expression.Bitcast(
-                                expr: Expression.Unary(
+                            expr: Bitcast(
+                                expr: Unary(
                                     op: .ampersand,
-                                    expression: Expression.Identifier("serialFake")),
-                                targetType: Expression.PointerType(Expression.PrimitiveType(.void)))),
-                        Expression.StructInitializer.Argument(
+                                    expression: Identifier("serialFake")),
+                                targetType: PointerType(PrimitiveType(.void)))),
+                        StructInitializer.Argument(
                             name: "vtable",
-                            expr: Expression.Identifier("__Serial_SerialFake_vtable_instance"))
+                            expr: Identifier("__Serial_SerialFake_vtable_instance"))
                     ]))
         ])
             .reconnect(parent: nil)

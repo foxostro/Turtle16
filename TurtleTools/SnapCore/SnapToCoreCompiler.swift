@@ -66,7 +66,7 @@ public class SnapToCoreCompiler: NSObject {
                 .returnPass(globalEnvironment)?
                 .whilePass(globalEnvironment)?
                 .ifPass(globalEnvironment)?
-                .eraseVarPass(globalEnvironment)?
+                .lowerVarDeclPass(globalEnvironment)?
                 .flatten()
         }
         .flatMap { ast in

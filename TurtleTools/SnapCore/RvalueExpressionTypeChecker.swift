@@ -1483,7 +1483,19 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
     
     public func check(typeOf expr: Expression.TypeOf) throws -> SymbolType {
-        return try rvalueContext().check(expression: expr.expr)
+        let type0 = try rvalueContext().check(expression: expr.expr)
+        
+        let type1: SymbolType = switch type0 {
+        case .arithmeticType(.compTimeInt(let constantValue)):
+            .arithmeticType(.mutableInt(
+                IntClass.smallestClassContaining(value: constantValue)!))
+        case .bool(.compTimeBool):
+            .bool(.mutableBool)
+        default:
+            type0
+        }
+        
+        return type1
     }
     
     public func check(bitcast expr: Expression.Bitcast) throws -> SymbolType {

@@ -9,14 +9,13 @@
 import TurtleCore
 import TurtleSimulatorCore
 
-public class CoreToTackCompiler: CompilerPass {
+public class CoreToTackCompiler: CompilerPassWithDeclScan {
     public typealias Register = TackInstruction.Register
     public typealias RegisterPointer = TackInstruction.RegisterPointer
     public typealias RegisterType = TackInstruction.RegisterType
     public typealias Options = SnapCompilerFrontEnd.Options
     
     private let options: Options
-    private let globalEnvironment: GlobalEnvironment
     private var subroutines: [Subroutine] = []
     public internal(set) var registerStack: [Register] = []
     private var nextRegisterIndex = 0
@@ -70,7 +69,6 @@ public class CoreToTackCompiler: CompilerPass {
     public init(symbols: SymbolTable = SymbolTable(),
                 globalEnvironment: GlobalEnvironment,
                 options: CoreToTackCompiler.Options = Options()) {
-        self.globalEnvironment = globalEnvironment
         self.options = options
         kUnionTypeTagOffset = 0
         kUnionPayloadOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .arithmeticType(.mutableInt(.u16)))
@@ -83,7 +81,7 @@ public class CoreToTackCompiler: CompilerPass {
                 (kSliceCount, Symbol(type: kSliceCountType, offset: kSliceCountOffset))
             ])
         kSliceType = .structType(StructType(name: kSliceName, symbols: structSymbols))
-        super.init(symbols)
+        super.init(symbols: symbols, globalEnvironment: globalEnvironment)
     }
     
     public override func run(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
@@ -3070,24 +3068,34 @@ public class CoreToTackCompiler: CompilerPass {
         return Seq(sourceAnchor: eseq.sourceAnchor, children: children)
     }
     
-    public override func visit(varDecl node: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
-        guard node.expression == nil else {
+    public override func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
+        guard node0.expression == nil else {
             throw CompilerError(
-                sourceAnchor: node.sourceAnchor,
-                message: "internal compiler error: VarDeclaration's expression should have been erased already: `\(node)'")
+                sourceAnchor: node0.sourceAnchor,
+                message: "internal compiler error: VarDeclaration's expression should have been erased already: `\(node0)'")
         }
+        _ = try super.visit(varDecl: node0)
         return nil
     }
     
     public override func visit(struct node0: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
-        nil
+        _ = try super.visit(struct: node0)
+        return nil
     }
 
     public override func visit(typealias node0: Typealias) throws -> AbstractSyntaxTreeNode? {
-        nil
+        _ = try super.visit(typealias: node0)
+        return nil
     }
 
     public override func visit(import node0: Import) throws -> AbstractSyntaxTreeNode? {
-        nil
+        _ = try super.visit(import: node0)
+        return nil
+    }
+    
+    public override func visit(module node0: Module) throws -> AbstractSyntaxTreeNode? {
+        let node1 = try super.visit(module: node0) as! Module
+        let node2 = try visit(block: node1.block)
+        return node2
     }
 }

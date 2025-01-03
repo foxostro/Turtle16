@@ -10,11 +10,22 @@ import TurtleCore
 
 /// Compiler pass to lower and erase VarDeclaration (e.g., var and let)
 public class CompilerPassLowerVarDecl: CompilerPassWithDeclScan {
+    private var rvalueContext: RvalueExpressionTypeChecker {
+        RvalueExpressionTypeChecker(
+            symbols: symbols!,
+            globalEnvironment: globalEnvironment)
+    }
+    
+    private var typeContext: RvalueExpressionTypeChecker {
+        TypeContextTypeChecker(
+            symbols: symbols!,
+            globalEnvironment: globalEnvironment)
+    }
+    
+    /// Replace each VarDeclaration with 1) a VarDeclaration that has no
+    /// expression and simply updates the symbol table, and 2) an assignment if
+    /// there was an expression.
     public override func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
-        // Our super class wants to return the VarDeclaration unmodified after
-        // scanning it and updating the environment with the new symbol. Here,
-        // however, we need to lower the node to include the appropriate
-        // assignment expression.
         let node1 = VarDeclaration(
             sourceAnchor: node0.sourceAnchor,
             identifier: try visit(identifier: node0.identifier) as! Expression.Identifier,
@@ -27,18 +38,73 @@ public class CompilerPassLowerVarDecl: CompilerPassWithDeclScan {
             storage: node0.storage,
             isMutable: node0.isMutable,
             visibility: node0.visibility)
-        let assignment = try SnapSubcompilerVarDeclaration(
+        
+        let assignmentExpr = try SnapSubcompilerVarDeclaration(
             symbols: symbols!,
             globalEnvironment: globalEnvironment)
             .compile(node1)
+        
+        if let assignmentExpr {
+            _ = try rvalueContext.check(assignment: assignmentExpr)
+        }
+        
+        guard let explicitType = try explicitTypeExpression(varDecl: node1) else {
+            throw unableToDeduceType(varDecl: node1)
+        }
+        
+        let node2 = node1
+            .withExpression(nil)
+            .withExplicitType(explicitType)
+        
         var children: [AbstractSyntaxTreeNode] = [
-            node1.withExpression(nil)
+            node2
         ]
-        if let assignment {
-            children.append(assignment)
+        if let assignmentExpr {
+            children.append(assignmentExpr)
         }
         let seq = Seq(sourceAnchor: node0.sourceAnchor, children: children)
         return seq
+    }
+    
+    fileprivate func unableToDeduceType(varDecl node: VarDeclaration) -> CompilerError {
+        CompilerError(
+            sourceAnchor: node.identifier.sourceAnchor,
+            format: "unable to deduce type of %@ `%@'",
+            node.isMutable ? "variable" : "constant",
+            node.identifier.identifier)
+    }
+    
+    fileprivate func explicitTypeExpression(varDecl node: VarDeclaration) throws -> Expression? {
+        let rtypeExpr = rtypeExpr(varDecl: node)
+        
+        guard let ltypeExpr0 = node.explicitType else {
+            return rtypeExpr
+        }
+        
+        let ltype0 = try typeContext.check(expression: ltypeExpr0)
+        let ltypeExpr1 = if ltype0.isArrayType && ltype0.arrayCount == nil {
+            rtypeExpr
+        }
+        else {
+            ltypeExpr0
+        }
+        
+        return ltypeExpr1
+    }
+    
+    fileprivate func rtypeExpr(varDecl node: VarDeclaration) -> Expression? {
+        guard let expr = node.expression else { return nil }
+        let type0 = Expression.TypeOf(
+            sourceAnchor: expr.sourceAnchor,
+            expr: expr)
+        let type1 = if node.isMutable {
+            type0
+        } else {
+            Expression.ConstType(
+                sourceAnchor: type0.sourceAnchor,
+                typ: type0)
+        }
+        return type1
     }
 }
 

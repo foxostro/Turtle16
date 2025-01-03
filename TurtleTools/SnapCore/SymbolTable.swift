@@ -217,6 +217,15 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         maybeUnwrapStructType() != nil
     }
     
+    public var isArrayType: Bool {
+        switch self {
+        case .array:
+            true
+        default:
+            false
+        }
+    }
+    
     public var arrayCount: Int? {
         switch self {
         case .array(count: let count, elementType: _):

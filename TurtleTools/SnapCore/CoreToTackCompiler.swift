@@ -29,10 +29,10 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
     private let kSliceName = "Slice"
     private let kSliceBase = "base"
     private let kSliceBaseAddressOffset: Int
-    private let kSliceBaseAddressType = SymbolType.arithmeticType(.mutableInt(.u16))
+    private let kSliceBaseAddressType = SymbolType.u16
     private let kSliceCount = "count"
     private let kSliceCountOffset: Int
-    private let kSliceCountType = SymbolType.arithmeticType(.mutableInt(.u16))
+    private let kSliceCountType = SymbolType.u16
     private let kSliceType: SymbolType
     
     private let kRangeName = "Range"
@@ -71,7 +71,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
                 options: CoreToTackCompiler.Options = Options()) {
         self.options = options
         kUnionTypeTagOffset = 0
-        kUnionPayloadOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .arithmeticType(.mutableInt(.u16)))
+        kUnionPayloadOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .u16)
         kSliceBaseAddressOffset = 0
         kSliceCountOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .pointer(.void))
         let structSymbols = SymbolTable(
@@ -546,7 +546,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
                 expression: expr.subscriptable),
             targetType: Expression.PrimitiveType(
                 sourceAnchor: expr.sourceAnchor,
-                typ: .arithmeticType(.mutableInt(.u16))))
+                typ: .u16))
         
         let baseExpr: Expression
         if let begin = maybeBegin {
@@ -1146,7 +1146,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
                 value: expr.value.count),
             elementType: Expression.PrimitiveType(
                 sourceAnchor: expr.sourceAnchor,
-                typ: .arithmeticType(.mutableInt(.u8))))
+                typ: .u8))
         let tempArrayId = try makeCompilerTemporary(expr.sourceAnchor, arrayType)
         return Seq(sourceAnchor: expr.sourceAnchor, children: [
             try lvalue(identifier: tempArrayId),
@@ -1271,7 +1271,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
                 sourceAnchor: rexpr.sourceAnchor,
                 symbols: symbols)
             
-        case (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.mutableInt(.u8))),
+        case (.arithmeticType(.compTimeInt(let a)), .u8),
              (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.u8))):
             // The expression produces a value that is known at compile time.
             // Add an instruction to load a register with that known value.
@@ -1282,7 +1282,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
                 sourceAnchor: rexpr.sourceAnchor,
                 symbols: symbols)
             
-        case (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.mutableInt(.i8))),
+        case (.arithmeticType(.compTimeInt(let a)), .i8),
              (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.i8))):
             // The expression produces a value that is known at compile time.
             // Add an instruction to load a register with that known value.
@@ -1293,7 +1293,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
                 sourceAnchor: rexpr.sourceAnchor,
                 symbols: symbols)
             
-        case (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.mutableInt(.i16))),
+        case (.arithmeticType(.compTimeInt(let a)), .i16),
              (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.i16))):
             // The expression produces a value that is known at compile time.
             // Add an instruction to load a register with that known value.
@@ -1304,7 +1304,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
                 sourceAnchor: rexpr.sourceAnchor,
                 symbols: symbols)
             
-        case (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.mutableInt(.u16))),
+        case (.arithmeticType(.compTimeInt(let a)), .u16),
              (.arithmeticType(.compTimeInt(let a)), .arithmeticType(.immutableInt(.u16))):
             // The expression produces a value that is known at compile time.
             // Add an instruction to load a register with that known value.
@@ -1793,8 +1793,8 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
                         symbols: symbols)
                 ]
                 
-            case (.arithmeticType(.mutableInt(.u8)), .minus),
-                 (.arithmeticType(.mutableInt(.i8)), .minus):
+            case (.u8, .minus),
+                 (.i8, .minus):
                 let a = nextRegister(type: .b)
                 let c = nextRegister(type: .b)
                 pushRegister(c)
@@ -1809,8 +1809,8 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
                         symbols: symbols)
                 ]
                 
-            case (.arithmeticType(.mutableInt(.u16)), .minus),
-                 (.arithmeticType(.mutableInt(.i16)), .minus):
+            case (.u16, .minus),
+                 (.i16, .minus):
                 let a = nextRegister(type: .w)
                 let c = nextRegister(type: .w)
                 pushRegister(c)
@@ -1825,8 +1825,8 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
                         symbols: symbols)
                 ]
                 
-            case (.arithmeticType(.mutableInt(.u8)), .tilde),
-                 (.arithmeticType(.mutableInt(.i8)), .tilde):
+            case (.u8, .tilde),
+                 (.i8, .tilde):
                 let c = nextRegister(type: .b)
                 pushRegister(c)
                 instructions += [
@@ -1836,8 +1836,8 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
                         symbols: symbols)
                 ]
                 
-            case (.arithmeticType(.mutableInt(.u16)), .tilde),
-                 (.arithmeticType(.mutableInt(.i16)), .tilde):
+            case (.u16, .tilde),
+                 (.i16, .tilde):
                 let c = nextRegister(type: .w)
                 pushRegister(c)
                 instructions += [

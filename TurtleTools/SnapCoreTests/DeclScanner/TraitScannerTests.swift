@@ -27,7 +27,7 @@ final class TraitScannerTests: XCTestCase {
     }
     
     func testCompileTraitAddsToTypeTable_HasMethod() throws {
-        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [
+        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.u8), arguments: [
             Expression.PointerType(Expression.Identifier("Foo"))
         ])))
         let ast = TraitDeclaration(identifier: Expression.Identifier("Foo"),
@@ -47,7 +47,7 @@ final class TraitScannerTests: XCTestCase {
         members.enclosingFunctionNameMode = .set("Foo")
         let frame = Frame()
         members.frameLookupMode = .set(frame)
-        let memberType: SymbolType = .pointer(.function(FunctionType(returnType: .arithmeticType(.mutableInt(.u8)), arguments: [.pointer(expected)])))
+        let memberType: SymbolType = .pointer(.function(FunctionType(returnType: .u8, arguments: [.pointer(expected)])))
         let sizeOfMemoryType = memoryLayoutStrategy.sizeof(type: memberType)
         let offset = frame.allocate(size: sizeOfMemoryType)
         let symbol = Symbol(type: memberType, offset: offset, storage: .automaticStorage)
@@ -71,7 +71,7 @@ final class TraitScannerTests: XCTestCase {
     }
 
     func testCompileTraitAddsVtableType_HasMethod() throws {
-        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [
+        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.u8), arguments: [
             Expression.PointerType(Expression.Identifier("Foo"))
         ])))
         let ast = TraitDeclaration(identifier: Expression.Identifier("Foo"),
@@ -87,7 +87,7 @@ final class TraitScannerTests: XCTestCase {
     }
 
     func testCompileTraitAddsVtableType_HasConstMethod() throws {
-        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [
+        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.u8), arguments: [
             Expression.PointerType(Expression.ConstType(Expression.Identifier("Foo")))
         ])))
         let ast = TraitDeclaration(identifier: Expression.Identifier("Foo"),
@@ -119,7 +119,7 @@ final class TraitScannerTests: XCTestCase {
     }
 
     func testCompileTraitAddsTraitObjectType() throws {
-        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: [
+        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.u8), arguments: [
             Expression.PointerType(Expression.Identifier("Foo"))
         ])))
         let ast = TraitDeclaration(identifier: Expression.Identifier("Foo"),

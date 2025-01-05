@@ -11,9 +11,6 @@ import TurtleCore
 import SnapCore
 
 final class CompilerPassGenericsTests: XCTestCase {
-    fileprivate let constU16 = SymbolType.arithmeticType(.immutableInt(.u16))
-    fileprivate let u16 = SymbolType.arithmeticType(.mutableInt(.u16))
-    fileprivate let u8 = SymbolType.arithmeticType(.mutableInt(.u8))
     
     fileprivate var testName: String {
         let regex = try! NSRegularExpression(pattern: #"\[\w+\s+(?<testName>\w+)\]"#)
@@ -54,7 +51,7 @@ final class CompilerPassGenericsTests: XCTestCase {
         let symbols = addGenericFunctionSymbol(SymbolTable())
         let expr = Expression.GenericTypeApplication(
             identifier: Expression.Identifier("foo"),
-            arguments: [Expression.PrimitiveType(constU16)])
+            arguments: [Expression.PrimitiveType(.constU16)])
         let compiler = CompilerPassGenerics(symbols: symbols, globalEnvironment: GlobalEnvironment())
         let actual = try compiler.visit(expr: expr)
         let expected = Expression.Identifier("__foo_const_u16")
@@ -66,7 +63,7 @@ final class CompilerPassGenericsTests: XCTestCase {
         let symbols = addGenericFunctionSymbol(SymbolTable())
         let expr = Expression.GenericTypeApplication(
             identifier: Expression.Identifier("foo"),
-            arguments: [Expression.PrimitiveType(constU16)])
+            arguments: [Expression.PrimitiveType(.constU16)])
         let compiler = CompilerPassGenerics(symbols: symbols, globalEnvironment: GlobalEnvironment())
         _ = try compiler.visit(expr: expr)
         
@@ -75,8 +72,8 @@ final class CompilerPassGenericsTests: XCTestCase {
         case .function(let funTyp):
             XCTAssertEqual(funTyp.mangledName, "__foo_const_u16")
             XCTAssertEqual(funTyp.name, "__foo_const_u16")
-            XCTAssertEqual(funTyp.arguments, [constU16])
-            XCTAssertEqual(funTyp.returnType, constU16)
+            XCTAssertEqual(funTyp.arguments, [.constU16])
+            XCTAssertEqual(funTyp.returnType, .constU16)
             
         default:
             XCTFail()
@@ -107,8 +104,8 @@ final class CompilerPassGenericsTests: XCTestCase {
                 identifier: Expression.Identifier("__foo_const_u16"),
                 functionType: Expression.FunctionType(
                     name: "__foo_const_u16",
-                    returnType: Expression.PrimitiveType(constU16),
-                    arguments: [Expression.PrimitiveType(constU16)]),
+                    returnType: Expression.PrimitiveType(.constU16),
+                    arguments: [Expression.PrimitiveType(.constU16)]),
                 argumentNames: ["a"],
                 body: Block(children: [
                     Return(Expression.Identifier("a"))
@@ -138,7 +135,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 symbols: funSym),
             Expression.GenericTypeApplication(
                 identifier: Expression.Identifier("foo"),
-                arguments: [Expression.PrimitiveType(constU16)])
+                arguments: [Expression.PrimitiveType(.constU16)])
         ])
         
         let ast1 = try CompilerPassGenerics(
@@ -161,8 +158,8 @@ final class CompilerPassGenericsTests: XCTestCase {
                 identifier: Expression.Identifier("__foo_u16"),
                 functionType: Expression.FunctionType(
                     name: "__foo_u16",
-                    returnType: Expression.PrimitiveType(u16),
-                    arguments: [Expression.PrimitiveType(u16)]),
+                    returnType: Expression.PrimitiveType(.u16),
+                    arguments: [Expression.PrimitiveType(.u16)]),
                 argumentNames: ["a"],
                 body: Block(children: [
                     Return(Expression.Identifier("a"))
@@ -171,7 +168,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 symbols: funSym),
             Expression.Call(
                 callee: Expression.Identifier("__foo_u16"),
-                arguments: [Expression.PrimitiveType(u16)])
+                arguments: [Expression.PrimitiveType(.u16)])
         ])
         
         let ast0 = Block(symbols: blockSymbols, children: [
@@ -194,7 +191,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 symbols: funSym),
             Expression.Call(
                 callee: Expression.Identifier("foo"),
-                arguments: [Expression.PrimitiveType(u16)])
+                arguments: [Expression.PrimitiveType(.u16)])
         ])
         
         let ast1 = try CompilerPassGenerics(
@@ -231,8 +228,8 @@ final class CompilerPassGenericsTests: XCTestCase {
         let expr = Expression.GenericTypeApplication(
             identifier: Expression.Identifier("foo"),
             arguments: [
-                Expression.PrimitiveType(u16),
-                Expression.PrimitiveType(u16)
+                Expression.PrimitiveType(.u16),
+                Expression.PrimitiveType(.u16)
             ])
         XCTAssertThrowsError(try compiler.visit(expr: expr)) {
             let compilerError = $0 as? CompilerError
@@ -269,8 +266,8 @@ final class CompilerPassGenericsTests: XCTestCase {
             expression: Expression.GenericTypeApplication(
                 identifier: Expression.Identifier("foo"),
                 arguments: [
-                    Expression.PrimitiveType(constU16),
-                    Expression.PrimitiveType(constU16)
+                    Expression.PrimitiveType(.constU16),
+                    Expression.PrimitiveType(.constU16)
                 ]))
         let compiler = CompilerPassGenerics(symbols: symbols, globalEnvironment: GlobalEnvironment())
         XCTAssertThrowsError(try compiler.visit(expr: expr)) {
@@ -329,11 +326,11 @@ final class CompilerPassGenericsTests: XCTestCase {
             Expression.StructInitializer(
                 expr: Expression.GenericTypeApplication(
                     identifier: Expression.Identifier("foo"),
-                    arguments: [Expression.PrimitiveType(u16)]),
+                    arguments: [Expression.PrimitiveType(.u16)]),
                 arguments: [
                     Expression.StructInitializer.Argument(
                         name: "T",
-                        expr: Expression.PrimitiveType(u16))
+                        expr: Expression.PrimitiveType(.u16))
                 ])
         ])
         
@@ -345,7 +342,7 @@ final class CompilerPassGenericsTests: XCTestCase {
         switch try symbols.resolveType(identifier: "__foo_u16") {
         case .structType(let typ):
             XCTAssertEqual(typ.name, "__foo_u16")
-            XCTAssertEqual(typ.symbols.maybeResolve(identifier: "bar")?.type, u16)
+            XCTAssertEqual(typ.symbols.maybeResolve(identifier: "bar")?.type, .u16)
             
         default:
             XCTFail()
@@ -360,7 +357,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 members: [
                     StructDeclaration.Member(
                         name: "bar",
-                        type: Expression.PrimitiveType(u16))
+                        type: Expression.PrimitiveType(.u16))
                 ],
                 visibility: .privateVisibility,
                 isConst: false),
@@ -369,7 +366,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 arguments: [
                     Expression.StructInitializer.Argument(
                         name: "T",
-                        expr: Expression.PrimitiveType(u16))
+                        expr: Expression.PrimitiveType(.u16))
                 ])
         ])
         
@@ -391,11 +388,11 @@ final class CompilerPassGenericsTests: XCTestCase {
             Expression.StructInitializer(
                 expr: Expression.GenericTypeApplication(
                     identifier: Expression.Identifier("foo"),
-                    arguments: [Expression.PrimitiveType(u16)]),
+                    arguments: [Expression.PrimitiveType(.u16)]),
                 arguments: [
                     Expression.StructInitializer.Argument(
                         name: "T",
-                        expr: Expression.PrimitiveType(u16))
+                        expr: Expression.PrimitiveType(.u16))
                 ])
         ])
         
@@ -433,8 +430,8 @@ final class CompilerPassGenericsTests: XCTestCase {
                             identifier: Expression.Identifier("foo"),
                             functionType: Expression.FunctionType(
                                 name: "foo",
-                                returnType: Expression.PrimitiveType(u8),
-                                arguments: [Expression.PrimitiveType(u8)]),
+                                returnType: Expression.PrimitiveType(.u8),
+                                arguments: [Expression.PrimitiveType(.u8)]),
                             argumentNames: ["arg1"],
                             typeArguments: [],
                             body: Block(
@@ -478,8 +475,8 @@ final class CompilerPassGenericsTests: XCTestCase {
                             identifier: Expression.Identifier("foo"),
                             functionType: Expression.FunctionType(
                                 name: "foo",
-                                returnType: Expression.PrimitiveType(u8),
-                                arguments: [Expression.PrimitiveType(u8)]),
+                                returnType: Expression.PrimitiveType(.u8),
+                                arguments: [Expression.PrimitiveType(.u8)]),
                             argumentNames: ["arg1"],
                             typeArguments: [],
                             body: Block(
@@ -494,7 +491,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                     expr: Expression.GenericTypeApplication(
                         identifier: Expression.Identifier("MyStruct"),
                         arguments: [
-                            Expression.PrimitiveType(u16)
+                            Expression.PrimitiveType(.u16)
                         ]),
                     arguments: [],
                     id: structInitializerID),
@@ -532,8 +529,8 @@ final class CompilerPassGenericsTests: XCTestCase {
                             identifier: Expression.Identifier("foo"),
                             functionType: Expression.FunctionType(
                                 name: "foo",
-                                returnType: Expression.PrimitiveType(u16),
-                                arguments: [Expression.PrimitiveType(u16)]),
+                                returnType: Expression.PrimitiveType(.u16),
+                                arguments: [Expression.PrimitiveType(.u16)]),
                             argumentNames: ["arg1"],
                             typeArguments: [],
                             body: Block(
@@ -590,7 +587,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                     expr: Expression.GenericTypeApplication(
                         identifier: Expression.Identifier("MyStruct"),
                         arguments: [
-                            Expression.PrimitiveType(u16)
+                            Expression.PrimitiveType(.u16)
                         ]),
                     arguments: []),
             ],
@@ -671,7 +668,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                     expr: Expression.GenericTypeApplication(
                         identifier: Expression.Identifier("MyStruct"),
                         arguments: [
-                            Expression.PrimitiveType(u16)
+                            Expression.PrimitiveType(.u16)
                         ]),
                     arguments: []),
             ])
@@ -690,8 +687,8 @@ final class CompilerPassGenericsTests: XCTestCase {
                             identifier: Expression.Identifier("foo"),
                             functionType: Expression.FunctionType(
                                 name: "foo",
-                                returnType: Expression.PrimitiveType(u16),
-                                arguments: [Expression.PrimitiveType(u16)]),
+                                returnType: Expression.PrimitiveType(.u16),
+                                arguments: [Expression.PrimitiveType(.u16)]),
                             argumentNames: ["arg1"],
                             typeArguments: [],
                             body: Block(children: [
@@ -706,8 +703,8 @@ final class CompilerPassGenericsTests: XCTestCase {
                             identifier: Expression.Identifier("bar"),
                             functionType: Expression.FunctionType(
                                 name: "bar",
-                                returnType: Expression.PrimitiveType(u16),
-                                arguments: [Expression.PrimitiveType(u16)]),
+                                returnType: Expression.PrimitiveType(.u16),
+                                arguments: [Expression.PrimitiveType(.u16)]),
                             argumentNames: ["arg1"],
                             typeArguments: [],
                             body: Block(children: [
@@ -770,7 +767,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                     expr: Expression.GenericTypeApplication(
                         identifier: Expression.Identifier("MyStruct"),
                         arguments: [
-                            Expression.PrimitiveType(u16)
+                            Expression.PrimitiveType(.u16)
                         ]),
                     arguments: []),
             ])
@@ -834,7 +831,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 typeArguments: [],
                 traitTypeExpr: Expression.GenericTypeApplication(
                     identifier: Expression.Identifier("MyTrait"),
-                    arguments: [Expression.PrimitiveType(u16)]),
+                    arguments: [Expression.PrimitiveType(.u16)]),
                 structTypeExpr: Expression.Identifier("MyStruct"),
                 children: [])
         ])
@@ -867,8 +864,8 @@ final class CompilerPassGenericsTests: XCTestCase {
                         name: "foo",
                         type: Expression.PointerType(Expression.FunctionType(
                             name: "foo",
-                            returnType: Expression.PrimitiveType(u16),
-                            arguments: [Expression.PrimitiveType(u16)]
+                            returnType: Expression.PrimitiveType(.u16),
+                            arguments: [Expression.PrimitiveType(.u16)]
                         )))
                 ]),
             StructDeclaration(
@@ -883,8 +880,8 @@ final class CompilerPassGenericsTests: XCTestCase {
                         identifier: Expression.Identifier("foo"),
                         functionType: Expression.FunctionType(
                             name: "foo",
-                            returnType: Expression.PrimitiveType(u16),
-                            arguments: [Expression.PrimitiveType(u16)]),
+                            returnType: Expression.PrimitiveType(.u16),
+                            arguments: [Expression.PrimitiveType(.u16)]),
                         argumentNames: ["arg1"],
                         body: Block(symbols: bodySym, children: [
                             Return(Expression.Identifier("arg1"))
@@ -917,15 +914,15 @@ final class CompilerPassGenericsTests: XCTestCase {
                 typeArguments: [],
                 traitTypeExpr: Expression.GenericTypeApplication(
                     identifier: Expression.Identifier("MyTrait"),
-                    arguments: [Expression.PrimitiveType(u16)]),
+                    arguments: [Expression.PrimitiveType(.u16)]),
                 structTypeExpr: Expression.Identifier("MyStruct"),
                 children: [
                     FunctionDeclaration(
                         identifier: Expression.Identifier("foo"),
                         functionType: Expression.FunctionType(
                             name: "foo",
-                            returnType: Expression.PrimitiveType(u16),
-                            arguments: [Expression.PrimitiveType(u16)]),
+                            returnType: Expression.PrimitiveType(.u16),
+                            arguments: [Expression.PrimitiveType(.u16)]),
                         argumentNames: ["arg1"],
                         body: Block(
                             symbols: bodySym,
@@ -967,8 +964,8 @@ final class CompilerPassGenericsTests: XCTestCase {
                             identifier: Expression.Identifier("__foo_const_u16"),
                             functionType: Expression.FunctionType(
                                 name: "__foo_const_u16",
-                                returnType: Expression.PrimitiveType(constU16),
-                                arguments: [Expression.PrimitiveType(constU16)]),
+                                returnType: Expression.PrimitiveType(.constU16),
+                                arguments: [Expression.PrimitiveType(.constU16)]),
                             argumentNames: ["arg1"],
                             body: Block(
                                 symbols: bodySym,
@@ -1024,7 +1021,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                         member: Expression.GenericTypeApplication(
                             identifier: Expression.Identifier("foo"),
                             arguments: [
-                                Expression.PrimitiveType(constU16)
+                                Expression.PrimitiveType(.constU16)
                             ])),
                     arguments: [
                         Expression.LiteralInt(0)
@@ -1050,8 +1047,8 @@ final class CompilerPassGenericsTests: XCTestCase {
                     identifier: Expression.Identifier("__foo_const_u16"),
                     functionType: Expression.FunctionType(
                         name: "__foo_const_u16",
-                        returnType: Expression.PrimitiveType(constU16),
-                        arguments: [Expression.PrimitiveType(constU16)]),
+                        returnType: Expression.PrimitiveType(.constU16),
+                        arguments: [Expression.PrimitiveType(.constU16)]),
                     argumentNames: ["a"],
                     body: Block(
                         children: [
@@ -1101,7 +1098,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 Expression.GenericTypeApplication(
                     identifier: Expression.Identifier("foo"),
                     arguments: [
-                        Expression.PrimitiveType(u16)
+                        Expression.PrimitiveType(.u16)
                     ])
             ])
             .reconnect(parent: nil)
@@ -1143,7 +1140,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 Expression.GenericTypeApplication(
                     identifier: Expression.Identifier("foo"),
                     arguments: [
-                        Expression.PrimitiveType(u16)
+                        Expression.PrimitiveType(.u16)
                     ])
             ])
             .reconnect(parent: nil)

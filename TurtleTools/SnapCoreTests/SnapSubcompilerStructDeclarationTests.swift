@@ -126,11 +126,11 @@ class SnapSubcompilerStructDeclarationTests: XCTestCase {
     func testStructWithOneMember() throws {
         let symbols = SymbolTable()
         let input = StructDeclaration(identifier: Expression.Identifier("Foo"), members: [
-            StructDeclaration.Member(name: "bar", type: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
+            StructDeclaration.Member(name: "bar", type: Expression.PrimitiveType(.u8))
         ])
         XCTAssertNoThrow(try makeCompiler(symbols).compile(input))
         let bar = Symbol(
-            type: .arithmeticType(.mutableInt(.u8)),
+            type: .u8,
             offset: 0,
             storage: .automaticStorage)
         let expectedStructSymbols = SymbolTable(tuples: [

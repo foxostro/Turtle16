@@ -175,13 +175,13 @@ public class TackDebugger: NSObject {
         guard let symbol = symbols?.maybeResolve(identifier: identifier) else {
             return nil
         }
-        guard symbol.type == .array(count: count, elementType: .arithmeticType(.mutableInt(.u8))) || symbol.type == .array(count: count, elementType: .arithmeticType(.immutableInt(.u8))) else {
+        guard symbol.type == .array(count: count, elementType: .u8) || symbol.type == .array(count: count, elementType: .arithmeticType(.immutableInt(.u8))) else {
             return nil
         }
         let baseAddr = addressOfSymbol(symbol)
         var arr: [UInt8] = []
         for i in 0..<count {
-            let addr = baseAddr &+ UInt(i*memoryLayoutStrategy.sizeof(type: .arithmeticType(.mutableInt(.u8))))
+            let addr = baseAddr &+ UInt(i*memoryLayoutStrategy.sizeof(type: .u8))
             let value = vm.loadb(address: addr)
             arr.append(value)
         }
@@ -192,13 +192,13 @@ public class TackDebugger: NSObject {
         guard let symbol = symbols?.maybeResolve(identifier: identifier) else {
             return nil
         }
-        guard symbol.type == .array(count: count, elementType: .arithmeticType(.mutableInt(.u16))) || symbol.type == .array(count: count, elementType: .arithmeticType(.immutableInt(.u16))) else {
+        guard symbol.type == .array(count: count, elementType: .u16) || symbol.type == .array(count: count, elementType: .arithmeticType(.immutableInt(.u16))) else {
             return nil
         }
         let baseAddr = addressOfSymbol(symbol)
         var arr: [UInt16] = []
         for i in 0..<count {
-            let addr = baseAddr &+ UInt(i*memoryLayoutStrategy.sizeof(type: .arithmeticType(.mutableInt(.u16))))
+            let addr = baseAddr &+ UInt(i*memoryLayoutStrategy.sizeof(type: .u16))
             let word = vm.loadw(address: addr)
             arr.append(word)
         }
@@ -212,7 +212,7 @@ public class TackDebugger: NSObject {
         
         let count: Int
         switch symbol.type {
-        case .array(count: let n, elementType: .arithmeticType(.mutableInt(.u8))), .array(count: let n, elementType: .arithmeticType(.immutableInt(.u8))):
+        case .array(count: let n, elementType: .u8), .array(count: let n, elementType: .arithmeticType(.immutableInt(.u8))):
             count = n!
             break
             
@@ -223,7 +223,7 @@ public class TackDebugger: NSObject {
         let baseAddr = addressOfSymbol(symbol)
         var arr: [UInt8] = []
         for i in 0..<count {
-            let addr = baseAddr &+ UInt(i*memoryLayoutStrategy.sizeof(type: .arithmeticType(.mutableInt(.u8))))
+            let addr = baseAddr &+ UInt(i*memoryLayoutStrategy.sizeof(type: .u8))
             let value = vm.loadb(address: addr)
             arr.append(value)
         }
@@ -238,9 +238,9 @@ public class TackDebugger: NSObject {
         }
         
         switch symbol.type {
-        case .dynamicArray(elementType: .arithmeticType(.mutableInt(.u8))),
+        case .dynamicArray(elementType: .u8),
              .dynamicArray(elementType: .arithmeticType(.immutableInt(.u8))),
-             .constDynamicArray(elementType: .arithmeticType(.mutableInt(.u8))),
+             .constDynamicArray(elementType: .u8),
              .constDynamicArray(elementType: .arithmeticType(.immutableInt(.u8))):
             break
             

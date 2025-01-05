@@ -18,9 +18,6 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
     fileprivate typealias PrimitiveType = Expression.PrimitiveType
     fileprivate typealias PointerType = Expression.PointerType
     
-    fileprivate let i16: SymbolType = .arithmeticType(.mutableInt(.i16))
-    fileprivate let u8: SymbolType = .arithmeticType(.mutableInt(.u8))
-    
     func testEraseMethodCalls() throws {
         let ast0 = Block(children: [
             StructDeclaration(
@@ -28,7 +25,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 members: [
                     StructDeclaration.Member(
                         name: "val",
-                        type: PrimitiveType(i16))
+                        type: PrimitiveType(.i16))
                 ],
                 visibility: .privateVisibility),
             Impl(
@@ -39,7 +36,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                         identifier: Identifier("bar"),
                         functionType: Expression.FunctionType(
                             name: "bar",
-                            returnType: PrimitiveType(u8),
+                            returnType: PrimitiveType(.u8),
                             arguments: [
                                 PointerType(Identifier("Foo"))
                             ]),
@@ -68,7 +65,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 members: [
                     StructDeclaration.Member(
                         name: "val",
-                        type: PrimitiveType(i16))
+                        type: PrimitiveType(.i16))
                 ],
                 visibility: .privateVisibility),
             Impl(
@@ -79,7 +76,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                         identifier: Identifier("bar"),
                         functionType: Expression.FunctionType(
                             name: "bar",
-                            returnType: PrimitiveType(u8),
+                            returnType: PrimitiveType(.u8),
                             arguments: [
                                 PointerType(Identifier("Foo"))
                             ]),
@@ -118,7 +115,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 members: [
                     StructDeclaration.Member(
                         name: "val",
-                        type: PrimitiveType(i16))
+                        type: PrimitiveType(.i16))
                 ],
                 visibility: .privateVisibility),
             Impl(
@@ -129,7 +126,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                         identifier: Identifier("bar"),
                         functionType: Expression.FunctionType(
                             name: "bar",
-                            returnType: PrimitiveType(u8),
+                            returnType: PrimitiveType(.u8),
                             arguments: [
                                 PointerType(Identifier("Foo"))
                             ]),
@@ -158,7 +155,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 members: [
                     StructDeclaration.Member(
                         name: "val",
-                        type: PrimitiveType(i16))
+                        type: PrimitiveType(.i16))
                 ],
                 visibility: .privateVisibility),
             Impl(
@@ -169,7 +166,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                         identifier: Identifier("bar"),
                         functionType: Expression.FunctionType(
                             name: "bar",
-                            returnType: PrimitiveType(u8),
+                            returnType: PrimitiveType(.u8),
                             arguments: [
                                 PointerType(Identifier("Foo"))
                             ]),
@@ -208,7 +205,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 members: [
                     StructDeclaration.Member(
                         name: "val",
-                        type: PrimitiveType(i16))
+                        type: PrimitiveType(.i16))
                 ],
                 visibility: .privateVisibility),
             Impl(
@@ -219,7 +216,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                         identifier: Identifier("bar"),
                         functionType: Expression.FunctionType(
                             name: "bar",
-                            returnType: PrimitiveType(u8),
+                            returnType: PrimitiveType(.u8),
                             arguments: [
                                 PointerType(Identifier("Foo"))
                             ]),
@@ -258,7 +255,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 members: [
                     StructDeclaration.Member(
                         name: "val",
-                        type: PrimitiveType(i16))
+                        type: PrimitiveType(.i16))
                 ],
                 visibility: .privateVisibility),
             Impl(
@@ -269,7 +266,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                         identifier: Identifier("bar"),
                         functionType: Expression.FunctionType(
                             name: "bar",
-                            returnType: PrimitiveType(u8),
+                            returnType: PrimitiveType(.u8),
                             arguments: []),
                         argumentNames: ["baz"],
                         typeArguments: [],
@@ -296,7 +293,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 members: [
                     StructDeclaration.Member(
                         name: "val",
-                        type: PrimitiveType(i16))
+                        type: PrimitiveType(.i16))
                 ],
                 visibility: .privateVisibility),
             Impl(
@@ -307,7 +304,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                         identifier: Identifier("bar"),
                         functionType: Expression.FunctionType(
                             name: "bar",
-                            returnType: PrimitiveType(u8),
+                            returnType: PrimitiveType(.u8),
                             arguments: []),
                         argumentNames: ["baz"],
                         typeArguments: [],
@@ -342,7 +339,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 members: [
                     StructDeclaration.Member(
                         name: "val",
-                        type: PrimitiveType(i16))
+                        type: PrimitiveType(.i16))
                 ],
                 visibility: .privateVisibility),
             Impl(
@@ -353,7 +350,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                         identifier: Identifier("bar"),
                         functionType: Expression.FunctionType(
                             name: "bar",
-                            returnType: PrimitiveType(u8),
+                            returnType: PrimitiveType(.u8),
                             arguments: []),
                         argumentNames: ["baz"],
                         typeArguments: [],
@@ -378,7 +375,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 members: [
                     StructDeclaration.Member(
                         name: "val",
-                        type: PrimitiveType(i16))
+                        type: PrimitiveType(.i16))
                 ],
                 visibility: .privateVisibility),
             Impl(
@@ -389,7 +386,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                         identifier: Identifier("bar"),
                         functionType: Expression.FunctionType(
                             name: "bar",
-                            returnType: PrimitiveType(u8),
+                            returnType: PrimitiveType(.u8),
                             arguments: []),
                         argumentNames: ["baz"],
                         typeArguments: [],

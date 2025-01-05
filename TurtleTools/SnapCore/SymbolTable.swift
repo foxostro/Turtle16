@@ -364,6 +364,16 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             Expression.UnionType(typ.members.map { $0.lift })
         }
     }
+    
+    public static let u8:  SymbolType = .arithmeticType(.mutableInt(.u8))
+    public static let u16: SymbolType = .arithmeticType(.mutableInt(.u16))
+    public static let i8:  SymbolType = .arithmeticType(.mutableInt(.i8))
+    public static let i16: SymbolType = .arithmeticType(.mutableInt(.i16))
+    
+    public static let constU8:  SymbolType = .arithmeticType(.immutableInt(.u8))
+    public static let constU16: SymbolType = .arithmeticType(.immutableInt(.u16))
+    public static let constI8:  SymbolType = .arithmeticType(.immutableInt(.i8))
+    public static let constI16: SymbolType = .arithmeticType(.immutableInt(.i16))
 }
 
 public enum SymbolStorage: Equatable {

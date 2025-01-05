@@ -24,7 +24,7 @@ final class ImplForScannerTests: XCTestCase {
                         returnType: Expression.PrimitiveType(.void),
                         arguments: [
                             Expression.PointerType(Expression.Identifier("Serial")),
-                            Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
+                            Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
                         ])))
             ],
             visibility: .privateVisibility)
@@ -66,7 +66,7 @@ final class ImplForScannerTests: XCTestCase {
                         arguments: [
                             Expression.PointerType(
                                 Expression.Identifier("Serial")),
-                            Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
+                            Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
                         ]),
                     argumentNames: ["self", "s"],
                     body: Block())
@@ -84,7 +84,7 @@ final class ImplForScannerTests: XCTestCase {
         XCTAssertEqual(vtableStructType.name, "__Serial_vtable")
         XCTAssertEqual(vtableStructType.symbols.exists(identifier: "puts"), true)
         let putsSymbol = try vtableStructType.symbols.resolve(identifier: "puts")
-        XCTAssertEqual(putsSymbol.type, .pointer(.function(FunctionType(returnType: .void, arguments: [.pointer(.void), .dynamicArray(elementType: .arithmeticType(.mutableInt(.u8)))]))))
+        XCTAssertEqual(putsSymbol.type, .pointer(.function(FunctionType(returnType: .void, arguments: [.pointer(.void), .dynamicArray(elementType: .u8)]))))
         XCTAssertEqual(putsSymbol.offset, 0)
     }
     
@@ -165,7 +165,7 @@ final class ImplForScannerTests: XCTestCase {
                         returnType: Expression.PrimitiveType(.void),
                         arguments: [
                             Expression.PointerType(Expression.Identifier("SerialFake")),
-                                                      Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8)))
+                                                      Expression.PrimitiveType(.u8)
                         ]),
                     argumentNames: ["self", "s"],
                     body: Block())
@@ -200,8 +200,8 @@ final class ImplForScannerTests: XCTestCase {
                         name: "puts",
                         returnType: Expression.PrimitiveType(.void),
                         arguments: [
-                            Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
-                            Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
+                            Expression.PrimitiveType(.u8),
+                            Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
                         ]),
                     argumentNames: ["self", "s"],
                     body: Block())
@@ -237,7 +237,7 @@ final class ImplForScannerTests: XCTestCase {
                         returnType: Expression.PrimitiveType(.bool(.mutableBool)),
                         arguments: [
                             Expression.PointerType(Expression.Identifier("SerialFake")),
-                            Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
+                            Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
                         ]),
                     argumentNames: ["self", "s"],
                     body: Block(children: [

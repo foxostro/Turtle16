@@ -17,8 +17,6 @@ final class ImplScannerTests: XCTestCase {
     fileprivate typealias PointerType = Expression.PointerType
     fileprivate typealias PrimitiveType = Expression.PrimitiveType
     
-    fileprivate let u8: SymbolType = .arithmeticType(.mutableInt(.u8))
-    
     func testExample() throws {
         let symbols = SymbolTable()
         let globalEnvironment = GlobalEnvironment()
@@ -41,7 +39,7 @@ final class ImplScannerTests: XCTestCase {
                     identifier: Identifier("bar"),
                     functionType: Expression.FunctionType(
                         name: "bar",
-                        returnType: PrimitiveType(u8),
+                        returnType: PrimitiveType(.u8),
                         arguments: [
                             PointerType(Identifier("Foo"))
                         ]),
@@ -75,7 +73,7 @@ final class ImplScannerTests: XCTestCase {
         
         XCTAssertEqual(funTyp?.name, "bar")
         XCTAssertEqual(funTyp?.arguments, [.pointer(fooType)])
-        XCTAssertEqual(funTyp?.returnType, u8)
+        XCTAssertEqual(funTyp?.returnType, .u8)
     }
     
     func testRedefinesExistingSymbol() throws {
@@ -87,7 +85,7 @@ final class ImplScannerTests: XCTestCase {
             members: [
                 StructDeclaration.Member(
                     name: "bar",
-                    type: PrimitiveType(.arithmeticType(.mutableInt(.u8))))
+                    type: PrimitiveType(.u8))
             ],
             visibility: .privateVisibility)
         _ = try SnapSubcompilerStructDeclaration(
@@ -107,7 +105,7 @@ final class ImplScannerTests: XCTestCase {
                     identifier: Identifier("bar"),
                     functionType: Expression.FunctionType(
                         name: "bar",
-                        returnType: PrimitiveType(u8),
+                        returnType: PrimitiveType(.u8),
                         arguments: [
                             PointerType(Identifier("Foo"))
                         ]),
@@ -148,7 +146,7 @@ final class ImplScannerTests: XCTestCase {
                                 identifier: Identifier("bar"),
                                 functionType: Expression.FunctionType(
                                     name: "bar",
-                                    returnType: PrimitiveType(u8),
+                                    returnType: PrimitiveType(.u8),
                                     arguments: [
                                         PointerType(Identifier("Foo"))
                                     ]),

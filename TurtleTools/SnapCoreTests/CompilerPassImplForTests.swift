@@ -10,8 +10,6 @@ import XCTest
 import TurtleCore
 import SnapCore
 
-fileprivate let u8: SymbolType = .arithmeticType(.mutableInt(.u8))
-
 final class CompilerPassImplForTests: XCTestCase {
     fileprivate typealias Assignment = Expression.Assignment
     fileprivate typealias Bitcast = Expression.Bitcast
@@ -39,7 +37,7 @@ final class CompilerPassImplForTests: XCTestCase {
                             returnType: PrimitiveType(.void),
                             arguments: [
                                 PointerType(Identifier("Serial")),
-                                DynamicArrayType(PrimitiveType(u8))
+                                DynamicArrayType(PrimitiveType(.u8))
                             ])))
                 ],
                 visibility: .privateVisibility),
@@ -53,7 +51,7 @@ final class CompilerPassImplForTests: XCTestCase {
                                 returnType: PrimitiveType(.void),
                                 arguments: [
                                     PointerType(PrimitiveType(.void)),
-                                    DynamicArrayType(PrimitiveType(u8))
+                                    DynamicArrayType(PrimitiveType(.u8))
                                 ])))
                 ],
                 isConst: true),
@@ -92,7 +90,7 @@ final class CompilerPassImplForTests: XCTestCase {
                             returnType: PrimitiveType(.void),
                             arguments: [
                                 PointerType(Identifier("Serial")),
-                                DynamicArrayType(PrimitiveType(u8))
+                                DynamicArrayType(PrimitiveType(.u8))
                             ]),
                         argumentNames: ["self", "s"],
                         body: Block(id: innerBlockID))
@@ -123,7 +121,7 @@ final class CompilerPassImplForTests: XCTestCase {
                                 returnType: PrimitiveType(.void),
                                 arguments: [
                                     PointerType(PrimitiveType(.void)),
-                                    DynamicArrayType(PrimitiveType(u8))
+                                    DynamicArrayType(PrimitiveType(.u8))
                                 ])))
                     ],
                     isConst: true),
@@ -158,7 +156,7 @@ final class CompilerPassImplForTests: XCTestCase {
                                     returnType: .void,
                                     arguments: [
                                         .pointer(.void),
-                                        .dynamicArray(elementType: u8)
+                                        .dynamicArray(elementType: .u8)
                                     ]))))))
                     ]),
                 storage: .staticStorage,
@@ -178,7 +176,7 @@ final class CompilerPassImplForTests: XCTestCase {
                             returnType: PrimitiveType(.void),
                             arguments: [
                                 PointerType(Identifier("__Serial_object")),
-                                DynamicArrayType(PrimitiveType(u8))
+                                DynamicArrayType(PrimitiveType(.u8))
                             ]),
                         argumentNames: ["self", "s"],
                         body: Block(id: innerBlockID))
@@ -255,7 +253,7 @@ final class CompilerPassImplForTests: XCTestCase {
                             returnType: PrimitiveType(.void),
                             arguments: [
                                 PointerType(Identifier("SerialFake")),
-                                PrimitiveType(u8)
+                                PrimitiveType(.u8)
                             ]),
                         argumentNames: ["self", "s"],
                         body: Block())
@@ -283,8 +281,8 @@ final class CompilerPassImplForTests: XCTestCase {
                             name: "puts",
                             returnType: PrimitiveType(.void),
                             arguments: [
-                                PrimitiveType(u8),
-                                DynamicArrayType(PrimitiveType(u8))
+                                PrimitiveType(.u8),
+                                DynamicArrayType(PrimitiveType(.u8))
                             ]),
                         argumentNames: ["self", "s"],
                         body: Block())
@@ -313,7 +311,7 @@ final class CompilerPassImplForTests: XCTestCase {
                             returnType: PrimitiveType(.bool(.mutableBool)),
                             arguments: [
                                 PointerType(Identifier("SerialFake")),
-                                DynamicArrayType(PrimitiveType(u8))
+                                DynamicArrayType(PrimitiveType(.u8))
                             ]),
                         argumentNames: ["self", "s"],
                         body: Block(children: [

@@ -84,12 +84,12 @@ public class SnapDebugConsole : DebugConsole {
         guard let symbol = symbols?.maybeResolve(identifier: identifier) else {
             return nil
         }
-        guard symbol.type == .array(count: count, elementType: .arithmeticType(.mutableInt(.u8))) || symbol.type == .array(count: count, elementType: .arithmeticType(.immutableInt(.u8))) else {
+        guard symbol.type == .array(count: count, elementType: .u8) || symbol.type == .array(count: count, elementType: .arithmeticType(.immutableInt(.u8))) else {
             return nil
         }
         var arr: [UInt8] = []
         for i in 0..<count {
-            let word = computer.ram[symbol.offset + i*memoryLayoutStrategy.sizeof(type: .arithmeticType(.mutableInt(.u8)))]
+            let word = computer.ram[symbol.offset + i*memoryLayoutStrategy.sizeof(type: .u8)]
             let value = UInt8(word & 0x00ff)
             arr.append(value)
         }
@@ -100,12 +100,12 @@ public class SnapDebugConsole : DebugConsole {
         guard let symbol = symbols?.maybeResolve(identifier: identifier) else {
             return nil
         }
-        guard symbol.type == .array(count: count, elementType: .arithmeticType(.mutableInt(.u16))) || symbol.type == .array(count: count, elementType: .arithmeticType(.immutableInt(.u16))) else {
+        guard symbol.type == .array(count: count, elementType: .u16) || symbol.type == .array(count: count, elementType: .arithmeticType(.immutableInt(.u16))) else {
             return nil
         }
         var arr: [UInt16] = []
         for i in 0..<count {
-            let word = computer.ram[symbol.offset + i*memoryLayoutStrategy.sizeof(type: .arithmeticType(.mutableInt(.u16)))]
+            let word = computer.ram[symbol.offset + i*memoryLayoutStrategy.sizeof(type: .u16)]
             arr.append(word)
         }
         return arr
@@ -118,7 +118,7 @@ public class SnapDebugConsole : DebugConsole {
         
         let count: Int
         switch symbol.type {
-        case .array(count: let n, elementType: .arithmeticType(.mutableInt(.u8))), .array(count: let n, elementType: .arithmeticType(.immutableInt(.u8))):
+        case .array(count: let n, elementType: .u8), .array(count: let n, elementType: .arithmeticType(.immutableInt(.u8))):
             count = n!
             break
             
@@ -128,7 +128,7 @@ public class SnapDebugConsole : DebugConsole {
         
         var arr: [UInt8] = []
         for i in 0..<count {
-            let word = computer.ram[symbol.offset + i*memoryLayoutStrategy.sizeof(type: .arithmeticType(.mutableInt(.u8)))]
+            let word = computer.ram[symbol.offset + i*memoryLayoutStrategy.sizeof(type: .u8)]
             let value = UInt8(word & 0x00ff)
             arr.append(value)
         }
@@ -143,9 +143,9 @@ public class SnapDebugConsole : DebugConsole {
         }
         
         switch symbol.type {
-        case .dynamicArray(elementType: .arithmeticType(.mutableInt(.u8))),
+        case .dynamicArray(elementType: .u8),
              .dynamicArray(elementType: .arithmeticType(.immutableInt(.u8))),
-             .constDynamicArray(elementType: .arithmeticType(.mutableInt(.u8))),
+             .constDynamicArray(elementType: .u8),
              .constDynamicArray(elementType: .arithmeticType(.immutableInt(.u8))):
             break
             

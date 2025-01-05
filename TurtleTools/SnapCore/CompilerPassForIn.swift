@@ -25,7 +25,7 @@ public class CompilerPassForIn: CompilerPass {
         let index = Expression.Identifier(sourceAnchor: node1.sourceAnchor, identifier: globalEnvironment.tempNameMaker.next(prefix: "__index"))
         let limit = Expression.Identifier(sourceAnchor: node1.sourceAnchor, identifier: globalEnvironment.tempNameMaker.next(prefix: "__limit"))
         let count = Expression.Identifier(sourceAnchor: node1.sourceAnchor, identifier: "count")
-        let usize = Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))) // TODO: This should use `usize' instead of assuming `u16'.
+        let usize = Expression.PrimitiveType(.u16) // TODO: This should use `usize' instead of assuming `u16'.
         let zero = Expression.LiteralInt(sourceAnchor: node1.sourceAnchor, value: 0)
         let one = Expression.LiteralInt(sourceAnchor: node1.sourceAnchor, value: 1)
         

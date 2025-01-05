@@ -15,25 +15,25 @@ public class ExprUtils: NSObject {
     public static func makeU8(value: Int) -> Expression {
         assert(value >= UInt8.min && value <= UInt8.max)
         return Expression.As(expr: Expression.LiteralInt(value),
-                             targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
+                             targetType: Expression.PrimitiveType(.u8))
     }
     
     public static func makeU16(value: Int) -> Expression {
         assert(value >= UInt16.min && value <= UInt16.max)
         return Expression.As(expr: Expression.LiteralInt(value),
-                             targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u16))))
+                             targetType: Expression.PrimitiveType(.u16))
     }
     
     public static func makeI8(value: Int) -> Expression {
         assert(value >= Int8.min && value <= Int8.max)
         return Expression.As(expr: Expression.LiteralInt(value),
-                             targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.i8))))
+                             targetType: Expression.PrimitiveType(.i8))
     }
     
     public static func makeI16(value: Int) -> Expression {
         assert(value >= Int16.min && value <= Int16.max)
         return Expression.As(expr: Expression.LiteralInt(value),
-                             targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.i16))))
+                             targetType: Expression.PrimitiveType(.i16))
     }
     
     public static func makeBool(value: Bool) -> Expression {

@@ -15,7 +15,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     fileprivate let kRuntime = "runtime_TackVM"
     fileprivate let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
     fileprivate lazy var kUnionPayloadOffset: Int = {
-        memoryLayoutStrategy.sizeof(type: .arithmeticType(.mutableInt(.u16)))
+        memoryLayoutStrategy.sizeof(type: .u16)
     }()
     
     fileprivate func makeCompiler() -> SnapCompilerFrontEnd {

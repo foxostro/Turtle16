@@ -17,7 +17,7 @@ final class CompilerPassSynthesizeTerminalReturnStatementsTests: XCTestCase {
                 identifier: Expression.Identifier("foo"),
                 functionType: Expression.FunctionType(
                     name: "foo",
-                    returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
+                    returnType: Expression.PrimitiveType(.u8),
                     arguments: []),
                 argumentNames: [],
                 body: Block(children: []))

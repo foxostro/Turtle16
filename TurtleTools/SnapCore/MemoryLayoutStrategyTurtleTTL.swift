@@ -52,7 +52,7 @@ public class MemoryLayoutStrategyTurtleTTL: NSObject, MemoryLayoutStrategy {
     }
     
     func sizeof(union typ: UnionType) -> Int {
-        let kTagSize = sizeof(type: .arithmeticType(.mutableInt(.u8)))
+        let kTagSize = sizeof(type: .u8)
         let kBufferSize = typ.members.reduce(0) { (result, memberType) -> Int in
             return max(result, sizeof(type: memberType))
         }

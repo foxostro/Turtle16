@@ -18,7 +18,7 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
         let compiler = SnapSubcompilerFunctionDeclaration()
         let input = FunctionDeclaration(
             identifier: Expression.Identifier("foo"),
-            functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: []),
+            functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
             argumentNames: [],
             body: Block(children: []))
             .reconnect(parent: nil)
@@ -34,7 +34,7 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
         let compiler = SnapSubcompilerFunctionDeclaration()
         let input = FunctionDeclaration(
             identifier: Expression.Identifier("foo"),
-            functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: []),
+            functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
             argumentNames: [],
             body: Block(children: []))
             .reconnect(parent: nil)
@@ -78,7 +78,7 @@ class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
         let compiler = SnapSubcompilerFunctionDeclaration()
         let input = FunctionDeclaration(
             identifier: Expression.Identifier("foo"),
-            functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))), arguments: []),
+            functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
             argumentNames: [],
             body: Block(children: [
                 Return(Expression.LiteralBool(true)),

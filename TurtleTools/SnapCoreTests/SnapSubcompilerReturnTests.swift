@@ -45,7 +45,7 @@ class SnapSubcompilerReturnTests: XCTestCase {
     func testNonVoidFunctionShouldReturnAValue() {
         let input = Return()
         let symbols = SymbolTable()
-        symbols.enclosingFunctionTypeMode = .set(FunctionType(returnType: .arithmeticType(.mutableInt(.u8)), arguments: []))
+        symbols.enclosingFunctionTypeMode = .set(FunctionType(returnType: .u8, arguments: []))
         let compiler = SnapSubcompilerReturn(symbols)
         XCTAssertThrowsError(try compiler.compile(input)) {
             let compilerError = $0 as? CompilerError
@@ -57,7 +57,7 @@ class SnapSubcompilerReturnTests: XCTestCase {
     func testReturnAValue() {
         let input = Return(Expression.LiteralInt(1))
         let symbols = SymbolTable()
-        symbols.enclosingFunctionTypeMode = .set(FunctionType(returnType: .arithmeticType(.mutableInt(.u8)), arguments: []))
+        symbols.enclosingFunctionTypeMode = .set(FunctionType(returnType: .u8, arguments: []))
         let compiler = SnapSubcompilerReturn(symbols)
         var output: AbstractSyntaxTreeNode? = nil
         XCTAssertNoThrow(output = try compiler.compile(input))

@@ -12,11 +12,11 @@ import TurtleCore
 
 class LvalueExpressionTypeCheckerTests: XCTestCase {
     func testIdentifier_U16() {
-        XCTAssertEqual(checkIdentifier(type: .arithmeticType(.mutableInt(.u16))), .arithmeticType(.mutableInt(.u16)))
+        XCTAssertEqual(checkIdentifier(type: .u16), .u16)
     }
     
     func testIdentifier_U8() {
-        XCTAssertEqual(checkIdentifier(type: .arithmeticType(.mutableInt(.u8))), .arithmeticType(.mutableInt(.u8)))
+        XCTAssertEqual(checkIdentifier(type: .u8), .u8)
     }
     
     func testIdentifier_Bool() {
@@ -24,8 +24,8 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testIdentifier_ArrayOfU8() {
-        XCTAssertEqual(checkIdentifier(type: .array(count: 1, elementType: .arithmeticType(.mutableInt(.u8)))),
-                       .array(count: 1, elementType: .arithmeticType(.mutableInt(.u8))))
+        XCTAssertEqual(checkIdentifier(type: .array(count: 1, elementType: .u8)),
+                       .array(count: 1, elementType: .u8))
     }
     
     fileprivate func checkIdentifier(type symbolType: SymbolType) -> SymbolType? {
@@ -49,12 +49,12 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
     func testArraySubscriptYieldsMutableReferenceToArrayElement() {
         let expr = ExprUtils.makeSubscript(identifier: "foo", expr: Expression.LiteralInt(0))
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .array(count: 1, elementType: .arithmeticType(.mutableInt(.u8))), offset: 0x0010))
+            ("foo", Symbol(type: .array(count: 1, elementType: .u8), offset: 0x0010))
         ])
         let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .arithmeticType(.mutableInt(.u8)))
+        XCTAssertEqual(result, .u8)
     }
     
     func testWeCanTakeTheLvalueOfAConstantArray() {
@@ -72,7 +72,7 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testCannotTakeTheLvalueOfTheArrayCountProperty() {
-        let expr = Expression.Get(expr: Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8)))),
+        let expr = Expression.Get(expr: Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8)),
                                                                 elements: [ExprUtils.makeU8(value: 0),
                                                                            ExprUtils.makeU8(value: 1),
                                                                            ExprUtils.makeU8(value: 2)]),
@@ -89,8 +89,8 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
                                   member: Expression.Identifier("asdf"))
         let offset = 0x0100
         let typ = StructType(name: "foo", symbols: SymbolTable(tuples: [
-            ("bar", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0, storage: .automaticStorage)),
-            ("baz", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 1, storage: .automaticStorage))
+            ("bar", Symbol(type: .u8, offset: 0, storage: .automaticStorage)),
+            ("baz", Symbol(type: .u16, offset: 1, storage: .automaticStorage))
         ]))
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .structType(typ), offset: offset))
@@ -108,8 +108,8 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
                                   member: Expression.Identifier("bar"))
         let offset = 0x0100
         let typ = StructType(name: "foo", symbols: SymbolTable(tuples: [
-            ("bar", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0, storage: .automaticStorage)),
-            ("baz", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 1, storage: .automaticStorage))
+            ("bar", Symbol(type: .u8, offset: 0, storage: .automaticStorage)),
+            ("baz", Symbol(type: .u16, offset: 1, storage: .automaticStorage))
         ]))
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .structType(typ), offset: offset))
@@ -117,7 +117,7 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .arithmeticType(.mutableInt(.u8)))
+        XCTAssertEqual(result, .u8)
     }
     
     func testGetLvalueOfSecondMemberOfStruct() {
@@ -125,8 +125,8 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
                                   member: Expression.Identifier("baz"))
         let offset = 0x0100
         let typ = StructType(name: "foo", symbols: SymbolTable(tuples: [
-            ("bar", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0, storage: .automaticStorage)),
-            ("baz", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 1, storage: .automaticStorage))
+            ("bar", Symbol(type: .u8, offset: 0, storage: .automaticStorage)),
+            ("baz", Symbol(type: .u16, offset: 1, storage: .automaticStorage))
         ]))
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .structType(typ), offset: offset))
@@ -134,32 +134,32 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .arithmeticType(.mutableInt(.u16)))
+        XCTAssertEqual(result, .u16)
     }
     
     func testLvalueOfPointerToU8() {
         let expr = Expression.Identifier("foo")
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .pointer(.arithmeticType(.mutableInt(.u8))), offset: 0x0100)),
-            ("bar", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0x0102))
+            ("foo", Symbol(type: .pointer(.u8), offset: 0x0100)),
+            ("bar", Symbol(type: .u8, offset: 0x0102))
         ])
         let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .pointer(.arithmeticType(.mutableInt(.u8))))
+        XCTAssertEqual(result, .pointer(.u8))
     }
     
     func testDereferencePointerToU8() {
         let expr = Expression.Get(expr: Expression.Identifier("foo"),
                                   member: Expression.Identifier("pointee"))
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .pointer(.arithmeticType(.mutableInt(.u8))), offset: 0x0100)),
-            ("bar", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0x0102))
+            ("foo", Symbol(type: .pointer(.u8), offset: 0x0100)),
+            ("bar", Symbol(type: .u8, offset: 0x0102))
         ])
         let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .arithmeticType(.mutableInt(.u8)))
+        XCTAssertEqual(result, .u8)
     }
     
     func testGetLvalueOfNonexistentMemberOfStructThroughPointer() {
@@ -167,8 +167,8 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
                                   member: Expression.Identifier("asdf"))
         let offset = 0x0100
         let typ = StructType(name: "Foo", symbols: SymbolTable(tuples: [
-            ("bar", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0, storage: .automaticStorage)),
-            ("baz", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 1, storage: .automaticStorage))
+            ("bar", Symbol(type: .u8, offset: 0, storage: .automaticStorage)),
+            ("baz", Symbol(type: .u16, offset: 1, storage: .automaticStorage))
         ]))
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(.structType(typ)), offset: offset))
@@ -186,8 +186,8 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
                                   member: Expression.Identifier("bar"))
         let offset = 0x0100
         let typ = StructType(name: "Foo", symbols: SymbolTable(tuples: [
-            ("bar", Symbol(type: .arithmeticType(.mutableInt(.u8)), offset: 0, storage: .automaticStorage)),
-            ("baz", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 1, storage: .automaticStorage))
+            ("bar", Symbol(type: .u8, offset: 0, storage: .automaticStorage)),
+            ("baz", Symbol(type: .u16, offset: 1, storage: .automaticStorage))
         ]))
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .pointer(.structType(typ)), offset: offset))
@@ -195,28 +195,28 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .arithmeticType(.mutableInt(.u8)))
+        XCTAssertEqual(result, .u8)
     }
     
     func testGetLvalueOfUnion() {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .unionType(UnionType([.arithmeticType(.mutableInt(.u16))])), offset: 0x0010))
+            ("foo", Symbol(type: .unionType(UnionType([.u16])), offset: 0x0010))
         ])
         let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
         let expr = Expression.Identifier("foo")
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
-        XCTAssertEqual(result, .unionType(UnionType([.arithmeticType(.mutableInt(.u16))])))
+        XCTAssertEqual(result, .unionType(UnionType([.u16])))
     }
     
     func testBitcast() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .array(count: 1, elementType: .arithmeticType(.mutableInt(.u8))), offset: 0x0010))
+            ("foo", Symbol(type: .array(count: 1, elementType: .u8), offset: 0x0010))
         ])
         let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
-        let expr = Expression.Bitcast(expr: Expression.Identifier("foo"), targetType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
+        let expr = Expression.Bitcast(expr: Expression.Identifier("foo"), targetType: Expression.PrimitiveType(.u8))
         let result: SymbolType? = try typeChecker.check(expression: expr)
-        XCTAssertEqual(result, .arithmeticType(.mutableInt(.u8)))
+        XCTAssertEqual(result, .u8)
     }
     
     func testGetLvalueOfStructMemberThroughGetOnLiteralStructInitializer() throws {
@@ -225,16 +225,16 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
         ])
         let expr = Expression.Get(expr: si, member: Expression.Identifier("bar"))
         let typ = StructType(name: "Foo", symbols: SymbolTable(tuples: [
-            ("bar", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0, storage: .automaticStorage))
+            ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
         ]))
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0))
+            ("foo", Symbol(type: .u16, offset: 0))
         ], typeDict: [
             "Foo" : .structType(typ)
         ])
         let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
         let result = try typeChecker.check(expression: expr)
-        XCTAssertEqual(result, .arithmeticType(.mutableInt(.u16)))
+        XCTAssertEqual(result, .u16)
     }
     
     func testSizeOfHasNoLvalue() {
@@ -269,7 +269,6 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testGenericFunctionApplication() throws {
-        let constU16 = SymbolType.arithmeticType(.immutableInt(.u16))
         let functionType = Expression.FunctionType(name: "foo",
                                                    returnType: Expression.Identifier("T"),
                                                    arguments: [Expression.Identifier("T")])
@@ -288,11 +287,11 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
         ])
         let typeChecker = LvalueExpressionTypeChecker(symbols: symbols, globalEnvironment: GlobalEnvironment())
         let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
-                                                     arguments: [Expression.PrimitiveType(constU16)])
+                                                     arguments: [Expression.PrimitiveType(.constU16)])
         let expected = SymbolType.function(FunctionType(name: "__foo_const_u16",
                                                         mangledName: "__foo_const_u16",
-                                                        returnType: constU16,
-                                                        arguments: [constU16],
+                                                        returnType: .constU16,
+                                                        arguments: [.constU16],
                                                         ast: nil))
         let actual = try typeChecker.check(expression: expr)
         XCTAssertEqual(actual, expected)
@@ -307,20 +306,20 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
     func testEseq_OneChild() throws {
         let ident = "foo"
         let symbols = SymbolTable(tuples: [
-            (ident, Symbol(type: .arithmeticType(.mutableInt(.u16)), offset: 0x0010))
+            (ident, Symbol(type: .u16, offset: 0x0010))
         ])
         let expr = Expression.Eseq(children: [
             Expression.Identifier("foo")
         ])
         let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
         let result = try typeChecker.check(expression: expr)
-        XCTAssertEqual(result, .arithmeticType(.mutableInt(.u16)))
+        XCTAssertEqual(result, .u16)
     }
     
     func testEseq_MultipleChildren() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .arithmeticType(.mutableInt(.u16)))),
-            ("bar", Symbol(type: .arithmeticType(.mutableInt(.i16))))
+            ("foo", Symbol(type: .u16)),
+            ("bar", Symbol(type: .i16))
         ])
         let expr = Expression.Eseq(children: [
             Expression.Identifier("bar"),
@@ -328,6 +327,6 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
         ])
         let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
         let result = try typeChecker.check(expression: expr)
-        XCTAssertEqual(result, .arithmeticType(.mutableInt(.u16)))
+        XCTAssertEqual(result, .u16)
     }
 }

@@ -95,7 +95,7 @@ class StatementTracerTests: XCTestCase {
         let ast = Block(children: [
             Match(expr: Expression.Identifier("test"), clauses: [
                 Match.Clause(valueIdentifier: Expression.Identifier("foo"),
-                             valueType: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))),
+                             valueType: Expression.PrimitiveType(.u8),
                              block: Block(children: [
                                 Return(one)
                             ])),

@@ -93,14 +93,14 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
     func testTypealias() throws {
         let symbols = SymbolTable()
         let input = Block(symbols: symbols, children: [
-            Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
+            Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.u8))
         ])
         
         let compiler = CompilerPassWithDeclScan()
         let result = try compiler.run(input)
         XCTAssertEqual(result, input)
         
-        let expectedType: SymbolType = .arithmeticType(.mutableInt(.u8))
+        let expectedType: SymbolType = .u8
         let actualType = try? symbols.resolveType(identifier: "Foo")
         XCTAssertEqual(actualType, expectedType)
     }
@@ -149,7 +149,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
         func compileSerialTrait() throws {
             let bar = TraitDeclaration.Member(name: "puts", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.void), arguments: [
                 Expression.PointerType(Expression.Identifier("Serial")),
-                Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
+                Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
             ])))
             let traitDecl = TraitDeclaration(
                 identifier: Expression.Identifier("Serial"),
@@ -187,7 +187,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
                                 returnType: Expression.PrimitiveType(.void),
                                 arguments: [
                                     Expression.PointerType(Expression.Identifier("Serial")),
-                                    Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
+                                    Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
                                 ]),
                             argumentNames: ["self", "s"],
                             body: Block())
@@ -204,7 +204,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
         XCTAssertEqual(vtableStructType.name, "__Serial_vtable")
         XCTAssertEqual(vtableStructType.symbols.exists(identifier: "puts"), true)
         let putsSymbol = try vtableStructType.symbols.resolve(identifier: "puts")
-        XCTAssertEqual(putsSymbol.type, .pointer(.function(FunctionType(returnType: .void, arguments: [.pointer(.void), .dynamicArray(elementType: .arithmeticType(.mutableInt(.u8)))]))))
+        XCTAssertEqual(putsSymbol.type, .pointer(.function(FunctionType(returnType: .void, arguments: [.pointer(.void), .dynamicArray(elementType: .u8)]))))
         XCTAssertEqual(putsSymbol.offset, 0)
     }
     

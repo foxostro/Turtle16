@@ -69,7 +69,7 @@ final class CompilerPassVtablesTests: XCTestCase {
                     Expression.PointerType(Expression.Identifier("Serial")),
                     Expression.DynamicArrayType(
                         Expression.PrimitiveType(
-                            .arithmeticType(.mutableInt(.u8))))
+                            .u8))
                 ]))
         
         let expected = Block(children: [
@@ -89,7 +89,7 @@ final class CompilerPassVtablesTests: XCTestCase {
                                     returnType: Expression.PrimitiveType(.void),
                                     arguments: [
                                         Expression.PointerType(Expression.PrimitiveType(.void)),
-                                        Expression.DynamicArrayType(Expression.PrimitiveType(.arithmeticType(.mutableInt(.u8))))
+                                        Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
                                     ])))
                     ],
                     isConst: false),
@@ -119,7 +119,7 @@ final class CompilerPassVtablesTests: XCTestCase {
                                         Expression.Identifier("__Serial_object")),
                                     Expression.DynamicArrayType(
                                         Expression.PrimitiveType(
-                                            .arithmeticType(.mutableInt(.u8))))
+                                            .u8))
                                 ]),
                             argumentNames: ["self", "arg1"],
                             body: Block(children: [

@@ -809,7 +809,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         case .structType(let typ), .constStructType(let typ):
             // TODO: The compiler treats Range specially but maybe it shouldn't. We could instead have a way to provide an overload of the subscript operator or some other solution in the standard library.
             if typ.name == "Range" {
-                return .arithmeticType(.mutableInt(.u16))
+                return .u16
             }
             else {
                 throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "value of type `\(subscriptableType)' has no subscripts")
@@ -824,10 +824,10 @@ public class RvalueExpressionTypeChecker: NSObject {
         guard typ.name == "Range" else {
             return false
         }
-        guard typ.symbols.maybeResolve(identifier: "begin")?.type == .arithmeticType(.mutableInt(.u16)) else {
+        guard typ.symbols.maybeResolve(identifier: "begin")?.type == .u16 else {
             return false
         }
-        guard typ.symbols.maybeResolve(identifier: "limit")?.type == .arithmeticType(.mutableInt(.u16)) else {
+        guard typ.symbols.maybeResolve(identifier: "limit")?.type == .u16 else {
             return false
         }
         return true
@@ -884,7 +884,7 @@ public class RvalueExpressionTypeChecker: NSObject {
                 case .structType(let typ), .constStructType(let typ):
                     // TODO: The compiler has special handling of Range.count but maybe it shouldn't. The compiler could provide a way to write a specialized Range.count property or something like that
                     if typ.name == "Range", member.identifier == "count" {
-                        return .arithmeticType(.mutableInt(.u16))
+                        return .u16
                     }
                                
                 default:
@@ -900,19 +900,19 @@ public class RvalueExpressionTypeChecker: NSObject {
         switch objectType {
         case .array, .constDynamicArray, .dynamicArray:
             if name == "count" {
-                return .arithmeticType(.mutableInt(.u16))
+                return .u16
             }
         case .constStructType(let typ):
             // TODO: The compiler treats Range specially but maybe it shouldn't do this. We could have some way to provide a specific template specialization and do it in stdlib.
             if typ.name == "Range", name == "count" {
-                return .arithmeticType(.mutableInt(.u16))
+                return .u16
             }
             else if let symbol = typ.symbols.maybeResolve(identifier: name) {
                 return symbol.type.correspondingConstType
             }
         case .structType(let typ):
             if typ.name == "Range", name == "count" {
-                return .arithmeticType(.mutableInt(.u16))
+                return .u16
             }
             else if let symbol = typ.symbols.maybeResolve(identifier: name) {
                 return symbol.type
@@ -924,7 +924,7 @@ public class RvalueExpressionTypeChecker: NSObject {
                 switch typ {
                 case .array, .constDynamicArray, .dynamicArray:
                     if name == "count" {
-                        return .arithmeticType(.mutableInt(.u16))
+                        return .u16
                     }
                 case .constStructType(let b):
                     if let symbol = b.symbols.maybeResolve(identifier: name) {
@@ -1479,7 +1479,7 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
     
     public func check(literalString expr: Expression.LiteralString) throws -> SymbolType {
-        return .array(count: expr.value.count, elementType: .arithmeticType(.mutableInt(.u8)))
+        return .array(count: expr.value.count, elementType: .u8)
     }
     
     public func check(typeOf expr: Expression.TypeOf) throws -> SymbolType {

@@ -24,10 +24,6 @@ final class CompilerPassImplTests: XCTestCase {
     fileprivate typealias StructInitializer = Expression.StructInitializer
     fileprivate typealias Unary = Expression.Unary
     
-    fileprivate let i16: SymbolType = .arithmeticType(.mutableInt(.i16))
-    fileprivate let u8: SymbolType = .arithmeticType(.mutableInt(.u8))
-    fileprivate let u16: SymbolType = .arithmeticType(.mutableInt(.u16))
-    
     fileprivate var testName: String {
         let regex = try! NSRegularExpression(pattern: #"\[\w+\s+(?<testName>\w+)\]"#)
         if let match = regex.firstMatch(in: name, range: NSRange(name.startIndex..., in: name)) {
@@ -50,7 +46,7 @@ final class CompilerPassImplTests: XCTestCase {
                 members: [
                     StructDeclaration.Member(
                         name: "val",
-                        type: PrimitiveType(i16))
+                        type: PrimitiveType(.i16))
                 ],
                 visibility: .privateVisibility),
             Impl(
@@ -61,7 +57,7 @@ final class CompilerPassImplTests: XCTestCase {
                         identifier: Identifier("bar"),
                         functionType: Expression.FunctionType(
                             name: "bar",
-                            returnType: PrimitiveType(u8),
+                            returnType: PrimitiveType(.u8),
                             arguments: [
                                 PointerType(Identifier("Foo"))
                             ]),
@@ -82,14 +78,14 @@ final class CompilerPassImplTests: XCTestCase {
                 members: [
                     StructDeclaration.Member(
                         name: "val",
-                        type: PrimitiveType(i16))
+                        type: PrimitiveType(.i16))
                 ],
                 visibility: .privateVisibility),
             FunctionDeclaration(
                 identifier: Identifier("__Foo_bar"),
                 functionType: Expression.FunctionType(
                     name: "__Foo_bar",
-                    returnType: PrimitiveType(u8),
+                    returnType: PrimitiveType(.u8),
                     arguments: [
                         PointerType(Identifier("Foo"))
                     ]),
@@ -117,7 +113,7 @@ final class CompilerPassImplTests: XCTestCase {
                 members: [
                     StructDeclaration.Member(
                         name: "val",
-                        type: PrimitiveType(i16))
+                        type: PrimitiveType(.i16))
                 ],
                 visibility: .privateVisibility),
             FunctionDeclaration(
@@ -137,7 +133,7 @@ final class CompilerPassImplTests: XCTestCase {
                                 identifier: Identifier("bar"),
                                 functionType: Expression.FunctionType(
                                     name: "bar",
-                                    returnType: PrimitiveType(u8),
+                                    returnType: PrimitiveType(.u8),
                                     arguments: [
                                         PointerType(Identifier("Foo"))
                                     ]),
@@ -158,7 +154,7 @@ final class CompilerPassImplTests: XCTestCase {
                 members: [
                     StructDeclaration.Member(
                         name: "val",
-                        type: PrimitiveType(i16))
+                        type: PrimitiveType(.i16))
                 ],
                 visibility: .privateVisibility),
             FunctionDeclaration(
@@ -174,7 +170,7 @@ final class CompilerPassImplTests: XCTestCase {
                         identifier: Identifier("__myFunc_Foo_bar"),
                         functionType: Expression.FunctionType(
                             name: "__myFunc_Foo_bar",
-                            returnType: PrimitiveType(u8),
+                            returnType: PrimitiveType(.u8),
                             arguments: [
                                 PointerType(Identifier("Foo"))
                             ]),
@@ -236,7 +232,7 @@ final class CompilerPassImplTests: XCTestCase {
                 identifier: Identifier("myFunction"),
                 functionType: Expression.FunctionType(
                     name: "myFunction",
-                    returnType: PrimitiveType(u16),
+                    returnType: PrimitiveType(.u16),
                     arguments: []),
                 argumentNames: [],
                 typeArguments: [],
@@ -324,7 +320,7 @@ final class CompilerPassImplTests: XCTestCase {
                         members: [
                             StructDeclaration.Member(
                                 name: "val",
-                                type: PrimitiveType(u16))
+                                type: PrimitiveType(.u16))
                         ],
                         visibility: .privateVisibility,
                         isConst: false),

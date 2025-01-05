@@ -53,7 +53,7 @@ final class CompilerPassMatchTests: XCTestCase {
                          valueType: Expression.PrimitiveType(.u8),
                          block: Block(children: [])),
             Match.Clause(valueIdentifier: Expression.Identifier("foo"),
-                         valueType: Expression.PrimitiveType(.bool(.mutableBool)),
+                         valueType: Expression.PrimitiveType(.bool),
                          block: Block(children: []))
         ], elseClause: nil)
         let compiler = CompilerPassMatch(symbols: symbols, globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL()))
@@ -75,7 +75,7 @@ final class CompilerPassMatchTests: XCTestCase {
                          valueType: Expression.PrimitiveType(.u8),
                          block: Block(children: [])),
             Match.Clause(valueIdentifier: Expression.Identifier("foo"),
-                         valueType: Expression.PrimitiveType(.bool(.mutableBool)),
+                         valueType: Expression.PrimitiveType(.bool),
                          block: Block(children: [])),
             Match.Clause(valueIdentifier: Expression.Identifier("foo"),
                          valueType: Expression.Identifier("None"),
@@ -129,7 +129,7 @@ final class CompilerPassMatchTests: XCTestCase {
     func testCompileMatchStatementWithUnionTypeAndNonexhaustiveClauses() {
         let symbols = SymbolTable(tuples: [
             ("result", Symbol(type: .u8)),
-            ("test", Symbol(type: .unionType(UnionType([.u8, .bool(.mutableBool)]))))
+            ("test", Symbol(type: .unionType(UnionType([.u8, .bool]))))
         ])
         let input = Match(expr: Expression.Identifier("test"), clauses: [
             Match.Clause(valueIdentifier: Expression.Identifier("foo"),
@@ -149,7 +149,7 @@ final class CompilerPassMatchTests: XCTestCase {
     func testCompileMatchStatementWithUnionTypeAndExhaustiveClauses() throws {
         let symbols = SymbolTable(tuples: [
             ("result", Symbol(type: .u8)),
-            ("test", Symbol(type: .unionType(UnionType([.u8, .bool(.mutableBool)]))))
+            ("test", Symbol(type: .unionType(UnionType([.u8, .bool]))))
         ])
         let input = Match(expr: Expression.Identifier("test"), clauses: [
             Match.Clause(valueIdentifier: Expression.Identifier("foo"),
@@ -158,7 +158,7 @@ final class CompilerPassMatchTests: XCTestCase {
                             Expression.Assignment(lexpr: Expression.Identifier("result"), rexpr: Expression.LiteralInt(1))
                         ])),
             Match.Clause(valueIdentifier: Expression.Identifier("foo"),
-                         valueType: Expression.PrimitiveType(.bool(.mutableBool)),
+                         valueType: Expression.PrimitiveType(.bool),
                          block: Block(children: [
                             Expression.Assignment(lexpr: Expression.Identifier("result"), rexpr: Expression.LiteralInt(2))
                         ]))
@@ -170,10 +170,10 @@ final class CompilerPassMatchTests: XCTestCase {
                            storage: .automaticStorage,
                            isMutable: true),
             If(condition: Expression.Is(expr: Expression.Identifier("__index"),
-                                        testType: Expression.PrimitiveType(.bool(.mutableBool))), then: Block(children: [
+                                        testType: Expression.PrimitiveType(.bool)), then: Block(children: [
                 VarDeclaration(identifier: Expression.Identifier("foo"),
                                explicitType: nil,
-                               expression: Expression.As(expr: Expression.Identifier("__index"), targetType: Expression.PrimitiveType(.bool(.mutableBool))),
+                               expression: Expression.As(expr: Expression.Identifier("__index"), targetType: Expression.PrimitiveType(.bool)),
                                storage: .automaticStorage,
                                isMutable: false),
                 Block(children: [

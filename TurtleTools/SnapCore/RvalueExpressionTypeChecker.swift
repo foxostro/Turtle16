@@ -33,7 +33,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         case let expr as Expression.LiteralInt:
             return check(literalInt: expr)
         case let expr as Expression.LiteralBool:
-            return .bool(.compTimeBool(expr.value))
+            return .booleanType(.compTimeBool(expr.value))
         case let expr as Expression.Group:
             return try check(expression: expr.expression)
         case let expr as Expression.Unary:
@@ -135,10 +135,10 @@ public class RvalueExpressionTypeChecker: NSObject {
             }
         case .bang:
             switch expressionType {
-            case .bool(let boolTyp):
+            case .booleanType(let boolTyp):
                 switch boolTyp {
                 case .compTimeBool(let value):
-                    return .bool(.compTimeBool(!value))
+                    return .booleanType(.compTimeBool(!value))
                 default:
                     return expressionType
                 }
@@ -202,43 +202,43 @@ public class RvalueExpressionTypeChecker: NSObject {
             abort()
         }
         
-        if case .bool(.compTimeBool) = leftType, case .bool(.compTimeBool) = rightType {
+        if case .booleanType(.compTimeBool) = leftType, case .booleanType(.compTimeBool) = rightType {
             return try checkConstantBooleanBinaryExpression(binary, leftType, rightType)
         }
         
-        _ = try checkTypesAreConvertibleInAssignment(ltype: .bool(.mutableBool),
+        _ = try checkTypesAreConvertibleInAssignment(ltype: .bool,
                                                      rtype: leftType,
                                                      sourceAnchor: binary.left.sourceAnchor,
                                                      messageWhenNotConvertible: "cannot convert value of type `\(leftType)' to type `bool'")
         
-        _ = try checkTypesAreConvertibleInAssignment(ltype: .bool(.mutableBool),
+        _ = try checkTypesAreConvertibleInAssignment(ltype: .bool,
                                                      rtype: rightType,
                                                      sourceAnchor: binary.right.sourceAnchor,
                                                      messageWhenNotConvertible: "cannot convert value of type `\(rightType)' to type `bool'")
         
         switch binary.op {
         case .eq, .ne, .doubleAmpersand, .doublePipe:
-            return .bool(.mutableBool)
+            return .bool
         default:
             throw invalidBinaryExpr(binary, leftType, rightType)
         }
     }
     
     private func checkConstantBooleanBinaryExpression(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> SymbolType {
-        guard case .bool(.compTimeBool(let a)) = leftType, case .bool(.compTimeBool(let b)) = rightType else {
+        guard case .booleanType(.compTimeBool(let a)) = leftType, case .booleanType(.compTimeBool(let b)) = rightType else {
             assert(false)
             abort()
         }
         
         switch binary.op {
         case .eq:
-            return .bool(.compTimeBool(a == b))
+            return .booleanType(.compTimeBool(a == b))
         case .ne:
-            return .bool(.compTimeBool(a != b))
+            return .booleanType(.compTimeBool(a != b))
         case .doubleAmpersand:
-            return .bool(.compTimeBool(a && b))
+            return .booleanType(.compTimeBool(a && b))
         case .doublePipe:
-            return .bool(.compTimeBool(a || b))
+            return .booleanType(.compTimeBool(a || b))
         default:
             throw invalidBinaryExpr(binary, leftType, rightType)
         }
@@ -268,7 +268,7 @@ public class RvalueExpressionTypeChecker: NSObject {
             
             switch binary.op {
             case .eq, .ne, .lt, .gt, .le, .ge:
-                return .bool(.mutableBool)
+                return .bool
             case .plus, .minus, .star, .divide, .modulus, .ampersand, .pipe, .caret, .leftDoubleAngle, .rightDoubleAngle:
                 return typeForArithmetic
             default:
@@ -289,17 +289,17 @@ public class RvalueExpressionTypeChecker: NSObject {
         
         switch binary.op {
         case .eq:
-            return .bool(.compTimeBool(a == b))
+            return .booleanType(.compTimeBool(a == b))
         case .ne:
-            return .bool(.compTimeBool(a != b))
+            return .booleanType(.compTimeBool(a != b))
         case .lt:
-            return .bool(.compTimeBool(a < b))
+            return .booleanType(.compTimeBool(a < b))
         case .gt:
-            return .bool(.compTimeBool(a > b))
+            return .booleanType(.compTimeBool(a > b))
         case .le:
-            return .bool(.compTimeBool(a <= b))
+            return .booleanType(.compTimeBool(a <= b))
         case .ge:
-            return .bool(.compTimeBool(a >= b))
+            return .booleanType(.compTimeBool(a >= b))
         case .plus:
             return .arithmeticType(.compTimeInt(a + b))
         case .minus:
@@ -401,7 +401,7 @@ public class RvalueExpressionTypeChecker: NSObject {
                 }
                 return .unacceptable(CompilerError(sourceAnchor: sourceAnchor, message: messageWhenNotConvertible))
             }
-        case (.bool(let a), .bool(let b)):
+        case (.booleanType(let a), .booleanType(let b)):
             switch (a, b) {
             case (.compTimeBool, .immutableBool),
                  (.compTimeBool, .mutableBool),
@@ -774,12 +774,12 @@ public class RvalueExpressionTypeChecker: NSObject {
         switch ltype {
         case .unionType(let typ):
             if typ.members.contains(rtype) || typ.members.contains(rtype.correspondingConstType) {
-                return .bool(.mutableBool)
+                return .bool
             } else {
-                return .bool(.compTimeBool(false))
+                return .booleanType(.compTimeBool(false))
             }
         default:
-            return .bool(.compTimeBool(ltype == rtype || ltype.correspondingConstType == rtype || ltype == rtype.correspondingConstType))
+            return .booleanType(.compTimeBool(ltype == rtype || ltype.correspondingConstType == rtype || ltype == rtype.correspondingConstType))
         }
     }
     
@@ -1489,8 +1489,8 @@ public class RvalueExpressionTypeChecker: NSObject {
         case .arithmeticType(.compTimeInt(let constantValue)):
             .arithmeticType(.mutableInt(
                 IntClass.smallestClassContaining(value: constantValue)!))
-        case .bool(.compTimeBool):
-            .bool(.mutableBool)
+        case .booleanType(.compTimeBool):
+            .bool
         default:
             type0
         }

@@ -234,7 +234,7 @@ final class ImplForScannerTests: XCTestCase {
                     identifier: Expression.Identifier("puts"),
                     functionType: Expression.FunctionType(
                         name: "puts",
-                        returnType: Expression.PrimitiveType(.bool(.mutableBool)),
+                        returnType: Expression.PrimitiveType(.bool),
                         arguments: [
                             Expression.PointerType(Expression.Identifier("SerialFake")),
                             Expression.DynamicArrayType(Expression.PrimitiveType(.u8))

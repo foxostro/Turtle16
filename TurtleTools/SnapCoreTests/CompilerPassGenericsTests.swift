@@ -1132,7 +1132,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                     body: Block(children: [
                         VarDeclaration(
                             identifier: Expression.Identifier("T"), // Shadows the generic type parameter, "T"
-                            explicitType: Expression.PrimitiveType(.bool(.mutableBool)),
+                            explicitType: Expression.PrimitiveType(.bool),
                             expression: Expression.LiteralBool(true),
                             storage: .automaticStorage,
                             isMutable: false)

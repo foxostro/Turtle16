@@ -36,7 +36,7 @@ class FunctionDeclarationTests: XCTestCase {
                                               argumentNames: [],
                                               body: Block(sourceAnchor: nil)),
                           FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                              functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.bool(.mutableBool)), arguments: []),
+                                              functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.bool), arguments: []),
                                               argumentNames: [],
                                               body: Block(sourceAnchor: nil)))
     }

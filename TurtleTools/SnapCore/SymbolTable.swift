@@ -12,7 +12,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     case void
     case function(FunctionType)
     case genericFunction(Expression.GenericFunctionType)
-    case bool(BooleanType)
+    case booleanType(BooleanType)
     case arithmeticType(ArithmeticType)
     case array(count: Int?, elementType: SymbolType)
     case constDynamicArray(elementType: SymbolType), dynamicArray(elementType: SymbolType)
@@ -25,7 +25,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     
     public var isPrimitive: Bool {
         switch self {
-        case .void, .bool, .arithmeticType, .pointer, .constPointer:
+        case .void, .booleanType, .arithmeticType, .pointer, .constPointer:
             return true
         
         default:
@@ -37,7 +37,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         switch self {
         case .void, .function:
             return true
-        case .bool(let typ):
+        case .booleanType(let typ):
             return typ.isConst
         case .arithmeticType(let typ):
             return typ.isConst
@@ -50,8 +50,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     
     public var correspondingConstType: SymbolType {
         switch self {
-        case .bool:
-            return .bool(.immutableBool)
+        case .booleanType:
+            return .constBool
         case .arithmeticType(let arithmeticType):
             return .arithmeticType(.immutableInt(arithmeticType.intClass!))
         case .array(count: let n, elementType: let typ):
@@ -73,8 +73,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     
     public var correspondingMutableType: SymbolType {
         switch self {
-        case .bool:
-            return .bool(.mutableBool)
+        case .booleanType:
+            return .bool
         case .arithmeticType(let arithmeticType):
             return .arithmeticType(.mutableInt(arithmeticType.intClass!))
         case .array(count: let n, elementType: let typ):
@@ -188,7 +188,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     
     public var isBooleanType: Bool {
         switch self {
-        case .bool:
+        case .booleanType:
             return true
         default:
             return false
@@ -250,7 +250,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
         switch self {
         case .void:
             return "void"
-        case .bool(let a):
+        case .booleanType(let a):
             return "\(a)"
         case .arithmeticType(let arithmeticType):
             return "\(arithmeticType)"
@@ -305,14 +305,14 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
                 template: typ.template,
                 enclosingImplId: typ.enclosingImplId)
             
-        case .bool(let typ):
+        case .booleanType(let typ):
             switch typ {
             case .compTimeBool(let val):
                 Expression.LiteralBool(val)
             case .immutableBool:
-                Expression.ConstType(Expression.PrimitiveType(.bool(.mutableBool)))
+                Expression.ConstType(Expression.PrimitiveType(.bool))
             case .mutableBool:
-                Expression.PrimitiveType(.bool(.mutableBool))
+                Expression.PrimitiveType(.bool)
             }
             
         case .arithmeticType(let typ):
@@ -374,6 +374,9 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     public static let constU16: SymbolType = .arithmeticType(.immutableInt(.u16))
     public static let constI8:  SymbolType = .arithmeticType(.immutableInt(.i8))
     public static let constI16: SymbolType = .arithmeticType(.immutableInt(.i16))
+    
+    public static let bool: SymbolType = .booleanType(.mutableBool)
+    public static let constBool: SymbolType = .booleanType(.immutableBool)
 }
 
 public enum SymbolStorage: Equatable {

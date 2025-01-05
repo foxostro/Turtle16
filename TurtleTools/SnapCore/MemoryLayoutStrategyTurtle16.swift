@@ -11,7 +11,7 @@ public class MemoryLayoutStrategyTurtle16: NSObject, MemoryLayoutStrategy {
         switch type {
         case .void, .function, .genericFunction, .genericStructType, .genericTraitType:
             return 0
-        case .bool(let boolType):
+        case .booleanType(let boolType):
             switch boolType {
             case .compTimeBool:
                 return 0

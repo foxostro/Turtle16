@@ -20,7 +20,7 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testIdentifier_Bool() {
-        XCTAssertEqual(checkIdentifier(type: .bool(.mutableBool)), .bool(.mutableBool))
+        XCTAssertEqual(checkIdentifier(type: .bool), .bool)
     }
     
     func testIdentifier_ArrayOfU8() {

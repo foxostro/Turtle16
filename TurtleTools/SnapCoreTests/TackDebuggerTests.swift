@@ -240,7 +240,7 @@ final class TackDebuggerTests: XCTestCase {
         let vm = TackVirtualMachine(tackProgram)
         let debugger = TackDebugger(vm)
         debugger.symbolsOfTopLevelScope = SymbolTable(tuples: [
-            ("foo", Symbol(type: .bool(.immutableBool),
+            ("foo", Symbol(type: .constBool,
                            offset: 100,
                            storage: .staticStorage,
                            visibility: .publicVisibility))

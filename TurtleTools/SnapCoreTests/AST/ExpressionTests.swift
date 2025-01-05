@@ -286,7 +286,7 @@ class ExpressionTests: XCTestCase {
     func testPrimitiveTypeEquality() {
         // Different underlying types
         XCTAssertNotEqual(Expression.PrimitiveType(.u8),
-                          Expression.PrimitiveType(.bool(.mutableBool)))
+                          Expression.PrimitiveType(.bool))
         
         // Same
         XCTAssertEqual(Expression.PrimitiveType(.u8),

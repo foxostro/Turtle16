@@ -1260,8 +1260,8 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
         let result: AbstractSyntaxTreeNode
         
         switch (rtype, ltype) {
-        case (.bool(.compTimeBool(let a)), .bool(.mutableBool)),
-             (.bool(.compTimeBool(let a)), .bool(.immutableBool)):
+        case (.booleanType(.compTimeBool(let a)), .bool),
+             (.booleanType(.compTimeBool(let a)), .constBool):
             // The expression produces a value that is known at compile time.
             // Add an instruction to load a register with that known value.
             let dst = nextRegister(type: .o)
@@ -1723,7 +1723,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
         let result: Bool
         
         switch (rtype, ltype) {
-        case (.bool(let a), .bool(let b)):
+        case (.booleanType(let a), .booleanType(let b)):
             result = a.canValueBeTriviallyReinterpretedAs(type: b)
             
         case (.arithmeticType(let a), .arithmeticType(let b)):
@@ -1783,7 +1783,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
             var instructions: [AbstractSyntaxTreeNode] = [childExpr]
             
             switch (childType, expr.op) {
-            case (.bool, .bang):
+            case (.booleanType, .bang):
                 let c = nextRegister(type: .o)
                 pushRegister(c)
                 instructions += [
@@ -2151,7 +2151,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
             case .none:
                 fatalError("Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(binary)")
             }
-        case .bool:
+        case .booleanType:
             ins = .lio(dst.unwrapBool!, value==0 ? false : true)
         default:
             fatalError("Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(binary)")
@@ -2166,14 +2166,14 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
     func compileBooleanBinaryExpression(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> AbstractSyntaxTreeNode {
         assert(leftType.isBooleanType && rightType.isBooleanType)
 
-        if case .bool(.compTimeBool) = leftType, case .bool(.compTimeBool) = rightType {
+        if case .booleanType(.compTimeBool) = leftType, case .booleanType(.compTimeBool) = rightType {
             return try compileConstantBooleanBinaryExpression(binary, leftType, rightType)
         }
         
         switch binary.op {
         case .eq:
-            let right = try compileAndConvertExpression(rexpr: binary.right, ltype: .bool(.mutableBool), isExplicitCast: false)
-            let left = try compileAndConvertExpression(rexpr: binary.left, ltype: .bool(.mutableBool), isExplicitCast: false)
+            let right = try compileAndConvertExpression(rexpr: binary.right, ltype: .bool, isExplicitCast: false)
+            let left = try compileAndConvertExpression(rexpr: binary.left, ltype: .bool, isExplicitCast: false)
             let a = popRegister()
             let b = popRegister()
             let c = nextRegister(type: .o)
@@ -2193,8 +2193,8 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
             return Seq(sourceAnchor: binary.sourceAnchor, children: [right, left, op])
             
         case .ne:
-            let right = try compileAndConvertExpression(rexpr: binary.right, ltype: .bool(.mutableBool), isExplicitCast: false)
-            let left = try compileAndConvertExpression(rexpr: binary.left, ltype: .bool(.mutableBool), isExplicitCast: false)
+            let right = try compileAndConvertExpression(rexpr: binary.right, ltype: .bool, isExplicitCast: false)
+            let left = try compileAndConvertExpression(rexpr: binary.left, ltype: .bool, isExplicitCast: false)
             let a = popRegister()
             let b = popRegister()
             let c = nextRegister(type: .o)
@@ -2225,7 +2225,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
     }
     
     func compileConstantBooleanBinaryExpression(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> AbstractSyntaxTreeNode {
-        guard case .bool(.compTimeBool(let a)) = leftType, case .bool(.compTimeBool(let b)) = rightType else {
+        guard case .booleanType(.compTimeBool(let a)) = leftType, case .booleanType(.compTimeBool(let b)) = rightType else {
             fatalError("Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(binary)")
         }
         
@@ -2261,7 +2261,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
         var instructions: [AbstractSyntaxTreeNode] = []
         let labelFalse = globalEnvironment.labelMaker.next()
         let labelTail = globalEnvironment.labelMaker.next()
-        instructions.append(try compileAndConvertExpression(rexpr: binary.left, ltype: .bool(.mutableBool), isExplicitCast: false))
+        instructions.append(try compileAndConvertExpression(rexpr: binary.left, ltype: .bool, isExplicitCast: false))
         let a = popRegister()
         instructions += [
             TackInstructionNode(
@@ -2270,7 +2270,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
                 symbols: symbols),
             try compileAndConvertExpression(
                 rexpr: binary.right,
-                ltype: .bool(.mutableBool),
+                ltype: .bool,
                 isExplicitCast: false)
         ]
         let b = popRegister()
@@ -2307,7 +2307,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
         var instructions: [AbstractSyntaxTreeNode] = []
         let labelTrue = globalEnvironment.labelMaker.next()
         let labelTail = globalEnvironment.labelMaker.next()
-        instructions.append(try compileAndConvertExpression(rexpr: binary.left, ltype: .bool(.mutableBool), isExplicitCast: false))
+        instructions.append(try compileAndConvertExpression(rexpr: binary.left, ltype: .bool, isExplicitCast: false))
         let a = popRegister()
         instructions += [
             TackInstructionNode(
@@ -2316,7 +2316,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
                 symbols: symbols),
             try compileAndConvertExpression(
                 rexpr: binary.right,
-                ltype: .bool(.mutableBool),
+                ltype: .bool,
                 isExplicitCast: false)
         ]
         let b = popRegister()
@@ -2353,7 +2353,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
         let exprType = try typeCheck(rexpr: expr)
         
         switch exprType {
-        case .bool(.compTimeBool(let val)):
+        case .booleanType(.compTimeBool(let val)):
             let tempResult = nextRegister(type: .o)
             let result = TackInstructionNode(
                 instruction: .lio(tempResult.unwrapBool!, val),

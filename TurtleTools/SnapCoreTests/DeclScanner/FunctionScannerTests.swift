@@ -36,7 +36,7 @@ final class FunctionScannerTests: XCTestCase {
         let symbols = SymbolTable()
         symbols.bind(
             identifier: "foo",
-            symbolType: .bool(.mutableBool),
+            symbolType: .bool,
             visibility: .privateVisibility)
         
         let input = FunctionDeclaration(

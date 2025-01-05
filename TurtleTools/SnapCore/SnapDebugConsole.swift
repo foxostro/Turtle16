@@ -62,7 +62,7 @@ public class SnapDebugConsole : DebugConsole {
         guard let symbol = symbols?.maybeResolve(identifier: identifier) else {
             return nil
         }
-        guard symbol.type.correspondingConstType == .bool(.immutableBool) else {
+        guard symbol.type.correspondingConstType == .constBool else {
             return nil
         }
         let word = computer.ram[symbol.offset]

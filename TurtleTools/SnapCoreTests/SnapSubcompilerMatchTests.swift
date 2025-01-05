@@ -54,7 +54,7 @@ class SnapSubcompilerMatchTests: XCTestCase {
                          valueType: Expression.PrimitiveType(.u8),
                          block: Block(children: [])),
             Match.Clause(valueIdentifier: Expression.Identifier("foo"),
-                         valueType: Expression.PrimitiveType(.bool(.mutableBool)),
+                         valueType: Expression.PrimitiveType(.bool),
                          block: Block(children: []))
         ], elseClause: nil)
         let compiler = SnapSubcompilerMatch(memoryLayoutStrategy: memoryLayoutStrategy, symbols: symbols)
@@ -77,7 +77,7 @@ class SnapSubcompilerMatchTests: XCTestCase {
                          valueType: Expression.PrimitiveType(.u8),
                          block: Block(children: [])),
             Match.Clause(valueIdentifier: Expression.Identifier("foo"),
-                         valueType: Expression.PrimitiveType(.bool(.mutableBool)),
+                         valueType: Expression.PrimitiveType(.bool),
                          block: Block(children: [])),
             Match.Clause(valueIdentifier: Expression.Identifier("foo"),
                          valueType: Expression.Identifier("None"),
@@ -132,7 +132,7 @@ class SnapSubcompilerMatchTests: XCTestCase {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
         let symbols = SymbolTable(tuples: [
             ("result", Symbol(type: .u8)),
-            ("test", Symbol(type: .unionType(UnionType([.u8, .bool(.mutableBool)]))))
+            ("test", Symbol(type: .unionType(UnionType([.u8, .bool]))))
         ])
         let input = Match(expr: Expression.Identifier("test"), clauses: [
             Match.Clause(valueIdentifier: Expression.Identifier("foo"),
@@ -153,7 +153,7 @@ class SnapSubcompilerMatchTests: XCTestCase {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
         let symbols = SymbolTable(tuples: [
             ("result", Symbol(type: .u8)),
-            ("test", Symbol(type: .unionType(UnionType([.u8, .bool(.mutableBool)]))))
+            ("test", Symbol(type: .unionType(UnionType([.u8, .bool]))))
         ])
         let input = Match(expr: Expression.Identifier("test"), clauses: [
             Match.Clause(valueIdentifier: Expression.Identifier("foo"),
@@ -162,7 +162,7 @@ class SnapSubcompilerMatchTests: XCTestCase {
                             Expression.Assignment(lexpr: Expression.Identifier("result"), rexpr: Expression.LiteralInt(1))
                         ])),
             Match.Clause(valueIdentifier: Expression.Identifier("foo"),
-                         valueType: Expression.PrimitiveType(.bool(.mutableBool)),
+                         valueType: Expression.PrimitiveType(.bool),
                          block: Block(children: [
                             Expression.Assignment(lexpr: Expression.Identifier("result"), rexpr: Expression.LiteralInt(2))
                         ]))
@@ -177,10 +177,10 @@ class SnapSubcompilerMatchTests: XCTestCase {
                            storage: .automaticStorage,
                            isMutable: true),
             If(condition: Expression.Is(expr: Expression.Identifier("__index"),
-                                        testType: Expression.PrimitiveType(.bool(.mutableBool))), then: Block(children: [
+                                        testType: Expression.PrimitiveType(.bool)), then: Block(children: [
                 VarDeclaration(identifier: Expression.Identifier("foo"),
                                explicitType: nil,
-                               expression: Expression.As(expr: Expression.Identifier("__index"), targetType: Expression.PrimitiveType(.bool(.mutableBool))),
+                               expression: Expression.As(expr: Expression.Identifier("__index"), targetType: Expression.PrimitiveType(.bool)),
                                storage: .automaticStorage,
                                isMutable: false),
                 Block(children: [

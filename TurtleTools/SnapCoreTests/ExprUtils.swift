@@ -38,7 +38,7 @@ public class ExprUtils: NSObject {
     
     public static func makeBool(value: Bool) -> Expression {
         return Expression.As(expr: Expression.LiteralBool(value),
-                             targetType: Expression.PrimitiveType(.bool(.mutableBool)))
+                             targetType: Expression.PrimitiveType(.bool))
     }
     
     public static func makeAdd(left: Expression, right: Expression) -> Expression {

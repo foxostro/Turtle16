@@ -100,7 +100,7 @@ class StatementTracerTests: XCTestCase {
                                 Return(one)
                             ])),
                 Match.Clause(valueIdentifier: Expression.Identifier("foo"),
-                             valueType: Expression.PrimitiveType(.bool(.mutableBool)),
+                             valueType: Expression.PrimitiveType(.bool),
                              block: Block(children: [
                                 Return(two)
                             ]))

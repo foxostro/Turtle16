@@ -84,7 +84,7 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
     
     func testConstantRedefinesExistingType() throws {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "foo", symbolType: .bool(.mutableBool))
+        symbols.bind(identifier: "foo", symbolType: .bool)
         let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: GlobalEnvironment())
         let input = VarDeclaration(
             identifier: Expression.Identifier("foo"),
@@ -100,7 +100,7 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
     
     func testVariableRedefinesExistingType() throws {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "foo", symbolType: .bool(.mutableBool))
+        symbols.bind(identifier: "foo", symbolType: .bool)
         let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: GlobalEnvironment())
         let input = VarDeclaration(
             identifier: Expression.Identifier("foo"),
@@ -212,7 +212,7 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
                                                     rexpr: Expression.LiteralBool(true))
         XCTAssertEqual(actual, expected)
         let foo = try? symbols.resolve(identifier: "foo")
-        let expectedSymbol = Symbol(type: .bool(.immutableBool),
+        let expectedSymbol = Symbol(type: .constBool,
                                     offset: SnapCompilerMetrics.kStaticStorageStartAddress,
                                     storage: .staticStorage,
                                     visibility: .privateVisibility)

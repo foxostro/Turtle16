@@ -308,7 +308,7 @@ final class CompilerPassImplForTests: XCTestCase {
                         identifier: Identifier("puts"),
                         functionType: FunctionType(
                             name: "puts",
-                            returnType: PrimitiveType(.bool(.mutableBool)),
+                            returnType: PrimitiveType(.bool),
                             arguments: [
                                 PointerType(Identifier("SerialFake")),
                                 DynamicArrayType(PrimitiveType(.u8))

@@ -497,7 +497,7 @@ public struct TackProgram: Equatable {
 extension SymbolType {
     public var primitiveType: TackInstruction.RegisterType? {
         switch self {
-        case .bool:
+        case .booleanType:
             return .o
             
         case .void:

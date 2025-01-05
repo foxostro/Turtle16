@@ -209,7 +209,7 @@ public class SnapLexer: Lexer {
                 TokenType(sourceAnchor: $0, type: .i16)
             },
             Rule(pattern: "bool\\b") {
-                TokenType(sourceAnchor: $0, type: .bool(.mutableBool))
+                TokenType(sourceAnchor: $0, type: .bool)
             },
             Rule(pattern: "void\\b") {
                 TokenType(sourceAnchor: $0, type: .void)

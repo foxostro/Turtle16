@@ -67,8 +67,8 @@ public class SnapSubcompilerVarDeclaration: NSObject {
                     case .arithmeticType(.compTimeInt(let constantValue)):
                         let intClass = IntClass.smallestClassContaining(value: constantValue)
                         symbolType = .arithmeticType(.mutableInt(intClass!))
-                    case .bool(.compTimeBool):
-                        symbolType = .bool(.mutableBool)
+                    case .booleanType(.compTimeBool):
+                        symbolType = .bool
                     default:
                         symbolType = expressionResultType
                     }

@@ -153,7 +153,7 @@ public class TackDebugger: NSObject {
         guard let symbol = symbols?.maybeResolve(identifier: identifier) else {
             return nil
         }
-        guard symbol.type.correspondingConstType == .bool(.immutableBool) else {
+        guard symbol.type.correspondingConstType == .constBool else {
             return nil
         }
         let word = vm.loado(address: addressOfSymbol(symbol))

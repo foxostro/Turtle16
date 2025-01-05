@@ -14,7 +14,7 @@ public class SnapSubcompilerIf: NSObject {
         var children: [AbstractSyntaxTreeNode] = []
         let condition = Expression.As(sourceAnchor: node.condition.sourceAnchor,
                                               expr: node.condition,
-                                      targetType: Expression.PrimitiveType(.bool(.mutableBool)))
+                                      targetType: Expression.PrimitiveType(.bool))
         try RvalueExpressionTypeChecker(symbols: symbols).check(expression: condition)
         if let elseBranch = node.elseBranch {
             let labelElse = labelMaker.next()

@@ -13,7 +13,7 @@ import TurtleCore
 class SymbolTableTests: XCTestCase {
     func testEquatableSymbols() {
         XCTAssertNotEqual(Symbol(type: .u8, offset: 0x10),
-                          Symbol(type: .bool(.mutableBool), offset: 0x10))
+                          Symbol(type: .bool, offset: 0x10))
     }
     
     func testUseOfUnresolvedIdentifier() {
@@ -63,50 +63,50 @@ class SymbolTableTests: XCTestCase {
 
     func testBindBoolean_Static_Mutable() {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "foo", symbol: Symbol(type: .bool(.mutableBool), offset: 0x10))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .bool, offset: 0x10))
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
-        XCTAssertEqual(symbol.type, .bool(.mutableBool))
+        XCTAssertEqual(symbol.type, .bool)
         XCTAssertEqual(symbol.offset, 0x10)
     }
 
     func testBindBoolean_Static_Constant() {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "foo", symbol: Symbol(type: .bool(.immutableBool), offset: 0x10))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
-        XCTAssertEqual(symbol.type, .bool(.immutableBool))
+        XCTAssertEqual(symbol.type, .constBool)
         XCTAssertEqual(symbol.offset, 0x10)
     }
     
     func testExistsInParentScope() {
         let parent = SymbolTable()
-        parent.bind(identifier: "foo", symbol: Symbol(type: .bool(.immutableBool), offset: 0x10))
+        parent.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
         let symbols = SymbolTable(parent: parent)
         XCTAssertTrue(symbols.exists(identifier: "foo"))
     }
     
     func testResolveSymbolInParentScope() {
         let parent = SymbolTable()
-        parent.bind(identifier: "foo", symbol: Symbol(type: .bool(.immutableBool), offset: 0x10))
+        parent.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
         let symbols = SymbolTable(parent: parent)
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
-        XCTAssertEqual(symbol, Symbol(type: .bool(.immutableBool), offset: 0x10))
+        XCTAssertEqual(symbol, Symbol(type: .constBool, offset: 0x10))
     }
     
     func testResolveSymbolWithStackFrameDepth() {
         let parent = SymbolTable()
-        parent.bind(identifier: "foo", symbol: Symbol(type: .bool(.immutableBool), offset: 0x10))
+        parent.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
         let symbols = SymbolTable(parent: parent)
         let resolution = try! symbols.resolveWithStackFrameDepth(sourceAnchor: nil, identifier: "foo")
-        XCTAssertEqual(resolution.0, Symbol(type: .bool(.immutableBool), offset: 0x10))
+        XCTAssertEqual(resolution.0, Symbol(type: .constBool, offset: 0x10))
         XCTAssertEqual(resolution.1, 0)
     }
     
     func testResolveSymbolWithScopeDepth() {
         let parent = SymbolTable()
-        parent.bind(identifier: "foo", symbol: Symbol(type: .bool(.immutableBool), offset: 0x10))
+        parent.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
         let symbols = SymbolTable(parent: parent)
         let resolution = try! symbols.resolveWithScopeDepth(identifier: "foo")
-        XCTAssertEqual(resolution.0, Symbol(type: .bool(.immutableBool), offset: 0x10))
+        XCTAssertEqual(resolution.0, Symbol(type: .constBool, offset: 0x10))
         XCTAssertEqual(resolution.1, 1)
     }
     
@@ -171,9 +171,9 @@ class SymbolTableTests: XCTestCase {
     func testBindUpdatesDeclarationOrder() {
         let symbols = SymbolTable()
         XCTAssertEqual(symbols.declarationOrder, [])
-        symbols.bind(identifier: "foo", symbol: Symbol(type: .bool(.immutableBool), offset: 0x10))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
         XCTAssertEqual(symbols.declarationOrder, ["foo"])
-        symbols.bind(identifier: "bar", symbol: Symbol(type: .bool(.immutableBool), offset: 0x10))
+        symbols.bind(identifier: "bar", symbol: Symbol(type: .constBool, offset: 0x10))
         XCTAssertEqual(symbols.declarationOrder, ["foo", "bar"])
     }
 }

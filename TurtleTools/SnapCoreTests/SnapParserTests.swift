@@ -1332,7 +1332,7 @@ while 1 {}
         let expected = TopLevel(sourceAnchor: parser.lineMapper.anchor(0, 31), children: [
             FunctionDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 31),
                                 identifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(5, 8), identifier: "foo"),
-                                functionType: Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(0, 31), name: "foo", returnType: Expression.PrimitiveType(.void), arguments: [Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 16), typ: .u8), Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(23, 27), typ: .bool(.mutableBool))]),
+                                functionType: Expression.FunctionType(sourceAnchor: parser.lineMapper.anchor(0, 31), name: "foo", returnType: Expression.PrimitiveType(.void), arguments: [Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 16), typ: .u8), Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(23, 27), typ: .bool)]),
                                 argumentNames: ["bar", "baz"],
                                 body: Block(sourceAnchor: parser.lineMapper.anchor(29, 31), children: []))
         ])
@@ -1639,7 +1639,7 @@ struct foo {
                                             StructDeclaration.Member(name: "baz",
                                                                      type: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(35, 38), typ: .u16)),
                                             StructDeclaration.Member(name: "qux",
-                                                                     type: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(49, 53), typ: .bool(.mutableBool))),
+                                                                     type: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(49, 53), typ: .bool)),
                                          ])
         XCTAssertEqual(ast.children.first, expected)
     }
@@ -1667,7 +1667,7 @@ struct foo { bar: u8, baz: u16, qux: bool }
                                             StructDeclaration.Member(name: "baz",
                                                                      type: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(27, 30), typ: .u16)),
                                             StructDeclaration.Member(name: "qux",
-                                                                     type: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(37, 41), typ: .bool(.mutableBool))),
+                                                                     type: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(37, 41), typ: .bool)),
                                          ])
         XCTAssertEqual(ast.children.first, expected)
     }
@@ -2133,7 +2133,7 @@ Foo.doSomething1()
         XCTAssertFalse(parser.hasError)
         let unionType = Expression.UnionType(sourceAnchor: parser.lineMapper.anchor(9, 18), members: [
             Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(9, 11), typ: .u8),
-            Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 18), typ: .bool(.mutableBool))
+            Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 18), typ: .bool)
         ])
         XCTAssertEqual(parser.syntaxTree?.children, [
             VarDeclaration(sourceAnchor: parser.lineMapper.anchor(0, 30),
@@ -2150,7 +2150,7 @@ Foo.doSomething1()
         XCTAssertFalse(parser.hasError)
         let unionType = Expression.UnionType(sourceAnchor: parser.lineMapper.anchor(9, 24), members: [
             Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(9, 11), typ: .u8),
-            Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 18), typ: .bool(.mutableBool)),
+            Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(14, 18), typ: .bool),
             Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(21, 24), identifier: "Foo")
         ])
         XCTAssertEqual(parser.syntaxTree?.children, [
@@ -2288,7 +2288,7 @@ match expr {
                                  block: Block(sourceAnchor: parser.lineMapper.anchor(30, 32), children: [])),
                     Match.Clause(sourceAnchor: parser.lineMapper.anchor(38, 56),
                                  valueIdentifier: Expression.Identifier(sourceAnchor: parser.lineMapper.anchor(39, 42), identifier: "foo"),
-                                 valueType: Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(44, 49), typ: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(45, 49), typ: .bool(.mutableBool))),
+                                 valueType: Expression.PointerType(sourceAnchor: parser.lineMapper.anchor(44, 49), typ: Expression.PrimitiveType(sourceAnchor: parser.lineMapper.anchor(45, 49), typ: .bool)),
                                  block: Block(sourceAnchor: parser.lineMapper.anchor(54, 56), children: []))
                   ],
                   elseClause: Block(sourceAnchor: parser.lineMapper.anchor(70, 72), children: []))

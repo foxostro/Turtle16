@@ -127,7 +127,7 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
     
     func testInferOneTypeArgument() throws {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "U", symbol: Symbol(type: .bool(.immutableBool)))
+        symbols.bind(identifier: "U", symbol: Symbol(type: .constBool))
         
         let call = Expression.Call(callee: Expression.Identifier("foo"), arguments: [Expression.Identifier("U")])
         let functionType = Expression.FunctionType(name: "foo",
@@ -147,14 +147,14 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
         let actual = try solver.inferTypeArguments(call: call,
                                                    genericFunctionType: generic,
                                                    symbols: symbols)
-        let expected: [SymbolType] = [.bool(.mutableBool)]
+        let expected: [SymbolType] = [.bool]
         XCTAssertEqual(actual, expected)
     }
     
     func testInferDifferentSubstitutionsOnEachArgumentButTheEvaluatedTypesAreIdentical() throws {
         let symbols = SymbolTable()
-        symbols.bind(identifier: "U", symbol: Symbol(type: .bool(.immutableBool)))
-        symbols.bind(identifier: "V", symbol: Symbol(type: .bool(.immutableBool)))
+        symbols.bind(identifier: "U", symbol: Symbol(type: .constBool))
+        symbols.bind(identifier: "V", symbol: Symbol(type: .constBool))
         
         let call = Expression.Call(callee: Expression.Identifier("foo"),
                                    arguments: [
@@ -179,14 +179,14 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
         let actual = try solver.inferTypeArguments(call: call,
                                                    genericFunctionType: generic,
                                                    symbols: symbols)
-        let expected: [SymbolType] = [.bool(.mutableBool)]
+        let expected: [SymbolType] = [.bool]
         XCTAssertEqual(actual, expected)
     }
         
     func testFailWhenInferDifferentSubstitutionsOnEachArgument() throws {
         // TODO: What if the fully qualified types of `U' and `V' are the same? Need to actually resolve the types to get this right.
         let symbols = SymbolTable()
-        symbols.bind(identifier: "U", symbol: Symbol(type: .bool(.immutableBool)))
+        symbols.bind(identifier: "U", symbol: Symbol(type: .constBool))
         symbols.bind(identifier: "V", symbol: Symbol(type: .arithmeticType(.immutableInt(.u16))))
         
         let call = Expression.Call(callee: Expression.Identifier("foo"),

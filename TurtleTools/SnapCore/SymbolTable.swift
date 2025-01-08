@@ -1484,3 +1484,70 @@ public class SymbolTable: NSObject {
         breadcrumb = nil
     }
 }
+
+extension SymbolType {
+    /// Return true if the type includes a Module type somewhere in the def'n
+    public func hasModule(
+        _ sym: SymbolTable,
+        _ genv: GlobalEnvironment,
+        _ workingSet: Set<SymbolType> = Set<SymbolType>()
+    ) throws -> Bool {
+        
+        guard !workingSet.contains(self) else { return false }
+        
+        let anyExprHasModule: ([Expression]) throws -> Bool = { exprs in
+            let typeChecker = TypeContextTypeChecker(
+                symbols: sym,
+                globalEnvironment: genv)
+            let result = try exprs
+                .compactMap {
+                    try? typeChecker.check(expression: $0)
+                }
+                .first {
+                    try $0.hasModule(sym, genv, workingSet.union([self]))
+                }
+            return result != nil
+        }
+        
+        return switch self {
+        case .void, .booleanType, .arithmeticType:
+            false
+            
+        case .function(let typ):
+            try typ.arguments.first {
+                try $0.hasModule(sym, genv, workingSet.union([self]))
+            } != nil
+            
+        case .genericFunction(let typ):
+            try anyExprHasModule(typ.arguments + typ.typeArguments)
+            
+        case .array(count: _, elementType: let elementType),
+             .constDynamicArray(elementType: let elementType),
+             .dynamicArray(elementType: let elementType),
+             .constPointer(let elementType),
+             .pointer(let elementType):
+            try elementType.hasModule(sym, genv, workingSet.union([self]))
+            
+        case .constStructType(let typ), .structType(let typ):
+            try typ.symbols.symbolTable.map(\.value.type).first {
+                try $0.hasModule(sym, genv, workingSet.union([self]))
+            } != nil || typ.isModule
+            
+        case .genericStructType(let typ):
+            try anyExprHasModule(typ.typeArguments)
+            
+        case .constTraitType(let typ), .traitType(let typ):
+            try typ.members.map(\.type).first {
+                try $0.hasModule(sym, genv, workingSet.union([self]))
+            } != nil
+            
+        case .genericTraitType(let typ):
+            try anyExprHasModule(typ.typeArguments)
+            
+        case .unionType(let typ):
+            try typ.members.first {
+                try $0.hasModule(sym, genv, workingSet.union([self]))
+            } != nil
+        }
+    }
+}

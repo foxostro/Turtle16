@@ -84,7 +84,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
         
         let expectedStructSymbols = SymbolTable()
         expectedStructSymbols.frameLookupMode = .set(Frame())
-        expectedStructSymbols.enclosingFunctionNameMode = .set("None")
+        expectedStructSymbols.breadcrumb = .structType("None")
         let expectedType: SymbolType = .structType(StructType(name: "None", symbols: expectedStructSymbols))
         let actualType = try symbols.resolveType(identifier: "None")
         XCTAssertEqual(actualType, expectedType)
@@ -117,7 +117,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
         
         let expectedSymbols = SymbolTable()
         expectedSymbols.frameLookupMode = .set(Frame())
-        expectedSymbols.enclosingFunctionNameMode = .set("Foo")
+        expectedSymbols.breadcrumb = .traitType("Foo")
         let expectedType: SymbolType = .traitType(TraitType(name: "Foo", nameOfTraitObjectType: "__Foo_object", nameOfVtableType: "__Foo_vtable", symbols: expectedSymbols))
         let actualType = try? symbols.resolveType(identifier: "Foo")
         XCTAssertEqual(expectedType, actualType)

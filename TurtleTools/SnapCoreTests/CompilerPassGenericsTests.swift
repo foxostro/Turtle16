@@ -54,7 +54,7 @@ final class CompilerPassGenericsTests: XCTestCase {
             arguments: [Expression.PrimitiveType(.constU16)])
         let compiler = CompilerPassGenerics(symbols: symbols, globalEnvironment: GlobalEnvironment())
         let actual = try compiler.visit(expr: expr)
-        let expected = Expression.Identifier("__foo_const_u16")
+        let expected = Expression.Identifier("foo[const u16]")
         XCTAssertEqual(actual, expected)
     }
     
@@ -67,11 +67,11 @@ final class CompilerPassGenericsTests: XCTestCase {
         let compiler = CompilerPassGenerics(symbols: symbols, globalEnvironment: GlobalEnvironment())
         _ = try compiler.visit(expr: expr)
         
-        let sym = try symbols.resolve(identifier: "__foo_const_u16")
+        let sym = try symbols.resolve(identifier: "foo[const u16]")
         switch sym.type {
         case .function(let funTyp):
-            XCTAssertEqual(funTyp.mangledName, "__foo_const_u16")
-            XCTAssertEqual(funTyp.name, "__foo_const_u16")
+            XCTAssertEqual(funTyp.mangledName, "foo[const u16]")
+            XCTAssertEqual(funTyp.name, "foo[const u16]")
             XCTAssertEqual(funTyp.arguments, [.constU16])
             XCTAssertEqual(funTyp.returnType, .constU16)
             
@@ -101,9 +101,9 @@ final class CompilerPassGenericsTests: XCTestCase {
         
         let expected = Block(symbols: blockSymbols, children: [
             FunctionDeclaration(
-                identifier: Expression.Identifier("__foo_const_u16"),
+                identifier: Expression.Identifier("foo[const u16]"),
                 functionType: Expression.FunctionType(
-                    name: "__foo_const_u16",
+                    name: "foo[const u16]",
                     returnType: Expression.PrimitiveType(.constU16),
                     arguments: [Expression.PrimitiveType(.constU16)]),
                 argumentNames: ["a"],
@@ -112,7 +112,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 ]),
                 visibility: .privateVisibility,
                 symbols: funSym),
-            Expression.Identifier("__foo_const_u16")
+            Expression.Identifier("foo[const u16]")
         ])
         
         let ast0 = Block(symbols: blockSymbols, children: [
@@ -155,9 +155,9 @@ final class CompilerPassGenericsTests: XCTestCase {
         
         let expected = Block(symbols: blockSymbols, children: [
             FunctionDeclaration(
-                identifier: Expression.Identifier("__foo_u16"),
+                identifier: Expression.Identifier("foo[u16]"),
                 functionType: Expression.FunctionType(
-                    name: "__foo_u16",
+                    name: "foo[u16]",
                     returnType: Expression.PrimitiveType(.u16),
                     arguments: [Expression.PrimitiveType(.u16)]),
                 argumentNames: ["a"],
@@ -167,7 +167,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 visibility: .privateVisibility,
                 symbols: funSym),
             Expression.Call(
-                callee: Expression.Identifier("__foo_u16"),
+                callee: Expression.Identifier("foo[u16]"),
                 arguments: [Expression.PrimitiveType(.u16)])
         ])
         
@@ -339,9 +339,9 @@ final class CompilerPassGenericsTests: XCTestCase {
             globalEnvironment: GlobalEnvironment())
             .run(ast0)
         
-        switch try symbols.resolveType(identifier: "__foo_u16") {
+        switch try symbols.resolveType(identifier: "foo[u16]") {
         case .structType(let typ):
-            XCTAssertEqual(typ.name, "__foo_u16")
+            XCTAssertEqual(typ.name, "foo[u16]")
             XCTAssertEqual(typ.symbols.maybeResolve(identifier: "bar")?.type, .u16)
             
         default:
@@ -353,7 +353,7 @@ final class CompilerPassGenericsTests: XCTestCase {
     func testGenericTypeApplicationCausesConcreteStructToBeAddedToAST() throws {
         let expected = Block(children: [
             StructDeclaration(
-                identifier: Expression.Identifier("__foo_u16"),
+                identifier: Expression.Identifier("foo[u16]"),
                 members: [
                     StructDeclaration.Member(
                         name: "bar",
@@ -362,7 +362,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 visibility: .privateVisibility,
                 isConst: false),
             Expression.StructInitializer(
-                expr: Expression.Identifier("__foo_u16"),
+                expr: Expression.Identifier("foo[u16]"),
                 arguments: [
                     Expression.StructInitializer.Argument(
                         name: "T",
@@ -420,11 +420,11 @@ final class CompilerPassGenericsTests: XCTestCase {
             symbols: symbols,
             children: [
                 StructDeclaration(
-                    identifier: Expression.Identifier("__MyStruct_u16"),
+                    identifier: Expression.Identifier("MyStruct[u16]"),
                     members: []),
                 Impl(
                     typeArguments: [],
-                    structTypeExpr: Expression.Identifier("__MyStruct_u16"),
+                    structTypeExpr: Expression.Identifier("MyStruct[u16]"),
                     children: [
                         FunctionDeclaration(
                             identifier: Expression.Identifier("foo"),
@@ -442,7 +442,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                             symbols: funSym)
                     ]),
                 Expression.StructInitializer(
-                    expr: Expression.Identifier("__MyStruct_u16"),
+                    expr: Expression.Identifier("MyStruct[u16]"),
                     arguments: [],
                     id: structInitializerID)
             ],
@@ -519,11 +519,11 @@ final class CompilerPassGenericsTests: XCTestCase {
             symbols: symbols,
             children: [
                 StructDeclaration(
-                    identifier: Expression.Identifier("__MyStruct_u16"),
+                    identifier: Expression.Identifier("MyStruct[u16]"),
                     members: []),
                 Impl(
                     typeArguments: [],
-                    structTypeExpr: Expression.Identifier("__MyStruct_u16"),
+                    structTypeExpr: Expression.Identifier("MyStruct[u16]"),
                     children: [
                         FunctionDeclaration(
                             identifier: Expression.Identifier("foo"),
@@ -541,7 +541,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                             symbols: funSym)
                     ]),
                 Expression.StructInitializer(
-                    expr: Expression.Identifier("__MyStruct_u16"),
+                    expr: Expression.Identifier("MyStruct[u16]"),
                     arguments: [])
             ])
         
@@ -677,11 +677,11 @@ final class CompilerPassGenericsTests: XCTestCase {
         let expected = Block(
             children: [
                 StructDeclaration(
-                    identifier: Expression.Identifier("__MyStruct_u16"),
+                    identifier: Expression.Identifier("MyStruct[u16]"),
                     members: []),
                 Impl(
                     typeArguments: [],
-                    structTypeExpr: Expression.Identifier("__MyStruct_u16"),
+                    structTypeExpr: Expression.Identifier("MyStruct[u16]"),
                     children: [
                         FunctionDeclaration(
                             identifier: Expression.Identifier("foo"),
@@ -697,7 +697,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                     ]),
                 Impl(
                     typeArguments: [],
-                    structTypeExpr: Expression.Identifier("__MyStruct_u16"),
+                    structTypeExpr: Expression.Identifier("MyStruct[u16]"),
                     children: [
                         FunctionDeclaration(
                             identifier: Expression.Identifier("bar"),
@@ -712,7 +712,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                             ]))
                     ]),
                 Expression.StructInitializer(
-                    expr: Expression.Identifier("__MyStruct_u16"),
+                    expr: Expression.Identifier("MyStruct[u16]"),
                     arguments: [])
             ],
             id: ast0.id)
@@ -841,9 +841,9 @@ final class CompilerPassGenericsTests: XCTestCase {
             globalEnvironment: GlobalEnvironment())
             .run(ast0)
         
-        switch try symbols.resolveType(identifier: "__MyTrait_u16") {
+        switch try symbols.resolveType(identifier: "MyTrait[u16]") {
         case .traitType(let typ):
-            XCTAssertEqual(typ.name, "__MyTrait_u16")
+            XCTAssertEqual(typ.name, "MyTrait[u16]")
             
         default:
             XCTFail()
@@ -858,7 +858,7 @@ final class CompilerPassGenericsTests: XCTestCase {
         
         let expected = Block(symbols: symbols, children: [
             TraitDeclaration(
-                identifier: Expression.Identifier("__MyTrait_u16"),
+                identifier: Expression.Identifier("MyTrait[u16]"),
                 members: [
                     TraitDeclaration.Member(
                         name: "foo",
@@ -873,7 +873,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 members: []),
             ImplFor(
                 typeArguments: [],
-                traitTypeExpr: Expression.Identifier("__MyTrait_u16"),
+                traitTypeExpr: Expression.Identifier("MyTrait[u16]"),
                 structTypeExpr: Expression.Identifier("MyStruct"),
                 children: [
                     FunctionDeclaration(
@@ -961,9 +961,9 @@ final class CompilerPassGenericsTests: XCTestCase {
                     structTypeExpr: Expression.Identifier("MyStruct"),
                     children: [
                         FunctionDeclaration(
-                            identifier: Expression.Identifier("__foo_const_u16"),
+                            identifier: Expression.Identifier("foo[const u16]"),
                             functionType: Expression.FunctionType(
-                                name: "__foo_const_u16",
+                                name: "foo[const u16]",
                                 returnType: Expression.PrimitiveType(.constU16),
                                 arguments: [Expression.PrimitiveType(.constU16)]),
                             argumentNames: ["arg1"],
@@ -978,7 +978,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 Expression.Call(
                     callee: Expression.Get(
                         expr: Expression.Identifier("MyStruct"),
-                        member: Expression.Identifier("__foo_const_u16")),
+                        member: Expression.Identifier("foo[const u16]")),
                     arguments: [
                         Expression.LiteralInt(0)
                     ])
@@ -1044,9 +1044,9 @@ final class CompilerPassGenericsTests: XCTestCase {
         let expected = Block(
             children: [
                 FunctionDeclaration(
-                    identifier: Expression.Identifier("__foo_const_u16"),
+                    identifier: Expression.Identifier("foo[const u16]"),
                     functionType: Expression.FunctionType(
-                        name: "__foo_const_u16",
+                        name: "foo[const u16]",
                         returnType: Expression.PrimitiveType(.constU16),
                         arguments: [Expression.PrimitiveType(.constU16)]),
                     argumentNames: ["a"],
@@ -1058,7 +1058,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                                 right: Expression.LiteralInt(1)))
                         ]),
                     visibility: .privateVisibility),
-                Expression.Identifier("__foo_const_u16")
+                Expression.Identifier("foo[const u16]")
             ])
             .reconnect(parent: nil)
         

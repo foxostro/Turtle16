@@ -75,10 +75,7 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
                             functionType: FunctionType,
                             functionDeclaration node0: FunctionDeclaration) throws {
         
-        let name = node0.identifier.identifier
-        
-        node0.symbols.enclosingFunctionTypeMode = .set(functionType)
-        node0.symbols.enclosingFunctionNameMode = .set(name)
+        node0.symbols.breadcrumb = .functionType(functionType)
         node0.body.symbols.parent = node0.symbols
         
         bindFunctionArguments(memoryLayoutStrategy: memoryLayoutStrategy,

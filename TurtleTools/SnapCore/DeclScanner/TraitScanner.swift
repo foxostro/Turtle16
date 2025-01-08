@@ -68,7 +68,7 @@ public class TraitScanner: NSObject {
         }
         
         let typeChecker = typeChecker(symbols: members)
-        members.enclosingFunctionNameMode = .set(mangledName)
+        members.breadcrumb = .traitType(traitType.unwrapTraitType().name)
         let frame = Frame()
         members.frameLookupMode = .set(frame)
         for memberDeclaration in node1.members {

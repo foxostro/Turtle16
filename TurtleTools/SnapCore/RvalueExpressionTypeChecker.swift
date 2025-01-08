@@ -1009,49 +1009,24 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
     
     public func mangleFunctionName(_ name: String?, evaluatedTypeArguments: [SymbolType] = []) -> String? {
-        guard let name else {
-            return nil
-        }
-        
-        // Each concrete instance must have a unique mangled name. We append a
-        // suffix derived from the type argument list to ensure it.
-        let typeNameList = evaluatedTypeArguments.map { arg in
-            arg.description.replacingOccurrences(of: " ", with: "_")
-        }
-        
-        let allEnclosingFunctionNames = symbols.allEnclosingFunctionNames().map {
-            $0.hasPrefix("__") ? String($0.dropFirst(2)) : $0
-        }
-        let arr = Array(NSOrderedSet(array: allEnclosingFunctionNames + [name] + typeNameList))
-        var mangledName = arr.map{$0 as! String}.joined(separator: "_")
-        
-        if arr.count > 1 && !mangledName.hasPrefix("__") {
-            mangledName = "__" + mangledName
-        }
-        
-        return mangledName
+        NameMangler().mangleFunctionName(
+            name,
+            evaluatedTypeArguments: evaluatedTypeArguments,
+            symbols: symbols)
     }
     
     public func mangleStructName(_ name: String?, evaluatedTypeArguments: [SymbolType] = []) -> String? {
-        guard let name else {
-            return nil
-        }
-        
-        // Each concrete instance must have a unique mangled name. We append a
-        // suffix derived from the type argument list to ensure it.
-        let typeNameList = evaluatedTypeArguments.map { arg in
-            arg.description.replacingOccurrences(of: " ", with: "_")
-        }
-        
-        let arr = Array(NSOrderedSet(array: [name] + typeNameList))
-        let prefix: String = (arr.count == 1) ? "" : "__"
-        let mangledName = prefix + arr.map{$0 as! String}.joined(separator: "_")
-        
-        return mangledName
+        NameMangler().mangleStructName(
+            name,
+            evaluatedTypeArguments: evaluatedTypeArguments,
+            symbols: symbols)
     }
     
     public func mangleTraitName(_ name: String?, evaluatedTypeArguments: [SymbolType] = []) -> String? {
-        mangleStructName(name, evaluatedTypeArguments: evaluatedTypeArguments)
+        NameMangler().mangleTraitName(
+            name,
+            evaluatedTypeArguments: evaluatedTypeArguments,
+            symbols: symbols)
     }
     
     fileprivate func evaluateFunctionArguments(_ argsToEvaluate: [Expression]) throws -> [SymbolType] {
@@ -1287,8 +1262,8 @@ public class RvalueExpressionTypeChecker: NSObject {
         if let genericTraitType {
             genericTraitType.instantiations[evaluatedTypeArguments] = result // memoize
         }
-            
-        members.enclosingFunctionNameMode = .set(mangledName)
+        
+        members.breadcrumb = .traitType(fullyQualifiedTraitType.name)
         let frame = Frame()
         members.frameLookupMode = .set(frame)
         for memberDeclaration in traitDecl.members {
@@ -1535,5 +1510,70 @@ public class RvalueExpressionTypeChecker: NSObject {
                                                    rtype: structSymbol.type)
                 return conforms
             }
+    }
+}
+
+/// Mangles identifier names in a consistent way
+/// Mangle, here, means to take a human-readable identifier provided by the
+/// programmer and replace it with an automatically generated name which is
+/// less readable, but embeds additional information useful to the compiler.
+public struct NameMangler {
+    public func mangleFunctionName(
+        _ name: String?,
+        evaluatedTypeArguments: [SymbolType] = [],
+        symbols: SymbolTable
+    ) -> String? {
+        
+        guard let name else { return nil }
+        
+        let decoratedName: String = {
+            if evaluatedTypeArguments.isEmpty {
+                return name
+            }
+            else {
+                let args = evaluatedTypeArguments
+                    .map(\.description)
+                    .joined(separator: ", ")
+                return "\(name)[\(args)]"
+            }
+        }()
+        
+        let breadcrumbs = symbols.breadcrumbs.compactMap(\.name) + [decoratedName]
+        let mangledName = breadcrumbs.joined(separator: "::")
+        
+        return mangledName
+    }
+    
+    public func mangleStructName(
+        _ name: String?,
+        evaluatedTypeArguments: [SymbolType] = [],
+        symbols: SymbolTable
+    ) -> String? {
+        
+        guard let name else { return nil }
+        let mangledName: String = {
+            if evaluatedTypeArguments.isEmpty {
+                return name
+            }
+            else {
+                let args = evaluatedTypeArguments
+                    .map(\.description)
+                    .joined(separator: ", ")
+                return "\(name)[\(args)]"
+            }
+        }()
+        return mangledName
+    }
+    
+    public func mangleTraitName(
+        _ name: String?,
+        evaluatedTypeArguments: [SymbolType] = [],
+        symbols: SymbolTable
+    ) -> String? {
+        
+        mangleStructName(
+            name,
+            evaluatedTypeArguments: evaluatedTypeArguments,
+            symbols: symbols)
     }
 }

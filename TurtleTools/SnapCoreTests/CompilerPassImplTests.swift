@@ -82,9 +82,9 @@ final class CompilerPassImplTests: XCTestCase {
                 ],
                 visibility: .privateVisibility),
             FunctionDeclaration(
-                identifier: Identifier("__Foo_bar"),
+                identifier: Identifier("Foo::bar"),
                 functionType: Expression.FunctionType(
-                    name: "__Foo_bar",
+                    name: "Foo::bar",
                     returnType: PrimitiveType(.u8),
                     arguments: [
                         PointerType(Identifier("Foo"))
@@ -95,7 +95,7 @@ final class CompilerPassImplTests: XCTestCase {
                     Return(LiteralInt(0))
                 ])),
             Get(expr: Identifier("Foo"), member: Identifier("val")),
-            Identifier("__Foo_bar")
+            Identifier("Foo::bar")
         ])
             .reconnect(parent: nil)
         
@@ -167,9 +167,9 @@ final class CompilerPassImplTests: XCTestCase {
                 typeArguments: [],
                 body: Block(children: [
                     FunctionDeclaration(
-                        identifier: Identifier("__myFunc_Foo_bar"),
+                        identifier: Identifier("myFunc::Foo::bar"),
                         functionType: Expression.FunctionType(
-                            name: "__myFunc_Foo_bar",
+                            name: "myFunc::Foo::bar",
                             returnType: PrimitiveType(.u8),
                             arguments: [
                                 PointerType(Identifier("Foo"))
@@ -269,9 +269,9 @@ final class CompilerPassImplTests: XCTestCase {
                         isConst: false,
                         associatedTraitType: "Incrementer"),
                     FunctionDeclaration(
-                        identifier: Identifier("__myFunction_Incrementer_object_increment"),
+                        identifier: Identifier("myFunction::__Incrementer_object::increment"),
                         functionType: Expression.FunctionType(
-                            name: "__myFunction_Incrementer_object_increment",
+                            name: "myFunction::__Incrementer_object::increment",
                             returnType: PrimitiveType(.void),
                             arguments: [PointerType(Identifier("__Incrementer_object"))]),
                         argumentNames: ["self"],
@@ -291,7 +291,7 @@ final class CompilerPassImplTests: XCTestCase {
                             Return()
                         ])),
                     VarDeclaration(
-                        identifier: Identifier("__Incrementer_RealIncrementer_u16_vtable_instance"),
+                        identifier: Identifier("__Incrementer_RealIncrementer[u16]_vtable_instance"),
                         explicitType: Identifier("__Incrementer_vtable"),
                         expression: StructInitializer(
                             expr: Identifier("__Incrementer_vtable"),
@@ -301,7 +301,7 @@ final class CompilerPassImplTests: XCTestCase {
                                     expr: Bitcast(
                                         expr: Unary(
                                             op: .ampersand,
-                                            expression: Identifier("__myFunction_RealIncrementer_u16_increment")),
+                                            expression: Identifier("myFunction::RealIncrementer[u16]::increment")),
                                         targetType: PrimitiveType(
                                             .pointer(.function(FunctionType(
                                                 name: nil,
@@ -315,7 +315,7 @@ final class CompilerPassImplTests: XCTestCase {
                         isMutable: false,
                         visibility: .privateVisibility),
                     StructDeclaration(
-                        identifier: Identifier("__RealIncrementer_u16"),
+                        identifier: Identifier("RealIncrementer[u16]"),
                         typeArguments: [],
                         members: [
                             StructDeclaration.Member(
@@ -325,12 +325,12 @@ final class CompilerPassImplTests: XCTestCase {
                         visibility: .privateVisibility,
                         isConst: false),
                     FunctionDeclaration(
-                        identifier: Identifier("__myFunction_RealIncrementer_u16_increment"),
+                        identifier: Identifier("myFunction::RealIncrementer[u16]::increment"),
                         functionType: Expression.FunctionType(
-                            name: "__myFunction_RealIncrementer_u16_increment",
+                            name: "myFunction::RealIncrementer[u16]::increment",
                             returnType: PrimitiveType(.void),
                             arguments: [
-                                PointerType(Identifier("__RealIncrementer_u16"))
+                                PointerType(Identifier("RealIncrementer[u16]"))
                             ]),
                         argumentNames: ["self"],
                         typeArguments: [],
@@ -352,7 +352,7 @@ final class CompilerPassImplTests: XCTestCase {
                         identifier: Identifier("realIncrementer"),
                         explicitType: nil,
                         expression: StructInitializer(
-                            expr: Identifier("__RealIncrementer_u16"),
+                            expr: Identifier("RealIncrementer[u16]"),
                             arguments: [
                                 StructInitializer.Argument(
                                     name: "val",
@@ -376,13 +376,13 @@ final class CompilerPassImplTests: XCTestCase {
                                         targetType: PointerType(PrimitiveType(.void)))),
                                 StructInitializer.Argument(
                                     name: "vtable",
-                                    expr: Identifier("__Incrementer_RealIncrementer_u16_vtable_instance"))
+                                    expr: Identifier("__Incrementer_RealIncrementer[u16]_vtable_instance"))
                             ]),
                         storage: .automaticStorage,
                         isMutable: false,
                         visibility: .privateVisibility),
                     Call(
-                        callee: Identifier("__myFunction_Incrementer_object_increment"),
+                        callee: Identifier("myFunction::__Incrementer_object::increment"),
                         arguments: [
                             Identifier("incrementer")
                         ]),

@@ -25,7 +25,9 @@ class SnapSubcompilerReturnTests: XCTestCase {
     func testUnexpectedNonVoidReturnValueInVoidFunction() {
         let input = Return(ExprUtils.makeU8(value: 1))
         let symbols = SymbolTable()
-        symbols.enclosingFunctionTypeMode = .set(FunctionType(returnType: .void, arguments: []))
+        symbols.breadcrumb = .functionType(FunctionType(
+            returnType: .void,
+            arguments: []))
         let compiler = SnapSubcompilerReturn(symbols)
         XCTAssertThrowsError(try compiler.compile(input)) {
             let compilerError = $0 as? CompilerError
@@ -37,7 +39,9 @@ class SnapSubcompilerReturnTests: XCTestCase {
     func testItIsCompletelyValidToHaveMeaninglessReturnStatementAtBottomOfVoidFunction() {
         let input = Return()
         let symbols = SymbolTable()
-        symbols.enclosingFunctionTypeMode = .set(FunctionType(returnType: .void, arguments: []))
+        symbols.breadcrumb = .functionType(FunctionType(
+            returnType: .void,
+            arguments: []))
         let compiler = SnapSubcompilerReturn(symbols)
         XCTAssertNoThrow(try compiler.compile(input))
     }
@@ -45,7 +49,9 @@ class SnapSubcompilerReturnTests: XCTestCase {
     func testNonVoidFunctionShouldReturnAValue() {
         let input = Return()
         let symbols = SymbolTable()
-        symbols.enclosingFunctionTypeMode = .set(FunctionType(returnType: .u8, arguments: []))
+        symbols.breadcrumb = .functionType(FunctionType(
+            returnType: .u8,
+            arguments: []))
         let compiler = SnapSubcompilerReturn(symbols)
         XCTAssertThrowsError(try compiler.compile(input)) {
             let compilerError = $0 as? CompilerError
@@ -57,13 +63,16 @@ class SnapSubcompilerReturnTests: XCTestCase {
     func testReturnAValue() {
         let input = Return(Expression.LiteralInt(1))
         let symbols = SymbolTable()
-        symbols.enclosingFunctionTypeMode = .set(FunctionType(returnType: .u8, arguments: []))
+        symbols.breadcrumb = .functionType(FunctionType(
+            returnType: .u8,
+            arguments: []))
         let compiler = SnapSubcompilerReturn(symbols)
         var output: AbstractSyntaxTreeNode? = nil
         XCTAssertNoThrow(output = try compiler.compile(input))
         XCTAssertEqual(output, Seq(children: [
-            Expression.InitialAssignment(lexpr: Expression.Identifier("__returnValue"),
-                                         rexpr: Expression.LiteralInt(1)),
+            Expression.InitialAssignment(
+                lexpr: Expression.Identifier("__returnValue"),
+                rexpr: Expression.LiteralInt(1)),
             Return()
         ]))
     }

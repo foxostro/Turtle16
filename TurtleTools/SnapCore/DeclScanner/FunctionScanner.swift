@@ -97,8 +97,7 @@ public class FunctionScanner: NSObject {
             .check(expression: node0.functionType)
             .unwrapFunctionType()
         
-        node0.symbols.enclosingFunctionTypeMode = .set(functionType)
-        node0.symbols.enclosingFunctionNameMode = .set(node0.identifier.identifier)
+        node0.symbols.breadcrumb = .functionType(functionType)
         node0.body.symbols.parent = node0.symbols
         
         var offset = memoryLayoutStrategy.sizeOfSaveArea

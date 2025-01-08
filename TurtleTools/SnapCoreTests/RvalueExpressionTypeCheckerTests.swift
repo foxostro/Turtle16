@@ -5297,8 +5297,8 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment)
         let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
                                                      arguments: [Expression.PrimitiveType(.constU16)])
-        let expected = SymbolType.function(FunctionType(name: "__foo_const_u16",
-                                                        mangledName: "__foo_const_u16",
+        let expected = SymbolType.function(FunctionType(name: "foo[const u16]",
+                                                        mangledName: "foo[const u16]",
                                                         returnType: .constU16,
                                                         arguments: [.constU16],
                                                         ast: template))
@@ -5479,8 +5479,8 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         ])
         let frame = Frame()
         concreteStructSymbols.frameLookupMode = .set(frame)
-        concreteStructSymbols.enclosingFunctionNameMode = .set("foo")
-        let expected = SymbolType.structType(StructType(name: "__foo_u16", symbols: concreteStructSymbols))
+        concreteStructSymbols.breadcrumb = .structType("foo")
+        let expected = SymbolType.structType(StructType(name: "foo[u16]", symbols: concreteStructSymbols))
         let actual = try typeChecker.check(expression: expr)
         XCTAssertEqual(actual, expected)
     }
@@ -5507,9 +5507,9 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         _ = frame.allocate(size: 1)
         frame.add(identifier: "bar", symbol: bar)
         concreteStructSymbols.frameLookupMode = .set(frame)
-        concreteStructSymbols.enclosingFunctionNameMode = .set("foo")
+        concreteStructSymbols.breadcrumb = .structType("foo")
         
-        let expected = SymbolType.structType(StructType(name: "__foo_u16", symbols: concreteStructSymbols))
+        let expected = SymbolType.structType(StructType(name: "foo[u16]", symbols: concreteStructSymbols))
         let actual = try typeChecker.check(expression: expr)
         XCTAssertEqual(actual, expected)
     }
@@ -5541,9 +5541,9 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         _ = frame.allocate(size: 1)
         frame.add(identifier: "bar", symbol: bar)
         concreteStructSymbols.frameLookupMode = .set(frame)
-        concreteStructSymbols.enclosingFunctionNameMode = .set("foo")
+        concreteStructSymbols.breadcrumb = .structType("foo")
 
-        let expected = SymbolType.structType(StructType(name: "__foo_u16", symbols: concreteStructSymbols))
+        let expected = SymbolType.structType(StructType(name: "foo[u16]", symbols: concreteStructSymbols))
         let actual = try typeChecker.check(expression: expr)
         XCTAssertEqual(actual, expected)
     }
@@ -5616,11 +5616,11 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expectedSymbols = SymbolTable()
         let frame = Frame()
         expectedSymbols.frameLookupMode = .set(frame)
-        expectedSymbols.enclosingFunctionNameMode = .set("__Foo_u16")
+        expectedSymbols.breadcrumb = .traitType("Foo[u16]")
         let expected = SymbolType.traitType(TraitType(
-            name: "__Foo_u16",
-            nameOfTraitObjectType: "__Foo_u16_object",
-            nameOfVtableType: "__Foo_u16_vtable",
+            name: "Foo[u16]",
+            nameOfTraitObjectType: "__Foo[u16]_object",
+            nameOfVtableType: "__Foo[u16]_vtable",
             symbols: expectedSymbols))
         let actual = try typeChecker.check(expression: expr)
         XCTAssertEqual(actual, expected)
@@ -5656,7 +5656,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let bar = Symbol(
             type: .pointer(.function(FunctionType(
                 name: "bar",
-                mangledName: "__Foo_u16_bar",
+                mangledName: "Foo[u16]::bar",
                 returnType: .u16,
                 arguments: [.u16],
                 ast: nil))),
@@ -5669,12 +5669,12 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         _ = frame.allocate(size: 1)
         frame.add(identifier: "bar", symbol: bar)
         concreteTraitSymbols.frameLookupMode = .set(frame)
-        concreteTraitSymbols.enclosingFunctionNameMode = .set("__Foo_u16")
+        concreteTraitSymbols.breadcrumb = .traitType("Foo[u16]")
         
         let expected = SymbolType.traitType(TraitType(
-            name: "__Foo_u16",
-            nameOfTraitObjectType: "__Foo_u16_object",
-            nameOfVtableType: "__Foo_u16_vtable",
+            name: "Foo[u16]",
+            nameOfTraitObjectType: "__Foo[u16]_object",
+            nameOfVtableType: "__Foo[u16]_vtable",
             symbols: concreteTraitSymbols))
         let actual = try typeChecker.check(expression: expr)
         XCTAssertEqual(actual, expected)

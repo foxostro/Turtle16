@@ -20,7 +20,7 @@ final class TraitScannerTests: XCTestCase {
         
         let expectedSymbols = SymbolTable()
         expectedSymbols.frameLookupMode = .set(Frame())
-        expectedSymbols.enclosingFunctionNameMode = .set("Foo")
+        expectedSymbols.breadcrumb = .traitType("Foo")
         let expected: SymbolType = .traitType(TraitType(name: "Foo", nameOfTraitObjectType: "__Foo_object", nameOfVtableType: "__Foo_vtable", symbols: expectedSymbols))
         let actual = try scanner.symbols.resolveType(identifier: "Foo")
         XCTAssertEqual(expected, actual)
@@ -44,7 +44,7 @@ final class TraitScannerTests: XCTestCase {
             nameOfTraitObjectType: "__Foo_object",
             nameOfVtableType: "__Foo_vtable",
             symbols: members))
-        members.enclosingFunctionNameMode = .set("Foo")
+        members.breadcrumb = .traitType("Foo")
         let frame = Frame()
         members.frameLookupMode = .set(frame)
         let memberType: SymbolType = .pointer(.function(FunctionType(returnType: .u8, arguments: [.pointer(expected)])))

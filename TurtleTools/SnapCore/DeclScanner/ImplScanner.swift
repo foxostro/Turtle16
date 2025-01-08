@@ -98,8 +98,7 @@ public class ImplScanner: NSObject {
     
     private func scanImplStruct(_ node: Impl, _ typ: StructType) throws {
         let symbols = SymbolTable(parent: parent)
-        symbols.enclosingFunctionNameMode = .set(typ.name)
-        symbols.enclosingFunctionTypeMode = .set(nil)
+        symbols.breadcrumb = .structType(typ.name)
         
         for child in node.children {
             let identifier = child.identifier.identifier

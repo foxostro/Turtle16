@@ -102,7 +102,7 @@ class SnapSubcompilerStructDeclarationTests: XCTestCase {
         XCTAssertNoThrow(try makeCompiler(symbols).compile(input))
         let expectedStructSymbols = SymbolTable()
         expectedStructSymbols.frameLookupMode = .set(Frame())
-        expectedStructSymbols.enclosingFunctionNameMode = .set("None")
+        expectedStructSymbols.breadcrumb = .structType("None")
         let expectedType: SymbolType = .structType(StructType(name: "None", symbols: expectedStructSymbols))
         let actualType = try? symbols.resolveType(identifier: "None")
         XCTAssertEqual(actualType, expectedType)
@@ -117,7 +117,7 @@ class SnapSubcompilerStructDeclarationTests: XCTestCase {
         XCTAssertNoThrow(try makeCompiler(symbols).compile(input))
         let expectedStructSymbols = SymbolTable()
         expectedStructSymbols.frameLookupMode = .set(Frame())
-        expectedStructSymbols.enclosingFunctionNameMode = .set("None")
+        expectedStructSymbols.breadcrumb = .structType("None")
         let expectedType: SymbolType = .constStructType(StructType(name: "None", symbols: expectedStructSymbols))
         let actualType = try? symbols.resolveType(identifier: "None")
         XCTAssertEqual(actualType, expectedType)
@@ -136,7 +136,7 @@ class SnapSubcompilerStructDeclarationTests: XCTestCase {
         let expectedStructSymbols = SymbolTable(tuples: [
             ("bar", bar)
         ])
-        expectedStructSymbols.enclosingFunctionNameMode = .set("Foo")
+        expectedStructSymbols.breadcrumb = .structType("Foo")
         let frame = Frame()
         _ = frame.allocate(size: 1)
         frame.add(identifier: "bar", symbol: bar)
@@ -172,7 +172,7 @@ class SnapSubcompilerStructDeclarationTests: XCTestCase {
         let actualType = try symbols.resolveType(identifier: "Foo")
         
         let expectedStructSymbols = SymbolTable()
-        expectedStructSymbols.enclosingFunctionNameMode = .set("Foo")
+        expectedStructSymbols.breadcrumb = .structType("Foo")
         let expectedType: SymbolType = .genericStructType(GenericStructType(template: input))
         
         XCTAssertEqual(actualType, expectedType)

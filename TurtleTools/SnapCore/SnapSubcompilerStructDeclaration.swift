@@ -75,7 +75,7 @@ public class SnapSubcompilerStructDeclaration: NSObject {
                      symbolType: type,
                      visibility: node.visibility)
         
-        members.enclosingFunctionNameMode = .set(name)
+        members.breadcrumb = .structType(mangledName)
         let frame = Frame()
         members.frameLookupMode = .set(frame)
         for memberDeclaration in node.members {

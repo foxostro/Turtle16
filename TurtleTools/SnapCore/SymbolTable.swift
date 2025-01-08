@@ -1138,31 +1138,44 @@ public class SymbolTable: NSObject {
         return index
     }
     
-    public enum EnclosingFunctionType: Hashable, Equatable {
-        case inherit, set(FunctionType?)
-    }
-    public var enclosingFunctionTypeMode: EnclosingFunctionType = .inherit
-    public var enclosingFunctionType: FunctionType? {
-        switch enclosingFunctionTypeMode {
-        case .inherit:
-            return parent?.enclosingFunctionType
-            
-        case .set(let val):
-            return val
+    public enum Breadcrumb: Hashable, Equatable, CustomStringConvertible {
+        case functionType(FunctionType), structType(String), traitType(String)
+        
+        public var description: String {
+            switch self {
+            case .functionType(let typ): "function\(typ.description)"
+            case .structType(let name):   "struct\(name)"
+            case .traitType(let name):    "trait\(name)"
+            }
+        }
+        
+        public var name: String? {
+            switch self {
+            case .functionType(let typ): typ.name
+            case .structType(let name):  name
+            case .traitType(let name):   name
+            }
         }
     }
     
-    public enum EnclosingFunctionName: Hashable, Equatable  {
-        case inherit, set(String?)
+    public var breadcrumb: Breadcrumb? = nil
+    
+    public var breadcrumbs: [Breadcrumb] {
+        let myBreadcrumb: [Breadcrumb] = if let breadcrumb { [breadcrumb] } else { [] }
+        let trail = (parent?.breadcrumbs ?? []) + myBreadcrumb
+        return trail
     }
-    public var enclosingFunctionNameMode: EnclosingFunctionName = .inherit
-    public var enclosingFunctionName: String? {
-        switch enclosingFunctionNameMode {
-        case .inherit:
-            return parent?.enclosingFunctionName
+    
+    public var enclosingFunctionType: FunctionType? {
+        switch breadcrumb {
+        case .functionType(let typ):
+            typ
             
-        case .set(let val):
-            return val
+        case .structType, .traitType:
+            nil
+            
+        default:
+            parent?.enclosingFunctionType
         }
     }
     
@@ -1310,18 +1323,6 @@ public class SymbolTable: NSObject {
         }
     }
     
-    public func allEnclosingFunctionNames() -> [String] {
-        if let enclosingFunctionName = enclosingFunctionName {
-            if let parent = parent {
-                return parent.allEnclosingFunctionNames() + [enclosingFunctionName]
-            } else {
-                return [enclosingFunctionName]
-            }
-        } else {
-            return []
-        }
-    }
-    
     public func maybeResolveType(sourceAnchor: SourceAnchor? = nil, identifier: String) -> SymbolType? {
         let maybeResolution = maybeResolveTypeWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier)
         return maybeResolution?.0
@@ -1362,36 +1363,15 @@ public class SymbolTable: NSObject {
     }
     
     public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else {
-            return false
-        }
-        guard type(of: rhs!) == type(of: self) else {
-            return false
-        }
-        guard let rhs = rhs as? SymbolTable else {
-            return false
-        }
-        guard declarationOrder == rhs.declarationOrder else {
-            return false
-        }
-        guard symbolTable == rhs.symbolTable else {
-            return false
-        }
-        guard typeTable == rhs.typeTable else {
-            return false
-        }
-        guard parent == rhs.parent else {
-            return false
-        }
-        guard enclosingFunctionType == rhs.enclosingFunctionType else {
-            return false
-        }
-        guard enclosingFunctionName == rhs.enclosingFunctionName else {
-            return false
-        }
-        guard frameLookupMode == rhs.frameLookupMode else {
-            return false
-        }
+        guard rhs != nil else { return false }
+        guard type(of: rhs!) == type(of: self) else { return false }
+        guard let rhs = rhs as? SymbolTable else { return false }
+        guard declarationOrder == rhs.declarationOrder else { return false }
+        guard symbolTable == rhs.symbolTable else { return false }
+        guard typeTable == rhs.typeTable else { return false }
+        guard parent == rhs.parent else { return false }
+        guard breadcrumb == rhs.breadcrumb else { return false }
+        guard frameLookupMode == rhs.frameLookupMode else { return false }
         return true
     }
     
@@ -1427,8 +1407,7 @@ public class SymbolTable: NSObject {
         hasher.combine(symbolTable)
         hasher.combine(typeTable)
         hasher.combine(parent)
-        hasher.combine(enclosingFunctionType)
-        hasher.combine(enclosingFunctionName)
+        hasher.combine(breadcrumb)
         hasher.combine(frameLookupMode)
         return hasher.finalize()
     }
@@ -1440,8 +1419,7 @@ public class SymbolTable: NSObject {
         result.typeTable = typeTable
         result.parent = parent
         result.frameLookupMode = frameLookupMode
-        result.enclosingFunctionTypeMode = enclosingFunctionTypeMode
-        result.enclosingFunctionNameMode = enclosingFunctionNameMode
+        result.breadcrumb = breadcrumb
         result.modulesAlreadyImported = modulesAlreadyImported
         return result
     }
@@ -1454,5 +1432,6 @@ public class SymbolTable: NSObject {
         symbolTable.removeAll()
         typeTable.removeAll()
         modulesAlreadyImported = []
+        breadcrumb = nil
     }
 }

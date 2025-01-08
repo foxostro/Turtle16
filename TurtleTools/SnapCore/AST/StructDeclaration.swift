@@ -87,11 +87,10 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
                 isConst: Bool = false,
                 associatedTraitType: String? = nil,
                 id: ID = ID()) {
-        self.identifier = identifier.withSourceAnchor(sourceAnchor) // TODO: I don't think I should overwrite the identifier's source anchor here
+        self.identifier = identifier
         self.typeArguments = typeArguments
         self.members = members.map {
-            Member(name: $0.name,
-                   type: $0.memberType.withSourceAnchor(sourceAnchor)) // TODO: I don't think I should overwrite the member type's source anchor here
+            Member(name: $0.name, type: $0.memberType)
         }
         self.visibility = visibility
         self.isConst = isConst

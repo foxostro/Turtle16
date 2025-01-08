@@ -10,13 +10,16 @@ import TurtleCore
 
 public class Module: AbstractSyntaxTreeNode {
     public let name: String
+    public let useGlobalNamespace: Bool
     public let block: Block
     
     public init(sourceAnchor: SourceAnchor? = nil,
                 name: String,
+                useGlobalNamespace: Bool = false,
                 block: Block,
                 id: ID = ID()) {
         self.name = name
+        self.useGlobalNamespace = useGlobalNamespace
         self.block = block
         super.init(sourceAnchor: sourceAnchor, id: id)
     }
@@ -24,6 +27,15 @@ public class Module: AbstractSyntaxTreeNode {
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Module {
         Module(sourceAnchor: sourceAnchor,
                name: name,
+               useGlobalNamespace: useGlobalNamespace,
+               block: block,
+               id: id)
+    }
+    
+    public func withUseGlobalNamespace(_ useGlobalNamespace: Bool) -> Module {
+        Module(sourceAnchor: sourceAnchor,
+               name: name,
+               useGlobalNamespace: useGlobalNamespace,
                block: block,
                id: id)
     }
@@ -31,6 +43,7 @@ public class Module: AbstractSyntaxTreeNode {
     public func withBlock(_ block: Block) -> Module {
         Module(sourceAnchor: sourceAnchor,
                name: name,
+               useGlobalNamespace: useGlobalNamespace,
                block: block,
                id: id)
     }
@@ -45,6 +58,7 @@ public class Module: AbstractSyntaxTreeNode {
         guard super.isEqual(rhs) else { return false }
         guard let rhs = rhs as? Module else { return false }
         guard name == rhs.name else { return false }
+        guard useGlobalNamespace == rhs.useGlobalNamespace else { return false }
         guard block == rhs.block else { return false }
         return true
     }
@@ -52,15 +66,22 @@ public class Module: AbstractSyntaxTreeNode {
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(name)
+        hasher.combine(useGlobalNamespace)
         hasher.combine(block)
         hasher.combine(super.hash)
         return hasher.finalize()
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let indent1 = makeIndent(depth: depth + 1)
         let childDesc = block.makeIndentedDescription(depth: depth + 1, wantsLeadingWhitespace: true)
-        let fullDesc = "\(indent)module \"\(name)\" {\n\(childDesc)\n\(indent)}"
+        let fullDesc = """
+            \(indent0)Module(\(name))
+            \(indent1)useGlobalNamespace: \(useGlobalNamespace)
+            \(childDesc)
+            \(indent0)\n
+            """
         return fullDesc
     }
 }

@@ -138,7 +138,8 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
         
         XCTAssertEqual(ast2, ast1)
         XCTAssertTrue(symbols.modulesAlreadyImported.contains("Foo"))
-        XCTAssertNoThrow(try symbols.resolveType(identifier: "None"))
+        let foo = try symbols.resolveType(identifier: "Foo").maybeUnwrapStructType()
+        XCTAssertNoThrow(try foo?.symbols.resolveType(identifier: "None"))
     }
     
     func testCompileImplForTrait() throws {
@@ -229,5 +230,96 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
         XCTAssertNoThrow(try elseSymbols.resolve(identifier: "quux"))
         XCTAssertNoThrow(try clauseSymbols.resolve(identifier: "qux"))
         XCTAssertNoThrow(try clauseSymbols.resolve(identifier: "bar"))
+    }
+    
+    var moduleFoo: Module {
+        Module(
+            name: "Foo",
+            block: Block(children: [
+                FunctionDeclaration(
+                    identifier: Expression.Identifier("bar"),
+                    functionType: Expression.FunctionType(
+                        name: "bar",
+                        returnType: Expression.PrimitiveType(.void),
+                        arguments: []),
+                    argumentNames: [],
+                    typeArguments: [],
+                    body: Block(),
+                    visibility: .publicVisibility)
+            ]))
+    }
+    
+    func testScanImport() throws {
+        let input = try parse("import Foo")
+            .replaceTopLevelWithBlock()
+            .inserting(module: moduleFoo)
+        
+        _ = try CompilerPassWithDeclScan().run(input)
+        
+        XCTAssertNoThrow(try input.symbols.resolveType(identifier: "Foo"))
+    }
+    
+    func testScanImport_DoesNotPolluteGlobalNamespace() throws {
+        let input = try parse("import Foo")
+            .replaceTopLevelWithBlock()
+            .inserting(module: moduleFoo)
+        
+        _ = try CompilerPassWithDeclScan().run(input)
+        
+        XCTAssertThrowsError(try input.symbols.resolve(identifier: "bar")) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "use of unresolved identifier: `bar'")
+        }
+    }
+    
+    func testScanImport_InvalidRedeclaration() throws {
+        let input = try parse("""
+            typealias Foo = u16
+            import Foo
+            Foo.bar()
+            """)
+            .replaceTopLevelWithBlock()
+            .inserting(module: moduleFoo)
+        
+        XCTAssertThrowsError(try CompilerPassWithDeclScan().run(input)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "import of module `Foo' redefines existing type of the same name")
+        }
+    }
+    
+    func testScanImport_MangledNameIncludesModuleName() throws {
+        let input = try parse("""
+            import Foo
+            """)
+            .replaceTopLevelWithBlock()
+            .inserting(module: moduleFoo)
+        
+        _ = try CompilerPassWithDeclScan().run(input)
+        
+        guard let Foo = try input
+                            .symbols
+                            .resolveType(identifier: "Foo")
+                            .maybeUnwrapStructType(),
+              let bar = try Foo
+                            .symbols
+                            .resolveTypeOfIdentifier(
+                                sourceAnchor: nil,
+                                identifier: "bar")
+                            .maybeUnwrapFunctionType() else  {
+            XCTFail()
+            return
+        }
+        
+        XCTAssertEqual(bar.mangledName, "Foo::bar")
+    }
+}
+
+fileprivate extension AbstractSyntaxTreeNode {
+    func inserting(module: Module) -> Block {
+        (self as! Block)
+            .inserting(children: [module], at: 0)
+            .reconnect(parent: nil)
     }
 }

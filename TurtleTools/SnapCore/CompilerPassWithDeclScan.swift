@@ -118,6 +118,7 @@ public class CompilerPassWithDeclScan: CompilerPass {
     func scan(module module0: Module) throws {
         let name = module0.name
         let block0 = module0.block
+        block0.symbols.breadcrumb = .module(name: name, useGlobalNamespace: module0.useGlobalNamespace)
         let blockOrSeq = try visit(block: block0)
         let block1: Block = switch blockOrSeq {
         case let block as Block:
@@ -126,7 +127,6 @@ public class CompilerPassWithDeclScan: CompilerPass {
         default:
             block0.withChildren([blockOrSeq!])
         }
-        block1.symbols.breadcrumb = .module(name)
         let module1 = module0.withBlock(block1)
         
         guard modules[name] == nil else {
@@ -146,48 +146,52 @@ public class CompilerPassWithDeclScan: CompilerPass {
         let name = node.moduleName
         
         guard let symbols, symbols.parent == nil else {
-            throw CompilerError(sourceAnchor: sourceAnchor, message: "declaration is only valid at file scope")
+            throw CompilerError(
+                sourceAnchor: sourceAnchor,
+                message: "declaration is only valid at file scope")
         }
         
-        guard !symbols.modulesAlreadyImported.contains(name) else {
-            return
-        }
+        guard !symbols.modulesAlreadyImported.contains(name) else { return }
         
         guard let src = modules[name]?.block.symbols else {
-            throw CompilerError(sourceAnchor: sourceAnchor, message: "failed to get symbols for module `\(name)'")
+            throw CompilerError(
+                sourceAnchor: sourceAnchor,
+                message: "failed to get symbols for module `\(name)'")
         }
         
-        for (identifier, symbol) in src.symbolTable {
-            if symbol.visibility == .publicVisibility {
-                guard !symbols.exists(identifier: identifier) else {
-                    throw CompilerError(
-                        sourceAnchor: sourceAnchor,
-                        message: "import of module `\(name)' redefines existing symbol: `\(identifier)'")
-                }
-                
-                guard !symbols.existsAsType(identifier: identifier) else {
-                    throw CompilerError(
-                        sourceAnchor: sourceAnchor,
-                        message: "import of module `\(name)' redefines existing type: `\(identifier)'")
-                }
-                
-                symbols.bind(identifier: identifier,
-                             symbol: Symbol(type: symbol.type,
-                                            offset: symbol.offset,
-                                            storage: symbol.storage,
-                                            visibility: .privateVisibility))
-            }
+        if node.intoGlobalNamespace {
+            try src.export(
+                to: symbols,
+                moduleName: name,
+                sourceAnchor: sourceAnchor)
         }
-        
-        for (identifier, record) in src.typeTable {
-            if record.visibility == .publicVisibility {
-                guard symbols.existsAsType(identifier: identifier) == false else {
-                    throw CompilerError(sourceAnchor: sourceAnchor, message: "import of module `\(name)' redefines existing type: `\(identifier)'")
-                }
-                symbols.bind(identifier: identifier,
-                             symbolType: record.symbolType,
-                             visibility: .privateVisibility)
+        else {
+            let moduleSym = SymbolTable()
+            let module = SymbolType.structType(StructType(
+                name: name,
+                symbols: moduleSym,
+                associatedModuleName: name))
+            
+            try src.export(
+                to: moduleSym,
+                moduleName: name,
+                sourceAnchor: sourceAnchor)
+            
+            guard !symbols.exists(identifier: name) else {
+                throw CompilerError(
+                    sourceAnchor: sourceAnchor,
+                    message: "import of module `\(name)' redefines existing symbol of the same name")
             }
+            
+            guard !symbols.existsAsType(identifier: name) else {
+                throw CompilerError(
+                    sourceAnchor: sourceAnchor,
+                    message: "import of module `\(name)' redefines existing type of the same name")
+            }
+            
+            symbols.bind(identifier: name,
+                         symbolType: module,
+                         visibility: .privateVisibility)
         }
         
         symbols.modulesAlreadyImported.insert(name)
@@ -227,5 +231,51 @@ public class CompilerPassWithDeclScan: CompilerPass {
     public override func willVisit(block: Block, clause: Match.Clause, in match: Match) throws {
         try super.willVisit(block: block, clause: clause, in: match)
         try scan(block: block, clause: clause, in: match)
+    }
+}
+
+fileprivate extension SymbolTable {
+    func export(to dst: SymbolTable,
+                moduleName: String,
+                sourceAnchor: SourceAnchor?) throws {
+        
+        for (identifier, symbol) in symbolTable {
+            if symbol.visibility == .publicVisibility {
+                guard !dst.exists(identifier: identifier) else {
+                    throw CompilerError(
+                        sourceAnchor: sourceAnchor,
+                        message: "import of module `\(moduleName)' redefines existing symbol: `\(identifier)'")
+                }
+                
+                guard !dst.existsAsType(identifier: identifier) else {
+                    throw CompilerError(
+                        sourceAnchor: sourceAnchor,
+                        message: "import of module `\(moduleName)' redefines existing type: `\(identifier)'")
+                }
+                
+                dst.bind(
+                    identifier: identifier,
+                    symbol: Symbol(
+                        type: symbol.type,
+                        offset: symbol.offset,
+                        storage: symbol.storage,
+                        visibility: .privateVisibility))
+            }
+        }
+        
+        for (identifier, record) in typeTable {
+            if record.visibility == .publicVisibility {
+                guard !dst.existsAsType(identifier: identifier) else {
+                    throw CompilerError(
+                        sourceAnchor: sourceAnchor,
+                        message: "import of module `\(moduleName)' redefines existing type: `\(identifier)'")
+                }
+                                
+                dst.bind(
+                    identifier: identifier,
+                    symbolType: record.symbolType,
+                    visibility: .privateVisibility)
+            }
+        }
     }
 }

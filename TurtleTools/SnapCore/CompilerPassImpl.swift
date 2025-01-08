@@ -54,7 +54,8 @@ public class CompilerPassImpl: CompilerPassWithDeclScan {
               let objectType = symbols!.maybeResolveType(
                 sourceAnchor: objectIdent.sourceAnchor,
                 identifier: objectIdent.identifier),
-              objectType.isStructType,
+              let structType = objectType.maybeUnwrapStructType(),
+              !structType.isModule,
               node0.member is Expression.Identifier,
               let functionType = try typeChecker.check(expression: node0).maybeUnwrapFunctionType(),
               let mangledName = functionType.mangledName else {

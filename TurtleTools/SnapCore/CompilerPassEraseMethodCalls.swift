@@ -40,6 +40,7 @@ public class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
         }
         guard !isTypeName(expr: getExpr.expr),
               let structTyp = try maybeUnwrapStructType(getExpr),
+              !structTyp.isModule,
               let fnTyp = try typeChecker.check(expression: getExpr).maybeUnwrapFunctionType() else {
             return node0
         }

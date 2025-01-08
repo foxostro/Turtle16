@@ -1538,7 +1538,9 @@ public struct NameMangler {
             }
         }()
         
-        let breadcrumbs = symbols.breadcrumbs.compactMap(\.name) + [decoratedName]
+        let breadcrumbs = symbols.breadcrumbs
+            .filter { $0.useGlobalNamespace != true }
+            .compactMap(\.name) + [decoratedName]
         let mangledName = breadcrumbs.joined(separator: "::")
         
         return mangledName

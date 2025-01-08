@@ -10,17 +10,21 @@ import TurtleCore
 
 public class Import: AbstractSyntaxTreeNode {
     public let moduleName: String
+    public let intoGlobalNamespace: Bool
     
     public init(sourceAnchor: SourceAnchor? = nil,
                 moduleName: String,
+                intoGlobalNamespace: Bool = false,
                 id: ID = ID()) {
         self.moduleName = moduleName
+        self.intoGlobalNamespace = intoGlobalNamespace
         super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Import {
         Import(sourceAnchor: sourceAnchor,
                moduleName: moduleName,
+               intoGlobalNamespace: intoGlobalNamespace,
                id: id)
     }
     
@@ -30,20 +34,23 @@ public class Import: AbstractSyntaxTreeNode {
         guard super.isEqual(rhs) else { return false }
         guard let rhs = rhs as? Import else { return false }
         guard moduleName == rhs.moduleName else { return false }
+        guard intoGlobalNamespace == rhs.intoGlobalNamespace else { return false }
         return true
     }
     
     public override var hash: Int {
         var hasher = Hasher()
         hasher.combine(moduleName)
+        hasher.combine(intoGlobalNamespace)
         hasher.combine(super.hash)
         return hasher.finalize()
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        String(format: "%@%@(%@)",
-               wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-               String(describing: type(of: self)),
-               moduleName)
+        let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let selfDesc = String(describing: type(of: self))
+        let globalLbl = intoGlobalNamespace ? " [GLOBAL]" : ""
+        let result = "\(indent)\(selfDesc)(\(moduleName))\(globalLbl)"
+        return result
     }
 }

@@ -43,7 +43,9 @@ public class SnapToCoreCompiler: NSObject {
         Result {
             try root?
                 .withImplicitImport(moduleName: standardLibraryName)?
-                .withImplicitImport(moduleName: runtimeSupport)?
+                .withImplicitImport(
+                    moduleName: runtimeSupport,
+                    intoGlobalNamespace: true)?
                 .replaceTopLevelWithBlock()
                 .reconnect(parent: nil)
                 .desugarTestDeclarations(
@@ -87,8 +89,8 @@ public class SnapToCoreCompiler: NSObject {
 }
 
 extension AbstractSyntaxTreeNode {
-    // The parser gives us an AST with a TopLevel node at the root. This node
-    // should be replaced by a Block node.
+    /// The parser gives us an AST with a TopLevel node at the root. This node
+    /// should be replaced by a Block node.
     public func replaceTopLevelWithBlock() -> AbstractSyntaxTreeNode {
         guard let top = self as? TopLevel else { return self }
         let block = Block(sourceAnchor: top.sourceAnchor,
@@ -97,16 +99,20 @@ extension AbstractSyntaxTreeNode {
         return block
     }
     
-    // Insert an import statement for an implicit import
-    public func withImplicitImport(moduleName: String?) -> AbstractSyntaxTreeNode? {
+    /// Insert an import statement for an implicit import
+    public func withImplicitImport(
+        moduleName: String?,
+        intoGlobalNamespace global: Bool = false) -> AbstractSyntaxTreeNode? {
+            
         guard let moduleName else { return self }
+        let importStmt = Import(moduleName: moduleName, intoGlobalNamespace: global)
         let result = switch self {
         case let top as TopLevel:
-            top.inserting(children: [Import(moduleName: moduleName)], at: 0)
+            top.inserting(children: [importStmt], at: 0)
         case let block as Block:
-            block.inserting(children: [Import(moduleName: moduleName)], at: 0)
+            block.inserting(children: [importStmt], at: 0)
         case let module as Module:
-            module.inserting(children: [Import(moduleName: moduleName)], at: 0)
+            module.inserting(children: [importStmt], at: 0)
         default:
             self
         }

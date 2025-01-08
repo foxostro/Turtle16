@@ -1273,7 +1273,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         let onSerialOutput = { (value: UInt8) in
             serialOutput.append(value)
         }
-        let options = Options(isBoundsCheckEnabled: true,
+        let options = Options(isVerboseLogging: true,
+                              isBoundsCheckEnabled: true,
                               runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = try run(options: options, program: """
@@ -1876,19 +1877,23 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         let onSerialOutput = { (value: UInt8) in
             serialOutput.append(value)
         }
-        let options = Options(isBoundsCheckEnabled: true,
-                              runtimeSupport: kRuntime,
-                              shouldRunSpecificTest: "foo",
-                              onSerialOutput: onSerialOutput,
-                              injectModules: ["MyModule" : """
-                                  public func foo() {
-                                      __puts("Hello, World!")
-                                  }
-                                  """])
-        _ = try run(options: options, program: """
-            import MyModule
-            foo()
-            """)
+        let options = Options(
+            isBoundsCheckEnabled: true,
+            runtimeSupport: kRuntime,
+            onSerialOutput: onSerialOutput,
+            injectModules: [
+                "MyModule" : """
+                             public func foo() {
+                                 __puts("Hello, World!")
+                             }
+                             """
+            ])
+        _ = try run(
+            options: options,
+            program: """
+                     import MyModule
+                     MyModule.foo()
+                     """)
 
         let str = String(bytes: serialOutput, encoding: .utf8)
         XCTAssertEqual(str, "Hello, World!")

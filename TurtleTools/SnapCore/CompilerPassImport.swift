@@ -54,8 +54,10 @@ public class CompilerPassImport: CompilerPass {
                 url: moduleURL)
             let module1 = module0.reconnect(parent: nil)
             let module2 = (runtimeSupport == moduleName)
-                ? module1
-                : module1.withImplicitImport(moduleName: runtimeSupport)! as! Module
+                ? module1.withUseGlobalNamespace(true)
+                : module1.withImplicitImport(
+                    moduleName: runtimeSupport,
+                    intoGlobalNamespace: true) as! Module
             let module3 = try visit(module: module2) as! Module
             pendingInsertions.append(module3)
             modulesAlreadySeen.insert(moduleName)

@@ -711,32 +711,50 @@ public class FunctionType: NSObject {
 public class StructType: NSObject {
     public let name: String
     public let symbols: SymbolTable
+    
+    /// If the struct was synthesized to represent a Trait then this is the
+    /// name of the associated trait, else nil.
     public let associatedTraitType: String?
+    
+    /// If the struct was synthesized to represent a Module then this is the
+    /// name of the associated module, else nil.
+    public let associatedModuleName: String?
+    
+    /// Indicates whether the struct was synthesized to represent a Module
+    public var isModule: Bool { associatedModuleName != nil }
     
     public init(name: String,
                 symbols: SymbolTable,
-                associatedTraitType: String? = nil) {
+                associatedTraitType: String? = nil,
+                associatedModuleName: String? = nil) {
         self.name = name
         self.symbols = symbols
         self.associatedTraitType = associatedTraitType
+        self.associatedModuleName = associatedModuleName
     }
     
     public func clone() -> StructType {
         StructType(name: name,
                    symbols: symbols.clone(),
-                   associatedTraitType: associatedTraitType)
+                   associatedTraitType: associatedTraitType,
+                   associatedModuleName: associatedModuleName)
+    }
+    
+    public func withAssociatedModule(_ associatedModuleName: String?) -> StructType {
+        StructType(name: name,
+                   symbols: symbols.clone(),
+                   associatedTraitType: associatedTraitType,
+                   associatedModuleName: associatedModuleName)
     }
     
     public override var description: String {
-        var result = """
-            struct \(name) {
-            \(makeMembersDescription())
-            }
-            """
-        if let associatedTraitType {
-            result += "\n(Associated Trait Type: \(associatedTraitType))"
-        }
-        return result
+        """
+        StructDeclaration(\(name))
+        \tassociatedTraitType: \(associatedTraitType ?? "none")
+        \tassociatedModuleName: \(associatedModuleName ?? "none")
+        \tMembers:
+        \(makeMembersDescription())\n
+        """
     }
     
     public func makeMembersDescription() -> String {
@@ -744,7 +762,7 @@ public class StructType: NSObject {
         for (name, symbol) in symbols.symbolTable {
             members.append("\(name): \(symbol.type)")
         }
-        let result = members.map({"\t\($0)"}).joined(separator: ",\n")
+        let result = members.map({"\t\t\($0)"}).joined(separator: "\n")
         return result
     }
     
@@ -789,6 +807,9 @@ public class StructType: NSObject {
         guard associatedTraitType == rhs.associatedTraitType else {
             return false
         }
+        guard associatedModuleName == rhs.associatedModuleName else {
+            return false
+        }
         #endif
         return true
     }
@@ -815,6 +836,7 @@ public class StructType: NSObject {
         hasher.combine(name)
         hasher.combine(symbols)
         hasher.combine(associatedTraitType)
+        hasher.combine(associatedModuleName)
         return hasher.finalize()
     }
 }
@@ -1140,25 +1162,35 @@ public class SymbolTable: NSObject {
     
     public enum Breadcrumb: Hashable, Equatable, CustomStringConvertible {
         case functionType(FunctionType)
-        case module(String)
+        case module(name: String, useGlobalNamespace: Bool)
         case structType(String)
         case traitType(String)
         
         public var description: String {
             switch self {
-            case .functionType(let typ): "function\(typ.description)"
-            case .module(let name):      "module\(name)"
-            case .structType(let name):  "struct\(name)"
-            case .traitType(let name):   "trait\(name)"
+            case .functionType(let typ):   "function(\(typ.description))"
+            case .module(let name, let g): "module(\(name), \(g)"
+            case .structType(let name):    "struct(\(name))"
+            case .traitType(let name):     "trait(\(name))"
             }
         }
         
         public var name: String? {
             switch self {
             case .functionType(let typ): typ.name
-            case .module(let name):      name
+            case .module(let name, _):   name
             case .structType(let name):  name
             case .traitType(let name):   name
+            }
+        }
+        
+        /// Return true if this is a module that should import it's symbols into
+        /// the global namespace, false if the module should not, and nil if
+        /// this breadcrumb is not a module at all.
+        public var useGlobalNamespace: Bool? {
+            switch self {
+            case .module(_, let useGlobalNamespace): useGlobalNamespace
+            default: nil
             }
         }
     }

@@ -116,6 +116,7 @@ public class CompilerPassWithDeclScan: CompilerPass {
     }
     
     func scan(module module0: Module) throws {
+        let name = module0.name
         let block0 = module0.block
         let blockOrSeq = try visit(block: block0)
         let block1: Block = switch blockOrSeq {
@@ -125,18 +126,19 @@ public class CompilerPassWithDeclScan: CompilerPass {
         default:
             block0.withChildren([blockOrSeq!])
         }
+        block1.symbols.breadcrumb = .module(name)
         let module1 = module0.withBlock(block1)
         
-        guard modules[module1.name] == nil else {
-            let message = if let existing = modules[module1.name]?.sourceAnchor {
-                "module duplicates existing module \"\(module1.name)\" declared at \(existing)"
+        guard modules[name] == nil else {
+            let message = if let existing = modules[name]?.sourceAnchor {
+                "module duplicates existing module \"\(name)\" declared at \(existing)"
             }
             else {
-                "module duplicates existing module \"\(module1.name)\""
+                "module duplicates existing module \"\(name)\""
             }
             throw CompilerError(sourceAnchor: module1.sourceAnchor, message: message)
         }
-        modules[module1.name] = module1
+        modules[name] = module1
     }
     
     func scan(import node: Import) throws {

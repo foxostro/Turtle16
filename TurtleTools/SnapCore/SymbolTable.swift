@@ -1139,19 +1139,24 @@ public class SymbolTable: NSObject {
     }
     
     public enum Breadcrumb: Hashable, Equatable, CustomStringConvertible {
-        case functionType(FunctionType), structType(String), traitType(String)
+        case functionType(FunctionType)
+        case module(String)
+        case structType(String)
+        case traitType(String)
         
         public var description: String {
             switch self {
             case .functionType(let typ): "function\(typ.description)"
-            case .structType(let name):   "struct\(name)"
-            case .traitType(let name):    "trait\(name)"
+            case .module(let name):      "module\(name)"
+            case .structType(let name):  "struct\(name)"
+            case .traitType(let name):   "trait\(name)"
             }
         }
         
         public var name: String? {
             switch self {
             case .functionType(let typ): typ.name
+            case .module(let name):      name
             case .structType(let name):  name
             case .traitType(let name):   name
             }
@@ -1171,10 +1176,10 @@ public class SymbolTable: NSObject {
         case .functionType(let typ):
             typ
             
-        case .structType, .traitType:
+        case .structType, .traitType, .module:
             nil
             
-        default:
+        case .none:
             parent?.enclosingFunctionType
         }
     }

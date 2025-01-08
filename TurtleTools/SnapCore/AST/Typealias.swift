@@ -18,8 +18,8 @@ public class Typealias: AbstractSyntaxTreeNode {
                 rexpr: Expression,
                 visibility: SymbolVisibility = .privateVisibility,
                 id: ID = ID()) {
-        self.lexpr = lexpr.withSourceAnchor(sourceAnchor)
-        self.rexpr = rexpr.withSourceAnchor(sourceAnchor)
+        self.lexpr = lexpr
+        self.rexpr = rexpr
         self.visibility = visibility
         super.init(sourceAnchor: sourceAnchor, id: id)
     }

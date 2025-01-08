@@ -971,11 +971,17 @@ trait \(name) {
         return true
     }
     
+    private var isDoingHash = false
+    
     public override var hash: Int {
+        defer { isDoingHash = false }
+        isDoingHash = true
         var hasher = Hasher()
         hasher.combine(name)
         hasher.combine(nameOfVtableType)
-        hasher.combine(symbols)
+        if !isDoingHash {
+            hasher.combine(symbols)
+        }
         return hasher.finalize()
     }
     

@@ -79,10 +79,10 @@ public class TraitDeclaration: AbstractSyntaxTreeNode {
                          visibility: SymbolVisibility = .privateVisibility,
                          mangledName: String? = nil,
                          id: ID = ID()) {
-        self.identifier = identifier.withSourceAnchor(sourceAnchor)
+        self.identifier = identifier
         self.typeArguments = typeArguments
         self.members = members.map {
-            Member(name: $0.name, type: $0.memberType.withSourceAnchor(sourceAnchor))
+            Member(name: $0.name, type: $0.memberType)
         }
         self.visibility = visibility
         self.mangledName = mangledName ?? identifier.identifier

@@ -6,7 +6,7 @@
 //  Copyright © 2024 Andrew Fox. All rights reserved.
 //
 
-import Foundation
+import TurtleCore
 
 /// Scans a trait declaration and binds the trait type in the environment
 public class TraitScanner: NSObject {
@@ -73,6 +73,11 @@ public class TraitScanner: NSObject {
         members.frameLookupMode = .set(frame)
         for memberDeclaration in node1.members {
             let memberType = try typeChecker.check(expression: memberDeclaration.memberType)
+            guard try memberType.hasModule(symbols, globalEnvironment) == false else {
+                throw CompilerError(
+                    sourceAnchor: memberDeclaration.memberType.sourceAnchor,
+                    message: "invalid use of module type")
+            }
             let sizeOfMemberType = memoryLayoutStrategy.sizeof(type: memberType)
             let offset = frame.allocate(size: sizeOfMemberType)
             let symbol = Symbol(type: memberType, offset: offset, storage: .automaticStorage)
@@ -80,6 +85,26 @@ public class TraitScanner: NSObject {
             frame.add(identifier: memberDeclaration.name, symbol: symbol)
         }
         members.parent = nil
+        
+        // Check whether any type parameters incorrectly reference a module type
+        for typ in evaluatedTypeArguments {
+            guard try typ.hasModule(symbols, globalEnvironment) == false else {
+                throw CompilerError(
+                    sourceAnchor: node0.typeArguments
+                        .map(\.sourceAnchor)
+                        .reduce(node0.typeArguments.first?.sourceAnchor) {
+                            $0?.union($1)
+                        },
+                    message: "invalid use of module type")
+            }
+        }
+        
+        // Catch all in case we missed something above
+        guard try traitType.hasModule(symbols, globalEnvironment) == false else {
+            throw CompilerError(
+                sourceAnchor: node0.identifier.sourceAnchor,
+                message: "invalid use of module type")
+        }
         
         // Put types into the environment for the vtable and trait-object
         try scan(decls: try TraitObjectDeclarationsBuilder().declarations(

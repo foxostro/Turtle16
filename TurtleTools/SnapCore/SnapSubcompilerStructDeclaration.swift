@@ -80,8 +80,15 @@ public class SnapSubcompilerStructDeclaration: NSObject {
         members.frameLookupMode = .set(frame)
         for memberDeclaration in node.members {
             let memberType = try typeChecker.check(expression: memberDeclaration.memberType)
-            if memberType == .structType(fullyQualifiedStructType) || memberType == .constStructType(fullyQualifiedStructType) {
-                throw CompilerError(sourceAnchor: memberDeclaration.memberType.sourceAnchor, message: "a struct cannot contain itself recursively")
+            guard memberType.maybeUnwrapStructType() != fullyQualifiedStructType else {
+                throw CompilerError(
+                    sourceAnchor: memberDeclaration.memberType.sourceAnchor,
+                    message: "a struct cannot contain itself recursively")
+            }
+            guard try memberType.hasModule(symbols, globalEnvironment) == false else {
+                throw CompilerError(
+                    sourceAnchor: memberDeclaration.memberType.sourceAnchor,
+                    message: "invalid use of module type")
             }
             let sizeOfMemberType = globalEnvironment.memoryLayoutStrategy.sizeof(type: memberType)
             let offset = frame.allocate(size: sizeOfMemberType)
@@ -90,6 +97,26 @@ public class SnapSubcompilerStructDeclaration: NSObject {
             frame.add(identifier: memberDeclaration.name, symbol: symbol)
         }
         members.parent = nil
+        
+        // Check whether any type parameters incorrectly reference a module type
+        for typ in evaluatedTypeArguments {
+            guard try typ.hasModule(symbols, globalEnvironment) == false else {
+                throw CompilerError(
+                    sourceAnchor: node.typeArguments
+                        .map(\.sourceAnchor)
+                        .reduce(node.typeArguments.first?.sourceAnchor) {
+                            $0?.union($1)
+                        },
+                    message: "invalid use of module type")
+            }
+        }
+        
+        // Catch all in case we missed something above
+        guard try type.hasModule(symbols, globalEnvironment) == false else {
+            throw CompilerError(
+                sourceAnchor: node.identifier.sourceAnchor,
+                message: "invalid use of module type")
+        }
         
         // Prohibit redeclarations of the type unless we're simply scanning the
         // exact same type again. This can happen in a few situations such as

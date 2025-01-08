@@ -18,19 +18,20 @@ public class SnapSubcompilerVarDeclaration: NSObject {
     }
     
     public func compile(_ node: VarDeclaration) throws -> Expression.InitialAssignment? {
+        let sourceAnchor = node.identifier.sourceAnchor
         let ident = node.identifier.identifier
         
-        guard !symbols.exists(identifier: node.identifier.identifier) else {
+        guard !symbols.exists(identifier: ident) else {
             let variable = node.isMutable ? "variable" : "constant"
             throw CompilerError(
-                sourceAnchor: node.identifier.sourceAnchor,
+                sourceAnchor: sourceAnchor,
                 message: "\(variable) redefines existing symbol: `\(ident)'")
         }
         
-        guard !symbols.existsAsType(identifier: node.identifier.identifier) else {
+        guard !symbols.existsAsType(identifier: ident) else {
             let variable = node.isMutable ? "variable" : "constant"
             throw CompilerError(
-                sourceAnchor: node.identifier.sourceAnchor,
+                sourceAnchor: sourceAnchor,
                 message: "\(variable) redefines existing type: `\(ident)'")
         }
         
@@ -40,7 +41,10 @@ public class SnapSubcompilerVarDeclaration: NSObject {
         // the type checker can determine what type it evaluates to.
         let explicitType: SymbolType?
         if let explicitTypeExpr = node.explicitType {
-            explicitType = try TypeContextTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment).check(expression: explicitTypeExpr)
+            explicitType = try TypeContextTypeChecker(
+                symbols: symbols,
+                globalEnvironment: globalEnvironment)
+                .check(expression: explicitTypeExpr)
         } else {
             explicitType = nil
         }
@@ -48,14 +52,18 @@ public class SnapSubcompilerVarDeclaration: NSObject {
         if let varDeclExpr = node.expression {
             // The type of the initial value expression may be used to infer the
             // symbol type in cases where the explicit type is not specified.
-            let expressionResultType = try RvalueExpressionTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment).check(expression: varDeclExpr)
+            let expressionResultType = try RvalueExpressionTypeChecker(
+                symbols: symbols,
+                globalEnvironment: globalEnvironment)
+                .check(expression: varDeclExpr)
 
             // An explicit array type does not specify the number of array elements.
             // If the explicit type is an array type then we must examine the
             // expression result type to determine the array length.
             var symbolType: SymbolType
             switch (expressionResultType, explicitType) {
-            case (.array(count: let count, elementType: _), .array(count: _, elementType: let elementType)):
+            case (.array(count: let count, elementType: _),
+                  .array(count: _, elementType: let elementType)):
                 symbolType = .array(count: count, elementType: elementType)
             default:
                 if let explicitType = explicitType {
@@ -79,7 +87,11 @@ public class SnapSubcompilerVarDeclaration: NSObject {
             } else {
                 symbolType = symbolType.correspondingConstType
             }
-            let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: node.storage, visibility: node.visibility)
+            let symbol = try makeSymbolWithExplicitType(
+                sourceAnchor: node.explicitType?.sourceAnchor ?? sourceAnchor,
+                explicitType: symbolType,
+                storage: node.storage,
+                visibility: node.visibility)
             symbols.bind(identifier: node.identifier.identifier, symbol: symbol)
             attachToFrame(identifier: node.identifier.identifier, symbol: symbol)
             result = Expression.InitialAssignment(sourceAnchor: node.sourceAnchor,
@@ -87,20 +99,36 @@ public class SnapSubcompilerVarDeclaration: NSObject {
                                                   rexpr: varDeclExpr)
         } else if let explicitType = explicitType {
             let symbolType = node.isMutable ? explicitType : explicitType.correspondingConstType
-            let symbol = try makeSymbolWithExplicitType(explicitType: symbolType, storage: node.storage, visibility: node.visibility)
+            let symbol = try makeSymbolWithExplicitType(
+                sourceAnchor: node.explicitType?.sourceAnchor ?? sourceAnchor,
+                explicitType: symbolType,
+                storage: node.storage,
+                visibility: node.visibility)
             symbols.bind(identifier: node.identifier.identifier, symbol: symbol)
             result = nil
         } else {
-            throw CompilerError(sourceAnchor: node.identifier.sourceAnchor,
-                                format: "unable to deduce type of %@ `%@'",
-                                node.isMutable ? "variable" : "constant",
-                                node.identifier.identifier)
+            throw CompilerError(
+                sourceAnchor: sourceAnchor,
+                format: "unable to deduce type of %@ `%@'",
+                node.isMutable ? "variable" : "constant",
+                node.identifier.identifier)
         }
 
         return result
     }
 
-    func makeSymbolWithExplicitType(explicitType: SymbolType, storage: SymbolStorage, visibility: SymbolVisibility) throws -> Symbol {
+    func makeSymbolWithExplicitType(
+        sourceAnchor: SourceAnchor?,
+        explicitType: SymbolType,
+        storage: SymbolStorage,
+        visibility: SymbolVisibility
+    ) throws -> Symbol {
+        
+        guard try explicitType.hasModule(symbols, globalEnvironment) == false else {
+            throw CompilerError(
+                sourceAnchor: sourceAnchor,
+                message: "invalid use of module type")
+        }
         let storage: SymbolStorage = (symbols.frame==nil) ? .staticStorage : storage
         let offset = bumpStoragePointer(explicitType, storage)
         let symbol = Symbol(type: explicitType, offset: offset, storage: storage, visibility: visibility)

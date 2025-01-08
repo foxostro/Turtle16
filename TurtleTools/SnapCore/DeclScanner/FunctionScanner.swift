@@ -93,9 +93,15 @@ public class FunctionScanner: NSObject {
     }
     
     private func doNonGeneric(node node0: FunctionDeclaration) throws {
-        let functionType = try TypeContextTypeChecker(symbols: symbols)
+        let symbolType = try TypeContextTypeChecker(symbols: symbols)
             .check(expression: node0.functionType)
-            .unwrapFunctionType()
+        let functionType = symbolType.unwrapFunctionType()
+        
+        guard try symbolType.hasModule(symbols, globalEnvironment) == false else {
+            throw CompilerError(
+                sourceAnchor: node0.identifier.sourceAnchor,
+                message: "invalid use of module type")
+        }
         
         node0.symbols.breadcrumb = .functionType(functionType)
         node0.body.symbols.parent = node0.symbols

@@ -1898,6 +1898,91 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         let str = String(bytes: serialOutput, encoding: .utf8)
         XCTAssertEqual(str, "Hello, World!")
     }
+    
+    func testCannotInstantiateVariableWithModuleType() throws {
+        let compiler = SnapCompilerFrontEnd(
+            options: SnapCompilerFrontEnd.Options(
+                injectedModules: [ "MyModule" : "" ]),
+            globalEnvironment: GlobalEnvironment())
+        let result = compiler.compile(program: """
+            import MyModule
+            let foo: MyModule = undefined
+            """)
+        expectError(result) { error in
+            XCTAssertEqual(error.sourceAnchor?.text, "MyModule")
+            XCTAssertEqual(error.sourceAnchor?.lineNumbers, 1..<2)
+            XCTAssertEqual(error.message, "invalid use of module type")
+        }
+    }
+    
+    func testCannotHaveFunctionParameterWithModuleType() throws {
+        let compiler = SnapCompilerFrontEnd(
+            options: SnapCompilerFrontEnd.Options(
+                injectedModules: [ "MyModule" : "" ]),
+            globalEnvironment: GlobalEnvironment())
+        let result = compiler.compile(program: """
+            import MyModule
+            func foo(bar: MyModule) {
+            }
+            """)
+        expectError(result) { error in
+            XCTAssertEqual(error.sourceAnchor?.text, "foo")
+            XCTAssertEqual(error.sourceAnchor?.lineNumbers, 1..<2)
+            XCTAssertEqual(error.message, "invalid use of module type")
+        }
+    }
+    
+    func testCannotDeclareStructWithModuleType() throws {
+        let compiler = SnapCompilerFrontEnd(
+            options: SnapCompilerFrontEnd.Options(
+                injectedModules: [ "MyModule" : "" ]),
+            globalEnvironment: GlobalEnvironment())
+        let result = compiler.compile(program: """
+            import MyModule
+            struct Foo {
+                bar: MyModule
+            }
+            """)
+        expectError(result) { error in
+            XCTAssertEqual(error.sourceAnchor?.text, "MyModule")
+            XCTAssertEqual(error.sourceAnchor?.lineNumbers, 2..<3)
+            XCTAssertEqual(error.message, "invalid use of module type")
+        }
+    }
+    
+    func testCannotDeclareTraitWithModuleType() throws {
+        let compiler = SnapCompilerFrontEnd(
+            options: SnapCompilerFrontEnd.Options(
+                injectedModules: [ "MyModule" : "" ]),
+            globalEnvironment: GlobalEnvironment())
+        let result = compiler.compile(program: """
+            import MyModule
+            trait Foo {
+                func foo(bar: MyModule)
+            }
+            """)
+        expectError(result) { error in
+            XCTAssertEqual(error.sourceAnchor?.text, "func foo(bar: MyModule)")
+            XCTAssertEqual(error.sourceAnchor?.lineNumbers, 2..<3)
+            XCTAssertEqual(error.message, "invalid use of module type")
+        }
+    }
+    
+    func testCannotDeclareUnionWithModuleType() throws {
+        let compiler = SnapCompilerFrontEnd(
+            options: SnapCompilerFrontEnd.Options(
+                injectedModules: [ "MyModule" : "" ]),
+            globalEnvironment: GlobalEnvironment())
+        let result = compiler.compile(program: """
+            import MyModule
+            typealias Foo = MyModule | u16
+            """)
+        expectError(result) { error in
+            XCTAssertEqual(error.sourceAnchor?.text, "MyModule | u16")
+            XCTAssertEqual(error.sourceAnchor?.lineNumbers, 1..<2)
+            XCTAssertEqual(error.message, "invalid use of module type")
+        }
+    }
 
     func testBasicFunctionPointerDemonstration() throws {
         var serialOutput: [UInt8] = []

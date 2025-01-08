@@ -673,12 +673,18 @@ public class FunctionType: NSObject {
         return true
     }
     
+    private var isDoingHash = false
+    
     public override var hash: Int {
+        defer { isDoingHash = false }
+        isDoingHash = true
         var hasher = Hasher()
         hasher.combine(name)
         hasher.combine(mangledName)
         hasher.combine(returnType)
-        hasher.combine(arguments)
+        if !isDoingHash {
+            hasher.combine(arguments)
+        }
 //        hasher.combine(ast)
         return hasher.finalize()
     }

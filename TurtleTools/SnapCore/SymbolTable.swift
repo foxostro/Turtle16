@@ -1138,6 +1138,23 @@ public class SymbolTable: NSObject {
     public var typeTable: [String:TypeRecord]
     public var parent: SymbolTable?
     
+    private lazy var internalTempNameCounter: Int = 0
+    private var tempNameCounter: Int {
+        if let parent {
+            return parent.tempNameCounter
+        }
+        else {
+            let result = internalTempNameCounter
+            internalTempNameCounter += 1
+            return result
+        }
+    }
+    
+    /// Generate a unique identifier with the specified prefix
+    public func tempName(prefix: String) -> String {
+         "\(prefix)\(tempNameCounter)"
+    }
+    
     public enum FrameLookupMode: Hashable, Equatable {
         case inherit, set(Frame)
         

@@ -1124,7 +1124,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
     func makeCompilerTemporary(_ sourceAnchor: SourceAnchor?, _ type: Expression) throws -> Expression.Identifier {
         let tempArrayId = Expression.Identifier(
             sourceAnchor: sourceAnchor,
-            identifier: globalEnvironment.tempNameMaker.next())
+            identifier: symbols!.tempName(prefix: "__temp"))
         let tempDecl = VarDeclaration(
             sourceAnchor: sourceAnchor,
             identifier: tempArrayId,

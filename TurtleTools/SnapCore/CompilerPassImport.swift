@@ -12,15 +12,11 @@ import TurtleCore
 public class CompilerPassImport: CompilerPass {
     fileprivate var modulesAlreadySeen = Set<String>()
     fileprivate let moduleSourceCache: [String : String]
-    fileprivate let staticStorageFrame: Frame
-    fileprivate let memoryLayoutStrategy: MemoryLayoutStrategy
     fileprivate let runtimeSupport: String?
     fileprivate var pendingInsertions: [Module] = []
     
     public init(symbols: SymbolTable? = nil,
                 injectModules: [(String, String)] = [],
-                staticStorageFrame: Frame = Frame(),
-                memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull(),
                 runtimeSupport: String? = nil) {
         
         var moduleSourceCache: [String : String] = [:]
@@ -28,8 +24,6 @@ public class CompilerPassImport: CompilerPass {
             moduleSourceCache[pair.0] = pair.1
         }
         self.moduleSourceCache = moduleSourceCache
-        self.staticStorageFrame = staticStorageFrame
-        self.memoryLayoutStrategy = memoryLayoutStrategy
         self.runtimeSupport = runtimeSupport
         
         super.init(symbols)
@@ -145,14 +139,10 @@ extension AbstractSyntaxTreeNode {
     /// - Parameter injectModules: A list of module name and module source code which overrides modules found on the file system.
     public func importPass(
         injectModules: [(String, String)],
-        runtimeSupport: String? = nil,
-        staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
+        runtimeSupport: String? = nil
     ) throws -> AbstractSyntaxTreeNode? {
         try CompilerPassImport(
             injectModules: injectModules,
-            staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy,
             runtimeSupport: runtimeSupport)
         .run(self)
     }

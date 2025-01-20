@@ -30,13 +30,8 @@ public class CompilerPassVtables: CompilerPassWithDeclScan {
 
 extension AbstractSyntaxTreeNode {
     /// Compiler pass to emit vtable and such for traits
-    public func vtablesPass(
-        staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
-    ) throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassVtables(
-            staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy)
+    public func vtablesPass() throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassVtables()
         .run(self)
     }
 }

@@ -445,13 +445,7 @@ public class CompilerPassGenerics: CompilerPassWithDeclScan {
 
 extension AbstractSyntaxTreeNode {
     /// Erase generics, rewriting in terms of new concrete types
-    public func genericsPass(
-        staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
-    ) throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassGenerics(
-            staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy)
-        .run(self)
+    public func genericsPass() throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassGenerics().run(self)
     }
 }

@@ -136,13 +136,7 @@ public class CompilerPassMatch: CompilerPassWithDeclScan {
 
 extension AbstractSyntaxTreeNode {
     /// Compiler pass to lower and erase Match statements
-    public func matchPass(
-        staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
-    ) throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassMatch(
-            staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy)
-        .run(self)
+    public func matchPass() throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassMatch().run(self)
     }
 }

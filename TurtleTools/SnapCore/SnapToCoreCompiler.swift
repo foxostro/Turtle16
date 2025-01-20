@@ -23,21 +23,17 @@ public class SnapToCoreCompiler: NSObject {
     let runtimeSupport: String?
     let sandboxAccessManager: SandboxAccessManager?
     let injectModules: [(String, String)]
-    let staticStorageFrame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
-    let memoryLayoutStrategy: MemoryLayoutStrategy
     
     public init(shouldRunSpecificTest: String? = nil,
                 injectModules: [(String, String)] = [],
                 isUsingStandardLibrary: Bool = false,
                 runtimeSupport: String? = nil,
-                sandboxAccessManager: SandboxAccessManager? = nil,
-                memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()) {
+                sandboxAccessManager: SandboxAccessManager? = nil) {
         self.shouldRunSpecificTest = shouldRunSpecificTest
         self.injectModules = injectModules
         self.isUsingStandardLibrary = isUsingStandardLibrary
         self.runtimeSupport = runtimeSupport
         self.sandboxAccessManager = sandboxAccessManager
-        self.memoryLayoutStrategy = memoryLayoutStrategy
     }
     
     public func compile(_ root: AbstractSyntaxTreeNode?) -> Result<Block?, Error> {
@@ -54,34 +50,20 @@ public class SnapToCoreCompiler: NSObject {
                     shouldRunSpecificTest: shouldRunSpecificTest)?
                 .importPass(
                     injectModules: injectModules,
-                    runtimeSupport: runtimeSupport,
-                    staticStorageFrame: staticStorageFrame,
-                    memoryLayoutStrategy: memoryLayoutStrategy)?
+                    runtimeSupport: runtimeSupport)?
                 .forInPass()?
-                .genericsPass(staticStorageFrame: staticStorageFrame,
-                              memoryLayoutStrategy: memoryLayoutStrategy)?
-                .vtablesPass(staticStorageFrame: staticStorageFrame,
-                             memoryLayoutStrategy: memoryLayoutStrategy)?
-                .implForPass(staticStorageFrame: staticStorageFrame,
-                             memoryLayoutStrategy: memoryLayoutStrategy)?
-                .eraseMethodCalls(staticStorageFrame: staticStorageFrame,
-                                  memoryLayoutStrategy: memoryLayoutStrategy)?
-                .synthesizeTerminalReturnStatements(staticStorageFrame: staticStorageFrame,
-                                                    memoryLayoutStrategy: memoryLayoutStrategy)?
-                .eraseImplPass(staticStorageFrame: staticStorageFrame,
-                               memoryLayoutStrategy: memoryLayoutStrategy)?
-                .matchPass(staticStorageFrame: staticStorageFrame,
-                           memoryLayoutStrategy: memoryLayoutStrategy)?
-                .assertPass(staticStorageFrame: staticStorageFrame,
-                            memoryLayoutStrategy: memoryLayoutStrategy)?
-                .returnPass(staticStorageFrame: staticStorageFrame,
-                            memoryLayoutStrategy: memoryLayoutStrategy)?
-                .whilePass(staticStorageFrame: staticStorageFrame,
-                           memoryLayoutStrategy: memoryLayoutStrategy)?
-                .ifPass(staticStorageFrame: staticStorageFrame,
-                        memoryLayoutStrategy: memoryLayoutStrategy)?
-                .lowerVarDeclPass(staticStorageFrame: staticStorageFrame,
-                                  memoryLayoutStrategy: memoryLayoutStrategy)?
+                .genericsPass()?
+                .vtablesPass()?
+                .implForPass()?
+                .eraseMethodCalls()?
+                .synthesizeTerminalReturnStatements()?
+                .eraseImplPass()?
+                .matchPass()?
+                .assertPass()?
+                .returnPass()?
+                .whilePass()?
+                .ifPass()?
+                .lowerVarDeclPass()?
                 .flatten()
         }
         .flatMap { ast in

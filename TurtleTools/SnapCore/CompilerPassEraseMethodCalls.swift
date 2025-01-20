@@ -97,13 +97,7 @@ public class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
 
 extension AbstractSyntaxTreeNode {
     /// Method calls written in the dot syntax are rewritten to plain function calls
-    public func eraseMethodCalls(
-        staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
-    ) throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassEraseMethodCalls(
-            staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy)
-        .run(self)
+    public func eraseMethodCalls() throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassEraseMethodCalls().run(self)
     }
 }

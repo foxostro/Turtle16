@@ -82,8 +82,7 @@ public class SnapCompilerFrontEnd: NSObject {
             injectModules: Array(options.injectedModules),
             isUsingStandardLibrary: options.isUsingStandardLibrary,
             runtimeSupport: options.runtimeSupport,
-            sandboxAccessManager: sandboxAccessManager,
-            memoryLayoutStrategy: memoryLayoutStrategy)
+            sandboxAccessManager: sandboxAccessManager)
         
         return compiler
             .compile(syntaxTree)

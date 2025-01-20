@@ -100,13 +100,7 @@ public class CompilerPassLowerVarDecl: CompilerPassWithDeclScan {
 
 extension AbstractSyntaxTreeNode {
     /// Compiler pass to lower and erase VarDeclaration (e.g., var and let)
-    public func lowerVarDeclPass(
-        staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
-    ) throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassLowerVarDecl(
-            staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy)
-        .run(self)
+    public func lowerVarDeclPass() throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassLowerVarDecl().run(self)
     }
 }

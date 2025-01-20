@@ -43,13 +43,7 @@ public class CompilerPassWhile: CompilerPassWithDeclScan {
 
 extension AbstractSyntaxTreeNode {
     /// Compiler pass to lower and erase "while" statements
-    public func whilePass(
-        staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
-    ) throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassWhile(
-            staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy)
-        .run(self)
+    public func whilePass() throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassWhile().run(self)
     }
 }

@@ -70,13 +70,7 @@ public class CompilerPassImpl: CompilerPassWithDeclScan {
 
 extension AbstractSyntaxTreeNode {
     /// Compiler pass to lower and erase Impl blocks
-    public func eraseImplPass(
-        staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
-    ) throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassImpl(
-            staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy)
-        .run(self)
+    public func eraseImplPass() throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassImpl().run(self)
     }
 }

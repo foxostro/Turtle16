@@ -256,13 +256,7 @@ public class CompilerPassImplFor: CompilerPassWithDeclScan {
 
 extension AbstractSyntaxTreeNode {
     /// Erase impl-for declarations, rewriting in terms of lower-level concepts
-    public func implForPass(
-        staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
-    ) throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassImplFor(
-            staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy)
-        .run(self)
+    public func implForPass() throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassImplFor().run(self)
     }
 }

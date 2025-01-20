@@ -114,7 +114,6 @@ public class ImplScanner: NSObject {
             }
             
             let scanner = FunctionScanner(
-                staticStorageFrame: staticStorageFrame,
                 memoryLayoutStrategy: memoryLayoutStrategy,
                 symbols: symbols, enclosingImplId: node.id)
             try scanner.scan(func: child)

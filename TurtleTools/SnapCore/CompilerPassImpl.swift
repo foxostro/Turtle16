@@ -38,7 +38,6 @@ public class CompilerPassImpl: CompilerPassWithDeclScan {
         try children2
             .forEach { child in
                 try FunctionScanner(
-                    staticStorageFrame: staticStorageFrame,
                     memoryLayoutStrategy: memoryLayoutStrategy,
                     symbols: symbols!,
                     enclosingImplId: nil)

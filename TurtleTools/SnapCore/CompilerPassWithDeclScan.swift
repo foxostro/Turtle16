@@ -102,7 +102,6 @@ public class CompilerPassWithDeclScan: CompilerPass {
     
     func scan(func node: FunctionDeclaration) throws {
         try FunctionScanner(
-            staticStorageFrame: staticStorageFrame,
             memoryLayoutStrategy: memoryLayoutStrategy,
             symbols: symbols!,
             enclosingImplId: nil)

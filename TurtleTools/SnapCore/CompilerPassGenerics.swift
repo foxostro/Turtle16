@@ -248,10 +248,9 @@ public class CompilerPassGenerics: CompilerPassWithDeclScan {
             .eval(ast1, replacements: pairs)
         // The expectation is that the template for a generic function has no symbols yet. The unbound type parameter makes that impossible. We scan it on instantiation when all types are known.
         try FunctionScanner(
-            staticStorageFrame: staticStorageFrame,
             memoryLayoutStrategy: memoryLayoutStrategy,
             symbols: ast2.symbols.parent!)
-            .scanInside(func: ast2)
+        .scanInside(func: ast2)
         let ast3 = try visit(ast2)!
         
         // The compiler must an emit AST node for the concrete instantiaton of

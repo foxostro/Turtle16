@@ -377,6 +377,14 @@ public class TackInstructionNode: AbstractSyntaxTreeNode {
             id: id)
     }
     
+    public func withInstruction(_ instruction: TackInstruction) -> TackInstructionNode {
+        TackInstructionNode(
+            instruction: instruction,
+            sourceAnchor: sourceAnchor,
+            symbols: symbols,
+            id: id)
+    }
+    
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> TackInstructionNode {
         TackInstructionNode(instruction: instruction,
                             sourceAnchor: sourceAnchor,

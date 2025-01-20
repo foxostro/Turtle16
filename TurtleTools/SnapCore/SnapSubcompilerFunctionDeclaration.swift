@@ -69,7 +69,6 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
                             functionDeclaration node0: FunctionDeclaration) throws {
         
         node0.symbols.breadcrumb = .functionType(functionType)
-        node0.body.symbols.parent = node0.symbols
         
         bindFunctionArguments(symbols: node0.symbols,
                               functionType: functionType,

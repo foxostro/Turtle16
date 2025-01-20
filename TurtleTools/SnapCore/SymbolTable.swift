@@ -1161,6 +1161,21 @@ public class SymbolTable: NSObject {
          "\(prefix)\(tempNameCounter)"
     }
     
+    /// Generate a new label name, unique in the current scope
+    public func nextLabel() -> String {
+        let prefix = ".L"
+        var counter = 0
+        var label = "\(prefix)\(counter)"
+        while exists(identifier: "\(prefix)\(counter)") {
+            counter += 1
+            label = "\(prefix)\(counter)"
+        }
+        bind(identifier: label, symbol: Symbol(type: .label))
+        return label
+    }
+    
+    private var internalLabelNameCounter: Int = 0
+    
     public enum FrameLookupMode: Hashable, Equatable {
         case inherit, set(Frame)
         

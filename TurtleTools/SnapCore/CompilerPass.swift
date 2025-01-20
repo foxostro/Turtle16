@@ -96,6 +96,8 @@ public class CompilerPass: NSObject {
             try visit(instruction: node)
         case let node as TackInstructionNode:
             try visit(tack: node)
+        case let node as LabelDeclaration:
+            try visit(label: node)
         default:
             genericNode
         }
@@ -364,6 +366,10 @@ public class CompilerPass: NSObject {
     }
     
     public func visit(tack node: TackInstructionNode) throws -> AbstractSyntaxTreeNode? {
+        node
+    }
+    
+    public func visit(label node: LabelDeclaration) throws -> LabelDeclaration {
         node
     }
     

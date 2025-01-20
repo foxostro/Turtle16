@@ -81,13 +81,9 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     }
 
     func testSimpleProgram() throws {
-        let compiler = makeCompiler()
-        let result = Result {
-            try compiler.compile(program: """
-                let a = 1
-                """)
-        }
-        let tackProgram = try result.get()
+        let tackProgram = try compile(program: """
+            let a = 1
+            """)
         XCTAssertEqual(tackProgram.listing, """
             0000  LIP p0, 272
             0001  LIUB b1, 1

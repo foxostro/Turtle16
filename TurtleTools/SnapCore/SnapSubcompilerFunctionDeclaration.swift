@@ -9,15 +9,16 @@
 import TurtleCore
 
 public class SnapSubcompilerFunctionDeclaration: NSObject {
-    public let enclosingImplId: AbstractSyntaxTreeNode.ID?
+    private let enclosingImplId: AbstractSyntaxTreeNode.ID?
+    private let memoryLayoutStrategy: MemoryLayoutStrategy
     
-    public init(enclosingImplId: AbstractSyntaxTreeNode.ID? = nil) {
+    public init(enclosingImplId: AbstractSyntaxTreeNode.ID? = nil,
+                memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()) {
         self.enclosingImplId = enclosingImplId
+        self.memoryLayoutStrategy = memoryLayoutStrategy
     }
     
-    public func compile(globalEnvironment: GlobalEnvironment,
-                        symbols: SymbolTable,
-                        node: FunctionDeclaration) throws {
+    public func compile(symbols: SymbolTable, node: FunctionDeclaration) throws {
         assert(node.symbols.frameLookupMode.isSet)
         let name = node.identifier.identifier
         
@@ -34,18 +35,14 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
         }
         
         if node.isGeneric {
-            try doGeneric(symbols: symbols,
-                          node: node)
+            try doGeneric(symbols: symbols, node: node)
         }
         else {
-            try doNonGeneric(globalEnvironment: globalEnvironment,
-                             symbols: symbols,
-                             node: node)
+            try doNonGeneric(symbols: symbols, node: node)
         }
     }
     
-    private func doGeneric(symbols: SymbolTable,
-                           node: FunctionDeclaration) throws {
+    private func doGeneric(symbols: SymbolTable, node: FunctionDeclaration) throws {
         let name = node.identifier.identifier
         let typ = Expression.GenericFunctionType(template: node, enclosingImplId: enclosingImplId)
         let symbol = Symbol(type: .genericFunction(typ),
@@ -55,12 +52,9 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
         symbols.bind(identifier: name, symbol: symbol)
     }
     
-    private func doNonGeneric(globalEnvironment: GlobalEnvironment,
-                              symbols: SymbolTable,
-                              node: FunctionDeclaration) throws {
+    private func doNonGeneric(symbols: SymbolTable, node: FunctionDeclaration) throws {
         let functionType = try evaluateFunctionTypeExpression(symbols, node.functionType)
-        try instantiate(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy,
-                        functionType: functionType,
+        try instantiate(functionType: functionType,
                         functionDeclaration: node)
         
         let name = node.identifier.identifier
@@ -71,15 +65,13 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
         symbols.bind(identifier: name, symbol: symbol)
     }
     
-    public func instantiate(memoryLayoutStrategy: MemoryLayoutStrategy,
-                            functionType: FunctionType,
+    public func instantiate(functionType: FunctionType,
                             functionDeclaration node0: FunctionDeclaration) throws {
         
         node0.symbols.breadcrumb = .functionType(functionType)
         node0.body.symbols.parent = node0.symbols
         
-        bindFunctionArguments(memoryLayoutStrategy: memoryLayoutStrategy,
-                              symbols: node0.symbols,
+        bindFunctionArguments(symbols: node0.symbols,
                               functionType: functionType,
                               argumentNames: node0.argumentNames)
         try expectFunctionReturnExpressionIsCorrectType(symbols: node0.symbols,
@@ -109,13 +101,18 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
         functionType.ast = node2
     }
     
-    private func evaluateFunctionTypeExpression(_ symbols: SymbolTable,
-                                                _ expr: Expression) throws -> FunctionType {
-        return try TypeContextTypeChecker(symbols: symbols).check(expression: expr).unwrapFunctionType()
+    private func evaluateFunctionTypeExpression(
+        _ symbols: SymbolTable,
+        _ expr: Expression
+    ) throws -> FunctionType {
+        try TypeContextTypeChecker(
+            symbols: symbols,
+            memoryLayoutStrategy: memoryLayoutStrategy)
+        .check(expression: expr)
+        .unwrapFunctionType()
     }
     
-    private func bindFunctionArguments(memoryLayoutStrategy: MemoryLayoutStrategy,
-                                       symbols: SymbolTable,
+    private func bindFunctionArguments(symbols: SymbolTable,
                                        functionType: FunctionType,
                                        argumentNames: [String]) {
         var offset = memoryLayoutStrategy.sizeOfSaveArea

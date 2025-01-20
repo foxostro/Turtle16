@@ -132,7 +132,10 @@ public class CompilerPassGenerics: CompilerPassWithDeclScan {
     }
     
     @discardableResult fileprivate func typeCheck(rexpr: Expression) throws -> SymbolType {
-        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols!, globalEnvironment: globalEnvironment)
+        let typeChecker = RvalueExpressionTypeChecker(
+            symbols: symbols!,
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
         return try typeChecker.check(expression: rexpr)
     }
     
@@ -198,7 +201,8 @@ public class CompilerPassGenerics: CompilerPassWithDeclScan {
         
         let typeChecker = RvalueExpressionTypeChecker(
             symbols: symbols,
-            globalEnvironment: globalEnvironment)
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
         let exprTyp = try typeChecker.check(expression: expr)
         let concreteDeclaration = switch exprTyp {
         case .function(let typ):
@@ -243,8 +247,10 @@ public class CompilerPassGenerics: CompilerPassWithDeclScan {
         let ast2 = try GenericsPartialEvaluator
             .eval(ast1, replacements: pairs)
         // The expectation is that the template for a generic function has no symbols yet. The unbound type parameter makes that impossible. We scan it on instantiation when all types are known.
-        try FunctionScanner(globalEnvironment: globalEnvironment,
-                            symbols: ast2.symbols.parent!)
+        try FunctionScanner(
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy,
+            symbols: ast2.symbols.parent!)
             .scanInside(func: ast2)
         let ast3 = try visit(ast2)!
         
@@ -397,8 +403,13 @@ public class CompilerPassGenerics: CompilerPassWithDeclScan {
         
         switch calleeType {
         case .genericFunction(let typ):
-            let typeChecker = RvalueExpressionTypeChecker(symbols: symbols!, globalEnvironment: globalEnvironment)
-            let app = try typeChecker.synthesizeGenericTypeApplication(call: expr0, genericFunctionType: typ)
+            let typeChecker = RvalueExpressionTypeChecker(
+                symbols: symbols!,
+                staticStorageFrame: staticStorageFrame,
+                memoryLayoutStrategy: memoryLayoutStrategy)
+            let app = try typeChecker.synthesizeGenericTypeApplication(
+                call: expr0,
+                genericFunctionType: typ)
             let callee1 = try visit(genericTypeApplication: app)!
             let expr1 = expr0.withCallee(callee1)
             return expr1
@@ -435,7 +446,13 @@ public class CompilerPassGenerics: CompilerPassWithDeclScan {
 
 extension AbstractSyntaxTreeNode {
     /// Erase generics, rewriting in terms of new concrete types
-    public func genericsPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassGenerics(globalEnvironment: globalEnvironment).run(self)
+    public func genericsPass(
+        staticStorageFrame: Frame = Frame(),
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+    ) throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassGenerics(
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
+        .run(self)
     }
 }

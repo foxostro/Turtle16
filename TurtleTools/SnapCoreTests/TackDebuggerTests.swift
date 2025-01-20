@@ -11,6 +11,8 @@ import SnapCore
 import TurtleCore
 
 final class TackDebuggerTests: XCTestCase {
+    fileprivate let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+    
     fileprivate struct Options {
         public let isVerboseLogging: Bool
         public let isBoundsCheckEnabled: Bool
@@ -45,9 +47,9 @@ final class TackDebuggerTests: XCTestCase {
             shouldRunSpecificTest: options.shouldRunSpecificTest,
             injectedModules: options.injectModules)
         
-        let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: memoryLayoutStrategy)
-        let compiler = SnapCompilerFrontEnd(options: opts2, globalEnvironment: globalEnvironment)
+        let compiler = SnapCompilerFrontEnd(
+            options: opts2,
+            memoryLayoutStrategy: memoryLayoutStrategy)
         
         let result = compiler.compile(program: program)
         let tackProgram: TackProgram

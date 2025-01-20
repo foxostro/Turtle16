@@ -51,7 +51,7 @@ final class CompilerPassVtablesTests: XCTestCase {
             ],
             id: expected.id)
         
-        let actual = try input.vtablesPass(GlobalEnvironment())
+        let actual = try input.vtablesPass()
         XCTAssertEqual(actual, expected)
     }
     
@@ -150,7 +150,7 @@ final class CompilerPassVtablesTests: XCTestCase {
             ],
             id: expected.id)
         
-        let actual = try input.vtablesPass(GlobalEnvironment())
+        let actual = try input.vtablesPass()
         XCTAssertEqual(actual, expected)
     }
 

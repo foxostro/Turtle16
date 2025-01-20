@@ -11,18 +11,23 @@ import TurtleCore
 
 /// Scans an Impl declaration and binds the function symbols in the environment
 public class ImplScanner: NSObject {
-    public let globalEnvironment: GlobalEnvironment
-    public let parent: SymbolTable
+    private let staticStorageFrame: Frame
+    private let memoryLayoutStrategy: MemoryLayoutStrategy
+    private let parent: SymbolTable
     private let typeChecker: RvalueExpressionTypeChecker
     
     public init(
-        globalEnvironment: GlobalEnvironment = GlobalEnvironment(),
+        staticStorageFrame: Frame,
+        memoryLayoutStrategy: MemoryLayoutStrategy,
         symbols parent: SymbolTable = SymbolTable()) {
             
-            self.globalEnvironment = globalEnvironment
+            self.staticStorageFrame = staticStorageFrame
+            self.memoryLayoutStrategy = memoryLayoutStrategy
             self.parent = parent
             typeChecker = RvalueExpressionTypeChecker(
-                symbols: parent, globalEnvironment: globalEnvironment)
+                symbols: parent,
+                staticStorageFrame: staticStorageFrame,
+                memoryLayoutStrategy: memoryLayoutStrategy)
         }
     
     public func scan(impl node: Impl) throws {
@@ -109,7 +114,8 @@ public class ImplScanner: NSObject {
             }
             
             let scanner = FunctionScanner(
-                globalEnvironment: globalEnvironment,
+                staticStorageFrame: staticStorageFrame,
+                memoryLayoutStrategy: memoryLayoutStrategy,
                 symbols: symbols, enclosingImplId: node.id)
             try scanner.scan(func: child)
             

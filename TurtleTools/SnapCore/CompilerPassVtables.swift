@@ -30,7 +30,13 @@ public class CompilerPassVtables: CompilerPassWithDeclScan {
 
 extension AbstractSyntaxTreeNode {
     /// Compiler pass to emit vtable and such for traits
-    public func vtablesPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassVtables(globalEnvironment: globalEnvironment).run(self)
+    public func vtablesPass(
+        staticStorageFrame: Frame = Frame(),
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+    ) throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassVtables(
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
+        .run(self)
     }
 }

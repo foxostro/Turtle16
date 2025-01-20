@@ -124,16 +124,15 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
     }
     
     func testImportingAModuleCausesItToExportPublicSymbols() throws {
-        let globalEnvironment = GlobalEnvironment()
         let symbols = SymbolTable()
         let ast0 = Block(symbols: symbols, children: [
             Import(moduleName: "Foo")
         ])
-        let ast1 = try ast0.importPass(
-            injectModules: [("Foo", "public struct None {}\n")],
-            globalEnvironment: globalEnvironment)
+        let ast1 = try ast0.importPass(injectModules: [
+            ("Foo", "public struct None {}\n")
+        ])
         
-        let compiler = CompilerPassWithDeclScan(globalEnvironment)
+        let compiler = CompilerPassWithDeclScan()
         let ast2 = try compiler.run(ast1)
         
         XCTAssertEqual(ast2, ast1)
@@ -144,7 +143,6 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
     
     func testCompileImplForTrait() throws {
         
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let symbols = SymbolTable()
         
         func compileSerialTrait() throws {
@@ -156,18 +154,15 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
                 identifier: Expression.Identifier("Serial"),
                 members: [bar],
                 visibility: .privateVisibility)
-            try TraitScanner(
-                globalEnvironment: globalEnvironment,
-                symbols: symbols)
-            .scan(trait: traitDecl)
+            try TraitScanner(symbols: symbols).scan(trait: traitDecl)
         }
         
         func compileSerialFake() throws {
             let fake = StructDeclaration(identifier: Expression.Identifier("SerialFake"), members: [])
-            try SnapSubcompilerStructDeclaration(
+            let compiler = SnapSubcompilerStructDeclaration(
                 symbols: symbols,
-                globalEnvironment: globalEnvironment)
-            .compile(fake)
+                memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
+            try compiler.compile(fake)
         }
         
         try compileSerialTrait()
@@ -196,7 +191,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
             ])
         .reconnect(parent: nil)
         
-        _ = try CompilerPassWithDeclScan(globalEnvironment: globalEnvironment).visit(ast)
+        _ = try CompilerPassWithDeclScan().visit(ast)
         
         // Let's examine, for correctness, the vtable symbol
         let nameOfVtableInstance = "__Serial_SerialFake_vtable_instance"
@@ -225,7 +220,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
         let clauseSymbols = match.clauses.first!.block.symbols
         let elseSymbols = match.elseClause!.symbols
         
-        _ = try CompilerPassWithDeclScan(globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())).run(input)
+        _ = try CompilerPassWithDeclScan().run(input)
         
         XCTAssertNoThrow(try elseSymbols.resolve(identifier: "quux"))
         XCTAssertNoThrow(try clauseSymbols.resolve(identifier: "qux"))

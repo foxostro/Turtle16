@@ -11,23 +11,29 @@ import TurtleCore
 
 /// Scans an ImplFor declaration and binds the function symbols in the environment
 public class ImplForScanner: NSObject {
-    public let globalEnvironment: GlobalEnvironment
-    public let symbols: SymbolTable
-    
+    private let staticStorageFrame: Frame
+    private let memoryLayoutStrategy: MemoryLayoutStrategy
+    private let symbols: SymbolTable
     private let typeChecker: RvalueExpressionTypeChecker
     private var implScanner: ImplScanner {
-        ImplScanner(globalEnvironment: globalEnvironment, symbols: symbols)
+        ImplScanner(
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy,
+            symbols: symbols)
     }
     
     public init(
-        globalEnvironment: GlobalEnvironment = GlobalEnvironment(),
+        staticStorageFrame: Frame,
+        memoryLayoutStrategy: MemoryLayoutStrategy,
         symbols: SymbolTable = SymbolTable()) {
             
-            self.globalEnvironment = globalEnvironment
+            self.staticStorageFrame = staticStorageFrame
+            self.memoryLayoutStrategy = memoryLayoutStrategy
             self.symbols = symbols
             typeChecker = RvalueExpressionTypeChecker(
                 symbols: symbols,
-                globalEnvironment: globalEnvironment)
+                staticStorageFrame: staticStorageFrame,
+                memoryLayoutStrategy: memoryLayoutStrategy)
         }
     
     public func scan(implFor node: ImplFor) throws {
@@ -87,7 +93,10 @@ public class ImplForScanner: NSObject {
                 let actualArgumentType = actualMethodType.arguments[0]
                 let expectedArgumentType = expectedMethodType.arguments[0]
                 if actualArgumentType != expectedArgumentType {
-                    let typeChecker = TypeContextTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment)
+                    let typeChecker = TypeContextTypeChecker(
+                        symbols: symbols,
+                        staticStorageFrame: staticStorageFrame,
+                        memoryLayoutStrategy: memoryLayoutStrategy)
                     let genericMutableSelfPointerType = try typeChecker.check(expression: Expression.PointerType(Expression.Identifier(traitType.name)))
                     let concreteMutableSelfPointerType = try typeChecker.check(expression: Expression.PointerType(Expression.Identifier(structType.name)))
                     if expectedArgumentType == genericMutableSelfPointerType {
@@ -161,7 +170,8 @@ public class ImplForScanner: NSObject {
         
         _ = try SnapSubcompilerVarDeclaration(
             symbols: symbols,
-            globalEnvironment: globalEnvironment)
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
         .compile(vtableInstanceDecl)!
     }
 }

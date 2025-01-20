@@ -20,7 +20,14 @@ public class CompilerPassReturn: CompilerPassWithDeclScan {
 
 extension AbstractSyntaxTreeNode {
     /// Compiler pass to lower and erase "return" statements
-    public func returnPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassReturn(globalEnvironment: globalEnvironment).run(self)
+    public func returnPass(
+        staticStorageFrame: Frame = Frame(),
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+    ) throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassReturn(
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy
+        )
+        .run(self)
     }
 }

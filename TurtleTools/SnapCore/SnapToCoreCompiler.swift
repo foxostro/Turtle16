@@ -23,20 +23,21 @@ public class SnapToCoreCompiler: NSObject {
     let runtimeSupport: String?
     let sandboxAccessManager: SandboxAccessManager?
     let injectModules: [(String, String)]
-    let globalEnvironment: GlobalEnvironment
+    let staticStorageFrame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
+    let memoryLayoutStrategy: MemoryLayoutStrategy
     
     public init(shouldRunSpecificTest: String? = nil,
                 injectModules: [(String, String)] = [],
                 isUsingStandardLibrary: Bool = false,
                 runtimeSupport: String? = nil,
                 sandboxAccessManager: SandboxAccessManager? = nil,
-                globalEnvironment: GlobalEnvironment = GlobalEnvironment()) {
+                memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()) {
         self.shouldRunSpecificTest = shouldRunSpecificTest
         self.injectModules = injectModules
         self.isUsingStandardLibrary = isUsingStandardLibrary
         self.runtimeSupport = runtimeSupport
         self.sandboxAccessManager = sandboxAccessManager
-        self.globalEnvironment = globalEnvironment
+        self.memoryLayoutStrategy = memoryLayoutStrategy
     }
     
     public func compile(_ root: AbstractSyntaxTreeNode?) -> Result<Block?, Error> {
@@ -50,25 +51,37 @@ public class SnapToCoreCompiler: NSObject {
                 .reconnect(parent: nil)
                 .desugarTestDeclarations(
                     testNames: &testNames,
-                    globalEnvironment: globalEnvironment,
                     shouldRunSpecificTest: shouldRunSpecificTest)?
                 .importPass(
                     injectModules: injectModules,
                     runtimeSupport: runtimeSupport,
-                    globalEnvironment: globalEnvironment)?
-                .forInPass(globalEnvironment)?
-                .genericsPass(globalEnvironment)?
-                .vtablesPass(globalEnvironment)?
-                .implForPass(globalEnvironment)?
-                .eraseMethodCalls(globalEnvironment)?
-                .synthesizeTerminalReturnStatements(globalEnvironment)?
-                .eraseImplPass(globalEnvironment)?
-                .matchPass(globalEnvironment)?
-                .assertPass(globalEnvironment)?
-                .returnPass(globalEnvironment)?
-                .whilePass(globalEnvironment)?
-                .ifPass(globalEnvironment)?
-                .lowerVarDeclPass(globalEnvironment)?
+                    staticStorageFrame: staticStorageFrame,
+                    memoryLayoutStrategy: memoryLayoutStrategy)?
+                .forInPass()?
+                .genericsPass(staticStorageFrame: staticStorageFrame,
+                              memoryLayoutStrategy: memoryLayoutStrategy)?
+                .vtablesPass(staticStorageFrame: staticStorageFrame,
+                             memoryLayoutStrategy: memoryLayoutStrategy)?
+                .implForPass(staticStorageFrame: staticStorageFrame,
+                             memoryLayoutStrategy: memoryLayoutStrategy)?
+                .eraseMethodCalls(staticStorageFrame: staticStorageFrame,
+                                  memoryLayoutStrategy: memoryLayoutStrategy)?
+                .synthesizeTerminalReturnStatements(staticStorageFrame: staticStorageFrame,
+                                                    memoryLayoutStrategy: memoryLayoutStrategy)?
+                .eraseImplPass(staticStorageFrame: staticStorageFrame,
+                               memoryLayoutStrategy: memoryLayoutStrategy)?
+                .matchPass(staticStorageFrame: staticStorageFrame,
+                           memoryLayoutStrategy: memoryLayoutStrategy)?
+                .assertPass(staticStorageFrame: staticStorageFrame,
+                            memoryLayoutStrategy: memoryLayoutStrategy)?
+                .returnPass(staticStorageFrame: staticStorageFrame,
+                            memoryLayoutStrategy: memoryLayoutStrategy)?
+                .whilePass(staticStorageFrame: staticStorageFrame,
+                           memoryLayoutStrategy: memoryLayoutStrategy)?
+                .ifPass(staticStorageFrame: staticStorageFrame,
+                        memoryLayoutStrategy: memoryLayoutStrategy)?
+                .lowerVarDeclPass(staticStorageFrame: staticStorageFrame,
+                                  memoryLayoutStrategy: memoryLayoutStrategy)?
                 .flatten()
         }
         .flatMap { ast in

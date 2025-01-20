@@ -31,7 +31,7 @@ public class SnapCompilerFrontEnd: NSObject {
     }
     
     let options: Options
-    let globalEnvironment: GlobalEnvironment
+    let memoryLayoutStrategy: MemoryLayoutStrategy
     
     public private(set) var testNames: [String] = []
     public private(set) var syntaxTree: AbstractSyntaxTreeNode! = nil
@@ -40,9 +40,9 @@ public class SnapCompilerFrontEnd: NSObject {
     public var sandboxAccessManager: SandboxAccessManager? = nil
     
     public init(options: Options = Options(),
-                globalEnvironment: GlobalEnvironment) {
+                memoryLayoutStrategy: MemoryLayoutStrategy) {
         self.options = options
-        self.globalEnvironment = globalEnvironment
+        self.memoryLayoutStrategy = memoryLayoutStrategy
     }
     
     public func compile(program text: String,
@@ -83,7 +83,7 @@ public class SnapCompilerFrontEnd: NSObject {
             isUsingStandardLibrary: options.isUsingStandardLibrary,
             runtimeSupport: options.runtimeSupport,
             sandboxAccessManager: sandboxAccessManager,
-            globalEnvironment: globalEnvironment)
+            memoryLayoutStrategy: memoryLayoutStrategy)
         
         return compiler
             .compile(syntaxTree)
@@ -96,8 +96,10 @@ public class SnapCompilerFrontEnd: NSObject {
     
     func compileSnapToTack(_ ast: AbstractSyntaxTreeNode?) -> Result<TackProgram, Error> {
         Result {
+            let staticStorageFrame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
             let tackAst = try CoreToTackCompiler(
-                globalEnvironment: globalEnvironment,
+                staticStorageFrame: staticStorageFrame,
+                memoryLayoutStrategy: memoryLayoutStrategy,
                 options: options)
             .run(ast)
             let tackProgram = try TackFlattener().compile(tackAst ?? Seq())

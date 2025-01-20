@@ -19,9 +19,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     }()
     
     fileprivate func makeCompiler() -> SnapCompilerFrontEnd {
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: memoryLayoutStrategy)
-        let compiler = SnapCompilerFrontEnd(globalEnvironment: globalEnvironment)
-        return compiler
+        SnapCompilerFrontEnd(memoryLayoutStrategy: memoryLayoutStrategy)
     }
     
     fileprivate func compile(program: String) throws -> TackProgram {
@@ -151,9 +149,9 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             shouldRunSpecificTest: options.shouldRunSpecificTest,
             injectedModules: options.injectModules)
         
-        let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: memoryLayoutStrategy)
-        let compiler = SnapCompilerFrontEnd(options: opts2, globalEnvironment: globalEnvironment)
+        let compiler = SnapCompilerFrontEnd(
+            options: opts2,
+            memoryLayoutStrategy: memoryLayoutStrategy)
         
         let result = compiler.compile(program: program)
         let tackProgram: TackProgram
@@ -417,7 +415,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     func testLocalVariablesDoNotSurviveTheLocalScope_ForLoop() {
         let compiler = SnapCompilerFrontEnd(
             options: SnapCompilerFrontEnd.Options(runtimeSupport: kRuntime),
-            globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: memoryLayoutStrategy))
+            memoryLayoutStrategy: memoryLayoutStrategy)
         let result = compiler.compile(program: """
             for i in 0..10 {
                 var a = i
@@ -1903,7 +1901,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         let compiler = SnapCompilerFrontEnd(
             options: SnapCompilerFrontEnd.Options(
                 injectedModules: [ "MyModule" : "" ]),
-            globalEnvironment: GlobalEnvironment())
+            memoryLayoutStrategy: memoryLayoutStrategy)
         let result = compiler.compile(program: """
             import MyModule
             let foo: MyModule = undefined
@@ -1919,7 +1917,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         let compiler = SnapCompilerFrontEnd(
             options: SnapCompilerFrontEnd.Options(
                 injectedModules: [ "MyModule" : "" ]),
-            globalEnvironment: GlobalEnvironment())
+            memoryLayoutStrategy: memoryLayoutStrategy)
         let result = compiler.compile(program: """
             import MyModule
             func foo(bar: MyModule) {
@@ -1936,7 +1934,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         let compiler = SnapCompilerFrontEnd(
             options: SnapCompilerFrontEnd.Options(
                 injectedModules: [ "MyModule" : "" ]),
-            globalEnvironment: GlobalEnvironment())
+            memoryLayoutStrategy: memoryLayoutStrategy)
         let result = compiler.compile(program: """
             import MyModule
             struct Foo {
@@ -1954,7 +1952,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         let compiler = SnapCompilerFrontEnd(
             options: SnapCompilerFrontEnd.Options(
                 injectedModules: [ "MyModule" : "" ]),
-            globalEnvironment: GlobalEnvironment())
+            memoryLayoutStrategy: memoryLayoutStrategy)
         let result = compiler.compile(program: """
             import MyModule
             trait Foo {
@@ -1972,7 +1970,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         let compiler = SnapCompilerFrontEnd(
             options: SnapCompilerFrontEnd.Options(
                 injectedModules: [ "MyModule" : "" ]),
-            globalEnvironment: GlobalEnvironment())
+            memoryLayoutStrategy: memoryLayoutStrategy)
         let result = compiler.compile(program: """
             import MyModule
             typealias Foo = MyModule | u16

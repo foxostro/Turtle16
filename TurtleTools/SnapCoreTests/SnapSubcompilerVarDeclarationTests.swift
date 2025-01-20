@@ -13,8 +13,10 @@ import TurtleCore
 class SnapSubcompilerVarDeclarationTests: XCTestCase {
     func testDeclareVariable_StaticStorage() throws {
         let symbols = SymbolTable()
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
+        let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
+        let compiler = SnapSubcompilerVarDeclaration(
+            symbols: symbols,
+            staticStorageFrame: frame)
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
                                    explicitType: Expression.PrimitiveType(.u8),
                                    expression: nil,
@@ -33,8 +35,7 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
     func testDeclareVariable_AutomaticStorage() throws {
         let symbols = SymbolTable()
         symbols.frameLookupMode = .set(Frame(growthDirection: .down))
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
+        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols)
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
                                    explicitType: Expression.PrimitiveType(.u8),
                                    expression: nil,
@@ -53,8 +54,7 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
     func testConstantRedefinesExistingSymbol() throws {
         let symbols = SymbolTable()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .void))
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
+        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols)
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
                                    explicitType: Expression.PrimitiveType(.u8),
                                    expression: nil,
@@ -69,8 +69,7 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
     func testVariableRedefinesExistingSymbol() throws {
         let symbols = SymbolTable()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .void))
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
+        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols)
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
                                    explicitType: Expression.PrimitiveType(.u8),
                                    expression: nil,
@@ -85,7 +84,7 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
     func testConstantRedefinesExistingType() throws {
         let symbols = SymbolTable()
         symbols.bind(identifier: "foo", symbolType: .bool)
-        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: GlobalEnvironment())
+        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols)
         let input = VarDeclaration(
             identifier: Expression.Identifier("foo"),
             explicitType: Expression.PrimitiveType(.u8),
@@ -101,7 +100,7 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
     func testVariableRedefinesExistingType() throws {
         let symbols = SymbolTable()
         symbols.bind(identifier: "foo", symbolType: .bool)
-        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: GlobalEnvironment())
+        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols)
         let input = VarDeclaration(
             identifier: Expression.Identifier("foo"),
             explicitType: Expression.PrimitiveType(.u8),
@@ -116,8 +115,10 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
     
     func testDeclareVariableWithExpressionAndExplicitType() throws {
         let symbols = SymbolTable()
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
+        let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
+        let compiler = SnapSubcompilerVarDeclaration(
+            symbols: symbols,
+            staticStorageFrame: frame)
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
                                    explicitType: Expression.PrimitiveType(.arithmeticType(.immutableInt(.u8))),
                                    expression: Expression.LiteralInt(0),
@@ -137,8 +138,10 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
     
     func testDeclareVariableWithExpression_compTimeU8_mutableVariable() throws {
         let symbols = SymbolTable()
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
+        let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
+        let compiler = SnapSubcompilerVarDeclaration(
+            symbols: symbols,
+            staticStorageFrame: frame)
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
                                    explicitType: nil,
                                    expression: Expression.LiteralInt(0),
@@ -158,8 +161,10 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
     
     func testDeclareVariableWithExpression_compTimeU8() throws {
         let symbols = SymbolTable()
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
+        let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
+        let compiler = SnapSubcompilerVarDeclaration(
+            symbols: symbols,
+            staticStorageFrame: frame)
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
                                    explicitType: nil,
                                    expression: Expression.LiteralInt(0),
@@ -179,8 +184,10 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
     
     func testDeclareVariableWithExpression_compTimeU16() throws {
         let symbols = SymbolTable()
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
+        let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
+        let compiler = SnapSubcompilerVarDeclaration(
+            symbols: symbols,
+            staticStorageFrame: frame)
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
                                    explicitType: nil,
                                    expression: Expression.LiteralInt(1000),
@@ -200,8 +207,10 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
     
     func testDeclareVariableWithExpression_compTimeBool() throws {
         let symbols = SymbolTable()
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
+        let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
+        let compiler = SnapSubcompilerVarDeclaration(
+            symbols: symbols,
+            staticStorageFrame: frame)
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
                                    explicitType: nil,
                                    expression: Expression.LiteralBool(true),
@@ -223,8 +232,10 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
         let symbols = SymbolTable()
         let typ = StructType(name: "bar", symbols: SymbolTable())
         symbols.bind(identifier: "bar", symbolType: .structType(typ))
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
+        let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
+        let compiler = SnapSubcompilerVarDeclaration(
+            symbols: symbols,
+            staticStorageFrame: frame)
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
                                    explicitType: nil,
                                    expression: Expression.StructInitializer(identifier: Expression.Identifier("bar"), arguments: []),
@@ -244,8 +255,10 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
     
     func testDeclareVariableWithExplicitTypeButNoExpression_immutable() throws {
         let symbols = SymbolTable()
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
+        let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
+        let compiler = SnapSubcompilerVarDeclaration(
+            symbols: symbols,
+            staticStorageFrame: frame)
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
                                    explicitType: Expression.PrimitiveType(.arithmeticType(.immutableInt(.u8))),
                                    expression: nil,
@@ -263,8 +276,10 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
     
     func testDeclareVariableWithExplicitTypeButNoExpression_mutable() throws {
         let symbols = SymbolTable()
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
+        let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
+        let compiler = SnapSubcompilerVarDeclaration(
+            symbols: symbols,
+            staticStorageFrame: frame)
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
                                    explicitType: Expression.PrimitiveType(.u8),
                                    expression: nil,
@@ -282,8 +297,7 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
     
     func testUnableToDeduceTypeOfConstant() throws {
         let symbols = SymbolTable()
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
+        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols)
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
                                    explicitType: nil,
                                    expression: nil,
@@ -297,8 +311,10 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
     
     func testUnableToDeduceTypeOfVariable() throws {
         let symbols = SymbolTable()
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
+        let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
+        let compiler = SnapSubcompilerVarDeclaration(
+            symbols: symbols,
+            staticStorageFrame: frame)
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
                                    explicitType: nil,
                                    expression: nil,
@@ -312,8 +328,10 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
     
     func testDeclareVariableWithExpressionAndExplicitType_literalArray() throws {
         let symbols = SymbolTable()
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
+        let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
+        let compiler = SnapSubcompilerVarDeclaration(
+            symbols: symbols,
+            staticStorageFrame: frame)
         let arrayExpr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u8)), elements: [Expression.LiteralInt(0)])
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
                                    explicitType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u8)),
@@ -334,8 +352,10 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
     
     func testDeclareVariableWithNoExpression() throws {
         let symbols = SymbolTable()
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
+        let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
+        let compiler = SnapSubcompilerVarDeclaration(
+            symbols: symbols,
+            staticStorageFrame: frame)
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
                                    explicitType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u8)),
                                    expression: nil,

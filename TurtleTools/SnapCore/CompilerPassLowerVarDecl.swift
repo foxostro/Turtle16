@@ -10,17 +10,6 @@ import TurtleCore
 
 /// Compiler pass to lower and erase VarDeclaration (e.g., var and let)
 public class CompilerPassLowerVarDecl: CompilerPassWithDeclScan {
-    private var rvalueContext: RvalueExpressionTypeChecker {
-        RvalueExpressionTypeChecker(
-            symbols: symbols!,
-            globalEnvironment: globalEnvironment)
-    }
-    
-    private var typeContext: RvalueExpressionTypeChecker {
-        TypeContextTypeChecker(
-            symbols: symbols!,
-            globalEnvironment: globalEnvironment)
-    }
     
     /// Replace each VarDeclaration with 1) a VarDeclaration that has no
     /// expression and simply updates the symbol table, and 2) an assignment if
@@ -41,8 +30,9 @@ public class CompilerPassLowerVarDecl: CompilerPassWithDeclScan {
         
         let assignmentExpr = try SnapSubcompilerVarDeclaration(
             symbols: symbols!,
-            globalEnvironment: globalEnvironment)
-            .compile(node1)
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
+        .compile(node1)
         
         if let assignmentExpr {
             _ = try rvalueContext.check(assignment: assignmentExpr)
@@ -110,7 +100,13 @@ public class CompilerPassLowerVarDecl: CompilerPassWithDeclScan {
 
 extension AbstractSyntaxTreeNode {
     /// Compiler pass to lower and erase VarDeclaration (e.g., var and let)
-    public func lowerVarDeclPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassLowerVarDecl(globalEnvironment: globalEnvironment).run(self)
+    public func lowerVarDeclPass(
+        staticStorageFrame: Frame = Frame(),
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+    ) throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassLowerVarDecl(
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
+        .run(self)
     }
 }

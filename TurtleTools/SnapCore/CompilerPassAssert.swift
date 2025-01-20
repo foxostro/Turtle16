@@ -19,7 +19,13 @@ public class CompilerPassAssert: CompilerPassWithDeclScan {
 
 extension AbstractSyntaxTreeNode {
     /// Compiler pass to lower and erase "assert" statements
-    public func assertPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassAssert(globalEnvironment: globalEnvironment).run(self)
+    public func assertPass(
+        staticStorageFrame: Frame = Frame(),
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+    ) throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassAssert(
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
+        .run(self)
     }
 }

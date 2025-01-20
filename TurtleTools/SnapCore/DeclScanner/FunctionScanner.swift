@@ -11,20 +11,18 @@ import TurtleCore
 
 /// Scans a function declaration and binds the function symbol in the environment
 public class FunctionScanner: NSObject {
-    public let globalEnvironment: GlobalEnvironment
     public let symbols: SymbolTable
-    public let enclosingImplId: AbstractSyntaxTreeNode.ID?
     
-    private var memoryLayoutStrategy: MemoryLayoutStrategy {
-        globalEnvironment.memoryLayoutStrategy
-    }
+    private let staticStorageFrame: Frame
+    private let memoryLayoutStrategy: MemoryLayoutStrategy
+    private let enclosingImplId: AbstractSyntaxTreeNode.ID?
     
-    public init(
-        globalEnvironment: GlobalEnvironment = GlobalEnvironment(),
-        symbols: SymbolTable = SymbolTable(),
-        enclosingImplId: AbstractSyntaxTreeNode.ID? = nil) {
-
-        self.globalEnvironment = globalEnvironment
+    public init(staticStorageFrame: Frame = Frame(),
+                memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16(),
+                symbols: SymbolTable = SymbolTable(),
+                enclosingImplId: AbstractSyntaxTreeNode.ID? = nil) {
+        self.staticStorageFrame = staticStorageFrame
+        self.memoryLayoutStrategy = memoryLayoutStrategy
         self.symbols = symbols
         self.enclosingImplId = enclosingImplId
     }
@@ -97,7 +95,7 @@ public class FunctionScanner: NSObject {
             .check(expression: node0.functionType)
         let functionType = symbolType.unwrapFunctionType()
         
-        guard try symbolType.hasModule(symbols, globalEnvironment) == false else {
+        guard try symbolType.hasModule(symbols) == false else {
             throw CompilerError(
                 sourceAnchor: node0.identifier.sourceAnchor,
                 message: "invalid use of module type")

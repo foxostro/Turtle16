@@ -10,15 +10,18 @@ import TurtleCore
 
 /// Scans a trait declaration and binds the trait type in the environment
 public class TraitScanner: NSObject {
-    public let globalEnvironment: GlobalEnvironment
     public let symbols: SymbolTable
     
-    private var memoryLayoutStrategy: MemoryLayoutStrategy {
-        globalEnvironment.memoryLayoutStrategy
-    }
+    private let staticStorageFrame: Frame
+    private let memoryLayoutStrategy: MemoryLayoutStrategy
     
-    public init(globalEnvironment: GlobalEnvironment = GlobalEnvironment(), symbols: SymbolTable = SymbolTable()) {
-        self.globalEnvironment = globalEnvironment
+    public init(
+        staticStorageFrame: Frame = Frame(),
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16(),
+        symbols: SymbolTable = SymbolTable()
+    ) {
+        self.staticStorageFrame = staticStorageFrame
+        self.memoryLayoutStrategy = memoryLayoutStrategy
         self.symbols = symbols
     }
     
@@ -73,7 +76,7 @@ public class TraitScanner: NSObject {
         members.frameLookupMode = .set(frame)
         for memberDeclaration in node1.members {
             let memberType = try typeChecker.check(expression: memberDeclaration.memberType)
-            guard try memberType.hasModule(symbols, globalEnvironment) == false else {
+            guard try memberType.hasModule(symbols) == false else {
                 throw CompilerError(
                     sourceAnchor: memberDeclaration.memberType.sourceAnchor,
                     message: "invalid use of module type")
@@ -88,7 +91,7 @@ public class TraitScanner: NSObject {
         
         // Check whether any type parameters incorrectly reference a module type
         for typ in evaluatedTypeArguments {
-            guard try typ.hasModule(symbols, globalEnvironment) == false else {
+            guard try typ.hasModule(symbols) == false else {
                 throw CompilerError(
                     sourceAnchor: node0.typeArguments
                         .map(\.sourceAnchor)
@@ -100,7 +103,7 @@ public class TraitScanner: NSObject {
         }
         
         // Catch all in case we missed something above
-        guard try traitType.hasModule(symbols, globalEnvironment) == false else {
+        guard try traitType.hasModule(symbols) == false else {
             throw CompilerError(
                 sourceAnchor: node0.identifier.sourceAnchor,
                 message: "invalid use of module type")
@@ -118,15 +121,16 @@ public class TraitScanner: NSObject {
     private func scan(decls: TraitObjectDeclarationsBuilder.Declarations) throws {
         try SnapSubcompilerStructDeclaration(
             symbols: symbols,
-            globalEnvironment: globalEnvironment)
+            memoryLayoutStrategy: memoryLayoutStrategy)
         .compile(decls.vtableDecl)
         try SnapSubcompilerStructDeclaration(
             symbols: symbols,
-            globalEnvironment: globalEnvironment)
+            memoryLayoutStrategy: memoryLayoutStrategy)
         .compile(decls.traitObjectDecl)
         if let traitObjectImpl = decls.traitObjectImpl {
             try ImplScanner(
-                globalEnvironment: globalEnvironment,
+                staticStorageFrame: staticStorageFrame,
+                memoryLayoutStrategy: memoryLayoutStrategy,
                 symbols: symbols)
             .scan(impl: traitObjectImpl)
         }
@@ -142,6 +146,9 @@ public class TraitScanner: NSObject {
     }
     
     private func typeChecker(symbols: SymbolTable) -> TypeContextTypeChecker {
-        TypeContextTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment)
+        TypeContextTypeChecker(
+            symbols: symbols,
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
     }
 }

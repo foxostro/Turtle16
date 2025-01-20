@@ -285,14 +285,16 @@ class LvalueExpressionTypeCheckerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .genericFunction(genericFunctionType)))
         ])
-        let typeChecker = LvalueExpressionTypeChecker(symbols: symbols, globalEnvironment: GlobalEnvironment())
-        let expr = Expression.GenericTypeApplication(identifier: Expression.Identifier("foo"),
-                                                     arguments: [Expression.PrimitiveType(.constU16)])
-        let expected = SymbolType.function(FunctionType(name: "foo[const u16]",
-                                                        mangledName: "foo[const u16]",
-                                                        returnType: .constU16,
-                                                        arguments: [.constU16],
-                                                        ast: nil))
+        let typeChecker = LvalueExpressionTypeChecker(symbols: symbols)
+        let expr = Expression.GenericTypeApplication(
+            identifier: Expression.Identifier("foo"),
+            arguments: [Expression.PrimitiveType(.constU16)])
+        let expected = SymbolType.function(FunctionType(
+            name: "foo[const u16]",
+            mangledName: "foo[const u16]",
+            returnType: .constU16,
+            arguments: [.constU16],
+            ast: nil))
         let actual = try typeChecker.check(expression: expr)
         XCTAssertEqual(actual, expected)
     }

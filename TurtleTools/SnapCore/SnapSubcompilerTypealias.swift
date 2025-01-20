@@ -29,7 +29,7 @@ public class SnapSubcompilerTypealias: NSObject {
         }
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         let symbolType = try typeChecker.check(expression: node.rexpr)
-        guard try symbolType.hasModule(symbols, GlobalEnvironment()) == false else {
+        guard try symbolType.hasModule(symbols) == false else {
             throw CompilerError(
                 sourceAnchor: node.rexpr.sourceAnchor,
                 message: "invalid use of module type")

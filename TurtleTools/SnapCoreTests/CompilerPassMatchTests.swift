@@ -17,7 +17,7 @@ final class CompilerPassMatchTests: XCTestCase {
         ])
         let input = Match(expr: Expression.Identifier("foo"), clauses: [], elseClause: nil)
         
-        let compiler = CompilerPassMatch(symbols: symbols, globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL()))
+        let compiler = CompilerPassMatch(symbols: symbols)
         XCTAssertThrowsError(try compiler.run(input)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -39,7 +39,7 @@ final class CompilerPassMatchTests: XCTestCase {
             ])
         ])
         
-        let compiler = CompilerPassMatch(symbols: symbols, globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL()))
+        let compiler = CompilerPassMatch(symbols: symbols)
         let output = try compiler.run(input)
         XCTAssertEqual(output, expected)
     }
@@ -56,7 +56,7 @@ final class CompilerPassMatchTests: XCTestCase {
                          valueType: Expression.PrimitiveType(.bool),
                          block: Block(children: []))
         ], elseClause: nil)
-        let compiler = CompilerPassMatch(symbols: symbols, globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL()))
+        let compiler = CompilerPassMatch(symbols: symbols)
         XCTAssertThrowsError(try compiler.run(input)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -82,7 +82,7 @@ final class CompilerPassMatchTests: XCTestCase {
                          block: Block(children: []))
         ], elseClause: nil)
             .reconnect(parent: symbols)
-        let compiler = CompilerPassMatch(symbols: symbols, globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL()))
+        let compiler = CompilerPassMatch(symbols: symbols)
         XCTAssertThrowsError(try compiler.run(input)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -121,7 +121,7 @@ final class CompilerPassMatchTests: XCTestCase {
                 ])
             ])),
         ])
-        let compiler = CompilerPassMatch(symbols: symbols, globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL()))
+        let compiler = CompilerPassMatch(symbols: symbols)
         let output = try compiler.run(input)
         XCTAssertEqual(output, expected)
     }
@@ -138,7 +138,7 @@ final class CompilerPassMatchTests: XCTestCase {
                             Expression.Assignment(lexpr: Expression.Identifier("result"), rexpr: Expression.LiteralInt(1))
                         ]))
         ], elseClause: nil)
-        let compiler = CompilerPassMatch(symbols: symbols, globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL()))
+        let compiler = CompilerPassMatch(symbols: symbols)
         XCTAssertThrowsError(try compiler.run(input)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -194,7 +194,7 @@ final class CompilerPassMatchTests: XCTestCase {
                       ]))
             )
         ])
-        let compiler = CompilerPassMatch(symbols: symbols, globalEnvironment: GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL()))
+        let compiler = CompilerPassMatch(symbols: symbols)
         let output = try compiler.run(input)
         XCTAssertEqual(output, expected)
     }

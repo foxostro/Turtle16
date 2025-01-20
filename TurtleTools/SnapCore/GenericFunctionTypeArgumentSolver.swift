@@ -31,7 +31,7 @@ public class GenericFunctionTypeArgumentSolver: NSObject {
             }
         }
         
-        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        let typeChecker = RvalueExpressionTypeChecker(symbols)
         
         let result = try generic.typeArguments.map { typeArgument in
             guard let subst = substitutions[typeArgument] else {
@@ -113,7 +113,8 @@ public class GenericFunctionTypeArgumentSolver: NSObject {
     }
     
     fileprivate func failedToInferError(_ expr: Expression.Call, _ generic: Expression.GenericFunctionType) -> CompilerError {
-        return CompilerError(sourceAnchor: expr.sourceAnchor,
-                             message: "failed to infer the type arguments of the generic function `\(generic.description)' in a call expression")
+        CompilerError(
+            sourceAnchor: expr.sourceAnchor,
+            message: "failed to infer the type arguments of the generic function `\(generic.description)' in a call expression")
     }
 }

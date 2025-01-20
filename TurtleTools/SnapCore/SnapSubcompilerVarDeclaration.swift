@@ -9,12 +9,16 @@
 import TurtleCore
 
 public class SnapSubcompilerVarDeclaration: NSObject {
-    public let symbols: SymbolTable
-    public let globalEnvironment: GlobalEnvironment
+    private let symbols: SymbolTable
+    private let staticStorageFrame: Frame
+    private let memoryLayoutStrategy: MemoryLayoutStrategy
     
-    public init(symbols: SymbolTable, globalEnvironment: GlobalEnvironment) {
+    public init(symbols: SymbolTable,
+                staticStorageFrame: Frame = Frame(),
+                memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()) {
         self.symbols = symbols
-        self.globalEnvironment = globalEnvironment
+        self.staticStorageFrame = staticStorageFrame
+        self.memoryLayoutStrategy = memoryLayoutStrategy
     }
     
     public func compile(_ node: VarDeclaration) throws -> Expression.InitialAssignment? {
@@ -43,7 +47,8 @@ public class SnapSubcompilerVarDeclaration: NSObject {
         if let explicitTypeExpr = node.explicitType {
             explicitType = try TypeContextTypeChecker(
                 symbols: symbols,
-                globalEnvironment: globalEnvironment)
+                staticStorageFrame: staticStorageFrame,
+                memoryLayoutStrategy: memoryLayoutStrategy)
                 .check(expression: explicitTypeExpr)
         } else {
             explicitType = nil
@@ -54,7 +59,8 @@ public class SnapSubcompilerVarDeclaration: NSObject {
             // symbol type in cases where the explicit type is not specified.
             let expressionResultType = try RvalueExpressionTypeChecker(
                 symbols: symbols,
-                globalEnvironment: globalEnvironment)
+                staticStorageFrame: staticStorageFrame,
+                memoryLayoutStrategy: memoryLayoutStrategy)
                 .check(expression: varDeclExpr)
 
             // An explicit array type does not specify the number of array elements.
@@ -125,7 +131,7 @@ public class SnapSubcompilerVarDeclaration: NSObject {
         visibility: SymbolVisibility
     ) throws -> Symbol {
         
-        guard try explicitType.hasModule(symbols, globalEnvironment) == false else {
+        guard try explicitType.hasModule(symbols) == false else {
             throw CompilerError(
                 sourceAnchor: sourceAnchor,
                 message: "invalid use of module type")
@@ -137,10 +143,10 @@ public class SnapSubcompilerVarDeclaration: NSObject {
     }
 
     func bumpStoragePointer(_ symbolType: SymbolType, _ storage: SymbolStorage) -> Int {
-        let size = globalEnvironment.memoryLayoutStrategy.sizeof(type: symbolType)
+        let size = memoryLayoutStrategy.sizeof(type: symbolType)
         let frame = switch storage {
         case .staticStorage:
-            globalEnvironment.staticStorageFrame
+            staticStorageFrame
             
         case .automaticStorage:
             symbols.frame!
@@ -152,7 +158,7 @@ public class SnapSubcompilerVarDeclaration: NSObject {
     func attachToFrame(identifier: String, symbol: Symbol) {
         let frame = switch symbol.storage {
         case .staticStorage:
-            globalEnvironment.staticStorageFrame
+            staticStorageFrame
             
         case .automaticStorage:
             symbols.frame!

@@ -45,7 +45,6 @@ final class SnapToCoreCompilerTests: XCTestCase {
     }
     
     func testRvalue_convert_pointer_to_trait() throws {
-        let globalEnvironment = GlobalEnvironment()
         let symbols = SymbolTable()
 
         let ast0 = Block(symbols: symbols, children: [
@@ -137,7 +136,7 @@ final class SnapToCoreCompilerTests: XCTestCase {
         ])
             .reconnect(parent: nil)
         
-        let actual = try SnapToCoreCompiler(globalEnvironment: globalEnvironment)
+        let actual = try SnapToCoreCompiler()
             .compile(ast0)
             .get()
         

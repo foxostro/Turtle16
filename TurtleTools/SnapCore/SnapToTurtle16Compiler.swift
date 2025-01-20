@@ -14,7 +14,7 @@ public class SnapToTurtle16Compiler: NSObject {
     public typealias Options = SnapCompilerFrontEnd.Options
     
     public let options: Options
-    public let globalEnvironment: GlobalEnvironment
+    public let memoryLayoutStrategy: MemoryLayoutStrategy
     
     public private(set) var testNames: [String] = []
     public private(set) var symbolsOfTopLevelScope: SymbolTable? = nil
@@ -31,20 +31,20 @@ public class SnapToTurtle16Compiler: NSObject {
     public init(options: Options = Options(),
                 memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()) {
         self.options = options
-        self.globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: memoryLayoutStrategy)
+        self.memoryLayoutStrategy = memoryLayoutStrategy
     }
     
     public func compile(program text: String, base: Int = 0, url: URL? = nil) {
         instructions = []
         errors = []
         
-        let frontEnd = SnapCompilerFrontEnd(options: options, globalEnvironment: globalEnvironment)
+        let frontEnd = SnapCompilerFrontEnd(options: options, memoryLayoutStrategy: memoryLayoutStrategy)
         tack = frontEnd.compile(program: text, base: base, url: url)
         testNames = frontEnd.testNames
         syntaxTree = frontEnd.syntaxTree
         symbolsOfTopLevelScope = frontEnd.symbolsOfTopLevelScope
         
-        let backEnd = SnapCompilerBackEndTurtle16(globalEnvironment: globalEnvironment)
+        let backEnd = SnapCompilerBackEndTurtle16()
         let result = tack.flatMap { backEnd.compile(tackProgram: $0) }
         assembly = backEnd.assembly
         

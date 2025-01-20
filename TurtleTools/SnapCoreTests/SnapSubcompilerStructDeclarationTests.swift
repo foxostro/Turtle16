@@ -11,9 +11,12 @@ import SnapCore
 import TurtleCore
 
 class SnapSubcompilerStructDeclarationTests: XCTestCase {
+    fileprivate let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+    
     fileprivate func makeCompiler(_ symbols: SymbolTable) -> SnapSubcompilerStructDeclaration {
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
-        return SnapSubcompilerStructDeclaration(symbols: symbols, globalEnvironment: globalEnvironment)
+        SnapSubcompilerStructDeclaration(
+            symbols: symbols,
+            memoryLayoutStrategy: memoryLayoutStrategy)
     }
     
     func testStructDeclarationMayNotRedefineExistingSymbol() throws {

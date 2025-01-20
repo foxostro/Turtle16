@@ -14,11 +14,8 @@ public class SnapASTTransformerTestDeclaration: CompilerPass {
     var currentTest: TestDeclaration? = nil
     var depth = 0
     let shouldRunSpecificTest: String?
-    let globalEnvironment: GlobalEnvironment
     
-    public init(globalEnvironment: GlobalEnvironment,
-                shouldRunSpecificTest: String? = nil) {
-        self.globalEnvironment = globalEnvironment
+    public init(shouldRunSpecificTest: String? = nil) {
         self.shouldRunSpecificTest = shouldRunSpecificTest
     }
     
@@ -107,12 +104,9 @@ extension AbstractSyntaxTreeNode {
     /// Erase test declarations and replace with a synthesized test runner.
     public func desugarTestDeclarations(
         testNames: inout [String],
-        globalEnvironment: GlobalEnvironment,
-        shouldRunSpecificTest: String?) throws -> AbstractSyntaxTreeNode? {
-        
-        let compiler = SnapASTTransformerTestDeclaration(
-            globalEnvironment: globalEnvironment,
-            shouldRunSpecificTest: shouldRunSpecificTest)
+        shouldRunSpecificTest: String?
+    ) throws -> AbstractSyntaxTreeNode? {
+        let compiler = SnapASTTransformerTestDeclaration(shouldRunSpecificTest: shouldRunSpecificTest)
         let result = try compiler.run(self)
         testNames = compiler.testNames
         return result

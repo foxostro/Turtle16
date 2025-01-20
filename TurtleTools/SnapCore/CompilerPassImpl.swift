@@ -14,7 +14,8 @@ public class CompilerPassImpl: CompilerPassWithDeclScan {
     var typeChecker: RvalueExpressionTypeChecker {
         RvalueExpressionTypeChecker(
             symbols: symbols!,
-            globalEnvironment: globalEnvironment)
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
     }
     
     public override func visit(impl node0: Impl) throws -> AbstractSyntaxTreeNode? {
@@ -37,7 +38,8 @@ public class CompilerPassImpl: CompilerPassWithDeclScan {
         try children2
             .forEach { child in
                 try FunctionScanner(
-                    globalEnvironment: globalEnvironment,
+                    staticStorageFrame: staticStorageFrame,
+                    memoryLayoutStrategy: memoryLayoutStrategy,
                     symbols: symbols!,
                     enclosingImplId: nil)
                 .scan(func: child)
@@ -69,8 +71,13 @@ public class CompilerPassImpl: CompilerPassWithDeclScan {
 
 extension AbstractSyntaxTreeNode {
     /// Compiler pass to lower and erase Impl blocks
-    public func eraseImplPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        let result = try CompilerPassImpl(globalEnvironment: globalEnvironment).run(self)
-        return result
+    public func eraseImplPass(
+        staticStorageFrame: Frame = Frame(),
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+    ) throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassImpl(
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
+        .run(self)
     }
 }

@@ -17,9 +17,7 @@ final class CompilerPassImportTests: XCTestCase {
                 Import(moduleName: "")
             ])
         let compiler = CompilerPassImport(
-            symbols: nil,
             injectModules: [],
-            globalEnvironment: GlobalEnvironment(),
             runtimeSupport: nil)
         XCTAssertThrowsError(try compiler.run(input)) {
             let compilerError = $0 as? CompilerError
@@ -29,9 +27,7 @@ final class CompilerPassImportTests: XCTestCase {
     
     func testNoSuchModule() throws {
         let compiler = CompilerPassImport(
-            symbols: nil,
             injectModules: [],
-            globalEnvironment: GlobalEnvironment(),
             runtimeSupport: nil)
         let input = Import(moduleName: "fake")
         XCTAssertThrowsError(try compiler.run(input)) {
@@ -46,9 +42,7 @@ final class CompilerPassImportTests: XCTestCase {
             Import(moduleName: "Foo")
         ])
         let compiler = CompilerPassImport(
-            symbols: nil,
             injectModules: [("Foo", "")],
-            globalEnvironment: GlobalEnvironment(),
             runtimeSupport: nil)
         let input = Block(
             children: [
@@ -61,7 +55,7 @@ final class CompilerPassImportTests: XCTestCase {
     
     func testImportFromBundleResource() throws {
         let symbols = SymbolTable()
-        let compiler = CompilerPassImport(globalEnvironment: GlobalEnvironment())
+        let compiler = CompilerPassImport()
         let input = Block(
             symbols: symbols,
             children: [
@@ -98,9 +92,7 @@ final class CompilerPassImportTests: XCTestCase {
             Import(moduleName: "Foo")
         ])
         let compiler = CompilerPassImport(
-            symbols: nil,
             injectModules: [("Foo", "")],
-            globalEnvironment: GlobalEnvironment(),
             runtimeSupport: nil)
         let input = Block(
             children: [
@@ -121,12 +113,10 @@ final class CompilerPassImportTests: XCTestCase {
             Import(moduleName: "Foo")
         ])
         let compiler = CompilerPassImport(
-            symbols: nil,
             injectModules: [
                 ("Foo", "import Bar\n"),
                 ("Bar", "")
             ],
-            globalEnvironment: GlobalEnvironment(),
             runtimeSupport: nil)
         let input = Block(
             children: [

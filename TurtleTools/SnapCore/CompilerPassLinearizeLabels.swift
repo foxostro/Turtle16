@@ -80,7 +80,8 @@ fileprivate extension AbstractSyntaxTreeNode {
     func rewriteLabels(
         from targets: [String],
         to replacements: [String],
-        globalEnvironment: GlobalEnvironment
+        staticStorageFrame: Frame,
+        memoryLayoutStrategy: MemoryLayoutStrategy
     ) throws -> AbstractSyntaxTreeNode? {
         guard targets != replacements else { return self }
         let result = try CompilerPassRewriteLabel(
@@ -95,7 +96,8 @@ extension AbstractSyntaxTreeNode {
     /// Rewrite labels to avoid collisions with names in the specified symbol table
     public func linearizeLabels(
         relativeTo symbols: SymbolTable,
-        globalEnvironment: GlobalEnvironment
+        staticStorageFrame: Frame,
+        memoryLayoutStrategy: MemoryLayoutStrategy
     ) throws -> AbstractSyntaxTreeNode? {
         let from = LabelCollector.collectLabels(self)
         guard !from.isEmpty else { return self }
@@ -103,7 +105,8 @@ extension AbstractSyntaxTreeNode {
         let result = try rewriteLabels(
             from: from,
             to: to,
-            globalEnvironment: globalEnvironment)
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
         return result
     }
 }
@@ -115,11 +118,13 @@ extension Block {
     /// enclosing Block.
     func eraseBlock(
         relativeTo symbols: SymbolTable,
-        globalEnvironment: GlobalEnvironment
+        staticStorageFrame: Frame = Frame(),
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
     ) throws -> Seq {
         let block1 = try linearizeLabels(
             relativeTo: symbols,
-            globalEnvironment: globalEnvironment) as! Block
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy) as! Block
         let seq = Seq(
             sourceAnchor: block1.sourceAnchor,
             children: block1.children)

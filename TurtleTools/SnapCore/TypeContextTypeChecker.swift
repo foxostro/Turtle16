@@ -9,6 +9,6 @@
 // Evaluates the expression type in a Type context.
 public class TypeContextTypeChecker: RvalueExpressionTypeChecker {
     public override func check(identifier expr: Expression.Identifier) throws -> SymbolType {
-        return try symbols.resolveType(sourceAnchor: expr.sourceAnchor, identifier: expr.identifier)
+        try symbols.resolveType(sourceAnchor: expr.sourceAnchor, identifier: expr.identifier)
     }
 }

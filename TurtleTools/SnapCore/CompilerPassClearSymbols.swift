@@ -25,13 +25,9 @@ public class CompilerPassClearSymbols: CompilerPass {
 
 extension AbstractSyntaxTreeNode {
     /// Clear all symbols from the AST and reconnect all symbol tables, lexically
-    public func clearSymbols(_ globalEnvironment: GlobalEnvironment? = nil) throws -> AbstractSyntaxTreeNode? {
+    public func clearSymbols(_ staticStorageFrame: Frame? = nil) throws -> AbstractSyntaxTreeNode? {
         let result = try CompilerPassClearSymbols().run(self)
-        
-        if let globalEnvironment {
-            globalEnvironment.staticStorageFrame.reset()
-        }
-        
+        staticStorageFrame?.reset()
         return result
     }
 }

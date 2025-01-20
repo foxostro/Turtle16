@@ -12,20 +12,34 @@ import TurtleCore
 // Throws a compiler error when the result type cannot be determined, e.g., due
 // to a type error in the expression.
 public class RvalueExpressionTypeChecker: NSObject {
-    public let symbols: SymbolTable
-    public let globalEnvironment: GlobalEnvironment!
+    let symbols: SymbolTable
+    private let staticStorageFrame: Frame
+    private let memoryLayoutStrategy: MemoryLayoutStrategy
     
-    public init(symbols: SymbolTable = SymbolTable(), globalEnvironment: GlobalEnvironment? = nil) {
+    public convenience init(_ symbols: SymbolTable) {
+        self.init(symbols: symbols)
+    }
+    
+    public init(symbols: SymbolTable = SymbolTable(),
+                staticStorageFrame: Frame = Frame(),
+                memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()) {
         self.symbols = symbols
-        self.globalEnvironment = globalEnvironment
+        self.staticStorageFrame = staticStorageFrame
+        self.memoryLayoutStrategy = memoryLayoutStrategy
     }
         
     func rvalueContext() -> RvalueExpressionTypeChecker {
-        return RvalueExpressionTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment)
+        RvalueExpressionTypeChecker(
+            symbols: symbols,
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
     }
         
     func lvalueContext() -> LvalueExpressionTypeChecker {
-        return LvalueExpressionTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment)
+        LvalueExpressionTypeChecker(
+            symbols: symbols,
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
     }
     
     @discardableResult public func check(expression: Expression) throws -> SymbolType {
@@ -94,7 +108,7 @@ public class RvalueExpressionTypeChecker: NSObject {
     }
     
     public func check(literalInt expr: Expression.LiteralInt) -> SymbolType {
-        return .arithmeticType(.compTimeInt(expr.value))
+        .arithmeticType(.compTimeInt(expr.value))
     }
         
     public func check(unary: Expression.Unary) throws -> SymbolType {
@@ -1100,7 +1114,10 @@ public class RvalueExpressionTypeChecker: NSObject {
             evaluatedTypeArguments.append(typeArgument)
             replacementMap[typeVariable.identifier] = Expression.PrimitiveType(typeArgument)
         }
-        let inner = RvalueExpressionTypeChecker(symbols: symbolsWithTypeArguments)
+        let inner = RvalueExpressionTypeChecker(
+            symbols: symbolsWithTypeArguments,
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
         
         // Evaluate the function type template using the above symbols to get
         // the concrete function type result.
@@ -1114,9 +1131,8 @@ public class RvalueExpressionTypeChecker: NSObject {
                                         arguments: arguments,
                                         ast: template3)
         
-        try SnapSubcompilerFunctionDeclaration()
-            .instantiate(memoryLayoutStrategy: globalEnvironment.memoryLayoutStrategy,
-                         functionType: functionType,
+        try SnapSubcompilerFunctionDeclaration(memoryLayoutStrategy: memoryLayoutStrategy)
+            .instantiate(functionType: functionType,
                          functionDeclaration: template3)
         
         let ast0 = functionType.ast!
@@ -1149,8 +1165,9 @@ public class RvalueExpressionTypeChecker: NSObject {
         }
         
         // Bind the concrete struct type
-        let subcompiler = SnapSubcompilerStructDeclaration(symbols: symbolsWithTypeArguments,
-                                                           globalEnvironment: globalEnvironment)
+        let subcompiler = SnapSubcompilerStructDeclaration(
+            symbols: symbolsWithTypeArguments,
+            memoryLayoutStrategy: memoryLayoutStrategy)
         let template = genericStructType.template.eraseTypeArguments()
         let concreteType = try subcompiler.compile(template, evaluatedTypeArguments)
         genericStructType.instantiations[evaluatedTypeArguments] = concreteType // memoize
@@ -1158,7 +1175,8 @@ public class RvalueExpressionTypeChecker: NSObject {
         // Apply the deferred impl nodes now.
         for implNode in genericStructType.implNodes.map({ $0.eraseTypeArguments() }) {
             try ImplScanner(
-                globalEnvironment: globalEnvironment,
+                staticStorageFrame: staticStorageFrame,
+                memoryLayoutStrategy: memoryLayoutStrategy,
                 symbols: symbolsWithTypeArguments)
             .scan(impl: implNode.clone())
         }
@@ -1167,7 +1185,8 @@ public class RvalueExpressionTypeChecker: NSObject {
         for node0 in genericStructType.implForNodes {
             let node1 = node0.eraseTypeArguments().clone()
             try ImplForScanner(
-                globalEnvironment: globalEnvironment,
+                staticStorageFrame: staticStorageFrame,
+                memoryLayoutStrategy: memoryLayoutStrategy,
                 symbols: symbolsWithTypeArguments)
             .scan(implFor: node1)
         }
@@ -1225,7 +1244,8 @@ public class RvalueExpressionTypeChecker: NSObject {
         // TODO: We need an overhaul of name mangling in general. Name mangling functions should be moved to a new object such as a struct `NameMangler` or something like that. Also, the mangling scheme should be changed so there is no possibility of name collisions with identifiers written by the programmer.
         let mangledName = TypeContextTypeChecker(
             symbols: symbols,
-            globalEnvironment: globalEnvironment)
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
         .mangleTraitName(
             node0.name,
             evaluatedTypeArguments: evaluatedTypeArguments)!
@@ -1248,7 +1268,10 @@ public class RvalueExpressionTypeChecker: NSObject {
         
         let mangledName = traitDecl.mangledName
         let members = SymbolTable(parent: symbols)
-        let typeChecker = TypeContextTypeChecker(symbols: members, globalEnvironment: globalEnvironment)
+        let typeChecker = TypeContextTypeChecker(
+            symbols: members,
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
         let fullyQualifiedTraitType = TraitType(
             name: mangledName,
             nameOfTraitObjectType: traitDecl.nameOfTraitObjectType,
@@ -1268,9 +1291,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         members.frameLookupMode = .set(frame)
         for memberDeclaration in traitDecl.members {
             let memberType = try typeChecker.check(expression: memberDeclaration.memberType)
-            let sizeOfMemberType = globalEnvironment
-                .memoryLayoutStrategy
-                .sizeof(type: memberType)
+            let sizeOfMemberType = memoryLayoutStrategy.sizeof(type: memberType)
             let offset = frame.allocate(size: sizeOfMemberType)
             let symbol = Symbol(type: memberType, offset: offset, storage: .automaticStorage)
             members.bind(identifier: memberDeclaration.name, symbol: symbol)
@@ -1299,7 +1320,8 @@ public class RvalueExpressionTypeChecker: NSObject {
                                            isConst: true)
         _ = try SnapSubcompilerStructDeclaration(
             symbols: symbols,
-            globalEnvironment: globalEnvironment).compile(structDecl)
+            memoryLayoutStrategy: memoryLayoutStrategy)
+        .compile(structDecl)
     }
     
     private func declareTraitObjectType(
@@ -1318,7 +1340,7 @@ public class RvalueExpressionTypeChecker: NSObject {
             isConst: false) // TODO: Should isConst be true here?
         _ = try SnapSubcompilerStructDeclaration(
             symbols: symbols,
-            globalEnvironment: globalEnvironment)
+            memoryLayoutStrategy: memoryLayoutStrategy)
         .compile(structDecl)
     }
     
@@ -1364,7 +1386,8 @@ public class RvalueExpressionTypeChecker: NSObject {
             structTypeExpr: Expression.Identifier(traitDecl.nameOfTraitObjectType),
             children: thunks)
         try ImplScanner(
-            globalEnvironment: globalEnvironment,
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy,
             symbols: symbols)
         .scan(impl: implBlock)
     }

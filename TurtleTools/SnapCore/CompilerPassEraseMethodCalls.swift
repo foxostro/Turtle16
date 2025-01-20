@@ -13,7 +13,8 @@ public class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
     var typeChecker: RvalueExpressionTypeChecker {
         RvalueExpressionTypeChecker(
             symbols: symbols!,
-            globalEnvironment: globalEnvironment)
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
     }
     
     public override func visit(get node0: Expression.Get) throws -> Expression? {
@@ -96,8 +97,13 @@ public class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
 
 extension AbstractSyntaxTreeNode {
     /// Method calls written in the dot syntax are rewritten to plain function calls
-    public func eraseMethodCalls(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        let result = try CompilerPassEraseMethodCalls(globalEnvironment: globalEnvironment).run(self)
-        return result
+    public func eraseMethodCalls(
+        staticStorageFrame: Frame = Frame(),
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+    ) throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassEraseMethodCalls(
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
+        .run(self)
     }
 }

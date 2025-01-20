@@ -10,13 +10,13 @@ import TurtleCore
 
 // TODO: Rename SnapSubcompilerStructDeclaration to StructScanner
 public class SnapSubcompilerStructDeclaration: NSObject {
-    public let symbols: SymbolTable
-    public let globalEnvironment: GlobalEnvironment
+    private let symbols: SymbolTable
+    private let memoryLayoutStrategy: MemoryLayoutStrategy
     
     public init(symbols: SymbolTable,
-                globalEnvironment: GlobalEnvironment) {
+                memoryLayoutStrategy: MemoryLayoutStrategy) {
         self.symbols = symbols
-        self.globalEnvironment = globalEnvironment
+        self.memoryLayoutStrategy = memoryLayoutStrategy
     }
     
     @discardableResult public func compile(_ node: StructDeclaration, _ evaluatedTypeArguments: [SymbolType] = []) throws -> SymbolType {
@@ -54,7 +54,7 @@ public class SnapSubcompilerStructDeclaration: NSObject {
         assert(!node.isGeneric)
         
         let members = SymbolTable(parent: symbols)
-        let typeChecker = TypeContextTypeChecker(symbols: members, globalEnvironment: globalEnvironment)
+        let typeChecker = TypeContextTypeChecker(symbols: members, memoryLayoutStrategy: memoryLayoutStrategy)
         let name = node.identifier.identifier
         let mangledName = typeChecker.mangleStructName(name, evaluatedTypeArguments: evaluatedTypeArguments)!
         let fullyQualifiedStructType = StructType(
@@ -85,12 +85,12 @@ public class SnapSubcompilerStructDeclaration: NSObject {
                     sourceAnchor: memberDeclaration.memberType.sourceAnchor,
                     message: "a struct cannot contain itself recursively")
             }
-            guard try memberType.hasModule(symbols, globalEnvironment) == false else {
+            guard try memberType.hasModule(symbols) == false else {
                 throw CompilerError(
                     sourceAnchor: memberDeclaration.memberType.sourceAnchor,
                     message: "invalid use of module type")
             }
-            let sizeOfMemberType = globalEnvironment.memoryLayoutStrategy.sizeof(type: memberType)
+            let sizeOfMemberType = memoryLayoutStrategy.sizeof(type: memberType)
             let offset = frame.allocate(size: sizeOfMemberType)
             let symbol = Symbol(type: memberType, offset: offset, storage: .automaticStorage)
             members.bind(identifier: memberDeclaration.name, symbol: symbol)
@@ -100,7 +100,7 @@ public class SnapSubcompilerStructDeclaration: NSObject {
         
         // Check whether any type parameters incorrectly reference a module type
         for typ in evaluatedTypeArguments {
-            guard try typ.hasModule(symbols, globalEnvironment) == false else {
+            guard try typ.hasModule(symbols) == false else {
                 throw CompilerError(
                     sourceAnchor: node.typeArguments
                         .map(\.sourceAnchor)
@@ -112,7 +112,7 @@ public class SnapSubcompilerStructDeclaration: NSObject {
         }
         
         // Catch all in case we missed something above
-        guard try type.hasModule(symbols, globalEnvironment) == false else {
+        guard try type.hasModule(symbols) == false else {
             throw CompilerError(
                 sourceAnchor: node.identifier.sourceAnchor,
                 message: "invalid use of module type")

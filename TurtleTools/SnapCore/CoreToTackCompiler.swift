@@ -67,13 +67,14 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
     }
     
     public init(symbols: SymbolTable = SymbolTable(),
-                globalEnvironment: GlobalEnvironment,
+                staticStorageFrame: Frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress),
+                memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16(),
                 options: CoreToTackCompiler.Options = Options()) {
         self.options = options
         kUnionTypeTagOffset = 0
-        kUnionPayloadOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .u16)
+        kUnionPayloadOffset = memoryLayoutStrategy.sizeof(type: .u16)
         kSliceBaseAddressOffset = 0
-        kSliceCountOffset = globalEnvironment.memoryLayoutStrategy.sizeof(type: .pointer(.void))
+        kSliceCountOffset = memoryLayoutStrategy.sizeof(type: .pointer(.void))
         let structSymbols = SymbolTable(
             frameLookupMode: .set(Frame()),
             tuples: [
@@ -81,7 +82,9 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
                 (kSliceCount, Symbol(type: kSliceCountType, offset: kSliceCountOffset))
             ])
         kSliceType = .structType(StructType(name: kSliceName, symbols: structSymbols))
-        super.init(symbols: symbols, globalEnvironment: globalEnvironment)
+        super.init(symbols: symbols,
+                   staticStorageFrame: staticStorageFrame,
+                   memoryLayoutStrategy: memoryLayoutStrategy)
     }
     
     public override func run(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
@@ -95,7 +98,8 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
         children += try subroutines.map { subroutine in
             try subroutine.linearizeLabels(
                 relativeTo: symbols!,
-                globalEnvironment: globalEnvironment)!
+                staticStorageFrame: staticStorageFrame,
+                memoryLayoutStrategy: memoryLayoutStrategy)!
         }
         
         let seq = Seq(sourceAnchor: node0?.sourceAnchor, children: children)
@@ -113,7 +117,8 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
         let block1 = try super.visit(block: block0) as! Block
         let seq = try block1.eraseBlock(
             relativeTo: symbols!,
-            globalEnvironment: globalEnvironment)
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
         return seq
     }
     
@@ -197,13 +202,11 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
     }
     
     @discardableResult func typeCheck(rexpr: Expression) throws -> SymbolType {
-        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols!, globalEnvironment: globalEnvironment)
-        return try typeChecker.check(expression: rexpr)
+        try rvalueContext.check(expression: rexpr)
     }
     
     @discardableResult func typeCheck(lexpr: Expression) throws -> SymbolType? {
-        let typeChecker = LvalueExpressionTypeChecker(symbols: symbols!, globalEnvironment: globalEnvironment)
-        return try typeChecker.check(expression: lexpr)
+        try lvalueContext.check(expression: lexpr)
     }
     
     public func lvalue(expr expr0: Expression) throws -> AbstractSyntaxTreeNode {
@@ -269,7 +272,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
         }
         
         let elementType = try typeCheck(rexpr: expr)
-        let elementSize = globalEnvironment.memoryLayoutStrategy.sizeof(type: elementType)
+        let elementSize = memoryLayoutStrategy.sizeof(type: elementType)
         let subscriptableType = try typeCheck(rexpr: expr.subscriptable)
         
         // Can we determine the index at compile time?
@@ -540,7 +543,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
         // base and count fields. This involves some unsafe, platform-specific
         // bitcasts and assumptions about the memory layout.
         let sliceType = try typeCheck(rexpr: expr)
-        let elementSize = globalEnvironment.memoryLayoutStrategy.sizeof(type: sliceType.arrayElementType)
+        let elementSize = memoryLayoutStrategy.sizeof(type: sliceType.arrayElementType)
         
         let arrayBeginExpr = Expression.Bitcast(
             sourceAnchor: expr.sourceAnchor,
@@ -744,7 +747,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
                 sourceAnchor: expr.sourceAnchor,
                 identifier: kSliceBase))
         let sliceType = try typeCheck(rexpr: expr)
-        let elementSize = globalEnvironment.memoryLayoutStrategy.sizeof(type: sliceType.arrayElementType)
+        let elementSize = memoryLayoutStrategy.sizeof(type: sliceType.arrayElementType)
         
         let baseExpr: Expression
         if let begin = maybeBegin {
@@ -1135,7 +1138,10 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
             storage: .automaticStorage,
             isMutable: true,
             visibility: .privateVisibility)
-        let varDeclCompiler = SnapSubcompilerVarDeclaration(symbols: symbols!, globalEnvironment: globalEnvironment)
+        let varDeclCompiler = SnapSubcompilerVarDeclaration(
+            symbols: symbols!,
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
         let _ = try varDeclCompiler.compile(tempDecl)
         return tempArrayId
     }
@@ -1518,7 +1524,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
                         symbols: symbols)
                 ]
             } else {
-                let size = globalEnvironment.memoryLayoutStrategy.sizeof(type: rtype)
+                let size = memoryLayoutStrategy.sizeof(type: rtype)
                 let tempUnionPayloadAddress = nextRegister(type: .p).unwrapPointer!
                 children += [
                     TackInstructionNode(
@@ -2471,7 +2477,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
     }
     
     func rvalue(assignment expr: Expression.Assignment) throws -> AbstractSyntaxTreeNode {
-        guard let ltype = try LvalueExpressionTypeChecker(symbols: symbols!).check(expression: expr.lexpr) else {
+        guard let ltype = try typeCheck(lexpr: expr.lexpr) else {
             throw CompilerError(sourceAnchor: expr.lexpr.sourceAnchor,
                                 message: "lvalue required in assignment")
         }
@@ -2480,7 +2486,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
             fatalError("Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(expr)")
         }
         
-        let size = globalEnvironment.memoryLayoutStrategy.sizeof(type: ltype)
+        let size = memoryLayoutStrategy.sizeof(type: ltype)
         let result: Seq
         
         if ltype.isPrimitive {
@@ -2893,7 +2899,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
         }
         
         // Allocate storage on the stack for the return value.
-        let returnTypeSize = globalEnvironment.memoryLayoutStrategy.sizeof(type: typ.returnType)
+        let returnTypeSize = memoryLayoutStrategy.sizeof(type: typ.returnType)
         var tempReturnValueAddr: Register!
         if returnTypeSize > 0 {
             tempReturnValueAddr = nextRegister(type: .p)
@@ -2909,7 +2915,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
         for i in 0..<typ.arguments.count {
             let tempArg = tempArgs[i]
             let argType = typ.arguments[i]
-            let argTypeSize = globalEnvironment.memoryLayoutStrategy.sizeof(type: argType)
+            let argTypeSize = memoryLayoutStrategy.sizeof(type: argType)
             let dst = nextRegister(type: .p).unwrapPointer!
             if argTypeSize > 0 {
                 children += [
@@ -2980,7 +2986,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
         
         // Free up stack storage allocated for arguments and return value.
         let argPackSize = typ.arguments.reduce(0) { (result, type) in
-            result + globalEnvironment.memoryLayoutStrategy.sizeof(type: type)
+            result + memoryLayoutStrategy.sizeof(type: type)
         }
         if argPackSize + returnTypeSize > 0 {
             children += [
@@ -3014,8 +3020,10 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
     
     fileprivate func rewriteStructMemberFunctionCallIfPossible(_ expr: Expression.Call) throws -> AbstractSyntaxTreeNode? {
         func matchStructMemberFunctionCall(_ expr: Expression.Call) throws -> StructMemberFunctionCallMatcher.Match? {
-            let typeChecker = RvalueExpressionTypeChecker(symbols: symbols!, globalEnvironment: globalEnvironment)
-            return try StructMemberFunctionCallMatcher(call: expr, typeChecker: typeChecker).match()
+            try StructMemberFunctionCallMatcher(
+                call: expr,
+                typeChecker: rvalueContext)
+            .match()
         }
         
         func rewriteStructMemberFunctionCall(_ match: StructMemberFunctionCallMatcher.Match) throws -> AbstractSyntaxTreeNode {
@@ -3045,7 +3053,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
     
     func rvalue(sizeof expr: Expression.SizeOf) throws -> AbstractSyntaxTreeNode {
         let targetType = try typeCheck(rexpr: expr.expr)
-        let size = globalEnvironment.memoryLayoutStrategy.sizeof(type: targetType)
+        let size = memoryLayoutStrategy.sizeof(type: targetType)
         let dest = nextRegister(type: .w)
         pushRegister(dest)
         let result = TackInstructionNode(
@@ -3100,7 +3108,8 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
         let node1 = modules[node0.name]!
         let seq = try node1.block.eraseBlock(
             relativeTo: symbols!,
-            globalEnvironment: globalEnvironment)
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
         return seq
     }
 }

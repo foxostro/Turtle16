@@ -204,7 +204,7 @@ final class CompilerPassImplForTests: XCTestCase {
         ])
             .reconnect(parent: nil)
         
-        XCTAssertThrowsError(try ast.implForPass(GlobalEnvironment())) {
+        XCTAssertThrowsError(try ast.implForPass()) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "`SerialFake' does not implement all trait methods; missing `puts'.")
@@ -232,7 +232,7 @@ final class CompilerPassImplForTests: XCTestCase {
         ])
             .reconnect(parent: nil)
         
-        XCTAssertThrowsError(try ast.implForPass(GlobalEnvironment())) {
+        XCTAssertThrowsError(try ast.implForPass()) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "`SerialFake' method `puts' has 1 parameter but the declaration in the `Serial' trait has 2.")
@@ -261,7 +261,7 @@ final class CompilerPassImplForTests: XCTestCase {
         ])
             .reconnect(parent: nil)
         
-        XCTAssertThrowsError(try ast.implForPass(GlobalEnvironment())) {
+        XCTAssertThrowsError(try ast.implForPass()) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "`SerialFake' method `puts' has incompatible type for trait `Serial'; expected `[]u8' argument, got `u8' instead")
@@ -290,7 +290,7 @@ final class CompilerPassImplForTests: XCTestCase {
         ])
             .reconnect(parent: nil)
         
-        XCTAssertThrowsError(try ast.implForPass(GlobalEnvironment())) {
+        XCTAssertThrowsError(try ast.implForPass()) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "`SerialFake' method `puts' has incompatible type for trait `Serial'; expected `*SerialFake' argument, got `u8' instead")
@@ -321,7 +321,7 @@ final class CompilerPassImplForTests: XCTestCase {
         ])
             .reconnect(parent: nil)
         
-        XCTAssertThrowsError(try ast.implForPass(GlobalEnvironment())) {
+        XCTAssertThrowsError(try ast.implForPass()) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "`SerialFake' method `puts' has incompatible type for trait `Serial'; expected `void' return value, got `bool' instead")
@@ -336,7 +336,7 @@ final class CompilerPassImplForTests: XCTestCase {
         // * ImplFor nodes are rewritten as plain Impl nodes
         let ast0 = serialFakeWithImplForAST
         let expected = compiledSerialFakeWithImplForAST
-        let actual = try ast0.implForPass(GlobalEnvironment())
+        let actual = try ast0.implForPass()
         XCTAssertEqual(actual, expected)
     }
     
@@ -374,7 +374,7 @@ final class CompilerPassImplForTests: XCTestCase {
                 isMutable: false,
                 visibility: .privateVisibility)
         ])
-        let actual = try ast0.implForPass(GlobalEnvironment())
+        let actual = try ast0.implForPass()
         XCTAssertEqual(actual, expected)
     }
     
@@ -414,7 +414,7 @@ final class CompilerPassImplForTests: XCTestCase {
                 isMutable: false,
                 visibility: .privateVisibility)
         ])
-        let actual = try ast0.implForPass(GlobalEnvironment())
+        let actual = try ast0.implForPass()
         XCTAssertEqual(actual, expected)
     }
     
@@ -458,7 +458,7 @@ final class CompilerPassImplForTests: XCTestCase {
                             expr: Identifier("__Serial_SerialFake_vtable_instance"))
                     ]))
         ])
-        let actual = try ast0.implForPass(GlobalEnvironment())
+        let actual = try ast0.implForPass()
         XCTAssertEqual(actual, expected)
     }
     
@@ -504,7 +504,7 @@ final class CompilerPassImplForTests: XCTestCase {
                             expr: Identifier("__Serial_SerialFake_vtable_instance"))
                     ]))
         ])
-        let actual = try ast0.implForPass(GlobalEnvironment())
+        let actual = try ast0.implForPass()
         XCTAssertEqual(actual, expected)
     }
     
@@ -548,7 +548,7 @@ final class CompilerPassImplForTests: XCTestCase {
                             expr: Identifier("__Serial_SerialFake_vtable_instance"))
                     ]))
         ])
-        let actual = try ast0.implForPass(GlobalEnvironment())
+        let actual = try ast0.implForPass()
         XCTAssertEqual(actual, expected)
     }
     
@@ -594,7 +594,7 @@ final class CompilerPassImplForTests: XCTestCase {
                             expr: Identifier("__Serial_SerialFake_vtable_instance"))
                     ]))
         ])
-        let actual = try ast0.implForPass(GlobalEnvironment())
+        let actual = try ast0.implForPass()
         XCTAssertEqual(actual, expected)
     }
 }

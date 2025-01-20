@@ -12,8 +12,6 @@ import TurtleCore
 
 class SnapASTTransformerTestDeclarationTests: XCTestCase {
     func testTestDeclarationMustBeAtFileScope() {
-        let globalEnvironment = GlobalEnvironment()
-        
         let original = Block(children: [
             VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
@@ -30,8 +28,7 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
         ])
         .reconnect(parent: nil)
         
-        let transformer = SnapASTTransformerTestDeclaration(globalEnvironment: globalEnvironment,
-                                                            shouldRunSpecificTest: "bar")
+        let transformer = SnapASTTransformerTestDeclaration(shouldRunSpecificTest: "bar")
         XCTAssertThrowsError(try transformer.visit(original)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -40,8 +37,6 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
     }
     
     func testTestDeclarationsMustHaveUniqueName() {
-        let globalEnvironment = GlobalEnvironment()
-        
         let original = Block(children: [
             FunctionDeclaration(identifier: Expression.Identifier("puts"), functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [Expression.DynamicArrayType(Expression.PrimitiveType(.u8))]), argumentNames: ["s"], body: Block(children: [])),
             TestDeclaration(name: "bar", body: Block(children: [])),
@@ -49,7 +44,7 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
         ])
         .reconnect(parent: nil)
         
-        let transformer = SnapASTTransformerTestDeclaration(globalEnvironment: globalEnvironment)
+        let transformer = SnapASTTransformerTestDeclaration()
         XCTAssertThrowsError(try transformer.visit(original)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -58,8 +53,6 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
     }
     
     func testTestsDisappearWhenNotBuildingForTesting() {
-        let globalEnvironment = GlobalEnvironment()
-        
         let input = Block(children: [
             VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
@@ -76,7 +69,7 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
                            isMutable: true)
         ])
         
-        let transformer = SnapASTTransformerTestDeclaration(globalEnvironment: globalEnvironment, shouldRunSpecificTest: nil)
+        let transformer = SnapASTTransformerTestDeclaration(shouldRunSpecificTest: nil)
         var actual: AbstractSyntaxTreeNode? = nil
         XCTAssertNoThrow(actual = try transformer.visit(input))
         
@@ -84,8 +77,6 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
     }
     
     func testCallMainFunctionWhenNotBuildingForTesting() {
-        let globalEnvironment = GlobalEnvironment()
-        
         let input = Block(children: [
             VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
@@ -108,7 +99,7 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
         ])
         .reconnect(parent: nil)
         
-        let transformer = SnapASTTransformerTestDeclaration(globalEnvironment: globalEnvironment, shouldRunSpecificTest: nil)
+        let transformer = SnapASTTransformerTestDeclaration(shouldRunSpecificTest: nil)
         var actual: AbstractSyntaxTreeNode? = nil
         XCTAssertNoThrow(actual = try transformer.visit(input))
         
@@ -116,8 +107,6 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
     }
     
     func testTheTestRunnerContainsTheTestBody() {
-        let globalEnvironment = GlobalEnvironment()
-        
         let input = Block(children: [
             VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
@@ -145,7 +134,7 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
             Expression.Call(callee: Expression.Identifier("__testMain"), arguments: [])
         ])
         
-        let transformer = SnapASTTransformerTestDeclaration(globalEnvironment: globalEnvironment, shouldRunSpecificTest: "bar")
+        let transformer = SnapASTTransformerTestDeclaration(shouldRunSpecificTest: "bar")
         var actual: AbstractSyntaxTreeNode? = nil
         XCTAssertNoThrow(actual = try transformer.visit(input))
         
@@ -153,8 +142,6 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
     }
     
     func testTheTestRunnerContainsTheTestBodyOfSpecificTest() {
-        let globalEnvironment = GlobalEnvironment()
-        
         let input = Block(children: [
             VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
@@ -186,7 +173,7 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
             Expression.Call(callee: Expression.Identifier("__testMain"), arguments: [])
         ])
         
-        let transformer = SnapASTTransformerTestDeclaration(globalEnvironment: globalEnvironment, shouldRunSpecificTest: "bar")
+        let transformer = SnapASTTransformerTestDeclaration(shouldRunSpecificTest: "bar")
         var actual: AbstractSyntaxTreeNode? = nil
         XCTAssertNoThrow(actual = try transformer.visit(input))
         
@@ -194,8 +181,6 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
     }
     
     func testDuringTestingCallTestMainNotActualMain() {
-        let globalEnvironment = GlobalEnvironment()
-        
         let input = Block(children: [
             VarDeclaration(identifier: Expression.Identifier("foo"),
                            explicitType: nil,
@@ -232,8 +217,7 @@ class SnapASTTransformerTestDeclarationTests: XCTestCase {
         ])
         .reconnect(parent: nil)
         
-        let transformer = SnapASTTransformerTestDeclaration(globalEnvironment: globalEnvironment,
-                                                            shouldRunSpecificTest: "bar")
+        let transformer = SnapASTTransformerTestDeclaration(shouldRunSpecificTest: "bar")
         var actual: AbstractSyntaxTreeNode? = nil
         XCTAssertNoThrow(actual = try transformer.visit(input))
         

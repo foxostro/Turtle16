@@ -24,7 +24,7 @@ final class CompilerPassSynthesizeTerminalReturnStatementsTests: XCTestCase {
         ])
             .reconnect(parent: nil)
         
-        XCTAssertThrowsError(try ast.synthesizeTerminalReturnStatements(GlobalEnvironment())) {
+        XCTAssertThrowsError(try ast.synthesizeTerminalReturnStatements()) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "missing return in a function expected to return `u8'")
@@ -67,7 +67,7 @@ final class CompilerPassSynthesizeTerminalReturnStatementsTests: XCTestCase {
             id: outerBlockId)
             .reconnect(parent: nil)
         
-        let ast1 = try ast0.synthesizeTerminalReturnStatements(GlobalEnvironment())
+        let ast1 = try ast0.synthesizeTerminalReturnStatements()
         
         XCTAssertEqual(ast1, expected)
     }

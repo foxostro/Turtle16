@@ -10,14 +10,6 @@ import TurtleCore
 
 // Discrete compiler pass to lower and erase ForIn statements
 public class CompilerPassForIn: CompilerPass {
-    public let globalEnvironment: GlobalEnvironment
-    
-    public init(symbols: SymbolTable? = nil,
-                globalEnvironment: GlobalEnvironment) {
-        self.globalEnvironment = globalEnvironment
-        super.init(symbols)
-    }
-    
     public override func visit(forIn node0: ForIn) throws -> AbstractSyntaxTreeNode? {
         let node1 = try super.visit(forIn: node0) as! ForIn
         
@@ -117,7 +109,7 @@ public class CompilerPassForIn: CompilerPass {
 
 extension AbstractSyntaxTreeNode {
     /// Lower and rewrite ForIn statements
-    public func forInPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassForIn(globalEnvironment: globalEnvironment).run(self)
+    public func forInPass() throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassForIn().run(self)
     }
 }

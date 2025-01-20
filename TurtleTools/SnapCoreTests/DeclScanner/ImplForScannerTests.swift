@@ -11,8 +11,7 @@ import SnapCore
 import TurtleCore
 
 final class ImplForScannerTests: XCTestCase {
-    fileprivate func scanSerialTrait(_ globalEnvironment: GlobalEnvironment,
-                                     _ symbols: SymbolTable) throws {
+    fileprivate func scanSerialTrait(_ symbols: SymbolTable) throws {
         
         let traitDecl = TraitDeclaration(
             identifier: Expression.Identifier("Serial"),
@@ -29,29 +28,29 @@ final class ImplForScannerTests: XCTestCase {
             ],
             visibility: .privateVisibility)
         
-        let scanner = TraitScanner(globalEnvironment: globalEnvironment,
-                                   symbols: symbols)
+        let scanner = TraitScanner(
+            staticStorageFrame: Frame(),
+            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
+            symbols: symbols)
         try scanner.scan(trait: traitDecl)
     }
     
-    fileprivate func scanSerialFake(_ globalEnvironment: GlobalEnvironment,
-                                    _ symbols: SymbolTable) throws {
+    fileprivate func scanSerialFake(_ symbols: SymbolTable) throws {
         
         let fake = StructDeclaration(
             identifier: Expression.Identifier("SerialFake"),
             members: [])
         try SnapSubcompilerStructDeclaration(
             symbols: symbols,
-            globalEnvironment: globalEnvironment)
+            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
         .compile(fake)
     }
     
     func testScanImplForTrait() throws {
-        let globalEnvironment = GlobalEnvironment()
         let symbols = SymbolTable()
         
-        try scanSerialTrait(globalEnvironment, symbols)
-        try scanSerialFake(globalEnvironment, symbols)
+        try scanSerialTrait(symbols)
+        try scanSerialFake(symbols)
         
         let ast = ImplFor(
             typeArguments: [],
@@ -73,8 +72,10 @@ final class ImplForScannerTests: XCTestCase {
             ])
             .reconnect(parent: nil)
         
-        let scanner = ImplForScanner(globalEnvironment: globalEnvironment,
-                                     symbols: symbols)
+        let scanner = ImplForScanner(
+            staticStorageFrame: Frame(),
+            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
+            symbols: symbols)
         try scanner.scan(implFor: ast)
         
         // Let's examine, for correctness, the vtable symbol
@@ -89,11 +90,10 @@ final class ImplForScannerTests: XCTestCase {
     }
     
     func testFailToScanImplForTraitBecauseMethodsAreMissing() throws {
-        let globalEnvironment = GlobalEnvironment()
         let symbols = SymbolTable()
         
-        try scanSerialTrait(globalEnvironment, symbols)
-        try scanSerialFake(globalEnvironment, symbols)
+        try scanSerialTrait(symbols)
+        try scanSerialFake(symbols)
         
         let ast = ImplFor(
             typeArguments: [],
@@ -101,8 +101,10 @@ final class ImplForScannerTests: XCTestCase {
             structTypeExpr: Expression.Identifier("SerialFake"),
             children: [])
         
-        let scanner = ImplForScanner(globalEnvironment: globalEnvironment,
-                                     symbols: symbols)
+        let scanner = ImplForScanner(
+            staticStorageFrame: Frame(),
+            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
+            symbols: symbols)
         
         XCTAssertThrowsError(try scanner.scan(implFor: ast)) {
             let compilerError = $0 as? CompilerError
@@ -112,11 +114,10 @@ final class ImplForScannerTests: XCTestCase {
     }
     
     func testFailToScanImplForTraitBecauseMethodHasIncorrectNumberOfParameters() throws {
-        let globalEnvironment = GlobalEnvironment()
         let symbols = SymbolTable()
         
-        try scanSerialTrait(globalEnvironment, symbols)
-        try scanSerialFake(globalEnvironment, symbols)
+        try scanSerialTrait(symbols)
+        try scanSerialFake(symbols)
         
         let ast = ImplFor(
             typeArguments: [],
@@ -136,8 +137,10 @@ final class ImplForScannerTests: XCTestCase {
             ])
             .reconnect(parent: nil)
         
-        let scanner = ImplForScanner(globalEnvironment: globalEnvironment,
-                                     symbols: symbols)
+        let scanner = ImplForScanner(
+            staticStorageFrame: Frame(),
+            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
+            symbols: symbols)
         
         XCTAssertThrowsError(try scanner.scan(implFor: ast)) {
             let compilerError = $0 as? CompilerError
@@ -147,11 +150,10 @@ final class ImplForScannerTests: XCTestCase {
     }
     
     func testFailToCompileImplForTraitBecauseMethodHasIncorrectParameterTypes() throws {
-        let globalEnvironment = GlobalEnvironment()
         let symbols = SymbolTable()
         
-        try scanSerialTrait(globalEnvironment, symbols)
-        try scanSerialFake(globalEnvironment, symbols)
+        try scanSerialTrait(symbols)
+        try scanSerialFake(symbols)
         
         let ast = ImplFor(
             typeArguments: [],
@@ -172,8 +174,10 @@ final class ImplForScannerTests: XCTestCase {
             ])
             .reconnect(parent: nil)
         
-        let scanner = ImplForScanner(globalEnvironment: globalEnvironment,
-                                     symbols: symbols)
+        let scanner = ImplForScanner(
+            staticStorageFrame: Frame(),
+            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
+            symbols: symbols)
         
         XCTAssertThrowsError(try scanner.scan(implFor: ast)) {
             let compilerError = $0 as? CompilerError
@@ -183,11 +187,10 @@ final class ImplForScannerTests: XCTestCase {
     }
     
     func testFailToScanImplForTraitBecauseMethodHasIncorrectSelfParameterTypes() throws {
-        let globalEnvironment = GlobalEnvironment()
         let symbols = SymbolTable()
         
-        try scanSerialTrait(globalEnvironment, symbols)
-        try scanSerialFake(globalEnvironment, symbols)
+        try scanSerialTrait(symbols)
+        try scanSerialFake(symbols)
         
         let ast = ImplFor(
             typeArguments: [],
@@ -208,8 +211,10 @@ final class ImplForScannerTests: XCTestCase {
             ])
             .reconnect(parent: nil)
         
-        let scanner = ImplForScanner(globalEnvironment: globalEnvironment,
-                                     symbols: symbols)
+        let scanner = ImplForScanner(
+            staticStorageFrame: Frame(),
+            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
+            symbols: symbols)
         
         XCTAssertThrowsError(try scanner.scan(implFor: ast)) {
             let compilerError = $0 as? CompilerError
@@ -219,11 +224,10 @@ final class ImplForScannerTests: XCTestCase {
     }
     
     func testFailToCompileImplForTraitBecauseMethodHasIncorrectReturnType() throws {
-        let globalEnvironment = GlobalEnvironment()
         let symbols = SymbolTable()
         
-        try scanSerialTrait(globalEnvironment, symbols)
-        try scanSerialFake(globalEnvironment, symbols)
+        try scanSerialTrait(symbols)
+        try scanSerialFake(symbols)
         
         let ast = ImplFor(
             typeArguments: [],
@@ -246,8 +250,10 @@ final class ImplForScannerTests: XCTestCase {
             ])
             .reconnect(parent: nil)
         
-        let scanner = ImplForScanner(globalEnvironment: globalEnvironment,
-                                     symbols: symbols)
+        let scanner = ImplForScanner(
+            staticStorageFrame: Frame(),
+            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
+            symbols: symbols)
         
         XCTAssertThrowsError(try scanner.scan(implFor: ast)) {
             let compilerError = $0 as? CompilerError

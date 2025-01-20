@@ -9,15 +9,38 @@
 import TurtleCore
 
 public class CompilerPassWithDeclScan: CompilerPass {
-    let globalEnvironment: GlobalEnvironment
+    let staticStorageFrame: Frame
+    let memoryLayoutStrategy: MemoryLayoutStrategy
     var modules: [String : Module] = [:]
     
-    public convenience init(_ env: GlobalEnvironment = GlobalEnvironment()) {
-        self.init(globalEnvironment: env)
+    public var rvalueContext: RvalueExpressionTypeChecker {
+        RvalueExpressionTypeChecker(
+            symbols: symbols!,
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
     }
     
-    public init(symbols: SymbolTable? = nil, globalEnvironment: GlobalEnvironment) {
-        self.globalEnvironment = globalEnvironment
+    public var lvalueContext: LvalueExpressionTypeChecker {
+        LvalueExpressionTypeChecker(
+            symbols: symbols!,
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
+    }
+    
+    public var typeContext: TypeContextTypeChecker {
+        TypeContextTypeChecker(
+            symbols: symbols!,
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
+    }
+    
+    public init(
+        symbols: SymbolTable? = nil,
+        staticStorageFrame: Frame = Frame(),
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+    ) {
+        self.staticStorageFrame = staticStorageFrame
+        self.memoryLayoutStrategy = memoryLayoutStrategy
         super.init(symbols)
     }
     
@@ -30,7 +53,7 @@ public class CompilerPassWithDeclScan: CompilerPass {
     
     /// Transformation to apply to the program AST before the compiler pass runs
     public func preProcess(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
-        try node0?.clearSymbols(globalEnvironment)
+        try node0?.clearSymbols(staticStorageFrame)
     }
     
     /// Transformation to apply to the program AST after the compiler pass runs
@@ -79,7 +102,8 @@ public class CompilerPassWithDeclScan: CompilerPass {
     
     func scan(func node: FunctionDeclaration) throws {
         try FunctionScanner(
-            globalEnvironment: globalEnvironment,
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy,
             symbols: symbols!,
             enclosingImplId: nil)
         .scan(func: node)
@@ -88,7 +112,7 @@ public class CompilerPassWithDeclScan: CompilerPass {
     func scan(struct node: StructDeclaration) throws {
         try SnapSubcompilerStructDeclaration(
             symbols: symbols!,
-            globalEnvironment: globalEnvironment)
+            memoryLayoutStrategy: memoryLayoutStrategy)
         .compile(node)
     }
     
@@ -98,21 +122,24 @@ public class CompilerPassWithDeclScan: CompilerPass {
     
     func scan(trait node: TraitDeclaration) throws {
         try TraitScanner(
-            globalEnvironment: globalEnvironment,
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy,
             symbols: symbols!)
         .scan(trait: node)
     }
     
     func scan(impl node: Impl) throws {
         try ImplScanner(
-            globalEnvironment: globalEnvironment,
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy,
             symbols: symbols!)
         .scan(impl: node)
     }
     
     func scan(implFor node: ImplFor) throws {
         try ImplForScanner(
-            globalEnvironment: globalEnvironment,
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy,
             symbols: symbols!)
         .scan(implFor: node)
     }
@@ -201,7 +228,7 @@ public class CompilerPassWithDeclScan: CompilerPass {
     
     func scan(block: Block, clause: Match.Clause, in match: Match) throws {
         let symbols = clause.block.symbols
-        let clauseType = try TypeContextTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment).check(expression: clause.valueType)
+        let clauseType = try typeContext.check(expression: clause.valueType)
         symbols.bind(identifier: clause.valueIdentifier.identifier,
                      symbol: Symbol(type: clauseType))
         try scan(block: clause.block)
@@ -229,7 +256,8 @@ public class CompilerPassWithDeclScan: CompilerPass {
         let node1 = try super.visit(varDecl: node0) as! VarDeclaration
         _ = try SnapSubcompilerVarDeclaration(
             symbols: symbols!,
-            globalEnvironment: globalEnvironment)
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
         .compile(node1)
         return node1
     }

@@ -12,10 +12,8 @@ import TurtleCore
 public class CompilerPassMatch: CompilerPassWithDeclScan {
     public override func visit(match node0: Match) throws -> AbstractSyntaxTreeNode? {
         let node1 = try super.visit(match: node0) as! Match
-        
         let outer = SymbolTable(parent: symbols)
-        
-        let matchExprType = try RvalueExpressionTypeChecker(symbols: symbols!).check(expression: node1.expr)
+        let matchExprType = try typeChecker.check(expression: node1.expr)
         
         // Get the list of types this match statement is expected to contain.
         let expectedTypes: NSOrderedSet
@@ -28,7 +26,7 @@ public class CompilerPassMatch: CompilerPassWithDeclScan {
         
         // Check that the expected and provided types match.
         let valueTypes = NSOrderedSet(array: try node1.clauses.map({
-            ($0, try RvalueExpressionTypeChecker(symbols: symbols!).check(expression: $0.valueType))
+            ($0, try typeChecker.check(expression: $0.valueType))
         }))
         let extraneousTypes = valueTypes.filter { (element_: Any) -> Bool in
             let element = element_ as! (Match.Clause, SymbolType)
@@ -127,11 +125,24 @@ public class CompilerPassMatch: CompilerPassWithDeclScan {
                       else: compileMatchClause(match, clauses.dropLast(), symbols))
         }
     }
+    
+    private var typeChecker: RvalueExpressionTypeChecker {
+        RvalueExpressionTypeChecker(
+            symbols: symbols!,
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
+    }
 }
 
 extension AbstractSyntaxTreeNode {
     /// Compiler pass to lower and erase Match statements
-    public func matchPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassMatch(globalEnvironment: globalEnvironment).run(self)
+    public func matchPass(
+        staticStorageFrame: Frame = Frame(),
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+    ) throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassMatch(
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
+        .run(self)
     }
 }

@@ -42,7 +42,7 @@ public class CompilerPassSynthesizeTerminalReturnStatements: CompilerPassWithDec
     }
     
     private func expectFunctionReturnExpressionIsCorrectType(_ node: FunctionDeclaration) throws {
-        let functionType = try TypeContextTypeChecker(symbols: symbols!)
+        let functionType = try typeContext
             .check(expression: node.functionType)
             .unwrapFunctionType()
         guard functionType.returnType != .void else { return }
@@ -60,7 +60,7 @@ public class CompilerPassSynthesizeTerminalReturnStatements: CompilerPassWithDec
     }
     
     private func shouldSynthesizeTerminalReturnStatement(_ node: FunctionDeclaration) throws -> Bool {
-        let functionType = try TypeContextTypeChecker(symbols: symbols!)
+        let functionType = try typeContext
             .check(expression: node.functionType)
             .unwrapFunctionType()
         guard functionType.returnType == .void else { return false }
@@ -85,7 +85,13 @@ public class CompilerPassSynthesizeTerminalReturnStatements: CompilerPassWithDec
 
 extension AbstractSyntaxTreeNode {
     /// Synthesize an explicit terminal return statement on functions with an implicit return
-    public func synthesizeTerminalReturnStatements(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassSynthesizeTerminalReturnStatements(globalEnvironment: globalEnvironment).run(self)
+    public func synthesizeTerminalReturnStatements(
+        staticStorageFrame: Frame = Frame(),
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+    ) throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassSynthesizeTerminalReturnStatements(
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
+        .run(self)
     }
 }

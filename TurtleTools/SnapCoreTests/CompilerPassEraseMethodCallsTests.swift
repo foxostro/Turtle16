@@ -102,7 +102,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
             .reconnect(parent: nil)
         
         let actual = try ast0
-            .eraseMethodCalls(GlobalEnvironment())?
+            .eraseMethodCalls()?
             .flatten()
         
         XCTAssertEqual(actual, expected)
@@ -192,7 +192,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
             .reconnect(parent: nil)
         
         let actual = try ast0
-            .eraseMethodCalls(GlobalEnvironment())?
+            .eraseMethodCalls()?
             .flatten()
         
         XCTAssertEqual(actual, expected)
@@ -242,7 +242,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
             .reconnect(parent: nil)
         
         let actual = try ast0
-            .eraseMethodCalls(GlobalEnvironment())?
+            .eraseMethodCalls()?
             .flatten()
         
         XCTAssertEqual(ast0, actual)
@@ -326,7 +326,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
             .reconnect(parent: nil)
         
         let actual = try ast0
-            .eraseMethodCalls(GlobalEnvironment())?
+            .eraseMethodCalls()?
             .flatten()
         
         XCTAssertEqual(actual, expected)
@@ -406,7 +406,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
             .reconnect(parent: nil)
         
         let actual = try ast0
-            .eraseMethodCalls(GlobalEnvironment())?
+            .eraseMethodCalls()?
             .flatten()
         
         XCTAssertEqual(actual, expected)

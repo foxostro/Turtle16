@@ -52,7 +52,7 @@ final class CompilerPassGenericsTests: XCTestCase {
         let expr = Expression.GenericTypeApplication(
             identifier: Expression.Identifier("foo"),
             arguments: [Expression.PrimitiveType(.constU16)])
-        let compiler = CompilerPassGenerics(symbols: symbols, globalEnvironment: GlobalEnvironment())
+        let compiler = CompilerPassGenerics(symbols: symbols)
         let actual = try compiler.visit(expr: expr)
         let expected = Expression.Identifier("foo[const u16]")
         XCTAssertEqual(actual, expected)
@@ -64,7 +64,7 @@ final class CompilerPassGenericsTests: XCTestCase {
         let expr = Expression.GenericTypeApplication(
             identifier: Expression.Identifier("foo"),
             arguments: [Expression.PrimitiveType(.constU16)])
-        let compiler = CompilerPassGenerics(symbols: symbols, globalEnvironment: GlobalEnvironment())
+        let compiler = CompilerPassGenerics(symbols: symbols)
         _ = try compiler.visit(expr: expr)
         
         let sym = try symbols.resolve(identifier: "foo[const u16]")
@@ -87,7 +87,7 @@ final class CompilerPassGenericsTests: XCTestCase {
             makeGenericFunctionDeclaration()
         ])
         
-        let compiler = CompilerPassGenerics(symbols: SymbolTable(), globalEnvironment: GlobalEnvironment())
+        let compiler = CompilerPassGenerics(symbols: SymbolTable())
         let ast1 = try compiler.run(ast0)
         
         XCTAssertEqual(ast1, Block())
@@ -138,10 +138,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 arguments: [Expression.PrimitiveType(.constU16)])
         ])
         
-        let ast1 = try CompilerPassGenerics(
-            symbols: symbols,
-            globalEnvironment: GlobalEnvironment())
-            .run(ast0)
+        let ast1 = try CompilerPassGenerics(symbols: symbols).run(ast0)
         
         XCTAssertEqual(ast1, expected)
     }
@@ -194,9 +191,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 arguments: [Expression.PrimitiveType(.u16)])
         ])
         
-        let ast1 = try CompilerPassGenerics(
-            symbols: symbols,
-            globalEnvironment: GlobalEnvironment()).run(ast0)
+        let ast1 = try CompilerPassGenerics(symbols: symbols).run(ast0)
         
         XCTAssertEqual(ast1, expected)
     }
@@ -224,7 +219,7 @@ final class CompilerPassGenericsTests: XCTestCase {
             identifier: "foo",
             symbol: Symbol(type: .genericFunction(genericFunctionType)))
         
-        let compiler = CompilerPassGenerics(symbols: symbols, globalEnvironment: GlobalEnvironment())
+        let compiler = CompilerPassGenerics(symbols: symbols)
         let expr = Expression.GenericTypeApplication(
             identifier: Expression.Identifier("foo"),
             arguments: [
@@ -269,7 +264,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                     Expression.PrimitiveType(.constU16),
                     Expression.PrimitiveType(.constU16)
                 ]))
-        let compiler = CompilerPassGenerics(symbols: symbols, globalEnvironment: GlobalEnvironment())
+        let compiler = CompilerPassGenerics(symbols: symbols)
         XCTAssertThrowsError(try compiler.visit(expr: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -296,10 +291,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 isConst: false)
         ])
         
-        let compiler = CompilerPassGenerics(
-            symbols: SymbolTable(),
-            globalEnvironment: GlobalEnvironment(
-                memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()))
+        let compiler = CompilerPassGenerics(symbols: SymbolTable())
         let ast1 = try compiler.run(ast0)
         XCTAssertEqual(ast1, Block())
     }
@@ -334,10 +326,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 ])
         ])
         
-        let _ = try CompilerPassGenerics(
-            symbols: symbols,
-            globalEnvironment: GlobalEnvironment())
-            .run(ast0)
+        let _ = try CompilerPassGenerics(symbols: symbols).run(ast0)
         
         switch try symbols.resolveType(identifier: "foo[u16]") {
         case .structType(let typ):
@@ -396,10 +385,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 ])
         ])
         
-        let ast1 = try CompilerPassGenerics(
-            symbols: nil,
-            globalEnvironment: GlobalEnvironment())
-            .run(ast0)
+        let ast1 = try CompilerPassGenerics().run(ast0)
         
         XCTAssertEqual(ast1, expected)
     }
@@ -498,10 +484,7 @@ final class CompilerPassGenericsTests: XCTestCase {
             ],
             id: outerBlockID)
         
-        let ast1 = try CompilerPassGenerics(
-            symbols: nil,
-            globalEnvironment: GlobalEnvironment())
-            .run(ast0)
+        let ast1 = try CompilerPassGenerics().run(ast0)
         
         XCTAssertEqual(ast1, expected)
     }
@@ -593,10 +576,7 @@ final class CompilerPassGenericsTests: XCTestCase {
             ],
             id: expected.id)
         
-        let ast1 = try CompilerPassGenerics(
-            symbols: nil,
-            globalEnvironment: GlobalEnvironment())
-            .run(ast0)
+        let ast1 = try CompilerPassGenerics().run(ast0)
         
         XCTAssertEqual(ast1, expected)
     }
@@ -718,10 +698,7 @@ final class CompilerPassGenericsTests: XCTestCase {
             id: ast0.id)
             .reconnect(parent: nil)
         
-        let ast1 = try CompilerPassGenerics(
-            symbols: nil,
-            globalEnvironment: GlobalEnvironment())
-            .run(ast0)
+        let ast1 = try CompilerPassGenerics().run(ast0)
         
         XCTAssertEqual(ast1, expected)
     }
@@ -773,9 +750,7 @@ final class CompilerPassGenericsTests: XCTestCase {
             ])
             .reconnect(parent: nil)
         
-        let compiler = CompilerPassGenerics(
-            symbols: nil,
-            globalEnvironment: GlobalEnvironment())
+        let compiler = CompilerPassGenerics()
         
         XCTAssertThrowsError(try compiler.run(ast)) {
             let compilerError = $0 as? CompilerError
@@ -803,10 +778,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 ])
         ])
         
-        let compiler = CompilerPassGenerics(
-            symbols: SymbolTable(),
-            globalEnvironment: GlobalEnvironment(
-                memoryLayoutStrategy: MemoryLayoutStrategyTurtle16()))
+        let compiler = CompilerPassGenerics(symbols: SymbolTable())
         let ast1 = try compiler.run(ast0)
         XCTAssertEqual(ast1, Block())
     }
@@ -836,10 +808,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 children: [])
         ])
         
-        _ = try CompilerPassGenerics(
-            symbols: symbols,
-            globalEnvironment: GlobalEnvironment())
-            .run(ast0)
+        _ = try CompilerPassGenerics(symbols: symbols).run(ast0)
         
         switch try symbols.resolveType(identifier: "MyTrait[u16]") {
         case .traitType(let typ):
@@ -934,10 +903,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                 ])
         ], id: expected.id)
         
-        let ast1 = try CompilerPassGenerics(
-            symbols: symbols,
-            globalEnvironment: GlobalEnvironment())
-        .run(ast0)
+        let ast1 = try CompilerPassGenerics(symbols: symbols).run(ast0)
         
         XCTAssertEqual(ast1, expected)
     }
@@ -1029,10 +995,7 @@ final class CompilerPassGenericsTests: XCTestCase {
             ],
             id: blockId)
         
-        let ast1 = try CompilerPassGenerics(
-            symbols: symbols,
-            globalEnvironment: GlobalEnvironment())
-            .run(ast0)
+        let ast1 = try CompilerPassGenerics(symbols: symbols).run(ast0)
         
         XCTAssertEqual(ast1, expected)
     }
@@ -1071,7 +1034,7 @@ final class CompilerPassGenericsTests: XCTestCase {
             .eraseSourceAnchors()?
             .replaceTopLevelWithBlock()
             .reconnect(parent: nil)
-        let ast1 = try CompilerPassGenerics(symbols: nil, globalEnvironment: GlobalEnvironment()).run(ast0)
+        let ast1 = try CompilerPassGenerics().run(ast0)
         XCTAssertEqual(ast1, expected)
     }
     
@@ -1103,9 +1066,7 @@ final class CompilerPassGenericsTests: XCTestCase {
             ])
             .reconnect(parent: nil)
         
-        let compiler = CompilerPassGenerics(
-            symbols: nil,
-            globalEnvironment: GlobalEnvironment())
+        let compiler = CompilerPassGenerics()
         
         XCTAssertThrowsError(try compiler.run(ast)) {
             let compilerError = $0 as? CompilerError
@@ -1145,9 +1106,7 @@ final class CompilerPassGenericsTests: XCTestCase {
             ])
             .reconnect(parent: nil)
         
-        let compiler = CompilerPassGenerics(
-            symbols: nil,
-            globalEnvironment: GlobalEnvironment())
+        let compiler = CompilerPassGenerics()
         
         XCTAssertThrowsError(try compiler.run(ast)) {
             let compilerError = $0 as? CompilerError

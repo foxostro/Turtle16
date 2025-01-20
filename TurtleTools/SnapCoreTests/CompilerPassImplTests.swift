@@ -100,7 +100,7 @@ final class CompilerPassImplTests: XCTestCase {
             .reconnect(parent: nil)
         
         let actual = try ast0
-            .eraseImplPass(GlobalEnvironment())?
+            .eraseImplPass()?
             .flatten()
         
         XCTAssertEqual(actual, expected)
@@ -185,14 +185,13 @@ final class CompilerPassImplTests: XCTestCase {
             .reconnect(parent: nil)
         
         let actual = try ast0
-            .eraseImplPass(GlobalEnvironment())?
+            .eraseImplPass()?
             .flatten()
         
         XCTAssertEqual(actual, expected)
     }
     
     func testGenericStructImplForWithinAFunction() throws {
-        let globalEnvironment = GlobalEnvironment()
         let actual = try parse("""
             func myFunction() -> u16 {
                 trait Incrementer {
@@ -218,12 +217,12 @@ final class CompilerPassImplTests: XCTestCase {
             """)
             .replaceTopLevelWithBlock()
             .reconnect(parent: nil)
-            .genericsPass(globalEnvironment)?
-            .vtablesPass(globalEnvironment)?
-            .implForPass(globalEnvironment)?
-            .eraseMethodCalls(globalEnvironment)?
-            .synthesizeTerminalReturnStatements(globalEnvironment)?
-            .eraseImplPass(globalEnvironment)?
+            .genericsPass()?
+            .vtablesPass()?
+            .implForPass()?
+            .eraseMethodCalls()?
+            .synthesizeTerminalReturnStatements()?
+            .eraseImplPass()?
             .flatten()?
             .eraseSourceAnchors() // aids in comparing against `expected`
         

@@ -27,7 +27,10 @@ public class CompilerPassImplFor: CompilerPassWithDeclScan {
     fileprivate var pendingInsertions: [AbstractSyntaxTreeNode.ID : [(String, VarDeclaration)]] = [:]
     
     fileprivate var typeChecker: RvalueExpressionTypeChecker {
-        RvalueExpressionTypeChecker(symbols: symbols!, globalEnvironment: globalEnvironment)
+        RvalueExpressionTypeChecker(
+            symbols: symbols!,
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
     }
     
     fileprivate class BlockRewriter: CompilerPass {
@@ -253,7 +256,13 @@ public class CompilerPassImplFor: CompilerPassWithDeclScan {
 
 extension AbstractSyntaxTreeNode {
     /// Erase impl-for declarations, rewriting in terms of lower-level concepts
-    public func implForPass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassImplFor(globalEnvironment: globalEnvironment).run(self)
+    public func implForPass(
+        staticStorageFrame: Frame = Frame(),
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+    ) throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassImplFor(
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
+        .run(self)
     }
 }

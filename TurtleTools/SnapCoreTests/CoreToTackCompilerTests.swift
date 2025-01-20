@@ -31,14 +31,21 @@ let kRangeType: SymbolType = .structType(StructType(name: kRangeName, symbols: S
 ])))
 
 
-class CoreToTackCompilerTests: XCTestCase {
-    func makeCompiler(options opts: CoreToTackCompiler.Options = CoreToTackCompiler.Options(isBoundsCheckEnabled: true),
-                      symbols: SymbolTable = SymbolTable(),
-                      globalEnvironment: GlobalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())) -> CoreToTackCompiler {
-        return CoreToTackCompiler(
+final class CoreToTackCompilerTests: XCTestCase {
+    fileprivate let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+    
+    fileprivate func makeCompiler(
+        options opts: CoreToTackCompiler.Options = CoreToTackCompiler.Options(
+            isBoundsCheckEnabled: true),
+        symbols: SymbolTable = SymbolTable()
+    ) -> CoreToTackCompiler {
+        let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
+        let compiler = CoreToTackCompiler(
             symbols: symbols,
-            globalEnvironment: globalEnvironment,
+            staticStorageFrame: frame,
+            memoryLayoutStrategy: memoryLayoutStrategy,
             options: opts)
+        return compiler
     }
     
     func testLabelDeclaration() throws {
@@ -111,13 +118,13 @@ class CoreToTackCompilerTests: XCTestCase {
     }
 
     func testCompileFunctionDeclaration_Simplest() throws {
-        let expected = Subroutine(identifier: "foo",
-                                  children: [
-                                    TackInstructionNode(.enter(0)),
-                                    TackInstructionNode(.leave),
-                                    TackInstructionNode(.ret)
-                                  ])
-        let globalEnvironment = GlobalEnvironment()
+        let expected = Subroutine(
+            identifier: "foo",
+            children: [
+                TackInstructionNode(.enter(0)),
+                TackInstructionNode(.leave),
+                TackInstructionNode(.ret)
+            ])
         let ast0 = Block(children: [
                 FunctionDeclaration(
                     identifier: Expression.Identifier("foo"),
@@ -131,8 +138,8 @@ class CoreToTackCompilerTests: XCTestCase {
                     ]))
             ])
             .reconnect(parent: nil)
-        let ast1 = try CompilerPassWithDeclScan(globalEnvironment).run(ast0)
-        let actual = try CoreToTackCompiler(globalEnvironment: globalEnvironment).run(ast1)
+        let ast1 = try CompilerPassWithDeclScan().run(ast0)
+        let actual = try CoreToTackCompiler().run(ast1)
         XCTAssertEqual(actual, expected)
     }
 
@@ -2191,16 +2198,12 @@ class CoreToTackCompilerTests: XCTestCase {
     }
 
     func testRvalue_Assignment_automatic_conversion_from_trait_to_pointer() throws {
-        let globalEnvironment = GlobalEnvironment()
         let symbols = SymbolTable()
         let traitDecl = TraitDeclaration(
             identifier: Expression.Identifier("Foo"),
             members: [],
             visibility: .privateVisibility)
-        try TraitScanner(
-            globalEnvironment: globalEnvironment,
-            symbols: symbols)
-        .scan(trait: traitDecl)
+        try TraitScanner(symbols: symbols).scan(trait: traitDecl)
 
         let traitObjectType = try symbols.resolveType(identifier: traitDecl.nameOfTraitObjectType)
         symbols.bind(identifier: "foo", symbol: Symbol(type: .pointer(traitObjectType), offset: 0x1000, storage: .staticStorage))
@@ -2782,8 +2785,7 @@ class CoreToTackCompilerTests: XCTestCase {
     }
 
     func testFixBugWithCompilerTemporaryOfArrayTypeWithNoExplicitCount() throws {
-        let globalEnvironment = GlobalEnvironment(memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
-        let compiler = makeCompiler(globalEnvironment: globalEnvironment)
+        let compiler = makeCompiler()
         let literalArray = Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u16)), elements: [
             Expression.LiteralInt(1), Expression.LiteralInt(2)
         ])
@@ -2792,7 +2794,7 @@ class CoreToTackCompilerTests: XCTestCase {
             XCTFail("failed to resolve __temp0")
             return
         }
-        let actual = globalEnvironment.memoryLayoutStrategy.sizeof(type: type)
+        let actual = memoryLayoutStrategy.sizeof(type: type)
         XCTAssertEqual(actual, 2)
     }
 

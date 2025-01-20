@@ -1525,24 +1525,21 @@ public class SymbolTable: NSObject {
 
 extension SymbolType {
     /// Return true if the type includes a Module type somewhere in the def'n
-    public func hasModule(
-        _ sym: SymbolTable,
-        _ genv: GlobalEnvironment,
-        _ workingSet: [SymbolType] = []
+    public func hasModule(_ sym: SymbolTable, _ workingSet: [SymbolType] = []
     ) throws -> Bool {
+        
+        let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
         
         guard !workingSet.contains(self) else { return false }
         
         let anyExprHasModule: ([Expression]) throws -> Bool = { exprs in
-            let typeChecker = TypeContextTypeChecker(
-                symbols: sym,
-                globalEnvironment: genv)
+            let typeChecker = TypeContextTypeChecker(symbols: sym, memoryLayoutStrategy: memoryLayoutStrategy)
             let result = try exprs
                 .compactMap {
                     try? typeChecker.check(expression: $0)
                 }
                 .first {
-                    try $0.hasModule(sym, genv, workingSet.union(self))
+                    try $0.hasModule(sym, workingSet.union(self))
                 }
             return result != nil
         }
@@ -1553,7 +1550,7 @@ extension SymbolType {
             
         case .function(let typ):
             try typ.arguments.first {
-                try $0.hasModule(sym, genv, workingSet.union(self))
+                try $0.hasModule(sym, workingSet.union(self))
             } != nil
             
         case .genericFunction(let typ):
@@ -1564,11 +1561,11 @@ extension SymbolType {
              .dynamicArray(elementType: let elementType),
              .constPointer(let elementType),
              .pointer(let elementType):
-            try elementType.hasModule(sym, genv, workingSet.union(self))
+            try elementType.hasModule(sym, workingSet.union(self))
             
         case .constStructType(let typ), .structType(let typ):
             try typ.symbols.symbolTable.map(\.value.type).first {
-                try $0.hasModule(sym, genv, workingSet.union(self))
+                try $0.hasModule(sym, workingSet.union(self))
             } != nil || typ.isModule
             
         case .genericStructType(let typ):
@@ -1576,7 +1573,7 @@ extension SymbolType {
             
         case .constTraitType(let typ), .traitType(let typ):
             try typ.members.map(\.type).first {
-                try $0.hasModule(sym, genv, workingSet.union(self))
+                try $0.hasModule(sym, workingSet.union(self))
             } != nil
             
         case .genericTraitType(let typ):
@@ -1584,7 +1581,7 @@ extension SymbolType {
             
         case .unionType(let typ):
             try typ.members.first {
-                try $0.hasModule(sym, genv, workingSet.union(self))
+                try $0.hasModule(sym, workingSet.union(self))
             } != nil
         }
     }

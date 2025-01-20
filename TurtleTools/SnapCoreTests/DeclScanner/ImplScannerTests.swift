@@ -19,7 +19,6 @@ final class ImplScannerTests: XCTestCase {
     
     func testExample() throws {
         let symbols = SymbolTable()
-        let globalEnvironment = GlobalEnvironment()
         
         let foo = StructDeclaration(
             identifier: Identifier("Foo"),
@@ -55,13 +54,14 @@ final class ImplScannerTests: XCTestCase {
         
         _ = try SnapSubcompilerStructDeclaration(
             symbols: symbols,
-            globalEnvironment: globalEnvironment)
+            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
         .compile(foo)
         
         try ImplScanner(
-            globalEnvironment: globalEnvironment,
+            staticStorageFrame: Frame(),
+            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
             symbols: symbols)
-            .scan(impl: impl)
+        .scan(impl: impl)
         
         let fooType = try symbols.resolveType(identifier: "Foo")
         let funTyp = try fooType
@@ -78,7 +78,6 @@ final class ImplScannerTests: XCTestCase {
     
     func testRedefinesExistingSymbol() throws {
         let symbols = SymbolTable()
-        let globalEnvironment = GlobalEnvironment()
         
         let foo = StructDeclaration(
             identifier: Identifier("Foo"),
@@ -90,7 +89,7 @@ final class ImplScannerTests: XCTestCase {
             visibility: .privateVisibility)
         _ = try SnapSubcompilerStructDeclaration(
             symbols: symbols,
-            globalEnvironment: globalEnvironment)
+            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
         .compile(foo)
         
         let functionSymbols = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))
@@ -119,7 +118,10 @@ final class ImplScannerTests: XCTestCase {
                     symbols: functionSymbols)
             ])
         
-        let scanner = ImplScanner(globalEnvironment: globalEnvironment, symbols: symbols)
+        let scanner = ImplScanner(
+            staticStorageFrame: Frame(),
+            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
+            symbols: symbols)
         XCTAssertThrowsError(try scanner.scan(impl: impl)) {
             let error = $0 as? CompilerError
             XCTAssertEqual(error?.message, "function redefines existing symbol: `bar'")
@@ -130,7 +132,6 @@ final class ImplScannerTests: XCTestCase {
     // When execution exits the scope, the methods disappear in the same manner
     // as any other type or symbol defined within that scope.
     func testImplScoping() throws {
-        let globalEnvironment = GlobalEnvironment()
         
         let outerBlock = Block(children: [
                 StructDeclaration(
@@ -166,13 +167,14 @@ final class ImplScannerTests: XCTestCase {
         
         _ = try SnapSubcompilerStructDeclaration(
             symbols: outerBlock.symbols,
-            globalEnvironment: globalEnvironment)
+            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
         .compile(foo)
         
         try ImplScanner(
-            globalEnvironment: globalEnvironment,
+            staticStorageFrame: Frame(),
+            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
             symbols: innerBlock.symbols)
-            .scan(impl: impl)
+        .scan(impl: impl)
         
         let tryResolveBar = { (block: Block) in
             try block
@@ -194,7 +196,6 @@ final class ImplScannerTests: XCTestCase {
     // When execution exits the scope, the methods disappear in the same manner
     // as any other type or symbol defined within that scope.
     func testGenericImplScoping() throws {
-        let globalEnvironment = GlobalEnvironment()
         
         let outerBlock = Block(children: [
                 StructDeclaration(
@@ -243,13 +244,14 @@ final class ImplScannerTests: XCTestCase {
         
         _ = try SnapSubcompilerStructDeclaration(
             symbols: outerBlock.symbols,
-            globalEnvironment: globalEnvironment)
+            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
         .compile(foo)
         
         try ImplScanner(
-            globalEnvironment: globalEnvironment,
+            staticStorageFrame: Frame(),
+            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
             symbols: innerBlock.symbols)
-            .scan(impl: impl)
+        .scan(impl: impl)
         
         let tryResolveBar = { (block: Block) in
             try block

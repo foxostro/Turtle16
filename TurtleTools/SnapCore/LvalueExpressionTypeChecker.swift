@@ -10,16 +10,23 @@ import TurtleCore
 
 // Evaluates the expression type in an lvalue context.
 public class LvalueExpressionTypeChecker: NSObject {
-    public let symbols: SymbolTable
-    public let globalEnvironment: GlobalEnvironment!
+    private let symbols: SymbolTable
+    private let staticStorageFrame: Frame
+    private let memoryLayoutStrategy: MemoryLayoutStrategy
     
-    public init(symbols: SymbolTable = SymbolTable(), globalEnvironment: GlobalEnvironment? = nil) {
+    public init(symbols: SymbolTable = SymbolTable(),
+                staticStorageFrame: Frame = Frame(),
+                memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()) {
         self.symbols = symbols
-        self.globalEnvironment = globalEnvironment
+        self.staticStorageFrame = staticStorageFrame
+        self.memoryLayoutStrategy = memoryLayoutStrategy
     }
         
     func rvalueContext() -> RvalueExpressionTypeChecker {
-        return RvalueExpressionTypeChecker(symbols: symbols, globalEnvironment: globalEnvironment)
+        RvalueExpressionTypeChecker(
+            symbols: symbols,
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
     }
     
     @discardableResult public func check(expression: Expression) throws -> SymbolType? {

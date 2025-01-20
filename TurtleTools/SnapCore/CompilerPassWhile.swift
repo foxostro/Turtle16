@@ -11,17 +11,45 @@ import TurtleCore
 /// Compiler pass to lower and erase "while" statements
 public class CompilerPassWhile: CompilerPassWithDeclScan {
     public override func visit(while node0: While) throws -> AbstractSyntaxTreeNode? {
-        let node1 = try SnapSubcompilerWhile().compile(
-            while: node0,
-            symbols: symbols!)
+        let symbols = symbols!
+        let s = node0.sourceAnchor
+        let condition = Expression.As(
+            sourceAnchor: node0.condition.sourceAnchor,
+            expr: node0.condition,
+            targetType: Expression.PrimitiveType(.bool))
+        try rvalueContext.check(expression: condition)
+        let labelHead = symbols.nextLabel()
+        let labelTail = symbols.nextLabel()
+        let node1 = Seq(sourceAnchor: s, children: [
+            LabelDeclaration(sourceAnchor: s, identifier: labelHead),
+            GotoIfFalse(sourceAnchor: s,
+                        condition: condition,
+                        target: labelTail),
+            node0.body,
+            Goto(sourceAnchor: s, target: labelHead),
+            LabelDeclaration(sourceAnchor: s, identifier: labelTail)
+        ])
         let node2 = try super.visit(node1)
         return node2
+    }
+    
+    private func rvalueContext() -> RvalueExpressionTypeChecker {
+        RvalueExpressionTypeChecker(
+            symbols: symbols!,
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
     }
 }
 
 extension AbstractSyntaxTreeNode {
     /// Compiler pass to lower and erase "while" statements
-    public func whilePass(_ globalEnvironment: GlobalEnvironment) throws -> AbstractSyntaxTreeNode? {
-        try CompilerPassWhile(globalEnvironment: globalEnvironment).run(self)
+    public func whilePass(
+        staticStorageFrame: Frame = Frame(),
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+    ) throws -> AbstractSyntaxTreeNode? {
+        try CompilerPassWhile(
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
+        .run(self)
     }
 }

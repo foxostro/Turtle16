@@ -11,11 +11,6 @@ import TurtleSimulatorCore
 
 public class SnapCompilerBackEndTurtle16: NSObject {
     public private(set) var assembly: Result<TopLevel, Error>! = nil
-    private let globalEnvironment: GlobalEnvironment
-    
-    public init(globalEnvironment: GlobalEnvironment) {
-        self.globalEnvironment = globalEnvironment
-    }
     
     public func compile(tackProgram: TackProgram) -> Result<[UInt16], Error> {
         let result = compileTackToAssembly(tackProgram)

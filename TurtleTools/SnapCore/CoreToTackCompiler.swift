@@ -92,7 +92,11 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
             children.append(compiledNode)
         }
         
-        children += subroutines
+        children += try subroutines.map { subroutine in
+            try subroutine.linearizeLabels(
+                relativeTo: symbols!,
+                globalEnvironment: globalEnvironment)!
+        }
         
         let seq = Seq(sourceAnchor: node0?.sourceAnchor, children: children)
         let result = try seq.flatten()
@@ -107,7 +111,9 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
     
     public override func visit(block block0: Block) throws -> AbstractSyntaxTreeNode? {
         let block1 = try super.visit(block: block0) as! Block
-        let seq = Seq(sourceAnchor: block1.sourceAnchor, children: block1.children)
+        let seq = try block1.eraseBlock(
+            relativeTo: symbols!,
+            globalEnvironment: globalEnvironment)
         return seq
     }
     
@@ -334,7 +340,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
                 let lowerBound = 0
                 let tempLowerBound = nextRegister(type: .w)
                 let tempComparison1 = nextRegister(type: .o)
-                let labelPassesLowerBoundsCheck = globalEnvironment.labelMaker.next()
+                let labelPassesLowerBoundsCheck = symbols!.nextLabel()
                 children += [
                     TackInstructionNode(
                         instruction: .liw(tempLowerBound.unwrap16!, lowerBound),
@@ -380,7 +386,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
                 }
                 
                 let tempComparison2 = nextRegister(type: .o)
-                let labelPassesUpperBoundsCheck = globalEnvironment.labelMaker.next()
+                let labelPassesUpperBoundsCheck = symbols!.nextLabel()
                 children += [
                     TackInstructionNode(
                         instruction: .ltw(tempComparison2.unwrapBool!, index.unwrap16!, tempUpperBound.unwrap16!),
@@ -500,8 +506,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
                         callee: Expression.Identifier(kOOB)))
                 let boundsCheck1 = try SnapSubcompilerIf().compile(
                     if: boundsCheck0,
-                    symbols: symbols!,
-                    labelMaker: globalEnvironment.labelMaker)
+                    symbols: symbols!)
                 if let boundsCheck2 = try super.visit(boundsCheck1) {
                     children.append(boundsCheck2)
                 }
@@ -524,8 +529,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
                             identifier: kOOB)))
                 let boundsCheck1 = try SnapSubcompilerIf().compile(
                     if: boundsCheck0,
-                    symbols: symbols!,
-                    labelMaker: globalEnvironment.labelMaker)
+                    symbols: symbols!)
                 if let boundsCheck2 = try super.visit(boundsCheck1) {
                     children.append(boundsCheck2)
                 }
@@ -697,8 +701,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
                             identifier: kOOB)))
                 let boundsCheck1 = try SnapSubcompilerIf().compile(
                     if: boundsCheck0,
-                    symbols: symbols!,
-                    labelMaker: globalEnvironment.labelMaker)
+                    symbols: symbols!)
                 if let boundsCheck2 = try super.visit(boundsCheck1) {
                     children.append(boundsCheck2)
                 }
@@ -719,8 +722,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
                             identifier: kOOB)))
                 let boundsCheck1 = try SnapSubcompilerIf().compile(
                     if: boundsCheck0,
-                    symbols: symbols!,
-                    labelMaker: globalEnvironment.labelMaker)
+                    symbols: symbols!)
                 if let boundsCheck2 = try super.visit(boundsCheck1) {
                     children.append(boundsCheck2)
                 }
@@ -1551,7 +1553,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
                 let unionTypeTag = determineUnionTypeTag(typ, targetType)!
                 let tempUnionTag = nextRegister(type: .w)
                 let tempComparison = nextRegister(type: .w)
-                let labelSkipPanic = globalEnvironment.labelMaker.next()
+                let labelSkipPanic = symbols!.nextLabel()
                 children += [
                     TackInstructionNode(
                         instruction: .lw(tempUnionTag.unwrap16!, tempUnionAddr.unwrapPointer!, kUnionTypeTagOffset),
@@ -2259,8 +2261,8 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
     
     func logicalAnd(_ binary: Expression.Binary) throws -> AbstractSyntaxTreeNode {
         var instructions: [AbstractSyntaxTreeNode] = []
-        let labelFalse = globalEnvironment.labelMaker.next()
-        let labelTail = globalEnvironment.labelMaker.next()
+        let labelFalse = symbols!.nextLabel()
+        let labelTail = symbols!.nextLabel()
         instructions.append(try compileAndConvertExpression(rexpr: binary.left, ltype: .bool, isExplicitCast: false))
         let a = popRegister()
         instructions += [
@@ -2305,8 +2307,8 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
     
     func logicalOr(_ binary: Expression.Binary) throws -> AbstractSyntaxTreeNode {
         var instructions: [AbstractSyntaxTreeNode] = []
-        let labelTrue = globalEnvironment.labelMaker.next()
-        let labelTail = globalEnvironment.labelMaker.next()
+        let labelTrue = symbols!.nextLabel()
+        let labelTail = symbols!.nextLabel()
         instructions.append(try compileAndConvertExpression(rexpr: binary.left, ltype: .bool, isExplicitCast: false))
         let a = popRegister()
         instructions += [
@@ -3093,9 +3095,12 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
         return nil
     }
     
-    public override func visit(module node0: Module) throws -> AbstractSyntaxTreeNode? {
-        let node1 = try super.visit(module: node0) as! Module
-        let node2 = try visit(block: node1.block)
-        return node2
+    public override func visit(module node0: Module) throws -> Seq {
+        // The module was compiled during the scan phase. Now erase it.
+        let node1 = modules[node0.name]!
+        let seq = try node1.block.eraseBlock(
+            relativeTo: symbols!,
+            globalEnvironment: globalEnvironment)
+        return seq
     }
 }

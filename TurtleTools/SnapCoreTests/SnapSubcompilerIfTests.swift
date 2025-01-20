@@ -15,7 +15,7 @@ class SnapSubcompilerIfTests: XCTestCase {
         let node = If(condition: Expression.LiteralInt(0),
                       then: Block(children: []),
                       else: nil)
-        XCTAssertThrowsError(try SnapSubcompilerIf().compile(if: node, symbols: SymbolTable(), labelMaker: LabelMaker())) {
+        XCTAssertThrowsError(try SnapSubcompilerIf().compile(if: node, symbols: SymbolTable())) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "cannot convert value of type `integer constant 0' to type `bool'")

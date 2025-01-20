@@ -14,7 +14,7 @@ class SnapSubcompilerWhileTests: XCTestCase {
     func testFailCompileIfStatementWithNonbooleanCondition() {
         let node = While(condition: Expression.LiteralInt(0),
                          body: Block(children: []))
-        XCTAssertThrowsError(try SnapSubcompilerWhile().compile(while: node, symbols: SymbolTable(), labelMaker: LabelMaker())) {
+        XCTAssertThrowsError(try SnapSubcompilerWhile().compile(while: node, symbols: SymbolTable())) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "cannot convert value of type `integer constant 0' to type `bool'")

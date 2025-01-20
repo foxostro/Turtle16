@@ -92,7 +92,7 @@ fileprivate extension AbstractSyntaxTreeNode {
 }
 
 extension AbstractSyntaxTreeNode {
-    /// Rewrite labels in the module to avoid collisions with names in the specified symbol table
+    /// Rewrite labels to avoid collisions with names in the specified symbol table
     public func linearizeLabels(
         relativeTo symbols: SymbolTable,
         globalEnvironment: GlobalEnvironment
@@ -109,6 +109,10 @@ extension AbstractSyntaxTreeNode {
 }
 
 extension Block {
+    /// Rewrite the Block into a Seq
+    /// Ensures label names are rewritten to preserve uniqueness relative to the
+    /// specified symbol table. Typically, this specifies the symbols of the
+    /// enclosing Block.
     func eraseBlock(
         relativeTo symbols: SymbolTable,
         globalEnvironment: GlobalEnvironment

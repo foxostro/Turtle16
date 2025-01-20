@@ -13,8 +13,7 @@ public class CompilerPassIf: CompilerPassWithDeclScan {
     public override func visit(if node0: If) throws -> AbstractSyntaxTreeNode? {
         let node1 = try SnapSubcompilerIf().compile(
             if: node0,
-            symbols: symbols!,
-            labelMaker: globalEnvironment.labelMaker)
+            symbols: symbols!)
         let node2 = try super.visit(node1)
         return node2
     }

@@ -11,7 +11,6 @@ import TurtleCore
 public class GlobalEnvironment: NSObject {
     public let staticStorageFrame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
     public let memoryLayoutStrategy: MemoryLayoutStrategy
-    public let labelMaker = LabelMaker()
     
     public init(memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()) {
         self.memoryLayoutStrategy = memoryLayoutStrategy

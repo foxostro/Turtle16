@@ -9,14 +9,14 @@
 import TurtleCore
 
 public class SnapSubcompilerWhile: NSObject {
-    public func compile(while node: While, symbols: SymbolTable, labelMaker: LabelMaker) throws -> Seq {
+    public func compile(while node: While, symbols: SymbolTable) throws -> Seq {
         let s = node.sourceAnchor
         let condition = Expression.As(sourceAnchor: node.condition.sourceAnchor,
                                               expr: node.condition,
                                       targetType: Expression.PrimitiveType(.bool))
         try RvalueExpressionTypeChecker(symbols: symbols).check(expression: condition)
-        let labelHead = labelMaker.next()
-        let labelTail = labelMaker.next()
+        let labelHead = symbols.nextLabel()
+        let labelTail = symbols.nextLabel()
         return Seq(sourceAnchor: s, children: [
             LabelDeclaration(sourceAnchor: s, identifier: labelHead),
             GotoIfFalse(sourceAnchor: s,

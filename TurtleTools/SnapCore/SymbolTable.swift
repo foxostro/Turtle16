@@ -22,10 +22,11 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     case constTraitType(TraitType), traitType(TraitType)
     case genericTraitType(GenericTraitType)
     case unionType(UnionType)
+    case label
     
     public var isPrimitive: Bool {
         switch self {
-        case .void, .booleanType, .arithmeticType, .pointer, .constPointer:
+        case .void, .booleanType, .arithmeticType, .pointer, .constPointer, .label:
             return true
         
         default:
@@ -35,7 +36,7 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
     
     public var isConst: Bool {
         switch self {
-        case .void, .function:
+        case .void, .function, .label:
             return true
         case .booleanType(let typ):
             return typ.isConst
@@ -286,6 +287,8 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             return "*\(pointee.description)"
         case .unionType(let typ):
             return typ.description
+        case .label:
+            return "label"
         }
     }
     
@@ -362,6 +365,9 @@ public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
             
         case .unionType(let typ):
             Expression.UnionType(typ.members.map { $0.lift })
+            
+        case .label:
+            fatalError("cannot lift a label")
         }
     }
     
@@ -1527,7 +1533,7 @@ extension SymbolType {
         }
         
         return switch self {
-        case .void, .booleanType, .arithmeticType:
+        case .void, .booleanType, .arithmeticType, .label:
             false
             
         case .function(let typ):

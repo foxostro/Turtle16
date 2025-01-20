@@ -2422,21 +2422,16 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         }
     }
 
-    func testBugWhereConstSelfPointerInTraitCausesCompilerCrash() {
-        let compiler = makeCompiler()
-        let result = Result {
-            try compiler.compile(program: """
-                trait Serial {
-                    func print(self: *const Serial, s: []const u8)
-                }
-                """)
-        }
-        XCTAssertNoThrow(try result.get())
+    func testBugWhereConstSelfPointerInTraitCausesCompilerCrash() throws {
+        _ = try makeCompiler().compile(program: """
+            trait Serial {
+                func print(self: *const Serial, s: []const u8)
+            }
+            """)
     }
 
     func testCrashWhenReturningAZeroSizeStruct() throws {
-        let compiler = makeCompiler()
-        _ = try compiler.compile(program: """
+        _ = try makeCompiler().compile(program: """
             struct Empty {}
             func init() -> Empty {
                 return Empty {}

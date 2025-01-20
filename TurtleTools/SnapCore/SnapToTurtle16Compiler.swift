@@ -39,7 +39,7 @@ public class SnapToTurtle16Compiler: NSObject {
         errors = []
         
         let frontEnd = SnapCompilerFrontEnd(options: options, memoryLayoutStrategy: memoryLayoutStrategy)
-        tack = frontEnd.compile(program: text, base: base, url: url)
+        tack = Result { try frontEnd.compile(program: text, base: base, url: url) }
         testNames = frontEnd.testNames
         syntaxTree = frontEnd.syntaxTree
         symbolsOfTopLevelScope = frontEnd.symbolsOfTopLevelScope

@@ -51,10 +51,9 @@ final class TackDebuggerTests: XCTestCase {
             options: opts2,
             memoryLayoutStrategy: memoryLayoutStrategy)
         
-        let result = compiler.compile(program: program)
         let tackProgram: TackProgram
         do {
-            tackProgram = try result.get()
+            tackProgram = try compiler.compile(program: program)
         }
         catch (let error as CompilerError) {
             let omnibusError = CompilerError.makeOmnibusError(fileName: nil, errors: [error])

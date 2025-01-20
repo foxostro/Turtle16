@@ -45,59 +45,46 @@ public class SnapCompilerFrontEnd: NSObject {
         self.memoryLayoutStrategy = memoryLayoutStrategy
     }
     
-    public func compile(program text: String,
-                        base: Int = 0,
-                        url: URL? = nil) -> Result<TackProgram, Error> {
+    public func compile(
+        program text: String,
+        base: Int = 0,
+        url: URL? = nil
+    ) throws -> TackProgram {
+        let tokens = try lex(text, url)
+        let ast0 = try parse(tokens)
+        let (ast1, testNames) = try ast0.snapToCore(
+            shouldRunSpecificTest: options.shouldRunSpecificTest,
+            injectModules: Array(options.injectedModules),
+            isUsingStandardLibrary: options.isUsingStandardLibrary,
+            runtimeSupport: options.runtimeSupport,
+            sandboxAccessManager: sandboxAccessManager)
+        let tackProgram = try ast1.coreToTack(
+            memoryLayoutStrategy: memoryLayoutStrategy,
+            options: options)
         
-        let result = lex(text, url)
-            .flatMap(parse)
-            .flatMap(desugar)
-            .flatMap(compileSnapToTack)
+        self.syntaxTree = ast0
+        self.symbolsOfTopLevelScope = ast1.symbols
+        self.testNames = testNames
         
-        return result
+        return tackProgram
     }
     
-    func lex(_ text: String, _ url: URL?) -> Result<[Token], Error> {
+    func lex(_ text: String, _ url: URL?) throws -> [Token] {
         let lexer = SnapLexer(text, url)
         lexer.scanTokens()
         if let error = lexer.errors.first {
-            return .failure(error)
+            throw error
         }
-        return .success(lexer.tokens)
+        return lexer.tokens
     }
     
-    func parse(_ tokens: [Token]) -> Result<AbstractSyntaxTreeNode?, Error> {
+    func parse(_ tokens: [Token]) throws -> TopLevel {
         let parser = SnapParser(tokens: tokens)
         parser.parse()
         if let error = parser.errors.first {
-            return .failure(error)
+            throw error
         }
         self.syntaxTree = parser.syntaxTree
-        return .success(parser.syntaxTree)
-    }
-    
-    func desugar(_ syntaxTree: AbstractSyntaxTreeNode?) -> Result<AbstractSyntaxTreeNode?, Error> {
-        Result {
-            guard let syntaxTree else { return nil }
-            let t = try syntaxTree.snapToCore(
-                shouldRunSpecificTest: options.shouldRunSpecificTest,
-                injectModules: Array(options.injectedModules),
-                isUsingStandardLibrary: options.isUsingStandardLibrary,
-                runtimeSupport: options.runtimeSupport,
-                sandboxAccessManager: sandboxAccessManager)
-            let (block, testNames) = t
-            symbolsOfTopLevelScope = block.symbols
-            self.testNames = testNames
-            return block
-        }
-    }
-    
-    func compileSnapToTack(_ ast: AbstractSyntaxTreeNode?) -> Result<TackProgram, Error> {
-        Result {
-            guard let ast else { return TackProgram() }
-            return try ast.coreToTack(
-                memoryLayoutStrategy: memoryLayoutStrategy,
-                options: options)
-        }
+        return parser.syntaxTree!
     }
 }

@@ -24,9 +24,8 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     
     fileprivate func compile(program: String) throws -> TackProgram {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: program)
         do {
-            return try result.get()
+            return try compiler.compile(program: program)
         }
         catch (let error as CompilerError) {
             let omnibusError = CompilerError.makeOmnibusError(fileName: nil, errors: [error])
@@ -47,13 +46,13 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     
     func testEmptyProgram() throws {
         let compiler = makeCompiler()
-        let tackProgram = try compiler.compile(program: "").get()
+        let tackProgram = try compiler.compile(program: "")
         XCTAssertEqual(tackProgram.listing, "")
     }
     
     func testCompileFailsDuringLexing() {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: "`")
+        let result = Result { try compiler.compile(program: "`") }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "`")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 0..<1)
@@ -63,7 +62,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testCompileFailsDuringParsing() {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: ":")
+        let result = Result { try compiler.compile(program: ":") }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, ":")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 0..<1)
@@ -73,7 +72,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testCompileFailsDuringCodeGeneration() {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: "foo")
+        let result = Result { try compiler.compile(program: "foo") }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "foo")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 0..<1)
@@ -83,9 +82,11 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testSimpleProgram() throws {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
-            let a = 1
-            """)
+        let result = Result {
+            try compiler.compile(program: """
+                let a = 1
+                """)
+        }
         let tackProgram = try result.get()
         XCTAssertEqual(tackProgram.listing, """
             0000  LIP p0, 272
@@ -153,10 +154,9 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             options: opts2,
             memoryLayoutStrategy: memoryLayoutStrategy)
         
-        let result = compiler.compile(program: program)
         let tackProgram: TackProgram
         do {
-            tackProgram = try result.get()
+            tackProgram = try compiler.compile(program: program)
         }
         catch (let error as CompilerError) {
             let omnibusError = CompilerError.makeOmnibusError(fileName: nil, errors: [error])
@@ -398,13 +398,15 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testLocalVariablesDoNotSurviveTheLocalScope() throws {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
-            {
-                var a = 1
-                a = 2
-            }
-            a = 3
-            """)
+        let result = Result {
+            try compiler.compile(program: """
+                {
+                    var a = 1
+                    a = 2
+                }
+                a = 3
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "a")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 4..<5)
@@ -416,12 +418,14 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         let compiler = SnapCompilerFrontEnd(
             options: SnapCompilerFrontEnd.Options(runtimeSupport: kRuntime),
             memoryLayoutStrategy: memoryLayoutStrategy)
-        let result = compiler.compile(program: """
-            for i in 0..10 {
-                var a = i
-            }
-            i = 3
-            """)
+        let result = Result {
+            try compiler.compile(program: """
+                for i in 0..10 {
+                    var a = i
+                }
+                i = 3
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "i")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 3..<4)
@@ -431,12 +435,14 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     
     func testCannotShadowALocalVariable() throws {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
-            let a = 1
-            {
-                let a = false
-            }
-            """)
+        let result = Result {
+            try compiler.compile(program: """
+                let a = 1
+                {
+                    let a = false
+                }
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "a")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 2..<3)
@@ -633,10 +639,12 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testMissingReturn_1() throws {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
-            func foo() -> u8 {
-            }
-            """)
+        let result = Result {
+            try compiler.compile(program: """
+                func foo() -> u8 {
+                }
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "foo")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 0..<1)
@@ -646,13 +654,15 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testMissingReturn_2() {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
-            func foo() -> u8 {
-                if false {
-                    return 1
+        let result = Result {
+            try compiler.compile(program: """
+                func foo() -> u8 {
+                    if false {
+                        return 1
+                    }
                 }
-            }
-            """)
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "foo")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 0..<1)
@@ -662,11 +672,13 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testUnexpectedNonVoidReturnValueInVoidFunction() {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
-            func foo() {
-                return 1
-            }
-            """)
+        let result = Result {
+            try compiler.compile(program: """
+                func foo() {
+                    return 1
+                }
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "1")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 1..<2)
@@ -852,9 +864,11 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func test_EndToEndIntegration_DeclareVariableWithExplicitType_CannotConvertU16ToBool() {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
-            let foo: bool = 0xffff
-            """)
+        let result = Result {
+            try compiler.compile(program: """
+                let foo: bool = 0xffff
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "0xffff")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 0..<1)
@@ -917,9 +931,11 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func test_EndToEndIntegration_FailToAssignScalarToArray() {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
-            let arr: [_]u8 = 1
-            """)
+        let result = Result {
+            try compiler.compile(program: """
+                let arr: [_]u8 = 1
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "1")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 0..<1)
@@ -931,12 +947,14 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func test_EndToEndIntegration_FailToAssignFunctionToArray() {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
-            func foo(bar: u8, baz: u16) -> bool {
-                return false
-            }
-            let arr: [_]u16 = foo
-            """)
+        let result = Result {
+            try compiler.compile(program: """
+                func foo(bar: u8, baz: u16) -> bool {
+                    return false
+                }
+                let arr: [_]u16 = foo
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "foo")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 3..<4)
@@ -946,10 +964,12 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func test_EndToEndIntegration_CannotAddArrayToInteger() {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
-            let foo = [_]u8{1, 2, 3}
-            let bar = 1 + foo
-            """)
+        let result = Result {
+            try compiler.compile(program: """
+                let foo = [_]u8{1, 2, 3}
+                let bar = 1 + foo
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "1 + foo")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 1..<2)
@@ -993,9 +1013,11 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func test_EndToEndIntegration_FailToCastIntegerLiteralToArrayOfU8BecauseOfOverflow() {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
-            let foo = [_]u8{0x1001, 0x1002, 0x1003} as [_]u8
-            """)
+        let result = Result {
+            try compiler.compile(program: """
+                let foo = [_]u8{0x1001, 0x1002, 0x1003} as [_]u8
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "0x1001")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 0..<1)
@@ -1381,10 +1403,12 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func test_EndToEndIntegration_CannotMakeMutatingPointerFromConstant_1() throws {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
-            let foo: u16 = 0xabcd
-            var bar: *u16 = &foo
-            """)
+        let result = Result {
+            try compiler.compile(program: """
+                let foo: u16 = 0xabcd
+                var bar: *u16 = &foo
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.message, "cannot assign value of type `*const u16' to type `*u16'")
         }
@@ -1392,14 +1416,16 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func test_EndToEndIntegration_CannotMakeMutatingPointerFromConstant_2() {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
-            struct Foo { x: u8, y: u8, z: u8 }
-            let bar = Foo { .x = 1, .y = 2, .z = 3 }
-            func doTheThing(foo: *Foo) {
-                foo.x = foo.y * foo.z
-            }
-            doTheThing(&bar)
-            """)
+        let result = Result {
+            try compiler.compile(program: """
+                struct Foo { x: u8, y: u8, z: u8 }
+                let bar = Foo { .x = 1, .y = 2, .z = 3 }
+                func doTheThing(foo: *Foo) {
+                    foo.x = foo.y * foo.z
+                }
+                doTheThing(&bar)
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.message, "cannot convert value of type `*const Foo' to expected argument type `*Foo' in call to `doTheThing'")
         }
@@ -1653,21 +1679,23 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func test_EndToEndIntegration_Match_WithExtraneousClause() {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
-            var r: u8 = 0
-            var a: u8 = 0
-            match a {
-                (foo: u8) -> {
-                    a = 1
-                },
-                (foo: bool) -> {
-                    a = 2
-                },
-                else -> {
-                    a = 3
+        let result = Result {
+            try compiler.compile(program: """
+                var r: u8 = 0
+                var a: u8 = 0
+                match a {
+                    (foo: u8) -> {
+                        a = 1
+                    },
+                    (foo: bool) -> {
+                        a = 2
+                    },
+                    else -> {
+                        a = 3
+                    }
                 }
-            }
-            """)
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "foo: bool")
             XCTAssertEqual(error.message, "extraneous clause in match statement: bool")
@@ -1676,15 +1704,17 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func test_EndToEndIntegration_Match_WithMissingClause() {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
-            var r: u8 = 0
-            var a: u8 | bool = 0
-            match a {
-                (foo: u8) -> {
-                    a = 1
+        let result = Result {
+            try compiler.compile(program: """
+                var r: u8 = 0
+                var a: u8 | bool = 0
+                match a {
+                    (foo: u8) -> {
+                        a = 1
+                    }
                 }
-            }
-            """)
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "a")
             XCTAssertEqual(error.message, "match statement is not exhaustive. Missing clause: bool")
@@ -1902,10 +1932,12 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             options: SnapCompilerFrontEnd.Options(
                 injectedModules: [ "MyModule" : "" ]),
             memoryLayoutStrategy: memoryLayoutStrategy)
-        let result = compiler.compile(program: """
-            import MyModule
-            let foo: MyModule = undefined
-            """)
+        let result = Result {
+            try compiler.compile(program: """
+                import MyModule
+                let foo: MyModule = undefined
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "MyModule")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 1..<2)
@@ -1918,11 +1950,13 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             options: SnapCompilerFrontEnd.Options(
                 injectedModules: [ "MyModule" : "" ]),
             memoryLayoutStrategy: memoryLayoutStrategy)
-        let result = compiler.compile(program: """
-            import MyModule
-            func foo(bar: MyModule) {
-            }
-            """)
+        let result = Result {
+            try compiler.compile(program: """
+                import MyModule
+                func foo(bar: MyModule) {
+                }
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "foo")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 1..<2)
@@ -1935,12 +1969,14 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             options: SnapCompilerFrontEnd.Options(
                 injectedModules: [ "MyModule" : "" ]),
             memoryLayoutStrategy: memoryLayoutStrategy)
-        let result = compiler.compile(program: """
-            import MyModule
-            struct Foo {
-                bar: MyModule
-            }
-            """)
+        let result = Result {
+            try compiler.compile(program: """
+                import MyModule
+                struct Foo {
+                    bar: MyModule
+                }
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "MyModule")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 2..<3)
@@ -1953,12 +1989,14 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             options: SnapCompilerFrontEnd.Options(
                 injectedModules: [ "MyModule" : "" ]),
             memoryLayoutStrategy: memoryLayoutStrategy)
-        let result = compiler.compile(program: """
-            import MyModule
-            trait Foo {
-                func foo(bar: MyModule)
-            }
-            """)
+        let result = Result {
+            try compiler.compile(program: """
+                import MyModule
+                trait Foo {
+                    func foo(bar: MyModule)
+                }
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "func foo(bar: MyModule)")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 2..<3)
@@ -1971,10 +2009,12 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             options: SnapCompilerFrontEnd.Options(
                 injectedModules: [ "MyModule" : "" ]),
             memoryLayoutStrategy: memoryLayoutStrategy)
-        let result = compiler.compile(program: """
-            import MyModule
-            typealias Foo = MyModule | u16
-            """)
+        let result = Result {
+            try compiler.compile(program: """
+                import MyModule
+                typealias Foo = MyModule | u16
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "MyModule | u16")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 1..<2)
@@ -2278,44 +2318,46 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testTraitsFailToCompileBecauseTraitNotImplementedAppropriately() throws {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
-            trait Serial {
-                func puts(self: *Serial, s: []const u8)
-            }
-
-            struct SerialFake {
-                buffer: [64]u8,
-                cursor: u16
-            }
-
-            impl SerialFake {
-                func init() -> SerialFake {
-                    var serial: SerialFake = undefined
-                    serial.cursor = 0
-                    for i in 0..(serial.buffer.count) {
-                        serial.buffer[i] = 0
+        let result = Result {
+            try compiler.compile(program: """
+                trait Serial {
+                    func puts(self: *Serial, s: []const u8)
+                }
+                
+                struct SerialFake {
+                    buffer: [64]u8,
+                    cursor: u16
+                }
+                
+                impl SerialFake {
+                    func init() -> SerialFake {
+                        var serial: SerialFake = undefined
+                        serial.cursor = 0
+                        for i in 0..(serial.buffer.count) {
+                            serial.buffer[i] = 0
+                        }
+                        return serial
                     }
-                    return serial
                 }
-            }
-
-            impl Serial for SerialFake {
-                func puts(self: *SerialFake) {
+                
+                impl Serial for SerialFake {
+                    func puts(self: *SerialFake) {
+                    }
                 }
-            }
-
-            test "call through trait interface" {
-                var serialFake = SerialFake.init()
-                let serial: Serial = &serialFake
-                serial.puts("test")
-                assert(serialFake.cursor == 4)
-                assert(serialFake.buffer[0] == 't')
-                assert(serialFake.buffer[1] == 'e')
-                assert(serialFake.buffer[2] == 's')
-                assert(serialFake.buffer[3] == 't')
-            }
-
-            """)
+                
+                test "call through trait interface" {
+                    var serialFake = SerialFake.init()
+                    let serial: Serial = &serialFake
+                    serial.puts("test")
+                    assert(serialFake.cursor == 4)
+                    assert(serialFake.buffer[0] == 't')
+                    assert(serialFake.buffer[1] == 'e')
+                    assert(serialFake.buffer[2] == 's')
+                    assert(serialFake.buffer[3] == 't')
+                }
+                
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "impl Serial for SerialFake {")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 20..<21)
@@ -2325,21 +2367,23 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testBugSymbolResolutionInStructMethodsPutsMembersInScopeWithBrokenOffsets() {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
-            struct Foo {
-                bar: u8
-            }
-
-            impl Foo {
-                func init() -> Foo {
-                    var baz: Foo = undefined
-                    bar = 42
-                    return baz
+        let result = Result {
+            try compiler.compile(program: """
+                struct Foo {
+                    bar: u8
                 }
-            }
-
-            let foo = Foo.init()
-            """)
+                
+                impl Foo {
+                    func init() -> Foo {
+                        var baz: Foo = undefined
+                        bar = 42
+                        return baz
+                    }
+                }
+                
+                let foo = Foo.init()
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "bar")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 7..<8)
@@ -2371,10 +2415,12 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testBugWhereImplErrorIsMissingSourceAnchor() throws {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
-            impl Foo {
-            }
-            """)
+        let result = Result {
+            try compiler.compile(program: """
+                impl Foo {
+                }
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "Foo")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 0..<1)
@@ -2384,32 +2430,35 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testBugWhereConstSelfPointerInTraitCausesCompilerCrash() {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
-            trait Serial {
-                func print(self: *const Serial, s: []const u8)
-            }
-            """)
+        let result = Result {
+            try compiler.compile(program: """
+                trait Serial {
+                    func print(self: *const Serial, s: []const u8)
+                }
+                """)
+        }
         XCTAssertNoThrow(try result.get())
     }
 
-    func testCrashWhenReturningAZeroSizeStruct() {
+    func testCrashWhenReturningAZeroSizeStruct() throws {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
+        _ = try compiler.compile(program: """
             struct Empty {}
             func init() -> Empty {
                 return Empty {}
             }
             let foo = init()
             """)
-        XCTAssertNoThrow(try result.get())
     }
 
     func testBugWhereCompilerPermitsImplicitConversionFromUnionToMemberType() {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
-            var a: u8 | bool = 42
-            var b: u8 = a
-            """)
+        let result = Result {
+            try compiler.compile(program: """
+                var a: u8 | bool = 42
+                var b: u8 = a
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "a")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 1..<2)
@@ -2417,23 +2466,24 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         }
     }
 
-    func testBugWhereCompilerDoesNotConvertUnionValuesOfDifferentConstness() {
+    func testBugWhereCompilerDoesNotConvertUnionValuesOfDifferentConstness() throws {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
+        _ = try compiler.compile(program: """
             var a: u8 | bool = 42
             let b: u8 | bool = a
             """)
-        XCTAssertNoThrow(try result.get())
     }
 
     func testWeCannotUseVariableBeforeItIsDeclared() {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
-            func main() {
-                a = 1
-                var a: u16 = 0
-            }
-            """)
+        let result = Result {
+            try compiler.compile(program: """
+                func main() {
+                    a = 1
+                    var a: u16 = 0
+                }
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "a")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 1..<2)
@@ -2466,15 +2516,15 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func testBugWhereAssignToMemberWithTraitTypeFails() throws {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
+        _ = try compiler.compile(program: """
             trait Serial {
                 func print(self: *Serial, s: []const u8)
             }
-
+            
             struct XmodemProtocol {
                 serial: Serial
             }
-
+            
             impl XmodemProtocol {
                 func init(serial: Serial) -> XmodemProtocol {
                     return XmodemProtocol {
@@ -2483,7 +2533,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
                 }
             }
             """)
-        XCTAssertNoThrow(try result.get())
     }
 
     func testBugWhereCannotAssignStructPointerToTraitObject() throws {
@@ -2878,12 +2927,14 @@ final class SnapCompilerFrontEndTests: XCTestCase {
 
     func test_EndToEndIntegration_CompileErrorOnConcreteInstantiationOfGenericFunction() {
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
-            func identity[T](a: T) -> T {
-                return a.count
-            }
-            let a = identity(1)
-            """)
+        let result = Result {
+            try compiler.compile(program: """
+                func identity[T](a: T) -> T {
+                    return a.count
+                }
+                let a = identity(1)
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "a.count")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 1..<2)
@@ -3106,11 +3157,13 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         // This leads to a crash in peekRegister(). The solution is to add a
         // case to ban conversions from `void' to `void'.
         let compiler = makeCompiler()
-        let result = compiler.compile(program: """
-            func myFunction() {
-            }
-            let p = myFunction()
-            """)
+        let result = Result {
+            try compiler.compile(program: """
+                func myFunction() {
+                }
+                let p = myFunction()
+                """)
+        }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "myFunction()")
             XCTAssertEqual(error.sourceAnchor?.lineNumbers, 2..<3)

@@ -12,15 +12,12 @@ import TurtleCore
 public class TraitScanner: NSObject {
     public let symbols: SymbolTable
     
-    private let staticStorageFrame: Frame
     private let memoryLayoutStrategy: MemoryLayoutStrategy
     
     public init(
-        staticStorageFrame: Frame = Frame(),
         memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull(),
         symbols: SymbolTable = SymbolTable()
     ) {
-        self.staticStorageFrame = staticStorageFrame
         self.memoryLayoutStrategy = memoryLayoutStrategy
         self.symbols = symbols
     }
@@ -147,7 +144,6 @@ public class TraitScanner: NSObject {
     private func typeChecker(symbols: SymbolTable) -> TypeContextTypeChecker {
         TypeContextTypeChecker(
             symbols: symbols,
-            staticStorageFrame: staticStorageFrame,
             memoryLayoutStrategy: memoryLayoutStrategy)
     }
 }

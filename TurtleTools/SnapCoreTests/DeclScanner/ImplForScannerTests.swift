@@ -28,10 +28,7 @@ final class ImplForScannerTests: XCTestCase {
             ],
             visibility: .privateVisibility)
         
-        let scanner = TraitScanner(
-            staticStorageFrame: Frame(),
-            memoryLayoutStrategy: MemoryLayoutStrategyNull(),
-            symbols: symbols)
+        let scanner = TraitScanner(symbols: symbols)
         try scanner.scan(trait: traitDecl)
     }
     

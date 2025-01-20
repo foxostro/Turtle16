@@ -121,7 +121,6 @@ public class CompilerPassWithDeclScan: CompilerPass {
     
     func scan(trait node: TraitDeclaration) throws {
         try TraitScanner(
-            staticStorageFrame: staticStorageFrame,
             memoryLayoutStrategy: memoryLayoutStrategy,
             symbols: symbols!)
         .scan(trait: node)

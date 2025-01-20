@@ -36,44 +36,38 @@ public class SnapToCoreCompiler: NSObject {
         self.sandboxAccessManager = sandboxAccessManager
     }
     
-    public func compile(_ root: AbstractSyntaxTreeNode?) -> Result<Block?, Error> {
-        Result {
-            try root?
-                .withImplicitImport(moduleName: standardLibraryName)?
-                .withImplicitImport(
-                    moduleName: runtimeSupport,
-                    intoGlobalNamespace: true)?
-                .replaceTopLevelWithBlock()
-                .reconnect(parent: nil)
-                .desugarTestDeclarations(
-                    testNames: &testNames,
-                    shouldRunSpecificTest: shouldRunSpecificTest)?
-                .importPass(
-                    injectModules: injectModules,
-                    runtimeSupport: runtimeSupport)?
-                .forInPass()?
-                .genericsPass()?
-                .vtablesPass()?
-                .implForPass()?
-                .eraseMethodCalls()?
-                .synthesizeTerminalReturnStatements()?
-                .eraseImplPass()?
-                .matchPass()?
-                .assertPass()?
-                .returnPass()?
-                .whilePass()?
-                .ifPass()?
-                .lowerVarDeclPass()?
-                .flatten()
+    public func run(_ root: AbstractSyntaxTreeNode) throws -> (Block, testNames: [String]) {
+        let core = try root
+            .withImplicitImport(moduleName: standardLibraryName)?
+            .withImplicitImport(
+                moduleName: runtimeSupport,
+                intoGlobalNamespace: true)?
+            .replaceTopLevelWithBlock()
+            .reconnect(parent: nil)
+            .desugarTestDeclarations(
+                testNames: &testNames,
+                shouldRunSpecificTest: shouldRunSpecificTest)?
+            .importPass(
+                injectModules: injectModules,
+                runtimeSupport: runtimeSupport)?
+            .forInPass()?
+            .genericsPass()?
+            .vtablesPass()?
+            .implForPass()?
+            .eraseMethodCalls()?
+            .synthesizeTerminalReturnStatements()?
+            .eraseImplPass()?
+            .matchPass()?
+            .assertPass()?
+            .returnPass()?
+            .whilePass()?
+            .ifPass()?
+            .lowerVarDeclPass()?
+            .flatten()
+        guard let block = core as? Block else {
+            throw CompilerError(message: "internal compiler error: expected Block after lowering Snap to the core language representation")
         }
-        .flatMap { ast in
-            if let block = ast as? Block {
-                .success(block)
-            }
-            else {
-                .failure(CompilerError(message: "expected Block at root of tree after AST transformation"))
-            }
-        }
+        return (block, testNames)
     }
     
     var standardLibraryName: String? {
@@ -97,8 +91,8 @@ extension AbstractSyntaxTreeNode {
     /// Insert an import statement for an implicit import
     public func withImplicitImport(
         moduleName: String?,
-        intoGlobalNamespace global: Bool = false) -> AbstractSyntaxTreeNode? {
-            
+        intoGlobalNamespace global: Bool = false
+    ) -> AbstractSyntaxTreeNode? {
         guard let moduleName else { return self }
         let importStmt = Import(moduleName: moduleName, intoGlobalNamespace: global)
         let result = switch self {
@@ -112,5 +106,22 @@ extension AbstractSyntaxTreeNode {
             self
         }
         return result
+    }
+    
+    /// Lower a Snap program to an equivalent representation which uses only a small core of the language
+    public func snapToCore(
+        shouldRunSpecificTest: String? = nil,
+        injectModules: [(String, String)] = [],
+        isUsingStandardLibrary: Bool = false,
+        runtimeSupport: String? = nil,
+        sandboxAccessManager: SandboxAccessManager? = nil
+    ) throws -> (Block, testNames: [String]) {
+        let compiler = SnapToCoreCompiler(
+            shouldRunSpecificTest: shouldRunSpecificTest,
+            injectModules: injectModules,
+            isUsingStandardLibrary: isUsingStandardLibrary,
+            runtimeSupport: runtimeSupport,
+            sandboxAccessManager: sandboxAccessManager)
+        return try compiler.run(self)
     }
 }

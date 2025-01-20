@@ -31,17 +31,13 @@ final class SnapToCoreCompilerTests: XCTestCase {
                 CommentNode(string: "")
             ])
         
-        let actual = try SnapToCoreCompiler()
-            .compile(input)
-            .get()
+        let actual = try SnapToCoreCompiler().run(input).0
         XCTAssertEqual(expected, actual)
     }
     
     func testExpectTopLevelNodeAtRoot() throws {
         let input = CommentNode(string: "")
-        XCTAssertThrowsError(try SnapToCoreCompiler()
-            .compile(input)
-            .get())
+        XCTAssertThrowsError(try SnapToCoreCompiler().run(input).0)
     }
     
     func testRvalue_convert_pointer_to_trait() throws {
@@ -136,10 +132,7 @@ final class SnapToCoreCompilerTests: XCTestCase {
         ])
             .reconnect(parent: nil)
         
-        let actual = try SnapToCoreCompiler()
-            .compile(ast0)
-            .get()
-        
+        let actual = try SnapToCoreCompiler().run(ast0).0
         XCTAssertEqual(actual, expected)
     }
 }

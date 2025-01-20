@@ -87,7 +87,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
                    memoryLayoutStrategy: memoryLayoutStrategy)
     }
     
-    public override func run(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
+    public override func run(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode {
         
         var children: [AbstractSyntaxTreeNode] = []
         
@@ -103,7 +103,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
         }
         
         let seq = Seq(sourceAnchor: node0?.sourceAnchor, children: children)
-        let result = try seq.flatten()
+        let result = try seq.flatten() ?? Seq()
         return result
     }
     
@@ -3111,5 +3111,26 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
             staticStorageFrame: staticStorageFrame,
             memoryLayoutStrategy: memoryLayoutStrategy)
         return seq
+    }
+}
+
+extension AbstractSyntaxTreeNode {
+    fileprivate func flattenTackProgram() throws -> TackProgram {
+        try TackFlattener().compile(self)
+    }
+    
+    /// Lower a Snap program, written in a minimal core subset of the language, to equivalent Tack code
+    public func coreToTack(
+        memoryLayoutStrategy: MemoryLayoutStrategy,
+        options: CoreToTackCompiler.Options
+    ) throws -> TackProgram {
+        let staticStorageFrame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
+        let compiler = CoreToTackCompiler(
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy,
+            options: options)
+        let tackAst = try compiler.run(self)
+        let tackProgram = try TackFlattener().compile(tackAst)
+        return tackProgram
     }
 }

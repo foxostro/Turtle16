@@ -77,32 +77,27 @@ public class SnapCompilerFrontEnd: NSObject {
     }
     
     func desugar(_ syntaxTree: AbstractSyntaxTreeNode?) -> Result<AbstractSyntaxTreeNode?, Error> {
-        let compiler = SnapToCoreCompiler(
-            shouldRunSpecificTest: options.shouldRunSpecificTest,
-            injectModules: Array(options.injectedModules),
-            isUsingStandardLibrary: options.isUsingStandardLibrary,
-            runtimeSupport: options.runtimeSupport,
-            sandboxAccessManager: sandboxAccessManager)
-        
-        return compiler
-            .compile(syntaxTree)
-            .map { block in
-                symbolsOfTopLevelScope = block?.symbols
-                testNames = compiler.testNames
-                return block
-            }
+        Result {
+            guard let syntaxTree else { return nil }
+            let t = try syntaxTree.snapToCore(
+                shouldRunSpecificTest: options.shouldRunSpecificTest,
+                injectModules: Array(options.injectedModules),
+                isUsingStandardLibrary: options.isUsingStandardLibrary,
+                runtimeSupport: options.runtimeSupport,
+                sandboxAccessManager: sandboxAccessManager)
+            let (block, testNames) = t
+            symbolsOfTopLevelScope = block.symbols
+            self.testNames = testNames
+            return block
+        }
     }
     
     func compileSnapToTack(_ ast: AbstractSyntaxTreeNode?) -> Result<TackProgram, Error> {
         Result {
-            let staticStorageFrame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
-            let tackAst = try CoreToTackCompiler(
-                staticStorageFrame: staticStorageFrame,
+            guard let ast else { return TackProgram() }
+            return try ast.coreToTack(
                 memoryLayoutStrategy: memoryLayoutStrategy,
                 options: options)
-            .run(ast)
-            let tackProgram = try TackFlattener().compile(tackAst ?? Seq())
-            return tackProgram
         }
     }
 }

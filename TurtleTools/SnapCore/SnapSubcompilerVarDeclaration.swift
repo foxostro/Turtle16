@@ -105,6 +105,7 @@ public class SnapSubcompilerVarDeclaration: NSObject {
                 storage: node.storage,
                 visibility: node.visibility)
             symbols.bind(identifier: node.identifier.identifier, symbol: symbol)
+            attachToFrame(identifier: node.identifier.identifier, symbol: symbol)
             result = nil
         } else {
             throw CompilerError(

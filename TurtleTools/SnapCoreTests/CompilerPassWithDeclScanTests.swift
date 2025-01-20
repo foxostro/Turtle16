@@ -11,17 +11,6 @@ import TurtleCore
 import SnapCore
 
 final class CompilerPassWithDeclScanTests: XCTestCase {
-    var testName: String {
-        let regex = try! NSRegularExpression(pattern: #"\[\w+\s+(?<testName>\w+)\]"#)
-        if let match = regex.firstMatch(in: name, range: NSRange(name.startIndex..., in: name)) {
-            let nsRange = match.range(withName: "testName")
-            if let range = Range(nsRange, in: name) {
-                return String(name[range])
-            }
-        }
-        return ""
-    }
-    
     func parse(_ text: String) throws -> TopLevel {
         try SnapCore.parse(text: text, url: URL(fileURLWithPath: testName))
     }

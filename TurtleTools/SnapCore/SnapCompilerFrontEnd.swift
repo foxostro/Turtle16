@@ -35,7 +35,7 @@ public class SnapCompilerFrontEnd: NSObject {
     
     public private(set) var testNames: [String] = []
     public private(set) var syntaxTree: AbstractSyntaxTreeNode! = nil
-    public private(set) var symbolsOfTopLevelScope: SymbolTable? = nil
+    public private(set) var symbolsOfTopLevelScope: SymbolTable! = nil
     
     public var sandboxAccessManager: SandboxAccessManager? = nil
     
@@ -43,6 +43,21 @@ public class SnapCompilerFrontEnd: NSObject {
                 memoryLayoutStrategy: MemoryLayoutStrategy) {
         self.options = options
         self.memoryLayoutStrategy = memoryLayoutStrategy
+    }
+    
+    public func collectTestNames(
+        program text: String,
+        url: URL? = nil
+    ) throws -> [String] {
+        let tokens = try lex(text, url)
+        let syntaxTree = try parse(tokens)
+        let (_, testNames) = try syntaxTree.snapToCore(
+            shouldRunSpecificTest: options.shouldRunSpecificTest,
+            injectModules: Array(options.injectedModules),
+            isUsingStandardLibrary: options.isUsingStandardLibrary,
+            runtimeSupport: options.runtimeSupport,
+            sandboxAccessManager: sandboxAccessManager)
+        return testNames
     }
     
     public func compile(

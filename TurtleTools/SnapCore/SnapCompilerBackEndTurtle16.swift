@@ -9,52 +9,56 @@
 import TurtleCore
 import TurtleSimulatorCore
 
-public class SnapCompilerBackEndTurtle16: NSObject {
-    public private(set) var assembly: Result<TopLevel, Error>! = nil
-    
-    public func compile(tackProgram: TackProgram) -> Result<[UInt16], Error> {
-        let result = compileTackToAssembly(tackProgram)
-            .flatMap(registerAllocation)
-            .flatMap(compileToLowerAssembly)
-            .flatMap(compileAssemblyToMachineCode)
-        return result
+extension TackProgram {
+    func machineCode() throws -> ([UInt16], TopLevel) {
+        var assembly: TopLevel!
+        let instructions = try self
+            .assemble()
+            .registerAllocation()
+            .map { assembly = $0; return $0 }
+            .lowerAssembly()
+            .machineCode()
+        return (instructions, assembly)
     }
     
-    func compileTackToAssembly(_ tackProgram: TackProgram) -> Result<TopLevel, Error> {
-        Result {
-            try TackToTurtle16Compiler().visit(TopLevel(children: [
-                tackProgram.ast
-            ])) as! TopLevel
+    fileprivate func assemble() throws -> TopLevel {
+        try TackToTurtle16Compiler().visit(TopLevel(children: [ ast ])) as! TopLevel
+    }
+}
+
+fileprivate extension TopLevel {
+    func map(_ block: (TopLevel) -> TopLevel) -> TopLevel {
+        block(self)
+    }
+    
+    func registerAllocation() throws -> TopLevel {
+        try RegisterAllocatorDriver().compile(topLevel: self)
+    }
+    
+    func lowerAssembly() throws -> TopLevel {
+        let topLevel0 = try SnapSubcompilerSubroutine().visit(self) as! TopLevel
+        
+        // The hardware requires us to place a NOP at the first instruction.
+        let topLevel1: TopLevel = if topLevel0.children.first != InstructionNode(instruction: kNOP) {
+            topLevel0.inserting(
+                children: [
+                    InstructionNode(instruction: kNOP)
+                ],
+                at: 0)
         }
-    }
-    
-    func registerAllocation(_ input: TopLevel) -> Result<TopLevel, Error> {
-        Result {
-            try RegisterAllocatorDriver().compile(topLevel: input)
+        else {
+            topLevel0
         }
+        
+        return topLevel1
     }
     
-    func compileToLowerAssembly(_ input: TopLevel) -> Result<TopLevel, Error> {
-        self.assembly = Result {
-            //try SnapASTTransformerFlattenSeq().compile(
-            var topLevel = try SnapSubcompilerSubroutine().visit(input) as! TopLevel
-            
-            // The hardware requires us to place a NOP at the first instruction.
-            if topLevel.children.first != InstructionNode(instruction: kNOP) {
-                topLevel = TopLevel(children: [InstructionNode(instruction: kNOP)] + topLevel.children)
-            }
-            
-            return topLevel
-        }
-        return self.assembly
-    }
-    
-    func compileAssemblyToMachineCode(_ topLevel: TopLevel) -> Result<[UInt16], Error> {
+    func machineCode() throws -> [UInt16] {
         let compiler = AssemblerCompiler()
-        compiler.compile(topLevel)
+        compiler.compile(self)
         if let error = compiler.errors.first {
-            return .failure(error)
+            throw error
         }
-        return .success(compiler.instructions)
+        return compiler.instructions
     }
 }

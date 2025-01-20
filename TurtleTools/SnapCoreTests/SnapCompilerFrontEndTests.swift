@@ -943,8 +943,6 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         }
     }
 
-    // TODO: Consider changing SnapToTurtle16Compiler.compile() so it returns either the compiled program or a compiler error. Eliminate the irregular `hasError' and `errors' properties.
-
     func test_EndToEndIntegration_FailToAssignFunctionToArray() {
         let compiler = makeCompiler()
         let result = Result {

@@ -101,8 +101,8 @@ public class SnapCommandLineDriver: NSObject {
         }
     }
     
-    fileprivate func printNumberOfInstructionWordsUsed(_ frontEnd: SnapToTurtle16Compiler) {
-        let numberOfInstructions = frontEnd.instructions.count
+    fileprivate func printNumberOfInstructionWordsUsed(_ program: TurtleProgram) {
+        let numberOfInstructions = program.instructions.count
         if numberOfInstructions > 32767 {
             reportInfoMessage("WARNING: generated code exceeds 32768 instruction memory words: \(numberOfInstructions) words used\n")
         } else {
@@ -128,38 +128,35 @@ public class SnapCommandLineDriver: NSObject {
     }
     
     fileprivate func collectNamesOfTests(_ text: String, _ fileName: String) throws -> [String] {
-        let opts = SnapToTurtle16Compiler.Options(isBoundsCheckEnabled: true,
-                                                  isUsingStandardLibrary: false,
-                                                  runtimeSupport: kRuntime)
-        let frontEnd0 = SnapToTurtle16Compiler(options: opts)
-        frontEnd0.compile(program: text, url: inputFileName)
-        if frontEnd0.hasError {
-            throw CompilerError.makeOmnibusError(fileName: fileName, errors: frontEnd0.errors)
+        let testNames: [String]
+        do {
+            testNames = try SnapToTurtle16Compiler().collectTestNames(
+                program: text,
+                url: URL.init(string: fileName),
+                options: SnapToTurtle16Compiler.Options(
+                    isBoundsCheckEnabled: true,
+                    isUsingStandardLibrary: false,
+                    runtimeSupport: kRuntime))
         }
-        return frontEnd0.testNames
+        catch let error as CompilerError {
+            throw CompilerError.makeOmnibusError(fileName: fileName, errors: [error])
+        }
+        return testNames
     }
     
     fileprivate func runSpecificTest(_ testName: String, _ text: String, _ fileName: String) throws {
         reportInfoMessage("Running test \"\(testName)\"...\n")
-        let opts = SnapToTurtle16Compiler.Options(isBoundsCheckEnabled: true,
-                                                  isUsingStandardLibrary: false,
-                                                  runtimeSupport: kRuntime,
-                                                  shouldRunSpecificTest: testName)
-        let frontEnd = SnapToTurtle16Compiler(options: opts)
-        frontEnd.compile(program: text, url: inputFileName)
-        if frontEnd.hasError {
-            throw CompilerError.makeOmnibusError(fileName: fileName, errors: frontEnd.errors)
-        }
-        printNumberOfInstructionWordsUsed(frontEnd)
+        let program = try compile(program: text, shouldRunSpecificTest: testName)
+        printNumberOfInstructionWordsUsed(program)
         let directory: URL = inputFileName!.deletingPathExtension().deletingLastPathComponent()
         let baseName: String = inputFileName!.deletingPathExtension().lastPathComponent + " -- \(testName)"
         irOutputFileName = URL(fileURLWithPath: baseName + ".ir", relativeTo: directory)
         asmOutputFileName = URL(fileURLWithPath: baseName + ".asm", relativeTo: directory)
         if shouldOutputIR {
-            try writeToFile(ir: frontEnd.tack.get())
+            try writeToFile(ir: program.tackProgram)
         }
         if shouldOutputAssembly {
-            try writeAssemblyToFile(assembly: frontEnd.assembly.get())
+            try writeAssemblyToFile(assembly: program.assembly)
         }
         
         var serialOutput: [UInt8] = []
@@ -193,12 +190,12 @@ public class SnapCommandLineDriver: NSObject {
         computer.cpu.load = { (addr: MemoryAddress) in
             return computer.ram[addr.value]
         }
-        computer.instructions = frontEnd.instructions
+        computer.instructions = program.instructions
         computer.reset()
         
         let debugger = SnapDebugConsole(computer: computer)
         debugger.logger = PrintLogger()
-        debugger.symbols = frontEnd.symbolsOfTopLevelScope
+        debugger.symbols = program.symbolsOfTopLevelScope
         debugger.interpreter.runOne(instruction: .run)
         
         reportInfoMessage("\n\n")
@@ -211,24 +208,19 @@ public class SnapCommandLineDriver: NSObject {
             throw SnapCommandLineDriverError("failed to read input file as UTF-8 text: \(fileName)")
         }
         
-        let opts = SnapToTurtle16Compiler.Options(isBoundsCheckEnabled: true,
-                                                  isUsingStandardLibrary: false,
-                                                  runtimeSupport: kRuntime)
-        let frontEnd = SnapToTurtle16Compiler(options: opts)
-        frontEnd.compile(program: text, url: inputFileName)
-        if frontEnd.hasError {
-            throw CompilerError.makeOmnibusError(fileName: fileName, errors: frontEnd.errors)
-        }
-        printNumberOfInstructionWordsUsed(frontEnd)
+        let program = try compile(program: text)
+        
+        printNumberOfInstructionWordsUsed(program)
+        
         let directory: URL = inputFileName!.deletingPathExtension().deletingLastPathComponent()
         let baseName: String = inputFileName!.deletingPathExtension().lastPathComponent
         irOutputFileName = URL(fileURLWithPath: baseName + ".ir", relativeTo: directory)
         asmOutputFileName = URL(fileURLWithPath: baseName + ".asm", relativeTo: directory)
         if shouldOutputIR {
-            try writeToFile(ir: frontEnd.tack.get())
+            try writeToFile(ir: program.tackProgram)
         }
         if shouldOutputAssembly {
-            try writeAssemblyToFile(assembly: frontEnd.assembly.get())
+            try writeAssemblyToFile(assembly: program.assembly)
         }
         
         var serialOutput: [UInt8] = []
@@ -262,12 +254,12 @@ public class SnapCommandLineDriver: NSObject {
         computer.cpu.load = { (addr: MemoryAddress) in
             return computer.ram[addr.value]
         }
-        computer.instructions = frontEnd.instructions
+        computer.instructions = program.instructions
         computer.reset()
         
         let debugger = SnapDebugConsole(computer: computer)
         debugger.logger = PrintLogger()
-        debugger.symbols = frontEnd.symbolsOfTopLevelScope
+        debugger.symbols = program.symbolsOfTopLevelScope
         debugger.interpreter.runOne(instruction: .run)
         
         reportInfoMessage("\n\n")
@@ -281,32 +273,49 @@ public class SnapCommandLineDriver: NSObject {
         guard let text = maybeText else {
             throw SnapCommandLineDriverError("failed to read input file as UTF-8 text: \(fileName)")
         }
-        let options = SnapToTurtle16Compiler.Options(isBoundsCheckEnabled: true,
-                                                     isUsingStandardLibrary: false,
-                                                     runtimeSupport: kRuntime)
-        let frontEnd = SnapToTurtle16Compiler(options: options)
-        frontEnd.compile(program: text, url: inputFileName)
-        if frontEnd.hasError {
-            throw CompilerError.makeOmnibusError(fileName: fileName, errors: frontEnd.errors)
-        }
-        printNumberOfInstructionWordsUsed(frontEnd)
+        
+        let program = try compile(program: text)
+        
+        printNumberOfInstructionWordsUsed(program)
         
         if shouldDoASTDump {
-            stdout.write(frontEnd.syntaxTree.description)
+            stdout.write(program.syntaxTree.description)
             stdout.write("\n")
         }
         
         if shouldOutputAssembly {
-            try writeAssemblyToFile(assembly: frontEnd.assembly.get())
+            try writeAssemblyToFile(assembly: program.assembly)
         }
         
         if shouldOutputIR {
-            try writeToFile(ir: frontEnd.tack.get())
+            try writeToFile(ir: program.tackProgram)
         }
         
-        try writeToFile(instructions: frontEnd.instructions)
+        try writeToFile(instructions: program.instructions)
         
         status = 0
+    }
+    
+    func compile(
+        program text: String,
+        shouldRunSpecificTest testName: String? = nil
+    ) throws -> TurtleProgram {
+        let program: TurtleProgram
+        do {
+            program = try SnapToTurtle16Compiler().compile(
+                program: text,
+                url: inputFileName,
+                options: SnapToTurtle16Compiler.Options(
+                    isBoundsCheckEnabled: true,
+                    isUsingStandardLibrary: false,
+                    runtimeSupport: kRuntime,
+                    shouldRunSpecificTest: testName))
+        }
+        catch let error as CompilerError {
+            let fileName = inputFileName!.relativePath
+            throw CompilerError.makeOmnibusError(fileName: fileName, errors: [error])
+        }
+        return program
     }
     
     func writeToFile(ir: TackProgram) throws {
@@ -320,12 +329,11 @@ public class SnapCommandLineDriver: NSObject {
     }
     
     func writeToFile(instructions: [UInt16]) throws {
-        if let programOutputFileName = programOutputFileName {
-            let computer = TurtleComputer(SchematicLevelCPUModel())
-            computer.instructions = instructions
-            let debugger = SnapDebugConsole(computer: computer)
-            debugger.interpreter.runOne(instruction: .save("program", programOutputFileName))
-        }
+        guard let programOutputFileName else { return }
+        let computer = TurtleComputer(SchematicLevelCPUModel())
+        computer.instructions = instructions
+        let debugger = SnapDebugConsole(computer: computer)
+        debugger.interpreter.runOne(instruction: .save("program", programOutputFileName))
     }
     
     public func parseArguments() throws {

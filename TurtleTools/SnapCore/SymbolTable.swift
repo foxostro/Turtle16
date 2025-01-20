@@ -1525,15 +1525,16 @@ public class SymbolTable: NSObject {
 
 extension SymbolType {
     /// Return true if the type includes a Module type somewhere in the def'n
-    public func hasModule(_ sym: SymbolTable, _ workingSet: [SymbolType] = []
+    public func hasModule(
+        _ sym: SymbolTable,
+        _ workingSet: [SymbolType] = []
     ) throws -> Bool {
-        
-        let memoryLayoutStrategy = MemoryLayoutStrategyNull()
         
         guard !workingSet.contains(self) else { return false }
         
+        let typeChecker = TypeContextTypeChecker(symbols: sym)
+        
         let anyExprHasModule: ([Expression]) throws -> Bool = { exprs in
-            let typeChecker = TypeContextTypeChecker(symbols: sym, memoryLayoutStrategy: memoryLayoutStrategy)
             let result = try exprs
                 .compactMap {
                     try? typeChecker.check(expression: $0)

@@ -64,6 +64,8 @@ public class CompilerPassWithDeclScan: CompilerPass {
             try scan(module: node)
         case let node as Import:
             try scan(import: node)
+        case let node as LabelDeclaration:
+            try scan(label: node)
         default:
             break
         }
@@ -203,6 +205,10 @@ public class CompilerPassWithDeclScan: CompilerPass {
         symbols.bind(identifier: clause.valueIdentifier.identifier,
                      symbol: Symbol(type: clauseType))
         try scan(block: clause.block)
+    }
+    
+    func scan(label: LabelDeclaration) throws {
+        symbols!.bind(identifier: label.identifier, symbol: Symbol(type: .label))
     }
     
     public override func willVisit(block node: Block) throws {

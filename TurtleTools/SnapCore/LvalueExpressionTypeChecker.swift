@@ -16,7 +16,7 @@ public class LvalueExpressionTypeChecker: NSObject {
     
     public init(symbols: SymbolTable = SymbolTable(),
                 staticStorageFrame: Frame = Frame(),
-                memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()) {
+                memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()) {
         self.symbols = symbols
         self.staticStorageFrame = staticStorageFrame
         self.memoryLayoutStrategy = memoryLayoutStrategy

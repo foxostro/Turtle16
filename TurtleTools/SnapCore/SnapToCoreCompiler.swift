@@ -31,7 +31,7 @@ public class SnapToCoreCompiler: NSObject {
                 isUsingStandardLibrary: Bool = false,
                 runtimeSupport: String? = nil,
                 sandboxAccessManager: SandboxAccessManager? = nil,
-                memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()) {
+                memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()) {
         self.shouldRunSpecificTest = shouldRunSpecificTest
         self.injectModules = injectModules
         self.isUsingStandardLibrary = isUsingStandardLibrary

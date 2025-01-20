@@ -20,7 +20,7 @@ public class CompilerPassImport: CompilerPass {
     public init(symbols: SymbolTable? = nil,
                 injectModules: [(String, String)] = [],
                 staticStorageFrame: Frame = Frame(),
-                memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16(),
+                memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull(),
                 runtimeSupport: String? = nil) {
         
         var moduleSourceCache: [String : String] = [:]
@@ -147,7 +147,7 @@ extension AbstractSyntaxTreeNode {
         injectModules: [(String, String)],
         runtimeSupport: String? = nil,
         staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) throws -> AbstractSyntaxTreeNode? {
         try CompilerPassImport(
             injectModules: injectModules,

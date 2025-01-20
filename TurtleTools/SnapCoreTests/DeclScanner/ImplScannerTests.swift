@@ -54,12 +54,12 @@ final class ImplScannerTests: XCTestCase {
         
         _ = try SnapSubcompilerStructDeclaration(
             symbols: symbols,
-            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
+            memoryLayoutStrategy: MemoryLayoutStrategyNull())
         .compile(foo)
         
         try ImplScanner(
             staticStorageFrame: Frame(),
-            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
+            memoryLayoutStrategy: MemoryLayoutStrategyNull(),
             symbols: symbols)
         .scan(impl: impl)
         
@@ -89,7 +89,7 @@ final class ImplScannerTests: XCTestCase {
             visibility: .privateVisibility)
         _ = try SnapSubcompilerStructDeclaration(
             symbols: symbols,
-            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
+            memoryLayoutStrategy: MemoryLayoutStrategyNull())
         .compile(foo)
         
         let functionSymbols = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))
@@ -120,7 +120,7 @@ final class ImplScannerTests: XCTestCase {
         
         let scanner = ImplScanner(
             staticStorageFrame: Frame(),
-            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
+            memoryLayoutStrategy: MemoryLayoutStrategyNull(),
             symbols: symbols)
         XCTAssertThrowsError(try scanner.scan(impl: impl)) {
             let error = $0 as? CompilerError
@@ -167,12 +167,12 @@ final class ImplScannerTests: XCTestCase {
         
         _ = try SnapSubcompilerStructDeclaration(
             symbols: outerBlock.symbols,
-            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
+            memoryLayoutStrategy: MemoryLayoutStrategyNull())
         .compile(foo)
         
         try ImplScanner(
             staticStorageFrame: Frame(),
-            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
+            memoryLayoutStrategy: MemoryLayoutStrategyNull(),
             symbols: innerBlock.symbols)
         .scan(impl: impl)
         
@@ -244,12 +244,12 @@ final class ImplScannerTests: XCTestCase {
         
         _ = try SnapSubcompilerStructDeclaration(
             symbols: outerBlock.symbols,
-            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
+            memoryLayoutStrategy: MemoryLayoutStrategyNull())
         .compile(foo)
         
         try ImplScanner(
             staticStorageFrame: Frame(),
-            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
+            memoryLayoutStrategy: MemoryLayoutStrategyNull(),
             symbols: innerBlock.symbols)
         .scan(impl: impl)
         

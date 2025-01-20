@@ -4620,7 +4620,7 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testGetCountOfRange() throws {
         let symbols = SymbolTable()
-            .withCompilerIntrinsicRangeType(MemoryLayoutStrategyTurtle16())
+            .withCompilerIntrinsicRangeType(MemoryLayoutStrategyNull())
         let expr = Expression.Get(
             expr: ExprUtils.makeRange(0, 10),
             member: Expression.Identifier("count"))
@@ -5638,7 +5638,9 @@ class RvalueExpressionTypeCheckerTests: XCTestCase {
         let symbols = SymbolTable()
         symbols.bind(identifier: "Foo", symbol: Symbol(type: .genericTraitType(GenericTraitType(template: template))))
         
-        let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
+        let typeChecker = RvalueExpressionTypeChecker(
+            symbols: symbols,
+            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
         let expr = Expression.GenericTypeApplication(
             identifier: Expression.Identifier("Foo"),
             arguments: [ Expression.PrimitiveType(.u16) ])

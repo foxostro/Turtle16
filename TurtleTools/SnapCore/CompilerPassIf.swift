@@ -23,7 +23,7 @@ extension AbstractSyntaxTreeNode {
     /// Compiler pass to lower and erase "if" statements
     public func ifPass(
         staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) throws -> AbstractSyntaxTreeNode? {
         try CompilerPassIf(
             staticStorageFrame: staticStorageFrame,

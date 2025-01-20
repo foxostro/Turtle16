@@ -72,7 +72,7 @@ extension AbstractSyntaxTreeNode {
     /// Compiler pass to lower and erase Impl blocks
     public func eraseImplPass(
         staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) throws -> AbstractSyntaxTreeNode? {
         try CompilerPassImpl(
             staticStorageFrame: staticStorageFrame,

@@ -15,7 +15,7 @@ public class FunctionScanner: NSObject {
     private let memoryLayoutStrategy: MemoryLayoutStrategy
     private let enclosingImplId: AbstractSyntaxTreeNode.ID?
     
-    public init(memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16(),
+    public init(memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull(),
                 symbols: SymbolTable = SymbolTable(),
                 enclosingImplId: AbstractSyntaxTreeNode.ID? = nil) {
         self.memoryLayoutStrategy = memoryLayoutStrategy

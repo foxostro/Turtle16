@@ -29,7 +29,7 @@ public class SnapToTurtle16Compiler: NSObject {
     }
     
     public init(options: Options = Options(),
-                memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()) {
+                memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()) {
         self.options = options
         self.memoryLayoutStrategy = memoryLayoutStrategy
     }

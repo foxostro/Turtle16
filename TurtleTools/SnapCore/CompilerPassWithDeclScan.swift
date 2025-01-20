@@ -37,7 +37,7 @@ public class CompilerPassWithDeclScan: CompilerPass {
     public init(
         symbols: SymbolTable? = nil,
         staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) {
         self.staticStorageFrame = staticStorageFrame
         self.memoryLayoutStrategy = memoryLayoutStrategy

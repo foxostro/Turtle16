@@ -119,7 +119,7 @@ extension Block {
     func eraseBlock(
         relativeTo symbols: SymbolTable,
         staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) throws -> Seq {
         let block1 = try linearizeLabels(
             relativeTo: symbols,

@@ -258,7 +258,7 @@ extension AbstractSyntaxTreeNode {
     /// Erase impl-for declarations, rewriting in terms of lower-level concepts
     public func implForPass(
         staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) throws -> AbstractSyntaxTreeNode? {
         try CompilerPassImplFor(
             staticStorageFrame: staticStorageFrame,

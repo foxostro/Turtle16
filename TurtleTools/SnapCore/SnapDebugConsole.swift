@@ -10,7 +10,7 @@ import TurtleSimulatorCore
 
 public class SnapDebugConsole : DebugConsole {
     public var symbols: SymbolTable? = nil
-    public let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+    public let memoryLayoutStrategy = MemoryLayoutStrategyNull()
     
     public func loadSymbolU8(_ identifier: String) -> UInt8? {
         guard let symbol = symbols?.maybeResolve(identifier: identifier) else {

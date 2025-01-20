@@ -35,7 +35,9 @@ class SnapSubcompilerVarDeclarationTests: XCTestCase {
     func testDeclareVariable_AutomaticStorage() throws {
         let symbols = SymbolTable()
         symbols.frameLookupMode = .set(Frame(growthDirection: .down))
-        let compiler = SnapSubcompilerVarDeclaration(symbols: symbols)
+        let compiler = SnapSubcompilerVarDeclaration(
+            symbols: symbols,
+            memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL())
         let input = VarDeclaration(identifier: Expression.Identifier("foo"),
                                    explicitType: Expression.PrimitiveType(.u8),
                                    expression: nil,

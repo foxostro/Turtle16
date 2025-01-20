@@ -32,7 +32,7 @@ extension AbstractSyntaxTreeNode {
     /// Compiler pass to emit vtable and such for traits
     public func vtablesPass(
         staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) throws -> AbstractSyntaxTreeNode? {
         try CompilerPassVtables(
             staticStorageFrame: staticStorageFrame,

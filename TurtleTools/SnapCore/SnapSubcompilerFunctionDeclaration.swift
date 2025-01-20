@@ -13,7 +13,7 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
     private let memoryLayoutStrategy: MemoryLayoutStrategy
     
     public init(enclosingImplId: AbstractSyntaxTreeNode.ID? = nil,
-                memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()) {
+                memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()) {
         self.enclosingImplId = enclosingImplId
         self.memoryLayoutStrategy = memoryLayoutStrategy
     }

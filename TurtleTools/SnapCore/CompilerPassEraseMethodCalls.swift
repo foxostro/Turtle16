@@ -99,7 +99,7 @@ extension AbstractSyntaxTreeNode {
     /// Method calls written in the dot syntax are rewritten to plain function calls
     public func eraseMethodCalls(
         staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) throws -> AbstractSyntaxTreeNode? {
         try CompilerPassEraseMethodCalls(
             staticStorageFrame: staticStorageFrame,

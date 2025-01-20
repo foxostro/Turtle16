@@ -447,7 +447,7 @@ extension AbstractSyntaxTreeNode {
     /// Erase generics, rewriting in terms of new concrete types
     public func genericsPass(
         staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) throws -> AbstractSyntaxTreeNode? {
         try CompilerPassGenerics(
             staticStorageFrame: staticStorageFrame,

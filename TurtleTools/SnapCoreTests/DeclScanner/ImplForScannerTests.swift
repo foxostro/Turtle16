@@ -30,7 +30,7 @@ final class ImplForScannerTests: XCTestCase {
         
         let scanner = TraitScanner(
             staticStorageFrame: Frame(),
-            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
+            memoryLayoutStrategy: MemoryLayoutStrategyNull(),
             symbols: symbols)
         try scanner.scan(trait: traitDecl)
     }
@@ -42,7 +42,7 @@ final class ImplForScannerTests: XCTestCase {
             members: [])
         try SnapSubcompilerStructDeclaration(
             symbols: symbols,
-            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16())
+            memoryLayoutStrategy: MemoryLayoutStrategyNull())
         .compile(fake)
     }
     
@@ -74,7 +74,7 @@ final class ImplForScannerTests: XCTestCase {
         
         let scanner = ImplForScanner(
             staticStorageFrame: Frame(),
-            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
+            memoryLayoutStrategy: MemoryLayoutStrategyNull(),
             symbols: symbols)
         try scanner.scan(implFor: ast)
         
@@ -103,7 +103,7 @@ final class ImplForScannerTests: XCTestCase {
         
         let scanner = ImplForScanner(
             staticStorageFrame: Frame(),
-            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
+            memoryLayoutStrategy: MemoryLayoutStrategyNull(),
             symbols: symbols)
         
         XCTAssertThrowsError(try scanner.scan(implFor: ast)) {
@@ -139,7 +139,7 @@ final class ImplForScannerTests: XCTestCase {
         
         let scanner = ImplForScanner(
             staticStorageFrame: Frame(),
-            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
+            memoryLayoutStrategy: MemoryLayoutStrategyNull(),
             symbols: symbols)
         
         XCTAssertThrowsError(try scanner.scan(implFor: ast)) {
@@ -176,7 +176,7 @@ final class ImplForScannerTests: XCTestCase {
         
         let scanner = ImplForScanner(
             staticStorageFrame: Frame(),
-            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
+            memoryLayoutStrategy: MemoryLayoutStrategyNull(),
             symbols: symbols)
         
         XCTAssertThrowsError(try scanner.scan(implFor: ast)) {
@@ -213,7 +213,7 @@ final class ImplForScannerTests: XCTestCase {
         
         let scanner = ImplForScanner(
             staticStorageFrame: Frame(),
-            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
+            memoryLayoutStrategy: MemoryLayoutStrategyNull(),
             symbols: symbols)
         
         XCTAssertThrowsError(try scanner.scan(implFor: ast)) {
@@ -252,7 +252,7 @@ final class ImplForScannerTests: XCTestCase {
         
         let scanner = ImplForScanner(
             staticStorageFrame: Frame(),
-            memoryLayoutStrategy: MemoryLayoutStrategyTurtle16(),
+            memoryLayoutStrategy: MemoryLayoutStrategyNull(),
             symbols: symbols)
         
         XCTAssertThrowsError(try scanner.scan(implFor: ast)) {

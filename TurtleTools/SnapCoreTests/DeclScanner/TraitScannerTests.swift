@@ -37,7 +37,7 @@ final class TraitScannerTests: XCTestCase {
         let scanner = TraitScanner()
         try scanner.scan(trait: ast)
         
-        let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+        let memoryLayoutStrategy = MemoryLayoutStrategyNull()
         let members = SymbolTable()
         let expected: SymbolType = .traitType(TraitType(
             name: "Foo",

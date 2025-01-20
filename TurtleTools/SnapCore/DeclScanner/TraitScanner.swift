@@ -17,7 +17,7 @@ public class TraitScanner: NSObject {
     
     public init(
         staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16(),
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull(),
         symbols: SymbolTable = SymbolTable()
     ) {
         self.staticStorageFrame = staticStorageFrame

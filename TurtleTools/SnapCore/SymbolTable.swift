@@ -1528,7 +1528,7 @@ extension SymbolType {
     public func hasModule(_ sym: SymbolTable, _ workingSet: [SymbolType] = []
     ) throws -> Bool {
         
-        let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+        let memoryLayoutStrategy = MemoryLayoutStrategyNull()
         
         guard !workingSet.contains(self) else { return false }
         

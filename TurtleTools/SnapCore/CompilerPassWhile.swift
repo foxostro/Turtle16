@@ -45,7 +45,7 @@ extension AbstractSyntaxTreeNode {
     /// Compiler pass to lower and erase "while" statements
     public func whilePass(
         staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) throws -> AbstractSyntaxTreeNode? {
         try CompilerPassWhile(
             staticStorageFrame: staticStorageFrame,

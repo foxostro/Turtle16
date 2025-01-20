@@ -87,7 +87,7 @@ extension AbstractSyntaxTreeNode {
     /// Synthesize an explicit terminal return statement on functions with an implicit return
     public func synthesizeTerminalReturnStatements(
         staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) throws -> AbstractSyntaxTreeNode? {
         try CompilerPassSynthesizeTerminalReturnStatements(
             staticStorageFrame: staticStorageFrame,

@@ -102,7 +102,7 @@ extension AbstractSyntaxTreeNode {
     /// Compiler pass to lower and erase VarDeclaration (e.g., var and let)
     public func lowerVarDeclPass(
         staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) throws -> AbstractSyntaxTreeNode? {
         try CompilerPassLowerVarDecl(
             staticStorageFrame: staticStorageFrame,

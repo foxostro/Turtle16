@@ -138,7 +138,7 @@ extension AbstractSyntaxTreeNode {
     /// Compiler pass to lower and erase Match statements
     public func matchPass(
         staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) throws -> AbstractSyntaxTreeNode? {
         try CompilerPassMatch(
             staticStorageFrame: staticStorageFrame,

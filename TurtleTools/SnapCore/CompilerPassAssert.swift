@@ -21,7 +21,7 @@ extension AbstractSyntaxTreeNode {
     /// Compiler pass to lower and erase "assert" statements
     public func assertPass(
         staticStorageFrame: Frame = Frame(),
-        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) throws -> AbstractSyntaxTreeNode? {
         try CompilerPassAssert(
             staticStorageFrame: staticStorageFrame,

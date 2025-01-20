@@ -1126,7 +1126,7 @@ public class TackToTurtle16Compiler: CompilerPass {
         ])
     }
     
-    fileprivate let labelMaker = LabelMaker(prefix: ".LL")
+    fileprivate var labelMaker = LabelMaker(prefix: ".LL")
     
     func mulw(_ sourceAnchor: SourceAnchor?,
               _ c_: TackInstruction.Register16,
@@ -2433,5 +2433,24 @@ public class TackToTurtle16Compiler: CompilerPass {
             InstructionNode(sourceAnchor: sourceAnchor, instruction: kNOP),
             InstructionNode(sourceAnchor: sourceAnchor, instruction: kHLT)
         ])
+    }
+}
+
+fileprivate struct LabelMaker {
+    public let prefix: String
+    private var tempLabelCounter = 0
+    
+    public init(prefix: String = ".L") {
+        self.prefix = prefix
+    }
+    
+    public mutating func next() -> String {
+        next(prefix: self.prefix)
+    }
+    
+    public mutating func next(prefix: String) -> String {
+        let label = "\(prefix)\(tempLabelCounter)"
+        tempLabelCounter += 1
+        return label
     }
 }

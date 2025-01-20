@@ -1175,7 +1175,6 @@ public class RvalueExpressionTypeChecker: NSObject {
         // Apply the deferred impl nodes now.
         for implNode in genericStructType.implNodes.map({ $0.eraseTypeArguments() }) {
             try ImplScanner(
-                staticStorageFrame: staticStorageFrame,
                 memoryLayoutStrategy: memoryLayoutStrategy,
                 symbols: symbolsWithTypeArguments)
             .scan(impl: implNode.clone())
@@ -1386,7 +1385,6 @@ public class RvalueExpressionTypeChecker: NSObject {
             structTypeExpr: Expression.Identifier(traitDecl.nameOfTraitObjectType),
             children: thunks)
         try ImplScanner(
-            staticStorageFrame: staticStorageFrame,
             memoryLayoutStrategy: memoryLayoutStrategy,
             symbols: symbols)
         .scan(impl: implBlock)

@@ -129,7 +129,6 @@ public class TraitScanner: NSObject {
         .compile(decls.traitObjectDecl)
         if let traitObjectImpl = decls.traitObjectImpl {
             try ImplScanner(
-                staticStorageFrame: staticStorageFrame,
                 memoryLayoutStrategy: memoryLayoutStrategy,
                 symbols: symbols)
             .scan(impl: traitObjectImpl)

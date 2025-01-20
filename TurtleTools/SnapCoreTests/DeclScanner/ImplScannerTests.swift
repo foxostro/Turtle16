@@ -58,7 +58,6 @@ final class ImplScannerTests: XCTestCase {
         .compile(foo)
         
         try ImplScanner(
-            staticStorageFrame: Frame(),
             memoryLayoutStrategy: MemoryLayoutStrategyNull(),
             symbols: symbols)
         .scan(impl: impl)
@@ -119,7 +118,6 @@ final class ImplScannerTests: XCTestCase {
             ])
         
         let scanner = ImplScanner(
-            staticStorageFrame: Frame(),
             memoryLayoutStrategy: MemoryLayoutStrategyNull(),
             symbols: symbols)
         XCTAssertThrowsError(try scanner.scan(impl: impl)) {
@@ -171,7 +169,6 @@ final class ImplScannerTests: XCTestCase {
         .compile(foo)
         
         try ImplScanner(
-            staticStorageFrame: Frame(),
             memoryLayoutStrategy: MemoryLayoutStrategyNull(),
             symbols: innerBlock.symbols)
         .scan(impl: impl)
@@ -248,7 +245,6 @@ final class ImplScannerTests: XCTestCase {
         .compile(foo)
         
         try ImplScanner(
-            staticStorageFrame: Frame(),
             memoryLayoutStrategy: MemoryLayoutStrategyNull(),
             symbols: innerBlock.symbols)
         .scan(impl: impl)

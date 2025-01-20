@@ -11,22 +11,18 @@ import TurtleCore
 
 /// Scans an Impl declaration and binds the function symbols in the environment
 public class ImplScanner: NSObject {
-    private let staticStorageFrame: Frame
     private let memoryLayoutStrategy: MemoryLayoutStrategy
     private let parent: SymbolTable
     private let typeChecker: RvalueExpressionTypeChecker
     
     public init(
-        staticStorageFrame: Frame,
         memoryLayoutStrategy: MemoryLayoutStrategy,
         symbols parent: SymbolTable = SymbolTable()) {
             
-            self.staticStorageFrame = staticStorageFrame
             self.memoryLayoutStrategy = memoryLayoutStrategy
             self.parent = parent
             typeChecker = RvalueExpressionTypeChecker(
                 symbols: parent,
-                staticStorageFrame: staticStorageFrame,
                 memoryLayoutStrategy: memoryLayoutStrategy)
         }
     

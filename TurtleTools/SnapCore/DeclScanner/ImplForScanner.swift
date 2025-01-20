@@ -16,16 +16,13 @@ public class ImplForScanner: NSObject {
     private let symbols: SymbolTable
     private let typeChecker: RvalueExpressionTypeChecker
     private var implScanner: ImplScanner {
-        ImplScanner(
-            staticStorageFrame: staticStorageFrame,
-            memoryLayoutStrategy: memoryLayoutStrategy,
-            symbols: symbols)
+        ImplScanner(memoryLayoutStrategy: memoryLayoutStrategy,
+                    symbols: symbols)
     }
     
-    public init(
-        staticStorageFrame: Frame,
-        memoryLayoutStrategy: MemoryLayoutStrategy,
-        symbols: SymbolTable = SymbolTable()) {
+    public init(staticStorageFrame: Frame,
+                memoryLayoutStrategy: MemoryLayoutStrategy,
+                symbols: SymbolTable = SymbolTable()) {
             
             self.staticStorageFrame = staticStorageFrame
             self.memoryLayoutStrategy = memoryLayoutStrategy

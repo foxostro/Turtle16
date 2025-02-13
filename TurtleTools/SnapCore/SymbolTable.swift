@@ -704,7 +704,7 @@ public final class FunctionType: Equatable, Hashable, CustomStringConvertible {
     }
 }
 
-public class StructType: NSObject {
+public final class StructType: Equatable, Hashable, CustomStringConvertible {
     public let name: String
     public let symbols: SymbolTable
     
@@ -743,7 +743,7 @@ public class StructType: NSObject {
                    associatedModuleName: associatedModuleName)
     }
     
-    public override var description: String {
+    public var description: String {
         """
         StructDeclaration(\(name))
         \tassociatedTraitType: \(associatedTraitType ?? "none")
@@ -768,51 +768,33 @@ public class StructType: NSObject {
     
     private var isDoingEqualityTest = false
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
+    private func isEqual(_ rhs: StructType) -> Bool {
         // Avoid recursive comparisons. These can occur if a trait contains a
         // method with a parameter whose type is a pointer to the trait. If we
         // don't detect these cases then we get infinite recursion.
-        guard false == isDoingEqualityTest else {
-            return true
-        }
+        guard !isDoingEqualityTest else { return true }
         isDoingEqualityTest = true
         defer { isDoingEqualityTest = false }
         
-        guard rhs != nil else {
-            return false
-        }
-        guard type(of: rhs!) == type(of: self) else {
-            return false
-        }
-        guard let rhs = rhs as? StructType else {
-            return false
-        }
-        guard name == rhs.name else {
-            return false
-        }
+        guard name == rhs.name else { return false }
         
         // TODO: StructType can persist in the AST across compiler passes. This makes it possible to have an AST node which refers to an outdated version of StructType from a previous compiler pass. To work around this, we're forced to ignore function symbols when comparing the two StructType instances. It might be better to instead refuse to ever put fully resolved struct types into the AST at all. This jives with other plans I've written about involving replacing SymbolType with type expressions completely.
         #if false
-        guard symbols == rhs.symbols else {
-            return false
-        }
+        guard symbols == rhs.symbols else { return false }
         #else
-        guard symbols.isEqualExceptFunctions(rhs.symbols) else {
-            return false
-        }
-        guard associatedTraitType == rhs.associatedTraitType else {
-            return false
-        }
-        guard associatedModuleName == rhs.associatedModuleName else {
-            return false
-        }
+        guard symbols.isEqualExceptFunctions(rhs.symbols) else { return false }
+        guard associatedTraitType == rhs.associatedTraitType else { return false }
+        guard associatedModuleName == rhs.associatedModuleName else { return false }
         #endif
+        
         return true
     }
     
     private var isComputingHash = false
     
-    public override var hash: Int {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+        
         // Avoid recursive computation of the hash.
         // This can occur with recursive types such as the following:
         //        struct LinkedList {
@@ -820,20 +802,13 @@ public class StructType: NSObject {
         //            key: u8,
         //            value: u8
         //        }
-        guard false == isComputingHash else {
-            var hasher = Hasher()
-            hasher.combine(name)
-            return hasher.finalize()
-        }
+        guard !isComputingHash else { return }
         isComputingHash = true
         defer { isComputingHash = false }
         
-        var hasher = Hasher()
-        hasher.combine(name)
         hasher.combine(symbols)
         hasher.combine(associatedTraitType)
         hasher.combine(associatedModuleName)
-        return hasher.finalize()
     }
 }
 

@@ -1027,8 +1027,8 @@ public struct Symbol: Hashable, Equatable {
 }
 
 // Maps a name to symbol information.
-public final class SymbolTable: NSObject {
-    public struct TypeRecord: Hashable, Equatable {
+public final class SymbolTable: Equatable, Hashable {
+    public struct TypeRecord: Equatable, Hashable {
         let symbolType: SymbolType
         let visibility: SymbolVisibility
     }
@@ -1165,8 +1165,6 @@ public final class SymbolTable: NSObject {
         parent = p
         frameLookupMode = s
         typeTable = typeDict.mapValues({TypeRecord(symbolType: $0, visibility: .privateVisibility)})
-        
-        super.init()
         
         for (identifier, symbol) in tuples {
             bind(identifier: identifier, symbol: symbol)
@@ -1385,19 +1383,12 @@ public final class SymbolTable: NSObject {
     }
     
     public static func ==(lhs: SymbolTable, rhs: SymbolTable) -> Bool {
-        lhs.isEqual(rhs)
-    }
-    
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
-        guard let rhs = rhs as? SymbolTable else { return false }
-        guard declarationOrder == rhs.declarationOrder else { return false }
-        guard symbolTable == rhs.symbolTable else { return false }
-        guard typeTable == rhs.typeTable else { return false }
-        guard parent == rhs.parent else { return false }
-        guard breadcrumb == rhs.breadcrumb else { return false }
-        guard frameLookupMode == rhs.frameLookupMode else { return false }
+        guard lhs.declarationOrder == rhs.declarationOrder else { return false }
+        guard lhs.symbolTable == rhs.symbolTable else { return false }
+        guard lhs.typeTable == rhs.typeTable else { return false }
+        guard lhs.parent == rhs.parent else { return false }
+        guard lhs.breadcrumb == rhs.breadcrumb else { return false }
+        guard lhs.frameLookupMode == rhs.frameLookupMode else { return false }
         return true
     }
     
@@ -1427,15 +1418,13 @@ public final class SymbolTable: NSObject {
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(declarationOrder)
         hasher.combine(symbolTable)
         hasher.combine(typeTable)
         hasher.combine(parent)
         hasher.combine(breadcrumb)
         hasher.combine(frameLookupMode)
-        return hasher.finalize()
     }
     
     public func clone() -> SymbolTable {

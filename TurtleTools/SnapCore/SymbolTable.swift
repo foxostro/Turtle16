@@ -954,61 +954,43 @@ public final class GenericTraitType: Equatable, Hashable, CustomStringConvertibl
     }
 }
 
-public class UnionType: NSObject {
+public final class UnionType: Equatable, Hashable, CustomStringConvertible {
     let members: [SymbolType]
     
     public init(_ members: [SymbolType]) {
         self.members = members
     }
     
-    public override var description: String {
-        let result = members.map({"\($0)"}).joined(separator: " | ")
-        return result
-    }
-    
-    public static func ==(lhs: UnionType, rhs: UnionType) -> Bool {
-        lhs.isEqual(rhs)
-    }
-    
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else {
-            return false
-        }
-        guard type(of: rhs!) == type(of: self) else {
-            return false
-        }
-        guard let rhs = rhs as? UnionType else {
-            return false
-        }
-        guard members == rhs.members else {
-            return false
-        }
-        return true
-    }
-    
-    public override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(members)
-        return hasher.finalize()
-    }
-    
     public var correspondingConstType: UnionType {
-        return UnionType(members.map({$0.correspondingConstType}))
+        UnionType(members.map({$0.correspondingConstType}))
     }
     
     public var correspondingMutableType: UnionType {
-        return UnionType(members.map({$0.correspondingMutableType}))
+        UnionType(members.map({$0.correspondingMutableType}))
+    }
+    
+    public static func ==(lhs: UnionType, rhs: UnionType) -> Bool {
+        guard lhs.members == rhs.members else { return false }
+        return true
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(members)
+    }
+    
+    public var description: String {
+        members.map({"\($0)"}).joined(separator: " | ")
     }
 }
 
-public enum SymbolVisibility: Equatable {
+public enum SymbolVisibility: Equatable, Hashable, CustomStringConvertible {
     case publicVisibility
     case privateVisibility
     
     public var description: String {
         switch self {
-        case .publicVisibility:  return "public"
-        case .privateVisibility: return "private"
+        case .publicVisibility:  "public"
+        case .privateVisibility: "private"
         }
     }
 }

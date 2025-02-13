@@ -63,7 +63,7 @@
 		6F15423026B897D200BA9572 /* SnapSubcompilerVarDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F15422F26B897D200BA9572 /* SnapSubcompilerVarDeclarationTests.swift */; };
 		6F15423226B91BCC00BA9572 /* SnapSubcompilerFunctionDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F15423126B91BCC00BA9572 /* SnapSubcompilerFunctionDeclaration.swift */; };
 		6F15423426B91BD800BA9572 /* SnapSubcompilerFunctionDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F15423326B91BD800BA9572 /* SnapSubcompilerFunctionDeclarationTests.swift */; };
-		6F15423626B92AB500BA9572 /* SnapSubcompilerStructDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F15423526B92AB500BA9572 /* SnapSubcompilerStructDeclaration.swift */; };
+		6F15423626B92AB500BA9572 /* StructScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F15423526B92AB500BA9572 /* StructScanner.swift */; };
 		6F15423826B92ADB00BA9572 /* SnapSubcompilerStructDeclarationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F15423726B92ADB00BA9572 /* SnapSubcompilerStructDeclarationTests.swift */; };
 		6F1800A7251D9079005D9D36 /* Import.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1800A6251D9079005D9D36 /* Import.swift */; };
 		6F1AD7E52C7CFCFD009AC825 /* CompilerPassReturn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F1AD7E42C7CFCFD009AC825 /* CompilerPassReturn.swift */; };
@@ -606,7 +606,7 @@
 		6F15422F26B897D200BA9572 /* SnapSubcompilerVarDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerVarDeclarationTests.swift; sourceTree = "<group>"; };
 		6F15423126B91BCC00BA9572 /* SnapSubcompilerFunctionDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerFunctionDeclaration.swift; sourceTree = "<group>"; };
 		6F15423326B91BD800BA9572 /* SnapSubcompilerFunctionDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerFunctionDeclarationTests.swift; sourceTree = "<group>"; };
-		6F15423526B92AB500BA9572 /* SnapSubcompilerStructDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerStructDeclaration.swift; sourceTree = "<group>"; };
+		6F15423526B92AB500BA9572 /* StructScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructScanner.swift; sourceTree = "<group>"; };
 		6F15423726B92ADB00BA9572 /* SnapSubcompilerStructDeclarationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapSubcompilerStructDeclarationTests.swift; sourceTree = "<group>"; };
 		6F1800A6251D9079005D9D36 /* Import.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Import.swift; sourceTree = "<group>"; };
 		6F1AD7E42C7CFCFD009AC825 /* CompilerPassReturn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerPassReturn.swift; sourceTree = "<group>"; };
@@ -1280,7 +1280,6 @@
 				6FD2735726C9BAD400749CDA /* SnapSubcompilerIf.swift */,
 				6F2E5B1D251AFB5700928DD1 /* SnapSubcompilerMatch.swift */,
 				6F13826226C0E878002CF167 /* SnapSubcompilerReturn.swift */,
-				6F15423526B92AB500BA9572 /* SnapSubcompilerStructDeclaration.swift */,
 				6F3F00F7274F736C00875339 /* SnapSubcompilerSubroutine.swift */,
 				6F9E8F7E26B9A90F00FE25E4 /* SnapSubcompilerTypealias.swift */,
 				6F15422D26B897BA00BA9572 /* SnapSubcompilerVarDeclaration.swift */,
@@ -1288,6 +1287,7 @@
 				6FDC6AAB27331637003A8ABF /* SnapToTurtle16Compiler.swift */,
 				6F24AC8A24A07CAF005193BB /* StatementTracer.swift */,
 				6FBCFA5526F5121A00193819 /* StructMemberFunctionCallMatcher.swift */,
+				6F15423526B92AB500BA9572 /* StructScanner.swift */,
 				6F5A00E9231C6454003E7C7F /* SymbolTable.swift */,
 				6F15421D26B34E3300BA9572 /* SymbolTablesReconnector.swift */,
 				6FBCFA5926F7F4D400193819 /* Tack.swift */,
@@ -2082,7 +2082,7 @@
 				6F24AC8B24A07CAF005193BB /* StatementTracer.swift in Sources */,
 				6FBD0F052C657E80000FEE84 /* GenericsPartialEvaluator.swift in Sources */,
 				6F42139D28F496B40016C0E8 /* Asm.swift in Sources */,
-				6F15423626B92AB500BA9572 /* SnapSubcompilerStructDeclaration.swift in Sources */,
+				6F15423626B92AB500BA9572 /* StructScanner.swift in Sources */,
 				6F40730126ADE09D007D8382 /* MemoryLayoutStrategy.swift in Sources */,
 				6F924E7A248B42D400F43741 /* RvalueExpressionTypeChecker.swift in Sources */,
 				6FDC6AAC27331637003A8ABF /* SnapToTurtle16Compiler.swift in Sources */,

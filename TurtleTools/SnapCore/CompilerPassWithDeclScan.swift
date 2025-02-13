@@ -109,7 +109,7 @@ public class CompilerPassWithDeclScan: CompilerPass {
     }
     
     func scan(struct node: StructDeclaration) throws {
-        try SnapSubcompilerStructDeclaration(
+        try StructScanner(
             symbols: symbols!,
             memoryLayoutStrategy: memoryLayoutStrategy)
         .compile(node)

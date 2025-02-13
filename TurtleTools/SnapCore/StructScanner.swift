@@ -1,5 +1,5 @@
 //
-//  SnapSubcompilerStructDeclaration.swift
+//  StructScanner.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 8/3/21.
@@ -8,8 +8,8 @@
 
 import TurtleCore
 
-// TODO: Rename SnapSubcompilerStructDeclaration to StructScanner
-public final class SnapSubcompilerStructDeclaration: NSObject {
+/// Adds a new struct type to the environment for a given StructDeclaration
+public final class StructScanner: NSObject {
     private let symbols: SymbolTable
     private let memoryLayoutStrategy: MemoryLayoutStrategy
     

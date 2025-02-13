@@ -13,8 +13,8 @@ import TurtleCore
 class SnapSubcompilerStructDeclarationTests: XCTestCase {
     fileprivate let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
     
-    fileprivate func makeCompiler(_ symbols: SymbolTable) -> SnapSubcompilerStructDeclaration {
-        SnapSubcompilerStructDeclaration(
+    fileprivate func makeCompiler(_ symbols: SymbolTable) -> StructScanner {
+        StructScanner(
             symbols: symbols,
             memoryLayoutStrategy: memoryLayoutStrategy)
     }

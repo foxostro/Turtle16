@@ -148,7 +148,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
         
         func compileSerialFake() throws {
             let fake = StructDeclaration(identifier: Expression.Identifier("SerialFake"), members: [])
-            let compiler = SnapSubcompilerStructDeclaration(
+            let compiler = StructScanner(
                 symbols: symbols,
                 memoryLayoutStrategy: MemoryLayoutStrategyNull())
             try compiler.compile(fake)

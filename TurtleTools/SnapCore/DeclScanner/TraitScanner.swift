@@ -122,14 +122,14 @@ public final class TraitScanner: NSObject {
         // exist in the environment.
         
         if nil == symbols.maybeResolveType(identifier: decls.vtableDecl.name)?.maybeUnwrapStructType() {
-            try SnapSubcompilerStructDeclaration(
+            try StructScanner(
                 symbols: symbols,
                 memoryLayoutStrategy: memoryLayoutStrategy)
             .compile(decls.vtableDecl)
         }
         
         if nil == symbols.maybeResolveType(identifier: decls.traitObjectDecl.name)?.maybeUnwrapStructType() {
-            try SnapSubcompilerStructDeclaration(
+            try StructScanner(
                 symbols: symbols,
                 memoryLayoutStrategy: memoryLayoutStrategy)
             .compile(decls.traitObjectDecl)

@@ -37,7 +37,7 @@ final class ImplForScannerTests: XCTestCase {
         let fake = StructDeclaration(
             identifier: Expression.Identifier("SerialFake"),
             members: [])
-        try SnapSubcompilerStructDeclaration(
+        try StructScanner(
             symbols: symbols,
             memoryLayoutStrategy: MemoryLayoutStrategyNull())
         .compile(fake)

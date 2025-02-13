@@ -52,7 +52,7 @@ final class ImplScannerTests: XCTestCase {
                     symbols: functionSymbols)
             ])
         
-        _ = try SnapSubcompilerStructDeclaration(
+        _ = try StructScanner(
             symbols: symbols,
             memoryLayoutStrategy: MemoryLayoutStrategyNull())
         .compile(foo)
@@ -86,7 +86,7 @@ final class ImplScannerTests: XCTestCase {
                     type: PrimitiveType(.u8))
             ],
             visibility: .privateVisibility)
-        _ = try SnapSubcompilerStructDeclaration(
+        _ = try StructScanner(
             symbols: symbols,
             memoryLayoutStrategy: MemoryLayoutStrategyNull())
         .compile(foo)
@@ -163,7 +163,7 @@ final class ImplScannerTests: XCTestCase {
         let innerBlock = outerBlock.children[1] as! Block
         let impl = innerBlock.children[0] as! Impl
         
-        _ = try SnapSubcompilerStructDeclaration(
+        _ = try StructScanner(
             symbols: outerBlock.symbols,
             memoryLayoutStrategy: MemoryLayoutStrategyNull())
         .compile(foo)
@@ -239,7 +239,7 @@ final class ImplScannerTests: XCTestCase {
         let innerBlock = outerBlock.children[1] as! Block
         let impl = innerBlock.children[0] as! Impl
         
-        _ = try SnapSubcompilerStructDeclaration(
+        _ = try StructScanner(
             symbols: outerBlock.symbols,
             memoryLayoutStrategy: MemoryLayoutStrategyNull())
         .compile(foo)

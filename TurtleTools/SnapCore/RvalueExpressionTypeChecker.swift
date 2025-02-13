@@ -1170,7 +1170,7 @@ public class RvalueExpressionTypeChecker: NSObject {
         }
         
         // Bind the concrete struct type
-        let subcompiler = SnapSubcompilerStructDeclaration(
+        let subcompiler = StructScanner(
             symbols: symbolsWithTypeArguments,
             memoryLayoutStrategy: memoryLayoutStrategy)
         let template = genericStructType.template.eraseTypeArguments()
@@ -1322,7 +1322,7 @@ public class RvalueExpressionTypeChecker: NSObject {
                                            members: members,
                                            visibility: traitDecl.visibility,
                                            isConst: true)
-        _ = try SnapSubcompilerStructDeclaration(
+        _ = try StructScanner(
             symbols: symbols,
             memoryLayoutStrategy: memoryLayoutStrategy)
         .compile(structDecl)
@@ -1342,7 +1342,7 @@ public class RvalueExpressionTypeChecker: NSObject {
             members: members,
             visibility: traitDecl.visibility,
             isConst: false) // TODO: Should isConst be true here?
-        _ = try SnapSubcompilerStructDeclaration(
+        _ = try StructScanner(
             symbols: symbols,
             memoryLayoutStrategy: memoryLayoutStrategy)
         .compile(structDecl)

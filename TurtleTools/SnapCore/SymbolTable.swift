@@ -812,7 +812,7 @@ public final class StructType: Equatable, Hashable, CustomStringConvertible {
     }
 }
 
-public class GenericStructType: NSObject {
+public final class GenericStructType: Equatable, Hashable, CustomStringConvertible {
     public let template: StructDeclaration
     public var instantiations: [ [SymbolType] : SymbolType ] = [:]
     
@@ -838,34 +838,17 @@ public class GenericStructType: NSObject {
         template.typeArguments.map(\.identifier)
     }
     
-    public override var description: String {
+    public var description: String {
         return "\(template.name)\(template.typeArgumentsDescription)"
     }
     
     public static func ==(lhs: GenericStructType, rhs: GenericStructType) -> Bool {
-        lhs.isEqual(rhs)
-    }
-    
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else {
-            return false
-        }
-        guard type(of: rhs!) == type(of: self) else {
-            return false
-        }
-        guard let rhs = rhs as? GenericStructType else {
-            return false
-        }
-        guard template == rhs.template else {
-            return false
-        }
+        guard lhs.template == rhs.template else { return false }
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(template)
-        return hasher.finalize()
     }
 }
 

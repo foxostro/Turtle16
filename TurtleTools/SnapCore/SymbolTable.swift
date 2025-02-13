@@ -926,7 +926,7 @@ trait \(name) {
     }
 }
 
-public class GenericTraitType: NSObject {
+public final class GenericTraitType: Equatable, Hashable, CustomStringConvertible {
     public let template: TraitDeclaration
     public var instantiations: [ [SymbolType] : SymbolType ] = [:]
     
@@ -940,34 +940,17 @@ public class GenericTraitType: NSObject {
         template.typeArguments
     }
     
-    public override var description: String {
-        return "\(template.name)\(template.typeArgumentsDescription)"
-    }
-    
     public static func ==(lhs: GenericTraitType, rhs: GenericTraitType) -> Bool {
-        lhs.isEqual(rhs)
-    }
-    
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else {
-            return false
-        }
-        guard type(of: rhs!) == type(of: self) else {
-            return false
-        }
-        guard let rhs = rhs as? GenericTraitType else {
-            return false
-        }
-        guard template == rhs.template else {
-            return false
-        }
+        guard lhs.template == rhs.template else { return false }
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(template)
-        return hasher.finalize()
+    }
+    
+    public var description: String {
+        "\(template.name)\(template.typeArgumentsDescription)"
     }
 }
 

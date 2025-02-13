@@ -21,9 +21,6 @@ final class CompilerPassVtablesTests: XCTestCase {
         
         let expected = Block(children: [
             Seq(children: [
-                TraitDeclaration(
-                    identifier: traitIdent,
-                    members: []),
                 StructDeclaration(
                     identifier: vtableIdent,
                     members: [],
@@ -39,7 +36,10 @@ final class CompilerPassVtablesTests: XCTestCase {
                             type: vtableType)
                     ],
                     isConst: false,
-                    associatedTraitType: traitIdent.identifier)
+                    associatedTraitType: traitIdent.identifier),
+                TraitDeclaration(
+                    identifier: traitIdent,
+                    members: [])
             ])
         ])
         
@@ -74,11 +74,6 @@ final class CompilerPassVtablesTests: XCTestCase {
         
         let expected = Block(children: [
             Seq(children: [
-                TraitDeclaration(
-                    identifier: traitIdent,
-                    members: [
-                        TraitDeclaration.Member(name: "puts", type: putsFnType)
-                    ]),
                 StructDeclaration(
                     identifier: vtableIdent,
                     members: [
@@ -105,6 +100,11 @@ final class CompilerPassVtablesTests: XCTestCase {
                     ],
                     isConst: false,
                     associatedTraitType: traitIdent.identifier),
+                TraitDeclaration(
+                    identifier: traitIdent,
+                    members: [
+                        TraitDeclaration.Member(name: "puts", type: putsFnType)
+                    ]),
                 Impl(
                     typeArguments: [],
                     structTypeExpr: traitObjectIdent,

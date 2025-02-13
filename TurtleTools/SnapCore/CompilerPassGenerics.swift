@@ -18,7 +18,7 @@ import TurtleCore
 // * Every reference to a generic trait is rewritten to instead reference the
 //   concrete instantiation of the trait. The concrete trait type is inserted
 //   into the AST.
-public class CompilerPassGenerics: CompilerPassWithDeclScan {
+public final class CompilerPassGenerics: CompilerPassWithDeclScan {
     
     /// Maps an ID which uniquely identifies a point in the AST to a list of
     /// nodes to be inserted just after this point.
@@ -231,8 +231,14 @@ public class CompilerPassGenerics: CompilerPassWithDeclScan {
             .unwrapGenericFunctionType()
         
         // Instantiate the generic function with concrete type arguments
+        typealias Key = GenericsPartialEvaluator.ReplacementKey
+        let keys: [Key] = genericFunctionType.typeArguments
+            .map { ident in
+                let scope = symbols.lookupIdOfEnclosingScope(identifier: ident.identifier)
+                return Key(identifier: ident.identifier, scope: scope)
+            }
         let pairs = zip(
-            genericFunctionType.typeArguments.map(\.identifier),
+            keys,
             try expr.arguments.map {
                 Expression.PrimitiveType(try typeCheck(rexpr: $0))
             })
@@ -309,16 +315,24 @@ public class CompilerPassGenerics: CompilerPassWithDeclScan {
         // was initially defined.
         // TODO: The compiler must instead insert the node at the widest lexical scope accessible to the generic type application which includes both the generic struct declaration and all type arguments.
         
+        // Build up a map to describe how generic type variables are to be
+        // replaced with concrete types specified by the type arguments.
+        typealias Key = GenericsPartialEvaluator.ReplacementKey
+        let keys: [Key] = genericStructType.typeArguments
+            .map { ident in
+                let scope = symbols.lookupIdOfEnclosingScope(identifier: ident.identifier)
+                return Key(identifier: ident.identifier, scope: scope)
+            }
+        let values: [Expression.PrimitiveType] = try expr.arguments
+            .map { try typeCheck(rexpr: $0) }
+            .map { Expression.PrimitiveType($0) }
+        let pairs = zip(keys, values)
+        
         // Instantiate the generic struct declarations with concrete type arguments
         let ast0 = genericStructType.template
             .withNewId()
             .eraseTypeArguments()
             .withIdentifier(concreteIdent)
-        let pairs = zip(
-            genericStructType.typeArguments.map(\.identifier),
-            try expr.arguments.map {
-                Expression.PrimitiveType(try typeCheck(rexpr: $0))
-            })
         let ast1 = try GenericsPartialEvaluator.eval(ast0, replacements: pairs)
         let ast2 = try visit(ast1)!
         appendPendingInsertion(ast2, after: genericStructType.template.id)
@@ -378,8 +392,15 @@ public class CompilerPassGenerics: CompilerPassWithDeclScan {
             .eraseTypeArguments()
             .withIdentifier(concreteIdent)
             .withMangledName(concreteTraitType.name)
+        typealias Key = GenericsPartialEvaluator.ReplacementKey
+        let keys: [Key] = genericTraitType.typeArguments
+            .map(\.identifier)
+            .map { ident in
+                let scope = symbols.lookupIdOfEnclosingScope(identifier: ident.identifier)
+                return Key(identifier: ident.identifier, scope: scope)
+            }
         let pairs = zip(
-            genericTraitType.typeArguments.map(\.identifier.identifier),
+            keys,
             try expr.arguments.map {
                 Expression.PrimitiveType(try typeCheck(rexpr: $0))
             })

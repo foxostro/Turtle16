@@ -13,7 +13,7 @@ import TurtleCore
 /// concepts. The ImplFor AST node is replaced with an appropriate Impl node
 /// and an appropriate vtable declaration. Traits are erased and rewritten into
 /// direct manipulation of trait-objects.
-public class CompilerPassImplFor: CompilerPassWithDeclScan {
+public final class CompilerPassImplFor: CompilerPassWithDeclScan {
     fileprivate typealias Assignment = Expression.Assignment
     fileprivate typealias Bitcast = Expression.Bitcast
     fileprivate typealias Get = Expression.Get

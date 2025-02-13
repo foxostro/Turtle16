@@ -226,7 +226,8 @@ public class CompilerPass: NSObject {
     }
     
     public func visit(struct node0: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
-        guard let identifier = try visit(identifier: node0.identifier) as? Expression.Identifier else {
+        let maybeIdentNode = try visit(identifier: node0.identifier)
+        guard let identifier = maybeIdentNode as? Expression.Identifier else {
             throw CompilerError(
                 sourceAnchor: node0.identifier.sourceAnchor,
                 message: "expected identifier: `\(node0.identifier)'")

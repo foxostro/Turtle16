@@ -151,5 +151,122 @@ final class TraitScannerTests: XCTestCase {
         let expected = SymbolType.genericTraitType(GenericTraitType(template: ast))
         XCTAssertEqual(expected, actual)
     }
+    
+    /// Verify that TraitScanner will throw an error in the case where a type
+    /// with the same name as our desired vtable type already exists, and
+    /// doesn't exactly match the type TraitScanner had intended to bind.
+    func testVtableTypeAlreadyExistsAndDoesntMatchTheTypeWeWantedToBind() throws {
+        let ast = TraitDeclaration(
+            identifier: Expression.Identifier("Foo"),
+            members: [
+                TraitDeclaration.Member(
+                    name: "bar",
+                    type: Expression.PointerType(Expression.FunctionType(
+                        name: nil,
+                        returnType: Expression.PrimitiveType(.void),
+                        arguments: [
+                            Expression.PointerType(Expression.Identifier("Foo"))
+                        ])))
+            ],
+            visibility: .privateVisibility)
+        
+        // Ensure the vtable type name is already taken before scanning.
+        let scanner = TraitScanner(symbols: SymbolTable(typeDict: [
+            "__Foo_vtable" : .void
+        ]))
+        
+        XCTAssertThrowsError(try scanner.scan(trait: ast)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "struct declaration redefines existing type: `__Foo_vtable'")
+        }
+    }
+    
+    /// Verify that TraitScanner will NOT throw an error in the case where a
+    /// type with the same name as our desired vtable type already exists, and
+    /// it DOES match the type TraitScanner had intended to bind.
+    func testVtableTypeAlreadyExistsAndDefinitelyMatchesTheTypeWeWantedToBind() throws {
+        let ast = TraitDeclaration(
+            identifier: Expression.Identifier("Foo"),
+            members: [
+                TraitDeclaration.Member(
+                    name: "bar",
+                    type: Expression.PointerType(Expression.FunctionType(
+                        name: nil,
+                        returnType: Expression.PrimitiveType(.void),
+                        arguments: [
+                            Expression.PointerType(Expression.Identifier("Foo"))
+                        ])))
+            ],
+            visibility: .privateVisibility)
+        
+        // Ensure the vtable type name is already taken before scanning.
+        let scanner = TraitScanner(symbols: SymbolTable(typeDict: [
+            "__Foo_vtable" : .structType(StructType(
+                name: "__Foo_vtable",
+                symbols: SymbolTable()))
+        ]))
+        
+        XCTAssertNoThrow(try scanner.scan(trait: ast))
+    }
+    
+    /// Verify that TraitScanner will throw an error in the case where a type
+    /// with the same name as our desired trait-object type already exists, and
+    /// doesn't match the type TraitScanner had intended to bind.
+    func testTraitObjectTypeAlreadyExistsAndDoesntMatchTheTypeWeWantedToBind() throws {
+        let ast = TraitDeclaration(
+            identifier: Expression.Identifier("Foo"),
+            members: [
+                TraitDeclaration.Member(
+                    name: "bar",
+                    type: Expression.PointerType(Expression.FunctionType(
+                        name: nil,
+                        returnType: Expression.PrimitiveType(.void),
+                        arguments: [
+                            Expression.PointerType(Expression.Identifier("Foo"))
+                        ])))
+            ],
+            visibility: .privateVisibility)
+        
+        // Ensure the trait-object type name is already taken before scanning.
+        let scanner = TraitScanner(symbols: SymbolTable(typeDict: [
+            "__Foo_object" : .void
+        ]))
+        
+        XCTAssertThrowsError(try scanner.scan(trait: ast)) {
+            let compilerError = $0 as? CompilerError
+            XCTAssertNotNil(compilerError)
+            XCTAssertEqual(compilerError?.message, "struct declaration redefines existing type: `__Foo_object'")
+        }
+    }
+    
+    /// Verify that TraitScanner will NOT throw an error in the case where a
+    /// type with the same name as our desired trait-object type already exists, and
+    /// it DOES match the type TraitScanner had intended to bind.
+    func testTraitObjectTypeAlreadyExistsAndDefinitelyMatchesTheTypeWeWantedToBind() throws {
+        let ast = TraitDeclaration(
+            identifier: Expression.Identifier("Foo"),
+            members: [
+                TraitDeclaration.Member(
+                    name: "bar",
+                    type: Expression.PointerType(Expression.FunctionType(
+                        name: nil,
+                        returnType: Expression.PrimitiveType(.void),
+                        arguments: [
+                            Expression.PointerType(Expression.Identifier("Foo"))
+                        ])))
+            ],
+            visibility: .privateVisibility)
+        
+        // Ensure the trait-object type name is already taken before scanning.
+        let scanner = TraitScanner(symbols: SymbolTable(typeDict: [
+            "__Foo_object" : .structType(StructType(
+                name: "__Foo_object",
+                symbols: SymbolTable(),
+                associatedTraitType: "Foo"))
+            ]))
+        
+        XCTAssertNoThrow(try scanner.scan(trait: ast))
+    }
 
 }

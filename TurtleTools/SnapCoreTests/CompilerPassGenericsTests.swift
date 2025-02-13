@@ -692,8 +692,8 @@ final class CompilerPassGenericsTests: XCTestCase {
         XCTAssertEqual(ast1, expected)
     }
     
-    // Declaration of a type must not shadow a generic type parameter.
-    func testSymbolDeclarationMustNotShadowGenericTypeParameter() throws {
+    // Declaration of a type may shadow a generic type parameter
+    func testTypeDeclarationMayShadowGenericTypeParameter() throws {
         let ast = Block(
             children: [
                 StructDeclaration(
@@ -739,12 +739,7 @@ final class CompilerPassGenericsTests: XCTestCase {
             ])
             .reconnect(parent: nil)
         
-        let compiler = CompilerPassGenerics()
-        
-        XCTAssertThrowsError(try compiler.run(ast)) {
-            let compilerError = $0 as? CompilerError
-            XCTAssertNotNil(compilerError)
-        }
+        XCTAssertNoThrow(try CompilerPassGenerics().run(ast))
     }
     
     // Generic trait declarations are erased from the AST.
@@ -1027,8 +1022,8 @@ final class CompilerPassGenericsTests: XCTestCase {
         XCTAssertEqual(ast1, expected)
     }
     
-    // Do not a function's generic type parameter to shadow an existing type.
-    func testDoNotAllowGenericTypeParamInFunctionToShadowExistingType() throws {
+    // A function's generic type parameter may shadow an existing type
+    func testFunctionGenericTypeParameterMayShadowAnExistingType() throws {
         let ast = Block(
             children: [
                 StructDeclaration(
@@ -1055,16 +1050,10 @@ final class CompilerPassGenericsTests: XCTestCase {
             ])
             .reconnect(parent: nil)
         
-        let compiler = CompilerPassGenerics()
-        
-        XCTAssertThrowsError(try compiler.run(ast)) {
-            let compilerError = $0 as? CompilerError
-            XCTAssertNotNil(compilerError)
-        }
+        XCTAssertNoThrow(try CompilerPassGenerics().run(ast))
     }
     
-    // Do not allow shadowing of a function's generic type parameter.
-    func testDoNotAllowShadowingGenericTypeParamInFunction() throws {
+    func testFunctionBodyMayShadowFunctionGenericTypeParameter() throws {
         let ast = Block(
             children: [
                 FunctionDeclaration(
@@ -1095,11 +1084,6 @@ final class CompilerPassGenericsTests: XCTestCase {
             ])
             .reconnect(parent: nil)
         
-        let compiler = CompilerPassGenerics()
-        
-        XCTAssertThrowsError(try compiler.run(ast)) {
-            let compilerError = $0 as? CompilerError
-            XCTAssertNotNil(compilerError)
-        }
+        XCTAssertNoThrow(try CompilerPassGenerics().run(ast))
     }
 }

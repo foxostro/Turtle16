@@ -1106,13 +1106,18 @@ public class RvalueExpressionTypeChecker: NSObject {
         // Bind types in a new symbol table to apply the type arguments.
         let symbolsWithTypeArguments = template2.symbols
         var evaluatedTypeArguments: [SymbolType] = []
-        var replacementMap: [String : Expression] = [:]
+        typealias Key = GenericsPartialEvaluator.ReplacementKey
+        var replacementMap: [Key : Expression] = [:]
         for i in 0..<expr.arguments.count {
             let typeVariable = genericFunctionType.typeArguments[i]
             let typeArgument = try check(expression: expr.arguments[i])
             symbolsWithTypeArguments.bind(identifier: typeVariable.identifier, symbolType: typeArgument)
             evaluatedTypeArguments.append(typeArgument)
-            replacementMap[typeVariable.identifier] = Expression.PrimitiveType(typeArgument)
+            
+            let ident = typeVariable.identifier
+            let scope = symbols.lookupIdOfEnclosingScope(identifier: ident)
+            let key = Key(identifier: ident, scope: scope)
+            replacementMap[key] = Expression.PrimitiveType(typeArgument)
         }
         let inner = RvalueExpressionTypeChecker(
             symbols: symbolsWithTypeArguments,

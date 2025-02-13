@@ -9,36 +9,39 @@
 import TurtleCore
 
 // TODO: Rename SnapSubcompilerStructDeclaration to StructScanner
-public class SnapSubcompilerStructDeclaration: NSObject {
+public final class SnapSubcompilerStructDeclaration: NSObject {
     private let symbols: SymbolTable
     private let memoryLayoutStrategy: MemoryLayoutStrategy
     
-    public init(symbols: SymbolTable,
-                memoryLayoutStrategy: MemoryLayoutStrategy) {
+    public init(
+        symbols: SymbolTable,
+        memoryLayoutStrategy: MemoryLayoutStrategy
+    ) {
         self.symbols = symbols
         self.memoryLayoutStrategy = memoryLayoutStrategy
     }
     
-    @discardableResult public func compile(_ node: StructDeclaration, _ evaluatedTypeArguments: [SymbolType] = []) throws -> SymbolType {
-        let type: SymbolType
+    @discardableResult public func compile(
+        _ node: StructDeclaration,
+        _ evaluatedTypeArguments: [SymbolType] = []
+    ) throws -> SymbolType {
         if node.isGeneric {
-            type = try doGeneric(node)
+            try doGeneric(node)
         }
         else {
-            type = try doNonGeneric(node, evaluatedTypeArguments)
+            try doNonGeneric(node, evaluatedTypeArguments)
         }
-        return type
     }
     
     private func doGeneric(_ node: StructDeclaration) throws -> SymbolType {
         assert(node.isGeneric)
         let name = node.identifier.identifier
-        guard !symbols.exists(identifier: name) else {
+        guard !symbols.exists(identifier: name, maxDepth: 0) else {
             throw CompilerError(
                 sourceAnchor: node.identifier.sourceAnchor,
                 message: "struct declaration redefines existing symbol: `\(name)'")
         }
-        guard !symbols.existsAsType(identifier: name) else {
+        guard !symbols.existsAsType(identifier: name, maxDepth: 0) else {
             throw CompilerError(
                 sourceAnchor: node.identifier.sourceAnchor,
                 message: "struct declaration redefines existing type: `\(name)'")
@@ -63,13 +66,13 @@ public class SnapSubcompilerStructDeclaration: NSObject {
             associatedTraitType: node.associatedTraitType)
         let type: SymbolType = node.isConst ? .constStructType(fullyQualifiedStructType) : .structType(fullyQualifiedStructType)
         
-        guard !symbols.exists(identifier: mangledName) else {
+        guard !symbols.exists(identifier: mangledName, maxDepth: 0) else {
             throw CompilerError(
                 sourceAnchor: node.identifier.sourceAnchor,
                 message: "struct declaration redefines existing symbol: `\(mangledName)'")
         }
         
-        let preexistingType = symbols.maybeResolveType(identifier: mangledName)
+        let preexistingType = symbols.maybeResolveType(identifier: mangledName, maxDepth: 0)
         
         symbols.bind(identifier: mangledName,
                      symbolType: type,
@@ -118,30 +121,13 @@ public class SnapSubcompilerStructDeclaration: NSObject {
                 message: "invalid use of module type")
         }
         
-        // Prohibit redeclarations of the type unless we're simply scanning the
-        // exact same type again. This can happen in a few situations such as
-        // when instantiating a generic types in the type checker.
-        // We do this check here so that we can perform a check above for any
-        // structs with recursive definitions. However, if it was an error to
-        // bind the new type due to invalid redeclaration of an existing type
-        // then we ought throw an error before we go any further.
-        if let preexistingType {
-            let err = CompilerError(
+        // Throw an error if the identifier is already bound in the environment
+        // and cannot be shadowed. The error is thrown at this point to ensure
+        // that errors for above cases are given priority.
+        guard nil == preexistingType else {
+            throw CompilerError(
                 sourceAnchor: node.identifier.sourceAnchor,
                 message: "struct declaration redefines existing type: `\(mangledName)'")
-            
-            guard let existing = preexistingType.maybeUnwrapStructType() else { throw err }
-            guard fullyQualifiedStructType.name == existing.name else { throw err }
-            
-            let memberNamesSansFunctions = { (structType: StructType) in
-                structType.symbols.symbolTable
-                    .filter { !$0.value.type.isFunctionType }
-                    .map { $0.key }
-                    .sorted()
-            }
-            let ourMembersNames = memberNamesSansFunctions(fullyQualifiedStructType)
-            let theirMembersNames = memberNamesSansFunctions(existing)
-            guard ourMembersNames == theirMembersNames else { throw err }
         }
         
         return type

@@ -27,13 +27,13 @@ public class FunctionScanner: NSObject {
         assert(node.symbols.frameLookupMode.isSet)
         let name = node.identifier.identifier
         
-        guard !symbols.exists(identifier: name) else {
+        guard !symbols.exists(identifier: name, maxDepth: 0) else {
             throw CompilerError(
                 sourceAnchor: node.identifier.sourceAnchor,
                 message: "function redefines existing symbol: `\(name)'")
         }
         
-        guard !symbols.existsAsType(identifier: name) else {
+        guard !symbols.existsAsType(identifier: name, maxDepth: 0) else {
             throw CompilerError(
                 sourceAnchor: node.identifier.sourceAnchor,
                 message: "function redefines existing type: `\(name)'")
@@ -53,8 +53,6 @@ public class FunctionScanner: NSObject {
     }
     
     private func doGeneric(node: FunctionDeclaration) throws {
-        try checkDoesNotShadowExistingSymbolOrType(typeParameters: node.typeArguments)
-        
         let name = node.identifier.identifier
         let typ = Expression.GenericFunctionType(
             template: node,
@@ -65,25 +63,6 @@ public class FunctionScanner: NSObject {
             storage: .automaticStorage,
             visibility: node.visibility)
         symbols.bind(identifier: name, symbol: symbol)
-    }
-    
-    /// Throw an error if any of the type parameters would shadow an existing symbol or type
-    private func checkDoesNotShadowExistingSymbolOrType(typeParameters: [Expression.GenericTypeArgument]) throws {
-        try typeParameters.forEach { param in
-            let ident: String = param.identifier.identifier
-            
-            guard !symbols.exists(identifier: ident) else {
-                throw CompilerError(
-                    sourceAnchor: param.identifier.sourceAnchor,
-                    message: "generic type parameter redefines existing symbol: `\(ident)'")
-            }
-            
-            guard !symbols.existsAsType(identifier: ident) else {
-                throw CompilerError(
-                    sourceAnchor: param.identifier.sourceAnchor,
-                    message: "generic type parameter redefines existing type: `\(ident)'")
-            }
-        }
     }
     
     private func doNonGeneric(node node0: FunctionDeclaration) throws {

@@ -9,7 +9,7 @@
 import TurtleCore
 
 /// Scans a trait declaration and binds the trait type in the environment
-public class TraitScanner: NSObject {
+public final class TraitScanner: NSObject {
     public let symbols: SymbolTable
     
     private let memoryLayoutStrategy: MemoryLayoutStrategy
@@ -44,9 +44,11 @@ public class TraitScanner: NSObject {
         return type
     }
     
-    private func doNonGeneric(traitDecl node0: TraitDeclaration,
-                              evaluatedTypeArguments: [SymbolType],
-                              genericTraitType: GenericTraitType?) throws -> SymbolType {
+    private func doNonGeneric(
+        traitDecl node0: TraitDeclaration,
+        evaluatedTypeArguments: [SymbolType],
+        genericTraitType: GenericTraitType?
+    ) throws -> SymbolType {
         assert(!node0.isGeneric)
         let mangledName = mangleTraitName(
             name: node0.name,
@@ -116,24 +118,35 @@ public class TraitScanner: NSObject {
     
     /// Put types into the environment for the vtable and trait-object
     private func scan(decls: TraitObjectDeclarationsBuilder.Declarations) throws {
-        try SnapSubcompilerStructDeclaration(
-            symbols: symbols,
-            memoryLayoutStrategy: memoryLayoutStrategy)
-        .compile(decls.vtableDecl)
-        try SnapSubcompilerStructDeclaration(
-            symbols: symbols,
-            memoryLayoutStrategy: memoryLayoutStrategy)
-        .compile(decls.traitObjectDecl)
-        if let traitObjectImpl = decls.traitObjectImpl {
-            try ImplScanner(
-                memoryLayoutStrategy: memoryLayoutStrategy,
-                symbols: symbols)
-            .scan(impl: traitObjectImpl)
+        // Avoid redfining the vtable or trait-object types if they already
+        // exist in the environment.
+        
+        if nil == symbols.maybeResolveType(identifier: decls.vtableDecl.name)?.maybeUnwrapStructType() {
+            try SnapSubcompilerStructDeclaration(
+                symbols: symbols,
+                memoryLayoutStrategy: memoryLayoutStrategy)
+            .compile(decls.vtableDecl)
+        }
+        
+        if nil == symbols.maybeResolveType(identifier: decls.traitObjectDecl.name)?.maybeUnwrapStructType() {
+            try SnapSubcompilerStructDeclaration(
+                symbols: symbols,
+                memoryLayoutStrategy: memoryLayoutStrategy)
+            .compile(decls.traitObjectDecl)
+            if let traitObjectImpl = decls.traitObjectImpl {
+                try ImplScanner(
+                    memoryLayoutStrategy: memoryLayoutStrategy,
+                    symbols: symbols)
+                .scan(impl: traitObjectImpl)
+            }
         }
     }
     
     /// Mangle the name of a concrete instance of a generic trait, given its evaluated type arguments
-    private func mangleTraitName(name: String?, evaluatedTypeArguments: [SymbolType] = []) -> String {
+    private func mangleTraitName(
+        name: String?,
+        evaluatedTypeArguments: [SymbolType] = []
+    ) -> String {
         typeChecker().mangleTraitName(name, evaluatedTypeArguments: evaluatedTypeArguments)!
     }
     

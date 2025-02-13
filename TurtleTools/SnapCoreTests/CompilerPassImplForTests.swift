@@ -27,20 +27,6 @@ final class CompilerPassImplForTests: XCTestCase {
     
     let serialFakeAST = Block(children: [
         Seq(children: [
-            TraitDeclaration(
-                identifier: Identifier("Serial"),
-                members: [
-                    TraitDeclaration.Member(
-                        name: "puts",
-                        type: PointerType(FunctionType(
-                            name: nil,
-                            returnType: PrimitiveType(.void),
-                            arguments: [
-                                PointerType(Identifier("Serial")),
-                                DynamicArrayType(PrimitiveType(.u8))
-                            ])))
-                ],
-                visibility: .privateVisibility),
             StructDeclaration(
                 identifier: Identifier("__Serial_vtable"),
                 members: [
@@ -66,7 +52,21 @@ final class CompilerPassImplForTests: XCTestCase {
                         type: PointerType(ConstType(Identifier("__Serial_vtable"))))
                 ],
                 isConst: true,
-                associatedTraitType: "Serial")
+                associatedTraitType: "Serial"),
+            TraitDeclaration(
+                identifier: Identifier("Serial"),
+                members: [
+                    TraitDeclaration.Member(
+                        name: "puts",
+                        type: PointerType(FunctionType(
+                            name: nil,
+                            returnType: PrimitiveType(.void),
+                            arguments: [
+                                PointerType(Identifier("Serial")),
+                                DynamicArrayType(PrimitiveType(.u8))
+                            ])))
+                ],
+                visibility: .privateVisibility)
         ]),
         StructDeclaration(
             identifier: Identifier("SerialFake"),
@@ -195,13 +195,14 @@ final class CompilerPassImplForTests: XCTestCase {
     }
     
     func testFailToCompileImplForTraitBecauseMethodsAreMissing() throws {
-        let ast = serialFakeAST.appending(children: [
-            ImplFor(
-                typeArguments: [],
-                traitTypeExpr: Identifier("Serial"),
-                structTypeExpr: Identifier("SerialFake"),
-                children: [])
-        ])
+        let ast = serialFakeAST.appending(
+            children: [
+                ImplFor(
+                    typeArguments: [],
+                    traitTypeExpr: Identifier("Serial"),
+                    structTypeExpr: Identifier("SerialFake"),
+                    children: [])
+            ])
             .reconnect(parent: nil)
         
         XCTAssertThrowsError(try ast.implForPass()) {

@@ -8,7 +8,7 @@
 
 import TurtleCore
 
-public class SnapSubcompilerVarDeclaration: NSObject {
+public final class SnapSubcompilerVarDeclaration: NSObject {
     private let symbols: SymbolTable
     private let staticStorageFrame: Frame
     private let memoryLayoutStrategy: MemoryLayoutStrategy
@@ -25,14 +25,14 @@ public class SnapSubcompilerVarDeclaration: NSObject {
         let sourceAnchor = node.identifier.sourceAnchor
         let ident = node.identifier.identifier
         
-        guard !symbols.exists(identifier: ident) else {
+        guard !symbols.exists(identifier: ident, maxDepth: 0) else {
             let variable = node.isMutable ? "variable" : "constant"
             throw CompilerError(
                 sourceAnchor: sourceAnchor,
                 message: "\(variable) redefines existing symbol: `\(ident)'")
         }
         
-        guard !symbols.existsAsType(identifier: ident) else {
+        guard !symbols.existsAsType(identifier: ident, maxDepth: 0) else {
             let variable = node.isMutable ? "variable" : "constant"
             throw CompilerError(
                 sourceAnchor: sourceAnchor,

@@ -1134,7 +1134,7 @@ public struct Symbol: Hashable, Equatable {
 }
 
 // Maps a name to symbol information.
-public class SymbolTable: NSObject {
+public final class SymbolTable: NSObject {
     public struct TypeRecord: Hashable, Equatable {
         let symbolType: SymbolType
         let visibility: SymbolVisibility
@@ -1280,18 +1280,28 @@ public class SymbolTable: NSObject {
         }
     }
     
-    public func exists(identifier: String) -> Bool {
-        if nil == symbolTable[identifier] {
-            return parent?.exists(identifier: identifier) ?? false
+    public func exists(identifier: String, maxDepth: Int = Int.max) -> Bool {
+        if nil != symbolTable[identifier] {
+            true
         }
-        return true
+        else if maxDepth > 0 {
+            parent?.exists(identifier: identifier, maxDepth: maxDepth - 1) ?? false
+        }
+        else {
+            false
+        }
     }
     
-    public func existsAsType(identifier: String) -> Bool {
-        if nil == typeTable[identifier] {
-            return parent?.existsAsType(identifier: identifier) ?? false
+    public func existsAsType(identifier: String, maxDepth: Int = Int.max) -> Bool {
+        if nil != typeTable[identifier] {
+            true
         }
-        return true
+        else if maxDepth > 0 {
+            parent?.existsAsType(identifier: identifier, maxDepth: maxDepth - 1) ?? false
+        }
+        else {
+            false
+        }
     }
     
     private func maybeResolveTypeWithScopeDepth(sourceAnchor: SourceAnchor? = nil, identifier: String) -> (SymbolType, Int)? {
@@ -1385,11 +1395,29 @@ public class SymbolTable: NSObject {
         return nil
     }
     
-    // The UUID of the AST node associated with this scope, if any
+    /// The UUID of the AST node associated with this scope, if any
     public var associatedNodeId: AbstractSyntaxTreeNode.ID?
     
-    // Given a symbol identifier, return the Id of the Block associated with the
-    // scope in which it was defined.
+    /// Return an Int which uniquely identifies this specific symbol table
+    public var id: Int {
+        Unmanaged.passUnretained(self).toOpaque().hashValue
+    }
+    
+    public typealias ScopeIdentifier = Int
+    
+    /// Given an identifier for a symbol or type, return the ID of the scope in which it was defined
+    public func lookupIdOfEnclosingScope(identifier id: String) -> ScopeIdentifier {
+        let scope = lookupEnclosingScope(identifier: id)
+        let scopeID = scope?.id ?? NSNotFound
+        return scopeID
+    }
+    
+    /// Given an identifier for a symbol or type, return the scope in which it was defined
+    public func lookupEnclosingScope(identifier id: String) -> SymbolTable? {
+        lookupScopeEnclosingSymbol(identifier: id) ?? lookupScopeEnclosingType(identifier: id)
+    }
+    
+    /// Given a symbol identifier, return the scope in which it was defined
     public func lookupScopeEnclosingSymbol(identifier: String) -> SymbolTable? {
         if let _ = symbolTable[identifier] {
             self
@@ -1399,8 +1427,7 @@ public class SymbolTable: NSObject {
         }
     }
     
-    // Given a type identifier, return the Id of the Block associated with the
-    // scope in which it was defined.
+    /// Given a type identifier, return the the scope in which it was defined
     public func lookupScopeEnclosingType(identifier: String) -> SymbolTable? {
         if let _ = typeTable[identifier] {
             self
@@ -1410,8 +1437,15 @@ public class SymbolTable: NSObject {
         }
     }
     
-    public func maybeResolveType(sourceAnchor: SourceAnchor? = nil, identifier: String) -> SymbolType? {
-        let maybeResolution = maybeResolveTypeWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier)
+    public func maybeResolveType(
+        sourceAnchor: SourceAnchor? = nil,
+        identifier: String,
+        maxDepth: Int = Int.max
+    ) -> SymbolType? {
+        let maybeResolution = maybeResolveTypeWithStackFrameDepth(
+            sourceAnchor: sourceAnchor,
+            identifier: identifier,
+            maxDepth: maxDepth)
         return maybeResolution?.0
     }
     
@@ -1423,11 +1457,23 @@ public class SymbolTable: NSObject {
         return resolution.0
     }
     
-    private func maybeResolveTypeWithStackFrameDepth(sourceAnchor: SourceAnchor?, identifier: String) -> (SymbolType, Int)? {
+    private func maybeResolveTypeWithStackFrameDepth(
+        sourceAnchor: SourceAnchor?,
+        identifier: String,
+        maxDepth: Int = Int.max
+    ) -> (SymbolType, Int)? {
         if let symbolRecord = typeTable[identifier] {
-            return (symbolRecord.symbolType, stackFrameIndex)
+            (symbolRecord.symbolType, stackFrameIndex)
         }
-        return parent?.maybeResolveTypeWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier)
+        else if maxDepth > 0 {
+            parent?.maybeResolveTypeWithStackFrameDepth(
+                sourceAnchor: sourceAnchor,
+                identifier: identifier,
+                maxDepth: maxDepth - 1)
+        }
+        else {
+            nil
+        }
     }
     
     public func resolveTypeRecord(sourceAnchor: SourceAnchor?, identifier: String) throws -> TypeRecord {

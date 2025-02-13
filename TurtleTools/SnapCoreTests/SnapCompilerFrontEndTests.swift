@@ -429,21 +429,134 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         }
     }
     
-    func testCannotShadowALocalVariable() throws {
-        let compiler = makeCompiler()
+    func testVariableDeclarationMayNotShadowAnExistingVariableInSameScope() throws {
+        let compiler = SnapCompilerFrontEnd(
+            options: SnapCompilerFrontEnd.Options(runtimeSupport: kRuntime),
+            memoryLayoutStrategy: memoryLayoutStrategy)
         let result = Result {
             try compiler.compile(program: """
-                let a = 1
-                {
-                    let a = false
-                }
-                """)
+            let a = 1
+            let a = false
+            """)
         }
         expectError(result) { error in
             XCTAssertEqual(error.sourceAnchor?.text, "a")
-            XCTAssertEqual(error.sourceAnchor?.lineNumbers, 2..<3)
+            XCTAssertEqual(error.sourceAnchor?.lineNumbers, 1..<2)
             XCTAssertEqual(error.message, "constant redefines existing symbol: `a'")
         }
+    }
+    
+    func testVariableDeclarationMayShadowAnExistingVariableInEnclosingScope() throws {
+        let program = """
+            let a: u16 = 1
+            {
+                let a = false
+            }
+            """
+        let compiler = SnapCompilerFrontEnd(
+            options: SnapCompilerFrontEnd.Options(runtimeSupport: kRuntime),
+            memoryLayoutStrategy: memoryLayoutStrategy)
+        XCTAssertNoThrow(try compiler.compile(program: program))
+    }
+    
+    func testVariableDeclarationMayShadowAnExistingTypeNameInEnclosingScope() throws {
+        let program = """
+            typealias a = u8
+            {
+                let a = false
+            }
+            """
+        let compiler = SnapCompilerFrontEnd(
+            options: SnapCompilerFrontEnd.Options(runtimeSupport: kRuntime),
+            memoryLayoutStrategy: memoryLayoutStrategy)
+        XCTAssertNoThrow(try compiler.compile(program: program))
+    }
+    
+    func testStructDeclarationMayNotShadowTypeInSameScope() throws {
+        let compiler = SnapCompilerFrontEnd(
+            options: SnapCompilerFrontEnd.Options(runtimeSupport: kRuntime),
+            memoryLayoutStrategy: memoryLayoutStrategy)
+        let result = Result {
+            try compiler.compile(program: """
+            struct a {}
+            struct a {}
+            """)
+        }
+        expectError(result) { error in
+            XCTAssertEqual(error.sourceAnchor?.text, "a")
+            XCTAssertEqual(error.sourceAnchor?.lineNumbers, 1..<2)
+            XCTAssertEqual(error.message, "struct declaration redefines existing type: `a'")
+        }
+    }
+    
+    func testStructDeclarationMayShadowAnExistingTypeNameInEnclosingScope() throws {
+        let program = """
+            struct a {}
+            {
+                struct a {}
+            }
+            """
+        let compiler = SnapCompilerFrontEnd(
+            options: SnapCompilerFrontEnd.Options(runtimeSupport: kRuntime),
+            memoryLayoutStrategy: memoryLayoutStrategy)
+        XCTAssertNoThrow(try compiler.compile(program: program))
+    }
+    
+    func testStructDeclarationMayShadowAnExistingSymbolNameInEnclosingScope() throws {
+        let program = """
+            let a = 1
+            {
+                struct a {
+                }
+            }
+            """
+        let compiler = SnapCompilerFrontEnd(
+            options: SnapCompilerFrontEnd.Options(runtimeSupport: kRuntime),
+            memoryLayoutStrategy: memoryLayoutStrategy)
+        XCTAssertNoThrow(try compiler.compile(program: program))
+    }
+    
+    func testFunctionDeclarationMayNotShadowExistingTypeInSameScope() throws {
+        let compiler = SnapCompilerFrontEnd(
+            options: SnapCompilerFrontEnd.Options(runtimeSupport: kRuntime),
+            memoryLayoutStrategy: memoryLayoutStrategy)
+        let result = Result {
+            try compiler.compile(program: """
+            struct a {}
+            func a() {}
+            """)
+        }
+        expectError(result) { error in
+            XCTAssertEqual(error.sourceAnchor?.text, "a")
+            XCTAssertEqual(error.sourceAnchor?.lineNumbers, 1..<2)
+            XCTAssertEqual(error.message, "function redefines existing type: `a'")
+        }
+    }
+    
+    func testFunctionDeclarationMayShadowExistingSymbolInEnclosingScope() throws {
+        let compiler = SnapCompilerFrontEnd(
+            options: SnapCompilerFrontEnd.Options(runtimeSupport: kRuntime),
+            memoryLayoutStrategy: memoryLayoutStrategy)
+        XCTAssertNoThrow(try compiler.compile(program: """
+            func a() {}
+            
+            func b() {
+                func a() {}
+            }
+            """))
+    }
+    
+    func testFunctionDeclarationMayShadowExistingTypeInEnclosingScope() throws {
+        let compiler = SnapCompilerFrontEnd(
+            options: SnapCompilerFrontEnd.Options(runtimeSupport: kRuntime),
+            memoryLayoutStrategy: memoryLayoutStrategy)
+        XCTAssertNoThrow(try compiler.compile(program: """
+            struct a {}
+            
+            func b() {
+                func a() {}
+            }
+            """))
     }
     
     func test_EndToEndIntegration_SimpleFunctionCall() throws {

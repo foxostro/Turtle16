@@ -608,7 +608,7 @@ public enum ArithmeticType: Equatable, Hashable, CustomStringConvertible {
     }
 }
 
-public class FunctionType: NSObject {
+public final class FunctionType: Equatable, Hashable, CustomStringConvertible {
     public let name: String?
     public let mangledName: String?
     public let returnType: SymbolType
@@ -622,14 +622,24 @@ public class FunctionType: NSObject {
                   arguments: arguments)
     }
     
-    public convenience init(name: String, returnType: SymbolType, arguments: [SymbolType]) {
+    public convenience init(
+        name: String,
+        returnType: SymbolType,
+        arguments: [SymbolType]
+    ) {
         self.init(name: name,
                   mangledName: name,
                   returnType: returnType,
                   arguments: arguments)
     }
     
-    public init(name: String?, mangledName: String?, returnType: SymbolType, arguments: [SymbolType], ast: FunctionDeclaration? = nil) {
+    public init(
+        name: String?,
+        mangledName: String?,
+        returnType: SymbolType,
+        arguments: [SymbolType],
+        ast: FunctionDeclaration? = nil
+    ) {
         self.name = name
         self.mangledName = mangledName
         self.returnType = returnType
@@ -637,54 +647,29 @@ public class FunctionType: NSObject {
         self.ast = ast
     }
     
-    public override var description: String {
+    public var description: String {
         let name = self.name ?? ""
         return "func \(name)(\(argumentsDescription)) -> \(returnType)"
     }
     
     public var argumentsDescription: String {
-        let result = arguments.map({$0.description}).joined(separator: ", ")
-        return result
+        arguments.map({$0.description}).joined(separator: ", ")
     }
     
     public static func ==(lhs: FunctionType, rhs: FunctionType) -> Bool {
-        lhs.isEqual(rhs)
-    }
-    
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else {
-            return false
-        }
-        guard type(of: rhs!) == type(of: self) else {
-            return false
-        }
-        guard let rhs = rhs as? FunctionType else {
-            return false
-        }
-        guard name == rhs.name else {
-            return false
-        }
-        guard mangledName == rhs.mangledName else {
-            return false
-        }
-        guard returnType == rhs.returnType else {
-            return false
-        }
-        guard arguments == rhs.arguments else {
-            return false
-        }
-//        guard ast == rhs.ast else {
-//            return false
-//        }
+        guard type(of: lhs) == type(of: rhs) else { return false }
+        guard lhs.name == rhs.name else { return false }
+        guard lhs.mangledName == rhs.mangledName else { return false }
+        guard lhs.returnType == rhs.returnType else { return false }
+        guard lhs.arguments == rhs.arguments else { return false }
+//        guard lhs.ast == rhs.ast else { return false }
         return true
     }
     
     private var isDoingHash = false
     
-    public override var hash: Int {
+    public func hash(into hasher: inout Hasher) {
         defer { isDoingHash = false }
-        isDoingHash = true
-        var hasher = Hasher()
         hasher.combine(name)
         hasher.combine(mangledName)
         hasher.combine(returnType)
@@ -692,15 +677,14 @@ public class FunctionType: NSObject {
             hasher.combine(arguments)
         }
 //        hasher.combine(ast)
-        return hasher.finalize()
     }
     
     public func eraseName() -> FunctionType {
-        return FunctionType(name: nil,
-                            mangledName: nil,
-                            returnType: returnType,
-                            arguments: arguments,
-                            ast: ast)
+        FunctionType(name: nil,
+                     mangledName: nil,
+                     returnType: returnType,
+                     arguments: arguments,
+                     ast: ast)
     }
     
     public func withBody(_ body: Block) -> FunctionType {

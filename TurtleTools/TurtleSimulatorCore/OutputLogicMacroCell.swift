@@ -8,10 +8,10 @@
 
 import Foundation
 
-// Models one Output Logic Macro Cell (OLMC) in a GAL22V10.
-// The hardware OLMCs have different numbers of product terms. That constraint
-// is not validated here. This simulation will accept any number of terms.
-public class OutputLogicMacroCell: NSObject {
+/// Models one Output Logic Macro Cell (OLMC) in a GAL22V10.
+/// The hardware OLMCs have different numbers of product terms. That constraint
+/// is not validated here. This simulation will accept any number of terms.
+public final class OutputLogicMacroCell {
     public let outputEnableProductTermFuseMap: ProductTermFuseMap
     public let productTermFuseMaps: [ProductTermFuseMap]
     public let s0: UInt
@@ -75,12 +75,11 @@ public class OutputLogicMacroCell: NSObject {
             }
         }
         
-        let result: UInt
-        switch (s1, s0) {
-        case (0, 0): result = (~flipFlopState) & 1
-        case (0, 1): result = ( flipFlopState) & 1
-        case (1, 0): result = (~sumTerm) & 1
-        case (1, 1): result = ( sumTerm) & 1
+        let result: UInt = switch (s1, s0) {
+        case (0, 0): (~flipFlopState) & 1
+        case (0, 1): ( flipFlopState) & 1
+        case (1, 0): (~sumTerm) & 1
+        case (1, 1): ( sumTerm) & 1
         default: abort()
         }
         
@@ -96,7 +95,7 @@ public class OutputLogicMacroCell: NSObject {
         return result
     }
     
-    fileprivate func configureCombinatorialInputs(_ input: Input) -> [UInt] {
+    private func configureCombinatorialInputs(_ input: Input) -> [UInt] {
         var modified = input.inputs
         
         if s1 == 0 {
@@ -140,14 +139,17 @@ public class OutputLogicMacroCell: NSObject {
     }
     
     public func evaluateSumTerm(_ input: Input) -> UInt {
-        return productTermFuseMaps.map({ (productTermFuseMap: ProductTermFuseMap) -> [UInt] in
-            productTermFuseMap.evaluate(configureCombinatorialInputs(input))
-        }).map({ (productTerm) -> UInt in
-            productTerm.reduce(1, { (x, y) -> UInt in
-                x & y
-            })
-        }).reduce(0, { (x, y) -> UInt in
-            x | y
-        })
+        productTermFuseMaps
+            .map { (productTermFuseMap: ProductTermFuseMap) -> [UInt] in
+                productTermFuseMap.evaluate(configureCombinatorialInputs(input))
+            }
+            .map { (productTerm) -> UInt in
+                productTerm.reduce(1) { (x, y) -> UInt in
+                    x & y
+                }
+            }
+            .reduce(0) { (x, y) -> UInt in
+                x | y
+            }
     }
 }

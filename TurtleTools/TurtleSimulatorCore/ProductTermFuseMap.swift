@@ -8,15 +8,15 @@
 
 import Foundation
 
-// The GAL22V10 contains a 132x44 programmable interconnect array. The JEDEC
-// file gives one fuse list field per row in this array, each representing one
-// product term. The FuseListMap class simulates one such row.
-// Each OLMC accepts a list of product terms generated in this way.
-public class ProductTermFuseMap: NSObject {
+/// The GAL22V10 contains a 132x44 programmable interconnect array. The JEDEC
+/// file gives one fuse list field per row in this array, each representing one
+/// product term. The FuseListMap class simulates one such row.
+/// Each OLMC accepts a list of product terms generated in this way.
+public struct ProductTermFuseMap {
     public static let numberOfTerms = 44
-    let fuseList: [UInt]
+    private let fuseList: [UInt]
     
-    public convenience init(fuseListBitmap: UInt) {
+    public init(fuseListBitmap: UInt) {
         assert(fuseListBitmap <= 0b11111111111111111111111111111111111111111111)
         var fuseList: [UInt] = []
         for i in 0..<ProductTermFuseMap.numberOfTerms {

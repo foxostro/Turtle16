@@ -8,38 +8,38 @@
 
 import TurtleCore
 
-public class TokenCurlyLeft : Token {}
-public class TokenCurlyRight : Token {}
-public class TokenSquareBracketLeft : Token {}
-public class TokenSquareBracketRight : Token {}
-public class TokenUnderscore : Token {}
-public class TokenArrow : Token {}
-public class TokenElse: Token {}
-public class TokenFunc : Token {}
-public class TokenIf: Token {}
-public class TokenReturn: Token {}
-public class TokenVar: Token {}
-public class TokenWhile : Token {}
-public class TokenFor : Token {}
-public class TokenIn : Token {}
-public class TokenStatic : Token {}
-public class TokenAs : Token {}
-public class TokenBitcastAs : Token {}
-public class TokenIs : Token {}
-public class TokenDoubleDot : Token {}
-public class TokenDot : Token {}
-public class TokenUndefined : Token {}
-public class TokenStruct : Token {}
-public class TokenConst : Token {}
-public class TokenImpl : Token {}
-public class TokenTypealias : Token {}
-public class TokenMatch : Token {}
-public class TokenPublic : Token {}
-public class TokenPrivate : Token {}
-public class TokenAssert : Token {}
-public class TokenTest : Token {}
-public class TokenImport : Token {}
-public class TokenTrait : Token {}
-public class TokenAsm : Token {}
-public class TokenSizeof : Token {}
-public class TokenAt : Token {}
+public final class TokenCurlyLeft : Token {}
+public final class TokenCurlyRight : Token {}
+public final class TokenSquareBracketLeft : Token {}
+public final class TokenSquareBracketRight : Token {}
+public final class TokenUnderscore : Token {}
+public final class TokenArrow : Token {}
+public final class TokenElse: Token {}
+public final class TokenFunc : Token {}
+public final class TokenIf: Token {}
+public final class TokenReturn: Token {}
+public final class TokenVar: Token {}
+public final class TokenWhile : Token {}
+public final class TokenFor : Token {}
+public final class TokenIn : Token {}
+public final class TokenStatic : Token {}
+public final class TokenAs : Token {}
+public final class TokenBitcastAs : Token {}
+public final class TokenIs : Token {}
+public final class TokenDoubleDot : Token {}
+public final class TokenDot : Token {}
+public final class TokenUndefined : Token {}
+public final class TokenStruct : Token {}
+public final class TokenConst : Token {}
+public final class TokenImpl : Token {}
+public final class TokenTypealias : Token {}
+public final class TokenMatch : Token {}
+public final class TokenPublic : Token {}
+public final class TokenPrivate : Token {}
+public final class TokenAssert : Token {}
+public final class TokenTest : Token {}
+public final class TokenImport : Token {}
+public final class TokenTrait : Token {}
+public final class TokenAsm : Token {}
+public final class TokenSizeof : Token {}
+public final class TokenAt : Token {}

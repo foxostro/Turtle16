@@ -6,32 +6,32 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-public class TokenOperator : Token {
+public final class TokenOperator : Token {
     public enum Operator {
         case eq, ne, lt, gt, le, ge, plus, minus, star, divide, modulus, ampersand, doubleAmpersand, pipe, doublePipe, bang, caret, leftDoubleAngle, rightDoubleAngle, tilde
         
         public var description: String {
             switch self {
-            case .eq: return "=="
-            case .ne: return "!="
-            case .lt: return "<"
-            case .gt: return ">"
-            case .le: return "<="
-            case .ge: return ">="
-            case .plus: return "+"
-            case .minus: return "-"
-            case .star: return "*"
-            case .divide: return "/"
-            case .modulus: return "%"
-            case .ampersand: return "&"
-            case .doubleAmpersand: return "&&"
-            case .pipe: return "|"
-            case .doublePipe: return "||"
-            case .bang: return "!"
-            case .caret: return "^"
-            case .leftDoubleAngle: return "<<"
-            case .rightDoubleAngle: return ">>"
-            case .tilde: return "~"
+            case .eq: "=="
+            case .ne: "!="
+            case .lt: "<"
+            case .gt: ">"
+            case .le: "<="
+            case .ge: ">="
+            case .plus: "+"
+            case .minus: "-"
+            case .star: "*"
+            case .divide: "/"
+            case .modulus: "%"
+            case .ampersand: "&"
+            case .doubleAmpersand: "&&"
+            case .pipe: "|"
+            case .doublePipe: "||"
+            case .bang: "!"
+            case .caret: "^"
+            case .leftDoubleAngle: "<<"
+            case .rightDoubleAngle: ">>"
+            case .tilde: "~"
             }
         }
     }
@@ -47,26 +47,18 @@ public class TokenOperator : Token {
     }
     
     public override var description: String {
-        return String(format: "<%@: sourceAnchor=%@, lexeme=\"%@\", op=%@>",
-                      String(describing: type(of: self)),
-                      String(describing: sourceAnchor),
-                      lexeme,
-                      String(describing: op))
+        "<\(selfDesc): sourceAnchor=\(sourceAnchorDesc), lexeme=\"\(lexeme)\", op=\(op)>"
     }
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
-        guard let rhs = rhs as? TokenOperator else { return false }
-        guard isBaseClassPartEqual(rhs) else { return false }
+    public override func isEqual(_ rhs: Token) -> Bool {
+        guard super.isEqual(rhs) else { return false }
+        guard let rhs = rhs as? Self else { return false }
         guard op == rhs.op else { return false }
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
+    public override func hash(into hasher: inout Hasher) {
+        super.hash(into: &hasher)
         hasher.combine(op)
-        hasher.combine(super.hash)
-        return hasher.finalize()
     }
 }

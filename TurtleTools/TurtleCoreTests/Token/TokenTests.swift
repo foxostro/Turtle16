@@ -20,11 +20,6 @@ class TokenTests: XCTestCase {
         XCTAssertEqual(a, b)
     }
     
-    func testTokenIsNotEqualToSomeOtherNSObject() {
-        let token = Token(sourceAnchor: nil)
-        XCTAssertNotEqual(token, NSArray())
-    }
-    
     func testTokenIsNotEqualToTokenOfDifferentType() {
         let a = Token(sourceAnchor: nil)
         let b = TokenEOF()

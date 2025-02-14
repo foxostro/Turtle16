@@ -6,41 +6,61 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-open class Token : NSObject {
+open class Token: Hashable, CustomStringConvertible {
     public let sourceAnchor: SourceAnchor?
-    public var lexeme: String {
-        String(sourceAnchor?.text ?? "")
-    }
+    public var lexeme: String { String(sourceAnchor?.text ?? "") }
+    public var sourceAnchorDesc: String { String(describing: sourceAnchor) }
+    public var selfDesc: String { String(describing: type(of: self)) }
     
     public init(sourceAnchor: SourceAnchor? = nil) {
         self.sourceAnchor = sourceAnchor
-        super.init()
     }
     
-    open override var description: String {
-        let typeString = String(describing: type(of: self))
-        return "<\(typeString): sourceAnchor=\(String(describing: sourceAnchor)), lexeme=\"\(lexeme)\">"
+    open var description: String {
+        "<\(selfDesc): sourceAnchor=\(sourceAnchorDesc), lexeme=\"\(lexeme)\">"
+    }
+    
+    open func hash(into hasher: inout Hasher) {
+        hasher.combine(sourceAnchor)
     }
     
     public static func ==(lhs: Token, rhs: Token) -> Bool {
         lhs.isEqual(rhs)
     }
     
-    open override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
-        return isBaseClassPartEqual(rhs)
-    }
-    
-    public final func isBaseClassPartEqual(_ rhs: Any?) -> Bool {
-        guard let rhs = rhs as? Token else { return false }
+    open func isEqual(_ rhs: Token) -> Bool {
+        guard type(of: self) == type(of: rhs) else { return false }
         guard sourceAnchor == rhs.sourceAnchor else { return false }
         return true
     }
+}
+
+/// A token that represents a literal value of some generic type
+public class TokenLiteral<T: Hashable> : Token {
+    public let literal: T
     
-    open override var hash: Int {
-        var hasher = Hasher()
-        hasher.combine(sourceAnchor)
-        return hasher.finalize()
+    public convenience init(_ literal: T) {
+        self.init(sourceAnchor: nil, literal: literal)
+    }
+    
+    public init(sourceAnchor: SourceAnchor? = nil, literal: T) {
+        self.literal = literal
+        super.init(sourceAnchor: sourceAnchor)
+    }
+    
+    public override var description: String {
+        "<\(selfDesc): sourceAnchor=\(sourceAnchorDesc), lexeme=\"\(lexeme)\", literal=\(literal)>"
+    }
+    
+    public override func isEqual(_ rhs: Token) -> Bool {
+        guard super.isEqual(rhs) else { return false }
+        guard let rhs = rhs as? Self else { return false }
+        guard literal == rhs.literal else { return false }
+        return true
+    }
+    
+    public override func hash(into hasher: inout Hasher) {
+        super.hash(into: &hasher)
+        hasher.combine(literal)
     }
 }

@@ -9,14 +9,9 @@
 import XCTest
 import TurtleCore
 
-class TokenOperatorTests: XCTestCase {
+final class TokenOperatorTests: XCTestCase {
     func testDescription() {
         XCTAssertEqual(TokenOperator(op: .minus).description, "<TokenOperator: sourceAnchor=nil, lexeme=\"\", op=minus>")
-    }
-    
-    func testTokenOperatorIsNotEqualToSomeOtherNSObject() {
-        let token = TokenOperator(op: .minus)
-        XCTAssertNotEqual(token, NSArray())
     }
     
     func testTokenOperatorIsNotEqualToTokenWithDifferentOperator() {

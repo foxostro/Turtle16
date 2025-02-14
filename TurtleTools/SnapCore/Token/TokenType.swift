@@ -8,7 +8,7 @@
 
 import TurtleCore
 
-public class TokenType : Token {
+public final class TokenType : Token {
     public let representedType: SymbolType
     
     public init(sourceAnchor: SourceAnchor, type: SymbolType) {
@@ -17,26 +17,18 @@ public class TokenType : Token {
     }
     
     public override var description: String {
-        return String(format: "<%@: sourceAnchor=%@, lexeme=\"%@\", type=%@>",
-                      String(describing: type(of: self)),
-                      String(describing: sourceAnchor),
-                      lexeme,
-                      representedType.description)
+        "<\(selfDesc): sourceAnchor=\(sourceAnchorDesc), lexeme=\"\(lexeme)\", type=\(representedType)>"
     }
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
-        guard let rhs = rhs as? TokenType else { return false }
-        guard isBaseClassPartEqual(rhs) else { return false }
+    public override func isEqual(_ rhs: Token) -> Bool {
+        guard super.isEqual(rhs) else { return false }
+        guard let rhs = rhs as? Self else { return false }
         guard representedType == rhs.representedType else { return false }
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
+    public override func hash(into hasher: inout Hasher) {
+        super.hash(into: &hasher)
         hasher.combine(representedType)
-        hasher.combine(super.hash)
-        return hasher.finalize()
     }
 }

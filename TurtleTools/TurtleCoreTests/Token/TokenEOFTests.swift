@@ -9,8 +9,8 @@
 import XCTest
 import TurtleCore
 
-class TokenEOFTests: XCTestCase {
+final class TokenEOFTests: XCTestCase {
     func testTokenDescription() {
-        XCTAssertEqual(TokenEOF().description, "<TokenEOF: sourceAnchor=nil>")
+        XCTAssertEqual(TokenEOF().description, "<TokenEOF: sourceAnchor=nil, lexeme=\"\">")
     }
 }

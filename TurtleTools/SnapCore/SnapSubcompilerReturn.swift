@@ -8,7 +8,7 @@
 
 import TurtleCore
 
-public class SnapSubcompilerReturn: NSObject {
+public struct SnapSubcompilerReturn {
     public let symbols: SymbolTable
     
     public init(_ symbols: SymbolTable) {

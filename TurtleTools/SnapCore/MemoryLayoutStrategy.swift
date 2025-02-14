@@ -6,7 +6,7 @@
 //  Copyright © 2021 Andrew Fox. All rights reserved.
 //
 
-public protocol MemoryLayoutStrategy: NSObject {
+public protocol MemoryLayoutStrategy {
     func sizeof(type: SymbolType) -> Int
     
     // The number of words to reserve in the stack frame to save registers.

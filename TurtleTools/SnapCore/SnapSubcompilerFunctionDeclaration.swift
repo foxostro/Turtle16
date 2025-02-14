@@ -8,12 +8,14 @@
 
 import TurtleCore
 
-public class SnapSubcompilerFunctionDeclaration: NSObject {
+public struct SnapSubcompilerFunctionDeclaration {
     private let enclosingImplId: AbstractSyntaxTreeNode.ID?
     private let memoryLayoutStrategy: MemoryLayoutStrategy
     
-    public init(enclosingImplId: AbstractSyntaxTreeNode.ID? = nil,
-                memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()) {
+    public init(
+        enclosingImplId: AbstractSyntaxTreeNode.ID? = nil,
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
+    ) {
         self.enclosingImplId = enclosingImplId
         self.memoryLayoutStrategy = memoryLayoutStrategy
     }
@@ -42,17 +44,26 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
         }
     }
     
-    private func doGeneric(symbols: SymbolTable, node: FunctionDeclaration) throws {
+    private func doGeneric(
+        symbols: SymbolTable,
+        node: FunctionDeclaration
+    ) throws {
         let name = node.identifier.identifier
-        let typ = Expression.GenericFunctionType(template: node, enclosingImplId: enclosingImplId)
-        let symbol = Symbol(type: .genericFunction(typ),
-                            offset: 0,
-                            storage: .automaticStorage,
-                            visibility: node.visibility)
+        let typ = Expression.GenericFunctionType(
+            template: node,
+            enclosingImplId: enclosingImplId)
+        let symbol = Symbol(
+            type: .genericFunction(typ),
+            offset: 0,
+            storage: .automaticStorage,
+            visibility: node.visibility)
         symbols.bind(identifier: name, symbol: symbol)
     }
     
-    private func doNonGeneric(symbols: SymbolTable, node: FunctionDeclaration) throws {
+    private func doNonGeneric(
+        symbols: SymbolTable,
+        node: FunctionDeclaration
+    ) throws {
         let functionType = try evaluateFunctionTypeExpression(symbols, node.functionType)
         try instantiate(functionType: functionType,
                         functionDeclaration: node)
@@ -65,9 +76,10 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
         symbols.bind(identifier: name, symbol: symbol)
     }
     
-    public func instantiate(functionType: FunctionType,
-                            functionDeclaration node0: FunctionDeclaration) throws {
-        
+    public func instantiate(
+        functionType: FunctionType,
+        functionDeclaration node0: FunctionDeclaration
+    ) throws {
         node0.symbols.breadcrumb = .functionType(functionType)
         
         bindFunctionArguments(symbols: node0.symbols,
@@ -111,9 +123,11 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
         .unwrapFunctionType()
     }
     
-    private func bindFunctionArguments(symbols: SymbolTable,
-                                       functionType: FunctionType,
-                                       argumentNames: [String]) {
+    private func bindFunctionArguments(
+        symbols: SymbolTable,
+        functionType: FunctionType,
+        argumentNames: [String]
+    ) {
         var offset = memoryLayoutStrategy.sizeOfSaveArea
         
         for i in (0..<functionType.arguments.count).reversed() {
@@ -138,9 +152,11 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
         offset += sizeOfFunctionReturnType
     }
     
-    private func expectFunctionReturnExpressionIsCorrectType(symbols: SymbolTable,
-                                                             functionType: FunctionType,
-                                                             func node: FunctionDeclaration) throws {
+    private func expectFunctionReturnExpressionIsCorrectType(
+        symbols: SymbolTable,
+        functionType: FunctionType,
+        func node: FunctionDeclaration
+    ) throws {
         let tracer = StatementTracer(symbols: symbols)
         let traces = try tracer.trace(ast: node.body)
         for trace in traces {
@@ -159,19 +175,21 @@ public class SnapSubcompilerFunctionDeclaration: NSObject {
         }
     }
     
-    private func makeErrorForMissingReturn(_ symbols: SymbolTable,
-                                           _ functionType: FunctionType,
-                                           _ node: FunctionDeclaration) -> CompilerError {
-        return CompilerError(sourceAnchor: node.identifier.sourceAnchor,
-                             message: "missing return in a function expected to return `\(functionType.returnType)'")
+    private func makeErrorForMissingReturn(
+        _ symbols: SymbolTable,
+        _ functionType: FunctionType,
+        _ node: FunctionDeclaration
+    ) -> CompilerError {
+        CompilerError(sourceAnchor: node.identifier.sourceAnchor,
+                      message: "missing return in a function expected to return `\(functionType.returnType)'")
     }
     
-    private func shouldSynthesizeTerminalReturnStatement(symbols: SymbolTable,
-                                                         functionType: FunctionType,
-                                                         func node: FunctionDeclaration) throws -> Bool {
-        guard functionType.returnType == .void else {
-            return false
-        }
+    private func shouldSynthesizeTerminalReturnStatement(
+        symbols: SymbolTable,
+        functionType: FunctionType,
+        func node: FunctionDeclaration
+    ) throws -> Bool {
+        guard functionType.returnType == .void else { return false }
         let tracer = StatementTracer(symbols: symbols)
         let traces = try! tracer.trace(ast: node.body)
         var allTracesEndInReturnStatement = true

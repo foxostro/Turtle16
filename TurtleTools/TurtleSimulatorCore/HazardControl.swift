@@ -8,12 +8,12 @@
 
 import Foundation
 
-// Simulates the CPU's hazard control unit to detect and resolve hazards.
-//
-// Implementing the Hazard Control unit in real hardware requires splitting
-// it across two ATF22V10 ICs. We represent this split through the two
-// stages of logic in this class.
-public class HazardControl: NSObject {
+/// Simulates the CPU's hazard control unit to detect and resolve hazards.
+///
+/// Implementing the Hazard Control unit in real hardware requires splitting
+/// it across two ATF22V10 ICs. We represent this split through the two
+/// stages of logic in this class.
+public class HazardControl {
     public struct Output {
         public let flush: UInt
         public let stall: UInt
@@ -67,12 +67,14 @@ public class HazardControl: NSObject {
         let stall: UInt
     }
     
+    public init() {}
+    
     public func generatedHazardControlSignalsStageOne(input: StageOneInput) -> StageOneOutput {
-        abort() // implement in a subclass
+        fatalError("implement in a subclass")
     }
     
     public func generatedHazardControlSignalsStageTwo(input: StageTwoInput) -> StageTwoOutput {
-        abort() // implement in a subclass
+        fatalError("implement in a subclass")
     }
     
     public func step(input: ID.Input,

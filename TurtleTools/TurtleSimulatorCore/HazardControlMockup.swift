@@ -8,8 +8,8 @@
 
 import Foundation
 
-// Mock up the hazard control logic. This will be implemented in a GAL on real hardware.
-public class HazardControlMockup: HazardControl {
+/// Mock up the hazard control logic. This will be implemented in a GAL on real hardware.
+public final class HazardControlMockup: HazardControl {
     public override func generatedHazardControlSignalsStageOne(input: StageOneInput) -> StageOneOutput {
         // For `fwd_a', we really want an expression like the following:
         //   let fwd_a = ~((sel_a_matches_sel_c_ex | wben_EX | writeBackSrc_EX) & (sel_a_matches_sel_c_mem | wben_MEM | writeBackSrc_MEM))

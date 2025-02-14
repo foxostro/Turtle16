@@ -11,7 +11,7 @@ import TurtleSimulatorCore
 
 class HazardControlMockupTests: XCTestCase {
     public func makeHazardControl() -> HazardControl {
-        return HazardControlMockup()
+        HazardControlMockup()
     }
     
     func testFlushOnJump() throws {

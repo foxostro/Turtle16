@@ -8,12 +8,12 @@
 
 import Foundation
 
-// Simulates the CPU's hazard control unit to detect and resolve hazards.
-//
-// Implementing the Hazard Control unit in real hardware requires splitting
-// it across two ATF22V10 ICs. We represent this split through the two
-// stages of logic in this class.
-public class HazardControlGAL: HazardControl {
+/// Simulates the CPU's hazard control unit to detect and resolve hazards.
+///
+/// Implementing the Hazard Control unit in real hardware requires splitting
+/// it across two ATF22V10 ICs. We represent this split through the two
+/// stages of logic in this class.
+public final class HazardControlGAL: HazardControl {
     public let stageOneGAL: ATF22V10
     public let stageTwoGAL: ATF22V10
     

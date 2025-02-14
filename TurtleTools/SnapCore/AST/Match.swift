@@ -9,7 +9,7 @@
 import TurtleCore
 
 public class Match: AbstractSyntaxTreeNode {
-    public class Clause: NSObject {
+    public struct Clause: Equatable, Hashable {
         public let sourceAnchor: SourceAnchor?
         public let valueIdentifier: Expression.Identifier
         public let valueType: Expression
@@ -23,29 +23,6 @@ public class Match: AbstractSyntaxTreeNode {
             self.valueIdentifier = valueIdentifier
             self.valueType = valueType
             self.block = block
-        }
-        
-        public static func ==(lhs: Clause, rhs: Clause) -> Bool {
-            lhs.isEqual(rhs)
-        }
-        
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard let rhs = rhs as? Clause else { return false }
-            guard sourceAnchor == rhs.sourceAnchor else { return false }
-            guard valueIdentifier == rhs.valueIdentifier else { return false }
-            guard valueType == rhs.valueType else { return false }
-            guard block == rhs.block else { return false }
-            return true
-        }
-        
-        public override var hash: Int {
-            var hasher = Hasher()
-            hasher.combine(sourceAnchor)
-            hasher.combine(valueIdentifier)
-            hasher.combine(valueType)
-            hasher.combine(block)
-            return hasher.finalize()
         }
     }
     

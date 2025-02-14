@@ -8,7 +8,7 @@
 
 import TurtleCore
 
-public class CompilerPass: NSObject {
+public class CompilerPass {
     struct Environment {
         private var stack: [SymbolTable] = []
         

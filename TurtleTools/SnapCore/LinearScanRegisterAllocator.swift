@@ -6,49 +6,48 @@
 //  Copyright © 2021 Andrew Fox. All rights reserved.
 //
 
-// A standard Linear Scan Register Allocator.
-// Live Intervals which must be spilled are simply not assigned a register.
-// Spill code is inserted elsewhere.
-// Configured for a pool of five registers {r0, r1, r2, r3, r4}
-// Ignores live intervals in the input already assigned a physical register.
-// See <http://web.cs.ucla.edu/~palsberg/course/cs132/linearscan.pdf>
-public class LinearScanRegisterAllocator: NSObject {
-    var registerPool: [Bool]
-    var registers: [Int : Int?] = [:]
-    var spillSlots: [Int : Int] = [:]
-    var active: [Int] = []
-    var nextSpillSlot = 0
+/// A standard Linear Scan Register Allocator.
+/// Live Intervals which must be spilled are simply not assigned a register.
+/// Spill code is inserted elsewhere.
+/// Ignores live intervals in the input already assigned a physical register.
+/// See <http://web.cs.ucla.edu/~palsberg/course/cs132/linearscan.pdf>
+public struct LinearScanRegisterAllocator {
+    private var registerPool: [Bool]
+    private var registers: [Int : Int?] = [:]
+    private var spillSlots: [Int : Int] = [:]
+    private var active: [Int] = []
+    private var nextSpillSlot = 0
     
-    let liveIntervals: [LiveInterval]
-    let increasingStartPoint: [LiveInterval]
-    let increasingEndPoint: [LiveInterval]
+    private let liveIntervals: [LiveInterval]
+    private let increasingStartPoint: [LiveInterval]
+    private let increasingEndPoint: [LiveInterval]
     
-    public static func allocate(numRegisters: Int,
-                                liveIntervals: [LiveInterval]) -> [LiveInterval] {
-        let allocator = LinearScanRegisterAllocator(numRegisters, liveIntervals)
+    public static func allocate(
+        numRegisters: Int,
+        liveIntervals: [LiveInterval]
+    ) -> [LiveInterval] {
+        var allocator = LinearScanRegisterAllocator(numRegisters, liveIntervals)
         allocator.performAllocation()
         let result = allocator.collateResults()
         return result
     }
     
-    init(_ numRegisters: Int, _ liveIntervals: [LiveInterval]) {
+    private init(_ numRegisters: Int, _ liveIntervals: [LiveInterval]) {
         assert(numRegisters >= 0)
         self.registerPool = Array<Bool>(repeating: true, count: numRegisters)
         self.liveIntervals = liveIntervals
-        increasingStartPoint = liveIntervals.sorted(by: { leftRange, rightRange in
+        increasingStartPoint = liveIntervals.sorted { leftRange, rightRange in
             leftRange.range.startIndex < rightRange.range.startIndex
-        })
-        increasingEndPoint = liveIntervals.sorted(by: { leftRange, rightRange in
+        }
+        increasingEndPoint = liveIntervals.sorted { leftRange, rightRange in
             leftRange.range.endIndex < rightRange.range.endIndex
-        })
+        }
     }
     
-    func performAllocation() {
+    private mutating func performAllocation() {
         for i in 0..<increasingStartPoint.count {
             expireOldIntervals(i)
-            if liveIntervals[i].physicalRegisterName != nil {
-                continue
-            }
+            guard liveIntervals[i].physicalRegisterName == nil else { continue }
             if active.count == registerPool.count {
                 spillAtInterval(i)
             } else {
@@ -58,9 +57,9 @@ public class LinearScanRegisterAllocator: NSObject {
         }
     }
     
-    func expireOldIntervals(_ i: Int) {
-        for j in Array(active) {
-            if liveIntervals[j].range.endIndex > liveIntervals[i].range.startIndex {
+    private mutating func expireOldIntervals(_ i: Int) {
+        for j in active {
+            guard liveIntervals[j].range.endIndex <= liveIntervals[i].range.startIndex else {
                 return
             }
             removeFromActive(j)
@@ -68,8 +67,9 @@ public class LinearScanRegisterAllocator: NSObject {
         }
     }
     
-    func spillAtInterval(_ i: Int) {
-        if let spill = active.last, liveIntervals[spill].range.endIndex > liveIntervals[i].range.endIndex {
+    private mutating func spillAtInterval(_ i: Int) {
+        if let spill = active.last,
+           liveIntervals[spill].range.endIndex > liveIntervals[i].range.endIndex {
             registers[i] = registers[spill]
             registers[spill] = nil
             removeFromActive(spill)
@@ -81,24 +81,24 @@ public class LinearScanRegisterAllocator: NSObject {
         }
     }
     
-    func removeFromActive(_ i: Int) {
+    private mutating func removeFromActive(_ i: Int) {
         active.removeAll(where: { $0 == i })
     }
     
-    func addToActive(_ i: Int) {
+    private mutating func addToActive(_ i: Int) {
         active.append(i)
         active.sort { leftIndex, rightIndex in
             liveIntervals[leftIndex].range.endIndex < liveIntervals[rightIndex].range.endIndex
         }
     }
     
-    func getNextSpillSlot() -> Int {
+    private mutating func getNextSpillSlot() -> Int {
         let result = nextSpillSlot
         nextSpillSlot += 1
         return result
     }
     
-    func allocatePhysicalRegister() -> Int? {
+    private mutating func allocatePhysicalRegister() -> Int? {
         for i in 0..<registerPool.count {
             if registerPool[i] {
                 registerPool[i] = false
@@ -108,13 +108,13 @@ public class LinearScanRegisterAllocator: NSObject {
         return nil // unreachable?
     }
     
-    func freePhysicalRegister(_ j: Int) {
+    private mutating func freePhysicalRegister(_ j: Int) {
         if let r_ = registers[j], let r = r_ {
             registerPool[r] = true
         }
     }
     
-    func collateResults() -> [LiveInterval] {
+    private func collateResults() -> [LiveInterval] {
         var result: [LiveInterval] = []
         for i in 0..<liveIntervals.count {
             let liveInterval = liveIntervals[i]
@@ -128,10 +128,11 @@ public class LinearScanRegisterAllocator: NSObject {
             else {
                 physicalRegisterName = nil
             }
-            result.append(LiveInterval(range: liveInterval.range,
-                                       virtualRegisterName: liveInterval.virtualRegisterName,
-                                       physicalRegisterName: physicalRegisterName,
-                                       spillSlot: spillSlots[i]))
+            result.append(LiveInterval(
+                range: liveInterval.range,
+                virtualRegisterName: liveInterval.virtualRegisterName,
+                physicalRegisterName: physicalRegisterName,
+                spillSlot: spillSlots[i]))
         }
         return result
     }

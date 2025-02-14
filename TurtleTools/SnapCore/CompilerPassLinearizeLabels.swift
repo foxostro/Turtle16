@@ -8,7 +8,7 @@
 
 import TurtleCore
 
-fileprivate class LabelCollector: CompilerPass {
+fileprivate final class LabelCollector: CompilerPass {
     public let prefix = ".L"
     public private(set) var labels: [String] = []
     
@@ -29,7 +29,7 @@ fileprivate class LabelCollector: CompilerPass {
     }
 }
 
-fileprivate class CompilerPassRewriteLabel: CompilerPass {
+fileprivate final class CompilerPassRewriteLabel: CompilerPass {
     private let targets: [String]
     private let replacements: [String]
     

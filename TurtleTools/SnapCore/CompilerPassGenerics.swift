@@ -8,16 +8,16 @@
 
 import TurtleCore
 
-// Snap compiler pass to erase generics
-// * Every expression with a generic function application is rewritten to
-//   instead reference the concrete instantiation of the function. The concrete
-//   instantiation of the function is inserted into the AST.
-// * Every reference to a generic struct type is rewritten to instead reference
-//   the concrete instantiation of the struct. The concrete struct type is
-//   inserted into the AST.
-// * Every reference to a generic trait is rewritten to instead reference the
-//   concrete instantiation of the trait. The concrete trait type is inserted
-//   into the AST.
+/// Snap compiler pass to erase generics
+/// * Every expression with a generic function application is rewritten to
+///   instead reference the concrete instantiation of the function. The concrete
+///   instantiation of the function is inserted into the AST.
+/// * Every reference to a generic struct type is rewritten to instead reference
+///   the concrete instantiation of the struct. The concrete struct type is
+///   inserted into the AST.
+/// * Every reference to a generic trait is rewritten to instead reference the
+///   concrete instantiation of the trait. The concrete trait type is inserted
+///   into the AST.
 public final class CompilerPassGenerics: CompilerPassWithDeclScan {
     
     /// Maps an ID which uniquely identifies a point in the AST to a list of
@@ -34,7 +34,7 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
     }
     
     /// Rewrites blocks in the AST by inserting the given nodes
-    fileprivate class BlockRewriter: CompilerPass {
+    fileprivate final class BlockRewriter: CompilerPass {
         fileprivate let pendingInsertions: PendingInsertions
         
         init(_ pendingInsertions: PendingInsertions) {
@@ -84,7 +84,7 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
     }
     
     /// Removes nodes that are generic declarations
-    fileprivate class GenericDeclarationStripper: CompilerPass {
+    fileprivate final class GenericDeclarationStripper: CompilerPass {
         public override func visit(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
             if node.isGeneric {
                 nil

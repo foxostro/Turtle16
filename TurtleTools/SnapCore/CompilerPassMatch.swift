@@ -9,7 +9,7 @@
 import TurtleCore
 
 /// Compiler pass to lower and erase Match statements
-public class CompilerPassMatch: CompilerPassWithDeclScan {
+public final class CompilerPassMatch: CompilerPassWithDeclScan {
     public override func visit(match node0: Match) throws -> AbstractSyntaxTreeNode? {
         let node1 = try super.visit(match: node0) as! Match
         let outer = SymbolTable(parent: symbols)

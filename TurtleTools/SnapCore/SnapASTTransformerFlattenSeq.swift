@@ -8,7 +8,7 @@
 
 import TurtleCore
 
-public class SnapASTTransformerFlattenSeq: CompilerPass {
+public final class SnapASTTransformerFlattenSeq: CompilerPass {
     public override func visit(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {
         node.withChildren(flatten(node.children))
     }

@@ -8,8 +8,8 @@
 
 import TurtleCore
 
-// Discrete compiler pass to lower and erase ForIn statements
-public class CompilerPassForIn: CompilerPass {
+/// Discrete compiler pass to lower and erase ForIn statements
+public final class CompilerPassForIn: CompilerPass {
     public override func visit(forIn node0: ForIn) throws -> AbstractSyntaxTreeNode? {
         let node1 = try super.visit(forIn: node0) as! ForIn
         

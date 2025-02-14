@@ -9,7 +9,7 @@
 import TurtleCore
 
 /// Compiler pass to lower and erase VarDeclaration (e.g., var and let)
-public class CompilerPassLowerVarDecl: CompilerPassWithDeclScan {
+public final class CompilerPassLowerVarDecl: CompilerPassWithDeclScan {
     
     /// Replace each VarDeclaration with 1) a VarDeclaration that has no
     /// expression and simply updates the symbol table, and 2) an assignment if

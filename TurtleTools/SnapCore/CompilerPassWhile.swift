@@ -9,7 +9,7 @@
 import TurtleCore
 
 /// Compiler pass to lower and erase "while" statements
-public class CompilerPassWhile: CompilerPassWithDeclScan {
+public final class CompilerPassWhile: CompilerPassWithDeclScan {
     public override func visit(while node0: While) throws -> AbstractSyntaxTreeNode? {
         let symbols = symbols!
         let s = node0.sourceAnchor

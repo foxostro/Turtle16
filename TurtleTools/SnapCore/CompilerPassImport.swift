@@ -9,7 +9,7 @@
 import TurtleCore
 
 // Compiler pass inserts corresponding modules into the AST for each import statement
-public class CompilerPassImport: CompilerPass {
+public final class CompilerPassImport: CompilerPass {
     fileprivate var modulesAlreadySeen = Set<String>()
     fileprivate let moduleSourceCache: [String : String]
     fileprivate let runtimeSupport: String?

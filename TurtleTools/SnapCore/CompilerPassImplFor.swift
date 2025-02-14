@@ -33,7 +33,7 @@ public final class CompilerPassImplFor: CompilerPassWithDeclScan {
             memoryLayoutStrategy: memoryLayoutStrategy)
     }
     
-    fileprivate class BlockRewriter: CompilerPass {
+    fileprivate final class BlockRewriter: CompilerPass {
         let pendingInsertions: [AbstractSyntaxTreeNode.ID : [(String, VarDeclaration)]]
         
         init(_ pendingInsertions: [AbstractSyntaxTreeNode.ID : [(String, VarDeclaration)]]) {

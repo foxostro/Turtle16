@@ -9,7 +9,7 @@
 import TurtleCore
 
 /// Compiler pass to lower and erase "return" statements
-public class CompilerPassReturn: CompilerPassWithDeclScan {
+public final class CompilerPassReturn: CompilerPassWithDeclScan {
     public override func visit(return node0: Return) throws -> AbstractSyntaxTreeNode? {
         let node1 = try super.visit(return: node0) as! Return
         let subcompiler = SnapSubcompilerReturn(symbols!)

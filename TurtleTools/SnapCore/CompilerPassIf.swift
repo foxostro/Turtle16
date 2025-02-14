@@ -9,7 +9,7 @@
 import TurtleCore
 
 /// Compiler pass to lower and erase "if" statements
-public class CompilerPassIf: CompilerPassWithDeclScan {
+public final class CompilerPassIf: CompilerPassWithDeclScan {
     public override func visit(if node0: If) throws -> AbstractSyntaxTreeNode? {
         let node1 = try SnapSubcompilerIf().compile(
             if: node0,

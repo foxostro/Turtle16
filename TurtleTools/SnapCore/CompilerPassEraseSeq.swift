@@ -8,7 +8,7 @@
 
 import TurtleCore
 
-public class CompilerPassEraseSeq: CompilerPass {
+public final class CompilerPassEraseSeq: CompilerPass {
     public typealias Predicate = (Seq) -> Bool // TODO: Consider moving the project minOS to 14+ and switching to Swift's built-in Predicate type
     let predicate: Predicate
     

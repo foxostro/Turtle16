@@ -8,7 +8,7 @@
 
 import TurtleCore
 
-public class CompilerPassEraseSourceAnchor: CompilerPass {
+public final class CompilerPassEraseSourceAnchor: CompilerPass {
     public override func visit(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {
         try super.visit(topLevel: node)?.withSourceAnchor(nil)
     }

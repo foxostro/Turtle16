@@ -9,7 +9,7 @@
 import TurtleCore
 import TurtleSimulatorCore
 
-public class SnapSubcompilerSubroutine: CompilerPass {
+public final class SnapSubcompilerSubroutine: CompilerPass {
     var subroutines: [Subroutine] = []
     
     public override func visit(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {

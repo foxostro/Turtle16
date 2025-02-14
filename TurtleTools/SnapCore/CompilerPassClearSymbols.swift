@@ -9,7 +9,7 @@
 import TurtleCore
 
 // Snap compiler pass to erase symbols from the AST
-public class CompilerPassClearSymbols: CompilerPass {
+public final class CompilerPassClearSymbols: CompilerPass {
     public override func visit(block block0: Block) throws -> AbstractSyntaxTreeNode? {
         let block1 = try super.visit(block: block0) as! Block
         block1.symbols.clear()

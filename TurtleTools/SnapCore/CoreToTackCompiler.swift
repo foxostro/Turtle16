@@ -9,7 +9,7 @@
 import TurtleCore
 import TurtleSimulatorCore
 
-public class CoreToTackCompiler: CompilerPassWithDeclScan {
+public final class CoreToTackCompiler: CompilerPassWithDeclScan {
     public typealias Register = TackInstruction.Register
     public typealias RegisterPointer = TackInstruction.RegisterPointer
     public typealias RegisterType = TackInstruction.RegisterType

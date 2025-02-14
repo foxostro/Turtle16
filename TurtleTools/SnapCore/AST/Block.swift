@@ -57,7 +57,7 @@ public class Block: AbstractSyntaxTreeNode {
     
     /// Returns a new block, which is a copy of this one, assigning new IDs to the block, and to each descendant block.
     public func clone() -> Block {
-        class BlockCloner: CompilerPass {
+        final class BlockCloner: CompilerPass {
             public override func visit(block block0: Block) throws -> AbstractSyntaxTreeNode? {
                 let block1 = try super.visit(block: block0) as! Block
                 let block2 = block1

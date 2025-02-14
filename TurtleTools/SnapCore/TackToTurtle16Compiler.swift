@@ -9,7 +9,7 @@
 import TurtleCore
 import TurtleSimulatorCore
 
-public class TackToTurtle16Compiler: CompilerPass {
+public final class TackToTurtle16Compiler: CompilerPass {
     public override func visit(_ node0: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
         return flatten(try super.visit(node0))
     }

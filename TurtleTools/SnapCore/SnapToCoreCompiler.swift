@@ -8,21 +8,21 @@
 
 import TurtleCore
 
-// Compiles a syntax tree, lowering nodes to the core Snap language.
-// Accepts a parse / syntax tree and returns an abstract syntax tree.
-// This is generally a contraction and rewriting of the parse tree, simplifying,
-// removing extraneous nodes, and rewriting nodes to express high-level concepts
-// in terms simpler ones. (i.e., de-sugaring of language constructs)
-// The core Snap language is a simpler subset of the language which can be
-// accepted by the next stage of the compiler.
-public class SnapToCoreCompiler: NSObject {
+/// Compiles a syntax tree, lowering nodes to the core Snap language.
+/// Accepts a parse / syntax tree and returns an abstract syntax tree.
+/// This is generally a contraction and rewriting of the parse tree, simplifying,
+/// removing extraneous nodes, and rewriting nodes to express high-level concepts
+/// in terms simpler ones. (i.e., de-sugaring of language constructs)
+/// The core Snap language is a simpler subset of the language which can be
+/// accepted by the next stage of the compiler.
+public final class SnapToCoreCompiler {
     public private(set) var testNames: [String] = []
     
-    let shouldRunSpecificTest: String?
-    let isUsingStandardLibrary: Bool
-    let runtimeSupport: String?
-    let sandboxAccessManager: SandboxAccessManager?
-    let injectModules: [(String, String)]
+    private let shouldRunSpecificTest: String?
+    private let isUsingStandardLibrary: Bool
+    private let runtimeSupport: String?
+    private let sandboxAccessManager: SandboxAccessManager?
+    private let injectModules: [(String, String)]
     
     public init(shouldRunSpecificTest: String? = nil,
                 injectModules: [(String, String)] = [],
@@ -70,7 +70,7 @@ public class SnapToCoreCompiler: NSObject {
         return (block, testNames)
     }
     
-    var standardLibraryName: String? {
+    private var standardLibraryName: String? {
         isUsingStandardLibrary
             ? kStandardLibraryModuleName
             : nil

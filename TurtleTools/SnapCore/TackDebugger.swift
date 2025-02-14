@@ -9,7 +9,7 @@
 import Foundation
 import TurtleCore
 
-public class TackDebugger: NSObject {
+public final class TackDebugger {
     public typealias Word = TackVirtualMachine.Word
     
     public let vm: TackVirtualMachine

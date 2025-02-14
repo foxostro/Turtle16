@@ -9,7 +9,7 @@
 import TurtleCore
 
 // TODO: Rename SnapSubcompilerTypealias to TypealiasScanner
-public class SnapSubcompilerTypealias: NSObject {
+public struct SnapSubcompilerTypealias {
     public let symbols: SymbolTable
     
     public init(_ symbols: SymbolTable) {

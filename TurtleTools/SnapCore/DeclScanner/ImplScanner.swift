@@ -10,21 +10,21 @@ import Foundation
 import TurtleCore
 
 /// Scans an Impl declaration and binds the function symbols in the environment
-public class ImplScanner: NSObject {
+public struct ImplScanner {
     private let memoryLayoutStrategy: MemoryLayoutStrategy
     private let parent: SymbolTable
     private let typeChecker: RvalueExpressionTypeChecker
     
     public init(
         memoryLayoutStrategy: MemoryLayoutStrategy,
-        symbols parent: SymbolTable = SymbolTable()) {
-            
-            self.memoryLayoutStrategy = memoryLayoutStrategy
-            self.parent = parent
-            typeChecker = RvalueExpressionTypeChecker(
-                symbols: parent,
-                memoryLayoutStrategy: memoryLayoutStrategy)
-        }
+        symbols parent: SymbolTable = SymbolTable()
+    ) {
+        self.memoryLayoutStrategy = memoryLayoutStrategy
+        self.parent = parent
+        typeChecker = RvalueExpressionTypeChecker(
+            symbols: parent,
+            memoryLayoutStrategy: memoryLayoutStrategy)
+    }
     
     public func scan(impl node: Impl) throws {
         if node.isGeneric {

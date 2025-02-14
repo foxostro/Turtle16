@@ -8,7 +8,7 @@
 
 import TurtleCore
 
-public class StructMemberFunctionCallMatcher: NSObject {
+public struct StructMemberFunctionCallMatcher {
     public struct Match {
         public let callExpr: Expression.Call
         public let getExpr: Expression.Get
@@ -25,50 +25,39 @@ public class StructMemberFunctionCallMatcher: NSObject {
     }
     
     public func match() throws -> Match? {
-        guard let typ = try getFunctionType() else {
-            return nil
-        }
-        
-        guard typ.arguments.count == expr.arguments.count+1 else {
-            return nil
-        }
-        
-        guard let getExpr = expr.callee as? Expression.Get else {
-            return nil
-        }
-        
-        guard let firstArgumentType = typ.arguments.first else {
-            return nil
-        }
+        guard let typ = try getFunctionType() else { return nil }
+        guard typ.arguments.count == expr.arguments.count+1 else { return nil }
+        guard let getExpr = expr.callee as? Expression.Get else { return nil }
+        guard let firstArgumentType = typ.arguments.first else { return nil }
         
         let rtype = try typeChecker.check(expression: getExpr.expr)
-        let status = typeChecker.convertBetweenTypes(ltype: firstArgumentType,
-                                                     rtype: rtype,
-                                                     sourceAnchor: expr.sourceAnchor,
-                                                     messageWhenNotConvertible: "",
-                                                     isExplicitCast: false)
-        switch status {
+        let status = typeChecker.convertBetweenTypes(
+            ltype: firstArgumentType,
+            rtype: rtype,
+            sourceAnchor: expr.sourceAnchor,
+            messageWhenNotConvertible: "",
+            isExplicitCast: false)
+        return switch status {
         case .acceptable:
-            return Match(callExpr: expr,
-                         getExpr: getExpr,
-                         fnType: typ,
-                         firstArgumentType: typ.arguments.first!)
+            Match(callExpr: expr,
+                  getExpr: getExpr,
+                  fnType: typ,
+                  firstArgumentType: typ.arguments.first!)
             
         case .unacceptable:
-            return nil
+            nil
         }
     }
     
     func getFunctionType() throws -> FunctionType? {
-        let result: FunctionType?
-        let calleeType = try typeChecker.check(expression: expr.callee)
-        switch calleeType {
-        case .function(let typ), .pointer(.function(let typ)), .constPointer(.function(let typ)):
-            result = typ
+        switch try typeChecker.check(expression: expr.callee) {
+        case .function(let typ),
+             .pointer(.function(let typ)),
+             .constPointer(.function(let typ)):
+            typ
             
         default:
-            result = nil
+            nil
         }
-        return result
     }
 }

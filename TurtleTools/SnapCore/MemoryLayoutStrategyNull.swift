@@ -6,7 +6,8 @@
 //  Copyright © 2025 Andrew Fox. All rights reserved.
 //
 
-public class MemoryLayoutStrategyNull: NSObject, MemoryLayoutStrategy {
+public struct MemoryLayoutStrategyNull: MemoryLayoutStrategy {
+    public init() {}
     public func sizeof(type: SymbolType) -> Int { 0 }
     public var sizeOfSaveArea: Int { 0 }
 }

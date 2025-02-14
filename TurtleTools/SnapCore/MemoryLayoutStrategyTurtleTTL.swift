@@ -6,7 +6,9 @@
 //  Copyright © 2021 Andrew Fox. All rights reserved.
 //
 
-public class MemoryLayoutStrategyTurtleTTL: NSObject, MemoryLayoutStrategy {
+public struct MemoryLayoutStrategyTurtleTTL: MemoryLayoutStrategy {
+    public init() {}
+    
     public func sizeof(type: SymbolType) -> Int {
         switch type {
         case .void, .function, .genericFunction, .genericStructType, .genericTraitType, .label:
@@ -43,7 +45,7 @@ public class MemoryLayoutStrategyTurtleTTL: NSObject, MemoryLayoutStrategy {
         }
     }
     
-    func sizeof(struct typ: StructType) -> Int {
+    private func sizeof(struct typ: StructType) -> Int {
         var accum = 0
         for (_, symbol) in typ.symbols.symbolTable {
             accum += sizeof(type: symbol.type)
@@ -51,7 +53,7 @@ public class MemoryLayoutStrategyTurtleTTL: NSObject, MemoryLayoutStrategy {
         return accum
     }
     
-    func sizeof(union typ: UnionType) -> Int {
+    private func sizeof(union typ: UnionType) -> Int {
         let kTagSize = sizeof(type: .u8)
         let kBufferSize = typ.members.reduce(0) { (result, memberType) -> Int in
             return max(result, sizeof(type: memberType))

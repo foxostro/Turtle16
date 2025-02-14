@@ -11,7 +11,7 @@ import TurtleCore
 import TurtleSimulatorCore
 
 // Provides an interface for driving the snap compiler from the command-line.
-public class SnapCommandLineDriver: NSObject {
+public final class SnapCommandLineDriver {
     public struct SnapCommandLineDriverError: Error {
         public let message: String
         

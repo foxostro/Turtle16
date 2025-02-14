@@ -1400,8 +1400,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         let onSerialOutput = { (value: UInt8) in
             serialOutput.append(value)
         }
-        let options = Options(isVerboseLogging: true,
-                              isBoundsCheckEnabled: true,
+        let options = Options(isBoundsCheckEnabled: true,
                               runtimeSupport: kRuntime,
                               onSerialOutput: onSerialOutput)
         _ = try run(options: options, program: """

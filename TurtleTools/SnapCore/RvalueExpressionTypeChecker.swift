@@ -8,10 +8,10 @@
 
 import TurtleCore
 
-// Given an expression, determines the result type.
-// Throws a compiler error when the result type cannot be determined, e.g., due
-// to a type error in the expression.
-public class RvalueExpressionTypeChecker: NSObject {
+/// Given an expression, determines the result type.
+/// Throws a compiler error when the result type cannot be determined, e.g., due
+/// to a type error in the expression.
+public class RvalueExpressionTypeChecker {
     let symbols: SymbolTable
     private let staticStorageFrame: Frame
     private let memoryLayoutStrategy: MemoryLayoutStrategy
@@ -20,9 +20,11 @@ public class RvalueExpressionTypeChecker: NSObject {
         self.init(symbols: symbols)
     }
     
-    public init(symbols: SymbolTable = SymbolTable(),
-                staticStorageFrame: Frame = Frame(),
-                memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()) {
+    public init(
+        symbols: SymbolTable = SymbolTable(),
+        staticStorageFrame: Frame = Frame(),
+        memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
+    ) {
         self.symbols = symbols
         self.staticStorageFrame = staticStorageFrame
         self.memoryLayoutStrategy = memoryLayoutStrategy

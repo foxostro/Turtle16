@@ -9,8 +9,8 @@
 import TurtleSimulatorCore
 import TurtleCore
 
-// Provides an interface for driving the assembler from the command-line.
-public class AssemblerCommandLineDriver: NSObject {
+/// Provides an interface for driving the assembler from the command-line.
+public final class AssemblerCommandLineDriver {
     public struct AssemblerCommandLineDriverError: Error {
         public let message: String
         

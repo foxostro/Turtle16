@@ -8,7 +8,9 @@
 
 import TurtleCore
 
-public class SnapSubcompilerAssert: NSObject {
+public struct SnapSubcompilerAssert {
+    public init() {}
+    
     public func compile(_ symbols: SymbolTable?, _ node: Assert) throws -> If {
         let s = node.sourceAnchor
         let panic = Expression.Call(

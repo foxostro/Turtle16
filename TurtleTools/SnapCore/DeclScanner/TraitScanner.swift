@@ -9,7 +9,7 @@
 import TurtleCore
 
 /// Scans a trait declaration and binds the trait type in the environment
-public final class TraitScanner: NSObject {
+public struct TraitScanner {
     public let symbols: SymbolTable
     
     private let memoryLayoutStrategy: MemoryLayoutStrategy

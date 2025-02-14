@@ -9,27 +9,27 @@
 import TurtleCore
 import TurtleSimulatorCore
 
-public class RegisterSpiller: NSObject {
-    public enum SpillError : Error {
+/// Insert register spill code into the program
+public struct RegisterSpiller {
+    public enum SpillError : Error, CustomStringConvertible {
         case missingLeadingEnter
         case missingSpillSlot
         case outOfTemporaries
         
         public var description: String {
             switch self {
-            case .missingLeadingEnter:
-                return "missing leading enter"
-                
-            case .missingSpillSlot:
-                return "missing spill slot"
-                
-            case .outOfTemporaries:
-                return "out of temporaries"
+            case .missingLeadingEnter: "missing leading enter"
+            case .missingSpillSlot: "missing spill slot"
+            case .outOfTemporaries: "out of temporaries"
             }
         }
     }
     
-    public static func spill(spilledIntervals: [LiveInterval], temporaries temporaries0: [Int], nodes nodes0: [AbstractSyntaxTreeNode]) -> Result<[AbstractSyntaxTreeNode], SpillError> {
+    public static func spill(
+        spilledIntervals: [LiveInterval],
+        temporaries temporaries0: [Int],
+        nodes nodes0: [AbstractSyntaxTreeNode]
+    ) -> Result<[AbstractSyntaxTreeNode], SpillError> {
         guard spilledIntervals.count > 0 else {
             // If there are no spilled intervals then we can return early.
             return .success(nodes0)

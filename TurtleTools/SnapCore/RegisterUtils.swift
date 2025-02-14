@@ -9,11 +9,9 @@
 import TurtleSimulatorCore
 import TurtleCore
 
-public class RegisterUtils: NSObject {
+public struct RegisterUtils {
     public static func getReferencedRegisters(_ node: AbstractSyntaxTreeNode) -> [String] {
-        guard let ins = node as? InstructionNode else {
-            return []
-        }
+        guard let ins = node as? InstructionNode else { return [] }
         switch ins.instruction {
         case kLOAD, kSTORE, kLI, kLUI, kCMP, kADD, kSUB, kAND, kOR, kXOR, kNOT, kCMPI, kADDI, kSUBI, kANDI, kORI, kXORI, kJR, kJALR, kADC, kSBC, kCALLPTR:
             return ins.parameters.reversed().compactMap { ($0 as? ParameterIdentifier)?.value }
@@ -27,9 +25,7 @@ public class RegisterUtils: NSObject {
     }
     
     public static func getSourceRegisters(_ node: AbstractSyntaxTreeNode) -> [String] {
-        guard let ins = node as? InstructionNode else {
-            return []
-        }
+        guard let ins = node as? InstructionNode else { return [] }
         switch ins.instruction {
         case kLOAD, kADD, kSUB, kAND, kOR, kXOR, kNOT, kADDI, kSUBI, kANDI, kORI, kXORI, kJR, kJALR, kADC, kSBC, kCALLPTR:
             return ins.parameters[1...].reversed().compactMap { ($0 as? ParameterIdentifier)?.value }
@@ -46,9 +42,7 @@ public class RegisterUtils: NSObject {
     }
     
     public static func getDestinationRegisters(_ node: AbstractSyntaxTreeNode) -> [String] {
-        guard let ins = node as? InstructionNode else {
-            return []
-        }
+        guard let ins = node as? InstructionNode else { return [] }
         switch ins.instruction {
         case kLOAD, kLI, kLUI, kADD, kSUB, kAND, kOR, kXOR, kNOT, kADDI, kSUBI, kANDI, kORI, kXORI, kJR, kJALR, kADC, kSBC, kCALLPTR, kLA:
             return [ins.parameters.first].compactMap { ($0 as? ParameterIdentifier)?.value }
@@ -58,17 +52,23 @@ public class RegisterUtils: NSObject {
         }
     }
     
-    public static func rewrite(nodes: [AbstractSyntaxTreeNode], from currName: String, to updatedName: String) -> [AbstractSyntaxTreeNode] {
+    public static func rewrite(
+        nodes: [AbstractSyntaxTreeNode],
+        from currName: String,
+        to updatedName: String
+    ) -> [AbstractSyntaxTreeNode] {
         let result = nodes.map {
             rewrite(node: $0, from: currName, to: updatedName)
         }
         return result
     }
     
-    static func rewrite(node: AbstractSyntaxTreeNode, from currName: String, to updatedName: String) -> AbstractSyntaxTreeNode {
-        guard let instruction = node as? InstructionNode else {
-            return node
-        }
+    static func rewrite(
+        node: AbstractSyntaxTreeNode,
+        from currName: String,
+        to updatedName: String
+    ) -> AbstractSyntaxTreeNode {
+        guard let instruction = node as? InstructionNode else { return node }
         switch instruction.instruction {
         case kLOAD, kSTORE, kLI, kLUI, kCMP, kADD, kSUB, kAND, kOR, kXOR, kNOT, kCMPI, kADDI, kSUBI, kANDI, kORI, kXORI, kJR, kJALR, kADC, kSBC, kCALLPTR:
             let updatedParameters = instruction.parameters.map { rewriteRegisterIdentifier($0, currName, updatedName) }
@@ -88,7 +88,11 @@ public class RegisterUtils: NSObject {
         }
     }
     
-    static func rewriteRegisterIdentifier(_ param: Parameter, _ currName: String, _ updatedName: String) -> Parameter {
+    static func rewriteRegisterIdentifier(
+        _ param: Parameter,
+        _ currName: String,
+        _ updatedName: String
+    ) -> Parameter {
         guard let ident = param as? ParameterIdentifier, currName == ident.value else {
             return param
         }

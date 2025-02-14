@@ -1,5 +1,5 @@
 //
-//  SnapSubcompilerTypealiasTests.swift
+//  TypealiasScannerTests.swift
 //  SnapCoreTests
 //
 //  Created by Andrew Fox on 8/3/21.
@@ -10,11 +10,11 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class SnapSubcompilerTypealiasTests: XCTestCase {
+final class TypealiasScannerTests: XCTestCase {
     func testDeclareTypealias() throws {
         let input = Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.u8))
         let symbols = SymbolTable()
-        try SnapSubcompilerTypealias(symbols).compile(input)
+        try TypealiasScanner(symbols).compile(input)
         let expectedType: SymbolType = .u8
         let actualType = try? symbols.resolveType(identifier: "Foo")
         XCTAssertEqual(actualType, expectedType)
@@ -25,7 +25,7 @@ class SnapSubcompilerTypealiasTests: XCTestCase {
         let symbols = SymbolTable()
         symbols.bind(identifier: "Foo", symbol: Symbol(type: .void, offset: nil, storage: .staticStorage, visibility: .privateVisibility))
         symbols.bind(identifier: "Foo", symbolType: .u8)
-        XCTAssertThrowsError(try SnapSubcompilerTypealias(symbols).compile(input)) {
+        XCTAssertThrowsError(try TypealiasScanner(symbols).compile(input)) {
             let error = $0 as? CompilerError
             XCTAssertEqual(error?.message, "typealias redefines existing symbol: `Foo'")
         }
@@ -35,7 +35,7 @@ class SnapSubcompilerTypealiasTests: XCTestCase {
         let input = Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.u8))
         let symbols = SymbolTable()
         symbols.bind(identifier: "Foo", symbolType: .u8)
-        XCTAssertThrowsError(try SnapSubcompilerTypealias(symbols).compile(input)) {
+        XCTAssertThrowsError(try TypealiasScanner(symbols).compile(input)) {
             let error = $0 as? CompilerError
             XCTAssertEqual(error?.message, "typealias redefines existing type: `Foo'")
         }

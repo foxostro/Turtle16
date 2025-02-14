@@ -1,5 +1,5 @@
 //
-//  SnapSubcompilerTypealias.swift
+//  TypealiasScanner.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 8/3/21.
@@ -8,9 +8,8 @@
 
 import TurtleCore
 
-// TODO: Rename SnapSubcompilerTypealias to TypealiasScanner
-public struct SnapSubcompilerTypealias {
-    public let symbols: SymbolTable
+public struct TypealiasScanner {
+    private let symbols: SymbolTable
     
     public init(_ symbols: SymbolTable) {
         self.symbols = symbols

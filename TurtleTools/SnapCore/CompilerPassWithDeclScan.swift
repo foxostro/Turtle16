@@ -116,7 +116,7 @@ public class CompilerPassWithDeclScan: CompilerPass {
     }
     
     func scan(typealias node: Typealias) throws {
-        try SnapSubcompilerTypealias(symbols!).compile(node)
+        try TypealiasScanner(symbols!).compile(node)
     }
     
     func scan(trait node: TraitDeclaration) throws {

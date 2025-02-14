@@ -10,7 +10,7 @@ public let kMainFunctionName = "main"
 public let kTestMainFunctionName = "__testMain"
 public let kStandardLibraryModuleName = "stdlib"
 
-public final class SnapCompilerMetrics: NSObject {
+public enum SnapCompilerMetrics {
     // Static storage is allocated in a region starting at this address.
     // The allocator is a simple bump pointer.
     public static let kStaticStorageStartAddress: Int = 0x0110

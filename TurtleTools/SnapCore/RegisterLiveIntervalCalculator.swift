@@ -9,7 +9,9 @@
 import TurtleCore
 import TurtleSimulatorCore
 
-public class RegisterLiveIntervalCalculator: NSObject {
+public struct RegisterLiveIntervalCalculator {
+    public init() {}
+    
     public func determineLiveIntervals(_ nodes: [AbstractSyntaxTreeNode]) -> [LiveInterval] {
         var nameToRange: [String : LiveInterval] = [:]
         
@@ -41,7 +43,7 @@ public class RegisterLiveIntervalCalculator: NSObject {
         }
     }
     
-    func getSortName(_ virtualRegisterName: String) -> String {
+    private func getSortName(_ virtualRegisterName: String) -> String {
         switch virtualRegisterName {
         case "ra":
             return "r5"
@@ -57,7 +59,7 @@ public class RegisterLiveIntervalCalculator: NSObject {
         }
     }
     
-    func getPhysicalRegisterName(_ virtualRegisterName: String) -> String? {
+    private func getPhysicalRegisterName(_ virtualRegisterName: String) -> String? {
         // The virtual register name may imply a mapping to an explicit physical
         // register which we need to guarantee. The client assumes the
         // responsibility of ensuring these mappings work. For example, using

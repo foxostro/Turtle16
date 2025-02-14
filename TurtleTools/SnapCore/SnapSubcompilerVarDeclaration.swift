@@ -8,7 +8,7 @@
 
 import TurtleCore
 
-public final class SnapSubcompilerVarDeclaration: NSObject {
+public struct SnapSubcompilerVarDeclaration {
     private let symbols: SymbolTable
     private let staticStorageFrame: Frame
     private let memoryLayoutStrategy: MemoryLayoutStrategy

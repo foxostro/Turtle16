@@ -8,17 +8,17 @@
 
 import Foundation
 
-// Parses a JEDEC fuse map file.
-// This parser will ignore the STX and ETX characters at the beginning and end
-// of the file. It will also ignore the fuse map checksum and the transmission
-// checksum.
-public class JEDECFuseFileParser: NSObject {
-    let maker: FuseListMaker
-    let binaryDigits: CharacterSet = CharacterSet.init(charactersIn: "01")
-    let fieldDelimiter = "*"
-    let fieldIdentifierF: Character = "F"
-    let fieldIdentifierL: Character = "L"
-    let fieldIdentifierQ: Character = "Q"
+/// Parses a JEDEC fuse map file.
+/// This parser will ignore the STX and ETX characters at the beginning and end
+/// of the file. It will also ignore the fuse map checksum and the transmission
+/// checksum.
+public struct JEDECFuseFileParser {
+    public let maker: FuseListMaker
+    private let binaryDigits: CharacterSet = CharacterSet.init(charactersIn: "01")
+    private let fieldDelimiter = "*"
+    private let fieldIdentifierF: Character = "F"
+    private let fieldIdentifierL: Character = "L"
+    private let fieldIdentifierQ: Character = "Q"
     
     public init(_ maker: FuseListMaker) {
         self.maker = maker

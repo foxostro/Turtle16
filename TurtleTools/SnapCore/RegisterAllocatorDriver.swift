@@ -9,10 +9,10 @@
 import TurtleCore
 import TurtleSimulatorCore
 
-// Rewrites the program to use physical register names instead of virtual.
-// Inserts code to load and store values when a register must spill.
-public class RegisterAllocatorDriver: NSObject {
-    let kNumberOfFreelyAllocatableRegisters: Int
+/// Rewrites the program to use physical register names instead of virtual.
+/// Inserts code to load and store values when a register must spill.
+public struct RegisterAllocatorDriver {
+    private let kNumberOfFreelyAllocatableRegisters: Int
     
     public init(numRegisters: Int = 5  /* a default value appropriate to Turtle16 */) {
         kNumberOfFreelyAllocatableRegisters = numRegisters
@@ -30,7 +30,10 @@ public class RegisterAllocatorDriver: NSObject {
         return topLevel2
     }
     
-    func iterateSubroutineNodes(_ nodes: [AbstractSyntaxTreeNode], _ block: (Subroutine) throws -> Subroutine) throws -> [AbstractSyntaxTreeNode] {
+    private func iterateSubroutineNodes(
+        _ nodes: [AbstractSyntaxTreeNode],
+        _ block: (Subroutine) throws -> Subroutine
+    ) throws -> [AbstractSyntaxTreeNode] {
         var children : [AbstractSyntaxTreeNode] = []
         for child in nodes {
             let result: AbstractSyntaxTreeNode
@@ -87,22 +90,33 @@ public class RegisterAllocatorDriver: NSObject {
         return children
     }
     
-    func determineLiveIntervals(_ nodes: [AbstractSyntaxTreeNode]) -> [LiveInterval] {
-        return RegisterLiveIntervalCalculator().determineLiveIntervals(nodes)
+    private func determineLiveIntervals(_ nodes: [AbstractSyntaxTreeNode]) -> [LiveInterval] {
+        RegisterLiveIntervalCalculator().determineLiveIntervals(nodes)
     }
     
-    func allocateRegisters(_ numRegisters: Int, _ liveIntervals: [LiveInterval]) -> [LiveInterval] {
-        return LinearScanRegisterAllocator.allocate(numRegisters: numRegisters, liveIntervals: liveIntervals)
+    private func allocateRegisters(
+        _ numRegisters: Int,
+        _ liveIntervals: [LiveInterval]
+    ) -> [LiveInterval] {
+        LinearScanRegisterAllocator.allocate(
+            numRegisters: numRegisters,
+            liveIntervals: liveIntervals)
     }
 
-    func compile(children: [AbstractSyntaxTreeNode], liveIntervals: [LiveInterval]) -> [AbstractSyntaxTreeNode] {
+    private func compile(
+        children: [AbstractSyntaxTreeNode],
+        liveIntervals: [LiveInterval]
+    ) -> [AbstractSyntaxTreeNode] {
         let children = iterateInstructionNodes(children) { index, instructionNode in
             return compile(index, instructionNode, liveIntervals)
         }
         return children
     }
     
-    func iterateInstructionNodes(_ nodes: [AbstractSyntaxTreeNode], _ block: (Int, InstructionNode) -> InstructionNode) -> [AbstractSyntaxTreeNode] {
+    private func iterateInstructionNodes(
+        _ nodes: [AbstractSyntaxTreeNode],
+        _ block: (Int, InstructionNode) -> InstructionNode
+    ) -> [AbstractSyntaxTreeNode] {
         var children : [AbstractSyntaxTreeNode] = []
         for child in nodes {
             let result: AbstractSyntaxTreeNode
@@ -119,7 +133,11 @@ public class RegisterAllocatorDriver: NSObject {
         return children
     }
     
-    func compile(_ index: Int, _ node: InstructionNode, _ liveIntervals: [LiveInterval]) -> InstructionNode {
+    private func compile(
+        _ index: Int,
+        _ node: InstructionNode,
+        _ liveIntervals: [LiveInterval]
+    ) -> InstructionNode {
         // TODO: rewrite in terms of RegisterUtils.rewrite()
         switch node.instruction {
         case kLOAD, kSTORE, kLI, kLUI, kCMP, kADD, kSUB, kAND, kOR, kXOR, kNOT, kCMPI, kADDI, kSUBI, kANDI, kORI, kXORI, kJR, kJALR, kADC, kSBC, kCALLPTR:
@@ -139,7 +157,11 @@ public class RegisterAllocatorDriver: NSObject {
         }
     }
     
-    func rewriteRegisterIdentifier(_ param: Parameter, _ index: Int, _ liveIntervals: [LiveInterval]) -> Parameter {
+    private func rewriteRegisterIdentifier(
+        _ param: Parameter,
+        _ index: Int,
+        _ liveIntervals: [LiveInterval]
+    ) -> Parameter {
         guard let ident = param as? ParameterIdentifier,
               let rewritten = lookup(ident.value, index, liveIntervals) else {
             return param
@@ -147,9 +169,15 @@ public class RegisterAllocatorDriver: NSObject {
         return ParameterIdentifier(sourceAnchor: param.sourceAnchor, value: rewritten)
     }
     
-    func lookup(_ virtualRegisterName: String, _ index: Int, _ liveIntervals: [LiveInterval]) -> String? {
-        return liveIntervals.first(where: {
-            ($0.virtualRegisterName == virtualRegisterName) && $0.range.contains(index)
-        })?.physicalRegisterName
+    private func lookup(
+        _ virtualRegisterName: String,
+        _ index: Int,
+        _ liveIntervals: [LiveInterval]
+    ) -> String? {
+        liveIntervals
+            .first {
+                ($0.virtualRegisterName == virtualRegisterName) && $0.range.contains(index)
+            }?
+            .physicalRegisterName
     }
 }

@@ -18,7 +18,7 @@ public enum TackVirtualMachineError: Error, Equatable {
     case inlineAssemblyNotSupported
 }
 
-public class TackVirtualMachine: NSObject {
+public final class TackVirtualMachine {
     public typealias Register = TackInstruction.Register
     public typealias RegisterPointer = TackInstruction.RegisterPointer
     public typealias RegisterBoolean = TackInstruction.RegisterBoolean
@@ -87,7 +87,6 @@ public class TackVirtualMachine: NSObject {
     public init(_ program: TackProgram) {
         self.program = program
         breakPoints = Array<Bool>(repeating: false, count: program.instructions.count)
-        super.init()
         setRegister(.sp, p: 0)
         setRegister(.fp, p: 0)
     }

@@ -1507,7 +1507,7 @@ public class Expression: AbstractSyntaxTreeNode {
     }
 
     public class StructInitializer: Expression {
-        public class Argument: NSObject {
+        public struct Argument: Equatable, Hashable, CustomStringConvertible {
             public let name: String
             public let expr: Expression
             
@@ -1516,28 +1516,8 @@ public class Expression: AbstractSyntaxTreeNode {
                 self.expr = expr
             }
             
-            public static func ==(lhs: Argument, rhs: Argument) -> Bool {
-                lhs.isEqual(rhs)
-            }
-            
-            public override func isEqual(_ rhs: Any?) -> Bool {
-                guard rhs != nil else { return false }
-                guard type(of: rhs!) == type(of: self) else { return false }
-                guard let rhs = rhs as? Argument else { return false }
-                guard name == rhs.name else { return false }
-                guard expr == rhs.expr else { return false }
-                return true
-            }
-            
-            public override var hash: Int {
-                var hasher = Hasher()
-                hasher.combine(name)
-                hasher.combine(expr)
-                return hasher.finalize()
-            }
-            
-            public override var description: String {
-                return ".\(name) = \(expr)"
+            public var description: String {
+                ".\(name) = \(expr)"
             }
         }
         

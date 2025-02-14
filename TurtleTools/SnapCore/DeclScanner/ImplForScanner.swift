@@ -10,7 +10,7 @@ import Foundation
 import TurtleCore
 
 /// Scans an ImplFor declaration and binds the function symbols in the environment
-public class ImplForScanner: NSObject {
+public struct ImplForScanner {
     private let staticStorageFrame: Frame
     private let memoryLayoutStrategy: MemoryLayoutStrategy
     private let symbols: SymbolTable
@@ -20,18 +20,19 @@ public class ImplForScanner: NSObject {
                     symbols: symbols)
     }
     
-    public init(staticStorageFrame: Frame,
-                memoryLayoutStrategy: MemoryLayoutStrategy,
-                symbols: SymbolTable = SymbolTable()) {
-            
-            self.staticStorageFrame = staticStorageFrame
-            self.memoryLayoutStrategy = memoryLayoutStrategy
-            self.symbols = symbols
-            typeChecker = RvalueExpressionTypeChecker(
-                symbols: symbols,
-                staticStorageFrame: staticStorageFrame,
-                memoryLayoutStrategy: memoryLayoutStrategy)
-        }
+    public init(
+        staticStorageFrame: Frame,
+        memoryLayoutStrategy: MemoryLayoutStrategy,
+        symbols: SymbolTable = SymbolTable()
+    ) {
+        self.staticStorageFrame = staticStorageFrame
+        self.memoryLayoutStrategy = memoryLayoutStrategy
+        self.symbols = symbols
+        typeChecker = RvalueExpressionTypeChecker(
+            symbols: symbols,
+            staticStorageFrame: staticStorageFrame,
+            memoryLayoutStrategy: memoryLayoutStrategy)
+    }
     
     public func scan(implFor node: ImplFor) throws {
         // It may be the case that we can't resolve the generic type application

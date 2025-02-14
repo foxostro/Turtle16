@@ -9,10 +9,14 @@
 import Foundation
 import TurtleCore
 
-public class GenericFunctionTypeArgumentSolver: NSObject {
-    public func inferTypeArguments(call expr: Expression.Call,
-                                   genericFunctionType generic: Expression.GenericFunctionType,
-                                   symbols: SymbolTable) throws -> [SymbolType] {
+public struct GenericFunctionTypeArgumentSolver {
+    public init() {}
+    
+    public func inferTypeArguments(
+        call expr: Expression.Call,
+        genericFunctionType generic: Expression.GenericFunctionType,
+        symbols: SymbolTable
+    ) throws -> [SymbolType] {
         guard expr.arguments.count == generic.arguments.count else {
             throw failedToInferError(expr, generic)
         }
@@ -50,20 +54,25 @@ public class GenericFunctionTypeArgumentSolver: NSObject {
         return result
     }
     
-    public func inferTypeArgument(concreteArgument: Expression,
-                                  genericArgument: Expression,
-                                  solvingFor typeArgument: Expression.Identifier) -> Expression? {
-        guard let expr = inferTypeArgumentInner(concreteArgument: concreteArgument,
-                                                genericArgument: genericArgument,
-                                                solvingFor: typeArgument) else {
+    public func inferTypeArgument(
+        concreteArgument: Expression,
+        genericArgument: Expression,
+        solvingFor typeArgument: Expression.Identifier
+    ) -> Expression? {
+        guard let expr = inferTypeArgumentInner(
+            concreteArgument: concreteArgument,
+            genericArgument: genericArgument,
+            solvingFor: typeArgument) else {
             return nil
         }
         return Expression.TypeOf(expr)
     }
     
-    fileprivate func inferTypeArgumentInner(concreteArgument: Expression,
-                                            genericArgument: Expression,
-                                            solvingFor typeArgument: Expression.Identifier) -> Expression? {
+    private func inferTypeArgumentInner(
+        concreteArgument: Expression,
+        genericArgument: Expression,
+        solvingFor typeArgument: Expression.Identifier
+    ) -> Expression? {
         switch genericArgument {
         case let expr as Expression.Identifier:
             if expr.identifier == typeArgument.identifier {
@@ -71,37 +80,42 @@ public class GenericFunctionTypeArgumentSolver: NSObject {
             }
             
         case let expr as Expression.ConstType:
-            if let r = inferTypeArgumentInner(concreteArgument: concreteArgument,
-                                              genericArgument: expr.typ,
-                                              solvingFor: typeArgument) {
+            if let r = inferTypeArgumentInner(
+                concreteArgument: concreteArgument,
+                genericArgument: expr.typ,
+                solvingFor: typeArgument) {
                 return Expression.ConstType(r)
             }
             
         case let expr as Expression.MutableType:
-            if let r = inferTypeArgumentInner(concreteArgument: concreteArgument,
-                                              genericArgument: expr.typ,
-                                              solvingFor: typeArgument) {
+            if let r = inferTypeArgumentInner(
+                concreteArgument: concreteArgument,
+                genericArgument: expr.typ,
+                solvingFor: typeArgument) {
                 return Expression.MutableType(r)
             }
             
         case let expr as Expression.PointerType:
-            if let r = inferTypeArgumentInner(concreteArgument: concreteArgument,
-                                              genericArgument: expr.typ,
-                                              solvingFor: typeArgument) {
+            if let r = inferTypeArgumentInner(
+                concreteArgument: concreteArgument,
+                genericArgument: expr.typ,
+                solvingFor: typeArgument) {
                 return Expression.PointerType(r)
             }
             
         case let expr as Expression.DynamicArrayType:
-            if let r = inferTypeArgumentInner(concreteArgument: concreteArgument,
-                                              genericArgument: expr.elementType,
-                                              solvingFor: typeArgument) {
+            if let r = inferTypeArgumentInner(
+                concreteArgument: concreteArgument,
+                genericArgument: expr.elementType,
+                solvingFor: typeArgument) {
                 return Expression.DynamicArrayType(r)
             }
             
         case let expr as Expression.ArrayType:
-            if let r = inferTypeArgumentInner(concreteArgument: concreteArgument,
-                                              genericArgument: expr.elementType,
-                                              solvingFor: typeArgument) {
+            if let r = inferTypeArgumentInner(
+                concreteArgument: concreteArgument,
+                genericArgument: expr.elementType,
+                solvingFor: typeArgument) {
                 return Expression.ArrayType(count: expr.count, elementType: r)
             }
 
@@ -112,7 +126,7 @@ public class GenericFunctionTypeArgumentSolver: NSObject {
         return nil
     }
     
-    fileprivate func failedToInferError(_ expr: Expression.Call, _ generic: Expression.GenericFunctionType) -> CompilerError {
+    private func failedToInferError(_ expr: Expression.Call, _ generic: Expression.GenericFunctionType) -> CompilerError {
         CompilerError(
             sourceAnchor: expr.sourceAnchor,
             message: "failed to infer the type arguments of the generic function `\(generic.description)' in a call expression")

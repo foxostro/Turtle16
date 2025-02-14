@@ -8,7 +8,9 @@
 
 import TurtleCore
 
-public class SnapSubcompilerIf: NSObject {
+public struct SnapSubcompilerIf {
+    public init() {}
+    
     public func compile(if node: If, symbols: SymbolTable) throws -> Seq {
         let s = node.sourceAnchor
         var children: [AbstractSyntaxTreeNode] = []

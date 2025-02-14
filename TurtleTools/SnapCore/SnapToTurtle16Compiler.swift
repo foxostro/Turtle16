@@ -24,6 +24,8 @@ public struct SnapToTurtle16Compiler {
     
     private let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
     
+    public init() {}
+    
     public func compile(
         program text: String,
         base: Int = 0,

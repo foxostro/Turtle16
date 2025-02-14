@@ -9,7 +9,7 @@
 import XCTest
 import TurtleCore
 
-class ParserTests: XCTestCase {
+final class ParserTests: XCTestCase {
     func testParseEmptyProgramYieldsEmptyAST() {
         let parser = Parser()
         parser.parse()

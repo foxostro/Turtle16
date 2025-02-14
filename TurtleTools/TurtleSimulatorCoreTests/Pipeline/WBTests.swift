@@ -9,7 +9,7 @@
 import XCTest
 import TurtleSimulatorCore
 
-class WBTests: XCTestCase {
+final class WBTests: XCTestCase {
     func testZeroControlWordYieldsZeroForIndividualControlSignals() {
         let output = WB().step(input: WB.Input(ctl: 0))
         XCTAssertEqual(output.wrl, 0)

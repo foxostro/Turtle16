@@ -10,7 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class SnapSubcompilerVarDeclarationTests: XCTestCase {
+final class SnapSubcompilerVarDeclarationTests: XCTestCase {
     func testDeclareVariable_StaticStorage() throws {
         let symbols = SymbolTable()
         let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)

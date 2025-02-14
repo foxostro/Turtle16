@@ -11,7 +11,7 @@ import SnapCore
 import TurtleSimulatorCore
 import TurtleCore
 
-class RegisterAllocatorDriverTests: XCTestCase {
+final class RegisterAllocatorDriverTests: XCTestCase {
     func testNOP() throws {
         let driver = RegisterAllocatorDriver()
         let input = TopLevel(children: [

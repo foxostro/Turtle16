@@ -9,7 +9,7 @@
 import XCTest
 import TurtleSimulatorCore
 
-class Turtle16ComputerTests: XCTestCase {
+final class Turtle16ComputerTests: XCTestCase {
     func testFlagsAreZeroAfterReset() throws {
         let cpu = SchematicLevelCPUModel()
         let computer = TurtleComputer(cpu)

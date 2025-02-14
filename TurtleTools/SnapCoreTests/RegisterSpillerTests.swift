@@ -11,7 +11,7 @@ import SnapCore
 import TurtleCore
 import TurtleSimulatorCore
 
-class RegisterSpillerTests: XCTestCase {
+final class RegisterSpillerTests: XCTestCase {
     func testNoSpills1() throws {
         switch RegisterSpiller.spill(spilledIntervals: [], temporaries: [], nodes: []) {
         case .success(let r):

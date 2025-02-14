@@ -10,7 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class IfTests: XCTestCase {
+final class IfTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
         XCTAssertNotEqual(If(condition: Expression.LiteralInt(1),
                              then: CommentNode(string: ""),

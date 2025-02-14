@@ -9,7 +9,7 @@
 import XCTest
 import TurtleCore
 
-class TokenBooleanTests: XCTestCase {
+final class TokenBooleanTests: XCTestCase {
     func testTokenBooleanDescription() {
         XCTAssertEqual(TokenBoolean(true).description, "<TokenBoolean: sourceAnchor=nil, lexeme=\"\", literal=true>")
     }

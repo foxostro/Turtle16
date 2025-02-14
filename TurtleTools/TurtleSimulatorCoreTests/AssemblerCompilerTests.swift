@@ -10,7 +10,7 @@ import XCTest
 import TurtleCore
 import TurtleSimulatorCore
 
-class AssemblerCompilerTests: XCTestCase {
+final class AssemblerCompilerTests: XCTestCase {
     fileprivate func makeDebugger(instructions: [UInt16]) -> DebugConsole {
         let cpu = SchematicLevelCPUModel()
         let computer = TurtleComputer(cpu)

@@ -9,7 +9,7 @@
 import XCTest
 import SnapCore
 
-class LinearScanRegisterAllocatorTests: XCTestCase {
+final class LinearScanRegisterAllocatorTests: XCTestCase {
     func testEmptyInput() throws {
         let actual = LinearScanRegisterAllocator.allocate(numRegisters: 0, liveIntervals: [])
         XCTAssertEqual(actual, [])

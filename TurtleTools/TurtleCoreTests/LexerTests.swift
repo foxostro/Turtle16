@@ -9,7 +9,7 @@
 import XCTest
 import TurtleCore
 
-class LexerTests: XCTestCase {
+final class LexerTests: XCTestCase {
     func testInitWithEmptyString() {
         let input = Lexer("")
         XCTAssertEqual(input.string, "")

@@ -9,7 +9,7 @@
 import XCTest
 import TurtleSimulatorCore
 
-class OutputLogicMacroCellTests: XCTestCase {
+final class OutputLogicMacroCellTests: XCTestCase {
     typealias Input = OutputLogicMacroCell.Input
     
     func testActiveHighOutput() throws {

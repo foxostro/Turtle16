@@ -10,7 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class SnapSubcompilerIfTests: XCTestCase {
+final class SnapSubcompilerIfTests: XCTestCase {
     func testFailCompileIfStatementWithNonbooleanCondition() {
         let node = If(condition: Expression.LiteralInt(0),
                       then: Block(children: []),

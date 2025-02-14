@@ -9,7 +9,7 @@
 import XCTest
 import TurtleSimulatorCore
 
-class DecoderGeneratorTests: XCTestCase {
+final class DecoderGeneratorTests: XCTestCase {
     let HLT = 0
     let SelStoreOpA = 1
     let SelStoreOpB = 2

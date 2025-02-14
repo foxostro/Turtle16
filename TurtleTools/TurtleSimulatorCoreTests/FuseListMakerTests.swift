@@ -9,7 +9,7 @@
 import XCTest
 import TurtleSimulatorCore
 
-class FuseListMakerTests: XCTestCase {
+final class FuseListMakerTests: XCTestCase {
     func testEmptyFuseList() throws {
         let maker = FuseListMaker()
         XCTAssertEqual(maker.fuseList, [])

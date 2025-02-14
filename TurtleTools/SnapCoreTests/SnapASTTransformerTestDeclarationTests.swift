@@ -10,7 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class SnapASTTransformerTestDeclarationTests: XCTestCase {
+final class SnapASTTransformerTestDeclarationTests: XCTestCase {
     func testTestDeclarationMustBeAtFileScope() {
         let original = Block(children: [
             VarDeclaration(identifier: Expression.Identifier("foo"),

@@ -10,7 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class SnapLexerTests: XCTestCase {
+final class SnapLexerTests: XCTestCase {
     func testTokenizeEmptyString() {
         let tokenizer = SnapLexer("")
         tokenizer.scanTokens()

@@ -9,7 +9,7 @@
 import XCTest
 import SnapCore
 
-class MemoryLayoutStrategyTurtleTTLTests: XCTestCase {
+final class MemoryLayoutStrategyTurtleTTLTests: XCTestCase {
     func makeStrategy() -> MemoryLayoutStrategy {
         return MemoryLayoutStrategyTurtleTTL()
     }

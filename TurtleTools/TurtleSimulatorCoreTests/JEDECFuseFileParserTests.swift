@@ -9,7 +9,7 @@
 import XCTest
 import TurtleSimulatorCore
 
-class JEDECFuseFileParserTests: XCTestCase {
+final class JEDECFuseFileParserTests: XCTestCase {
     func testParserEmptyString() throws {
         let maker = FuseListMaker()
         let parser = JEDECFuseFileParser(maker)

@@ -10,7 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class StatementTracerTests: XCTestCase {
+final class StatementTracerTests: XCTestCase {
     func testTraceSingleReturnStatement() {
         let tracer = StatementTracer()
         let one = Expression.LiteralInt(1)

@@ -10,7 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class FunctionDeclarationTests: XCTestCase {
+final class FunctionDeclarationTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
         XCTAssertNotEqual(FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                               functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),

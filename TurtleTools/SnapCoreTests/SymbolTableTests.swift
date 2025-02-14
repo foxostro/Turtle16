@@ -10,7 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class SymbolTableTests: XCTestCase {
+final class SymbolTableTests: XCTestCase {
     func testEquatableSymbols() {
         XCTAssertNotEqual(Symbol(type: .u8, offset: 0x10),
                           Symbol(type: .bool, offset: 0x10))

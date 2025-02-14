@@ -9,7 +9,7 @@
 import XCTest
 import TurtleSimulatorCore
 
-class DebugConsoleTests: XCTestCase {
+final class DebugConsoleTests: XCTestCase {
     func testRunProgram() throws {
         let path = Bundle(for: type(of: self)).url(forResource: "fib", withExtension: "bin")!.path
         let debugConsole = DebugConsole(computer: TurtleComputer(SchematicLevelCPUModel()))

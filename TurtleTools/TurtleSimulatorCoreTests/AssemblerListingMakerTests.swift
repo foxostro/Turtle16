@@ -10,7 +10,7 @@ import XCTest
 import TurtleSimulatorCore
 import TurtleCore
 
-class AssemblerListingMakerTests: XCTestCase {
+final class AssemblerListingMakerTests: XCTestCase {
     func testEmptyProgram() throws {
         let ast = TopLevel(children: [])
         let actual = AssemblerListingMaker().makeListing(ast)

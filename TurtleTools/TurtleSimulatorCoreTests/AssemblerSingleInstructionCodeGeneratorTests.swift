@@ -10,7 +10,7 @@ import XCTest
 import TurtleCore
 import TurtleSimulatorCore
 
-class AssemblerSingleInstructionCodeGeneratorTests: XCTestCase {
+final class AssemblerSingleInstructionCodeGeneratorTests: XCTestCase {
     func testNop() throws {
         let codeGen = AssemblerSingleInstructionCodeGenerator()
         XCTAssertEqual(codeGen.nop(), 0b0000000000000000)

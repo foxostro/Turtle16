@@ -11,7 +11,7 @@ import TurtleCore
 import TurtleSimulatorCore
 import SnapCore
 
-class RegisterLiveIntervalCalculatorTests: XCTestCase {
+final class RegisterLiveIntervalCalculatorTests: XCTestCase {
     func testEmpty() throws {
         let obj = RegisterLiveIntervalCalculator()
         let input: [AbstractSyntaxTreeNode] = []

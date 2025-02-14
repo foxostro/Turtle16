@@ -9,7 +9,7 @@
 import XCTest
 import TurtleSimulatorCore
 
-class DisassemblerTests: XCTestCase {
+final class DisassemblerTests: XCTestCase {
     func testNOP() throws {
         let disassembler = Disassembler()
         XCTAssertEqual(disassembler.disassembleOne(0x0000), "NOP")

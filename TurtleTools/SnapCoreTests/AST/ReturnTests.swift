@@ -10,7 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class ReturnTests: XCTestCase {
+final class ReturnTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
         XCTAssertNotEqual(Return(),
                           CommentNode(string: ""))

@@ -9,7 +9,7 @@
 import XCTest
 import TurtleSimulatorCore
 
-class EXTests: XCTestCase {
+final class EXTests: XCTestCase {
     func testSplitOutSelC_000() {
         let ex = EX()
         let selC = ex.splitOutSelC(input: EX.Input(ins: 0b1111100011111111))

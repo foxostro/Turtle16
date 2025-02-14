@@ -10,7 +10,7 @@ import XCTest
 import TurtleSimulatorCore
 import TurtleCore
 
-class DebugConsoleCommandLineLexerTests: XCTestCase {
+final class DebugConsoleCommandLineLexerTests: XCTestCase {
     func testTokenizeEmptyString() {
         let text = ""
         let lineMapper = SourceLineRangeMapper(text: text)

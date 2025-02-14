@@ -10,7 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class StructDeclarationTests: XCTestCase {
+final class StructDeclarationTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
         XCTAssertNotEqual(StructDeclaration(identifier: Expression.Identifier("foo"), members: []),
                           CommentNode(string: ""))

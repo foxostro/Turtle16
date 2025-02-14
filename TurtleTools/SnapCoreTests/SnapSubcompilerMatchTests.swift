@@ -10,7 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class SnapSubcompilerMatchTests: XCTestCase {
+final class SnapSubcompilerMatchTests: XCTestCase {
     func testCompileEmptyMatchStatement() {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
         let symbols = SymbolTable(tuples: [

@@ -9,7 +9,7 @@
 import XCTest
 import SnapCore
 
-class MemoryLayoutStrategyTurtle16Tests: XCTestCase {
+final class MemoryLayoutStrategyTurtle16Tests: XCTestCase {
     func testSizeOfVoid() throws {
         let strategy = MemoryLayoutStrategyTurtle16()
         XCTAssertEqual(strategy.sizeof(type: .void), 0)

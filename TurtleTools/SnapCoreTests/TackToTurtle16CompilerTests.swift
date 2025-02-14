@@ -11,7 +11,7 @@ import SnapCore
 import TurtleCore
 import TurtleSimulatorCore
 
-class TackToTurtle16CompilerTests: XCTestCase {
+final class TackToTurtle16CompilerTests: XCTestCase {
     fileprivate func makeDebugger(assembly: AbstractSyntaxTreeNode?) -> DebugConsole {
         let topLevel0 = TopLevel(children: [
             InstructionNode(instruction: kNOP),

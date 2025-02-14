@@ -10,7 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class WhileTests: XCTestCase {
+final class WhileTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
         XCTAssertNotEqual(While(condition: Expression.LiteralInt(1),
                                 body: CommentNode(string: "")),

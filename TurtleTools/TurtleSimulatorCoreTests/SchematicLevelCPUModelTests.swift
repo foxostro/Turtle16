@@ -34,7 +34,7 @@ extension SchematicLevelCPUModel {
     }
 }
 
-class SchematicLevelCPUModelTests: XCTestCase {
+final class SchematicLevelCPUModelTests: XCTestCase {
     func testStartsInResetState() {
         let cpu = SchematicLevelCPUModel()
         XCTAssertTrue(cpu.isResetting)

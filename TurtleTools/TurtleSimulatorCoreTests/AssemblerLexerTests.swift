@@ -10,7 +10,7 @@ import XCTest
 import TurtleCore
 import TurtleSimulatorCore
 
-class AssemblerLexerTests: XCTestCase {
+final class AssemblerLexerTests: XCTestCase {
     func testTokenizeComment1() {
         let text = "// comment"
         let lineMapper = SourceLineRangeMapper(text: text)

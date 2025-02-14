@@ -9,7 +9,7 @@
 import XCTest
 import TurtleSimulatorCore
 
-class AssemblerTests: XCTestCase {
+final class AssemblerTests: XCTestCase {
     func testExample() throws {
         let assembler = Assembler()
         assembler.compile("""

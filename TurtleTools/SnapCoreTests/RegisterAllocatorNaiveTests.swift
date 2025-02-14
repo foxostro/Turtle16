@@ -11,7 +11,7 @@ import SnapCore
 import TurtleSimulatorCore
 import TurtleCore
 
-class RegisterAllocatorNaiveTests: XCTestCase {
+final class RegisterAllocatorNaiveTests: XCTestCase {
     func testCMP() throws {
         let registerAllocator = RegisterAllocatorNaive()
         let input = InstructionNode(instruction: kCMP, parameters:[

@@ -10,7 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class SymbolTablesReconnectorTests: XCTestCase {
+final class SymbolTablesReconnectorTests: XCTestCase {
     func testBlock() throws {
         let table1 = SymbolTable()
         let table2 = SymbolTable()

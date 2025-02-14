@@ -9,7 +9,7 @@
 import XCTest
 import SnapCore
 
-class TypeContextTypeCheckerTests: XCTestCase {
+final class TypeContextTypeCheckerTests: XCTestCase {
     func testTypeOfAnIdentifierNamingAStruct() {
         let expr = Expression.Identifier("foo")
         let typ = StructType(name: "foo", symbols: SymbolTable())

@@ -9,7 +9,7 @@
 import XCTest
 import TurtleSimulatorCore
 
-class IFTests: XCTestCase {
+final class IFTests: XCTestCase {
     func testFlushOnJumpByIssuingNOP() {
         let ifetch = IF()
         let input = IF.Input(stall: 0, y: 0xffff, jabs: 1, j: 0, rst: 1)

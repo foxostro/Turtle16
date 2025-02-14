@@ -10,7 +10,7 @@ import XCTest
 import TurtleSimulatorCore
 import TurtleCore
 
-class DebugConsoleCommandLineCompilerTests: XCTestCase {
+final class DebugConsoleCommandLineCompilerTests: XCTestCase {
     func testEmptyString() throws {
         let compiler = DebugConsoleCommandLineCompiler()
         compiler.compile("")

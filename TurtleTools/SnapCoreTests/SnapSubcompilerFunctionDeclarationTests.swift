@@ -10,7 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
+final class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
     func testFunctionRedefinesExistingSymbol() throws {
         let symbols = SymbolTable()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .void))

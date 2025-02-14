@@ -11,7 +11,7 @@ import SnapCore
 import TurtleCore
 import TurtleSimulatorCore
 
-class RegisterUtilsTests: XCTestCase {
+final class RegisterUtilsTests: XCTestCase {
     func testGetReferencedRegisters_Label() throws {
         let result = RegisterUtils.getReferencedRegisters(LabelDeclaration(identifier: ""))
         XCTAssertTrue(result.isEmpty)

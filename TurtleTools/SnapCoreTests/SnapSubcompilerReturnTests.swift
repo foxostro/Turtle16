@@ -10,7 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class SnapSubcompilerReturnTests: XCTestCase {
+final class SnapSubcompilerReturnTests: XCTestCase {
     func testCompilationFailsBecauseReturnIsInvalidOutsideFunction() {
         let ast = Return(Expression.LiteralBool(true))
         let symbols = SymbolTable()

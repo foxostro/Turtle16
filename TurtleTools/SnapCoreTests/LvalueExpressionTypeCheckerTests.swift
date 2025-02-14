@@ -10,7 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class LvalueExpressionTypeCheckerTests: XCTestCase {
+final class LvalueExpressionTypeCheckerTests: XCTestCase {
     func testIdentifier_U16() {
         XCTAssertEqual(checkIdentifier(type: .u16), .u16)
     }

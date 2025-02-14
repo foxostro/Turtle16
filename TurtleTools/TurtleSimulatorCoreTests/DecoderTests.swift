@@ -9,7 +9,7 @@
 import XCTest
 import TurtleSimulatorCore
 
-class ProgrammableLogicDecoderTests: XCTestCase {
+final class ProgrammableLogicDecoderTests: XCTestCase {
     fileprivate func printTruthTable(_ signal: Int) {
         // Print the truth table for a given signal with columns for the actual
         // and expected results, comparing the PLD instruction deocder against

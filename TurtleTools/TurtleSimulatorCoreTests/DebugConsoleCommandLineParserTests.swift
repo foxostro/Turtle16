@@ -10,7 +10,7 @@ import XCTest
 import TurtleSimulatorCore
 import TurtleCore
 
-class DebugConsoleCommandLineParserTests: XCTestCase {
+final class DebugConsoleCommandLineParserTests: XCTestCase {
     func parse(_ text: String) -> DebugConsoleCommandLineParser {
         let tokenizer = DebugConsoleCommandLineLexer(text)
         tokenizer.scanTokens()

@@ -9,7 +9,7 @@
 import XCTest
 import TurtleCore
 
-class LabelDeclarationTests: XCTestCase {
+final class LabelDeclarationTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
         XCTAssertNotEqual(LabelDeclaration(identifier: "label"),
                           CommentNode(string: ""))

@@ -10,7 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class VarDeclarationTests: XCTestCase {
+final class VarDeclarationTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
         let foo = Expression.Identifier("foo")
         let one = Expression.LiteralInt(1)

@@ -9,7 +9,7 @@
 import XCTest
 import TurtleSimulatorCore
 
-class IDTests: XCTestCase {
+final class IDTests: XCTestCase {
     func testWriteBackSixteenBits() throws {
         let id = ID()
         id.registerFile[0] = 0xcdcd

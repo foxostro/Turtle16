@@ -9,7 +9,7 @@
 import XCTest
 import TurtleSimulatorCore
 
-class MEMTests: XCTestCase {
+final class MEMTests: XCTestCase {
     func testRDYisHigh() {
         let mem = MEM()
         let input = MEM.Input(rdy: 1, y: 0xabab, storeOp: 0xcdcd, selC: 3, ctl: 0)

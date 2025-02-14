@@ -9,7 +9,7 @@
 import XCTest
 import TurtleSimulatorCore
 
-class ProductTermFuseMapTests: XCTestCase {
+final class ProductTermFuseMapTests: XCTestCase {
     func testSelectNoFusesSet() throws {
         let map = ProductTermFuseMap(fuseListBitmap: 0b11111111111111111111111111111111111111111111)
         let productTerm = map.evaluate(Array<UInt>(repeating: 0, count: 24))

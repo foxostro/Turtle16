@@ -10,6 +10,6 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class SnapASTTransformerBaseTests: XCTestCase {
+final class SnapASTTransformerBaseTests: XCTestCase {
     // empty
 }

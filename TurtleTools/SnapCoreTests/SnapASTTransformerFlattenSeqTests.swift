@@ -10,7 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class SnapASTTransformerFlattenSeqTests: XCTestCase {
+final class SnapASTTransformerFlattenSeqTests: XCTestCase {
     func testRemoveEmptySeqStatements() throws {
         let input = Seq(children: [])
         let compiler = SnapASTTransformerFlattenSeq()

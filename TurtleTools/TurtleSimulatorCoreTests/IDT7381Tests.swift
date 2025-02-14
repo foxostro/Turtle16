@@ -9,7 +9,7 @@
 import XCTest
 import TurtleSimulatorCore
 
-class IDT7381Tests: XCTestCase {
+final class IDT7381Tests: XCTestCase {
     func testOutputCanBeDisabled() {
         let alu = IDT7381()
         let input = IDT7381.Input(a: 0,

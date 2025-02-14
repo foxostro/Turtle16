@@ -9,7 +9,7 @@
 import XCTest
 import TurtleCore
 
-class ScannerExtensionTests: XCTestCase {
+final class ScannerExtensionTests: XCTestCase {
     func testFailToScanBinaryIntFromEmptyString() {
         let scanner = Scanner(string: "")
         var number = -1

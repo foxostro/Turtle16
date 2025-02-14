@@ -9,7 +9,7 @@
 import XCTest
 import TurtleSimulatorCore
 
-class ATF22V10Tests: XCTestCase {
+final class ATF22V10Tests: XCTestCase {
     func testCorrectNumberOfProductTermsPerOLMC() throws {
         let gal = ATF22V10(fuseList: Array<UInt>(repeating: 1, count: 5892))
         XCTAssertEqual(gal.outputLogicMacroCells.count, 10)

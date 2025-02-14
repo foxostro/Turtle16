@@ -10,7 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class StructMemberFunctionCallMatcherTests: XCTestCase {
+final class StructMemberFunctionCallMatcherTests: XCTestCase {
     func testExample() throws {
         let symbols = SymbolTable()
         let fooSymbols = SymbolTable()

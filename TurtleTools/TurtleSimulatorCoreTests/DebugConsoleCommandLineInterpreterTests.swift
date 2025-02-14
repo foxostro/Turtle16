@@ -10,7 +10,7 @@ import XCTest
 import TurtleCore
 import TurtleSimulatorCore
 
-class DebugConsoleCommandLineInterpreterTests: XCTestCase {
+final class DebugConsoleCommandLineInterpreterTests: XCTestCase {
     func testQuit() throws {
         let computer = TurtleComputer(SchematicLevelCPUModel())
         let interpreter = DebugConsoleCommandLineInterpreter(computer)

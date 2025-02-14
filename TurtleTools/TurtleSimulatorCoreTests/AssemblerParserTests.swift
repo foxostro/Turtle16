@@ -10,7 +10,7 @@ import XCTest
 import TurtleCore
 import TurtleSimulatorCore
 
-class AssemblerParserTests: XCTestCase {
+final class AssemblerParserTests: XCTestCase {
     func parse(_ text: String) -> AssemblerParser {
         let tokenizer = AssemblerLexer(text)
         tokenizer.scanTokens()

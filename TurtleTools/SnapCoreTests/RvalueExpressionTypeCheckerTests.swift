@@ -23,7 +23,7 @@ extension SymbolTable {
     }
 }
 
-class RvalueExpressionTypeCheckerTests: XCTestCase {
+final class RvalueExpressionTypeCheckerTests: XCTestCase {
     let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
     
     func testUnsupportedExpressionThrows() {

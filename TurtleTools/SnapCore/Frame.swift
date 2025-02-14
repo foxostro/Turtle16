@@ -9,18 +9,17 @@
 import Foundation
 
 // An activation record, usually a stack frame
-public class Frame: NSObject {
-    public enum GrowthDirection {
-        case down, up
-    }
-    public let growthDirection: GrowthDirection
-    public private(set) var storagePointer: Int
-    public let initialStoragePointer: Int
+public final class Frame: Equatable, Hashable {
+    public enum GrowthDirection { case down, up }
     
     public struct Pair: Hashable, Equatable {
         let identifier: String
         let symbol: Symbol
     }
+    
+    public let growthDirection: GrowthDirection
+    public private(set) var storagePointer: Int
+    public let initialStoragePointer: Int
     public private(set) var symbols: [Pair] = []
     
     public init(storagePointer: Int = 0, growthDirection: GrowthDirection = .up) {
@@ -35,34 +34,16 @@ public class Frame: NSObject {
     }
     
     public static func ==(lhs: Frame, rhs: Frame) -> Bool {
-        lhs.isEqual(rhs)
-    }
-    
-    open override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else {
-            return false
-        }
-        guard let rhs = rhs as? Frame else {
-            return false
-        }
-        guard storagePointer == rhs.storagePointer else {
-            return false
-        }
-        guard growthDirection == rhs.growthDirection else {
-            return false
-        }
-        guard symbols == rhs.symbols else {
-            return false
-        }
+        guard lhs.storagePointer == rhs.storagePointer else { return false }
+        guard lhs.growthDirection == rhs.growthDirection else { return false }
+        guard lhs.symbols == rhs.symbols else { return false }
         return true
     }
     
-    open override var hash: Int {
-        var hasher = Hasher()
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(storagePointer)
         hasher.combine(growthDirection)
         hasher.combine(symbols)
-        return hasher.finalize()
     }
     
     // Allocate memory within a frame, returning the offset for the allocation

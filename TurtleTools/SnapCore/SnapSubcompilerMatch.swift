@@ -8,9 +8,8 @@
 
 import TurtleCore
 
-// Accepts a Match statement and produces an AST which implements it in terms
-// of other nodes.
-public class SnapSubcompilerMatch: NSObject {
+/// Lowers a Match statement
+public struct SnapSubcompilerMatch {
     public let symbols: SymbolTable
     public let memoryLayoutStrategy: MemoryLayoutStrategy
     

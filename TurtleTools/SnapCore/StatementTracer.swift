@@ -8,8 +8,8 @@
 
 import TurtleCore
 
-public class StatementTracer: NSObject {
-    let memoryLayoutStrategy = MemoryLayoutStrategyNull()
+public struct StatementTracer {
+    private let memoryLayoutStrategy = MemoryLayoutStrategyNull()
     
     public enum TraceElement: Equatable {
         case Statement(String)

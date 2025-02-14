@@ -11,7 +11,7 @@ import SnapCore
 // The macOS 15 SDK added the new Foundation.Expression class, introducing a name collision with our own Expression class. This typealias resolves the ambiguity in favor of our type.
 public typealias Expression = SnapCore.Expression
 
-public class ExprUtils: NSObject {
+public struct ExprUtils {
     public static func makeU8(value: Int) -> Expression {
         assert(value >= UInt8.min && value <= UInt8.max)
         return Expression.As(expr: Expression.LiteralInt(value),

@@ -11,8 +11,7 @@ public enum SnapCommandLineParserError: Error, Equatable {
     case unknownOption(String)
 }
 
-public class SnapCommandLineArgumentParser: NSObject {
-    var args: [String]
+public final class SnapCommandLineArgumentParser {
     public enum Option: Equatable {
         case printHelp
         case inputFileName(String)
@@ -27,6 +26,8 @@ public class SnapCommandLineArgumentParser: NSObject {
         case unoptimized
         case run
     }
+    
+    private var args: [String]
     public private(set) var options: [Option] = []
     
     public init(args: [String]) {
@@ -116,7 +117,7 @@ public class SnapCommandLineArgumentParser: NSObject {
     }
     
     private func peek() throws -> String {
-        return args.first!
+        args.first!
     }
     
     private func advance() throws {

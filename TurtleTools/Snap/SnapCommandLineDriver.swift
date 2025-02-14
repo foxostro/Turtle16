@@ -10,7 +10,7 @@ import SnapCore
 import TurtleCore
 import TurtleSimulatorCore
 
-// Provides an interface for driving the snap compiler from the command-line.
+/// Provides an interface for driving the snap compiler from the command-line.
 public final class SnapCommandLineDriver {
     public struct SnapCommandLineDriverError: Error {
         public let message: String

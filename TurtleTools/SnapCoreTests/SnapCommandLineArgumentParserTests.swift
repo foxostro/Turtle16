@@ -9,7 +9,7 @@
 import XCTest
 import SnapCore
 
-class SnapCommandLineArgumentParserTests: XCTestCase {
+final class SnapCommandLineArgumentParserTests: XCTestCase {
     func testPrintUsageBecauseNoArguments() {
         let parser = SnapCommandLineArgumentParser(args: [])
         XCTAssertThrowsError(try parser.parse()) {

@@ -9,7 +9,7 @@
 import TurtleCore
 
 /// Adds a new struct type to the environment for a given StructDeclaration
-public final class StructScanner: NSObject {
+public struct StructScanner {
     private let symbols: SymbolTable
     private let memoryLayoutStrategy: MemoryLayoutStrategy
     
@@ -53,7 +53,10 @@ public final class StructScanner: NSObject {
         return type
     }
     
-    private func doNonGeneric(_ node: StructDeclaration, _ evaluatedTypeArguments: [SymbolType]) throws -> SymbolType {
+    private func doNonGeneric(
+        _ node: StructDeclaration,
+        _ evaluatedTypeArguments: [SymbolType]
+    ) throws -> SymbolType {
         assert(!node.isGeneric)
         
         let members = SymbolTable(parent: symbols)

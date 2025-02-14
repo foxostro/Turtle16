@@ -19,7 +19,7 @@ public struct TurtleProgram {
 }
 
 /// Compile a Snap program to Turtle16 machine code
-public class SnapToTurtle16Compiler: NSObject {
+public struct SnapToTurtle16Compiler {
     public typealias Options = SnapCompilerFrontEnd.Options
     
     private let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()

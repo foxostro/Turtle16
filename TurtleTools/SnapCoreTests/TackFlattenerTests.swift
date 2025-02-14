@@ -14,13 +14,13 @@ final class TackFlattenerTests: XCTestCase {
     func testFlattenEmptyProgram() throws {
         let expected = TackProgram(instructions: [], labels: [:])
         let program = Seq()
-        let actual = try TackFlattener().compile(program)
+        let actual = try TackFlattener.compile(program)
         XCTAssertEqual(actual, expected)
     }
     
     func testUnsupportedNode() throws {
         let program = Expression.LiteralInt(0)
-        XCTAssertThrowsError(try TackFlattener().compile(program)) {
+        XCTAssertThrowsError(try TackFlattener.compile(program)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "unsupported node: `0'")
@@ -30,28 +30,28 @@ final class TackFlattenerTests: XCTestCase {
     func testSingleInstruction() throws {
         let program = TackInstructionNode(.nop)
         let expected = TackProgram(instructions: [.nop], labels: [:], ast: program)
-        let actual = try TackFlattener().compile(program)
+        let actual = try TackFlattener.compile(program)
         XCTAssertEqual(actual, expected)
     }
     
     func testSeqWithOneLevel() throws {
         let program = Seq(children: [TackInstructionNode(.nop)])
         let expected = TackProgram(instructions: [.nop], labels: [:], ast: program)
-        let actual = try TackFlattener().compile(program)
+        let actual = try TackFlattener.compile(program)
         XCTAssertEqual(actual, expected)
     }
     
     func testSeqWithTwoLevels() throws {
         let program = Seq(children: [Seq(children: [TackInstructionNode(.nop)])])
         let expected = TackProgram(instructions: [.nop], labels: [:], ast: program)
-        let actual = try TackFlattener().compile(program)
+        let actual = try TackFlattener.compile(program)
         XCTAssertEqual(actual, expected)
     }
     
     func testLabelDeclaration() throws {
         let program = Seq(children: [LabelDeclaration(ParameterIdentifier("foo"))])
         let expected = TackProgram(instructions: [], labels: ["foo":0], ast: program)
-        let actual = try TackFlattener().compile(program)
+        let actual = try TackFlattener.compile(program)
         XCTAssertEqual(actual, expected)
     }
     
@@ -60,7 +60,7 @@ final class TackFlattenerTests: XCTestCase {
             LabelDeclaration(ParameterIdentifier("foo")),
             LabelDeclaration(ParameterIdentifier("foo"))
         ])
-        XCTAssertThrowsError(try TackFlattener().compile(program)) {
+        XCTAssertThrowsError(try TackFlattener.compile(program)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "label redefines existing symbol: `foo'")
@@ -87,7 +87,7 @@ final class TackFlattenerTests: XCTestCase {
                 "foo" : 1
             ],
             ast: program)
-        let actual = try TackFlattener().compile(program)
+        let actual = try TackFlattener.compile(program)
         XCTAssertEqual(actual, expected)
     }
 }

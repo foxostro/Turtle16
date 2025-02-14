@@ -9,25 +9,30 @@
 import Foundation
 import TurtleCore
 
-// Accepts a Tack AST and produces a TackProgram.
-public class TackFlattener: NSObject {
+/// Accepts a Tack AST and produces a TackProgram.
+public struct TackFlattener {
     private var instructions: [(TackInstruction, SourceAnchor?, SymbolTable?, String?)] = []
     private var didProcessSubroutine = false
     private var labels: [String : Int] = [:]
     private var currentSubroutine: String? = nil
     
-    public func compile(_ node: AbstractSyntaxTreeNode) throws -> TackProgram {
+    public static func compile(_ node: AbstractSyntaxTreeNode) throws -> TackProgram {
+        var flattener = TackFlattener()
+        return try flattener.compile_(node)
+    }
+    
+    private mutating func compile_(_ node: AbstractSyntaxTreeNode) throws -> TackProgram {
         try innerCompile(node)
         return TackProgram(
-            instructions: instructions.map{$0.0},
-            sourceAnchor: instructions.map{$0.1},
-            symbols: instructions.map{$0.2},
-            subroutines: instructions.map{$0.3},
+            instructions: instructions.map(\.0),
+            sourceAnchor: instructions.map(\.1),
+            symbols: instructions.map(\.2),
+            subroutines: instructions.map(\.3),
             labels: labels,
             ast: node)
     }
     
-    private func innerCompile(_ node: AbstractSyntaxTreeNode) throws {
+    private mutating func innerCompile(_ node: AbstractSyntaxTreeNode) throws {
         switch node {
         case let node as TackInstructionNode:
             instructions.append((
@@ -61,7 +66,7 @@ public class TackFlattener: NSObject {
         }
     }
     
-    private func label(_ sourceAnchor: SourceAnchor?, _ name: String) throws {
+    private mutating func label(_ sourceAnchor: SourceAnchor?, _ name: String) throws {
         guard labels[name] == nil else {
             throw CompilerError(sourceAnchor: sourceAnchor, message: "label redefines existing symbol: `\(name)'")
         }

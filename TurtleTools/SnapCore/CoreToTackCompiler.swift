@@ -3116,7 +3116,7 @@ public class CoreToTackCompiler: CompilerPassWithDeclScan {
 
 extension AbstractSyntaxTreeNode {
     fileprivate func flattenTackProgram() throws -> TackProgram {
-        try TackFlattener().compile(self)
+        try TackFlattener.compile(self)
     }
     
     /// Lower a Snap program, written in a minimal core subset of the language, to equivalent Tack code
@@ -3130,7 +3130,7 @@ extension AbstractSyntaxTreeNode {
             memoryLayoutStrategy: memoryLayoutStrategy,
             options: options)
         let tackAst = try compiler.run(self)
-        let tackProgram = try TackFlattener().compile(tackAst)
+        let tackProgram = try TackFlattener.compile(tackAst)
         return tackProgram
     }
 }

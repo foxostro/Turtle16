@@ -10,7 +10,7 @@ import Foundation
 import TurtleCore
 
 /// Scans a function declaration and binds the function symbol in the environment
-public class FunctionScanner: NSObject {
+public struct FunctionScanner {
     public let symbols: SymbolTable
     private let memoryLayoutStrategy: MemoryLayoutStrategy
     private let enclosingImplId: AbstractSyntaxTreeNode.ID?

@@ -9,7 +9,7 @@
 import TurtleCore
 
 public class TraitDeclaration: AbstractSyntaxTreeNode {
-    public class Member: NSObject {
+    public struct Member: Hashable, Equatable, CustomStringConvertible  {
         public let name: String
         public let memberType: Expression
         
@@ -18,28 +18,8 @@ public class TraitDeclaration: AbstractSyntaxTreeNode {
             self.memberType = type
         }
         
-        public static func ==(lhs: Member, rhs: Member) -> Bool {
-            lhs.isEqual(rhs)
-        }
-        
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
-            guard let rhs = rhs as? Member else { return false }
-            guard name == rhs.name else { return false }
-            guard memberType == rhs.memberType else { return false }
-            return true
-        }
-        
-        public override var hash: Int {
-            var hasher = Hasher()
-            hasher.combine(name)
-            hasher.combine(memberType)
-            return hasher.finalize()
-        }
-        
-        public override var description: String {
-            return "\(name): \(memberType)"
+        public var description: String {
+            "\(name): \(memberType)"
         }
     }
     

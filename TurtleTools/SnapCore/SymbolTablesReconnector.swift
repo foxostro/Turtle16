@@ -8,7 +8,7 @@
 
 import TurtleCore
 
-public class SymbolTablesReconnector: NSObject {
+public final class SymbolTablesReconnector {
     var symbols: SymbolTable? = nil
     let onlyCheck: Bool
     

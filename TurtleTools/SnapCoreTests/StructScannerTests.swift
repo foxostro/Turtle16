@@ -1,5 +1,5 @@
 //
-//  SnapSubcompilerStructDeclarationTests.swift
+//  StructScannerTests.swift
 //  SnapCoreTests
 //
 //  Created by Andrew Fox on 8/3/21.
@@ -10,7 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-class SnapSubcompilerStructDeclarationTests: XCTestCase {
+final class StructScannerTests: XCTestCase {
     fileprivate let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
     
     fileprivate func makeCompiler(_ symbols: SymbolTable) -> StructScanner {

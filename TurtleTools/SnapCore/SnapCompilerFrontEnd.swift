@@ -9,7 +9,7 @@
 import Foundation
 import TurtleCore
 
-public class SnapCompilerFrontEnd: NSObject {
+public final class SnapCompilerFrontEnd {
     public struct Options {
         public let isBoundsCheckEnabled: Bool
         public let isUsingStandardLibrary: Bool
@@ -84,7 +84,7 @@ public class SnapCompilerFrontEnd: NSObject {
         return tackProgram
     }
     
-    func lex(_ text: String, _ url: URL?) throws -> [Token] {
+    private func lex(_ text: String, _ url: URL?) throws -> [Token] {
         let lexer = SnapLexer(text, url)
         lexer.scanTokens()
         if let error = lexer.errors.first {
@@ -93,7 +93,7 @@ public class SnapCompilerFrontEnd: NSObject {
         return lexer.tokens
     }
     
-    func parse(_ tokens: [Token]) throws -> TopLevel {
+    private func parse(_ tokens: [Token]) throws -> TopLevel {
         let parser = SnapParser(tokens: tokens)
         parser.parse()
         if let error = parser.errors.first {

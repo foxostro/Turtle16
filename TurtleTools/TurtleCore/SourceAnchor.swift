@@ -6,15 +6,23 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-public class SourceAnchor: NSObject {
+public struct SourceAnchor: Hashable, CustomStringConvertible, CustomDebugStringConvertible {
     public let range: Range<String.Index>
     public let lineMapper: SourceLineRangeMapper
     
     public var url: URL? {
-        return lineMapper.url
+        lineMapper.url
     }
     
-    public override var description: String {
+    public var text: Substring {
+        lineMapper.text[range]
+    }
+    
+    public var lineNumbers: Range<Int>? {
+        lineMapper.lineNumbers(for: range)
+    }
+    
+    public var description: String {
         var str = ""
         if let fileName = url?.lastPathComponent {
             str += "\(fileName): "
@@ -26,7 +34,7 @@ public class SourceAnchor: NSObject {
         return str
     }
     
-    public override var debugDescription: String {
+    public var debugDescription: String {
         var begin = 0
         var index = lineMapper.text.startIndex
         while index != range.lowerBound {
@@ -40,48 +48,6 @@ public class SourceAnchor: NSObject {
             lineMapper.text.formIndex(after: &index)
         }
         return "\(begin)..\(end) --> \(text)"
-    }
-    
-    public init(range: Range<String.Index>, lineMapper: SourceLineRangeMapper) {
-        self.range = range
-        self.lineMapper = lineMapper
-    }
-    
-    public var text: Substring {
-        return lineMapper.text[range]
-    }
-    
-    public var lineNumbers: Range<Int>? {
-        return lineMapper.lineNumbers(for: range)
-    }
-    
-    public func union(_ sourceAnchor: SourceAnchor?) -> SourceAnchor {
-        guard let sourceAnchor = sourceAnchor else {
-            return self
-        }
-        let lowerBound = min(range.lowerBound, sourceAnchor.range.lowerBound)
-        let upperBound = max(range.upperBound, sourceAnchor.range.upperBound)
-        let combinedRange = lowerBound..<upperBound
-        return SourceAnchor(range: combinedRange, lineMapper: lineMapper)
-    }
-    
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else {
-            return false
-        }
-        guard type(of: rhs!) == type(of: self) else {
-            return false
-        }
-        guard let rhs = rhs as? SourceAnchor else {
-            return false
-        }
-        guard text == rhs.text else {
-            return false
-        }
-        guard range == rhs.range else {
-            return false
-        }
-        return true
     }
     
     public var lineNumberPrefix: String? {
@@ -121,6 +87,21 @@ public class SourceAnchor: NSObject {
         return result
     }
     
+    public init(range: Range<String.Index>, lineMapper: SourceLineRangeMapper) {
+        self.range = range
+        self.lineMapper = lineMapper
+    }
+    
+    public func union(_ sourceAnchor: SourceAnchor?) -> SourceAnchor {
+        guard let sourceAnchor = sourceAnchor else {
+            return self
+        }
+        let lowerBound = min(range.lowerBound, sourceAnchor.range.lowerBound)
+        let upperBound = max(range.upperBound, sourceAnchor.range.upperBound)
+        let combinedRange = lowerBound..<upperBound
+        return SourceAnchor(range: combinedRange, lineMapper: lineMapper)
+    }
+    
     public func split() -> [SourceAnchor] {
         let text = lineMapper.text[range]
         var index = range.lowerBound
@@ -136,5 +117,11 @@ public class SourceAnchor: NSObject {
             }
         }
         return [self]
+    }
+    
+    public static func ==(lhs: SourceAnchor, rhs: SourceAnchor) -> Bool {
+        guard lhs.text == rhs.text else { return false }
+        guard lhs.range == rhs.range else { return false }
+        return true
     }
 }

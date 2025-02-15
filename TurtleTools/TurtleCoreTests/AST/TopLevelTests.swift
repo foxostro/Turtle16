@@ -9,7 +9,7 @@
 import XCTest
 import TurtleCore
 
-class TopLevelTests: NSObject {
+final class TopLevelTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
         XCTAssertNotEqual(TopLevel(children: []),
                           CommentNode(string: ""))
@@ -26,7 +26,7 @@ class TopLevelTests: NSObject {
     }
     
     func testHash() {
-        XCTAssertEqual(TopLevel(children: [CommentNode(string: "")]).hash,
-                       TopLevel(children: [CommentNode(string: "")]).hash)
+        XCTAssertEqual(TopLevel(children: [CommentNode(string: "")]).hashValue,
+                       TopLevel(children: [CommentNode(string: "")]).hashValue)
     }
 }

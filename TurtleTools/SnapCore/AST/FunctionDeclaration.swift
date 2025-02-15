@@ -8,7 +8,8 @@
 
 import TurtleCore
 
-public class FunctionDeclaration: AbstractSyntaxTreeNode {
+/// Declare a function and its body
+public final class FunctionDeclaration: AbstractSyntaxTreeNode {
     public let identifier: Expression.Identifier
     public let functionType: Expression.FunctionType
     public let argumentNames: [String]
@@ -117,11 +118,9 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
             id: ID())
     }
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
+    public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
-        guard let rhs = rhs as? FunctionDeclaration else { return false }
+        guard let rhs = rhs as? Self else { return false }
         guard identifier == rhs.identifier else { return false }
         guard functionType == rhs.functionType else { return false }
         guard typeArguments == rhs.typeArguments else { return false }
@@ -131,16 +130,14 @@ public class FunctionDeclaration: AbstractSyntaxTreeNode {
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
+    public override func hash(into hasher: inout Hasher) {
+        super.hash(into: &hasher)
         hasher.combine(identifier)
         hasher.combine(functionType)
         hasher.combine(argumentNames)
         hasher.combine(typeArguments)
         hasher.combine(body)
         hasher.combine(visibility)
-        hasher.combine(super.hash)
-        return hasher.finalize()
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {

@@ -57,10 +57,10 @@ final class IfTests: XCTestCase {
     func testHash() {
         XCTAssertEqual(If(condition: Expression.LiteralInt(1),
                           then: CommentNode(string: ""),
-                          else: nil).hash,
+                          else: nil).hashValue,
                        If(condition: Expression.LiteralInt(1),
                           then: CommentNode(string: ""),
-                          else: nil).hash)
+                          else: nil).hashValue)
     }
     
     func testGetters() {

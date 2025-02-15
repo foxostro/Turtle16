@@ -8,7 +8,8 @@
 
 import TurtleCore
 
-public class Typealias: AbstractSyntaxTreeNode {
+/// Declare a new type alias, basically rebinding the definition of a type under a new identifier
+public final class Typealias: AbstractSyntaxTreeNode {
     public let lexpr: Expression.Identifier
     public let rexpr: Expression
     public let visibility: SymbolVisibility
@@ -32,27 +33,23 @@ public class Typealias: AbstractSyntaxTreeNode {
                   id: id)
     }
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
+    public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
-        guard let rhs = rhs as? Typealias else { return false }
+        guard let rhs = rhs as? Self else { return false }
         guard lexpr == rhs.lexpr else { return false }
         guard rexpr == rhs.rexpr else { return false }
         guard visibility == rhs.visibility else { return false }
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
+    public override func hash(into hasher: inout Hasher) {
+        super.hash(into: &hasher)
         hasher.combine(lexpr)
         hasher.combine(rexpr)
         hasher.combine(visibility)
-        hasher.combine(super.hash)
-        return hasher.finalize()
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         String(format: "%@%@\n%@lexpr: %@\n%@rexpr: %@\n%@visibility: %@",
                wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                String(describing: type(of: self)),

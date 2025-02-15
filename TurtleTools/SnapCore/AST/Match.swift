@@ -8,7 +8,8 @@
 
 import TurtleCore
 
-public class Match: AbstractSyntaxTreeNode {
+/// A match statement is like a switch on the type of an expression
+public final class Match: AbstractSyntaxTreeNode {
     public struct Clause: Hashable {
         public let sourceAnchor: SourceAnchor?
         public let valueIdentifier: Expression.Identifier
@@ -49,11 +50,9 @@ public class Match: AbstractSyntaxTreeNode {
               id: id)
     }
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
+    public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
-        guard let rhs = rhs as? Match else { return false }
+        guard let rhs = rhs as? Self else { return false }
         guard sourceAnchor == rhs.sourceAnchor else { return false }
         guard expr == rhs.expr else { return false }
         guard clauses == rhs.clauses else { return false }
@@ -61,14 +60,12 @@ public class Match: AbstractSyntaxTreeNode {
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
+    public override func hash(into hasher: inout Hasher) {
+        super.hash(into: &hasher)
         hasher.combine(sourceAnchor)
         hasher.combine(expr)
         hasher.combine(clauses)
         hasher.combine(elseClause)
-        hasher.combine(super.hash)
-        return hasher.finalize()
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {

@@ -39,8 +39,8 @@ final class StructDeclarationTests: XCTestCase {
     
     func testHash() {
         XCTAssertEqual(StructDeclaration(identifier: Expression.Identifier("foo"),
-                                         members: []).hash,
+                                         members: []).hashValue,
                        StructDeclaration(identifier: Expression.Identifier("foo"),
-                                         members: []).hash)
+                                         members: []).hashValue)
     }
 }

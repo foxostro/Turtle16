@@ -8,7 +8,8 @@
 
 import TurtleCore
 
-public class ImplFor: AbstractSyntaxTreeNode {
+/// Adds methods to a struct to implement the specified trait
+public final class ImplFor: AbstractSyntaxTreeNode {
     public let typeArguments: [Expression.GenericTypeArgument]
     public let traitTypeExpr: Expression
     public let structTypeExpr: Expression
@@ -76,11 +77,9 @@ public class ImplFor: AbstractSyntaxTreeNode {
                 id: id)
     }
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
+    public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
-        guard let rhs = rhs as? ImplFor else { return false }
+        guard let rhs = rhs as? Self else { return false }
         guard typeArguments == rhs.typeArguments else { return false }
         guard traitTypeExpr == rhs.traitTypeExpr else { return false }
         guard structTypeExpr == rhs.structTypeExpr else { return false }
@@ -88,14 +87,12 @@ public class ImplFor: AbstractSyntaxTreeNode {
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
+    public override func hash(into hasher: inout Hasher) {
+        super.hash(into: &hasher)
         hasher.combine(typeArguments)
         hasher.combine(traitTypeExpr)
         hasher.combine(structTypeExpr)
         hasher.combine(children)
-        hasher.combine(super.hash)
-        return hasher.finalize()
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {

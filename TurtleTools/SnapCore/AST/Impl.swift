@@ -8,7 +8,8 @@
 
 import TurtleCore
 
-public class Impl: AbstractSyntaxTreeNode {
+/// Adds zero or more methods to an existing struct
+public final class Impl: AbstractSyntaxTreeNode {
     public let typeArguments: [Expression.GenericTypeArgument]
     public let structTypeExpr: Expression
     public let children: [FunctionDeclaration]
@@ -74,24 +75,20 @@ public class Impl: AbstractSyntaxTreeNode {
         return withChildren(children)
     }
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
+    public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
-        guard let rhs = rhs as? Impl else { return false }
+        guard let rhs = rhs as? Self else { return false }
         guard typeArguments == rhs.typeArguments else { return false }
         guard structTypeExpr == rhs.structTypeExpr else { return false }
         guard children == rhs.children else { return false }
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
+    public override func hash(into hasher: inout Hasher) {
+        super.hash(into: &hasher)
         hasher.combine(typeArguments)
         hasher.combine(structTypeExpr)
         hasher.combine(children)
-        hasher.combine(super.hash)
-        return hasher.finalize()
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {

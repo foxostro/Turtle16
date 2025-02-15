@@ -8,7 +8,8 @@
 
 import TurtleCore
 
-public class TraitDeclaration: AbstractSyntaxTreeNode {
+/// Declare a new trait type
+public final class TraitDeclaration: AbstractSyntaxTreeNode {
     public struct Member: Hashable, CustomStringConvertible  {
         public let name: String
         public let memberType: Expression
@@ -119,9 +120,7 @@ public class TraitDeclaration: AbstractSyntaxTreeNode {
                          id: id)
     }
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
+    public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
         guard let rhs = rhs as? TraitDeclaration else { return false }
         guard identifier == rhs.identifier else { return false }
@@ -132,15 +131,13 @@ public class TraitDeclaration: AbstractSyntaxTreeNode {
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
+    public override func hash(into hasher: inout Hasher) {
+        super.hash(into: &hasher)
         hasher.combine(identifier)
         hasher.combine(members)
         hasher.combine(typeArguments)
         hasher.combine(visibility)
         hasher.combine(mangledName)
-        hasher.combine(super.hash)
-        return hasher.finalize()
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
@@ -153,19 +150,17 @@ public class TraitDeclaration: AbstractSyntaxTreeNode {
     }
     
     private func indent(text: String, depth: Int) -> String {
-        let indentLine = makeIndent(depth: depth)
-        let indented = text.split(separator: "\n").map { line in
-            "\(indentLine)\(line)"
-        }.joined(separator: "\n")
-        return indented
+        text.split(separator: "\n")
+            .map { line in
+                "\(makeIndent(depth: depth))\(line)"
+            }
+            .joined(separator: "\n")
     }
     
     private var visibilityDescription: String {
         switch visibility {
-        case .publicVisibility:
-            return "public"
-        case .privateVisibility:
-            return "private"
+        case .publicVisibility:  "public"
+        case .privateVisibility: "private"
         }
     }
     

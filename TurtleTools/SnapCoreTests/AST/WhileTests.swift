@@ -40,9 +40,9 @@ final class WhileTests: XCTestCase {
     
     func testHash() {
         XCTAssertEqual(While(condition: Expression.LiteralInt(1),
-                             body: Expression.LiteralInt(1)).hash,
+                             body: Expression.LiteralInt(1)).hashValue,
                        While(condition: Expression.LiteralInt(1),
-                             body: Expression.LiteralInt(1)).hash)
+                             body: Expression.LiteralInt(1)).hashValue)
     }
     
     func testGetters() {

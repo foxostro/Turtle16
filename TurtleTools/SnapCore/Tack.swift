@@ -349,8 +349,8 @@ public enum TackInstruction: Hashable {
     }
 }
 
-// Allows a TackInstruction to be embedded in an Abstract Syntax Tree
-public class TackInstructionNode: AbstractSyntaxTreeNode {
+/// Allows a TackInstruction to be embedded in an Abstract Syntax Tree
+public final class TackInstructionNode: AbstractSyntaxTreeNode {
     public let instruction: TackInstruction
     public let symbols: SymbolTable?
     
@@ -392,10 +392,9 @@ public class TackInstructionNode: AbstractSyntaxTreeNode {
                             id: id)
     }
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
-        guard let rhs = rhs as? TackInstructionNode else { return false }
+    public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
+        guard super.isEqual(rhs) else { return false }
+        guard let rhs = rhs as? Self else { return false }
         guard instruction == rhs.instruction else { return false }
         
         // Symbol tables do not affect equality.
@@ -403,15 +402,13 @@ public class TackInstructionNode: AbstractSyntaxTreeNode {
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
+    public override func hash(into hasher: inout Hasher) {
+        super.hash(into: &hasher)
         hasher.combine(instruction)
         // Symbol tables do not affect the hash.
-        hasher.combine(super.hash)
-        return hasher.finalize()
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let result = "\(indent)\(instruction.description)"
         return result

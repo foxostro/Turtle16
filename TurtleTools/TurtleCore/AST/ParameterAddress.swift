@@ -28,21 +28,18 @@ public class ParameterAddress: Parameter {
                          id: id)
     }
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
-        guard let rhs = rhs as? ParameterAddress else { return false }
+    public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
+        guard super.isEqual(rhs) else { return false }
+        guard let rhs = rhs as? Self else { return false }
         guard offset == rhs.offset else { return false }
         guard identifier == rhs.identifier else { return false }
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
+    public override func hash(into hasher: inout Hasher) {
+        super.hash(into: &hasher)
         hasher.combine(offset)
         hasher.combine(identifier)
-        hasher.combine(super.hash)
-        return hasher.finalize()
     }
     
     public override var description: String {

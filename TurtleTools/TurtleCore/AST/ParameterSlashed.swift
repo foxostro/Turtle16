@@ -28,23 +28,20 @@ public class ParameterSlashed: Parameter {
                          id: id)
     }
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
-        guard let rhs = rhs as? ParameterSlashed else { return false }
+    public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
+        guard super.isEqual(rhs) else { return false }
+        guard let rhs = rhs as? Self else { return false }
         guard child == rhs.child else { return false }
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
+    public override func hash(into hasher: inout Hasher) {
+        super.hash(into: &hasher)
         hasher.combine(child)
-        hasher.combine(super.hash)
-        return hasher.finalize()
     }
     
     public override var description: String {
-        return "/\(child)"
+        "/\(child)"
     }
 }
 

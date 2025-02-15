@@ -6,7 +6,7 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-public class LabelDeclaration: AbstractSyntaxTreeNode {
+public final class LabelDeclaration: AbstractSyntaxTreeNode {
     public let identifier: String
     
     public convenience init(sourceAnchor: SourceAnchor? = nil, _ ident: ParameterIdentifier) {
@@ -32,22 +32,19 @@ public class LabelDeclaration: AbstractSyntaxTreeNode {
                          id: id)
     }
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
-        guard let rhs = rhs as? LabelDeclaration else { return false }
+    public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
+        guard super.isEqual(rhs) else { return false }
+        guard let rhs = rhs as? Self else { return false }
         guard identifier == rhs.identifier else { return false }
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
+    public override func hash(into hasher: inout Hasher) {
+        super.hash(into: &hasher)
         hasher.combine(identifier)
-        hasher.combine(super.hash)
-        return hasher.finalize()
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let name = String(describing: type(of: self))
         return "\(indent)\(name)(\(identifier))"

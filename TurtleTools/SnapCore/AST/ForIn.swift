@@ -8,7 +8,8 @@
 
 import TurtleCore
 
-public class ForIn: AbstractSyntaxTreeNode {
+/// A for-in statement iterates elements of a sequence expression
+public final class ForIn: AbstractSyntaxTreeNode {
     public let identifier: Expression.Identifier
     public let sequenceExpr: Expression
     public let body: Block
@@ -32,28 +33,20 @@ public class ForIn: AbstractSyntaxTreeNode {
               id: id)
     }
     
-    public static func ==(lhs: ForIn, rhs: ForIn) -> Bool {
-        lhs.isEqual(rhs)
-    }
-    
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
+    public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
-        guard let rhs = rhs as? ForIn else { return false }
+        guard let rhs = rhs as? Self else { return false }
         guard identifier == rhs.identifier else { return false }
         guard sequenceExpr == rhs.sequenceExpr else { return false }
         guard body == rhs.body else { return false }
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
+    public override func hash(into hasher: inout Hasher) {
+        super.hash(into: &hasher)
         hasher.combine(identifier)
         hasher.combine(sequenceExpr)
         hasher.combine(body)
-        hasher.combine(super.hash)
-        return hasher.finalize()
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {

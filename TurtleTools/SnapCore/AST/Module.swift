@@ -8,7 +8,7 @@
 
 import TurtleCore
 
-public class Module: AbstractSyntaxTreeNode {
+public final class Module: AbstractSyntaxTreeNode {
     public let name: String
     public let useGlobalNamespace: Bool
     public let block: Block
@@ -52,24 +52,20 @@ public class Module: AbstractSyntaxTreeNode {
         withBlock(block.inserting(children: toInsert, at: 0))
     }
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
+    public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
-        guard let rhs = rhs as? Module else { return false }
+        guard let rhs = rhs as? Self else { return false }
         guard name == rhs.name else { return false }
         guard useGlobalNamespace == rhs.useGlobalNamespace else { return false }
         guard block == rhs.block else { return false }
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
+    public override func hash(into hasher: inout Hasher) {
+        super.hash(into: &hasher)
         hasher.combine(name)
         hasher.combine(useGlobalNamespace)
         hasher.combine(block)
-        hasher.combine(super.hash)
-        return hasher.finalize()
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {

@@ -8,7 +8,8 @@
 
 import TurtleCore
 
-public class Import: AbstractSyntaxTreeNode {
+/// Directive to import symbols from the specified module
+public final class Import: AbstractSyntaxTreeNode {
     public let moduleName: String
     public let intoGlobalNamespace: Bool
     
@@ -28,22 +29,18 @@ public class Import: AbstractSyntaxTreeNode {
                id: id)
     }
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
+    public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
-        guard let rhs = rhs as? Import else { return false }
+        guard let rhs = rhs as? Self else { return false }
         guard moduleName == rhs.moduleName else { return false }
         guard intoGlobalNamespace == rhs.intoGlobalNamespace else { return false }
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
+    public override func hash(into hasher: inout Hasher) {
+        super.hash(into: &hasher)
         hasher.combine(moduleName)
         hasher.combine(intoGlobalNamespace)
-        hasher.combine(super.hash)
-        return hasher.finalize()
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {

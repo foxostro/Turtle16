@@ -8,7 +8,8 @@
 
 import TurtleCore
 
-public class VarDeclaration: AbstractSyntaxTreeNode {
+/// Declare a variable in the current scope
+public final class VarDeclaration: AbstractSyntaxTreeNode {
     public let identifier: Expression.Identifier
     public let explicitType: Expression?
     public let expression: Expression?
@@ -66,11 +67,9 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
                        id: id)
     }
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
+    public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
-        guard let rhs = rhs as? VarDeclaration else { return false }
+        guard let rhs = rhs as? Self else { return false }
         guard identifier == rhs.identifier else { return false }
         guard explicitType == rhs.explicitType else { return false }
         guard isMutable == rhs.isMutable else { return false }
@@ -80,19 +79,17 @@ public class VarDeclaration: AbstractSyntaxTreeNode {
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
+    public override func hash(into hasher: inout Hasher) {
+        super.hash(into: &hasher)
         hasher.combine(identifier)
         hasher.combine(explicitType)
         hasher.combine(storage)
         hasher.combine(isMutable)
         hasher.combine(expression)
         hasher.combine(visibility)
-        hasher.combine(super.hash)
-        return hasher.finalize()
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         String(format: "%@%@\n%@identifier: %@\n%@explicitType: %@\n%@storage: %@\n%@isMutable: %@\n%@visibility: %@\n%@expression: %@",
                wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
                String(describing: type(of: self)),

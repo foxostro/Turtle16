@@ -143,9 +143,9 @@ final class ExpressionTests: XCTestCase {
         
         // Hash
         XCTAssertEqual(Expression.Assignment(lexpr: foo,
-                                             rexpr: Expression.LiteralInt(1)).hash,
+                                             rexpr: Expression.LiteralInt(1)).hashValue,
                        Expression.Assignment(lexpr: foo,
-                                             rexpr: Expression.LiteralInt(1)).hash)
+                                             rexpr: Expression.LiteralInt(1)).hashValue)
     }
     
     func testCallEquality() {
@@ -168,9 +168,9 @@ final class ExpressionTests: XCTestCase {
         
         // Hash
         XCTAssertEqual(Expression.Call(callee: Expression.Identifier("foo"),
-                                       arguments: [Expression.LiteralInt(1)]).hash,
+                                       arguments: [Expression.LiteralInt(1)]).hashValue,
                        Expression.Call(callee: Expression.Identifier("foo"),
-                                       arguments: [Expression.LiteralInt(1)]).hash)
+                                       arguments: [Expression.LiteralInt(1)]).hashValue)
     }
     
     func testAsEquality() {
@@ -194,9 +194,9 @@ final class ExpressionTests: XCTestCase {
         
         // Hash
         XCTAssertEqual(Expression.As(expr: Expression.Identifier("foo"),
-                                     targetType: Expression.PrimitiveType(.u8)).hash,
+                                     targetType: Expression.PrimitiveType(.u8)).hashValue,
                        Expression.As(expr: Expression.Identifier("foo"),
-                                     targetType: Expression.PrimitiveType(.u8)).hash)
+                                     targetType: Expression.PrimitiveType(.u8)).hashValue)
     }
     
     func testSubscriptEquality() {
@@ -220,9 +220,9 @@ final class ExpressionTests: XCTestCase {
         
         // Hash
         XCTAssertEqual(Expression.Subscript(subscriptable: Expression.Identifier("foo"),
-                                            argument: Expression.LiteralInt(0)).hash,
+                                            argument: Expression.LiteralInt(0)).hashValue,
                        Expression.Subscript(subscriptable: Expression.Identifier("foo"),
-                                            argument: Expression.LiteralInt(0)).hash)
+                                            argument: Expression.LiteralInt(0)).hashValue)
     }
     
     func testLiteralArrayEquality() {
@@ -252,9 +252,9 @@ final class ExpressionTests: XCTestCase {
         
         // Same hashes
         XCTAssertEqual(Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u8)),
-                                               elements: [Expression.LiteralInt(0)]).hash,
+                                               elements: [Expression.LiteralInt(0)]).hashValue,
                        Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u8)),
-                                               elements: [Expression.LiteralInt(0)]).hash)
+                                               elements: [Expression.LiteralInt(0)]).hashValue)
     }
     
     func testGetEquality() {
@@ -293,7 +293,7 @@ final class ExpressionTests: XCTestCase {
                        Expression.PrimitiveType(.u8))
         
         // Same hashes
-        XCTAssertEqual(Expression.PrimitiveType(.u8).hash,
-                       Expression.PrimitiveType(.u8).hash)
+        XCTAssertEqual(Expression.PrimitiveType(.u8).hashValue,
+                       Expression.PrimitiveType(.u8).hashValue)
     }
 }

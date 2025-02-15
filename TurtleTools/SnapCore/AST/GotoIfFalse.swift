@@ -8,7 +8,8 @@
 
 import TurtleCore
 
-public class GotoIfFalse: AbstractSyntaxTreeNode {
+/// Conditional branch: jump to the target if the condition is false
+public final class GotoIfFalse: AbstractSyntaxTreeNode {
     public let condition: Expression
     public let target: String
     
@@ -42,22 +43,18 @@ public class GotoIfFalse: AbstractSyntaxTreeNode {
                     id: id)
     }
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
+    public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
-        guard let rhs = rhs as? GotoIfFalse else { return false }
+        guard let rhs = rhs as? Self else { return false }
         guard condition == rhs.condition else { return false }
         guard target == rhs.target else { return false }
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
+    public override func hash(into hasher: inout Hasher) {
+        super.hash(into: &hasher)
         hasher.combine(condition)
         hasher.combine(target)
-        hasher.combine(super.hash)
-        return hasher.finalize()
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {

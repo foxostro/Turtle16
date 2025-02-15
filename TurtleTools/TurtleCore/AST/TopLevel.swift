@@ -6,7 +6,7 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-public class TopLevel: AbstractSyntaxTreeNode {
+public final class TopLevel: AbstractSyntaxTreeNode {
     public let children: [AbstractSyntaxTreeNode]
     
     public init(sourceAnchor: SourceAnchor? = nil,
@@ -34,20 +34,16 @@ public class TopLevel: AbstractSyntaxTreeNode {
         return withChildren(children1)
     }
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
+    public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
-        guard let rhs = rhs as? TopLevel else { return false }
+        guard let rhs = rhs as? Self else { return false }
         guard children == rhs.children else { return false }
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
+    public override func hash(into hasher: inout Hasher) {
+        super.hash(into: &hasher)
         hasher.combine(children)
-        hasher.combine(super.hash)
-        return hasher.finalize()
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {

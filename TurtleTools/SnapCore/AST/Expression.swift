@@ -8,14 +8,8 @@
 
 import TurtleCore
 
+/// An expression in the program which evaluates to a typed value
 public class Expression: AbstractSyntaxTreeNode {
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard rhs is Expression else { return false }
-        guard super.isEqual(rhs) else { return false }
-        return true
-    }
-    
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> Expression {
         fatalError("withSourceAnchor() is unimplemented for \(self)")
     }
@@ -48,20 +42,16 @@ public class Expression: AbstractSyntaxTreeNode {
                 id: id)
         }
         
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? LiteralInt else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard value == rhs.value else { return false }
             return true
         }
         
-        public override var hash: Int {
-            var hasher = Hasher()
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
             hasher.combine(value)
-            hasher.combine(super.hash)
-            return hasher.finalize()
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
@@ -91,20 +81,16 @@ public class Expression: AbstractSyntaxTreeNode {
                         id: id)
         }
         
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? LiteralBool else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard value == rhs.value else { return false }
             return true
         }
         
-        public override var hash: Int {
-            var hasher = Hasher()
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
             hasher.combine(value)
-            hasher.combine(super.hash)
-            return hasher.finalize()
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
@@ -141,20 +127,16 @@ public class Expression: AbstractSyntaxTreeNode {
                        id: id)
         }
         
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? Identifier else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard identifier == rhs.identifier else { return false }
             return true
         }
         
-        public override var hash: Int {
-            var hasher = Hasher()
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
             hasher.combine(identifier)
-            hasher.combine(super.hash)
-            return hasher.finalize()
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
@@ -191,22 +173,18 @@ public class Expression: AbstractSyntaxTreeNode {
                   id: id)
         }
         
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? Unary else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard op == rhs.op else { return false }
             guard child == rhs.child else { return false }
             return true
         }
         
-        public override var hash: Int {
-            var hasher = Hasher()
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
             hasher.combine(op)
             hasher.combine(child)
-            hasher.combine(super.hash)
-            return hasher.finalize()
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
@@ -240,20 +218,16 @@ public class Expression: AbstractSyntaxTreeNode {
                   id: id)
         }
         
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? Group else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard expression == rhs.expression else { return false }
             return true
         }
         
-        public override var hash: Int {
-            var hasher = Hasher()
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
             hasher.combine(expression)
-            hasher.combine(super.hash)
-            return hasher.finalize()
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
@@ -287,20 +261,16 @@ public class Expression: AbstractSyntaxTreeNode {
                  id: id)
         }
         
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? Eseq else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard children == rhs.children else { return false }
             return true
         }
         
-        public override var hash: Int {
-            var hasher = Hasher()
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
             hasher.combine(children)
-            hasher.combine(super.hash)
-            return hasher.finalize()
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
@@ -344,23 +314,20 @@ public class Expression: AbstractSyntaxTreeNode {
                    id: id)
         }
         
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? Binary else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard op == rhs.op else { return false }
             guard left == rhs.left else { return false }
             guard right == rhs.right else { return false }
             return true
         }
         
-        public override var hash: Int {
-            var hasher = Hasher()
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
             hasher.combine(op)
             hasher.combine(left)
             hasher.combine(right)
-            hasher.combine(super.hash)
-            return hasher.finalize()
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
@@ -410,22 +377,18 @@ public class Expression: AbstractSyntaxTreeNode {
                        id: id)
         }
         
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? Assignment else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard lexpr == rhs.lexpr else { return false }
             guard rexpr == rhs.rexpr else { return false }
             return true
         }
         
-        public override var hash: Int {
-            var hasher = Hasher()
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
             hasher.combine(lexpr)
             hasher.combine(rexpr)
-            hasher.combine(super.hash)
-            return hasher.finalize()
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
@@ -502,14 +465,18 @@ public class Expression: AbstractSyntaxTreeNode {
             return withArguments(arguments)
         }
         
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? Call else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard callee == rhs.callee else { return false }
             guard arguments == rhs.arguments else { return false }
             return true
+        }
+        
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
+            hasher.combine(callee)
+            hasher.combine(arguments)
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
@@ -563,11 +530,9 @@ public class Expression: AbstractSyntaxTreeNode {
                id: id)
         }
         
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? As else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard expr == rhs.expr else { return false }
             guard targetType == rhs.targetType else { return false }
             return true
@@ -604,11 +569,9 @@ public class Expression: AbstractSyntaxTreeNode {
                     id: id)
         }
         
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? Bitcast else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard expr == rhs.expr else { return false }
             guard targetType == rhs.targetType else { return false }
             return true
@@ -645,11 +608,9 @@ public class Expression: AbstractSyntaxTreeNode {
                id: id)
         }
         
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? Is else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard expr == rhs.expr else { return false }
             guard testType == rhs.testType else { return false }
             return true
@@ -686,11 +647,9 @@ public class Expression: AbstractSyntaxTreeNode {
                       id: id)
         }
         
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? Subscript else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard subscriptable == rhs.subscriptable else { return false }
             guard argument == rhs.argument else { return false }
             return true
@@ -727,11 +686,9 @@ public class Expression: AbstractSyntaxTreeNode {
                          id: id)
         }
         
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? LiteralArray else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard arrayType == rhs.arrayType else { return false }
             guard elements == rhs.elements else {
                 return false
@@ -739,12 +696,10 @@ public class Expression: AbstractSyntaxTreeNode {
             return true
         }
         
-        public override var hash: Int {
-            var hasher = Hasher()
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
             hasher.combine(arrayType)
             hasher.combine(elements)
-            hasher.combine(super.hash)
-            return hasher.finalize()
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
@@ -805,22 +760,18 @@ public class Expression: AbstractSyntaxTreeNode {
                 id: id)
         }
         
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? Get else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard expr == rhs.expr else { return false }
             guard member == rhs.member else { return false }
             return true
         }
         
-        public override var hash: Int {
-            var hasher = Hasher()
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
             hasher.combine(expr)
             hasher.combine(member)
-            hasher.combine(super.hash)
-            return hasher.finalize()
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
@@ -854,20 +805,16 @@ public class Expression: AbstractSyntaxTreeNode {
                           id: id)
         }
         
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? PrimitiveType else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard typ == rhs.typ else { return false }
             return true
         }
         
-        public override var hash: Int {
-            var hasher = Hasher()
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
             hasher.combine(typ)
-            hasher.combine(super.hash)
-            return hasher.finalize()
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
@@ -903,20 +850,16 @@ public class Expression: AbstractSyntaxTreeNode {
                              id: id)
         }
         
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? DynamicArrayType else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard elementType == rhs.elementType else { return false }
             return true
         }
         
-        public override var hash: Int {
-            var hasher = Hasher()
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
             hasher.combine(elementType)
-            hasher.combine(super.hash)
-            return hasher.finalize()
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
@@ -947,22 +890,18 @@ public class Expression: AbstractSyntaxTreeNode {
                       id: id)
         }
         
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? ArrayType else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard count == rhs.count else { return false }
             guard elementType == rhs.elementType else { return false }
             return true
         }
         
-        public override var hash: Int {
-            var hasher = Hasher()
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
             hasher.combine(count)
             hasher.combine(elementType)
-            hasher.combine(super.hash)
-            return hasher.finalize()
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
@@ -1044,27 +983,20 @@ public class Expression: AbstractSyntaxTreeNode {
             return result
         }
         
-        public static func ==(lhs: FunctionType, rhs: FunctionType) -> Bool {
-            lhs.isEqual(rhs)
-        }
-        
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? FunctionType else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard name == rhs.name else { return false }
             guard returnType == rhs.returnType else { return false }
             guard arguments == rhs.arguments else { return false }
             return true
         }
         
-        public override var hash: Int {
-            var hasher = Hasher()
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
             hasher.combine(name)
             hasher.combine(returnType)
             hasher.combine(arguments)
-            return hasher.finalize()
         }
     }
 
@@ -1119,23 +1051,16 @@ public class Expression: AbstractSyntaxTreeNode {
             return "\(indent)func \(name)[\(typeArgumentsDescription)](\(argumentsDescription)) -> \(returnType)"
         }
         
-        public static func ==(lhs: GenericFunctionType, rhs: GenericFunctionType) -> Bool {
-            lhs.isEqual(rhs)
-        }
-        
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? GenericFunctionType else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard template == rhs.template else { return false }
             return true
         }
         
-        public override var hash: Int {
-            var hasher = Hasher()
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
             hasher.combine(template)
-            return hasher.finalize()
         }
     }
     
@@ -1197,25 +1122,18 @@ public class Expression: AbstractSyntaxTreeNode {
             return result
         }
         
-        public static func ==(lhs: GenericTypeApplication, rhs: GenericTypeApplication) -> Bool {
-            lhs.isEqual(rhs)
-        }
-        
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? GenericTypeApplication else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard identifier == rhs.identifier else { return false }
             guard arguments == rhs.arguments else { return false }
             return true
         }
         
-        public override var hash: Int {
-            var hasher = Hasher()
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
             hasher.combine(identifier)
             hasher.combine(arguments)
-            return hasher.finalize()
         }
     }
     
@@ -1255,25 +1173,18 @@ public class Expression: AbstractSyntaxTreeNode {
             return "\(leading)\(desc): \(shortDescription)"
         }
         
-        public static func ==(lhs: GenericTypeArgument, rhs: GenericTypeArgument) -> Bool {
-            lhs.isEqual(rhs)
-        }
-        
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? GenericTypeArgument else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard identifier == rhs.identifier else { return false }
             guard constraints == rhs.constraints else { return false }
             return true
         }
         
-        public override var hash: Int {
-            var hasher = Hasher()
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
             hasher.combine(identifier)
             hasher.combine(constraints)
-            return hasher.finalize()
         }
     }
 
@@ -1310,23 +1221,16 @@ public class Expression: AbstractSyntaxTreeNode {
                           typ.makeIndentedDescription(depth: depth+1))
         }
         
-        public static func ==(lhs: PointerType, rhs: PointerType) -> Bool {
-            lhs.isEqual(rhs)
-        }
-        
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? PointerType else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard typ == rhs.typ else { return false }
             return true
         }
         
-        public override var hash: Int {
-            var hasher = Hasher()
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
             hasher.combine(typ)
-            return hasher.finalize()
         }
     }
 
@@ -1363,23 +1267,16 @@ public class Expression: AbstractSyntaxTreeNode {
                           typ.makeIndentedDescription(depth: depth+1))
         }
         
-        public static func ==(lhs: ConstType, rhs: ConstType) -> Bool {
-            lhs.isEqual(rhs)
-        }
-        
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? ConstType else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard typ == rhs.typ else { return false }
             return true
         }
         
-        public override var hash: Int {
-            var hasher = Hasher()
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
             hasher.combine(typ)
-            return hasher.finalize()
         }
     }
     
@@ -1417,23 +1314,16 @@ public class Expression: AbstractSyntaxTreeNode {
             return result
         }
         
-        public static func ==(lhs: MutableType, rhs: MutableType) -> Bool {
-            lhs.isEqual(rhs)
-        }
-        
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? MutableType else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard typ == rhs.typ else { return false }
             return true
         }
         
-        public override var hash: Int {
-            var hasher = Hasher()
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
             hasher.combine(typ)
-            return hasher.finalize()
         }
     }
     
@@ -1486,23 +1376,16 @@ public class Expression: AbstractSyntaxTreeNode {
             return result
         }
         
-        public static func ==(lhs: UnionType, rhs: UnionType) -> Bool {
-            lhs.isEqual(rhs)
-        }
-        
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? UnionType else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard members == rhs.members else { return false }
             return true
         }
         
-        public override var hash: Int {
-            var hasher = Hasher()
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
             hasher.combine(members)
-            return hasher.finalize()
         }
     }
 
@@ -1581,25 +1464,18 @@ public class Expression: AbstractSyntaxTreeNode {
             return result
         }
         
-        public static func ==(lhs: StructInitializer, rhs: StructInitializer) -> Bool {
-            lhs.isEqual(rhs)
-        }
-        
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? StructInitializer else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard expr == rhs.expr else { return false }
             guard arguments == rhs.arguments else { return false }
             return true
         }
         
-        public override var hash: Int {
-            var hasher = Hasher()
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
             hasher.combine(expr)
             hasher.combine(arguments)
-            return hasher.finalize()
         }
     }
     
@@ -1623,20 +1499,16 @@ public class Expression: AbstractSyntaxTreeNode {
                           id: id)
         }
         
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? LiteralString else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard value == rhs.value else { return false }
             return true
         }
         
-        public override var hash: Int {
-            var hasher = Hasher()
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
             hasher.combine(value)
-            hasher.combine(super.hash)
-            return hasher.finalize()
         }
         
         open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
@@ -1679,23 +1551,16 @@ public class Expression: AbstractSyntaxTreeNode {
                           expr.makeIndentedDescription(depth: depth + 1))
         }
         
-        public static func ==(lhs: TypeOf, rhs: TypeOf) -> Bool {
-            lhs.isEqual(rhs)
-        }
-        
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? TypeOf else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard expr == rhs.expr else { return false }
             return true
         }
         
-        public override var hash: Int {
-            var hasher = Hasher()
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
             hasher.combine(expr)
-            return hasher.finalize()
         }
     }
     
@@ -1732,23 +1597,16 @@ public class Expression: AbstractSyntaxTreeNode {
                           expr.makeIndentedDescription(depth: depth + 1))
         }
         
-        public static func ==(lhs: SizeOf, rhs: SizeOf) -> Bool {
-            lhs.isEqual(rhs)
-        }
-        
-        public override func isEqual(_ rhs: Any?) -> Bool {
-            guard rhs != nil else { return false }
-            guard type(of: rhs!) == type(of: self) else { return false }
+        public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
             guard super.isEqual(rhs) else { return false }
-            guard let rhs = rhs as? SizeOf else { return false }
+            guard let rhs = rhs as? Self else { return false }
             guard expr == rhs.expr else { return false }
             return true
         }
         
-        public override var hash: Int {
-            var hasher = Hasher()
+        public override func hash(into hasher: inout Hasher) {
+            super.hash(into: &hasher)
             hasher.combine(expr)
-            return hasher.finalize()
         }
     }
 }

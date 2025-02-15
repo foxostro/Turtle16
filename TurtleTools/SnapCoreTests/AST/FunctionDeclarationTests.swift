@@ -78,10 +78,10 @@ final class FunctionDeclarationTests: XCTestCase {
         XCTAssertEqual(FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                            functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
                                            argumentNames: [],
-                                           body: Block(children: [Expression.LiteralInt(1)])).hash,
+                                           body: Block(children: [Expression.LiteralInt(1)])).hashValue,
                        FunctionDeclaration(identifier: Expression.Identifier("foo"),
                                            functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
                                            argumentNames: [],
-                                           body: Block(children: [Expression.LiteralInt(1)])).hash)
+                                           body: Block(children: [Expression.LiteralInt(1)])).hashValue)
     }
 }

@@ -9,7 +9,19 @@
 /// Abstract base class for a node in the AST manipulated by the compiler
 /// Each node is intended to be an immutable object. Rewriting the tree requires
 /// creating new nodes and a new tree.
-open class AbstractSyntaxTreeNode : NSObject {
+open class AbstractSyntaxTreeNode: Equatable, Hashable, CustomStringConvertible {
+    /// Behaviors that may be adopted when determining equality of two AST nodes
+    public enum EqualityMode {
+        /// Consider all fields of the two AST nodes
+        case defaultEqualityMode
+        
+        /// Ignore source anchors on the two AST nodes
+        case ignoreSourceAnchors
+    }
+    
+    /// Control the behavior when determining equality of two AST nodes
+    public static var equalityMode: EqualityMode = .defaultEqualityMode
+    
     /// Source anchor connects the AST node to an exercept of the original
     /// source code from which it was derived. This is useful for producing
     /// diagnostic messages for the user.
@@ -31,14 +43,6 @@ open class AbstractSyntaxTreeNode : NSObject {
             self.val = CountingID.next()
         }
         
-        public static func ==(lhs: CountingID, rhs: CountingID) -> Bool {
-            lhs.val == rhs.val
-        }
-        
-        public func hash(into hasher: inout Hasher) {
-            hasher.combine(val)
-        }
-        
         public var description: String {
             "ID(\(val))"
         }
@@ -58,37 +62,29 @@ open class AbstractSyntaxTreeNode : NSObject {
         fatalError("unimplemented")
     }
     
-    public static func ==(lhs: AbstractSyntaxTreeNode, rhs: AbstractSyntaxTreeNode) -> Bool {
+    public static func == (lhs: AbstractSyntaxTreeNode, rhs: AbstractSyntaxTreeNode) -> Bool {
         lhs.isEqual(rhs)
     }
     
-    open override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else {
-            return false
-        }
-        guard type(of: rhs!) == type(of: self) else {
-            return false
-        }
-        guard let rhs = rhs as? AbstractSyntaxTreeNode else {
-            return false
-        }
-        guard sourceAnchor == rhs.sourceAnchor else {
-            if let _ = NSClassFromString("XCTest") {
-                print("lhs sourceAnchor: \(String(describing: sourceAnchor))")
-                print("rhs sourceAnchor: \(String(describing: rhs.sourceAnchor))")
+    open func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
+        guard type(of: self) == type(of: rhs) else { return false }
+        if AbstractSyntaxTreeNode.equalityMode != .ignoreSourceAnchors {
+            guard sourceAnchor == rhs.sourceAnchor else {
+                if let _ = NSClassFromString("XCTest") {
+                    print("lhs sourceAnchor: \(String(describing: sourceAnchor))")
+                    print("rhs sourceAnchor: \(String(describing: rhs.sourceAnchor))")
+                }
+                return false
             }
-            return false
         }
         return true
     }
     
-    open override var hash: Int {
-        var hasher = Hasher()
+    open func hash(into hasher: inout Hasher) {
         hasher.combine(sourceAnchor)
-        return hasher.finalize()
     }
     
-    public override var description: String {
+    public var description: String {
         makeIndentedDescription(depth: 0)
     }
     

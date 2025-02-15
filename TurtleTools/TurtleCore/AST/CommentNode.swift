@@ -7,7 +7,7 @@
 //
 
 // Sometimes, such as during source to source translation, we need to represent a comment in the AST.
-public class CommentNode: AbstractSyntaxTreeNode {
+public final class CommentNode: AbstractSyntaxTreeNode {
     public let string: String
     
     public required init(sourceAnchor: SourceAnchor? = nil,
@@ -21,18 +21,15 @@ public class CommentNode: AbstractSyntaxTreeNode {
         CommentNode(sourceAnchor: sourceAnchor, string: string)
     }
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
-        guard let rhs = rhs as? CommentNode else { return false }
+    public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
+        guard super.isEqual(rhs) else { return false }
+        guard let rhs = rhs as? Self else { return false }
         guard string == rhs.string else { return false }
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
+    public override func hash(into hasher: inout Hasher) {
+        super.hash(into: &hasher)
         hasher.combine(string)
-        hasher.combine(super.hash)
-        return hasher.finalize()
     }
 }

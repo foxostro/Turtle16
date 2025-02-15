@@ -118,10 +118,4 @@ public struct SourceAnchor: Hashable, CustomStringConvertible, CustomDebugString
         }
         return [self]
     }
-    
-    public static func ==(lhs: SourceAnchor, rhs: SourceAnchor) -> Bool {
-        guard lhs.text == rhs.text else { return false }
-        guard lhs.range == rhs.range else { return false }
-        return true
-    }
 }

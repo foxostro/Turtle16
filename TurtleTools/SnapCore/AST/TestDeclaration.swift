@@ -8,7 +8,8 @@
 
 import TurtleCore
 
-public class TestDeclaration: AbstractSyntaxTreeNode {
+/// Declare a unit test which is only run when the program is built for testing
+public final class TestDeclaration: AbstractSyntaxTreeNode {
     public let name: String
     public let body: Block
     
@@ -35,22 +36,18 @@ public class TestDeclaration: AbstractSyntaxTreeNode {
                         id: id)
     }
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
+    public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
-        guard let rhs = rhs as? TestDeclaration else { return false }
+        guard let rhs = rhs as? Self else { return false }
         guard name == rhs.name else { return false }
         guard body == rhs.body else { return false }
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
+    public override func hash(into hasher: inout Hasher) {
+        super.hash(into: &hasher)
         hasher.combine(name)
         hasher.combine(body)
-        hasher.combine(super.hash)
-        return hasher.finalize()
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {

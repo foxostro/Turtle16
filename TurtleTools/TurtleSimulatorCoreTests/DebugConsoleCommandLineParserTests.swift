@@ -11,6 +11,14 @@ import TurtleSimulatorCore
 import TurtleCore
 
 final class DebugConsoleCommandLineParserTests: XCTestCase {
+    override func setUp() {
+        AbstractSyntaxTreeNode.equalityMode = .ignoreSourceAnchors
+    }
+    
+    override func tearDown() {
+        AbstractSyntaxTreeNode.equalityMode = .defaultEqualityMode
+    }
+    
     func parse(_ text: String) -> DebugConsoleCommandLineParser {
         let tokenizer = DebugConsoleCommandLineLexer(text)
         tokenizer.scanTokens()

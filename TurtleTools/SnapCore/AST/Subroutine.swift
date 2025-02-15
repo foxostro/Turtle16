@@ -8,7 +8,9 @@
 
 import TurtleCore
 
-public class Subroutine: AbstractSyntaxTreeNode {
+/// A subroutine is a low-level procedure abstraction, lower than the function
+/// abstraction. A function is lowered to a subroutine.
+public final class Subroutine: AbstractSyntaxTreeNode {
     public let identifier: String
     public let children: [AbstractSyntaxTreeNode]
     
@@ -35,22 +37,18 @@ public class Subroutine: AbstractSyntaxTreeNode {
                    id: id)
     }
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
+    public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
-        guard let rhs = rhs as? Subroutine else { return false }
+        guard let rhs = rhs as? Self else { return false }
         guard identifier == rhs.identifier else { return false }
         guard children == rhs.children else { return false }
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
+    public override func hash(into hasher: inout Hasher) {
+        super.hash(into: &hasher)
         hasher.combine(identifier)
         hasher.combine(children)
-        hasher.combine(super.hash)
-        return hasher.finalize()
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {

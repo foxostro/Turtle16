@@ -11,6 +11,14 @@ import TurtleCore
 import TurtleSimulatorCore
 
 final class AssemblerParserTests: XCTestCase {
+    override func setUp() {
+        AbstractSyntaxTreeNode.equalityMode = .ignoreSourceAnchors
+    }
+    
+    override func tearDown() {
+        AbstractSyntaxTreeNode.equalityMode = .defaultEqualityMode
+    }
+    
     func parse(_ text: String) -> AssemblerParser {
         let tokenizer = AssemblerLexer(text)
         tokenizer.scanTokens()

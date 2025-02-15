@@ -8,7 +8,8 @@
 
 import TurtleCore
 
-public class StructDeclaration: AbstractSyntaxTreeNode {
+/// Declare a new struct type
+public final class StructDeclaration: AbstractSyntaxTreeNode {
     public struct Member: Hashable, CustomStringConvertible {
         public let name: String
         public let memberType: Expression
@@ -144,11 +145,9 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
                           id: ID())
     }
     
-    public override func isEqual(_ rhs: Any?) -> Bool {
-        guard rhs != nil else { return false }
-        guard type(of: rhs!) == type(of: self) else { return false }
+    public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
         guard super.isEqual(rhs) else { return false }
-        guard let rhs = rhs as? StructDeclaration else { return false }
+        guard let rhs = rhs as? Self else { return false }
         guard identifier == rhs.identifier else { return false }
         guard typeArguments == rhs.typeArguments else { return false }
         guard members == rhs.members else { return false }
@@ -158,16 +157,14 @@ public class StructDeclaration: AbstractSyntaxTreeNode {
         return true
     }
     
-    public override var hash: Int {
-        var hasher = Hasher()
+    public override func hash(into hasher: inout Hasher) {
+        super.hash(into: &hasher)
         hasher.combine(identifier)
         hasher.combine(typeArguments)
         hasher.combine(members)
         hasher.combine(visibility)
         hasher.combine(isConst)
         hasher.combine(associatedTraitType)
-        hasher.combine(super.hash)
-        return hasher.finalize()
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {

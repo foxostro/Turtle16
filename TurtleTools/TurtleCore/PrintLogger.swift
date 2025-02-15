@@ -6,7 +6,9 @@
 //  Copyright © 2022 Andrew Fox. All rights reserved.
 //
 
-public class PrintLogger: NSObject, Logger {
+public class PrintLogger: Logger {
+    public init() {}
+    
     public func append(_ format: String, _ args: CVarArg...) {
         let message = String(format:format, arguments:args)
         print(message, terminator: "")

@@ -6,7 +6,7 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-open class Parser: NSObject {
+open class Parser {
     public let lineMapper: SourceLineRangeMapper!
     public var tokens: [Token] = []
     public private(set) var previous: Token? = nil

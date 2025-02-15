@@ -6,7 +6,7 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-public class ConsoleLogger: NSObject, Logger {
+public class ConsoleLogger: Logger {
     public func append(_ format: String, _ args: CVarArg...) {
         let message = String(format:format, arguments:args)
         NSLog(message)

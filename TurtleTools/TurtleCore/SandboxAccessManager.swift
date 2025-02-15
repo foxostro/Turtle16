@@ -12,7 +12,7 @@ public protocol SandboxAccessManager {
     func requestAccess(url: URL?)
 }
 
-public class ConcreteSandboxAccessManager: NSObject, SandboxAccessManager {
+public class ConcreteSandboxAccessManager: SandboxAccessManager {
     let kBookmarksKey = "bookmarks"
     var bookmarks: [URL : Data] = [:]
     
@@ -22,7 +22,7 @@ public class ConcreteSandboxAccessManager: NSObject, SandboxAccessManager {
         }
     }
     
-    public override init() {
+    public init() {
         do {
             let maybeBookmarksData = UserDefaults.standard.object(forKey: kBookmarksKey) as? Data
             if let bookmarksData = maybeBookmarksData {

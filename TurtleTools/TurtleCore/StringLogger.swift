@@ -8,8 +8,10 @@
 
 import Foundation
 
-public class StringLogger: NSObject, Logger {
+public class StringLogger: Logger {
     public var stringValue = ""
+    
+    public init() {}
     
     public func append(_ format: String, _ args: CVarArg...) {
         let message = String(format:format, arguments:args)

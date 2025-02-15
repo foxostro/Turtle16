@@ -11,7 +11,7 @@ public enum AssemblerCommandLineParserError: Error, Equatable {
     case unknownOption(String)
 }
 
-public final class AssemblerCommandLineArgumentParser: NSObject {
+public final class AssemblerCommandLineArgumentParser {
     var args: [String]
     public enum Option: Equatable {
         case printHelp

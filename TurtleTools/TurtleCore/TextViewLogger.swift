@@ -8,7 +8,7 @@
 
 import Cocoa
 
-public class TextViewLogger: NSObject, Logger {
+public class TextViewLogger: Logger {
     let textView:NSTextView
     let viewUpdateQueue:ThrottledQueue
     let queue = DispatchQueue(label: "com.foxostro.TextViewLogger")

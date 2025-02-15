@@ -6,7 +6,7 @@
 //  Copyright © 2019 Andrew Fox. All rights reserved.
 //
 
-open class Lexer: NSObject {
+open class Lexer {
     public let string: String
     private var position: String.Index
     public var isAtEnd:Bool {
@@ -15,7 +15,7 @@ open class Lexer: NSObject {
     public let lineMapper: SourceLineRangeMapper
     public private(set) var tokens: [Token] = []
     
-    public class Rule : NSObject {
+    public struct Rule {
         public let regex: NSRegularExpression?
         public let emit: (SourceAnchor) -> Token?
         public init(pattern: String, options: NSRegularExpression.Options = [], emit: @escaping (SourceAnchor) -> Token?) {

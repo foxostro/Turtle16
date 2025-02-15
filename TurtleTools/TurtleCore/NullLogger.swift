@@ -6,6 +6,6 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-public class NullLogger: NSObject, Logger {
+public class NullLogger: Logger {
     public func append(_ format: String, _ args: CVarArg...) {}
 }

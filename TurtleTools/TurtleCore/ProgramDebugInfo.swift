@@ -6,7 +6,7 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-open class ProgramDebugInfo: NSObject {
+open class ProgramDebugInfo {
     public var lineMapper: SourceLineRangeMapper!
     private var mapProgramCounterToSource: [SourceAnchor?] = []
     

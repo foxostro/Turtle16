@@ -27,7 +27,7 @@ private func callback(
     return noErr;
 }
 
-open class AudioRenderer: NSObject {
+open class AudioRenderer {
     public let sampleRate = 48000.0
     public let lock = NSLock()
     var audioComponent: AudioComponentInstance!

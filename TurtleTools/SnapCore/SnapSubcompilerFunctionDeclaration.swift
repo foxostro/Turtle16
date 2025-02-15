@@ -49,7 +49,7 @@ public struct SnapSubcompilerFunctionDeclaration {
         node: FunctionDeclaration
     ) throws {
         let name = node.identifier.identifier
-        let typ = Expression.GenericFunctionType(
+        let typ = GenericFunctionType(
             template: node,
             enclosingImplId: enclosingImplId)
         let symbol = Symbol(
@@ -101,12 +101,12 @@ public struct SnapSubcompilerFunctionDeclaration {
         
         let node1 = node0.withBody(body)
         
-        let node2 = node1.withFunctionType(Expression.FunctionType(
+        let node2 = node1.withFunctionType(FunctionType(
             sourceAnchor: node1.functionType.sourceAnchor,
             name: functionType.name,
-            returnType: Expression.PrimitiveType(functionType.returnType),
+            returnType: PrimitiveType(functionType.returnType),
             arguments: functionType.arguments.map{
-                Expression.PrimitiveType($0)
+                PrimitiveType($0)
             }))
         
         functionType.ast = node2

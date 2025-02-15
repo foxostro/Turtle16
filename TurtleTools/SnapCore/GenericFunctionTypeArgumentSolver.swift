@@ -13,15 +13,15 @@ public struct GenericFunctionTypeArgumentSolver {
     public init() {}
     
     public func inferTypeArguments(
-        call expr: Expression.Call,
-        genericFunctionType generic: Expression.GenericFunctionType,
+        call expr: Call,
+        genericFunctionType generic: GenericFunctionType,
         symbols: SymbolTable
     ) throws -> [SymbolType] {
         guard expr.arguments.count == generic.arguments.count else {
             throw failedToInferError(expr, generic)
         }
         
-        var substitutions: [Expression.Identifier : [Expression]] = [:]
+        var substitutions: [Identifier : [Expression]] = [:]
         for typeArgument in generic.typeArguments {
             for pair in zip(expr.arguments, generic.arguments) {
                 if let inferredType = inferTypeArgument(concreteArgument: pair.0,
@@ -57,7 +57,7 @@ public struct GenericFunctionTypeArgumentSolver {
     public func inferTypeArgument(
         concreteArgument: Expression,
         genericArgument: Expression,
-        solvingFor typeArgument: Expression.Identifier
+        solvingFor typeArgument: Identifier
     ) -> Expression? {
         guard let expr = inferTypeArgumentInner(
             concreteArgument: concreteArgument,
@@ -65,58 +65,58 @@ public struct GenericFunctionTypeArgumentSolver {
             solvingFor: typeArgument) else {
             return nil
         }
-        return Expression.TypeOf(expr)
+        return TypeOf(expr)
     }
     
     private func inferTypeArgumentInner(
         concreteArgument: Expression,
         genericArgument: Expression,
-        solvingFor typeArgument: Expression.Identifier
+        solvingFor typeArgument: Identifier
     ) -> Expression? {
         switch genericArgument {
-        case let expr as Expression.Identifier:
+        case let expr as Identifier:
             if expr.identifier == typeArgument.identifier {
                 return concreteArgument
             }
             
-        case let expr as Expression.ConstType:
+        case let expr as ConstType:
             if let r = inferTypeArgumentInner(
                 concreteArgument: concreteArgument,
                 genericArgument: expr.typ,
                 solvingFor: typeArgument) {
-                return Expression.ConstType(r)
+                return ConstType(r)
             }
             
-        case let expr as Expression.MutableType:
+        case let expr as MutableType:
             if let r = inferTypeArgumentInner(
                 concreteArgument: concreteArgument,
                 genericArgument: expr.typ,
                 solvingFor: typeArgument) {
-                return Expression.MutableType(r)
+                return MutableType(r)
             }
             
-        case let expr as Expression.PointerType:
+        case let expr as PointerType:
             if let r = inferTypeArgumentInner(
                 concreteArgument: concreteArgument,
                 genericArgument: expr.typ,
                 solvingFor: typeArgument) {
-                return Expression.PointerType(r)
+                return PointerType(r)
             }
             
-        case let expr as Expression.DynamicArrayType:
+        case let expr as DynamicArrayType:
             if let r = inferTypeArgumentInner(
                 concreteArgument: concreteArgument,
                 genericArgument: expr.elementType,
                 solvingFor: typeArgument) {
-                return Expression.DynamicArrayType(r)
+                return DynamicArrayType(r)
             }
             
-        case let expr as Expression.ArrayType:
+        case let expr as ArrayType:
             if let r = inferTypeArgumentInner(
                 concreteArgument: concreteArgument,
                 genericArgument: expr.elementType,
                 solvingFor: typeArgument) {
-                return Expression.ArrayType(count: expr.count, elementType: r)
+                return ArrayType(count: expr.count, elementType: r)
             }
 
         default:
@@ -126,7 +126,7 @@ public struct GenericFunctionTypeArgumentSolver {
         return nil
     }
     
-    private func failedToInferError(_ expr: Expression.Call, _ generic: Expression.GenericFunctionType) -> CompilerError {
+    private func failedToInferError(_ expr: Call, _ generic: GenericFunctionType) -> CompilerError {
         CompilerError(
             sourceAnchor: expr.sourceAnchor,
             message: "failed to infer the type arguments of the generic function `\(generic.description)' in a call expression")

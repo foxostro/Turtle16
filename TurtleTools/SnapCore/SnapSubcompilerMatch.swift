@@ -64,7 +64,7 @@ public struct SnapSubcompilerMatch {
         // Generate an AST for if-else tree to evaluate the clauses.
         var stmts: [AbstractSyntaxTreeNode] = []
         if !match.clauses.isEmpty {
-            stmts.append(VarDeclaration(identifier: Expression.Identifier("__index"),
+            stmts.append(VarDeclaration(identifier: Identifier("__index"),
                                         explicitType: nil,
                                         expression: match.expr,
                                         storage: .automaticStorage,
@@ -89,7 +89,7 @@ public struct SnapSubcompilerMatch {
         assert(!clauses.isEmpty)
         
         let clause = clauses.last!
-        let index = Expression.Identifier("__index")
+        let index = Identifier("__index")
         
         if clauses.count == 1 {
             let clauseElseBlock: Block?
@@ -103,12 +103,12 @@ public struct SnapSubcompilerMatch {
             
             let outerSymbols = SymbolTable(parent: symbols)
             
-            return If(condition: Expression.Is(expr: index, testType: clause.valueType),
+            return If(condition: Is(expr: index, testType: clause.valueType),
                       then: Block(symbols: outerSymbols,
                                   children: [
                         VarDeclaration(identifier: clause.valueIdentifier,
                                        explicitType: nil,
-                                       expression: Expression.As(expr: index, targetType: clause.valueType),
+                                       expression: As(expr: index, targetType: clause.valueType),
                                        storage: .automaticStorage,
                                        isMutable: false),
                                     Block(sourceAnchor: clause.block.sourceAnchor,
@@ -118,12 +118,12 @@ public struct SnapSubcompilerMatch {
                       else: clauseElseBlock)
         } else {
             let outerSymbols = SymbolTable(parent: symbols)
-            return If(condition: Expression.Is(expr: index, testType: clause.valueType),
+            return If(condition: Is(expr: index, testType: clause.valueType),
                       then: Block(symbols: outerSymbols,
                                   children: [
                         VarDeclaration(identifier: clause.valueIdentifier,
                                        explicitType: nil,
-                                       expression: Expression.As(expr: index, targetType: clause.valueType),
+                                       expression: As(expr: index, targetType: clause.valueType),
                                        storage: .automaticStorage,
                                        isMutable: false),
                                     Block(sourceAnchor: clause.block.sourceAnchor,

@@ -113,127 +113,127 @@ public final class CompilerPassEraseSourceAnchor: CompilerPass {
         try super.visit(expressionStatement: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(unsupported node: Expression.UnsupportedExpression) throws -> Expression? {
+    public override func visit(unsupported node: UnsupportedExpression) throws -> Expression? {
         try super.visit(unsupported: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(literalInt node: Expression.LiteralInt) throws -> Expression? {
+    public override func visit(literalInt node: LiteralInt) throws -> Expression? {
         try super.visit(literalInt: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(literalBoolean node: Expression.LiteralBool) throws -> Expression? {
+    public override func visit(literalBoolean node: LiteralBool) throws -> Expression? {
         try super.visit(literalBoolean: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(literalArray expr: Expression.LiteralArray) throws -> Expression? {
+    public override func visit(literalArray expr: LiteralArray) throws -> Expression? {
         try super.visit(literalArray: expr)?.withSourceAnchor(nil)
     }
     
-    public override func visit(literalString expr: Expression.LiteralString) throws -> Expression? {
+    public override func visit(literalString expr: LiteralString) throws -> Expression? {
         try super.visit(literalString: expr)?.withSourceAnchor(nil)
     }
     
-    public override func visit(identifier node: Expression.Identifier) throws -> Expression? {
+    public override func visit(identifier node: Identifier) throws -> Expression? {
         try super.visit(identifier: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(as expr: Expression.As) throws -> Expression? {
+    public override func visit(as expr: As) throws -> Expression? {
         try super.visit(as: expr)?.withSourceAnchor(nil)
     }
     
-    public override func visit(bitcast node: Expression.Bitcast) throws -> Expression? {
+    public override func visit(bitcast node: Bitcast) throws -> Expression? {
         try super.visit(bitcast: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(unary node: Expression.Unary) throws -> Expression? {
+    public override func visit(unary node: Unary) throws -> Expression? {
         try super.visit(unary: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(binary node: Expression.Binary) throws -> Expression? {
+    public override func visit(binary node: Binary) throws -> Expression? {
         try super.visit(binary: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(is node: Expression.Is) throws -> Expression? {
+    public override func visit(is node: Is) throws -> Expression? {
         try super.visit(is: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(initialAssignment node: Expression.InitialAssignment) throws -> Expression? {
+    public override func visit(initialAssignment node: InitialAssignment) throws -> Expression? {
         try super.visit(initialAssignment: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(assignment node: Expression.Assignment) throws -> Expression? {
+    public override func visit(assignment node: Assignment) throws -> Expression? {
         try super.visit(assignment: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(subscript node: Expression.Subscript) throws -> Expression? {
+    public override func visit(subscript node: Subscript) throws -> Expression? {
         try super.visit(subscript: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(get node: Expression.Get) throws -> Expression? {
+    public override func visit(get node: Get) throws -> Expression? {
         try super.visit(get: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(structInitializer node: Expression.StructInitializer) throws -> Expression? {
+    public override func visit(structInitializer node: StructInitializer) throws -> Expression? {
         try super.visit(structInitializer: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(call node: Expression.Call) throws -> Expression? {
+    public override func visit(call node: Call) throws -> Expression? {
         try super.visit(call: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(typeof node: Expression.TypeOf) throws -> Expression? {
+    public override func visit(typeof node: TypeOf) throws -> Expression? {
         try super.visit(typeof: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(sizeof node: Expression.SizeOf) throws -> Expression? {
+    public override func visit(sizeof node: SizeOf) throws -> Expression? {
         try super.visit(sizeof: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(genericTypeApplication expr: Expression.GenericTypeApplication) throws -> Expression? {
+    public override func visit(genericTypeApplication expr: GenericTypeApplication) throws -> Expression? {
         try super.visit(genericTypeApplication: expr)?.withSourceAnchor(nil)
     }
     
-    public override func visit(genericTypeArgument node: Expression.GenericTypeArgument) throws -> Expression? {
+    public override func visit(genericTypeArgument node: GenericTypeArgument) throws -> Expression? {
         try super.visit(genericTypeArgument: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(eseq node: Expression.Eseq) throws -> Expression? {
+    public override func visit(eseq node: Eseq) throws -> Expression? {
         try super.visit(eseq: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(primitiveType node: Expression.PrimitiveType) throws -> Expression? {
+    public override func visit(primitiveType node: PrimitiveType) throws -> Expression? {
         try super.visit(primitiveType: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(pointerType node: Expression.PointerType) throws -> Expression? {
+    public override func visit(pointerType node: PointerType) throws -> Expression? {
         try super.visit(pointerType: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(constType node: Expression.ConstType) throws -> Expression? {
+    public override func visit(constType node: ConstType) throws -> Expression? {
         try super.visit(constType: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(mutableType node: Expression.MutableType) throws -> Expression? {
+    public override func visit(mutableType node: MutableType) throws -> Expression? {
         try super.visit(mutableType: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(unionType node: Expression.UnionType) throws -> Expression? {
+    public override func visit(unionType node: UnionType) throws -> Expression? {
         try super.visit(unionType: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(dynamicArrayType node: Expression.DynamicArrayType) throws -> Expression? {
+    public override func visit(dynamicArrayType node: DynamicArrayType) throws -> Expression? {
         try super.visit(dynamicArrayType: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(arrayType node: Expression.ArrayType) throws -> Expression? {
+    public override func visit(arrayType node: ArrayType) throws -> Expression? {
         try super.visit(arrayType: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(functionType node: Expression.FunctionType) throws -> Expression? {
+    public override func visit(functionType node: FunctionType) throws -> Expression? {
         try super.visit(functionType: node)?.withSourceAnchor(nil)
     }
     
-    public override func visit(genericFunctionType node: Expression.GenericFunctionType) throws -> Expression? {
+    public override func visit(genericFunctionType node: GenericFunctionType) throws -> Expression? {
         try super.visit(genericFunctionType: node)?.withSourceAnchor(nil)
     }
 }

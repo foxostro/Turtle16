@@ -34,20 +34,20 @@ public final class SnapASTTransformerTestDeclaration: CompilerPass {
                 testDeclaration.body.symbols.parent = bodySymbols
                 let body = Block(symbols: bodySymbols, children: [
                     testDeclaration.body,
-                    Expression.Call(callee: Expression.Identifier("__puts"), arguments: [Expression.LiteralString("passed\n")])
+                    Call(callee: Identifier("__puts"), arguments: [LiteralString("passed\n")])
                 ])
                 let testRunnerMain = FunctionDeclaration(
-                    identifier: Expression.Identifier(kTestMainFunctionName),
-                    functionType: Expression.FunctionType(
+                    identifier: Identifier(kTestMainFunctionName),
+                    functionType: FunctionType(
                         name: kTestMainFunctionName,
-                        returnType: Expression.PrimitiveType(.void),
+                        returnType: PrimitiveType(.void),
                         arguments: []),
                     argumentNames: [],
                     body: body,
                     symbols: fnSymbols)
                 children += [
                     testRunnerMain,
-                    Expression.Call(callee: Expression.Identifier(kTestMainFunctionName), arguments: [])
+                    Call(callee: Identifier(kTestMainFunctionName), arguments: [])
                 ]
             } else {
                 let hasMain = result.children.first(where: {
@@ -59,7 +59,7 @@ public final class SnapASTTransformerTestDeclaration: CompilerPass {
                 }) != nil
                 if hasMain {
                     children += [
-                        Expression.Call(callee: Expression.Identifier(kMainFunctionName), arguments: [])
+                        Call(callee: Identifier(kMainFunctionName), arguments: [])
                     ]
                 }
             }

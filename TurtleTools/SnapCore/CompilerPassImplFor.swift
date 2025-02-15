@@ -14,16 +14,6 @@ import TurtleCore
 /// and an appropriate vtable declaration. Traits are erased and rewritten into
 /// direct manipulation of trait-objects.
 public final class CompilerPassImplFor: CompilerPassWithDeclScan {
-    fileprivate typealias Assignment = Expression.Assignment
-    fileprivate typealias Bitcast = Expression.Bitcast
-    fileprivate typealias Get = Expression.Get
-    fileprivate typealias GenericTypeArgument = Expression.GenericTypeArgument
-    fileprivate typealias Identifier = Expression.Identifier
-    fileprivate typealias PointerType = Expression.PointerType
-    fileprivate typealias PrimitiveType = Expression.PrimitiveType
-    fileprivate typealias StructInitializer = Expression.StructInitializer
-    fileprivate typealias Unary = Expression.Unary
-    
     fileprivate var pendingInsertions: [AbstractSyntaxTreeNode.ID : [(String, VarDeclaration)]] = [:]
     
     fileprivate var typeChecker: RvalueExpressionTypeChecker {
@@ -141,7 +131,7 @@ public final class CompilerPassImplFor: CompilerPassWithDeclScan {
     }
     
     /// All references to trait types are rewritten to direct manipulation of trait objects
-    public override func visit(identifier node0: Expression.Identifier) throws -> Expression? {
+    public override func visit(identifier node0: Identifier) throws -> Expression? {
         guard let typ = symbols?.maybeResolveType(identifier: node0.identifier),
               let traitType = typ.maybeUnwrapTraitType() else {
             return node0
@@ -168,7 +158,7 @@ public final class CompilerPassImplFor: CompilerPassWithDeclScan {
     }
     
     /// InitialAssignment is rewritten to populate a trait-object
-    public override func visit(initialAssignment node0: Expression.InitialAssignment) throws -> Expression? {
+    public override func visit(initialAssignment node0: InitialAssignment) throws -> Expression? {
         guard let traitType = try maybeLookupCorrespondingTraitType(expr: node0.lexpr),
               let rexpr1 = try convertToTraitObject(traitType, expr: node0.rexpr) else {
             return try super.visit(initialAssignment: node0)
@@ -178,7 +168,7 @@ public final class CompilerPassImplFor: CompilerPassWithDeclScan {
     }
     
     /// Assignment is rewritten to populate a trait-object
-    public override func visit(assignment node0: Expression.Assignment) throws -> Expression? {
+    public override func visit(assignment node0: Assignment) throws -> Expression? {
         guard let traitType = try maybeLookupCorrespondingTraitType(expr: node0.lexpr),
               let rexpr1 = try convertToTraitObject(traitType, expr: node0.rexpr) else {
             return try super.visit(assignment: node0)
@@ -239,7 +229,7 @@ public final class CompilerPassImplFor: CompilerPassWithDeclScan {
             arguments: [
                 StructInitializer.Argument(
                     name: "object",
-                    expr: Expression.Bitcast(
+                    expr: Bitcast(
                         sourceAnchor: expr.sourceAnchor,
                         expr: expr,
                         targetType: PointerType(PrimitiveType(.void)))),

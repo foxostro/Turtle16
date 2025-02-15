@@ -13,16 +13,16 @@ import TurtleCore
 final class SnapASTTransformerTestDeclarationTests: XCTestCase {
     func testTestDeclarationMustBeAtFileScope() {
         let original = Block(children: [
-            VarDeclaration(identifier: Expression.Identifier("foo"),
+            VarDeclaration(identifier: Identifier("foo"),
                            explicitType: nil,
-                           expression: Expression.LiteralInt(1),
+                           expression: LiteralInt(1),
                            storage: .staticStorage,
                            isMutable: true),
-            FunctionDeclaration(identifier: Expression.Identifier("puts"), functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [Expression.DynamicArrayType(Expression.PrimitiveType(.u8))]), argumentNames: ["s"], body: Block(children: [])),
+            FunctionDeclaration(identifier: Identifier("puts"), functionType: FunctionType(name: "puts", returnType: PrimitiveType(.void), arguments: [DynamicArrayType(PrimitiveType(.u8))]), argumentNames: ["s"], body: Block(children: [])),
             TestDeclaration(name: "bar", body: Block(children: [
                 TestDeclaration(name: "baz", body: Block(children: [
-                    Expression.Assignment(lexpr: Expression.Identifier("foo"),
-                                          rexpr: Expression.LiteralInt(42))
+                    Assignment(lexpr: Identifier("foo"),
+                                          rexpr: LiteralInt(42))
                 ]))
             ]))
         ])
@@ -38,7 +38,7 @@ final class SnapASTTransformerTestDeclarationTests: XCTestCase {
     
     func testTestDeclarationsMustHaveUniqueName() {
         let original = Block(children: [
-            FunctionDeclaration(identifier: Expression.Identifier("puts"), functionType: Expression.FunctionType(name: "puts", returnType: Expression.PrimitiveType(.void), arguments: [Expression.DynamicArrayType(Expression.PrimitiveType(.u8))]), argumentNames: ["s"], body: Block(children: [])),
+            FunctionDeclaration(identifier: Identifier("puts"), functionType: FunctionType(name: "puts", returnType: PrimitiveType(.void), arguments: [DynamicArrayType(PrimitiveType(.u8))]), argumentNames: ["s"], body: Block(children: [])),
             TestDeclaration(name: "bar", body: Block(children: [])),
             TestDeclaration(name: "bar", body: Block(children: []))
         ])
@@ -54,17 +54,17 @@ final class SnapASTTransformerTestDeclarationTests: XCTestCase {
     
     func testTestsDisappearWhenNotBuildingForTesting() {
         let input = Block(children: [
-            VarDeclaration(identifier: Expression.Identifier("foo"),
+            VarDeclaration(identifier: Identifier("foo"),
                            explicitType: nil,
-                           expression: Expression.LiteralInt(1),
+                           expression: LiteralInt(1),
                            storage: .staticStorage,
                            isMutable: true),
             TestDeclaration(name: "bar", body: Block(children: []))
         ])
         let expected = Block(children: [
-            VarDeclaration(identifier: Expression.Identifier("foo"),
+            VarDeclaration(identifier: Identifier("foo"),
                            explicitType: nil,
-                           expression: Expression.LiteralInt(1),
+                           expression: LiteralInt(1),
                            storage: .staticStorage,
                            isMutable: true)
         ])
@@ -78,24 +78,24 @@ final class SnapASTTransformerTestDeclarationTests: XCTestCase {
     
     func testCallMainFunctionWhenNotBuildingForTesting() {
         let input = Block(children: [
-            VarDeclaration(identifier: Expression.Identifier("foo"),
+            VarDeclaration(identifier: Identifier("foo"),
                            explicitType: nil,
-                           expression: Expression.LiteralInt(1),
+                           expression: LiteralInt(1),
                            storage: .staticStorage,
                            isMutable: true),
             TestDeclaration(name: "bar", body: Block(children: [])),
-            FunctionDeclaration(identifier: Expression.Identifier("main"), functionType: Expression.FunctionType(name: "main", returnType: Expression.PrimitiveType(.void), arguments: []), argumentNames: [], body: Block(children: []))
+            FunctionDeclaration(identifier: Identifier("main"), functionType: FunctionType(name: "main", returnType: PrimitiveType(.void), arguments: []), argumentNames: [], body: Block(children: []))
         ])
         .reconnect(parent: nil)
         
         let expected = Block(children: [
-            VarDeclaration(identifier: Expression.Identifier("foo"),
+            VarDeclaration(identifier: Identifier("foo"),
                            explicitType: nil,
-                           expression: Expression.LiteralInt(1),
+                           expression: LiteralInt(1),
                            storage: .staticStorage,
                            isMutable: true),
-            FunctionDeclaration(identifier: Expression.Identifier("main"), functionType: Expression.FunctionType(name: "main", returnType: Expression.PrimitiveType(.void), arguments: []), argumentNames: [], body: Block(children: [])),
-            Expression.Call(callee: Expression.Identifier("main"), arguments: [])
+            FunctionDeclaration(identifier: Identifier("main"), functionType: FunctionType(name: "main", returnType: PrimitiveType(.void), arguments: []), argumentNames: [], body: Block(children: [])),
+            Call(callee: Identifier("main"), arguments: [])
         ])
         .reconnect(parent: nil)
         
@@ -108,30 +108,30 @@ final class SnapASTTransformerTestDeclarationTests: XCTestCase {
     
     func testTheTestRunnerContainsTheTestBody() {
         let input = Block(children: [
-            VarDeclaration(identifier: Expression.Identifier("foo"),
+            VarDeclaration(identifier: Identifier("foo"),
                            explicitType: nil,
-                           expression: Expression.LiteralInt(1),
+                           expression: LiteralInt(1),
                            storage: .staticStorage,
                            isMutable: true),
             TestDeclaration(name: "bar", body: Block(children: [
-                Expression.Assignment(lexpr: Expression.Identifier("foo"),
-                                      rexpr: Expression.LiteralInt(42))
+                Assignment(lexpr: Identifier("foo"),
+                                      rexpr: LiteralInt(42))
             ]))
         ])
         let expected = Block(children: [
-            VarDeclaration(identifier: Expression.Identifier("foo"),
+            VarDeclaration(identifier: Identifier("foo"),
                            explicitType: nil,
-                           expression: Expression.LiteralInt(1),
+                           expression: LiteralInt(1),
                            storage: .staticStorage,
                            isMutable: true),
-            FunctionDeclaration(identifier: Expression.Identifier("__testMain"), functionType: Expression.FunctionType(name: "__testMain", returnType: Expression.PrimitiveType(.void), arguments: []), argumentNames: [], body: Block(children: [
+            FunctionDeclaration(identifier: Identifier("__testMain"), functionType: FunctionType(name: "__testMain", returnType: PrimitiveType(.void), arguments: []), argumentNames: [], body: Block(children: [
                 Block(children: [
-                    Expression.Assignment(lexpr: Expression.Identifier("foo"),
-                                          rexpr: Expression.LiteralInt(42))
+                    Assignment(lexpr: Identifier("foo"),
+                                          rexpr: LiteralInt(42))
                 ]),
-                Expression.Call(callee: Expression.Identifier("__puts"), arguments: [Expression.LiteralString("passed\n")])
+                Call(callee: Identifier("__puts"), arguments: [LiteralString("passed\n")])
             ])),
-            Expression.Call(callee: Expression.Identifier("__testMain"), arguments: [])
+            Call(callee: Identifier("__testMain"), arguments: [])
         ])
         
         let transformer = SnapASTTransformerTestDeclaration(shouldRunSpecificTest: "bar")
@@ -143,34 +143,34 @@ final class SnapASTTransformerTestDeclarationTests: XCTestCase {
     
     func testTheTestRunnerContainsTheTestBodyOfSpecificTest() {
         let input = Block(children: [
-            VarDeclaration(identifier: Expression.Identifier("foo"),
+            VarDeclaration(identifier: Identifier("foo"),
                            explicitType: nil,
-                           expression: Expression.LiteralInt(1),
+                           expression: LiteralInt(1),
                            storage: .staticStorage,
                            isMutable: true),
             TestDeclaration(name: "bar", body: Block(children: [
-                Expression.Assignment(lexpr: Expression.Identifier("foo"),
-                                      rexpr: Expression.LiteralInt(42))
+                Assignment(lexpr: Identifier("foo"),
+                                      rexpr: LiteralInt(42))
             ])),
             TestDeclaration(name: "baz", body: Block(children: [
-                Expression.Assignment(lexpr: Expression.Identifier("foo"),
-                                      rexpr: Expression.LiteralInt(41))
+                Assignment(lexpr: Identifier("foo"),
+                                      rexpr: LiteralInt(41))
             ]))
         ])
         let expected = Block(children: [
-            VarDeclaration(identifier: Expression.Identifier("foo"),
+            VarDeclaration(identifier: Identifier("foo"),
                            explicitType: nil,
-                           expression: Expression.LiteralInt(1),
+                           expression: LiteralInt(1),
                            storage: .staticStorage,
                            isMutable: true),
-            FunctionDeclaration(identifier: Expression.Identifier("__testMain"), functionType: Expression.FunctionType(name: "__testMain", returnType: Expression.PrimitiveType(.void), arguments: []), argumentNames: [], body: Block(children: [
+            FunctionDeclaration(identifier: Identifier("__testMain"), functionType: FunctionType(name: "__testMain", returnType: PrimitiveType(.void), arguments: []), argumentNames: [], body: Block(children: [
                 Block(children: [
-                    Expression.Assignment(lexpr: Expression.Identifier("foo"),
-                                          rexpr: Expression.LiteralInt(42))
+                    Assignment(lexpr: Identifier("foo"),
+                                          rexpr: LiteralInt(42))
                 ]),
-                Expression.Call(callee: Expression.Identifier("__puts"), arguments: [Expression.LiteralString("passed\n")])
+                Call(callee: Identifier("__puts"), arguments: [LiteralString("passed\n")])
             ])),
-            Expression.Call(callee: Expression.Identifier("__testMain"), arguments: [])
+            Call(callee: Identifier("__testMain"), arguments: [])
         ])
         
         let transformer = SnapASTTransformerTestDeclaration(shouldRunSpecificTest: "bar")
@@ -182,38 +182,38 @@ final class SnapASTTransformerTestDeclarationTests: XCTestCase {
     
     func testDuringTestingCallTestMainNotActualMain() {
         let input = Block(children: [
-            VarDeclaration(identifier: Expression.Identifier("foo"),
+            VarDeclaration(identifier: Identifier("foo"),
                            explicitType: nil,
-                           expression: Expression.LiteralInt(1),
+                           expression: LiteralInt(1),
                            storage: .staticStorage,
                            isMutable: true),
             TestDeclaration(name: "bar", body: Block(children: [
-                Expression.Assignment(lexpr: Expression.Identifier("foo"),
-                                      rexpr: Expression.LiteralInt(42))
+                Assignment(lexpr: Identifier("foo"),
+                                      rexpr: LiteralInt(42))
             ])),
             TestDeclaration(name: "baz", body: Block(children: [
-                Expression.Assignment(lexpr: Expression.Identifier("foo"),
-                                      rexpr: Expression.LiteralInt(41))
+                Assignment(lexpr: Identifier("foo"),
+                                      rexpr: LiteralInt(41))
             ])),
-            FunctionDeclaration(identifier: Expression.Identifier("main"), functionType: Expression.FunctionType(name: "main", returnType: Expression.PrimitiveType(.void), arguments: []), argumentNames: [], body: Block(children: []))
+            FunctionDeclaration(identifier: Identifier("main"), functionType: FunctionType(name: "main", returnType: PrimitiveType(.void), arguments: []), argumentNames: [], body: Block(children: []))
         ])
         .reconnect(parent: nil)
         
         let expected = Block(children: [
-            VarDeclaration(identifier: Expression.Identifier("foo"),
+            VarDeclaration(identifier: Identifier("foo"),
                            explicitType: nil,
-                           expression: Expression.LiteralInt(1),
+                           expression: LiteralInt(1),
                            storage: .staticStorage,
                            isMutable: true),
-            FunctionDeclaration(identifier: Expression.Identifier("main"), functionType: Expression.FunctionType(name: "main", returnType: Expression.PrimitiveType(.void), arguments: []), argumentNames: [], body: Block(children: [])),
-            FunctionDeclaration(identifier: Expression.Identifier("__testMain"), functionType: Expression.FunctionType(name: "__testMain", returnType: Expression.PrimitiveType(.void), arguments: []), argumentNames: [], body: Block(children: [
+            FunctionDeclaration(identifier: Identifier("main"), functionType: FunctionType(name: "main", returnType: PrimitiveType(.void), arguments: []), argumentNames: [], body: Block(children: [])),
+            FunctionDeclaration(identifier: Identifier("__testMain"), functionType: FunctionType(name: "__testMain", returnType: PrimitiveType(.void), arguments: []), argumentNames: [], body: Block(children: [
                 Block(children: [
-                    Expression.Assignment(lexpr: Expression.Identifier("foo"),
-                                          rexpr: Expression.LiteralInt(42))
+                    Assignment(lexpr: Identifier("foo"),
+                                          rexpr: LiteralInt(42))
                 ]),
-                Expression.Call(callee: Expression.Identifier("__puts"), arguments: [Expression.LiteralString("passed\n")])
+                Call(callee: Identifier("__puts"), arguments: [LiteralString("passed\n")])
             ])),
-            Expression.Call(callee: Expression.Identifier("__testMain"), arguments: [])
+            Call(callee: Identifier("__testMain"), arguments: [])
         ])
         .reconnect(parent: nil)
         

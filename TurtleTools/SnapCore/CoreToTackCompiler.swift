@@ -214,15 +214,15 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             throw CompilerError(sourceAnchor: expr0.sourceAnchor, message: "lvalue required")
         }
         let expr1 = switch expr0 {
-        case let node as Expression.Identifier:
+        case let node as Identifier:
             try lvalue(identifier: node)
-        case let node as Expression.Subscript:
+        case let node as Subscript:
             try lvalue(subscript: node)
-        case let node as Expression.Get:
+        case let node as Get:
             try lvalue(get: node)
-        case let node as Expression.Bitcast:
+        case let node as Bitcast:
             try lvalue(expr: node.expr)
-        case let node as Expression.GenericTypeApplication:
+        case let node as GenericTypeApplication:
             throw CompilerError(sourceAnchor: node.sourceAnchor, message: "internal compiler error: expected generics to have been erased by this point: `\(node)'")
         default:
             throw CompilerError(sourceAnchor: expr0.sourceAnchor, message: "internal compiler error: unimplemented support for expression in CoreToTackCompiler: `\(expr0)'")
@@ -231,7 +231,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         return expr2
     }
     
-    func lvalue(identifier node: Expression.Identifier) throws -> AbstractSyntaxTreeNode {
+    func lvalue(identifier node: Identifier) throws -> AbstractSyntaxTreeNode {
         let lvalueType = try typeCheck(lexpr: node)
         switch lvalueType {
         case .function(let typ):
@@ -260,7 +260,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         }
     }
     
-    func lvalue(subscript expr: Expression.Subscript) throws -> AbstractSyntaxTreeNode {
+    func lvalue(subscript expr: Subscript) throws -> AbstractSyntaxTreeNode {
         let argumentType = try typeCheck(rexpr: expr.argument)
         
         switch argumentType {
@@ -438,7 +438,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         return Seq(sourceAnchor: expr.sourceAnchor, children: children)
     }
     
-    func lvalue(slice expr: Expression.Subscript) throws -> AbstractSyntaxTreeNode {
+    func lvalue(slice expr: Subscript) throws -> AbstractSyntaxTreeNode {
         let subscriptableType = try typeCheck(rexpr: expr.subscriptable)
         switch subscriptableType {
         case .array:
@@ -452,12 +452,12 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         }
     }
     
-    func lvalue(arraySlice expr: Expression.Subscript) throws -> AbstractSyntaxTreeNode {
+    func lvalue(arraySlice expr: Subscript) throws -> AbstractSyntaxTreeNode {
         assert(isAcceptableArraySliceArgument(expr.argument))
         
         let subscriptableType = try typeCheck(rexpr: expr.subscriptable)
-        let beginExpr = Expression.Get(expr: expr.argument, member: Expression.Identifier(kRangeBegin))
-        let limitExpr = Expression.Get(expr: expr.argument, member: Expression.Identifier(kRangeLimit))
+        let beginExpr = Get(expr: expr.argument, member: Identifier(kRangeBegin))
+        let limitExpr = Get(expr: expr.argument, member: Identifier(kRangeLimit))
         let upperBound = subscriptableType.arrayCount!
         var children: [AbstractSyntaxTreeNode] = []
         
@@ -497,16 +497,16 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             if maybeBegin == nil {
                 let boundsCheck0 = If(
                     sourceAnchor: expr.sourceAnchor,
-                    condition: Expression.Binary(
+                    condition: Binary(
                         sourceAnchor: expr.sourceAnchor,
                         op: .ge,
                         left: beginExpr,
-                        right: Expression.LiteralInt(
+                        right: LiteralInt(
                             sourceAnchor: expr.sourceAnchor,
                             value: upperBound)),
-                    then: Expression.Call(
+                    then: Call(
                         sourceAnchor: expr.sourceAnchor,
-                        callee: Expression.Identifier(kOOB)))
+                        callee: Identifier(kOOB)))
                 let boundsCheck1 = try SnapSubcompilerIf().compile(
                     if: boundsCheck0,
                     symbols: symbols!)
@@ -518,16 +518,16 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             if maybeLimit == nil {
                 let boundsCheck0 = If(
                     sourceAnchor: expr.sourceAnchor,
-                    condition: Expression.Binary(
+                    condition: Binary(
                         sourceAnchor: expr.sourceAnchor,
                         op: .gt,
                         left: limitExpr,
-                        right: Expression.LiteralInt(
+                        right: LiteralInt(
                             sourceAnchor: expr.sourceAnchor,
                             value: upperBound)),
-                    then: Expression.Call(
+                    then: Call(
                         sourceAnchor: expr.sourceAnchor,
-                        callee: Expression.Identifier(
+                        callee: Identifier(
                             sourceAnchor: expr.sourceAnchor,
                             identifier: kOOB)))
                 let boundsCheck1 = try SnapSubcompilerIf().compile(
@@ -545,13 +545,13 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         let sliceType = try typeCheck(rexpr: expr)
         let elementSize = memoryLayoutStrategy.sizeof(type: sliceType.arrayElementType)
         
-        let arrayBeginExpr = Expression.Bitcast(
+        let arrayBeginExpr = Bitcast(
             sourceAnchor: expr.sourceAnchor,
-            expr: Expression.Unary(
+            expr: Unary(
                 sourceAnchor: expr.sourceAnchor,
                 op: .ampersand,
                 expression: expr.subscriptable),
-            targetType: Expression.PrimitiveType(
+            targetType: PrimitiveType(
                 sourceAnchor: expr.sourceAnchor,
                 typ: .u16))
         
@@ -561,33 +561,33 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 baseExpr = arrayBeginExpr
             }
             else {
-                baseExpr = Expression.Binary(
+                baseExpr = Binary(
                     sourceAnchor: expr.sourceAnchor,
                     op: .plus,
                     left: arrayBeginExpr,
-                    right: Expression.LiteralInt(
+                    right: LiteralInt(
                         sourceAnchor: expr.sourceAnchor,
                         value: begin * elementSize))
             }
         }
         else {
             if elementSize == 1 {
-                baseExpr = Expression.Binary(
+                baseExpr = Binary(
                     sourceAnchor: expr.sourceAnchor,
                     op: .plus,
                     left: arrayBeginExpr,
                     right: beginExpr)
             }
             else {
-                baseExpr = Expression.Binary(
+                baseExpr = Binary(
                     sourceAnchor: expr.sourceAnchor,
                     op: .plus,
                     left: arrayBeginExpr,
-                    right: Expression.Binary(
+                    right: Binary(
                         sourceAnchor: expr.sourceAnchor,
                         op: .star,
                         left: beginExpr,
-                        right: Expression.LiteralInt(
+                        right: LiteralInt(
                             sourceAnchor: expr.sourceAnchor,
                             value: elementSize)))
             }
@@ -595,31 +595,31 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         
         let countExpr: Expression
         if let begin = maybeBegin, let limit = maybeLimit {
-            countExpr = Expression.LiteralInt(
+            countExpr = LiteralInt(
                 sourceAnchor: expr.sourceAnchor,
                 value: limit - begin)
         }
         else {
-            countExpr = Expression.Binary(
+            countExpr = Binary(
                 sourceAnchor: expr.sourceAnchor,
                 op: .minus,
                 left: limitExpr,
                 right: beginExpr)
         }
         
-        let sliceExpr = Expression.StructInitializer(
+        let sliceExpr = StructInitializer(
             sourceAnchor: expr.sourceAnchor,
-            identifier: Expression.Identifier(
+            identifier: Identifier(
                 sourceAnchor: expr.sourceAnchor,
                 identifier: kSliceName),
             arguments: [
-                Expression.StructInitializer.Argument(name: kSliceBase, expr: baseExpr),
-                Expression.StructInitializer.Argument(name: kSliceCount, expr: countExpr)
+                StructInitializer.Argument(name: kSliceBase, expr: baseExpr),
+                StructInitializer.Argument(name: kSliceCount, expr: countExpr)
             ])
-        let bitcastExpr = Expression.Bitcast(
+        let bitcastExpr = Bitcast(
             sourceAnchor: expr.sourceAnchor,
             expr: sliceExpr,
-            targetType: Expression.PrimitiveType(
+            targetType: PrimitiveType(
                 sourceAnchor: expr.sourceAnchor,
                 typ: sliceType))
         let compiledNode = try rvalue(expr: bitcastExpr)
@@ -647,8 +647,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         return result
     }
     
-    func lvalue(dynamicArraySlice expr: Expression.Subscript) throws -> AbstractSyntaxTreeNode {
-        guard let range = expr.argument as? Expression.StructInitializer, range.arguments.count == 2, range.arguments[0].name == kRangeBegin, range.arguments[1].name == kRangeLimit else {
+    func lvalue(dynamicArraySlice expr: Subscript) throws -> AbstractSyntaxTreeNode {
+        guard let range = expr.argument as? StructInitializer, range.arguments.count == 2, range.arguments[0].name == kRangeBegin, range.arguments[1].name == kRangeLimit else {
             fatalError("Array slice requires the argument to be range. Semantic analysis should have caught this error at an earlier step.")
         }
         
@@ -677,29 +677,29 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         
         // Insert dynamic bounds check
         if options.isBoundsCheckEnabled {
-            let upperBoundExpr = Expression.Get(
+            let upperBoundExpr = Get(
                 sourceAnchor: expr.sourceAnchor,
-                expr: Expression.Bitcast(
+                expr: Bitcast(
                     sourceAnchor: expr.sourceAnchor,
                     expr: expr.subscriptable,
-                    targetType: Expression.Identifier(
+                    targetType: Identifier(
                         sourceAnchor: expr.sourceAnchor,
                         identifier: kSliceName)),
-                member: Expression.Identifier(
+                member: Identifier(
                     sourceAnchor: expr.sourceAnchor,
                     identifier: kSliceCount))
             
             if maybeBegin == nil {
                 let boundsCheck0 = If(
                     sourceAnchor: expr.sourceAnchor,
-                    condition: Expression.Binary(
+                    condition: Binary(
                         sourceAnchor: expr.sourceAnchor,
                         op: .ge,
                         left: beginExpr,
                         right: upperBoundExpr),
-                    then: Expression.Call(
+                    then: Call(
                         sourceAnchor: expr.sourceAnchor,
-                        callee: Expression.Identifier(
+                        callee: Identifier(
                             sourceAnchor: expr.sourceAnchor,
                             identifier: kOOB)))
                 let boundsCheck1 = try SnapSubcompilerIf().compile(
@@ -713,14 +713,14 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             if maybeLimit == nil {
                 let boundsCheck0 = If(
                     sourceAnchor: expr.sourceAnchor,
-                    condition: Expression.Binary(
+                    condition: Binary(
                         sourceAnchor: expr.sourceAnchor,
                         op: .gt,
                         left: limitExpr,
                         right: upperBoundExpr),
-                    then: Expression.Call(
+                    then: Call(
                         sourceAnchor: expr.sourceAnchor,
-                        callee: Expression.Identifier(
+                        callee: Identifier(
                             sourceAnchor: expr.sourceAnchor,
                             identifier: kOOB)))
                 let boundsCheck1 = try SnapSubcompilerIf().compile(
@@ -735,15 +735,15 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         // Compile an expression to initialize a Slice struct with populated
         // base and count fields. This involves some unsafe, platform-specific
         // bitcasts and assumptions about the memory layout.
-        let arrayBeginExpr = Expression.Get(
+        let arrayBeginExpr = Get(
             sourceAnchor: expr.sourceAnchor,
-            expr: Expression.Bitcast(
+            expr: Bitcast(
                 sourceAnchor: expr.sourceAnchor,
                 expr: expr.subscriptable,
-                targetType: Expression.PrimitiveType(
+                targetType: PrimitiveType(
                     sourceAnchor: expr.sourceAnchor,
                     typ: kSliceType)),
-            member: Expression.Identifier(
+            member: Identifier(
                 sourceAnchor: expr.sourceAnchor,
                 identifier: kSliceBase))
         let sliceType = try typeCheck(rexpr: expr)
@@ -755,33 +755,33 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 baseExpr = arrayBeginExpr
             }
             else {
-                baseExpr = Expression.Binary(
+                baseExpr = Binary(
                     sourceAnchor: expr.sourceAnchor,
                     op: .plus,
                     left: arrayBeginExpr,
-                    right: Expression.LiteralInt(
+                    right: LiteralInt(
                         sourceAnchor: expr.sourceAnchor,
                         value: begin * elementSize))
             }
         }
         else {
             if elementSize == 1 {
-                baseExpr = Expression.Binary(
+                baseExpr = Binary(
                     sourceAnchor: expr.sourceAnchor,
                     op: .plus,
                     left: arrayBeginExpr,
                     right: beginExpr)
             }
             else {
-                baseExpr = Expression.Binary(
+                baseExpr = Binary(
                     sourceAnchor: expr.sourceAnchor,
                     op: .plus,
                     left: arrayBeginExpr,
-                    right: Expression.Binary(
+                    right: Binary(
                         sourceAnchor: expr.sourceAnchor,
                         op: .star,
                         left: beginExpr,
-                        right: Expression.LiteralInt(
+                        right: LiteralInt(
                             sourceAnchor: expr.sourceAnchor,
                             value: elementSize)))
             }
@@ -789,31 +789,31 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         
         let countExpr: Expression
         if let begin = maybeBegin, let limit = maybeLimit {
-            countExpr = Expression.LiteralInt(
+            countExpr = LiteralInt(
                 sourceAnchor: expr.sourceAnchor,
                 value: limit - begin)
         }
         else {
-            countExpr = Expression.Binary(
+            countExpr = Binary(
                 sourceAnchor: expr.sourceAnchor,
                 op: .minus,
                 left: limitExpr,
                 right: beginExpr)
         }
         
-        let sliceExpr = Expression.StructInitializer(
+        let sliceExpr = StructInitializer(
             sourceAnchor: expr.sourceAnchor,
-            identifier: Expression.Identifier(
+            identifier: Identifier(
                 sourceAnchor: expr.sourceAnchor,
                 identifier: kSliceName),
             arguments: [
-                Expression.StructInitializer.Argument(name: kSliceBase, expr: baseExpr),
-                Expression.StructInitializer.Argument(name: kSliceCount, expr: countExpr)
+                StructInitializer.Argument(name: kSliceBase, expr: baseExpr),
+                StructInitializer.Argument(name: kSliceCount, expr: countExpr)
             ])
-        let bitcastExpr = Expression.Bitcast(
+        let bitcastExpr = Bitcast(
             sourceAnchor: expr.sourceAnchor,
             expr: sliceExpr,
-            targetType: Expression.PrimitiveType(
+            targetType: PrimitiveType(
                 sourceAnchor: expr.sourceAnchor,
                 typ: sliceType))
         children.append(try rvalue(expr: bitcastExpr))
@@ -899,12 +899,12 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         return Seq(sourceAnchor: sourceAnchor, children: children)
     }
     
-    func lvalue(get expr: Expression.Get) throws -> AbstractSyntaxTreeNode {
-        guard let member = expr.member as? Expression.Identifier else {
+    func lvalue(get expr: Get) throws -> AbstractSyntaxTreeNode {
+        guard let member = expr.member as? Identifier else {
             throw CompilerError(sourceAnchor: expr.member.sourceAnchor, message: "expected identifier in get expression")
         }
         
-        if let structInitializer = expr.expr as? Expression.StructInitializer {
+        if let structInitializer = expr.expr as? StructInitializer {
             let argument = structInitializer.arguments.first(where: {$0.name == member.identifier})
             let memberExpr = argument!.expr
             return try lvalue(expr: memberExpr)
@@ -969,43 +969,43 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
     public func rvalue(expr expr0: Expression) throws -> AbstractSyntaxTreeNode {
         try typeCheck(rexpr: expr0)
         let expr1 = switch expr0 {
-        case let group as Expression.Group:
+        case let group as Group:
             try rvalue(expr: group.expression)
-        case let literal as Expression.LiteralInt:
+        case let literal as LiteralInt:
             rvalue(literalInt: literal)
-        case let literal as Expression.LiteralBool:
+        case let literal as LiteralBool:
             rvalue(literalBoolean: literal)
-        case let literal as Expression.LiteralArray:
+        case let literal as LiteralArray:
             try rvalue(literalArray: literal)
-        case let literal as Expression.LiteralString:
+        case let literal as LiteralString:
             try rvalue(literalString: literal)
-        case let node as Expression.Identifier:
+        case let node as Identifier:
             try rvalue(identifier: node)
-        case let node as Expression.As:
+        case let node as As:
             try rvalue(as: node)
-        case let node as Expression.Bitcast:
+        case let node as Bitcast:
             try rvalue(bitcast: node)
-        case let node as Expression.Unary:
+        case let node as Unary:
             try rvalue(unary: node)
-        case let node as Expression.Binary:
+        case let node as Binary:
             try rvalue(binary: node)
-        case let expr as Expression.Is:
+        case let expr as Is:
             try rvalue(is: expr)
-        case let expr as Expression.Assignment:
+        case let expr as Assignment:
             try rvalue(assignment: expr)
-        case let expr as Expression.Subscript:
+        case let expr as Subscript:
             try rvalue(subscript: expr)
-        case let expr as Expression.Get:
+        case let expr as Get:
             try rvalue(get: expr)
-        case let node as Expression.StructInitializer:
+        case let node as StructInitializer:
             try rvalue(structInitializer: node)
-        case let node as Expression.Call:
+        case let node as Call:
             try rvalue(call: node)
-        case let node as Expression.SizeOf:
+        case let node as SizeOf:
             try rvalue(sizeof: node)
-        case let eseq as Expression.Eseq:
+        case let eseq as Eseq:
             try rvalue(eseq: eseq)
-        case let node as Expression.GenericTypeApplication:
+        case let node as GenericTypeApplication:
             throw CompilerError(sourceAnchor: node.sourceAnchor, message: "internal compiler error: expected generics to have been erased by this point: `\(node)'")
         default:
             throw CompilerError(sourceAnchor: expr0.sourceAnchor, message: "internal compiler error: unimplemented support for expression in CoreToTackCompiler: `\(expr0)'")
@@ -1014,7 +1014,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         return expr2
     }
     
-    func rvalue(literalInt node: Expression.LiteralInt) -> AbstractSyntaxTreeNode {
+    func rvalue(literalInt node: LiteralInt) -> AbstractSyntaxTreeNode {
         let result: AbstractSyntaxTreeNode
         switch ArithmeticTypeInfo.compTimeInt(node.value).intClass {
         case .i8:
@@ -1056,7 +1056,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         return result
     }
     
-    func rvalue(literalBoolean node: Expression.LiteralBool) -> AbstractSyntaxTreeNode {
+    func rvalue(literalBoolean node: LiteralBool) -> AbstractSyntaxTreeNode {
         let dest = nextRegister(type: .o)
         pushRegister(dest)
         let result = TackInstructionNode(
@@ -1066,11 +1066,11 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         return result
     }
     
-    func rvalue(literalArray expr: Expression.LiteralArray) throws -> AbstractSyntaxTreeNode {
+    func rvalue(literalArray expr: LiteralArray) throws -> AbstractSyntaxTreeNode {
         let arrayType = try typeCheck(rexpr: expr)
         let arrayElementType = try typeCheck(rexpr: expr.arrayType).arrayElementType
         if arrayElementType.isPrimitive {
-            let tempArrayId = try makeCompilerTemporary(expr.sourceAnchor, Expression.PrimitiveType(
+            let tempArrayId = try makeCompilerTemporary(expr.sourceAnchor, PrimitiveType(
                     sourceAnchor: expr.sourceAnchor,
                     typ: arrayType))
             var children: [AbstractSyntaxTreeNode] = [
@@ -1079,7 +1079,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             let tempArrayAddr = popRegister()
             for i in 0..<expr.elements.count {
                 children += [
-                    try rvalue(as: Expression.As(expr: expr.elements[i], targetType: Expression.PrimitiveType(arrayElementType)))
+                    try rvalue(as: As(expr: expr.elements[i], targetType: PrimitiveType(arrayElementType)))
                 ]
                 
                 let resultRegister = popRegister()
@@ -1106,13 +1106,13 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             let tempArrayId = try makeCompilerTemporary(expr.sourceAnchor, expr.arrayType)
             var children: [AbstractSyntaxTreeNode] = []
             for i in 0..<expr.elements.count {
-                let slot = Expression.Subscript(
+                let slot = Subscript(
                     sourceAnchor: expr.sourceAnchor,
                     subscriptable: tempArrayId,
-                    argument: Expression.LiteralInt(
+                    argument: LiteralInt(
                         sourceAnchor: expr.sourceAnchor,
                         value: i))
-                let child =  try rvalue(expr: Expression.Assignment(
+                let child =  try rvalue(expr: Assignment(
                     sourceAnchor: expr.sourceAnchor,
                     lexpr: slot,
                     rexpr: expr.elements[i]))
@@ -1126,8 +1126,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         }
     }
     
-    func makeCompilerTemporary(_ sourceAnchor: SourceAnchor?, _ type: Expression) throws -> Expression.Identifier {
-        let tempArrayId = Expression.Identifier(
+    func makeCompilerTemporary(_ sourceAnchor: SourceAnchor?, _ type: Expression) throws -> Identifier {
+        let tempArrayId = Identifier(
             sourceAnchor: sourceAnchor,
             identifier: symbols!.tempName(prefix: "__temp"))
         let tempDecl = VarDeclaration(
@@ -1146,13 +1146,13 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         return tempArrayId
     }
     
-    func rvalue(literalString expr: Expression.LiteralString) throws -> AbstractSyntaxTreeNode {
-        let arrayType = Expression.ArrayType(
+    func rvalue(literalString expr: LiteralString) throws -> AbstractSyntaxTreeNode {
+        let arrayType = ArrayType(
             sourceAnchor: expr.sourceAnchor,
-            count: Expression.LiteralInt(
+            count: LiteralInt(
                 sourceAnchor: expr.sourceAnchor,
                 value: expr.value.count),
-            elementType: Expression.PrimitiveType(
+            elementType: PrimitiveType(
                 sourceAnchor: expr.sourceAnchor,
                 typ: .u8))
         let tempArrayId = try makeCompilerTemporary(expr.sourceAnchor, arrayType)
@@ -1165,7 +1165,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         ])
     }
     
-    func rvalue(identifier node: Expression.Identifier) throws -> AbstractSyntaxTreeNode {
+    func rvalue(identifier node: Identifier) throws -> AbstractSyntaxTreeNode {
         let symbol = try symbols!.resolve(identifier: node.identifier)
         
         var children: [AbstractSyntaxTreeNode] = [
@@ -1197,19 +1197,19 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         return Seq(sourceAnchor: node.sourceAnchor, children: children)
     }
     
-    func rvalue(as expr: Expression.As) throws -> AbstractSyntaxTreeNode {
+    func rvalue(as expr: As) throws -> AbstractSyntaxTreeNode {
         let targetType = try typeCheck(rexpr: expr.targetType)
-        if case .array = targetType, let literalArray0 = expr.expr as? Expression.LiteralArray {
+        if case .array = targetType, let literalArray0 = expr.expr as? LiteralArray {
             let elementType = targetType.arrayElementType
             let elements = literalArray0.elements.map {
-                Expression.As(
+                As(
                     sourceAnchor: expr.sourceAnchor,
                     expr: $0,
-                    targetType: Expression.PrimitiveType(
+                    targetType: PrimitiveType(
                         sourceAnchor: expr.sourceAnchor,
                         typ: elementType))
             }
-            let literalArray1 = Expression.LiteralArray(
+            let literalArray1 = LiteralArray(
                 sourceAnchor: literalArray0.sourceAnchor,
                 arrayType: expr.targetType,
                 elements: elements)
@@ -1223,7 +1223,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         }
     }
     
-    func rvalue(bitcast expr: Expression.Bitcast) throws -> AbstractSyntaxTreeNode {
+    func rvalue(bitcast expr: Bitcast) throws -> AbstractSyntaxTreeNode {
         var children: [AbstractSyntaxTreeNode] = [
             try rvalue(expr: expr.expr)
         ]
@@ -1245,9 +1245,9 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
     }
     
     func compileAndConvertExpression(rexpr: Expression, ltype: SymbolType, isExplicitCast: Bool) throws -> AbstractSyntaxTreeNode {
-        if let getExpr = rexpr as? Expression.Get,
-           let member = getExpr.member as? Expression.Identifier,
-           let structInitializer = getExpr.expr as? Expression.StructInitializer {
+        if let getExpr = rexpr as? Get,
+           let member = getExpr.member as? Identifier,
+           let structInitializer = getExpr.expr as? StructInitializer {
             let argument = structInitializer.arguments.first(where: {$0.name == member.identifier})
             let memberExpr = argument!.expr
             let result = try compileAndConvertExpression(
@@ -1414,27 +1414,27 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 fatalError("Unsupported type conversion from \(rtype) to \(ltype). Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(rexpr)")
             }
             let savedRegisterStack = registerStack
-            let tempArrayId = try makeCompilerTemporary(rexpr.sourceAnchor, Expression.PrimitiveType(ltype))
+            let tempArrayId = try makeCompilerTemporary(rexpr.sourceAnchor, PrimitiveType(ltype))
             var children: [AbstractSyntaxTreeNode] = []
             for i in 0..<n {
                 children += [
-                    try rvalue(expr: Expression.Assignment(
+                    try rvalue(expr: Assignment(
                         sourceAnchor: rexpr.sourceAnchor,
-                        lexpr: Expression.Subscript(
+                        lexpr: Subscript(
                             sourceAnchor: rexpr.sourceAnchor,
                             subscriptable: tempArrayId,
-                            argument: Expression.LiteralInt(
+                            argument: LiteralInt(
                                 sourceAnchor: rexpr.sourceAnchor,
                                 value: i)),
-                        rexpr: Expression.As(
+                        rexpr: As(
                             sourceAnchor: rexpr.sourceAnchor,
-                            expr: Expression.Subscript(
+                            expr: Subscript(
                                 sourceAnchor: rexpr.sourceAnchor,
                                 subscriptable: rexpr,
-                                argument: Expression.LiteralInt(
+                                argument: LiteralInt(
                                     sourceAnchor: rexpr.sourceAnchor,
                                     value: i)),
-                            targetType: Expression.PrimitiveType(
+                            targetType: PrimitiveType(
                                 sourceAnchor: rexpr.sourceAnchor,
                                 typ: b))))
                 ]
@@ -1448,7 +1448,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         case (.array(let n?, let a), .constDynamicArray(let b)),
              (.array(let n?, let a), .dynamicArray(let b)):
             assert(canValueBeTriviallyReinterpreted(b, a))
-            let tempArrayId = try makeCompilerTemporary(rexpr.sourceAnchor, Expression.PrimitiveType(ltype))
+            let tempArrayId = try makeCompilerTemporary(rexpr.sourceAnchor, PrimitiveType(ltype))
             var children: [AbstractSyntaxTreeNode] = [
                 try lvalue(expr: tempArrayId)
             ]
@@ -1483,7 +1483,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             result = Seq(sourceAnchor: rexpr.sourceAnchor, children: children)
             
         case (_, .unionType(let typ)):
-            let tempArrayId = try makeCompilerTemporary(rexpr.sourceAnchor, Expression.PrimitiveType(
+            let tempArrayId = try makeCompilerTemporary(rexpr.sourceAnchor, PrimitiveType(
                     sourceAnchor: rexpr.sourceAnchor,
                     typ: ltype))
             var children: [AbstractSyntaxTreeNode] = [
@@ -1505,10 +1505,10 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             ]
             if targetType.isPrimitive {
                 children += [
-                    try rvalue(as: Expression.As(
+                    try rvalue(as: As(
                         sourceAnchor: rexpr.sourceAnchor,
                         expr: rexpr,
-                        targetType: Expression.PrimitiveType(
+                        targetType: PrimitiveType(
                             sourceAnchor: rexpr.sourceAnchor,
                             typ: targetType))),
                     TackInstructionNode(
@@ -1531,10 +1531,10 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                         instruction: .addip(tempUnionPayloadAddress, tempUnionAddr.unwrapPointer!, kUnionPayloadOffset),
                         sourceAnchor: rexpr.sourceAnchor,
                         symbols: symbols),
-                    try rvalue(as: Expression.As(
+                    try rvalue(as: As(
                         sourceAnchor: rexpr.sourceAnchor,
                         expr: rexpr,
-                        targetType: Expression.PrimitiveType(
+                        targetType: PrimitiveType(
                             sourceAnchor: rexpr.sourceAnchor,
                             typ: targetType))),
                     TackInstructionNode(
@@ -1620,31 +1620,31 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             let nameOfVtableInstance = nameOfVtableInstance(
                 traitName: b.name,
                 structName: structType.name)
-            result = try rvalue(expr: Expression.StructInitializer(
+            result = try rvalue(expr: StructInitializer(
                 sourceAnchor: rexpr.sourceAnchor,
-                expr: Expression.Identifier(
+                expr: Identifier(
                     sourceAnchor: rexpr.sourceAnchor,
                     identifier: b.nameOfTraitObjectType),
                 arguments: [
                     // Take the pointer to the object and cast as an opaque *void
-                    Expression.StructInitializer.Argument(
+                    StructInitializer.Argument(
                         name: "object",
-                        expr: Expression.Bitcast(
+                        expr: Bitcast(
                             sourceAnchor: rexpr.sourceAnchor,
                             expr: rexpr,
-                            targetType: Expression.PointerType(
+                            targetType: PointerType(
                                 sourceAnchor: rexpr.sourceAnchor,
-                                typ: Expression.PrimitiveType(
+                                typ: PrimitiveType(
                                     sourceAnchor: rexpr.sourceAnchor,
                                     typ: .void)))),
                 
                     // Attach a pointer to the appropriate vtable instance.
-                    Expression.StructInitializer.Argument(
+                    StructInitializer.Argument(
                         name: "vtable",
-                        expr: Expression.Unary(
+                        expr: Unary(
                             sourceAnchor: rexpr.sourceAnchor,
                             op: .ampersand,
-                            expression: Expression.Identifier(
+                            expression: Identifier(
                                 sourceAnchor: rexpr.sourceAnchor,
                                 identifier: nameOfVtableInstance)))
             ]))
@@ -1656,33 +1656,33 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             let nameOfVtableInstance = nameOfVtableInstance(
                 traitName: b.name,
                 structName: structType.name)
-            let objectPointer = Expression.Unary(
+            let objectPointer = Unary(
                 sourceAnchor: rexpr.sourceAnchor,
                 op: .ampersand,
                 expression: rexpr)
-            result = try rvalue(expr: Expression.StructInitializer(
+            result = try rvalue(expr: StructInitializer(
                 sourceAnchor: rexpr.sourceAnchor,
-                identifier: Expression.Identifier(
+                identifier: Identifier(
                     sourceAnchor: rexpr.sourceAnchor,
                     identifier: b.nameOfTraitObjectType),
                 arguments: [
                     // Take the pointer to the object and cast as an opaque *void
-                    Expression.StructInitializer.Argument(name: "object", expr: Expression.Bitcast(
+                    StructInitializer.Argument(name: "object", expr: Bitcast(
                             sourceAnchor: rexpr.sourceAnchor,
                             expr: objectPointer,
-                            targetType: Expression.PointerType(
+                            targetType: PointerType(
                                 sourceAnchor: rexpr.sourceAnchor,
-                                typ: Expression.PrimitiveType(
+                                typ: PrimitiveType(
                                     sourceAnchor: rexpr.sourceAnchor,
                                     typ: .void)))),
                 
                     // Attach a pointer to the appropriate vtable instance.
-                    Expression.StructInitializer.Argument(
+                    StructInitializer.Argument(
                         name: "vtable",
-                        expr: Expression.Unary(
+                        expr: Unary(
                             sourceAnchor: rexpr.sourceAnchor,
                             op: .ampersand,
-                            expression: Expression.Identifier(
+                            expression: Identifier(
                                 sourceAnchor: rexpr.sourceAnchor,
                                 identifier: nameOfVtableInstance)))
                 ]))
@@ -1766,7 +1766,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         return result
     }
     
-    func rvalue(unary expr: Expression.Unary) throws -> AbstractSyntaxTreeNode {
+    func rvalue(unary expr: Unary) throws -> AbstractSyntaxTreeNode {
         let childType = try typeCheck(rexpr: expr.child).correspondingMutableType
         
         let result: AbstractSyntaxTreeNode
@@ -1865,7 +1865,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         return result
     }
     
-    func rvalue(binary: Expression.Binary) throws -> AbstractSyntaxTreeNode {
+    func rvalue(binary: Binary) throws -> AbstractSyntaxTreeNode {
         let rightType = try typeCheck(rexpr: binary.right)
         let leftType = try typeCheck(rexpr: binary.left)
         
@@ -1880,7 +1880,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         fatalError("Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(binary)")
     }
     
-    func compileArithmeticBinaryExpression(_ binary: Expression.Binary) throws -> AbstractSyntaxTreeNode {
+    func compileArithmeticBinaryExpression(_ binary: Binary) throws -> AbstractSyntaxTreeNode {
         
         let resultType = try typeCheck(rexpr: binary)
         let rightType = try typeCheck(rexpr: binary.right)
@@ -1932,7 +1932,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
     }
     
     func determineArithmeticInstruction(
-        _ binary: Expression.Binary,
+        _ binary: Binary,
         _ leftType: SymbolType,
         _ rightType: SymbolType,
         _ intClass: IntClass,
@@ -2076,7 +2076,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         return ins
     }
     
-    func compileConstantArithmeticBinaryExpression(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> AbstractSyntaxTreeNode {
+    func compileConstantArithmeticBinaryExpression(_ binary: Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> AbstractSyntaxTreeNode {
         guard case .arithmeticType(.compTimeInt(let a)) = leftType, case .arithmeticType(.compTimeInt(let b)) = rightType else {
             fatalError("Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(binary)")
         }
@@ -2171,7 +2171,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             symbols: symbols)
     }
     
-    func compileBooleanBinaryExpression(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> AbstractSyntaxTreeNode {
+    func compileBooleanBinaryExpression(_ binary: Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> AbstractSyntaxTreeNode {
         assert(leftType.isBooleanType && rightType.isBooleanType)
 
         if case .booleanType(.compTimeBool) = leftType, case .booleanType(.compTimeBool) = rightType {
@@ -2232,7 +2232,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         }
     }
     
-    func compileConstantBooleanBinaryExpression(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> AbstractSyntaxTreeNode {
+    func compileConstantBooleanBinaryExpression(_ binary: Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> AbstractSyntaxTreeNode {
         guard case .booleanType(.compTimeBool(let a)) = leftType, case .booleanType(.compTimeBool(let b)) = rightType else {
             fatalError("Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(binary)")
         }
@@ -2265,7 +2265,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             symbols: symbols)
     }
     
-    func logicalAnd(_ binary: Expression.Binary) throws -> AbstractSyntaxTreeNode {
+    func logicalAnd(_ binary: Binary) throws -> AbstractSyntaxTreeNode {
         var instructions: [AbstractSyntaxTreeNode] = []
         let labelFalse = symbols!.nextLabel()
         let labelTail = symbols!.nextLabel()
@@ -2311,7 +2311,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         return Seq(sourceAnchor: binary.sourceAnchor, children: instructions)
     }
     
-    func logicalOr(_ binary: Expression.Binary) throws -> AbstractSyntaxTreeNode {
+    func logicalOr(_ binary: Binary) throws -> AbstractSyntaxTreeNode {
         var instructions: [AbstractSyntaxTreeNode] = []
         let labelTrue = symbols!.nextLabel()
         let labelTail = symbols!.nextLabel()
@@ -2357,7 +2357,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         return Seq(sourceAnchor: binary.sourceAnchor, children: instructions)
     }
     
-    func rvalue(is expr: Expression.Is) throws -> AbstractSyntaxTreeNode {
+    func rvalue(is expr: Is) throws -> AbstractSyntaxTreeNode {
         let exprType = try typeCheck(rexpr: expr)
         
         switch exprType {
@@ -2381,7 +2381,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         }
     }
     
-    func compileUnionTypeIs(_ expr: Expression.Is, _ typ: UnionTypeInfo) throws -> AbstractSyntaxTreeNode {
+    func compileUnionTypeIs(_ expr: Is, _ typ: UnionTypeInfo) throws -> AbstractSyntaxTreeNode {
         var children: [AbstractSyntaxTreeNode] = []
         
         // Take the test type and determine the corresponding type tag.
@@ -2476,13 +2476,13 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         return nil
     }
     
-    func rvalue(assignment expr: Expression.Assignment) throws -> AbstractSyntaxTreeNode {
+    func rvalue(assignment expr: Assignment) throws -> AbstractSyntaxTreeNode {
         guard let ltype = try typeCheck(lexpr: expr.lexpr) else {
             throw CompilerError(sourceAnchor: expr.lexpr.sourceAnchor,
                                 message: "lvalue required in assignment")
         }
         
-        guard false==ltype.isConst || (expr is Expression.InitialAssignment) else {
+        guard false==ltype.isConst || (expr is InitialAssignment) else {
             fatalError("Unsupported expression. Semantic analysis should have caught and rejected the program at an earlier stage of compilation: \(expr)")
         }
         
@@ -2514,19 +2514,19 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             result = Seq(sourceAnchor: expr.sourceAnchor, children: [
                 try lvalue(expr: expr.lexpr)
             ])
-        } else if let structInitializer = expr.rexpr as? Expression.StructInitializer {
+        } else if let structInitializer = expr.rexpr as? StructInitializer {
             let children = try structInitializer.arguments.map {
-                let g = Expression.Get(sourceAnchor: expr.lexpr.sourceAnchor,
+                let g = Get(sourceAnchor: expr.lexpr.sourceAnchor,
                                        expr: expr.lexpr,
-                                       member: Expression.Identifier($0.name))
-                let assig: Expression.Assignment
-                if expr is Expression.InitialAssignment {
-                    assig = Expression.InitialAssignment(
+                                       member: Identifier($0.name))
+                let assig: Assignment
+                if expr is InitialAssignment {
+                    assig = InitialAssignment(
                         sourceAnchor: expr.sourceAnchor,
                         lexpr: g,
                         rexpr: $0.expr)
                 } else {
-                    assig = Expression.Assignment(
+                    assig = Assignment(
                         sourceAnchor: expr.sourceAnchor,
                         lexpr: g,
                         rexpr: $0.expr)
@@ -2557,7 +2557,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         return result
     }
     
-    func rvalue(subscript expr: Expression.Subscript) throws -> AbstractSyntaxTreeNode {
+    func rvalue(subscript expr: Subscript) throws -> AbstractSyntaxTreeNode {
         let subscriptableType = try typeCheck(rexpr: expr.subscriptable)
         
         switch subscriptableType {
@@ -2565,13 +2565,13 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             guard typ.name == "Range" else {
                 fatalError("Cannot subscript an expression of type `\(subscriptableType)'")
             }
-            let lowered = Expression.Binary(
+            let lowered = Binary(
                 sourceAnchor: expr.sourceAnchor,
                 op: .plus,
-                left: Expression.Get(
+                left: Get(
                     sourceAnchor: expr.sourceAnchor,
                     expr: expr.subscriptable,
-                    member: Expression.Identifier("begin")),
+                    member: Identifier("begin")),
                 right: expr.argument)
             let result = try rvalue(expr: lowered)
             return result
@@ -2606,12 +2606,12 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         }
     }
     
-    func rvalue(get expr: Expression.Get) throws -> AbstractSyntaxTreeNode {
-        guard let member = expr.member as? Expression.Identifier else {
+    func rvalue(get expr: Get) throws -> AbstractSyntaxTreeNode {
+        guard let member = expr.member as? Identifier else {
             fatalError("expected identifier in get expression")
         }
         
-        if let structInitializer = expr.expr as? Expression.StructInitializer {
+        if let structInitializer = expr.expr as? StructInitializer {
             let argument = structInitializer.arguments.first(where: {$0.name == member.identifier})
             guard let memberExpr = argument?.expr else {
                 fatalError("unimplemented")
@@ -2654,17 +2654,17 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         case .constStructType(let typ), .structType(let typ):
             // TODO: The compiler has special handling of Range.count but maybe it shouldn't
             if typ.name == "Range", name == "count" {
-                let calcCount = Expression.Binary(
+                let calcCount = Binary(
                     sourceAnchor: expr.sourceAnchor,
                     op: .minus,
-                    left: Expression.Get(
+                    left: Get(
                         sourceAnchor: expr.sourceAnchor,
                         expr: expr.expr,
-                        member: Expression.Identifier("limit")),
-                    right: Expression.Get(
+                        member: Identifier("limit")),
+                    right: Get(
                         sourceAnchor: expr.sourceAnchor,
                         expr: expr.expr,
-                        member: Expression.Identifier("begin")))
+                        member: Identifier("begin")))
                 let result = try rvalue(binary: calcCount)
                 return result
             }
@@ -2795,23 +2795,23 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         return Seq(sourceAnchor: expr.sourceAnchor, children: children)
     }
     
-    func rvalue(structInitializer expr: Expression.StructInitializer) throws -> AbstractSyntaxTreeNode {
+    func rvalue(structInitializer expr: StructInitializer) throws -> AbstractSyntaxTreeNode {
         let resultType = try typeCheck(rexpr: expr)
         let savedRegisterStack = registerStack
         let tempArrayId = try makeCompilerTemporary(
             expr.sourceAnchor,
-            Expression.PrimitiveType(
+            PrimitiveType(
                 sourceAnchor: expr.sourceAnchor,
                 typ: resultType))
         var children: [AbstractSyntaxTreeNode] = []
         for arg in expr.arguments {
-            let slot = Expression.Get(
+            let slot = Get(
                 sourceAnchor: expr.sourceAnchor,
                 expr: tempArrayId,
-                member: Expression.Identifier(
+                member: Identifier(
                     sourceAnchor: expr.sourceAnchor,
                     identifier: arg.name))
-            let child =  try rvalue(expr: Expression.Assignment(
+            let child =  try rvalue(expr: Assignment(
                 sourceAnchor: expr.sourceAnchor,
                 lexpr: slot,
                 rexpr: arg.expr))
@@ -2824,10 +2824,10 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         return Seq(sourceAnchor: expr.sourceAnchor, children: children)
     }
     
-    func rvalue(call expr: Expression.Call) throws -> AbstractSyntaxTreeNode {
+    func rvalue(call expr: Call) throws -> AbstractSyntaxTreeNode {
         let calleeType: SymbolType
         if let symbols,
-           let identifier = expr.callee as? Expression.Identifier {
+           let identifier = expr.callee as? Identifier {
             calleeType = try symbols.resolveTypeOfIdentifier(sourceAnchor: identifier.sourceAnchor, identifier: identifier.identifier)
         }
         else {
@@ -2846,7 +2846,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         }
     }
     
-    func rvalue(call expr: Expression.Call, typ: FunctionTypeInfo) throws -> AbstractSyntaxTreeNode {
+    func rvalue(call expr: Call, typ: FunctionTypeInfo) throws -> AbstractSyntaxTreeNode {
         do {
             return try rvalueInner(call: expr, typ: typ)
         }
@@ -2859,17 +2859,17 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         }
     }
     
-    fileprivate func rvalueInner(call expr: Expression.Call, typ: FunctionTypeInfo) throws -> AbstractSyntaxTreeNode {
+    fileprivate func rvalueInner(call expr: Call, typ: FunctionTypeInfo) throws -> AbstractSyntaxTreeNode {
         _ = try RvalueExpressionTypeChecker(symbols: symbols!).checkInner(call: expr, typ: typ)
         
         let calleeType = try typeCheck(rexpr: expr.callee)
         
         // Allocate a temporary to hold the function call return value.
-        var tempRetId: Expression.Identifier! = nil
+        var tempRetId: Identifier! = nil
         if typ.returnType != .void {
             tempRetId = try makeCompilerTemporary(
                 expr.sourceAnchor,
-                Expression.PrimitiveType(
+                PrimitiveType(
                     sourceAnchor: expr.sourceAnchor,
                     typ: typ.returnType))
         }
@@ -2888,10 +2888,10 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             let argType = typ.arguments[i]
             let argExpr = expr.arguments[i]
             children += [
-                try rvalue(expr: Expression.As(
+                try rvalue(expr: As(
                     sourceAnchor: expr.sourceAnchor,
                     expr: argExpr,
-                    targetType: Expression.PrimitiveType(
+                    targetType: PrimitiveType(
                         sourceAnchor: expr.sourceAnchor,
                         typ: argType)))
             ]
@@ -3018,8 +3018,8 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         return outerSeq
     }
     
-    fileprivate func rewriteStructMemberFunctionCallIfPossible(_ expr: Expression.Call) throws -> AbstractSyntaxTreeNode? {
-        func matchStructMemberFunctionCall(_ expr: Expression.Call) throws -> StructMemberFunctionCallMatcher.Match? {
+    fileprivate func rewriteStructMemberFunctionCallIfPossible(_ expr: Call) throws -> AbstractSyntaxTreeNode? {
+        func matchStructMemberFunctionCall(_ expr: Call) throws -> StructMemberFunctionCallMatcher.Match? {
             try StructMemberFunctionCallMatcher(
                 call: expr,
                 typeChecker: rvalueContext)
@@ -3028,15 +3028,15 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         
         func rewriteStructMemberFunctionCall(_ match: StructMemberFunctionCallMatcher.Match) throws -> AbstractSyntaxTreeNode {
             let expr = match.callExpr
-            let tempSelf = try makeCompilerTemporary(expr.sourceAnchor, Expression.PrimitiveType(match.firstArgumentType))
-            let assign = try rvalue(assignment: Expression.InitialAssignment(sourceAnchor: expr.sourceAnchor, lexpr: tempSelf, rexpr: match.getExpr.expr))
+            let tempSelf = try makeCompilerTemporary(expr.sourceAnchor, PrimitiveType(match.firstArgumentType))
+            let assign = try rvalue(assignment: InitialAssignment(sourceAnchor: expr.sourceAnchor, lexpr: tempSelf, rexpr: match.getExpr.expr))
             registerStack.removeLast()
             return Seq(sourceAnchor: expr.sourceAnchor, children: [
                 assign,
                 try rvalue(
-                    call: Expression.Call(
+                    call: Call(
                         sourceAnchor: expr.sourceAnchor,
-                        callee: Expression.Get(
+                        callee: Get(
                             sourceAnchor: expr.sourceAnchor,
                             expr: tempSelf,
                             member: match.getExpr.member),
@@ -3051,7 +3051,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         return try rewriteStructMemberFunctionCall(match)
     }
     
-    func rvalue(sizeof expr: Expression.SizeOf) throws -> AbstractSyntaxTreeNode {
+    func rvalue(sizeof expr: SizeOf) throws -> AbstractSyntaxTreeNode {
         let targetType = try typeCheck(rexpr: expr.expr)
         let size = memoryLayoutStrategy.sizeof(type: targetType)
         let dest = nextRegister(type: .w)
@@ -3063,7 +3063,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         return result
     }
     
-    func rvalue(eseq: Expression.Eseq) throws -> AbstractSyntaxTreeNode {
+    func rvalue(eseq: Eseq) throws -> AbstractSyntaxTreeNode {
         var children: [AbstractSyntaxTreeNode] = []
         if eseq.children.count > 1 {
             for child in eseq.children[0..<eseq.children.count-1] {

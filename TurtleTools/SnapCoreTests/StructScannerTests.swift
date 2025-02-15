@@ -29,7 +29,7 @@ final class StructScannerTests: XCTestCase {
                 storage: .staticStorage,
                 visibility: .privateVisibility))
         let input = StructDeclaration(
-            identifier: Expression.Identifier("foo"),
+            identifier: Identifier("foo"),
             members: [])
         let compiler = makeCompiler(symbols)
         XCTAssertThrowsError(try compiler.compile(input)) {
@@ -45,7 +45,7 @@ final class StructScannerTests: XCTestCase {
             symbolType: .void,
             visibility: .privateVisibility)
         let input = StructDeclaration(
-            identifier: Expression.Identifier("foo"),
+            identifier: Identifier("foo"),
             members: [])
         let compiler = makeCompiler(symbols)
         XCTAssertThrowsError(try compiler.compile(input)) {
@@ -64,10 +64,10 @@ final class StructScannerTests: XCTestCase {
                 storage: .staticStorage,
                 visibility: .privateVisibility))
         let input = StructDeclaration(
-            identifier: Expression.Identifier("foo"),
+            identifier: Identifier("foo"),
             typeArguments: [
-                Expression.GenericTypeArgument(
-                    identifier: Expression.Identifier("T"),
+                GenericTypeArgument(
+                    identifier: Identifier("T"),
                     constraints: [])
             ],
             members: [])
@@ -85,10 +85,10 @@ final class StructScannerTests: XCTestCase {
             symbolType: .void,
             visibility: .privateVisibility)
         let input = StructDeclaration(
-            identifier: Expression.Identifier("foo"),
+            identifier: Identifier("foo"),
             typeArguments: [
-                Expression.GenericTypeArgument(
-                    identifier: Expression.Identifier("T"),
+                GenericTypeArgument(
+                    identifier: Identifier("T"),
                     constraints: [])
             ],
             members: [])
@@ -101,7 +101,7 @@ final class StructScannerTests: XCTestCase {
     
     func testEmptyStruct() throws {
         let symbols = SymbolTable()
-        let input = StructDeclaration(identifier: Expression.Identifier("None"), members: [])
+        let input = StructDeclaration(identifier: Identifier("None"), members: [])
         XCTAssertNoThrow(try makeCompiler(symbols).compile(input))
         let expectedStructSymbols = SymbolTable()
         expectedStructSymbols.frameLookupMode = .set(Frame())
@@ -114,7 +114,7 @@ final class StructScannerTests: XCTestCase {
     func testConstStruct() throws {
         let symbols = SymbolTable()
         let input = StructDeclaration(
-            identifier: Expression.Identifier("None"),
+            identifier: Identifier("None"),
             members: [],
             isConst: true)
         XCTAssertNoThrow(try makeCompiler(symbols).compile(input))
@@ -128,8 +128,8 @@ final class StructScannerTests: XCTestCase {
     
     func testStructWithOneMember() throws {
         let symbols = SymbolTable()
-        let input = StructDeclaration(identifier: Expression.Identifier("Foo"), members: [
-            StructDeclaration.Member(name: "bar", type: Expression.PrimitiveType(.u8))
+        let input = StructDeclaration(identifier: Identifier("Foo"), members: [
+            StructDeclaration.Member(name: "bar", type: PrimitiveType(.u8))
         ])
         XCTAssertNoThrow(try makeCompiler(symbols).compile(input))
         let bar = Symbol(
@@ -151,8 +151,8 @@ final class StructScannerTests: XCTestCase {
     
     func testStructCannotContainItselfRecursively() throws {
         let symbols = SymbolTable()
-        let input = StructDeclaration(identifier: Expression.Identifier("Foo"), members: [
-            StructDeclaration.Member(name: "bar", type: Expression.Identifier("Foo"))
+        let input = StructDeclaration(identifier: Identifier("Foo"), members: [
+            StructDeclaration.Member(name: "bar", type: Identifier("Foo"))
         ])
         let compiler = makeCompiler(symbols)
         XCTAssertThrowsError(try compiler.compile(input)) {
@@ -164,10 +164,10 @@ final class StructScannerTests: XCTestCase {
     func testGenericStruct() throws {
         let symbols = SymbolTable()
         let input = StructDeclaration(
-            identifier: Expression.Identifier("Foo"),
+            identifier: Identifier("Foo"),
             typeArguments: [
-                Expression.GenericTypeArgument(
-                    identifier: Expression.Identifier("T"),
+                GenericTypeArgument(
+                    identifier: Identifier("T"),
                     constraints: [])
             ],
             members: [])

@@ -27,12 +27,12 @@ public final class GenericsPartialEvaluator: CompilerPass {
     /// Partially evaluate the given generic function, struct, or whatever
     /// - Parameter replacements: The replacements to apply while partially
     ///   evaluating the function. The replacements must be a sequence of pairs
-    ///   where each pair is a (ReplacementKey, Expression.PrimitiveType). The first
+    ///   where each pair is a (ReplacementKey, PrimitiveType). The first
     ///   element identifies the specific symbol to replace. The second element
     ///   is the expression which replaces it.
     /// - Returns: The partially evaluated function, struct, or other object,
     ///   with replacements applied
-    public static func eval<U, S>(_ ast0: U, replacements: S) throws -> U  where S : Sequence, S.Element == (ReplacementKey, Expression.PrimitiveType), U: AbstractSyntaxTreeNode {
+    public static func eval<U, S>(_ ast0: U, replacements: S) throws -> U  where S : Sequence, S.Element == (ReplacementKey, PrimitiveType), U: AbstractSyntaxTreeNode {
         let replacementMap = Dictionary(uniqueKeysWithValues: replacements)
         let ast1 = try GenericsPartialEvaluator(symbols: nil, map: replacementMap)
             .run(ast0) as! U
@@ -44,7 +44,7 @@ public final class GenericsPartialEvaluator: CompilerPass {
         super.init(symbols)
     }
     
-    public override func visit(identifier node0: Expression.Identifier) -> Expression? {
+    public override func visit(identifier node0: Identifier) -> Expression? {
         let scope = symbols?.lookupIdOfEnclosingScope(identifier: node0.identifier) ?? NSNotFound
         let key = ReplacementKey(identifier: node0.identifier, scope: scope)
         let replacement = map[key] ?? node0
@@ -69,7 +69,7 @@ public final class GenericsPartialEvaluator: CompilerPass {
             sourceAnchor: node0.sourceAnchor,
             identifier: node0.identifier, // Do not rewrite the identifier of the new type
             typeArguments: try node0.typeArguments.compactMap {
-                try visit(genericTypeArgument: $0) as! Expression.GenericTypeArgument?
+                try visit(genericTypeArgument: $0) as! GenericTypeArgument?
             },
             members: try node0.members.map {
                 StructDeclaration.Member(

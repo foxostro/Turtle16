@@ -12,7 +12,7 @@ import TurtleCore
 
 final class SnapSubcompilerIfTests: XCTestCase {
     func testFailCompileIfStatementWithNonbooleanCondition() {
-        let node = If(condition: Expression.LiteralInt(0),
+        let node = If(condition: LiteralInt(0),
                       then: Block(children: []),
                       else: nil)
         XCTAssertThrowsError(try SnapSubcompilerIf().compile(if: node, symbols: SymbolTable())) {

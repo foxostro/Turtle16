@@ -10,16 +10,16 @@ import TurtleCore
 
 public struct StructMemberFunctionCallMatcher {
     public struct Match {
-        public let callExpr: Expression.Call
-        public let getExpr: Expression.Get
+        public let callExpr: Call
+        public let getExpr: Get
         public let fnType: FunctionTypeInfo
         public let firstArgumentType: SymbolType
     }
     
-    public let expr: Expression.Call
+    public let expr: Call
     public let typeChecker: RvalueExpressionTypeChecker
     
-    public init(call expr: Expression.Call, typeChecker: RvalueExpressionTypeChecker) {
+    public init(call expr: Call, typeChecker: RvalueExpressionTypeChecker) {
         self.expr = expr
         self.typeChecker = typeChecker
     }
@@ -27,7 +27,7 @@ public struct StructMemberFunctionCallMatcher {
     public func match() throws -> Match? {
         guard let typ = try getFunctionType() else { return nil }
         guard typ.arguments.count == expr.arguments.count+1 else { return nil }
-        guard let getExpr = expr.callee as? Expression.Get else { return nil }
+        guard let getExpr = expr.callee as? Get else { return nil }
         guard let firstArgumentType = typ.arguments.first else { return nil }
         
         let rtype = try typeChecker.check(expression: getExpr.expr)

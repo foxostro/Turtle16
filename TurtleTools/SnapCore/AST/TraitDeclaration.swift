@@ -24,9 +24,9 @@ public final class TraitDeclaration: AbstractSyntaxTreeNode {
         }
     }
     
-    public let identifier: Expression.Identifier
+    public let identifier: Identifier
     public let mangledName: String
-    public let typeArguments: [Expression.GenericTypeArgument]
+    public let typeArguments: [GenericTypeArgument]
     public let members: [Member]
     public let visibility: SymbolVisibility
     
@@ -54,8 +54,8 @@ public final class TraitDeclaration: AbstractSyntaxTreeNode {
     }
     
     public required init(sourceAnchor: SourceAnchor? = nil,
-                         identifier: Expression.Identifier,
-                         typeArguments: [Expression.GenericTypeArgument] = [],
+                         identifier: Identifier,
+                         typeArguments: [GenericTypeArgument] = [],
                          members: [Member],
                          visibility: SymbolVisibility = .privateVisibility,
                          mangledName: String? = nil,
@@ -110,7 +110,7 @@ public final class TraitDeclaration: AbstractSyntaxTreeNode {
                          id: ID())
     }
     
-    public func withIdentifier(_ identifier: Expression.Identifier) -> TraitDeclaration {
+    public func withIdentifier(_ identifier: Identifier) -> TraitDeclaration {
         TraitDeclaration(sourceAnchor: sourceAnchor,
                          identifier: identifier,
                          typeArguments: typeArguments,

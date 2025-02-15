@@ -13,7 +13,7 @@ import TurtleCore
 final class TraitScannerTests: XCTestCase {
 
     func testCompileTraitAddsToTypeTable_Empty() throws {
-        let ast = TraitDeclaration(identifier: Expression.Identifier("Foo"), members: [])
+        let ast = TraitDeclaration(identifier: Identifier("Foo"), members: [])
         
         let scanner = TraitScanner()
         try scanner.scan(trait: ast)
@@ -27,10 +27,10 @@ final class TraitScannerTests: XCTestCase {
     }
     
     func testCompileTraitAddsToTypeTable_HasMethod() throws {
-        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.u8), arguments: [
-            Expression.PointerType(Expression.Identifier("Foo"))
+        let bar = TraitDeclaration.Member(name: "bar", type:  PointerType(FunctionType(name: nil, returnType: PrimitiveType(.u8), arguments: [
+            PointerType(Identifier("Foo"))
         ])))
-        let ast = TraitDeclaration(identifier: Expression.Identifier("Foo"),
+        let ast = TraitDeclaration(identifier: Identifier("Foo"),
                                    members: [bar],
                                    visibility: .privateVisibility)
         
@@ -60,7 +60,7 @@ final class TraitScannerTests: XCTestCase {
     }
 
     func testCompileTraitAddsVtableType_Empty() throws {
-        let ast = TraitDeclaration(identifier: Expression.Identifier("Foo"), members: [])
+        let ast = TraitDeclaration(identifier: Identifier("Foo"), members: [])
         
         let scanner = TraitScanner()
         try scanner.scan(trait: ast)
@@ -71,10 +71,10 @@ final class TraitScannerTests: XCTestCase {
     }
 
     func testCompileTraitAddsVtableType_HasMethod() throws {
-        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.u8), arguments: [
-            Expression.PointerType(Expression.Identifier("Foo"))
+        let bar = TraitDeclaration.Member(name: "bar", type:  PointerType(FunctionType(name: nil, returnType: PrimitiveType(.u8), arguments: [
+            PointerType(Identifier("Foo"))
         ])))
-        let ast = TraitDeclaration(identifier: Expression.Identifier("Foo"),
+        let ast = TraitDeclaration(identifier: Identifier("Foo"),
                                    members: [bar],
                                    visibility: .privateVisibility)
 
@@ -87,10 +87,10 @@ final class TraitScannerTests: XCTestCase {
     }
 
     func testCompileTraitAddsVtableType_HasConstMethod() throws {
-        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.u8), arguments: [
-            Expression.PointerType(Expression.ConstType(Expression.Identifier("Foo")))
+        let bar = TraitDeclaration.Member(name: "bar", type:  PointerType(FunctionType(name: nil, returnType: PrimitiveType(.u8), arguments: [
+            PointerType(ConstType(Identifier("Foo")))
         ])))
-        let ast = TraitDeclaration(identifier: Expression.Identifier("Foo"),
+        let ast = TraitDeclaration(identifier: Identifier("Foo"),
                                    members: [bar],
                                    visibility: .privateVisibility)
 
@@ -103,10 +103,10 @@ final class TraitScannerTests: XCTestCase {
     }
     
     func testCompileTraitAddsTraitObjectType_VoidReturn() throws {
-        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.void), arguments: [
-            Expression.PointerType(Expression.Identifier("Foo"))
+        let bar = TraitDeclaration.Member(name: "bar", type:  PointerType(FunctionType(name: nil, returnType: PrimitiveType(.void), arguments: [
+            PointerType(Identifier("Foo"))
         ])))
-        let ast = TraitDeclaration(identifier: Expression.Identifier("Foo"),
+        let ast = TraitDeclaration(identifier: Identifier("Foo"),
                                    members: [bar],
                                    visibility: .privateVisibility)
         
@@ -119,10 +119,10 @@ final class TraitScannerTests: XCTestCase {
     }
 
     func testCompileTraitAddsTraitObjectType() throws {
-        let bar = TraitDeclaration.Member(name: "bar", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.u8), arguments: [
-            Expression.PointerType(Expression.Identifier("Foo"))
+        let bar = TraitDeclaration.Member(name: "bar", type:  PointerType(FunctionType(name: nil, returnType: PrimitiveType(.u8), arguments: [
+            PointerType(Identifier("Foo"))
         ])))
-        let ast = TraitDeclaration(identifier: Expression.Identifier("Foo"),
+        let ast = TraitDeclaration(identifier: Identifier("Foo"),
                                    members: [bar],
                                    visibility: .privateVisibility)
         
@@ -136,10 +136,10 @@ final class TraitScannerTests: XCTestCase {
     
     func testCompileTraitAddsToTypeTable_EmptyGenericTrait() throws {
         let ast = TraitDeclaration(
-            identifier: Expression.Identifier("Foo"),
+            identifier: Identifier("Foo"),
             typeArguments: [
-                Expression.GenericTypeArgument(
-                    identifier: Expression.Identifier("T"),
+                GenericTypeArgument(
+                    identifier: Identifier("T"),
                     constraints: [])
             ],
             members: [])
@@ -157,15 +157,15 @@ final class TraitScannerTests: XCTestCase {
     /// doesn't exactly match the type TraitScanner had intended to bind.
     func testVtableTypeAlreadyExistsAndDoesntMatchTheTypeWeWantedToBind() throws {
         let ast = TraitDeclaration(
-            identifier: Expression.Identifier("Foo"),
+            identifier: Identifier("Foo"),
             members: [
                 TraitDeclaration.Member(
                     name: "bar",
-                    type: Expression.PointerType(Expression.FunctionType(
+                    type: PointerType(FunctionType(
                         name: nil,
-                        returnType: Expression.PrimitiveType(.void),
+                        returnType: PrimitiveType(.void),
                         arguments: [
-                            Expression.PointerType(Expression.Identifier("Foo"))
+                            PointerType(Identifier("Foo"))
                         ])))
             ],
             visibility: .privateVisibility)
@@ -187,15 +187,15 @@ final class TraitScannerTests: XCTestCase {
     /// it DOES match the type TraitScanner had intended to bind.
     func testVtableTypeAlreadyExistsAndDefinitelyMatchesTheTypeWeWantedToBind() throws {
         let ast = TraitDeclaration(
-            identifier: Expression.Identifier("Foo"),
+            identifier: Identifier("Foo"),
             members: [
                 TraitDeclaration.Member(
                     name: "bar",
-                    type: Expression.PointerType(Expression.FunctionType(
+                    type: PointerType(FunctionType(
                         name: nil,
-                        returnType: Expression.PrimitiveType(.void),
+                        returnType: PrimitiveType(.void),
                         arguments: [
-                            Expression.PointerType(Expression.Identifier("Foo"))
+                            PointerType(Identifier("Foo"))
                         ])))
             ],
             visibility: .privateVisibility)
@@ -215,15 +215,15 @@ final class TraitScannerTests: XCTestCase {
     /// doesn't match the type TraitScanner had intended to bind.
     func testTraitObjectTypeAlreadyExistsAndDoesntMatchTheTypeWeWantedToBind() throws {
         let ast = TraitDeclaration(
-            identifier: Expression.Identifier("Foo"),
+            identifier: Identifier("Foo"),
             members: [
                 TraitDeclaration.Member(
                     name: "bar",
-                    type: Expression.PointerType(Expression.FunctionType(
+                    type: PointerType(FunctionType(
                         name: nil,
-                        returnType: Expression.PrimitiveType(.void),
+                        returnType: PrimitiveType(.void),
                         arguments: [
-                            Expression.PointerType(Expression.Identifier("Foo"))
+                            PointerType(Identifier("Foo"))
                         ])))
             ],
             visibility: .privateVisibility)
@@ -245,15 +245,15 @@ final class TraitScannerTests: XCTestCase {
     /// it DOES match the type TraitScanner had intended to bind.
     func testTraitObjectTypeAlreadyExistsAndDefinitelyMatchesTheTypeWeWantedToBind() throws {
         let ast = TraitDeclaration(
-            identifier: Expression.Identifier("Foo"),
+            identifier: Identifier("Foo"),
             members: [
                 TraitDeclaration.Member(
                     name: "bar",
-                    type: Expression.PointerType(Expression.FunctionType(
+                    type: PointerType(FunctionType(
                         name: nil,
-                        returnType: Expression.PrimitiveType(.void),
+                        returnType: PrimitiveType(.void),
                         arguments: [
-                            Expression.PointerType(Expression.Identifier("Foo"))
+                            PointerType(Identifier("Foo"))
                         ])))
             ],
             visibility: .privateVisibility)

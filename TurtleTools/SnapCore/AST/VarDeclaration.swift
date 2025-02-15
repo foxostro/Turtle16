@@ -10,7 +10,7 @@ import TurtleCore
 
 /// Declare a variable in the current scope
 public final class VarDeclaration: AbstractSyntaxTreeNode {
-    public let identifier: Expression.Identifier
+    public let identifier: Identifier
     public let explicitType: Expression?
     public let expression: Expression?
     public let storage: SymbolStorage
@@ -18,7 +18,7 @@ public final class VarDeclaration: AbstractSyntaxTreeNode {
     public let visibility: SymbolVisibility
     
     public init(sourceAnchor: SourceAnchor? = nil,
-                identifier: Expression.Identifier,
+                identifier: Identifier,
                 explicitType: Expression?,
                 expression: Expression?,
                 storage: SymbolStorage,

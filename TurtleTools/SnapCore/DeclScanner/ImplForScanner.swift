@@ -41,7 +41,7 @@ public struct ImplForScanner {
         // and deal with it later.
         let structType: SymbolType
         switch node.structTypeExpr {
-        case let app as Expression.GenericTypeApplication:
+        case let app as GenericTypeApplication:
             if let s = try? typeChecker.check(expression: node.structTypeExpr) {
                 structType = s
             }
@@ -95,8 +95,8 @@ public struct ImplForScanner {
                         symbols: symbols,
                         staticStorageFrame: staticStorageFrame,
                         memoryLayoutStrategy: memoryLayoutStrategy)
-                    let genericMutableSelfPointerType = try typeChecker.check(expression: Expression.PointerType(Expression.Identifier(traitType.name)))
-                    let concreteMutableSelfPointerType = try typeChecker.check(expression: Expression.PointerType(Expression.Identifier(structType.name)))
+                    let genericMutableSelfPointerType = try typeChecker.check(expression: PointerType(Identifier(traitType.name)))
+                    let concreteMutableSelfPointerType = try typeChecker.check(expression: PointerType(Identifier(structType.name)))
                     if expectedArgumentType == genericMutableSelfPointerType {
                         if actualArgumentType != concreteMutableSelfPointerType {
                             throw CompilerError(sourceAnchor: node.sourceAnchor, message: "`\(structType.name)' method `\(requiredMethodName)' has incompatible type for trait `\(traitType.name)'; expected `\(concreteMutableSelfPointerType)' argument, got `\(actualArgumentType)' instead")
@@ -128,23 +128,23 @@ public struct ImplForScanner {
                                        _ structType: StructTypeInfo,
                                        _ node: ImplFor) throws {
         let vtableType = try symbols.resolveType(identifier: traitType.nameOfVtableType).unwrapStructType()
-        var arguments: [Expression.StructInitializer.Argument] = []
+        var arguments: [StructInitializer.Argument] = []
         let sortedVtableSymbols = vtableType.symbols.symbolTable.sorted { $0.0 < $1.0 }
         for (methodName, methodSymbol) in sortedVtableSymbols {
-            let arg = Expression.StructInitializer.Argument(
+            let arg = StructInitializer.Argument(
                 name: methodName,
-                expr: Expression.Bitcast(
-                    expr: Expression.Unary(
+                expr: Bitcast(
+                    expr: Unary(
                         op: .ampersand,
-                        expression: Expression.Get(
-                            expr: Expression.Identifier(structType.name),
-                            member: Expression.Identifier(methodName))),
-                    targetType: Expression.PrimitiveType(methodSymbol.type)))
+                        expression: Get(
+                            expr: Identifier(structType.name),
+                            member: Identifier(methodName))),
+                    targetType: PrimitiveType(methodSymbol.type)))
             arguments.append(arg)
         }
         
         let visibility: SymbolVisibility
-        if let identifier = node.traitTypeExpr as? Expression.Identifier {
+        if let identifier = node.traitTypeExpr as? Identifier {
             let typeRecord = try symbols.resolveTypeRecord(
                 sourceAnchor: node.sourceAnchor,
                 identifier: identifier.identifier)
@@ -155,12 +155,12 @@ public struct ImplForScanner {
         }
         
         let vtableInstanceDecl = VarDeclaration(
-            identifier: Expression.Identifier(nameOfVtableInstance(
+            identifier: Identifier(nameOfVtableInstance(
                 traitName: traitType.name,
                 structName: structType.name)),
-            explicitType: Expression.Identifier(vtableType.name),
-            expression: Expression.StructInitializer(
-                identifier: Expression.Identifier(traitType.nameOfVtableType),
+            explicitType: Identifier(vtableType.name),
+            expression: StructInitializer(
+                identifier: Identifier(traitType.nameOfVtableType),
                 arguments: arguments),
             storage: .staticStorage,
             isMutable: false,

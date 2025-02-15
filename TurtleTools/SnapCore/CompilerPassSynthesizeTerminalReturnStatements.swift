@@ -13,11 +13,11 @@ public class CompilerPassSynthesizeTerminalReturnStatements: CompilerPassWithDec
     public override func visit(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
         FunctionDeclaration(
             sourceAnchor: node.sourceAnchor,
-            identifier: try visit(identifier: node.identifier) as! Expression.Identifier,
-            functionType: try visit(expr: node.functionType) as! Expression.FunctionType,
+            identifier: try visit(identifier: node.identifier) as! Identifier,
+            functionType: try visit(expr: node.functionType) as! FunctionType,
             argumentNames: node.argumentNames,
             typeArguments: try node.typeArguments.compactMap {
-                try visit(genericTypeArgument: $0) as! Expression.GenericTypeArgument?
+                try visit(genericTypeArgument: $0) as! GenericTypeArgument?
             },
             body: try visitFunctionBody(func: node),
             visibility: node.visibility,

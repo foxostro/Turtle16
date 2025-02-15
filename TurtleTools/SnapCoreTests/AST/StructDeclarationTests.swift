@@ -12,35 +12,35 @@ import TurtleCore
 
 final class StructDeclarationTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
-        XCTAssertNotEqual(StructDeclaration(identifier: Expression.Identifier("foo"), members: []),
+        XCTAssertNotEqual(StructDeclaration(identifier: Identifier("foo"), members: []),
                           CommentNode(string: ""))
     }
     
     func testDoesNotEqualNodeWithDifferentIdentifier() {
-        XCTAssertNotEqual(StructDeclaration(identifier: Expression.Identifier("foo"),
+        XCTAssertNotEqual(StructDeclaration(identifier: Identifier("foo"),
                                             members: []),
-                          StructDeclaration(identifier: Expression.Identifier("bar"),
+                          StructDeclaration(identifier: Identifier("bar"),
                                             members: []))
     }
     
     func testDoesNotEqualNodeWithDifferentMembers() {
-        XCTAssertNotEqual(StructDeclaration(identifier: Expression.Identifier("foo"),
-                                            members: [StructDeclaration.Member(name: "bar", type: Expression.PrimitiveType(.u8))]),
-                          StructDeclaration(identifier: Expression.Identifier("foo"),
-                                            members: [StructDeclaration.Member(name: "bar", type: Expression.PrimitiveType(.u16))]))
+        XCTAssertNotEqual(StructDeclaration(identifier: Identifier("foo"),
+                                            members: [StructDeclaration.Member(name: "bar", type: PrimitiveType(.u8))]),
+                          StructDeclaration(identifier: Identifier("foo"),
+                                            members: [StructDeclaration.Member(name: "bar", type: PrimitiveType(.u16))]))
     }
     
     func testSame() {
-        XCTAssertEqual(StructDeclaration(identifier: Expression.Identifier("foo"),
+        XCTAssertEqual(StructDeclaration(identifier: Identifier("foo"),
                                          members: []),
-                       StructDeclaration(identifier: Expression.Identifier("foo"),
+                       StructDeclaration(identifier: Identifier("foo"),
                                          members: []))
     }
     
     func testHash() {
-        XCTAssertEqual(StructDeclaration(identifier: Expression.Identifier("foo"),
+        XCTAssertEqual(StructDeclaration(identifier: Identifier("foo"),
                                          members: []).hashValue,
-                       StructDeclaration(identifier: Expression.Identifier("foo"),
+                       StructDeclaration(identifier: Identifier("foo"),
                                          members: []).hashValue)
     }
 }

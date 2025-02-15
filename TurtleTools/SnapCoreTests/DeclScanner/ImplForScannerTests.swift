@@ -14,16 +14,16 @@ final class ImplForScannerTests: XCTestCase {
     fileprivate func scanSerialTrait(_ symbols: SymbolTable) throws {
         
         let traitDecl = TraitDeclaration(
-            identifier: Expression.Identifier("Serial"),
+            identifier: Identifier("Serial"),
             members: [
                 TraitDeclaration.Member(
                     name: "puts",
-                    type:  Expression.PointerType(Expression.FunctionType(
+                    type:  PointerType(FunctionType(
                         name: nil,
-                        returnType: Expression.PrimitiveType(.void),
+                        returnType: PrimitiveType(.void),
                         arguments: [
-                            Expression.PointerType(Expression.Identifier("Serial")),
-                            Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
+                            PointerType(Identifier("Serial")),
+                            DynamicArrayType(PrimitiveType(.u8))
                         ])))
             ],
             visibility: .privateVisibility)
@@ -35,7 +35,7 @@ final class ImplForScannerTests: XCTestCase {
     fileprivate func scanSerialFake(_ symbols: SymbolTable) throws {
         
         let fake = StructDeclaration(
-            identifier: Expression.Identifier("SerialFake"),
+            identifier: Identifier("SerialFake"),
             members: [])
         try StructScanner(
             symbols: symbols,
@@ -51,18 +51,18 @@ final class ImplForScannerTests: XCTestCase {
         
         let ast = ImplFor(
             typeArguments: [],
-            traitTypeExpr: Expression.Identifier("Serial"),
-            structTypeExpr: Expression.Identifier("SerialFake"),
+            traitTypeExpr: Identifier("Serial"),
+            structTypeExpr: Identifier("SerialFake"),
             children: [
                 FunctionDeclaration(
-                    identifier: Expression.Identifier("puts"),
-                    functionType: Expression.FunctionType(
+                    identifier: Identifier("puts"),
+                    functionType: FunctionType(
                         name: "puts",
-                        returnType: Expression.PrimitiveType(.void),
+                        returnType: PrimitiveType(.void),
                         arguments: [
-                            Expression.PointerType(
-                                Expression.Identifier("Serial")),
-                            Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
+                            PointerType(
+                                Identifier("Serial")),
+                            DynamicArrayType(PrimitiveType(.u8))
                         ]),
                     argumentNames: ["self", "s"],
                     body: Block())
@@ -94,8 +94,8 @@ final class ImplForScannerTests: XCTestCase {
         
         let ast = ImplFor(
             typeArguments: [],
-            traitTypeExpr: Expression.Identifier("Serial"),
-            structTypeExpr: Expression.Identifier("SerialFake"),
+            traitTypeExpr: Identifier("Serial"),
+            structTypeExpr: Identifier("SerialFake"),
             children: [])
         
         let scanner = ImplForScanner(
@@ -118,16 +118,16 @@ final class ImplForScannerTests: XCTestCase {
         
         let ast = ImplFor(
             typeArguments: [],
-            traitTypeExpr: Expression.Identifier("Serial"),
-            structTypeExpr: Expression.Identifier("SerialFake"),
+            traitTypeExpr: Identifier("Serial"),
+            structTypeExpr: Identifier("SerialFake"),
             children: [
                 FunctionDeclaration(
-                    identifier: Expression.Identifier("puts"),
-                    functionType: Expression.FunctionType(
+                    identifier: Identifier("puts"),
+                    functionType: FunctionType(
                         name: "puts",
-                        returnType: Expression.PrimitiveType(.void),
+                        returnType: PrimitiveType(.void),
                         arguments: [
-                            Expression.PointerType(Expression.Identifier("SerialFake"))
+                            PointerType(Identifier("SerialFake"))
                         ]),
                     argumentNames: ["self"],
                     body: Block())
@@ -154,17 +154,17 @@ final class ImplForScannerTests: XCTestCase {
         
         let ast = ImplFor(
             typeArguments: [],
-            traitTypeExpr: Expression.Identifier("Serial"),
-            structTypeExpr: Expression.Identifier("SerialFake"),
+            traitTypeExpr: Identifier("Serial"),
+            structTypeExpr: Identifier("SerialFake"),
             children: [
                 FunctionDeclaration(
-                    identifier: Expression.Identifier("puts"),
-                    functionType: Expression.FunctionType(
+                    identifier: Identifier("puts"),
+                    functionType: FunctionType(
                         name: "puts",
-                        returnType: Expression.PrimitiveType(.void),
+                        returnType: PrimitiveType(.void),
                         arguments: [
-                            Expression.PointerType(Expression.Identifier("SerialFake")),
-                                                      Expression.PrimitiveType(.u8)
+                            PointerType(Identifier("SerialFake")),
+                                                      PrimitiveType(.u8)
                         ]),
                     argumentNames: ["self", "s"],
                     body: Block())
@@ -191,17 +191,17 @@ final class ImplForScannerTests: XCTestCase {
         
         let ast = ImplFor(
             typeArguments: [],
-            traitTypeExpr: Expression.Identifier("Serial"),
-            structTypeExpr: Expression.Identifier("SerialFake"),
+            traitTypeExpr: Identifier("Serial"),
+            structTypeExpr: Identifier("SerialFake"),
             children: [
                 FunctionDeclaration(
-                    identifier: Expression.Identifier("puts"),
-                    functionType: Expression.FunctionType(
+                    identifier: Identifier("puts"),
+                    functionType: FunctionType(
                         name: "puts",
-                        returnType: Expression.PrimitiveType(.void),
+                        returnType: PrimitiveType(.void),
                         arguments: [
-                            Expression.PrimitiveType(.u8),
-                            Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
+                            PrimitiveType(.u8),
+                            DynamicArrayType(PrimitiveType(.u8))
                         ]),
                     argumentNames: ["self", "s"],
                     body: Block())
@@ -228,21 +228,21 @@ final class ImplForScannerTests: XCTestCase {
         
         let ast = ImplFor(
             typeArguments: [],
-            traitTypeExpr: Expression.Identifier("Serial"),
-            structTypeExpr: Expression.Identifier("SerialFake"),
+            traitTypeExpr: Identifier("Serial"),
+            structTypeExpr: Identifier("SerialFake"),
             children: [
                 FunctionDeclaration(
-                    identifier: Expression.Identifier("puts"),
-                    functionType: Expression.FunctionType(
+                    identifier: Identifier("puts"),
+                    functionType: FunctionType(
                         name: "puts",
-                        returnType: Expression.PrimitiveType(.bool),
+                        returnType: PrimitiveType(.bool),
                         arguments: [
-                            Expression.PointerType(Expression.Identifier("SerialFake")),
-                            Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
+                            PointerType(Identifier("SerialFake")),
+                            DynamicArrayType(PrimitiveType(.u8))
                         ]),
                     argumentNames: ["self", "s"],
                     body: Block(children: [
-                        Return(Expression.LiteralBool(false))
+                        Return(LiteralBool(false))
                     ]))
             ])
             .reconnect(parent: nil)

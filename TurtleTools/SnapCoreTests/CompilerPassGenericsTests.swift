@@ -29,7 +29,7 @@ final class CompilerPassGenericsTests: XCTestCase {
     
     fileprivate func addGenericFunctionSymbol(_ symbols: SymbolTable) -> SymbolTable {
         let template = makeGenericFunctionDeclaration(symbols)
-        let genericFunctionType = Expression.GenericFunctionType(template: template)
+        let genericFunctionType = GenericFunctionType(template: template)
         symbols.bind(identifier: "foo", symbol: Symbol(type: .genericFunction(genericFunctionType)))
         return symbols
     }
@@ -38,21 +38,21 @@ final class CompilerPassGenericsTests: XCTestCase {
     // instead reference the concrete instantiation of the function.
     func testRewriteGenericFunctionApplicationExpressionToConcreteInstantiation() throws {
         let symbols = addGenericFunctionSymbol(SymbolTable())
-        let expr = Expression.GenericTypeApplication(
-            identifier: Expression.Identifier("foo"),
-            arguments: [Expression.PrimitiveType(.constU16)])
+        let expr = GenericTypeApplication(
+            identifier: Identifier("foo"),
+            arguments: [PrimitiveType(.constU16)])
         let compiler = CompilerPassGenerics(symbols: symbols)
         let actual = try compiler.visit(expr: expr)
-        let expected = Expression.Identifier("foo[const u16]")
+        let expected = Identifier("foo[const u16]")
         XCTAssertEqual(actual, expected)
     }
     
     // The concrete instantiation of the function is added to the symbol table.
     func testGenericFunctionApplicationCausesConcreteFunctionToBeAddedToSymbolTable() throws {
         let symbols = addGenericFunctionSymbol(SymbolTable())
-        let expr = Expression.GenericTypeApplication(
-            identifier: Expression.Identifier("foo"),
-            arguments: [Expression.PrimitiveType(.constU16)])
+        let expr = GenericTypeApplication(
+            identifier: Identifier("foo"),
+            arguments: [PrimitiveType(.constU16)])
         let compiler = CompilerPassGenerics(symbols: symbols)
         _ = try compiler.visit(expr: expr)
         
@@ -90,41 +90,41 @@ final class CompilerPassGenericsTests: XCTestCase {
         
         let expected = Block(symbols: blockSymbols, children: [
             FunctionDeclaration(
-                identifier: Expression.Identifier("foo[const u16]"),
-                functionType: Expression.FunctionType(
+                identifier: Identifier("foo[const u16]"),
+                functionType: FunctionType(
                     name: "foo[const u16]",
-                    returnType: Expression.PrimitiveType(.constU16),
-                    arguments: [Expression.PrimitiveType(.constU16)]),
+                    returnType: PrimitiveType(.constU16),
+                    arguments: [PrimitiveType(.constU16)]),
                 argumentNames: ["a"],
                 body: Block(children: [
-                    Return(Expression.Identifier("a"))
+                    Return(Identifier("a"))
                 ]),
                 visibility: .privateVisibility,
                 symbols: funSym),
-            Expression.Identifier("foo[const u16]")
+            Identifier("foo[const u16]")
         ])
         
         let ast0 = Block(symbols: blockSymbols, children: [
             FunctionDeclaration(
-                identifier: Expression.Identifier("foo"),
-                functionType: Expression.FunctionType(
+                identifier: Identifier("foo"),
+                functionType: FunctionType(
                     name: "foo",
-                    returnType: Expression.Identifier("T"),
-                    arguments: [Expression.Identifier("T")]),
+                    returnType: Identifier("T"),
+                    arguments: [Identifier("T")]),
                 argumentNames: ["a"],
                 typeArguments: [
-                    Expression.GenericTypeArgument(
-                        identifier: Expression.Identifier("T"),
+                    GenericTypeArgument(
+                        identifier: Identifier("T"),
                         constraints: [])
                 ],
                 body: Block(symbols: SymbolTable(parent: funSym), children: [
-                    Return(Expression.Identifier("a"))
+                    Return(Identifier("a"))
                 ]),
                 visibility: .privateVisibility,
                 symbols: funSym),
-            Expression.GenericTypeApplication(
-                identifier: Expression.Identifier("foo"),
-                arguments: [Expression.PrimitiveType(.constU16)])
+            GenericTypeApplication(
+                identifier: Identifier("foo"),
+                arguments: [PrimitiveType(.constU16)])
         ])
         
         let ast1 = try CompilerPassGenerics(symbols: symbols).run(ast0)
@@ -141,43 +141,43 @@ final class CompilerPassGenericsTests: XCTestCase {
         
         let expected = Block(symbols: blockSymbols, children: [
             FunctionDeclaration(
-                identifier: Expression.Identifier("foo[u16]"),
-                functionType: Expression.FunctionType(
+                identifier: Identifier("foo[u16]"),
+                functionType: FunctionType(
                     name: "foo[u16]",
-                    returnType: Expression.PrimitiveType(.u16),
-                    arguments: [Expression.PrimitiveType(.u16)]),
+                    returnType: PrimitiveType(.u16),
+                    arguments: [PrimitiveType(.u16)]),
                 argumentNames: ["a"],
                 body: Block(children: [
-                    Return(Expression.Identifier("a"))
+                    Return(Identifier("a"))
                 ]),
                 visibility: .privateVisibility,
                 symbols: funSym),
-            Expression.Call(
-                callee: Expression.Identifier("foo[u16]"),
-                arguments: [Expression.PrimitiveType(.u16)])
+            Call(
+                callee: Identifier("foo[u16]"),
+                arguments: [PrimitiveType(.u16)])
         ])
         
         let ast0 = Block(symbols: blockSymbols, children: [
             FunctionDeclaration(
-                identifier: Expression.Identifier("foo"),
-                functionType: Expression.FunctionType(
+                identifier: Identifier("foo"),
+                functionType: FunctionType(
                     name: "foo",
-                    returnType: Expression.Identifier("T"),
-                    arguments: [Expression.Identifier("T")]),
+                    returnType: Identifier("T"),
+                    arguments: [Identifier("T")]),
                 argumentNames: ["a"],
                 typeArguments: [
-                    Expression.GenericTypeArgument(
-                        identifier: Expression.Identifier("T"),
+                    GenericTypeArgument(
+                        identifier: Identifier("T"),
                         constraints: [])
                 ],
                 body: Block(symbols: SymbolTable(parent: funSym), children: [
-                    Return(Expression.Identifier("a"))
+                    Return(Identifier("a"))
                 ]),
                 visibility: .privateVisibility,
                 symbols: funSym),
-            Expression.Call(
-                callee: Expression.Identifier("foo"),
-                arguments: [Expression.PrimitiveType(.u16)])
+            Call(
+                callee: Identifier("foo"),
+                arguments: [PrimitiveType(.u16)])
         ])
         
         let ast1 = try CompilerPassGenerics(symbols: symbols).run(ast0)
@@ -189,31 +189,31 @@ final class CompilerPassGenericsTests: XCTestCase {
         let symbols = SymbolTable()
         let funSym = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))
         let bodySym = SymbolTable(parent: funSym)
-        let functionType = Expression.FunctionType(
+        let functionType = FunctionType(
             name: "foo",
-            returnType: Expression.Identifier("T"),
-            arguments: [Expression.Identifier("T")])
+            returnType: Identifier("T"),
+            arguments: [Identifier("T")])
         let template = FunctionDeclaration(
-            identifier: Expression.Identifier("foo"),
+            identifier: Identifier("foo"),
             functionType: functionType,
             argumentNames: ["a"],
             typeArguments: [
-                Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])
+                GenericTypeArgument(identifier: Identifier("T"), constraints: [])
             ],
             body: Block(symbols: bodySym),
             visibility: .privateVisibility,
             symbols: funSym)
-        let genericFunctionType = Expression.GenericFunctionType(template: template)
+        let genericFunctionType = GenericFunctionType(template: template)
         symbols.bind(
             identifier: "foo",
             symbol: Symbol(type: .genericFunction(genericFunctionType)))
         
         let compiler = CompilerPassGenerics(symbols: symbols)
-        let expr = Expression.GenericTypeApplication(
-            identifier: Expression.Identifier("foo"),
+        let expr = GenericTypeApplication(
+            identifier: Identifier("foo"),
             arguments: [
-                Expression.PrimitiveType(.u16),
-                Expression.PrimitiveType(.u16)
+                PrimitiveType(.u16),
+                PrimitiveType(.u16)
             ])
         XCTAssertThrowsError(try compiler.visit(expr: expr)) {
             let compilerError = $0 as? CompilerError
@@ -226,32 +226,32 @@ final class CompilerPassGenericsTests: XCTestCase {
         let symbols = SymbolTable()
         let funSym = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))
         let bodySym = SymbolTable(parent: funSym)
-        let functionType = Expression.FunctionType(
+        let functionType = FunctionType(
             name: "foo",
-            returnType: Expression.Identifier("T"),
-            arguments: [Expression.Identifier("T")])
+            returnType: Identifier("T"),
+            arguments: [Identifier("T")])
         let template = FunctionDeclaration(
-            identifier: Expression.Identifier("foo"),
+            identifier: Identifier("foo"),
             functionType: functionType,
             argumentNames: ["a"],
             typeArguments: [
-                Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])
+                GenericTypeArgument(identifier: Identifier("T"), constraints: [])
             ],
             body: Block(symbols: bodySym),
             visibility: .privateVisibility,
             symbols: funSym)
-        let genericFunctionType = Expression.GenericFunctionType(template: template)
+        let genericFunctionType = GenericFunctionType(template: template)
         symbols.bind(
             identifier: "foo",
             symbol: Symbol(type: .genericFunction(genericFunctionType)))
 
-        let expr = Expression.Unary(
+        let expr = Unary(
             op: .ampersand,
-            expression: Expression.GenericTypeApplication(
-                identifier: Expression.Identifier("foo"),
+            expression: GenericTypeApplication(
+                identifier: Identifier("foo"),
                 arguments: [
-                    Expression.PrimitiveType(.constU16),
-                    Expression.PrimitiveType(.constU16)
+                    PrimitiveType(.constU16),
+                    PrimitiveType(.constU16)
                 ]))
         let compiler = CompilerPassGenerics(symbols: symbols)
         XCTAssertThrowsError(try compiler.visit(expr: expr)) {
@@ -265,16 +265,16 @@ final class CompilerPassGenericsTests: XCTestCase {
     func testGenericStructDeclarationsAreErasedFromAST() throws {
         let ast0 = Block(children: [
             StructDeclaration(
-                identifier: Expression.Identifier("foo"),
+                identifier: Identifier("foo"),
                 typeArguments: [
-                    Expression.GenericTypeArgument(
-                        identifier: Expression.Identifier("T"),
+                    GenericTypeArgument(
+                        identifier: Identifier("T"),
                         constraints: [])
                 ],
                 members: [
                     StructDeclaration.Member(
                         name: "bar",
-                        type: Expression.Identifier("T"))
+                        type: Identifier("T"))
                 ],
                 visibility: .privateVisibility,
                 isConst: false)
@@ -291,27 +291,27 @@ final class CompilerPassGenericsTests: XCTestCase {
         
         let ast0 = Block(symbols: symbols, children: [
             StructDeclaration(
-                identifier: Expression.Identifier("foo"),
+                identifier: Identifier("foo"),
                 typeArguments: [
-                    Expression.GenericTypeArgument(
-                        identifier: Expression.Identifier("T"),
+                    GenericTypeArgument(
+                        identifier: Identifier("T"),
                         constraints: [])
                 ],
                 members: [
                     StructDeclaration.Member(
                         name: "bar",
-                        type: Expression.Identifier("T"))
+                        type: Identifier("T"))
                 ],
                 visibility: .privateVisibility,
                 isConst: false),
-            Expression.StructInitializer(
-                expr: Expression.GenericTypeApplication(
-                    identifier: Expression.Identifier("foo"),
-                    arguments: [Expression.PrimitiveType(.u16)]),
+            StructInitializer(
+                expr: GenericTypeApplication(
+                    identifier: Identifier("foo"),
+                    arguments: [PrimitiveType(.u16)]),
                 arguments: [
-                    Expression.StructInitializer.Argument(
+                    StructInitializer.Argument(
                         name: "T",
-                        expr: Expression.PrimitiveType(.u16))
+                        expr: PrimitiveType(.u16))
                 ])
         ])
         
@@ -331,46 +331,46 @@ final class CompilerPassGenericsTests: XCTestCase {
     func testGenericTypeApplicationCausesConcreteStructToBeAddedToAST() throws {
         let expected = Block(children: [
             StructDeclaration(
-                identifier: Expression.Identifier("foo[u16]"),
+                identifier: Identifier("foo[u16]"),
                 members: [
                     StructDeclaration.Member(
                         name: "bar",
-                        type: Expression.PrimitiveType(.u16))
+                        type: PrimitiveType(.u16))
                 ],
                 visibility: .privateVisibility,
                 isConst: false),
-            Expression.StructInitializer(
-                expr: Expression.Identifier("foo[u16]"),
+            StructInitializer(
+                expr: Identifier("foo[u16]"),
                 arguments: [
-                    Expression.StructInitializer.Argument(
+                    StructInitializer.Argument(
                         name: "T",
-                        expr: Expression.PrimitiveType(.u16))
+                        expr: PrimitiveType(.u16))
                 ])
         ])
         
         let ast0 = Block(children: [
             StructDeclaration(
-                identifier: Expression.Identifier("foo"),
+                identifier: Identifier("foo"),
                 typeArguments: [
-                    Expression.GenericTypeArgument(
-                        identifier: Expression.Identifier("T"),
+                    GenericTypeArgument(
+                        identifier: Identifier("T"),
                         constraints: [])
                 ],
                 members: [
                     StructDeclaration.Member(
                         name: "bar",
-                        type: Expression.Identifier("T"))
+                        type: Identifier("T"))
                 ],
                 visibility: .privateVisibility,
                 isConst: false),
-            Expression.StructInitializer(
-                expr: Expression.GenericTypeApplication(
-                    identifier: Expression.Identifier("foo"),
-                    arguments: [Expression.PrimitiveType(.u16)]),
+            StructInitializer(
+                expr: GenericTypeApplication(
+                    identifier: Identifier("foo"),
+                    arguments: [PrimitiveType(.u16)]),
                 arguments: [
-                    Expression.StructInitializer.Argument(
+                    StructInitializer.Argument(
                         name: "T",
-                        expr: Expression.PrimitiveType(.u16))
+                        expr: PrimitiveType(.u16))
                 ])
         ])
         
@@ -395,29 +395,29 @@ final class CompilerPassGenericsTests: XCTestCase {
             symbols: symbols,
             children: [
                 StructDeclaration(
-                    identifier: Expression.Identifier("MyStruct[u16]"),
+                    identifier: Identifier("MyStruct[u16]"),
                     members: []),
                 Impl(
                     typeArguments: [],
-                    structTypeExpr: Expression.Identifier("MyStruct[u16]"),
+                    structTypeExpr: Identifier("MyStruct[u16]"),
                     children: [
                         FunctionDeclaration(
-                            identifier: Expression.Identifier("foo"),
-                            functionType: Expression.FunctionType(
+                            identifier: Identifier("foo"),
+                            functionType: FunctionType(
                                 name: "foo",
-                                returnType: Expression.PrimitiveType(.u8),
-                                arguments: [Expression.PrimitiveType(.u8)]),
+                                returnType: PrimitiveType(.u8),
+                                arguments: [PrimitiveType(.u8)]),
                             argumentNames: ["arg1"],
                             typeArguments: [],
                             body: Block(
                                 symbols: bodySym,
                                 children: [
-                                    Return(Expression.Identifier("arg1"))
+                                    Return(Identifier("arg1"))
                                 ]),
                             symbols: funSym)
                     ]),
-                Expression.StructInitializer(
-                    expr: Expression.Identifier("MyStruct[u16]"),
+                StructInitializer(
+                    expr: Identifier("MyStruct[u16]"),
                     arguments: [],
                     id: structInitializerID)
             ],
@@ -427,46 +427,46 @@ final class CompilerPassGenericsTests: XCTestCase {
             symbols: symbols,
             children: [
                 StructDeclaration(
-                    identifier: Expression.Identifier("MyStruct"),
+                    identifier: Identifier("MyStruct"),
                     typeArguments: [
-                        Expression.GenericTypeArgument(
-                            identifier: Expression.Identifier("T"),
+                        GenericTypeArgument(
+                            identifier: Identifier("T"),
                             constraints: [])
                     ],
                     members: []),
                 Impl(
                     typeArguments: [
-                        Expression.GenericTypeArgument(
-                            identifier: Expression.Identifier("T"),
+                        GenericTypeArgument(
+                            identifier: Identifier("T"),
                             constraints: [])
                     ],
-                    structTypeExpr: Expression.GenericTypeApplication(
-                        identifier: Expression.Identifier("MyStruct"),
+                    structTypeExpr: GenericTypeApplication(
+                        identifier: Identifier("MyStruct"),
                         arguments: [
-                            Expression.Identifier("T")
+                            Identifier("T")
                         ]),
                     children: [
                         FunctionDeclaration(
-                            identifier: Expression.Identifier("foo"),
-                            functionType: Expression.FunctionType(
+                            identifier: Identifier("foo"),
+                            functionType: FunctionType(
                                 name: "foo",
-                                returnType: Expression.PrimitiveType(.u8),
-                                arguments: [Expression.PrimitiveType(.u8)]),
+                                returnType: PrimitiveType(.u8),
+                                arguments: [PrimitiveType(.u8)]),
                             argumentNames: ["arg1"],
                             typeArguments: [],
                             body: Block(
                                 symbols: bodySym,
                                 children: [
-                                    Return(Expression.Identifier("arg1"))
+                                    Return(Identifier("arg1"))
                                 ]),
                             symbols: funSym,
                             id: myStructFooID)
                     ]),
-                Expression.StructInitializer(
-                    expr: Expression.GenericTypeApplication(
-                        identifier: Expression.Identifier("MyStruct"),
+                StructInitializer(
+                    expr: GenericTypeApplication(
+                        identifier: Identifier("MyStruct"),
                         arguments: [
-                            Expression.PrimitiveType(.u16)
+                            PrimitiveType(.u16)
                         ]),
                     arguments: [],
                     id: structInitializerID),
@@ -491,29 +491,29 @@ final class CompilerPassGenericsTests: XCTestCase {
             symbols: symbols,
             children: [
                 StructDeclaration(
-                    identifier: Expression.Identifier("MyStruct[u16]"),
+                    identifier: Identifier("MyStruct[u16]"),
                     members: []),
                 Impl(
                     typeArguments: [],
-                    structTypeExpr: Expression.Identifier("MyStruct[u16]"),
+                    structTypeExpr: Identifier("MyStruct[u16]"),
                     children: [
                         FunctionDeclaration(
-                            identifier: Expression.Identifier("foo"),
-                            functionType: Expression.FunctionType(
+                            identifier: Identifier("foo"),
+                            functionType: FunctionType(
                                 name: "foo",
-                                returnType: Expression.PrimitiveType(.u16),
-                                arguments: [Expression.PrimitiveType(.u16)]),
+                                returnType: PrimitiveType(.u16),
+                                arguments: [PrimitiveType(.u16)]),
                             argumentNames: ["arg1"],
                             typeArguments: [],
                             body: Block(
                                 symbols: bodySym,
                                 children: [
-                                    Return(Expression.Identifier("arg1"))
+                                    Return(Identifier("arg1"))
                                 ]),
                             symbols: funSym)
                     ]),
-                Expression.StructInitializer(
-                    expr: Expression.Identifier("MyStruct[u16]"),
+                StructInitializer(
+                    expr: Identifier("MyStruct[u16]"),
                     arguments: [])
             ])
         
@@ -521,45 +521,45 @@ final class CompilerPassGenericsTests: XCTestCase {
             symbols: symbols,
             children: [
                 StructDeclaration(
-                    identifier: Expression.Identifier("MyStruct"),
+                    identifier: Identifier("MyStruct"),
                     typeArguments: [
-                        Expression.GenericTypeArgument(
-                            identifier: Expression.Identifier("T"),
+                        GenericTypeArgument(
+                            identifier: Identifier("T"),
                             constraints: [])
                     ],
                     members: []),
                 Impl(
                     typeArguments: [
-                        Expression.GenericTypeArgument(
-                            identifier: Expression.Identifier("T"),
+                        GenericTypeArgument(
+                            identifier: Identifier("T"),
                             constraints: [])
                     ],
-                    structTypeExpr: Expression.GenericTypeApplication(
-                        identifier: Expression.Identifier("MyStruct"),
+                    structTypeExpr: GenericTypeApplication(
+                        identifier: Identifier("MyStruct"),
                         arguments: [
-                            Expression.Identifier("T")
+                            Identifier("T")
                         ]),
                     children: [
                         FunctionDeclaration(
-                            identifier: Expression.Identifier("foo"),
-                            functionType: Expression.FunctionType(
+                            identifier: Identifier("foo"),
+                            functionType: FunctionType(
                                 name: "foo",
-                                returnType: Expression.Identifier("T"),
-                                arguments: [Expression.Identifier("T")]),
+                                returnType: Identifier("T"),
+                                arguments: [Identifier("T")]),
                             argumentNames: ["arg1"],
                             typeArguments: [],
                             body: Block(
                                 symbols: bodySym,
                                 children: [
-                                    Return(Expression.Identifier("arg1"))
+                                    Return(Identifier("arg1"))
                                 ]),
                             symbols: funSym)
                     ]),
-                Expression.StructInitializer(
-                    expr: Expression.GenericTypeApplication(
-                        identifier: Expression.Identifier("MyStruct"),
+                StructInitializer(
+                    expr: GenericTypeApplication(
+                        identifier: Identifier("MyStruct"),
                         arguments: [
-                            Expression.PrimitiveType(.u16)
+                            PrimitiveType(.u16)
                         ]),
                     arguments: []),
             ],
@@ -578,66 +578,66 @@ final class CompilerPassGenericsTests: XCTestCase {
         let ast0 = Block(
             children: [
                 StructDeclaration(
-                    identifier: Expression.Identifier("MyStruct"),
+                    identifier: Identifier("MyStruct"),
                     typeArguments: [
-                        Expression.GenericTypeArgument(
-                            identifier: Expression.Identifier("T"),
+                        GenericTypeArgument(
+                            identifier: Identifier("T"),
                             constraints: [])
                     ],
                     members: []),
                 Impl(
                     typeArguments: [
-                        Expression.GenericTypeArgument(
-                            identifier: Expression.Identifier("T"),
+                        GenericTypeArgument(
+                            identifier: Identifier("T"),
                             constraints: [])
                     ],
-                    structTypeExpr: Expression.GenericTypeApplication(
-                        identifier: Expression.Identifier("MyStruct"),
+                    structTypeExpr: GenericTypeApplication(
+                        identifier: Identifier("MyStruct"),
                         arguments: [
-                            Expression.Identifier("T")
+                            Identifier("T")
                         ]),
                     children: [
                         FunctionDeclaration(
-                            identifier: Expression.Identifier("foo"),
-                            functionType: Expression.FunctionType(
+                            identifier: Identifier("foo"),
+                            functionType: FunctionType(
                                 name: "foo",
-                                returnType: Expression.Identifier("T"),
-                                arguments: [Expression.Identifier("T")]),
+                                returnType: Identifier("T"),
+                                arguments: [Identifier("T")]),
                             argumentNames: ["arg1"],
                             typeArguments: [],
                             body: Block(children: [
-                                Return(Expression.Identifier("arg1"))
+                                Return(Identifier("arg1"))
                             ]))
                     ]),
                 Impl(
                     typeArguments: [
-                        Expression.GenericTypeArgument(
-                            identifier: Expression.Identifier("T"),
+                        GenericTypeArgument(
+                            identifier: Identifier("T"),
                             constraints: [])
                     ],
-                    structTypeExpr: Expression.GenericTypeApplication(
-                        identifier: Expression.Identifier("MyStruct"),
+                    structTypeExpr: GenericTypeApplication(
+                        identifier: Identifier("MyStruct"),
                         arguments: [
-                            Expression.Identifier("T")
+                            Identifier("T")
                         ]),
                     children: [
                         FunctionDeclaration(
-                            identifier: Expression.Identifier("bar"),
-                            functionType: Expression.FunctionType(
+                            identifier: Identifier("bar"),
+                            functionType: FunctionType(
                                 name: "bar",
-                                returnType: Expression.Identifier("T"),
-                                arguments: [Expression.Identifier("T")]),
+                                returnType: Identifier("T"),
+                                arguments: [Identifier("T")]),
                             argumentNames: ["arg1"],
                             typeArguments: [],
                             body: Block(children: [
-                                Return(Expression.Identifier("arg1"))
+                                Return(Identifier("arg1"))
                             ]))
                     ]),
-                Expression.StructInitializer(
-                    expr: Expression.GenericTypeApplication(
-                        identifier: Expression.Identifier("MyStruct"),
+                StructInitializer(
+                    expr: GenericTypeApplication(
+                        identifier: Identifier("MyStruct"),
                         arguments: [
-                            Expression.PrimitiveType(.u16)
+                            PrimitiveType(.u16)
                         ]),
                     arguments: []),
             ])
@@ -646,42 +646,42 @@ final class CompilerPassGenericsTests: XCTestCase {
         let expected = Block(
             children: [
                 StructDeclaration(
-                    identifier: Expression.Identifier("MyStruct[u16]"),
+                    identifier: Identifier("MyStruct[u16]"),
                     members: []),
                 Impl(
                     typeArguments: [],
-                    structTypeExpr: Expression.Identifier("MyStruct[u16]"),
+                    structTypeExpr: Identifier("MyStruct[u16]"),
                     children: [
                         FunctionDeclaration(
-                            identifier: Expression.Identifier("foo"),
-                            functionType: Expression.FunctionType(
+                            identifier: Identifier("foo"),
+                            functionType: FunctionType(
                                 name: "foo",
-                                returnType: Expression.PrimitiveType(.u16),
-                                arguments: [Expression.PrimitiveType(.u16)]),
+                                returnType: PrimitiveType(.u16),
+                                arguments: [PrimitiveType(.u16)]),
                             argumentNames: ["arg1"],
                             typeArguments: [],
                             body: Block(children: [
-                                Return(Expression.Identifier("arg1"))
+                                Return(Identifier("arg1"))
                             ]))
                     ]),
                 Impl(
                     typeArguments: [],
-                    structTypeExpr: Expression.Identifier("MyStruct[u16]"),
+                    structTypeExpr: Identifier("MyStruct[u16]"),
                     children: [
                         FunctionDeclaration(
-                            identifier: Expression.Identifier("bar"),
-                            functionType: Expression.FunctionType(
+                            identifier: Identifier("bar"),
+                            functionType: FunctionType(
                                 name: "bar",
-                                returnType: Expression.PrimitiveType(.u16),
-                                arguments: [Expression.PrimitiveType(.u16)]),
+                                returnType: PrimitiveType(.u16),
+                                arguments: [PrimitiveType(.u16)]),
                             argumentNames: ["arg1"],
                             typeArguments: [],
                             body: Block(children: [
-                                Return(Expression.Identifier("arg1"))
+                                Return(Identifier("arg1"))
                             ]))
                     ]),
-                Expression.StructInitializer(
-                    expr: Expression.Identifier("MyStruct[u16]"),
+                StructInitializer(
+                    expr: Identifier("MyStruct[u16]"),
                     arguments: [])
             ],
             id: ast0.id)
@@ -697,43 +697,43 @@ final class CompilerPassGenericsTests: XCTestCase {
         let ast = Block(
             children: [
                 StructDeclaration(
-                    identifier: Expression.Identifier("MyStruct"),
+                    identifier: Identifier("MyStruct"),
                     typeArguments: [
-                        Expression.GenericTypeArgument(
-                            identifier: Expression.Identifier("T"),
+                        GenericTypeArgument(
+                            identifier: Identifier("T"),
                             constraints: [])
                     ],
                     members: []),
                 Impl(
                     typeArguments: [
-                        Expression.GenericTypeArgument(
-                            identifier: Expression.Identifier("T"),
+                        GenericTypeArgument(
+                            identifier: Identifier("T"),
                             constraints: [])
                     ],
-                    structTypeExpr: Expression.GenericTypeApplication(
-                        identifier: Expression.Identifier("MyStruct"),
+                    structTypeExpr: GenericTypeApplication(
+                        identifier: Identifier("MyStruct"),
                         arguments: [
-                            Expression.Identifier("T")
+                            Identifier("T")
                         ]),
                     children: [
                         FunctionDeclaration(
-                            identifier: Expression.Identifier("foo"),
-                            functionType: Expression.FunctionType(
+                            identifier: Identifier("foo"),
+                            functionType: FunctionType(
                                 name: "foo",
-                                returnType: Expression.Identifier("T"),
-                                arguments: [Expression.Identifier("T")]),
+                                returnType: Identifier("T"),
+                                arguments: [Identifier("T")]),
                             argumentNames: ["arg1"],
                             typeArguments: [],
                             body: Block(children: [
                                 StructDeclaration(StructTypeInfo(name: "T", symbols: SymbolTable())),
-                                Return(Expression.Identifier("arg1"))
+                                Return(Identifier("arg1"))
                             ]))
                     ]),
-                Expression.StructInitializer(
-                    expr: Expression.GenericTypeApplication(
-                        identifier: Expression.Identifier("MyStruct"),
+                StructInitializer(
+                    expr: GenericTypeApplication(
+                        identifier: Identifier("MyStruct"),
                         arguments: [
-                            Expression.PrimitiveType(.u16)
+                            PrimitiveType(.u16)
                         ]),
                     arguments: []),
             ])
@@ -746,19 +746,19 @@ final class CompilerPassGenericsTests: XCTestCase {
     func testGenericTraitDeclarationsAreErasedFromAST() throws {
         let ast0 = Block(children: [
             TraitDeclaration(
-                identifier: Expression.Identifier("foo"),
+                identifier: Identifier("foo"),
                 typeArguments: [
-                    Expression.GenericTypeArgument(
-                        identifier: Expression.Identifier("T"),
+                    GenericTypeArgument(
+                        identifier: Identifier("T"),
                         constraints: [])
                 ],
                 members: [
                     TraitDeclaration.Member(
                         name: "bar",
-                        type: Expression.FunctionType(
+                        type: FunctionType(
                             name: "bar",
-                            returnType: Expression.Identifier("T"),
-                            arguments: [Expression.Identifier("T")]))
+                            returnType: Identifier("T"),
+                            arguments: [Identifier("T")]))
                 ])
         ])
         
@@ -773,22 +773,22 @@ final class CompilerPassGenericsTests: XCTestCase {
         
         let ast0 = Block(symbols: symbols, children: [
             TraitDeclaration(
-                identifier: Expression.Identifier("MyTrait"),
+                identifier: Identifier("MyTrait"),
                 typeArguments: [
-                    Expression.GenericTypeArgument(
-                        identifier: Expression.Identifier("T"),
+                    GenericTypeArgument(
+                        identifier: Identifier("T"),
                         constraints: [])
                 ],
                 members: []),
             StructDeclaration(
-                identifier: Expression.Identifier("MyStruct"),
+                identifier: Identifier("MyStruct"),
                 members: []),
             ImplFor(
                 typeArguments: [],
-                traitTypeExpr: Expression.GenericTypeApplication(
-                    identifier: Expression.Identifier("MyTrait"),
-                    arguments: [Expression.PrimitiveType(.u16)]),
-                structTypeExpr: Expression.Identifier("MyStruct"),
+                traitTypeExpr: GenericTypeApplication(
+                    identifier: Identifier("MyTrait"),
+                    arguments: [PrimitiveType(.u16)]),
+                structTypeExpr: Identifier("MyStruct"),
                 children: [])
         ])
         
@@ -811,33 +811,33 @@ final class CompilerPassGenericsTests: XCTestCase {
         
         let expected = Block(symbols: symbols, children: [
             TraitDeclaration(
-                identifier: Expression.Identifier("MyTrait[u16]"),
+                identifier: Identifier("MyTrait[u16]"),
                 members: [
                     TraitDeclaration.Member(
                         name: "foo",
-                        type: Expression.PointerType(Expression.FunctionType(
+                        type: PointerType(FunctionType(
                             name: "foo",
-                            returnType: Expression.PrimitiveType(.u16),
-                            arguments: [Expression.PrimitiveType(.u16)]
+                            returnType: PrimitiveType(.u16),
+                            arguments: [PrimitiveType(.u16)]
                         )))
                 ]),
             StructDeclaration(
-                identifier: Expression.Identifier("MyStruct"),
+                identifier: Identifier("MyStruct"),
                 members: []),
             ImplFor(
                 typeArguments: [],
-                traitTypeExpr: Expression.Identifier("MyTrait[u16]"),
-                structTypeExpr: Expression.Identifier("MyStruct"),
+                traitTypeExpr: Identifier("MyTrait[u16]"),
+                structTypeExpr: Identifier("MyStruct"),
                 children: [
                     FunctionDeclaration(
-                        identifier: Expression.Identifier("foo"),
-                        functionType: Expression.FunctionType(
+                        identifier: Identifier("foo"),
+                        functionType: FunctionType(
                             name: "foo",
-                            returnType: Expression.PrimitiveType(.u16),
-                            arguments: [Expression.PrimitiveType(.u16)]),
+                            returnType: PrimitiveType(.u16),
+                            arguments: [PrimitiveType(.u16)]),
                         argumentNames: ["arg1"],
                         body: Block(symbols: bodySym, children: [
-                            Return(Expression.Identifier("arg1"))
+                            Return(Identifier("arg1"))
                         ]),
                         symbols: funSym)
                 ])
@@ -846,41 +846,41 @@ final class CompilerPassGenericsTests: XCTestCase {
         
         let ast0 = Block(symbols: symbols, children: [
             TraitDeclaration(
-                identifier: Expression.Identifier("MyTrait"),
+                identifier: Identifier("MyTrait"),
                 typeArguments: [
-                    Expression.GenericTypeArgument(
-                        identifier: Expression.Identifier("T"),
+                    GenericTypeArgument(
+                        identifier: Identifier("T"),
                         constraints: [])
                 ],
                 members: [
                     TraitDeclaration.Member(
                         name: "foo",
-                        type: Expression.PointerType(Expression.FunctionType(
+                        type: PointerType(FunctionType(
                             name: "foo",
-                            returnType: Expression.Identifier("T"),
-                            arguments: [Expression.Identifier("T")])))
+                            returnType: Identifier("T"),
+                            arguments: [Identifier("T")])))
                     ]),
             StructDeclaration(
-                identifier: Expression.Identifier("MyStruct"),
+                identifier: Identifier("MyStruct"),
                 members: []),
             ImplFor(
                 typeArguments: [],
-                traitTypeExpr: Expression.GenericTypeApplication(
-                    identifier: Expression.Identifier("MyTrait"),
-                    arguments: [Expression.PrimitiveType(.u16)]),
-                structTypeExpr: Expression.Identifier("MyStruct"),
+                traitTypeExpr: GenericTypeApplication(
+                    identifier: Identifier("MyTrait"),
+                    arguments: [PrimitiveType(.u16)]),
+                structTypeExpr: Identifier("MyStruct"),
                 children: [
                     FunctionDeclaration(
-                        identifier: Expression.Identifier("foo"),
-                        functionType: Expression.FunctionType(
+                        identifier: Identifier("foo"),
+                        functionType: FunctionType(
                             name: "foo",
-                            returnType: Expression.PrimitiveType(.u16),
-                            arguments: [Expression.PrimitiveType(.u16)]),
+                            returnType: PrimitiveType(.u16),
+                            arguments: [PrimitiveType(.u16)]),
                         argumentNames: ["arg1"],
                         body: Block(
                             symbols: bodySym,
                             children: [
-                                Return(Expression.Identifier("arg1"))
+                                Return(Identifier("arg1"))
                             ],
                             id: expectedBodyId),
                         symbols: funSym)
@@ -904,33 +904,33 @@ final class CompilerPassGenericsTests: XCTestCase {
             symbols: symbols,
             children: [
                 StructDeclaration(
-                    identifier: Expression.Identifier("MyStruct"),
+                    identifier: Identifier("MyStruct"),
                     members: []),
                 Impl(
                     typeArguments: [],
-                    structTypeExpr: Expression.Identifier("MyStruct"),
+                    structTypeExpr: Identifier("MyStruct"),
                     children: [
                         FunctionDeclaration(
-                            identifier: Expression.Identifier("foo[const u16]"),
-                            functionType: Expression.FunctionType(
+                            identifier: Identifier("foo[const u16]"),
+                            functionType: FunctionType(
                                 name: "foo[const u16]",
-                                returnType: Expression.PrimitiveType(.constU16),
-                                arguments: [Expression.PrimitiveType(.constU16)]),
+                                returnType: PrimitiveType(.constU16),
+                                arguments: [PrimitiveType(.constU16)]),
                             argumentNames: ["arg1"],
                             body: Block(
                                 symbols: bodySym,
                                 children: [
-                                    Return(Expression.Identifier("arg1"))
+                                    Return(Identifier("arg1"))
                                 ]),
                             symbols: funSym)
                     ],
                     id: implId),
-                Expression.Call(
-                    callee: Expression.Get(
-                        expr: Expression.Identifier("MyStruct"),
-                        member: Expression.Identifier("foo[const u16]")),
+                Call(
+                    callee: Get(
+                        expr: Identifier("MyStruct"),
+                        member: Identifier("foo[const u16]")),
                     arguments: [
-                        Expression.LiteralInt(0)
+                        LiteralInt(0)
                     ])
             ],
             id: blockId)
@@ -939,42 +939,42 @@ final class CompilerPassGenericsTests: XCTestCase {
             symbols: symbols,
             children: [
                 StructDeclaration(
-                    identifier: Expression.Identifier("MyStruct"),
+                    identifier: Identifier("MyStruct"),
                     members: []),
                 Impl(
                     typeArguments: [],
-                    structTypeExpr: Expression.Identifier("MyStruct"),
+                    structTypeExpr: Identifier("MyStruct"),
                     children: [
                         FunctionDeclaration(
-                            identifier: Expression.Identifier("foo"),
-                            functionType: Expression.FunctionType(
+                            identifier: Identifier("foo"),
+                            functionType: FunctionType(
                                 name: "foo",
-                                returnType: Expression.Identifier("T"),
-                                arguments: [Expression.Identifier("T")]),
+                                returnType: Identifier("T"),
+                                arguments: [Identifier("T")]),
                             argumentNames: ["arg1"],
                             typeArguments: [
-                                Expression.GenericTypeArgument(
-                                    identifier: Expression.Identifier("T"),
+                                GenericTypeArgument(
+                                    identifier: Identifier("T"),
                                     constraints: [])
                             ],
                             body: Block(
                                 symbols: bodySym,
                                 children: [
-                                    Return(Expression.Identifier("arg1"))
+                                    Return(Identifier("arg1"))
                                 ]),
                             symbols: funSym)
                     ],
                     id: implId),
-                Expression.Call(
-                    callee: Expression.Get(
-                        expr: Expression.Identifier("MyStruct"),
-                        member: Expression.GenericTypeApplication(
-                            identifier: Expression.Identifier("foo"),
+                Call(
+                    callee: Get(
+                        expr: Identifier("MyStruct"),
+                        member: GenericTypeApplication(
+                            identifier: Identifier("foo"),
                             arguments: [
-                                Expression.PrimitiveType(.constU16)
+                                PrimitiveType(.constU16)
                             ])),
                     arguments: [
-                        Expression.LiteralInt(0)
+                        LiteralInt(0)
                     ])
             ],
             id: blockId)
@@ -991,21 +991,21 @@ final class CompilerPassGenericsTests: XCTestCase {
         let expected = Block(
             children: [
                 FunctionDeclaration(
-                    identifier: Expression.Identifier("foo[const u16]"),
-                    functionType: Expression.FunctionType(
+                    identifier: Identifier("foo[const u16]"),
+                    functionType: FunctionType(
                         name: "foo[const u16]",
-                        returnType: Expression.PrimitiveType(.constU16),
-                        arguments: [Expression.PrimitiveType(.constU16)]),
+                        returnType: PrimitiveType(.constU16),
+                        arguments: [PrimitiveType(.constU16)]),
                     argumentNames: ["a"],
                     body: Block(
                         children: [
-                            Return(Expression.Binary(
+                            Return(Binary(
                                 op: .plus,
-                                left: Expression.Identifier("a"),
-                                right: Expression.LiteralInt(1)))
+                                left: Identifier("a"),
+                                right: LiteralInt(1)))
                         ]),
                     visibility: .privateVisibility),
-                Expression.Identifier("foo[const u16]")
+                Identifier("foo[const u16]")
             ])
             .reconnect(parent: nil)
         
@@ -1027,25 +1027,25 @@ final class CompilerPassGenericsTests: XCTestCase {
         let ast = Block(
             children: [
                 StructDeclaration(
-                    identifier: Expression.Identifier("T"),
+                    identifier: Identifier("T"),
                     members: []),
                 FunctionDeclaration(
-                    identifier: Expression.Identifier("foo"),
-                    functionType: Expression.FunctionType(
+                    identifier: Identifier("foo"),
+                    functionType: FunctionType(
                         name: "foo",
-                        returnType: Expression.PrimitiveType(.void),
-                        arguments: [Expression.PrimitiveType(.void)]),
+                        returnType: PrimitiveType(.void),
+                        arguments: [PrimitiveType(.void)]),
                     argumentNames: ["arg1"],
                     typeArguments: [
-                        Expression.GenericTypeArgument(
-                            identifier: Expression.Identifier("T"), // Shadows the variable, "T"
+                        GenericTypeArgument(
+                            identifier: Identifier("T"), // Shadows the variable, "T"
                             constraints: [])
                     ],
                     body: Block()),
-                Expression.GenericTypeApplication(
-                    identifier: Expression.Identifier("foo"),
+                GenericTypeApplication(
+                    identifier: Identifier("foo"),
                     arguments: [
-                        Expression.PrimitiveType(.u16)
+                        PrimitiveType(.u16)
                     ])
             ])
             .reconnect(parent: nil)
@@ -1057,29 +1057,29 @@ final class CompilerPassGenericsTests: XCTestCase {
         let ast = Block(
             children: [
                 FunctionDeclaration(
-                    identifier: Expression.Identifier("foo"),
-                    functionType: Expression.FunctionType(
+                    identifier: Identifier("foo"),
+                    functionType: FunctionType(
                         name: "foo",
-                        returnType: Expression.PrimitiveType(.void),
-                        arguments: [Expression.PrimitiveType(.void)]),
+                        returnType: PrimitiveType(.void),
+                        arguments: [PrimitiveType(.void)]),
                     argumentNames: ["arg1"],
                     typeArguments: [
-                        Expression.GenericTypeArgument(
-                            identifier: Expression.Identifier("T"),
+                        GenericTypeArgument(
+                            identifier: Identifier("T"),
                             constraints: [])
                     ],
                     body: Block(children: [
                         VarDeclaration(
-                            identifier: Expression.Identifier("T"), // Shadows the generic type parameter, "T"
-                            explicitType: Expression.PrimitiveType(.bool),
-                            expression: Expression.LiteralBool(true),
+                            identifier: Identifier("T"), // Shadows the generic type parameter, "T"
+                            explicitType: PrimitiveType(.bool),
+                            expression: LiteralBool(true),
                             storage: .automaticStorage,
                             isMutable: false)
                     ])),
-                Expression.GenericTypeApplication(
-                    identifier: Expression.Identifier("foo"),
+                GenericTypeApplication(
+                    identifier: Identifier("foo"),
                     arguments: [
-                        Expression.PrimitiveType(.u16)
+                        PrimitiveType(.u16)
                     ])
             ])
             .reconnect(parent: nil)

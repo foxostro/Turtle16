@@ -29,10 +29,10 @@ final class SymbolTablesReconnectorTests: XCTestCase {
         
         let input = Block(symbols: table1, children: [
             FunctionDeclaration(
-                identifier: Expression.Identifier("foo"),
-                functionType: Expression.FunctionType(
+                identifier: Identifier("foo"),
+                functionType: FunctionType(
                     name: "foo",
-                    returnType: Expression.PrimitiveType(.u8),
+                    returnType: PrimitiveType(.u8),
                     arguments: []),
                 argumentNames: [],
                 body: Block(children: []),
@@ -48,8 +48,8 @@ final class SymbolTablesReconnectorTests: XCTestCase {
     }
     
     func testFunctionDeclaration_Body() throws {
-        let input = FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                        functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
+        let input = FunctionDeclaration(identifier: Identifier("foo"),
+                                        functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
                                         argumentNames: [],
                                         body: Block(children: []))
         SymbolTablesReconnector().reconnect(input)

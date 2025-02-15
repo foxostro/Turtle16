@@ -28,10 +28,10 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
     func testFunctionDeclaration() throws {
         let symbols = SymbolTable()
         let originalFunctionDeclaration = FunctionDeclaration(
-            identifier: Expression.Identifier("foo"),
-            functionType: Expression.FunctionType(
+            identifier: Identifier("foo"),
+            functionType: FunctionType(
                 name: "foo",
-                returnType: Expression.PrimitiveType(.void),
+                returnType: PrimitiveType(.void),
                 arguments: []),
             argumentNames: [],
             body: Block(children: []))
@@ -64,7 +64,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
     func testStructDeclaration() throws {
         let symbols = SymbolTable()
         let input = Block(symbols: symbols, children: [
-            StructDeclaration(identifier: Expression.Identifier("None"), members: [])
+            StructDeclaration(identifier: Identifier("None"), members: [])
         ])
         
         let compiler = CompilerPassWithDeclScan()
@@ -82,7 +82,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
     func testTypealias() throws {
         let symbols = SymbolTable()
         let input = Block(symbols: symbols, children: [
-            Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.u8))
+            Typealias(lexpr: Identifier("Foo"), rexpr: PrimitiveType(.u8))
         ])
         
         let compiler = CompilerPassWithDeclScan()
@@ -98,7 +98,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
         let symbols = SymbolTable()
         
         let input = Block(symbols: symbols, children: [
-            TraitDeclaration(identifier: Expression.Identifier("Foo"), members: [])
+            TraitDeclaration(identifier: Identifier("Foo"), members: [])
         ])
         
         let compiler = CompilerPassWithDeclScan()
@@ -135,19 +135,19 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
         let symbols = SymbolTable()
         
         func compileSerialTrait() throws {
-            let bar = TraitDeclaration.Member(name: "puts", type:  Expression.PointerType(Expression.FunctionType(name: nil, returnType: Expression.PrimitiveType(.void), arguments: [
-                Expression.PointerType(Expression.Identifier("Serial")),
-                Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
+            let bar = TraitDeclaration.Member(name: "puts", type:  PointerType(FunctionType(name: nil, returnType: PrimitiveType(.void), arguments: [
+                PointerType(Identifier("Serial")),
+                DynamicArrayType(PrimitiveType(.u8))
             ])))
             let traitDecl = TraitDeclaration(
-                identifier: Expression.Identifier("Serial"),
+                identifier: Identifier("Serial"),
                 members: [bar],
                 visibility: .privateVisibility)
             try TraitScanner(symbols: symbols).scan(trait: traitDecl)
         }
         
         func compileSerialFake() throws {
-            let fake = StructDeclaration(identifier: Expression.Identifier("SerialFake"), members: [])
+            let fake = StructDeclaration(identifier: Identifier("SerialFake"), members: [])
             let compiler = StructScanner(
                 symbols: symbols,
                 memoryLayoutStrategy: MemoryLayoutStrategyNull())
@@ -162,17 +162,17 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
             children: [
                 ImplFor(
                     typeArguments: [],
-                    traitTypeExpr: Expression.Identifier("Serial"),
-                    structTypeExpr: Expression.Identifier("SerialFake"),
+                    traitTypeExpr: Identifier("Serial"),
+                    structTypeExpr: Identifier("SerialFake"),
                     children: [
                         FunctionDeclaration(
-                            identifier: Expression.Identifier("puts"),
-                            functionType: Expression.FunctionType(
+                            identifier: Identifier("puts"),
+                            functionType: FunctionType(
                                 name: "puts",
-                                returnType: Expression.PrimitiveType(.void),
+                                returnType: PrimitiveType(.void),
                                 arguments: [
-                                    Expression.PointerType(Expression.Identifier("Serial")),
-                                    Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
+                                    PointerType(Identifier("Serial")),
+                                    DynamicArrayType(PrimitiveType(.u8))
                                 ]),
                             argumentNames: ["self", "s"],
                             body: Block())
@@ -221,10 +221,10 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
             name: "Foo",
             block: Block(children: [
                 FunctionDeclaration(
-                    identifier: Expression.Identifier("bar"),
-                    functionType: Expression.FunctionType(
+                    identifier: Identifier("bar"),
+                    functionType: FunctionType(
                         name: "bar",
-                        returnType: Expression.PrimitiveType(.void),
+                        returnType: PrimitiveType(.void),
                         arguments: []),
                     argumentNames: [],
                     typeArguments: [],

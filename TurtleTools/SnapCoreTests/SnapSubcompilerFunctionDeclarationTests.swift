@@ -16,8 +16,8 @@ final class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
         symbols.bind(identifier: "foo", symbol: Symbol(type: .void))
         let compiler = SnapSubcompilerFunctionDeclaration()
         let input = FunctionDeclaration(
-            identifier: Expression.Identifier("foo"),
-            functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
+            identifier: Identifier("foo"),
+            functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
             argumentNames: [],
             body: Block(children: []))
             .reconnect(parent: nil)
@@ -31,8 +31,8 @@ final class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
         let symbols = SymbolTable()
         let compiler = SnapSubcompilerFunctionDeclaration()
         let input = FunctionDeclaration(
-            identifier: Expression.Identifier("foo"),
-            functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
+            identifier: Identifier("foo"),
+            functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
             argumentNames: [],
             body: Block(children: []))
             .reconnect(parent: nil)
@@ -48,8 +48,8 @@ final class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
         let originalBody = Block(children: [])
         let expectedRewrittenBody = Block(children: [Return()])
         let input = FunctionDeclaration(
-            identifier: Expression.Identifier("foo"),
-            functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.void), arguments: []),
+            identifier: Identifier("foo"),
+            functionType: FunctionType(name: "foo", returnType: PrimitiveType(.void), arguments: []),
             argumentNames: [],
             body: originalBody)
             .reconnect(parent: nil)
@@ -70,12 +70,12 @@ final class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
         let symbols = SymbolTable()
         let compiler = SnapSubcompilerFunctionDeclaration()
         let input = FunctionDeclaration(
-            identifier: Expression.Identifier("foo"),
-            functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
+            identifier: Identifier("foo"),
+            functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
             argumentNames: [],
             body: Block(children: [
-                Return(Expression.LiteralBool(true)),
-                Expression.LiteralBool(false)
+                Return(LiteralBool(true)),
+                LiteralBool(false)
             ]))
             .reconnect(parent: nil)
         XCTAssertThrowsError(try compiler.compile(symbols: symbols, node: input)) {
@@ -86,16 +86,16 @@ final class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
     }
     
     func testDeclareGenericFunction() throws {
-        let functionType = Expression.FunctionType(name: "foo",
-                                                   returnType: Expression.Identifier("T"),
-                                                   arguments: [Expression.Identifier("T")])
+        let functionType = FunctionType(name: "foo",
+                                                   returnType: Identifier("T"),
+                                                   arguments: [Identifier("T")])
         let input = FunctionDeclaration(
-            identifier: Expression.Identifier("foo"),
+            identifier: Identifier("foo"),
             functionType: functionType,
             argumentNames: ["a"],
-            typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
+            typeArguments: [GenericTypeArgument(identifier: Identifier("T"), constraints: [])],
             body: Block(children: [
-                Return(Expression.Identifier("a"))
+                Return(Identifier("a"))
             ]),
             visibility: .privateVisibility,
             symbols: SymbolTable())
@@ -104,7 +104,7 @@ final class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
         try SnapSubcompilerFunctionDeclaration().compile(symbols: symbols, node: input)
         let actualSymbol = try symbols.resolve(identifier: "foo")
         let actualType = actualSymbol.type
-        let expectedType = SymbolType.genericFunction(Expression.GenericFunctionType(template: input))
+        let expectedType = SymbolType.genericFunction(GenericFunctionType(template: input))
         XCTAssertEqual(actualType, expectedType)
     }
 }

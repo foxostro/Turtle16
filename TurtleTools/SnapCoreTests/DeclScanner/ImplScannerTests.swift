@@ -11,12 +11,6 @@ import SnapCore
 import TurtleCore
 
 final class ImplScannerTests: XCTestCase {
-    fileprivate typealias GenericTypeArgument = Expression.GenericTypeArgument
-    fileprivate typealias Identifier = Expression.Identifier
-    fileprivate typealias LiteralInt = Expression.LiteralInt
-    fileprivate typealias PointerType = Expression.PointerType
-    fileprivate typealias PrimitiveType = Expression.PrimitiveType
-    
     func testExample() throws {
         let symbols = SymbolTable()
         
@@ -36,7 +30,7 @@ final class ImplScannerTests: XCTestCase {
             children: [
                 FunctionDeclaration(
                     identifier: Identifier("bar"),
-                    functionType: Expression.FunctionType(
+                    functionType: FunctionType(
                         name: "bar",
                         returnType: PrimitiveType(.u8),
                         arguments: [
@@ -101,7 +95,7 @@ final class ImplScannerTests: XCTestCase {
             children: [
                 FunctionDeclaration(
                     identifier: Identifier("bar"),
-                    functionType: Expression.FunctionType(
+                    functionType: FunctionType(
                         name: "bar",
                         returnType: PrimitiveType(.u8),
                         arguments: [
@@ -143,7 +137,7 @@ final class ImplScannerTests: XCTestCase {
                         children: [
                             FunctionDeclaration(
                                 identifier: Identifier("bar"),
-                                functionType: Expression.FunctionType(
+                                functionType: FunctionType(
                                     name: "bar",
                                     returnType: PrimitiveType(.u8),
                                     arguments: [
@@ -211,7 +205,7 @@ final class ImplScannerTests: XCTestCase {
                                 identifier: Identifier("T"),
                                 constraints: [])
                         ],
-                        structTypeExpr: Expression.GenericTypeApplication(
+                        structTypeExpr: GenericTypeApplication(
                             identifier: Identifier("Foo"),
                             arguments: [
                                 Identifier("T")
@@ -219,7 +213,7 @@ final class ImplScannerTests: XCTestCase {
                         children: [
                             FunctionDeclaration(
                                 identifier: Identifier("bar"),
-                                functionType: Expression.FunctionType(
+                                functionType: FunctionType(
                                     name: "bar",
                                     returnType: Identifier("T"),
                                     arguments: [

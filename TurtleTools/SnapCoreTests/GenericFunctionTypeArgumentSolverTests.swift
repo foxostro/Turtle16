@@ -13,82 +13,82 @@ import SnapCore
 final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
     func testInferTypeArgumentFromExpressionViaIdentifier() {
         let solver = GenericFunctionTypeArgumentSolver()
-        let expected = Expression.TypeOf(Expression.Identifier("U"))
-        let actual = solver.inferTypeArgument(concreteArgument: Expression.Identifier("U"),
-                                              genericArgument: Expression.Identifier("T"),
-                                              solvingFor: Expression.Identifier("T"))
+        let expected = TypeOf(Identifier("U"))
+        let actual = solver.inferTypeArgument(concreteArgument: Identifier("U"),
+                                              genericArgument: Identifier("T"),
+                                              solvingFor: Identifier("T"))
         XCTAssertEqual(actual, expected)
     }
     
     func testFailToInferTypeArgumentFromExpressionViaIdentifier() {
         let solver = GenericFunctionTypeArgumentSolver()
-        let actual = solver.inferTypeArgument(concreteArgument: Expression.Identifier("U"),
-                                              genericArgument: Expression.Identifier("V"),
-                                              solvingFor: Expression.Identifier("T"))
+        let actual = solver.inferTypeArgument(concreteArgument: Identifier("U"),
+                                              genericArgument: Identifier("V"),
+                                              solvingFor: Identifier("T"))
         XCTAssertNil(actual)
     }
     
     func testInferTypeArgumentFromExpressionViaConstType() {
         let solver = GenericFunctionTypeArgumentSolver()
-        let expected = Expression.TypeOf(Expression.ConstType(Expression.Identifier("U")))
-        let actual = solver.inferTypeArgument(concreteArgument: Expression.Identifier("U"),
-                                              genericArgument: Expression.ConstType(Expression.Identifier("T")),
-                                              solvingFor: Expression.Identifier("T"))
+        let expected = TypeOf(ConstType(Identifier("U")))
+        let actual = solver.inferTypeArgument(concreteArgument: Identifier("U"),
+                                              genericArgument: ConstType(Identifier("T")),
+                                              solvingFor: Identifier("T"))
         XCTAssertEqual(actual, expected)
     }
     
     func testInferTypeArgumentFromExpressionViaMutableType() {
         let solver = GenericFunctionTypeArgumentSolver()
-        let expected = Expression.TypeOf(Expression.MutableType(Expression.Identifier("U")))
-        let actual = solver.inferTypeArgument(concreteArgument: Expression.Identifier("U"),
-                                              genericArgument: Expression.MutableType(Expression.Identifier("T")),
-                                              solvingFor: Expression.Identifier("T"))
+        let expected = TypeOf(MutableType(Identifier("U")))
+        let actual = solver.inferTypeArgument(concreteArgument: Identifier("U"),
+                                              genericArgument: MutableType(Identifier("T")),
+                                              solvingFor: Identifier("T"))
         XCTAssertEqual(actual, expected)
     }
     
     func testInferTypeArgumentFromExpressionViaPointerType() {
         let solver = GenericFunctionTypeArgumentSolver()
-        let expected = Expression.TypeOf(Expression.PointerType(Expression.Identifier("U")))
-        let actual = solver.inferTypeArgument(concreteArgument: Expression.Identifier("U"),
-                                              genericArgument: Expression.PointerType(Expression.Identifier("T")),
-                                              solvingFor: Expression.Identifier("T"))
+        let expected = TypeOf(PointerType(Identifier("U")))
+        let actual = solver.inferTypeArgument(concreteArgument: Identifier("U"),
+                                              genericArgument: PointerType(Identifier("T")),
+                                              solvingFor: Identifier("T"))
         XCTAssertEqual(actual, expected)
     }
     
     func testInferTypeArgumentFromExpressionViaDynamicArrayType() {
         let solver = GenericFunctionTypeArgumentSolver()
-        let expected = Expression.TypeOf(Expression.DynamicArrayType(Expression.Identifier("U")))
-        let actual = solver.inferTypeArgument(concreteArgument: Expression.Identifier("U"),
-                                              genericArgument: Expression.DynamicArrayType(Expression.Identifier("T")),
-                                              solvingFor: Expression.Identifier("T"))
+        let expected = TypeOf(DynamicArrayType(Identifier("U")))
+        let actual = solver.inferTypeArgument(concreteArgument: Identifier("U"),
+                                              genericArgument: DynamicArrayType(Identifier("T")),
+                                              solvingFor: Identifier("T"))
         XCTAssertEqual(actual, expected)
     }
     
     func testInferTypeArgumentFromExpressionViaArrayType() {
         let solver = GenericFunctionTypeArgumentSolver()
-        let expected = Expression.TypeOf(Expression.ArrayType(count: Expression.Identifier("V"), elementType: Expression.Identifier("U")))
-        let actual = solver.inferTypeArgument(concreteArgument: Expression.Identifier("U"),
-                                              genericArgument: Expression.ArrayType(count: Expression.Identifier("V"), elementType: Expression.Identifier("T")),
-                                              solvingFor: Expression.Identifier("T"))
+        let expected = TypeOf(ArrayType(count: Identifier("V"), elementType: Identifier("U")))
+        let actual = solver.inferTypeArgument(concreteArgument: Identifier("U"),
+                                              genericArgument: ArrayType(count: Identifier("V"), elementType: Identifier("T")),
+                                              solvingFor: Identifier("T"))
         XCTAssertEqual(actual, expected)
     }
     
     func testCannotInferTypeArgumentFromCallExpressionWithIncorrectNumberOfArguments() {
         let symbols = SymbolTable()
-        let call = Expression.Call(callee: Expression.Identifier("foo"), arguments: [])
-        let functionType = Expression.FunctionType(name: "foo",
-                                                   returnType: Expression.Identifier("T"),
-                                                   arguments: [Expression.Identifier("T")])
-        let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
+        let call = Call(callee: Identifier("foo"), arguments: [])
+        let functionType = FunctionType(name: "foo",
+                                                   returnType: Identifier("T"),
+                                                   arguments: [Identifier("T")])
+        let template = FunctionDeclaration(identifier: Identifier("foo"),
                                            functionType: functionType,
                                            argumentNames: ["a"],
-                                           typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
+                                           typeArguments: [GenericTypeArgument(identifier: Identifier("T"), constraints: [])],
                                            body: Block(children: [
-                                            Return(Expression.LiteralInt(0))
+                                            Return(LiteralInt(0))
                                            ]),
                                            visibility: .privateVisibility,
                                            symbols: SymbolTable())
-        let generic = Expression.GenericFunctionType(template: template)
+        let generic = GenericFunctionType(template: template)
         let solver = GenericFunctionTypeArgumentSolver()
         XCTAssertThrowsError(try solver.inferTypeArguments(call: call,
                                                            genericFunctionType: generic,
@@ -101,20 +101,20 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
     
     func testCannotInferTypeArgumentFromCallExpressionWithNoArguments() {
         let symbols = SymbolTable()
-        let call = Expression.Call(callee: Expression.Identifier("foo"), arguments: [])
-        let functionType = Expression.FunctionType(name: "foo",
-                                                   returnType: Expression.Identifier("T"),
+        let call = Call(callee: Identifier("foo"), arguments: [])
+        let functionType = FunctionType(name: "foo",
+                                                   returnType: Identifier("T"),
                                                    arguments: [])
-        let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
+        let template = FunctionDeclaration(identifier: Identifier("foo"),
                                            functionType: functionType,
                                            argumentNames: [],
-                                           typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
+                                           typeArguments: [GenericTypeArgument(identifier: Identifier("T"), constraints: [])],
                                            body: Block(children: [
-                                            Return(Expression.LiteralInt(0))
+                                            Return(LiteralInt(0))
                                            ]),
                                            visibility: .privateVisibility,
                                            symbols: SymbolTable())
-        let generic = Expression.GenericFunctionType(template: template)
+        let generic = GenericFunctionType(template: template)
         let solver = GenericFunctionTypeArgumentSolver()
         XCTAssertThrowsError(try solver.inferTypeArguments(call: call,
                                                            genericFunctionType: generic,
@@ -129,20 +129,20 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
         let symbols = SymbolTable()
         symbols.bind(identifier: "U", symbol: Symbol(type: .constBool))
         
-        let call = Expression.Call(callee: Expression.Identifier("foo"), arguments: [Expression.Identifier("U")])
-        let functionType = Expression.FunctionType(name: "foo",
-                                                   returnType: Expression.Identifier("T"),
-                                                   arguments: [Expression.Identifier("T")])
-        let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
+        let call = Call(callee: Identifier("foo"), arguments: [Identifier("U")])
+        let functionType = FunctionType(name: "foo",
+                                                   returnType: Identifier("T"),
+                                                   arguments: [Identifier("T")])
+        let template = FunctionDeclaration(identifier: Identifier("foo"),
                                            functionType: functionType,
                                            argumentNames: [],
-                                           typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
+                                           typeArguments: [GenericTypeArgument(identifier: Identifier("T"), constraints: [])],
                                            body: Block(children: [
-                                            Return(Expression.LiteralInt(0))
+                                            Return(LiteralInt(0))
                                            ]),
                                            visibility: .privateVisibility,
                                            symbols: SymbolTable())
-        let generic = Expression.GenericFunctionType(template: template)
+        let generic = GenericFunctionType(template: template)
         let solver = GenericFunctionTypeArgumentSolver()
         let actual = try solver.inferTypeArguments(call: call,
                                                    genericFunctionType: generic,
@@ -156,25 +156,25 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
         symbols.bind(identifier: "U", symbol: Symbol(type: .constBool))
         symbols.bind(identifier: "V", symbol: Symbol(type: .constBool))
         
-        let call = Expression.Call(callee: Expression.Identifier("foo"),
+        let call = Call(callee: Identifier("foo"),
                                    arguments: [
-                                    Expression.Identifier("U"),
-                                    Expression.Identifier("V")
+                                    Identifier("U"),
+                                    Identifier("V")
                                    ])
-        let functionType = Expression.FunctionType(name: "foo",
-                                                   returnType: Expression.PrimitiveType(.void),
+        let functionType = FunctionType(name: "foo",
+                                                   returnType: PrimitiveType(.void),
                                                    arguments: [
-                                                    Expression.Identifier("T"),
-                                                    Expression.Identifier("T")
+                                                    Identifier("T"),
+                                                    Identifier("T")
                                                    ])
-        let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
+        let template = FunctionDeclaration(identifier: Identifier("foo"),
                                            functionType: functionType,
                                            argumentNames: ["a", "b"],
-                                           typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
+                                           typeArguments: [GenericTypeArgument(identifier: Identifier("T"), constraints: [])],
                                            body: Block(),
                                            visibility: .privateVisibility,
                                            symbols: SymbolTable())
-        let generic = Expression.GenericFunctionType(template: template)
+        let generic = GenericFunctionType(template: template)
         let solver = GenericFunctionTypeArgumentSolver()
         let actual = try solver.inferTypeArguments(call: call,
                                                    genericFunctionType: generic,
@@ -189,25 +189,25 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
         symbols.bind(identifier: "U", symbol: Symbol(type: .constBool))
         symbols.bind(identifier: "V", symbol: Symbol(type: .arithmeticType(.immutableInt(.u16))))
         
-        let call = Expression.Call(callee: Expression.Identifier("foo"),
+        let call = Call(callee: Identifier("foo"),
                                    arguments: [
-                                    Expression.Identifier("U"),
-                                    Expression.Identifier("V")
+                                    Identifier("U"),
+                                    Identifier("V")
                                    ])
-        let functionType = Expression.FunctionType(name: "foo",
-                                                   returnType: Expression.PrimitiveType(.void),
+        let functionType = FunctionType(name: "foo",
+                                                   returnType: PrimitiveType(.void),
                                                    arguments: [
-                                                    Expression.Identifier("T"),
-                                                    Expression.Identifier("T")
+                                                    Identifier("T"),
+                                                    Identifier("T")
                                                    ])
-        let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
+        let template = FunctionDeclaration(identifier: Identifier("foo"),
                                            functionType: functionType,
                                            argumentNames: ["a", "b"],
-                                           typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
+                                           typeArguments: [GenericTypeArgument(identifier: Identifier("T"), constraints: [])],
                                            body: Block(),
                                            visibility: .privateVisibility,
                                            symbols: SymbolTable())
-        let generic = Expression.GenericFunctionType(template: template)
+        let generic = GenericFunctionType(template: template)
         let solver = GenericFunctionTypeArgumentSolver()
         XCTAssertThrowsError(try solver.inferTypeArguments(call: call,
                                                            genericFunctionType: generic,

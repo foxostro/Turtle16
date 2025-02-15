@@ -10,10 +10,10 @@ import TurtleCore
 
 /// Declare a function and its body
 public final class FunctionDeclaration: AbstractSyntaxTreeNode {
-    public let identifier: Expression.Identifier
-    public let functionType: Expression.FunctionType
+    public let identifier: Identifier
+    public let functionType: FunctionType
     public let argumentNames: [String]
-    public let typeArguments: [Expression.GenericTypeArgument]
+    public let typeArguments: [GenericTypeArgument]
     public let body: Block
     public let visibility: SymbolVisibility
     public let symbols: SymbolTable
@@ -23,10 +23,10 @@ public final class FunctionDeclaration: AbstractSyntaxTreeNode {
     }
     
     public init(sourceAnchor: SourceAnchor? = nil,
-                identifier: Expression.Identifier,
-                functionType: Expression.FunctionType,
+                identifier: Identifier,
+                functionType: FunctionType,
                 argumentNames: [String],
-                typeArguments: [Expression.GenericTypeArgument] = [],
+                typeArguments: [GenericTypeArgument] = [],
                 body: Block,
                 visibility: SymbolVisibility = .privateVisibility,
                 symbols: SymbolTable = SymbolTable(),
@@ -65,7 +65,7 @@ public final class FunctionDeclaration: AbstractSyntaxTreeNode {
                             id: id)
     }
     
-    public func withFunctionType(_ functionType: Expression.FunctionType) -> FunctionDeclaration {
+    public func withFunctionType(_ functionType: FunctionType) -> FunctionDeclaration {
         FunctionDeclaration(sourceAnchor: sourceAnchor,
                             identifier: identifier,
                             functionType: functionType,
@@ -93,7 +93,7 @@ public final class FunctionDeclaration: AbstractSyntaxTreeNode {
         withTypeArguments([])
     }
     
-    public func withTypeArguments(_ typeArguments: [Expression.GenericTypeArgument]) -> FunctionDeclaration {
+    public func withTypeArguments(_ typeArguments: [GenericTypeArgument]) -> FunctionDeclaration {
         FunctionDeclaration(sourceAnchor: sourceAnchor,
                             identifier: identifier,
                             functionType: functionType,

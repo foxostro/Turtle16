@@ -10,7 +10,7 @@ import TurtleCore
 
 /// Adds zero or more methods to an existing struct
 public final class Impl: AbstractSyntaxTreeNode {
-    public let typeArguments: [Expression.GenericTypeArgument]
+    public let typeArguments: [GenericTypeArgument]
     public let structTypeExpr: Expression
     public let children: [FunctionDeclaration]
     
@@ -19,7 +19,7 @@ public final class Impl: AbstractSyntaxTreeNode {
     }
     
     public init(sourceAnchor: SourceAnchor? = nil,
-                typeArguments: [Expression.GenericTypeArgument],
+                typeArguments: [GenericTypeArgument],
                 structTypeExpr: Expression,
                 children: [FunctionDeclaration],
                 id: ID = ID()) {

@@ -13,11 +13,11 @@ import SnapCore
 final class CompilerPassVtablesTests: XCTestCase {
     
     func testEmptyTrait() throws {
-        let traitIdent = Expression.Identifier("Foo")
-        let traitObjectIdent = Expression.Identifier("__Foo_object")
-        let vtableIdent = Expression.Identifier("__Foo_vtable")
-        let vtableType = Expression.PointerType(Expression.ConstType(vtableIdent))
-        let objectType = Expression.PointerType(Expression.PrimitiveType(.void))
+        let traitIdent = Identifier("Foo")
+        let traitObjectIdent = Identifier("__Foo_object")
+        let vtableIdent = Identifier("__Foo_vtable")
+        let vtableType = PointerType(ConstType(vtableIdent))
+        let objectType = PointerType(PrimitiveType(.void))
         
         let expected = Block(children: [
             Seq(children: [
@@ -56,19 +56,19 @@ final class CompilerPassVtablesTests: XCTestCase {
     }
     
     func testSimpleConcreteTrait() throws {
-        let traitIdent = Expression.Identifier("Serial")
-        let traitObjectIdent = Expression.Identifier("__Serial_object")
-        let vtableIdent = Expression.Identifier("__Serial_vtable")
-        let vtableType = Expression.PointerType(Expression.ConstType(vtableIdent))
-        let objectType = Expression.PointerType(Expression.PrimitiveType(.void))
-        let putsFnType = Expression.PointerType(
-            Expression.FunctionType(
+        let traitIdent = Identifier("Serial")
+        let traitObjectIdent = Identifier("__Serial_object")
+        let vtableIdent = Identifier("__Serial_vtable")
+        let vtableType = PointerType(ConstType(vtableIdent))
+        let objectType = PointerType(PrimitiveType(.void))
+        let putsFnType = PointerType(
+            FunctionType(
                 name: nil,
-                returnType: Expression.PrimitiveType(.void),
+                returnType: PrimitiveType(.void),
                 arguments: [
-                    Expression.PointerType(Expression.Identifier("Serial")),
-                    Expression.DynamicArrayType(
-                        Expression.PrimitiveType(
+                    PointerType(Identifier("Serial")),
+                    DynamicArrayType(
+                        PrimitiveType(
                             .u8))
                 ]))
         
@@ -79,12 +79,12 @@ final class CompilerPassVtablesTests: XCTestCase {
                     members: [
                         StructDeclaration.Member(
                             name: "puts",
-                            type: Expression.PointerType(
-                                Expression.FunctionType(
-                                    returnType: Expression.PrimitiveType(.void),
+                            type: PointerType(
+                                FunctionType(
+                                    returnType: PrimitiveType(.void),
                                     arguments: [
-                                        Expression.PointerType(Expression.PrimitiveType(.void)),
-                                        Expression.DynamicArrayType(Expression.PrimitiveType(.u8))
+                                        PointerType(PrimitiveType(.void)),
+                                        DynamicArrayType(PrimitiveType(.u8))
                                     ])))
                     ],
                     isConst: false),
@@ -110,30 +110,30 @@ final class CompilerPassVtablesTests: XCTestCase {
                     structTypeExpr: traitObjectIdent,
                     children: [
                         FunctionDeclaration(
-                            identifier: Expression.Identifier("puts"),
-                            functionType: Expression.FunctionType(
+                            identifier: Identifier("puts"),
+                            functionType: FunctionType(
                                 name: "puts",
-                                returnType: Expression.PrimitiveType(.void),
+                                returnType: PrimitiveType(.void),
                                 arguments: [
-                                    Expression.PointerType(
-                                        Expression.Identifier("__Serial_object")),
-                                    Expression.DynamicArrayType(
-                                        Expression.PrimitiveType(
+                                    PointerType(
+                                        Identifier("__Serial_object")),
+                                    DynamicArrayType(
+                                        PrimitiveType(
                                             .u8))
                                 ]),
                             argumentNames: ["self", "arg1"],
                             body: Block(children: [
-                                Expression.Call(
-                                    callee: Expression.Get(
-                                        expr: Expression.Get(
-                                            expr: Expression.Identifier("self"),
-                                            member: Expression.Identifier("vtable")),
-                                        member: Expression.Identifier("puts")),
+                                Call(
+                                    callee: Get(
+                                        expr: Get(
+                                            expr: Identifier("self"),
+                                            member: Identifier("vtable")),
+                                        member: Identifier("puts")),
                                     arguments: [
-                                        Expression.Get(
-                                            expr: Expression.Identifier("self"),
-                                            member: Expression.Identifier("object")),
-                                        Expression.Identifier("arg1")
+                                        Get(
+                                            expr: Identifier("self"),
+                                            member: Identifier("object")),
+                                        Identifier("arg1")
                                     ])
                             ]))
                     ])

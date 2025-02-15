@@ -193,11 +193,11 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
         }
     }
     
-    public override func visit(genericTypeApplication expr: Expression.GenericTypeApplication) throws -> Expression? {
+    public override func visit(genericTypeApplication expr: GenericTypeApplication) throws -> Expression? {
         try visit(genericTypeApplication: expr, symbols: symbols!)
     }
     
-    fileprivate func visit(genericTypeApplication expr: Expression.GenericTypeApplication, symbols: SymbolTable) throws -> Expression? {
+    fileprivate func visit(genericTypeApplication expr: GenericTypeApplication, symbols: SymbolTable) throws -> Expression? {
         
         let typeChecker = RvalueExpressionTypeChecker(
             symbols: symbols,
@@ -219,12 +219,12 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
         return concreteDeclaration
     }
     
-    fileprivate func visit(expr: Expression.GenericTypeApplication,
+    fileprivate func visit(expr: GenericTypeApplication,
                            symbols: SymbolTable,
                            concreteFunctionType: FunctionTypeInfo) throws -> Expression? {
         
         let mangledName = concreteFunctionType.mangledName!
-        let concreteIdent = Expression.Identifier(mangledName)
+        let concreteIdent = Identifier(mangledName)
         let genericFunctionType = try symbols.resolveTypeOfIdentifier(
             sourceAnchor: expr.identifier.sourceAnchor,
             identifier: expr.identifier.identifier)
@@ -240,7 +240,7 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
         let pairs = zip(
             keys,
             try expr.arguments.map {
-                Expression.PrimitiveType(try typeCheck(rexpr: $0))
+                PrimitiveType(try typeCheck(rexpr: $0))
             })
         let ast0 = genericFunctionType.template
         let ast1 = ast0
@@ -293,11 +293,11 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
         concreteTypesAlreadyInstantiated.removeLast()
     }
     
-    fileprivate func visit(expr: Expression.GenericTypeApplication,
+    fileprivate func visit(expr: GenericTypeApplication,
                            symbols: SymbolTable,
                            concreteStructType: StructTypeInfo) throws -> Expression? {
         
-        let concreteIdent = Expression.Identifier(concreteStructType.name)
+        let concreteIdent = Identifier(concreteStructType.name)
         
         // Prevent recursive instantiation
         guard !alreadyInstantiated(concreteIdent.identifier) else {
@@ -323,9 +323,9 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
                 let scope = symbols.lookupIdOfEnclosingScope(identifier: ident.identifier)
                 return Key(identifier: ident.identifier, scope: scope)
             }
-        let values: [Expression.PrimitiveType] = try expr.arguments
+        let values: [PrimitiveType] = try expr.arguments
             .map { try typeCheck(rexpr: $0) }
-            .map { Expression.PrimitiveType($0) }
+            .map { PrimitiveType($0) }
         let pairs = zip(keys, values)
         
         // Instantiate the generic struct declarations with concrete type arguments
@@ -364,11 +364,11 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
         return concreteIdent
     }
     
-    fileprivate func visit(expr: Expression.GenericTypeApplication,
+    fileprivate func visit(expr: GenericTypeApplication,
                            symbols: SymbolTable,
                            concreteTraitType: TraitTypeInfo) throws -> Expression? {
         
-        let concreteIdent = Expression.Identifier(concreteTraitType.name)
+        let concreteIdent = Identifier(concreteTraitType.name)
         
         // Prevent recursive instantiation
         guard !alreadyInstantiated(concreteIdent.identifier) else {
@@ -402,7 +402,7 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
         let pairs = zip(
             keys,
             try expr.arguments.map {
-                Expression.PrimitiveType(try typeCheck(rexpr: $0))
+                PrimitiveType(try typeCheck(rexpr: $0))
             })
         let ast1 = try GenericsPartialEvaluator.eval(ast0, replacements: pairs)
         let ast2 = try visit(ast1)!
@@ -411,10 +411,10 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
         return concreteIdent
     }
     
-    public override func visit(call expr0: Expression.Call) throws -> Expression? {
+    public override func visit(call expr0: Call) throws -> Expression? {
         let calleeType: SymbolType
         if let symbols,
-           let identifier = expr0.callee as? Expression.Identifier {
+           let identifier = expr0.callee as? Identifier {
             calleeType = try symbols.resolveTypeOfIdentifier(sourceAnchor: identifier.sourceAnchor, identifier: identifier.identifier)
         }
         else {
@@ -441,8 +441,8 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
         }
     }
     
-    public override func visit(get expr0: Expression.Get) throws -> Expression? {
-        guard let app = expr0.member as? Expression.GenericTypeApplication else {
+    public override func visit(get expr0: Get) throws -> Expression? {
+        guard let app = expr0.member as? GenericTypeApplication else {
             let expr1 = try super.visit(get: expr0)
             return expr1
         }

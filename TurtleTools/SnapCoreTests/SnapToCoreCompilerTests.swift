@@ -11,15 +11,6 @@ import SnapCore
 import TurtleCore
 
 final class SnapToCoreCompilerTests: XCTestCase {
-    fileprivate typealias Bitcast = Expression.Bitcast
-    fileprivate typealias ConstType = Expression.ConstType
-    fileprivate typealias Identifier = Expression.Identifier
-    fileprivate typealias InitialAssignment = Expression.InitialAssignment
-    fileprivate typealias PointerType = Expression.PointerType
-    fileprivate typealias PrimitiveType = Expression.PrimitiveType
-    fileprivate typealias StructInitializer = Expression.StructInitializer
-    fileprivate typealias Unary = Expression.Unary
-    
     func testExample() throws {
         let input = TopLevel(
             children: [

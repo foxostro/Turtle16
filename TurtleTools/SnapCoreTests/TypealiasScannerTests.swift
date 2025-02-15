@@ -12,7 +12,7 @@ import TurtleCore
 
 final class TypealiasScannerTests: XCTestCase {
     func testDeclareTypealias() throws {
-        let input = Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.u8))
+        let input = Typealias(lexpr: Identifier("Foo"), rexpr: PrimitiveType(.u8))
         let symbols = SymbolTable()
         try TypealiasScanner(symbols).compile(input)
         let expectedType: SymbolType = .u8
@@ -21,7 +21,7 @@ final class TypealiasScannerTests: XCTestCase {
     }
     
     func testTypealiascannotRedefineExistingSymbol() throws {
-        let input = Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.u8))
+        let input = Typealias(lexpr: Identifier("Foo"), rexpr: PrimitiveType(.u8))
         let symbols = SymbolTable()
         symbols.bind(identifier: "Foo", symbol: Symbol(type: .void, offset: nil, storage: .staticStorage, visibility: .privateVisibility))
         symbols.bind(identifier: "Foo", symbolType: .u8)
@@ -32,7 +32,7 @@ final class TypealiasScannerTests: XCTestCase {
     }
     
     func testTypealiascannotRedefineExistingType() throws {
-        let input = Typealias(lexpr: Expression.Identifier("Foo"), rexpr: Expression.PrimitiveType(.u8))
+        let input = Typealias(lexpr: Identifier("Foo"), rexpr: PrimitiveType(.u8))
         let symbols = SymbolTable()
         symbols.bind(identifier: "Foo", symbolType: .u8)
         XCTAssertThrowsError(try TypealiasScanner(symbols).compile(input)) {

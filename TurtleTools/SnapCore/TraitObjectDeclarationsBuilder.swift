@@ -9,15 +9,6 @@
 import TurtleCore
 
 struct TraitObjectDeclarationsBuilder {
-    fileprivate typealias Call = Expression.Call
-    fileprivate typealias ConstType = Expression.ConstType
-    fileprivate typealias FunctionType = Expression.FunctionType
-    fileprivate typealias GenericTypeApplication = Expression.GenericTypeApplication
-    fileprivate typealias Get = Expression.Get
-    fileprivate typealias Identifier = Expression.Identifier
-    fileprivate typealias PointerType = Expression.PointerType
-    fileprivate typealias PrimitiveType = Expression.PrimitiveType
-    
     struct Declarations {
         let vtableDecl: StructDeclaration
         let traitObjectDecl: StructDeclaration
@@ -156,7 +147,7 @@ struct TraitObjectDeclarationsBuilder {
 
     func rewriteTraitMemberTypeForThunk( // TODO: The `rewriteTraitMemberTypeForThunk` method should be fileprivate
         _ traitDecl: TraitDeclaration,
-        _ method: TraitDeclaration.Member) -> Expression.FunctionType {
+        _ method: TraitDeclaration.Member) -> FunctionType {
         
         rewriteTraitMemberTypeForThunk(
             traitName: traitDecl.identifier.identifier,
@@ -169,7 +160,7 @@ struct TraitObjectDeclarationsBuilder {
         traitName: String,
         traitObjectName: String,
         methodName: String,
-        methodType: Expression) -> Expression.FunctionType {
+        methodType: Expression) -> FunctionType {
             
         let functionType = (methodType as! PointerType).typ as! FunctionType
         

@@ -10,12 +10,12 @@ import TurtleCore
 
 /// Declare a new type alias, basically rebinding the definition of a type under a new identifier
 public final class Typealias: AbstractSyntaxTreeNode {
-    public let lexpr: Expression.Identifier
+    public let lexpr: Identifier
     public let rexpr: Expression
     public let visibility: SymbolVisibility
     
     public init(sourceAnchor: SourceAnchor? = nil,
-                lexpr: Expression.Identifier,
+                lexpr: Identifier,
                 rexpr: Expression,
                 visibility: SymbolVisibility = .privateVisibility,
                 id: ID = ID()) {

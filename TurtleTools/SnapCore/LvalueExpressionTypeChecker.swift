@@ -33,13 +33,13 @@ public final class LvalueExpressionTypeChecker {
     
     @discardableResult public func check(expression: Expression) throws -> SymbolType? {
         switch expression {
-        case let identifier as Expression.Identifier:
+        case let identifier as Identifier:
             return try check(identifier: identifier)
-        case let expr as Expression.Subscript:
+        case let expr as Subscript:
             return try check(subscript: expr)
-        case let expr as Expression.Get:
+        case let expr as Get:
             return try check(get: expr)
-        case let expr as Expression.Bitcast:
+        case let expr as Bitcast:
             if let _ = try check(expression: expr.expr) {
                 let result = try rvalueContext().check(expression: expr.targetType)
                 return result
@@ -47,28 +47,28 @@ public final class LvalueExpressionTypeChecker {
             else {
                 return nil
             }
-        case let expr as Expression.GenericTypeApplication:
+        case let expr as GenericTypeApplication:
             return try check(genericTypeApplication: expr)
-        case let expr as Expression.Eseq:
+        case let expr as Eseq:
             return try check(eseq: expr)
         default:
             return nil
         }
     }
         
-    public func check(identifier expr: Expression.Identifier) throws -> SymbolType? {
+    public func check(identifier expr: Identifier) throws -> SymbolType? {
         return try rvalueContext().check(identifier: expr)
     }
     
-    public func check(subscript expr: Expression.Subscript) throws -> SymbolType? {
+    public func check(subscript expr: Subscript) throws -> SymbolType? {
         return try rvalueContext().check(subscript: expr)
     }
     
-    public func check(get expr: Expression.Get) throws -> SymbolType? {
-        if let _ = expr.member as? Expression.Identifier {
+    public func check(get expr: Get) throws -> SymbolType? {
+        if let _ = expr.member as? Identifier {
             return try check(getIdent: expr)
         }
-        else if let _ = expr.member as? Expression.GenericTypeApplication {
+        else if let _ = expr.member as? GenericTypeApplication {
             return nil
         }
         else {
@@ -76,8 +76,8 @@ public final class LvalueExpressionTypeChecker {
         }
     }
     
-    private func check(getIdent expr: Expression.Get) throws -> SymbolType? {
-        let member = expr.member as! Expression.Identifier
+    private func check(getIdent expr: Get) throws -> SymbolType? {
+        let member = expr.member as! Identifier
         let name = member.identifier
         let resultType = try rvalueContext().check(expression: expr.expr)
         switch resultType {
@@ -120,11 +120,11 @@ public final class LvalueExpressionTypeChecker {
         throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "value of type `\(resultType)' has no member `\(name)'")
     }
     
-    public func check(genericTypeApplication expr: Expression.GenericTypeApplication) throws -> SymbolType? {
+    public func check(genericTypeApplication expr: GenericTypeApplication) throws -> SymbolType? {
         return try rvalueContext().check(genericTypeApplication: expr)
     }
     
-    public func check(eseq: Expression.Eseq) throws -> SymbolType? {
+    public func check(eseq: Eseq) throws -> SymbolType? {
         guard let expr = eseq.children.last else {
             return nil
         }

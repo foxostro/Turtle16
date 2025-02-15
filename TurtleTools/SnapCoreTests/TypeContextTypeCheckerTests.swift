@@ -11,7 +11,7 @@ import SnapCore
 
 final class TypeContextTypeCheckerTests: XCTestCase {
     func testTypeOfAnIdentifierNamingAStruct() {
-        let expr = Expression.Identifier("foo")
+        let expr = Identifier("foo")
         let typ = StructTypeInfo(name: "foo", symbols: SymbolTable())
         let symbols = SymbolTable(typeDict: ["foo" : .structType(typ)])
         let typeChecker = TypeContextTypeChecker(symbols: symbols)

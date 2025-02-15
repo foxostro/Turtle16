@@ -14,7 +14,7 @@ final class CompilerPassWhileTests: XCTestCase {
     func testFailCompileIfStatementWithNonbooleanCondition() {
         let node = Block(
             children: [
-                While(condition: Expression.LiteralInt(0),
+                While(condition: LiteralInt(0),
                       body: Block())
                 ])
         XCTAssertThrowsError(try node.whilePass()) {

@@ -19,16 +19,16 @@ final class SnapSubcompilerAssertTests: XCTestCase {
     }
     
     fileprivate func makeAssertFalse() -> Assert {
-        return Assert(condition: Expression.LiteralBool(false), message: "false")
+        return Assert(condition: LiteralBool(false), message: "false")
     }
     
     fileprivate func makeAssertFalseResult() -> AbstractSyntaxTreeNode {
-        let panic = Expression.Call(callee: Expression.Identifier("__panic"), arguments: [
-            Expression.LiteralString("false")
+        let panic = Call(callee: Identifier("__panic"), arguments: [
+            LiteralString("false")
         ])
-        let condition = Expression.Binary(op: .eq,
-                                          left: Expression.LiteralBool(false),
-                                          right: Expression.LiteralBool(false))
+        let condition = Binary(op: .eq,
+                                          left: LiteralBool(false),
+                                          right: LiteralBool(false))
         return If(condition: condition, then: Block(children: [panic]))
     }
 }

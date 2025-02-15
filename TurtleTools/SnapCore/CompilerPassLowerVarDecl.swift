@@ -17,7 +17,7 @@ public final class CompilerPassLowerVarDecl: CompilerPassWithDeclScan {
     public override func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
         let node1 = VarDeclaration(
             sourceAnchor: node0.sourceAnchor,
-            identifier: try visit(identifier: node0.identifier) as! Expression.Identifier,
+            identifier: try visit(identifier: node0.identifier) as! Identifier,
             explicitType: try node0.explicitType.flatMap {
                 try visit(expr: $0)
             },
@@ -84,13 +84,13 @@ public final class CompilerPassLowerVarDecl: CompilerPassWithDeclScan {
     
     fileprivate func rtypeExpr(varDecl node: VarDeclaration) -> Expression? {
         guard let expr = node.expression else { return nil }
-        let type0 = Expression.TypeOf(
+        let type0 = TypeOf(
             sourceAnchor: expr.sourceAnchor,
             expr: expr)
         let type1 = if node.isMutable {
             type0
         } else {
-            Expression.ConstType(
+            ConstType(
                 sourceAnchor: type0.sourceAnchor,
                 typ: type0)
         }

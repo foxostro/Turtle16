@@ -10,7 +10,7 @@ import TurtleCore
 
 /// Adds methods to a struct to implement the specified trait
 public final class ImplFor: AbstractSyntaxTreeNode {
-    public let typeArguments: [Expression.GenericTypeArgument]
+    public let typeArguments: [GenericTypeArgument]
     public let traitTypeExpr: Expression
     public let structTypeExpr: Expression
     public let children: [FunctionDeclaration]
@@ -20,7 +20,7 @@ public final class ImplFor: AbstractSyntaxTreeNode {
     }
     
     public init(sourceAnchor: SourceAnchor? = nil,
-                typeArguments: [Expression.GenericTypeArgument],
+                typeArguments: [GenericTypeArgument],
                 traitTypeExpr: Expression,
                 structTypeExpr: Expression,
                 children: [FunctionDeclaration],

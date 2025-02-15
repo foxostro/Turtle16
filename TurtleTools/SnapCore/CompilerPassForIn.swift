@@ -13,19 +13,19 @@ public final class CompilerPassForIn: CompilerPass {
     public override func visit(forIn node0: ForIn) throws -> AbstractSyntaxTreeNode? {
         let node1 = try super.visit(forIn: node0) as! ForIn
         
-        let sequence = Expression.Identifier(
+        let sequence = Identifier(
             sourceAnchor: node1.sourceAnchor,
             identifier: symbols!.tempName(prefix: "__sequence"))
-        let index = Expression.Identifier(
+        let index = Identifier(
             sourceAnchor: node1.sourceAnchor,
             identifier: symbols!.tempName(prefix: "__index"))
-        let limit = Expression.Identifier(
+        let limit = Identifier(
             sourceAnchor: node1.sourceAnchor,
             identifier: symbols!.tempName(prefix: "__limit"))
-        let count = Expression.Identifier(sourceAnchor: node1.sourceAnchor, identifier: "count")
-        let usize = Expression.PrimitiveType(.u16) // TODO: This should use `usize' instead of assuming `u16'.
-        let zero = Expression.LiteralInt(sourceAnchor: node1.sourceAnchor, value: 0)
-        let one = Expression.LiteralInt(sourceAnchor: node1.sourceAnchor, value: 1)
+        let count = Identifier(sourceAnchor: node1.sourceAnchor, identifier: "count")
+        let usize = PrimitiveType(.u16) // TODO: This should use `usize' instead of assuming `u16'.
+        let zero = LiteralInt(sourceAnchor: node1.sourceAnchor, value: 0)
+        let one = LiteralInt(sourceAnchor: node1.sourceAnchor, value: 1)
         
         let grandparent = SymbolTable(parent: symbols)
         let parent = SymbolTable(parent: grandparent)
@@ -55,7 +55,7 @@ public final class CompilerPassForIn: CompilerPass {
                     sourceAnchor: node1.sourceAnchor,
                     identifier: limit,
                     explicitType: usize,
-                    expression: Expression.Get(
+                    expression: Get(
                         expr: sequence,
                         member: count),
                     storage: .automaticStorage,
@@ -63,11 +63,11 @@ public final class CompilerPassForIn: CompilerPass {
                 VarDeclaration(
                     sourceAnchor: node1.sourceAnchor,
                     identifier: node1.identifier,
-                    explicitType: Expression.TypeOf(
+                    explicitType: TypeOf(
                         sourceAnchor: node1.sourceAnchor,
-                        expr: Expression.MutableType(
+                        expr: MutableType(
                             sourceAnchor: node1.sourceAnchor,
-                            typ: Expression.Subscript(
+                            typ: Subscript(
                                 sourceAnchor: node1.sourceAnchor,
                                 subscriptable: sequence,
                                 argument: zero))),
@@ -76,7 +76,7 @@ public final class CompilerPassForIn: CompilerPass {
                     isMutable: true),
                 While(
                     sourceAnchor: node1.sourceAnchor,
-                    condition: Expression.Binary(
+                    condition: Binary(
                         sourceAnchor: node1.sourceAnchor,
                         op: .ne,
                         left: index,
@@ -85,18 +85,18 @@ public final class CompilerPassForIn: CompilerPass {
                         sourceAnchor: node1.sourceAnchor,
                         symbols: parent,
                         children: [
-                            Expression.Assignment(
+                            Assignment(
                                 sourceAnchor: node1.sourceAnchor,
                                 lexpr: node1.identifier,
-                                rexpr: Expression.Subscript(
+                                rexpr: Subscript(
                                     sourceAnchor: node1.sourceAnchor,
                                     subscriptable: sequence,
                                     argument: index)),
                             body,
-                            Expression.Assignment(
+                            Assignment(
                                 sourceAnchor: node1.sourceAnchor,
                                 lexpr: index,
-                                rexpr: Expression.Binary(
+                                rexpr: Binary(
                                     op: .plus,
                                     left: index,
                                     right: one)),

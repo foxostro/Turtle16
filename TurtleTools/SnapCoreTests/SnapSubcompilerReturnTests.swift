@@ -12,7 +12,7 @@ import TurtleCore
 
 final class SnapSubcompilerReturnTests: XCTestCase {
     func testCompilationFailsBecauseReturnIsInvalidOutsideFunction() {
-        let ast = Return(Expression.LiteralBool(true))
+        let ast = Return(LiteralBool(true))
         let symbols = SymbolTable()
         let compiler = SnapSubcompilerReturn(symbols)
         XCTAssertThrowsError(try compiler.compile(ast)) {
@@ -61,7 +61,7 @@ final class SnapSubcompilerReturnTests: XCTestCase {
     }
     
     func testReturnAValue() {
-        let input = Return(Expression.LiteralInt(1))
+        let input = Return(LiteralInt(1))
         let symbols = SymbolTable()
         symbols.breadcrumb = .functionType(FunctionTypeInfo(
             returnType: .u8,
@@ -70,9 +70,9 @@ final class SnapSubcompilerReturnTests: XCTestCase {
         var output: AbstractSyntaxTreeNode? = nil
         XCTAssertNoThrow(output = try compiler.compile(input))
         XCTAssertEqual(output, Seq(children: [
-            Expression.InitialAssignment(
-                lexpr: Expression.Identifier("__returnValue"),
-                rexpr: Expression.LiteralInt(1)),
+            InitialAssignment(
+                lexpr: Identifier("__returnValue"),
+                rexpr: LiteralInt(1)),
             Return()
         ]))
     }

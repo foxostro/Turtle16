@@ -12,12 +12,12 @@ import TurtleCore
 public final class Match: AbstractSyntaxTreeNode {
     public struct Clause: Hashable {
         public let sourceAnchor: SourceAnchor?
-        public let valueIdentifier: Expression.Identifier
+        public let valueIdentifier: Identifier
         public let valueType: Expression
         public let block: Block
         
         public init(sourceAnchor: SourceAnchor? = nil,
-                    valueIdentifier: Expression.Identifier,
+                    valueIdentifier: Identifier,
                     valueType: Expression,
                     block: Block) {
             self.sourceAnchor = sourceAnchor

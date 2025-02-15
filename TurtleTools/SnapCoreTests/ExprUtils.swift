@@ -14,112 +14,112 @@ public typealias Expression = SnapCore.Expression
 public struct ExprUtils {
     public static func makeU8(value: Int) -> Expression {
         assert(value >= UInt8.min && value <= UInt8.max)
-        return Expression.As(expr: Expression.LiteralInt(value),
-                             targetType: Expression.PrimitiveType(.u8))
+        return As(expr: LiteralInt(value),
+                             targetType: PrimitiveType(.u8))
     }
     
     public static func makeU16(value: Int) -> Expression {
         assert(value >= UInt16.min && value <= UInt16.max)
-        return Expression.As(expr: Expression.LiteralInt(value),
-                             targetType: Expression.PrimitiveType(.u16))
+        return As(expr: LiteralInt(value),
+                             targetType: PrimitiveType(.u16))
     }
     
     public static func makeI8(value: Int) -> Expression {
         assert(value >= Int8.min && value <= Int8.max)
-        return Expression.As(expr: Expression.LiteralInt(value),
-                             targetType: Expression.PrimitiveType(.i8))
+        return As(expr: LiteralInt(value),
+                             targetType: PrimitiveType(.i8))
     }
     
     public static func makeI16(value: Int) -> Expression {
         assert(value >= Int16.min && value <= Int16.max)
-        return Expression.As(expr: Expression.LiteralInt(value),
-                             targetType: Expression.PrimitiveType(.i16))
+        return As(expr: LiteralInt(value),
+                             targetType: PrimitiveType(.i16))
     }
     
     public static func makeBool(value: Bool) -> Expression {
-        return Expression.As(expr: Expression.LiteralBool(value),
-                             targetType: Expression.PrimitiveType(.bool))
+        return As(expr: LiteralBool(value),
+                             targetType: PrimitiveType(.bool))
     }
     
     public static func makeAdd(left: Expression, right: Expression) -> Expression {
-        return Expression.Binary(op: .plus,
+        return Binary(op: .plus,
                                  left: left,
                                  right: right)
     }
     
     public static func makeSub(left: Expression, right: Expression) -> Expression {
-        return Expression.Binary(op: .minus,
+        return Binary(op: .minus,
                                  left: left,
                                  right: right)
     }
     
     public static func makeMul(left: Expression, right: Expression) -> Expression {
-        return Expression.Binary(op: .star,
+        return Binary(op: .star,
                                  left: left,
                                  right: right)
     }
     
     public static func makeDiv(left: Expression, right: Expression) -> Expression {
-        return Expression.Binary(op: .divide,
+        return Binary(op: .divide,
                                  left: left,
                                  right: right)
     }
     
     public static func makeComparisonEq(left: Expression, right: Expression) -> Expression {
-        return Expression.Binary(op: .eq,
+        return Binary(op: .eq,
                                  left: left,
                                  right: right)
     }
     
     public static func makeComparisonNe(left: Expression, right: Expression) -> Expression {
-        return Expression.Binary(op: .ne,
+        return Binary(op: .ne,
                                  left: left,
                                  right: right)
     }
     
     public static func makeComparisonLt(left: Expression, right: Expression) -> Expression {
-        return Expression.Binary(op: .lt,
+        return Binary(op: .lt,
                                  left: left,
                                  right: right)
     }
     
     public static func makeComparisonGt(left: Expression, right: Expression) -> Expression {
-        return Expression.Binary(op: .gt,
+        return Binary(op: .gt,
                                  left: left,
                                  right: right)
     }
     
     public static func makeComparisonLe(left: Expression, right: Expression) -> Expression {
-        return Expression.Binary(op: .le,
+        return Binary(op: .le,
                                  left: left,
                                  right: right)
     }
     
     public static func makeComparisonGe(left: Expression, right: Expression) -> Expression {
-        return Expression.Binary(op: .ge,
+        return Binary(op: .ge,
                                  left: left,
                                  right: right)
     }
     
     public static func makeAssignment(name: String, right: Expression) -> Expression {
-        return makeAssignment(lexpr: Expression.Identifier(name),
+        return makeAssignment(lexpr: Identifier(name),
                               rexpr: right)
     }
     
     public static func makeAssignment(lexpr: Expression, rexpr: Expression) -> Expression {
-        return Expression.Assignment(lexpr: lexpr, rexpr: rexpr)
+        return Assignment(lexpr: lexpr, rexpr: rexpr)
     }
     
     public static func makeNeg(expr: Expression) -> Expression {
-        return Expression.Unary(op: .minus,
+        return Unary(op: .minus,
                                 expression: expr)
     }
     
     public static func makeSubscript(identifier: String, expr: Expression) -> Expression {
-        return Expression.Subscript(subscriptable: Expression.Identifier(identifier), argument: expr)
+        return Subscript(subscriptable: Identifier(identifier), argument: expr)
     }
     
     public static func makeRange(_ begin: Int, _ limit: Int) -> Expression {
-        return Expression.StructInitializer(identifier: Expression.Identifier("Range"), arguments: [Expression.StructInitializer.Argument(name: "begin", expr: Expression.LiteralInt(begin)), Expression.StructInitializer.Argument(name: "limit", expr: Expression.LiteralInt(limit))])
+        return StructInitializer(identifier: Identifier("Range"), arguments: [StructInitializer.Argument(name: "begin", expr: LiteralInt(begin)), StructInitializer.Argument(name: "limit", expr: LiteralInt(limit))])
     }
 }

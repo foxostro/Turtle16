@@ -98,7 +98,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     
     func testGotoIfFalse() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.run(GotoIfFalse(condition: Expression.LiteralBool(false), target: "bar"))
+        let actual = try compiler.run(GotoIfFalse(condition: LiteralBool(false), target: "bar"))
         let expected = Seq(children: [
             TackInstructionNode(.lio(.o(0), false)),
             TackInstructionNode(.bz(.o(0), "bar"))
@@ -127,10 +127,10 @@ final class CoreToTackCompilerTests: XCTestCase {
             ])
         let ast0 = Block(children: [
                 FunctionDeclaration(
-                    identifier: Expression.Identifier("foo"),
-                    functionType: Expression.FunctionType(
+                    identifier: Identifier("foo"),
+                    functionType: FunctionType(
                         name: "foo",
-                        returnType: Expression.PrimitiveType(.void),
+                        returnType: PrimitiveType(.void),
                         arguments: []),
                     argumentNames: [],
                     body: Block(children: [
@@ -145,7 +145,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testExpr_LiteralBoolFalse() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.run(Expression.LiteralBool(false))
+        let actual = try compiler.run(LiteralBool(false))
         let expected = TackInstructionNode(.lio(.o(0), false))
         XCTAssertEqual(actual, expected)
         XCTAssertNil(compiler.registerStack.last)
@@ -153,7 +153,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_LiteralBoolFalse() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.rvalue(expr: Expression.LiteralBool(false))
+        let actual = try compiler.rvalue(expr: LiteralBool(false))
         let expected = TackInstructionNode(.lio(.o(0), false))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(0)))
@@ -161,7 +161,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_LiteralBoolTrue() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.rvalue(expr: Expression.LiteralBool(true))
+        let actual = try compiler.rvalue(expr: LiteralBool(true))
         let expected = TackInstructionNode(.lio(.o(0), true))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(0)))
@@ -169,7 +169,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_LiteralInt_Small_Positive() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.rvalue(expr: Expression.LiteralInt(1))
+        let actual = try compiler.rvalue(expr: LiteralInt(1))
         let expected = TackInstructionNode(.liub(.b(0), 1))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(0)))
@@ -177,7 +177,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_LiteralInt_Small_Negative() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.rvalue(expr: Expression.LiteralInt(-1))
+        let actual = try compiler.rvalue(expr: LiteralInt(-1))
         let expected = TackInstructionNode(.lib(.b(0), -1))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(0)))
@@ -185,7 +185,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_LiteralInt_Big() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.rvalue(expr: Expression.LiteralInt(0x1000))
+        let actual = try compiler.rvalue(expr: LiteralInt(0x1000))
         let expected = TackInstructionNode(.liuw(.w(0), 0x1000))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
@@ -193,7 +193,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_LiteralInt_Big_Negative() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.rvalue(expr: Expression.LiteralInt(-1000))
+        let actual = try compiler.rvalue(expr: LiteralInt(-1000))
         let expected = TackInstructionNode(.liw(.w(0), -1000))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
@@ -201,8 +201,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_LiteralArray_primitive_type() throws {
         let compiler = makeCompiler()
-        let arrType = Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u16))
-        let actual = try compiler.rvalue(expr: Expression.LiteralArray(arrayType: arrType, elements: [Expression.LiteralInt(42)]))
+        let arrType = ArrayType(count: LiteralInt(1), elementType: PrimitiveType(.u16))
+        let actual = try compiler.rvalue(expr: LiteralArray(arrayType: arrType, elements: [LiteralInt(42)]))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 272)),
             TackInstructionNode(.liuw(.w(1), 42)),
@@ -214,10 +214,10 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_LiteralArray_non_primitive_type() throws {
         let compiler = makeCompiler()
-        let inner = Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u16))
-        let outer = Expression.ArrayType(count: Expression.LiteralInt(1), elementType: inner)
-        let actual = try compiler.rvalue(expr: Expression.LiteralArray(arrayType: outer, elements: [
-            Expression.LiteralArray(arrayType: inner, elements: [Expression.LiteralInt(42)])
+        let inner = ArrayType(count: LiteralInt(1), elementType: PrimitiveType(.u16))
+        let outer = ArrayType(count: LiteralInt(1), elementType: inner)
+        let actual = try compiler.rvalue(expr: LiteralArray(arrayType: outer, elements: [
+            LiteralArray(arrayType: inner, elements: [LiteralInt(42)])
         ]))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 272)),
@@ -235,7 +235,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_LiteralString() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.rvalue(expr: Expression.LiteralString("a"))
+        let actual = try compiler.rvalue(expr: LiteralString("a"))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 272)),
             TackInstructionNode(.ststr(.p(0), "a"))
@@ -248,11 +248,11 @@ final class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable()
         symbols.bind(identifier: kSliceName, symbolType: kSliceType)
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.StructInitializer(identifier: Expression.Identifier(kSliceName), arguments: [
-            Expression.StructInitializer.Argument(name: kSliceBase,
-                                                  expr: Expression.LiteralInt(0xabcd)),
-            Expression.StructInitializer.Argument(name: kSliceCount,
-                                                  expr: Expression.LiteralInt(0xffff))
+        let actual = try compiler.rvalue(expr: StructInitializer(identifier: Identifier(kSliceName), arguments: [
+            StructInitializer.Argument(name: kSliceBase,
+                                                  expr: LiteralInt(0xabcd)),
+            StructInitializer.Argument(name: kSliceCount,
+                                                  expr: LiteralInt(0xffff))
         ]))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 272)),
@@ -274,7 +274,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: SymbolTable(tuples: [
             ("foo", Symbol(type: .u16, offset: offset, storage: .staticStorage))
         ]))
-        let actual = try compiler.rvalue(expr: Expression.Identifier("foo"))
+        let actual = try compiler.rvalue(expr: Identifier("foo"))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), offset)),
             TackInstructionNode(.lw(.w(1), .p(0), 0))
@@ -290,7 +290,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Identifier("foo"))
+        let actual = try compiler.rvalue(expr: Identifier("foo"))
         let expected = Seq(children: [
             TackInstructionNode(.subip(.p(0), .fp, offset)),
             TackInstructionNode(.lw(.w(1), .p(0), 0))
@@ -304,7 +304,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         let compiler = makeCompiler(symbols: SymbolTable(tuples: [
             ("foo", Symbol(type: kSliceType, offset: offset, storage: .staticStorage))
         ]))
-        let actual = try compiler.rvalue(expr: Expression.Identifier("foo"))
+        let actual = try compiler.rvalue(expr: Identifier("foo"))
         let expected = TackInstructionNode(.lip(.p(0), offset))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
@@ -316,8 +316,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.PrimitiveType(.u8)))
+        let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"),
+                                                             targetType: PrimitiveType(.u8)))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lb(.b(1), .p(0), 0))
@@ -332,8 +332,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.PrimitiveType(.u16)))
+        let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"),
+                                                             targetType: PrimitiveType(.u16)))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
@@ -349,8 +349,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.PrimitiveType(.u8)))
+        let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"),
+                                                             targetType: PrimitiveType(.u8)))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -366,8 +366,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.PrimitiveType(.i16)))
+        let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"),
+                                                             targetType: PrimitiveType(.i16)))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
@@ -383,8 +383,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.PrimitiveType(.i8)))
+        let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"),
+                                                             targetType: PrimitiveType(.i8)))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -400,8 +400,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.PrimitiveType(.i16)))
+        let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"),
+                                                             targetType: PrimitiveType(.i16)))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
@@ -416,8 +416,8 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .array(count: 1, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u16))))
+        let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"),
+                                                             targetType: ArrayType(count: nil, elementType: PrimitiveType(.u16))))
         let expected = TackInstructionNode(.lip(.p(0), 0xabcd))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
@@ -428,8 +428,8 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .array(count: 0, elementType: .u8), offset: 0xabcd, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.ArrayType(count: Expression.LiteralInt(0), elementType: Expression.PrimitiveType(.u8))))
+        let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"),
+                                                             targetType: ArrayType(count: LiteralInt(0), elementType: PrimitiveType(.u8))))
         let expected = TackInstructionNode(.lip(.p(0), 0xabcd))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
@@ -440,8 +440,8 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .array(count: 1, elementType: .u16), offset: 0x1000, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8))))
+        let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"),
+                                                             targetType: ArrayType(count: nil, elementType: PrimitiveType(.u8))))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 272)),
             TackInstructionNode(.liuw(.w(1), 0)),
@@ -463,7 +463,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .array(count: 1, elementType: .u16), offset: 0x1000, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.DynamicArrayType(Expression.PrimitiveType(.u16))))
+        let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"), targetType: DynamicArrayType(PrimitiveType(.u16))))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 272)),
             TackInstructionNode(.lip(.p(1), 0x1000)),
@@ -477,8 +477,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_literal_array_to_dynamic_array() throws {
         let compiler = makeCompiler()
-        let arr = Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u16)), elements: [Expression.LiteralInt(1)])
-        let actual = try compiler.rvalue(expr: Expression.As(expr: arr, targetType: Expression.DynamicArrayType(Expression.PrimitiveType(.u16))))
+        let arr = LiteralArray(arrayType: ArrayType(count: nil, elementType: PrimitiveType(.u16)), elements: [LiteralInt(1)])
+        let actual = try compiler.rvalue(expr: As(expr: arr, targetType: DynamicArrayType(PrimitiveType(.u16))))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 272)),
             TackInstructionNode(.lip(.p(1), 274)),
@@ -498,8 +498,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                        targetType: Expression.PrimitiveType(.u8)))
+        let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"),
+                                                        targetType: PrimitiveType(.u8)))
         let expected = TackInstructionNode(.liub(.b(0), 42))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(0)))
@@ -511,8 +511,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.PrimitiveType(.u16)))
+        let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"),
+                                                             targetType: PrimitiveType(.u16)))
         let expected = TackInstructionNode(.liuw(.w(0), 1000))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
@@ -524,8 +524,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.PrimitiveType(.bool)))
+        let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"),
+                                                             targetType: PrimitiveType(.bool)))
         let expected = TackInstructionNode(.lio(.o(0), true))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(0)))
@@ -537,8 +537,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.PrimitiveType(.bool)))
+        let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"),
+                                                             targetType: PrimitiveType(.bool)))
         let expected = TackInstructionNode(.lio(.o(0), false))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(0)))
@@ -550,8 +550,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.PointerType(Expression.PrimitiveType(.arithmeticType(.immutableInt(.u16))))))
+        let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"),
+                                                             targetType: PointerType(PrimitiveType(.arithmeticType(.immutableInt(.u16))))))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lp(.p(1), .p(0), 0))
@@ -566,8 +566,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.UnionType([Expression.PrimitiveType(.u16)])))
+        let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"),
+                                                             targetType: UnionType([PrimitiveType(.u16)])))
         let expected = TackInstructionNode(.lip(.p(0), 0xabcd))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
@@ -579,8 +579,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.PrimitiveType(.u16)))
+        let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"),
+                                                             targetType: PrimitiveType(.u16)))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lw(.w(1), .p(0), 1))
@@ -595,8 +595,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u16))))
+        let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"),
+                                                             targetType: ArrayType(count: LiteralInt(1), elementType: PrimitiveType(.u16))))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.addip(.p(1), .p(0), 1))
@@ -611,7 +611,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.PrimitiveType(.u16)])))
+        let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"), targetType: UnionType([PrimitiveType(.u16)])))
         let expected = Seq(children: [
             TackInstructionNode(.subip(.p(0), .fp, 2)),
             TackInstructionNode(.liuw(.w(1), 0)),
@@ -630,7 +630,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.PrimitiveType(.bool), Expression.PrimitiveType(.u16)])))
+        let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"), targetType: UnionType([PrimitiveType(.bool), PrimitiveType(.u16)])))
         let expected = Seq(children: [
             TackInstructionNode(.subip(.p(0), .fp, 2)),
             TackInstructionNode(.liuw(.w(1), 1)),
@@ -649,7 +649,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"), targetType: Expression.UnionType([Expression.ArrayType(count: Expression.LiteralInt(2), elementType: Expression.PrimitiveType(.u16))])))
+        let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"), targetType: UnionType([ArrayType(count: LiteralInt(2), elementType: PrimitiveType(.u16))])))
         let expected = Seq(children: [
             TackInstructionNode(.subip(.p(0), .fp, 3)),
             TackInstructionNode(.liuw(.w(1), 0)),
@@ -668,8 +668,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.As(expr: Expression.Identifier("foo"),
-                                                             targetType: Expression.PrimitiveType(.u16)))
+        let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"),
+                                                             targetType: PrimitiveType(.u16)))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -689,8 +689,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Bitcast(expr: Expression.Identifier("foo"),
-                                                                  targetType: Expression.PointerType(Expression.PrimitiveType(.arithmeticType(.immutableInt(.u16))))))
+        let actual = try compiler.rvalue(expr: Bitcast(expr: Identifier("foo"),
+                                                                  targetType: PointerType(PrimitiveType(.arithmeticType(.immutableInt(.u16))))))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -702,7 +702,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Group() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.rvalue(expr: Expression.Group(Expression.LiteralBool(false)))
+        let actual = try compiler.rvalue(expr: Group(LiteralBool(false)))
         let expected = TackInstructionNode(.lio(.o(0), false))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(0)))
@@ -713,7 +713,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .u8, offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Unary(op: .minus, expression: Expression.Identifier("foo")))
+        let actual = try compiler.rvalue(expr: Unary(op: .minus, expression: Identifier("foo")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 100)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
@@ -729,7 +729,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .u16, offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Unary(op: .minus, expression: Expression.Identifier("foo")))
+        let actual = try compiler.rvalue(expr: Unary(op: .minus, expression: Identifier("foo")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 100)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -745,7 +745,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .i8, offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Unary(op: .minus, expression: Expression.Identifier("foo")))
+        let actual = try compiler.rvalue(expr: Unary(op: .minus, expression: Identifier("foo")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 100)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
@@ -761,7 +761,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .i16, offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Unary(op: .minus, expression: Expression.Identifier("foo")))
+        let actual = try compiler.rvalue(expr: Unary(op: .minus, expression: Identifier("foo")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 100)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -777,7 +777,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .bool, offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Unary(op: .bang, expression: Expression.Identifier("foo")))
+        let actual = try compiler.rvalue(expr: Unary(op: .bang, expression: Identifier("foo")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 100)),
             TackInstructionNode(.lo(.o(1), .p(0), 0)),
@@ -792,7 +792,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .u8, offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Unary(op: .tilde, expression: Expression.Identifier("foo")))
+        let actual = try compiler.rvalue(expr: Unary(op: .tilde, expression: Identifier("foo")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 100)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
@@ -807,7 +807,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .u16, offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Unary(op: .tilde, expression: Expression.Identifier("foo")))
+        let actual = try compiler.rvalue(expr: Unary(op: .tilde, expression: Identifier("foo")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 100)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -822,7 +822,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .i8, offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Unary(op: .tilde, expression: Expression.Identifier("foo")))
+        let actual = try compiler.rvalue(expr: Unary(op: .tilde, expression: Identifier("foo")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 100)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
@@ -837,7 +837,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .i16, offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Unary(op: .tilde, expression: Expression.Identifier("foo")))
+        let actual = try compiler.rvalue(expr: Unary(op: .tilde, expression: Identifier("foo")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 100)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -852,7 +852,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .function(FunctionTypeInfo(name: "foo", mangledName: "foo", returnType: .void, arguments: []))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Unary(op: .ampersand, expression: Expression.Identifier("foo")))
+        let actual = try compiler.rvalue(expr: Unary(op: .ampersand, expression: Identifier("foo")))
         let expected = TackInstructionNode(.la(.p(0), "foo"))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
@@ -863,7 +863,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .u16, offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Unary(op: .ampersand, expression: Expression.Identifier("foo")))
+        let actual = try compiler.rvalue(expr: Unary(op: .ampersand, expression: Identifier("foo")))
         let expected = TackInstructionNode(.lip(.p(0), 100))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
@@ -875,7 +875,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .plus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .plus, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -893,7 +893,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .minus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .minus, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -911,7 +911,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .star, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .star, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -929,7 +929,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .i16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .divide, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -947,7 +947,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .divide, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -965,7 +965,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .modulus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .modulus, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -983,7 +983,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .leftDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .leftDoubleAngle, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -1001,7 +1001,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .rightDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .rightDoubleAngle, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -1019,7 +1019,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .ampersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .ampersand, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -1037,7 +1037,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .pipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .pipe, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -1055,7 +1055,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .caret, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .caret, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -1073,7 +1073,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .eq, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -1091,7 +1091,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .ne, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -1109,7 +1109,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .i16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .lt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .lt, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -1127,7 +1127,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .i16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .ge, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .ge, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -1145,7 +1145,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .i16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .le, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .le, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -1163,7 +1163,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .i16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .gt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .gt, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -1181,7 +1181,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .lt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .lt, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -1199,7 +1199,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .ge, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .ge, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -1217,7 +1217,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .le, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .le, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -1235,7 +1235,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .gt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .gt, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lw(.w(1), .p(0), 0)),
@@ -1253,7 +1253,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .plus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .plus, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
@@ -1271,7 +1271,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .minus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .minus, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
@@ -1289,7 +1289,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .star, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .star, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
@@ -1307,7 +1307,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .i8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .divide, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
@@ -1325,7 +1325,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .divide, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
@@ -1343,7 +1343,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .modulus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .modulus, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
@@ -1361,7 +1361,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .leftDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .leftDoubleAngle, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
@@ -1379,7 +1379,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .rightDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .rightDoubleAngle, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
@@ -1397,7 +1397,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .ampersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .ampersand, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
@@ -1415,7 +1415,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .pipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .pipe, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
@@ -1433,7 +1433,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .caret, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .caret, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
@@ -1451,7 +1451,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .eq, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
@@ -1469,7 +1469,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .ne, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
@@ -1487,7 +1487,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .lt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .lt, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
@@ -1505,7 +1505,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .ge, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .ge, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
@@ -1523,7 +1523,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .le, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .le, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
@@ -1541,7 +1541,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .gt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .gt, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lb(.b(1), .p(0), 0)),
@@ -1559,7 +1559,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .arithmeticType(.compTimeInt(1))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .eq, left: Identifier("left"), right: Identifier("right")))
         let expected = TackInstructionNode(.lio(.o(0), true))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(0)))
@@ -1571,7 +1571,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .arithmeticType(.compTimeInt(1))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .ne, left: Identifier("left"), right: Identifier("right")))
         let expected = TackInstructionNode(.lio(.o(0), false))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(0)))
@@ -1583,7 +1583,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .arithmeticType(.compTimeInt(2))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .lt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .lt, left: Identifier("left"), right: Identifier("right")))
         let expected = TackInstructionNode(.lio(.o(0), true))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(0)))
@@ -1595,7 +1595,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .arithmeticType(.compTimeInt(1))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .gt, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .gt, left: Identifier("left"), right: Identifier("right")))
         let expected = TackInstructionNode(.lio(.o(0), true))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(0)))
@@ -1607,7 +1607,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .arithmeticType(.compTimeInt(1))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .le, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .le, left: Identifier("left"), right: Identifier("right")))
         let expected = TackInstructionNode(.lio(.o(0), true))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(0)))
@@ -1619,7 +1619,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .arithmeticType(.compTimeInt(1))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .ge, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .ge, left: Identifier("left"), right: Identifier("right")))
         let expected = TackInstructionNode(.lio(.o(0), true))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(0)))
@@ -1631,7 +1631,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .arithmeticType(.compTimeInt(-1000))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .plus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .plus, left: Identifier("left"), right: Identifier("right")))
         let expected = TackInstructionNode(.liw(.w(0), -2000))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
@@ -1643,7 +1643,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .arithmeticType(.compTimeInt(1))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .minus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .minus, left: Identifier("left"), right: Identifier("right")))
         let expected = TackInstructionNode(.liub(.b(0), 0))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(0)))
@@ -1655,7 +1655,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .arithmeticType(.compTimeInt(1))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .star, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .star, left: Identifier("left"), right: Identifier("right")))
         let expected = TackInstructionNode(.liub(.b(0), 1))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(0)))
@@ -1667,7 +1667,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .arithmeticType(.compTimeInt(1))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .divide, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .divide, left: Identifier("left"), right: Identifier("right")))
         let expected = TackInstructionNode(.liub(.b(0), 1))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(0)))
@@ -1679,7 +1679,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .arithmeticType(.compTimeInt(2))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .modulus, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .modulus, left: Identifier("left"), right: Identifier("right")))
         let expected = TackInstructionNode(.liub(.b(0), 1))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(0)))
@@ -1691,7 +1691,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .arithmeticType(.compTimeInt(0x0f))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .ampersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .ampersand, left: Identifier("left"), right: Identifier("right")))
         let expected = TackInstructionNode(.liub(.b(0), 0xb))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(0)))
@@ -1703,7 +1703,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .arithmeticType(.compTimeInt(0x0f))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .pipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .pipe, left: Identifier("left"), right: Identifier("right")))
         let expected = TackInstructionNode(.liub(.b(0), 0xaf))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(0)))
@@ -1715,7 +1715,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .arithmeticType(.compTimeInt(0xab))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .caret, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .caret, left: Identifier("left"), right: Identifier("right")))
         let expected = TackInstructionNode(.liub(.b(0), 0))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(0)))
@@ -1727,7 +1727,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .arithmeticType(.compTimeInt(2))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .leftDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .leftDoubleAngle, left: Identifier("left"), right: Identifier("right")))
         let expected = TackInstructionNode(.liub(.b(0), 8))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(0)))
@@ -1739,7 +1739,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .arithmeticType(.compTimeInt(2))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .rightDoubleAngle, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .rightDoubleAngle, left: Identifier("left"), right: Identifier("right")))
         let expected = TackInstructionNode(.liub(.b(0), 2))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .b(.b(0)))
@@ -1751,7 +1751,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .bool, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .eq, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lo(.o(1), .p(0), 0)),
@@ -1769,7 +1769,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .bool, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .ne, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 200)),
             TackInstructionNode(.lo(.o(1), .p(0), 0)),
@@ -1787,7 +1787,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .bool, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .doubleAmpersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .doubleAmpersand, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 100)),
             TackInstructionNode(.lo(.o(1), .p(0), 0)),
@@ -1811,7 +1811,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .bool, offset: 200, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .doublePipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .doublePipe, left: Identifier("left"), right: Identifier("right")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 100)),
             TackInstructionNode(.lo(.o(1), .p(0), 0)),
@@ -1835,7 +1835,7 @@ final class CoreToTackCompilerTests: XCTestCase {
              ("right", Symbol(type: .booleanType(.compTimeBool(true))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .eq, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .eq, left: Identifier("left"), right: Identifier("right")))
         let expected = TackInstructionNode(.lio(.o(0), true))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(0)))
@@ -1847,7 +1847,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .booleanType(.compTimeBool(true))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .ne, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .ne, left: Identifier("left"), right: Identifier("right")))
         let expected = TackInstructionNode(.lio(.o(0), false))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(0)))
@@ -1859,7 +1859,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .booleanType(.compTimeBool(true))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .doubleAmpersand, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .doubleAmpersand, left: Identifier("left"), right: Identifier("right")))
         let expected = TackInstructionNode(.lio(.o(0), true))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(0)))
@@ -1871,7 +1871,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("right", Symbol(type: .booleanType(.compTimeBool(true))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Binary(op: .doublePipe, left: Expression.Identifier("left"), right: Expression.Identifier("right")))
+        let actual = try compiler.rvalue(expr: Binary(op: .doublePipe, left: Identifier("left"), right: Identifier("right")))
         let expected = TackInstructionNode(.lio(.o(0), true))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(0)))
@@ -1882,7 +1882,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .booleanType(.compTimeBool(true))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Is(expr: Expression.Identifier("foo"), testType: Expression.PrimitiveType(.booleanType(.compTimeBool(true)))))
+        let actual = try compiler.rvalue(expr: Is(expr: Identifier("foo"), testType: PrimitiveType(.booleanType(.compTimeBool(true)))))
         let expected = TackInstructionNode(.lio(.o(0), true))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .o(.o(0)))
@@ -1893,7 +1893,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool])), offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Is(expr: Expression.Identifier("foo"), testType: Expression.PrimitiveType(.bool)))
+        let actual = try compiler.rvalue(expr: Is(expr: Identifier("foo"), testType: PrimitiveType(.bool)))
         let expected = Seq(children: [
             TackInstructionNode(.liw(.w(0), 1)),
             TackInstructionNode(.lip(.p(1), 100)),
@@ -1909,7 +1909,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .unionType(UnionTypeInfo([.arithmeticType(.immutableInt(.u8)), .constBool])), offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Is(expr: Expression.Identifier("foo"), testType: Expression.PrimitiveType(.bool)))
+        let actual = try compiler.rvalue(expr: Is(expr: Identifier("foo"), testType: PrimitiveType(.bool)))
         let expected = Seq(children: [
             TackInstructionNode(.liw(.w(0), 1)),
             TackInstructionNode(.lip(.p(1), 100)),
@@ -1925,8 +1925,8 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .u16, offset: 0x1000, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
-                                                                     rexpr: Expression.LiteralInt(42)))
+        let actual = try compiler.rvalue(expr: Assignment(lexpr: Identifier("foo"),
+                                                                     rexpr: LiteralInt(42)))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x1000)),
             TackInstructionNode(.liuw(.w(1), 42)),
@@ -1942,8 +1942,8 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("bar", Symbol(type: .array(count: 0, elementType: .u16), offset: 0x2000, storage: .staticStorage)),
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
-                                                                     rexpr: Expression.Identifier("bar")))
+        let actual = try compiler.rvalue(expr: Assignment(lexpr: Identifier("foo"),
+                                                                     rexpr: Identifier("bar")))
         let expected = TackInstructionNode(.lip(.p(0), 0x1000))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .p(.p(0)))
@@ -1955,8 +1955,8 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("bar", Symbol(type: .array(count: 1, elementType: .u16), offset: 0x2000, storage: .staticStorage)),
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
-                                                                     rexpr: Expression.Identifier("bar")))
+        let actual = try compiler.rvalue(expr: Assignment(lexpr: Identifier("foo"),
+                                                                     rexpr: Identifier("bar")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x1000)),
             TackInstructionNode(.lip(.p(1), 0x2000)),
@@ -1972,8 +1972,8 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("bar", Symbol(type: .array(count: 2, elementType: .u16), offset: 0x2000, storage: .staticStorage)),
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
-                                                                     rexpr: Expression.Identifier("bar")))
+        let actual = try compiler.rvalue(expr: Assignment(lexpr: Identifier("foo"),
+                                                                     rexpr: Identifier("bar")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x1000)),
             TackInstructionNode(.lip(.p(1), 0x2000)),
@@ -1989,7 +1989,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: Expression.LiteralInt(9)))
+        let actual = try compiler.rvalue(expr: Subscript(subscriptable: Identifier("foo"), argument: LiteralInt(9)))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.liuw(.w(1), 9)),
@@ -2006,7 +2006,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
+        let actual = try compiler.rvalue(expr: Subscript(subscriptable: Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.liuw(.w(1), 9)),
@@ -2033,7 +2033,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
+        let actual = try compiler.rvalue(expr: Subscript(subscriptable: Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lw(.w(1), .p(0), 0))
@@ -2048,7 +2048,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
+        let actual = try compiler.rvalue(expr: Subscript(subscriptable: Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.liuw(.w(1), 9)),
@@ -2075,7 +2075,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
+        let actual = try compiler.rvalue(expr: Subscript(subscriptable: Identifier("foo"), argument: ExprUtils.makeU16(value: 9)))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lp(.p(1), .p(0), 0)),
@@ -2102,7 +2102,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .dynamicArray(elementType: .u16), offset: 0xabcd, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        XCTAssertThrowsError(try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: Expression.LiteralInt(-1)))) {
+        XCTAssertThrowsError(try compiler.rvalue(expr: Subscript(subscriptable: Identifier("foo"), argument: LiteralInt(-1)))) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "Array index is always out of bounds: `-1' is less than zero")
@@ -2114,7 +2114,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        XCTAssertThrowsError(try compiler.rvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: Expression.LiteralInt(100)))) {
+        XCTAssertThrowsError(try compiler.rvalue(expr: Subscript(subscriptable: Identifier("foo"), argument: LiteralInt(100)))) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "Array index is always out of bounds: `100' is not in 0..10")
@@ -2126,7 +2126,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .dynamicArray(elementType: .u16), offset: 0xabcd, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        XCTAssertThrowsError(try compiler.lvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: Expression.LiteralInt(-1)))) {
+        XCTAssertThrowsError(try compiler.lvalue(expr: Subscript(subscriptable: Identifier("foo"), argument: LiteralInt(-1)))) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "Array index is always out of bounds: `-1' is less than zero")
@@ -2138,7 +2138,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        XCTAssertThrowsError(try compiler.lvalue(expr: Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: Expression.LiteralInt(100)))) {
+        XCTAssertThrowsError(try compiler.lvalue(expr: Subscript(subscriptable: Identifier("foo"), argument: LiteralInt(100)))) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
             XCTAssertEqual(compilerError?.message, "Array index is always out of bounds: `100' is not in 0..10")
@@ -2150,10 +2150,10 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0x1000, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Assignment(
-            lexpr: Expression.Subscript(subscriptable: Expression.Identifier("foo"),
-                                        argument: Expression.LiteralInt(9)),
-            rexpr: Expression.LiteralInt(42))
+        let actual = try compiler.rvalue(expr: Assignment(
+            lexpr: Subscript(subscriptable: Identifier("foo"),
+                                        argument: LiteralInt(9)),
+            rexpr: LiteralInt(42))
         )
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x1000)),
@@ -2172,8 +2172,8 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("bar", Symbol(type: .u16, offset: 0x2000, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
-                                                                     rexpr: Expression.Identifier("bar")))
+        let actual = try compiler.rvalue(expr: Assignment(lexpr: Identifier("foo"),
+                                                                     rexpr: Identifier("bar")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x1000)),
             TackInstructionNode(.lip(.p(1), 0x2000)),
@@ -2188,7 +2188,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .pointer(.u16), offset: 0x1000, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let expr = Expression.Assignment(lexpr: Expression.Identifier("foo"),
+        let expr = Assignment(lexpr: Identifier("foo"),
                                          rexpr: ExprUtils.makeU16(value: 42))
         XCTAssertThrowsError(try compiler.lvalue(expr: expr)) {
             let compilerError = $0 as? CompilerError
@@ -2200,7 +2200,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Assignment_automatic_conversion_from_trait_to_pointer() throws {
         let symbols = SymbolTable()
         let traitDecl = TraitDeclaration(
-            identifier: Expression.Identifier("Foo"),
+            identifier: Identifier("Foo"),
             members: [],
             visibility: .privateVisibility)
         try TraitScanner(symbols: symbols).scan(trait: traitDecl)
@@ -2212,8 +2212,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         symbols.bind(identifier: "bar", symbol: Symbol(type: traitType, offset: 0x2000, storage: .staticStorage))
 
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: Expression.Identifier("foo"),
-                                                                     rexpr: Expression.Identifier("bar")))
+        let actual = try compiler.rvalue(expr: Assignment(lexpr: Identifier("foo"),
+                                                                     rexpr: Identifier("bar")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x1000)),
             TackInstructionNode(.lip(.p(1), 0x2000)),
@@ -2229,8 +2229,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
-                                                              member: Expression.Identifier("count")))
+        let actual = try compiler.rvalue(expr: Get(expr: Identifier("foo"),
+                                                              member: Identifier("count")))
         let expected = TackInstructionNode(.liuw(.w(0), 42))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
@@ -2242,8 +2242,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
-                                                              member: Expression.Identifier("count")))
+        let actual = try compiler.rvalue(expr: Get(expr: Identifier("foo"),
+                                                              member: Identifier("count")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lw(.w(1), .p(0), 1))
@@ -2258,8 +2258,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
-                                                              member: Expression.Identifier("count")))
+        let actual = try compiler.rvalue(expr: Get(expr: Identifier("foo"),
+                                                              member: Identifier("count")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lw(.w(1), .p(0), 1))
@@ -2278,8 +2278,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
-                                                              member: Expression.Identifier("baz")))
+        let actual = try compiler.rvalue(expr: Get(expr: Identifier("foo"),
+                                                              member: Identifier("baz")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.addip(.p(1), .p(0), 1))
@@ -2294,8 +2294,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
-                                                              member: Expression.Identifier("pointee")))
+        let actual = try compiler.rvalue(expr: Get(expr: Identifier("foo"),
+                                                              member: Identifier("pointee")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lp(.p(1), .p(0), 0)),
@@ -2311,8 +2311,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.lvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
-                                                              member: Expression.Identifier("pointee")))
+        let actual = try compiler.lvalue(expr: Get(expr: Identifier("foo"),
+                                                              member: Identifier("pointee")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lp(.p(1), .p(0), 0))
@@ -2327,7 +2327,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.lvalue(expr: Expression.Bitcast(expr: Expression.Get(expr: Expression.Identifier("foo"), member: Expression.Identifier("pointee")), targetType: Expression.PrimitiveType(.u8)))
+        let actual = try compiler.lvalue(expr: Bitcast(expr: Get(expr: Identifier("foo"), member: Identifier("pointee")), targetType: PrimitiveType(.u8)))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lp(.p(1), .p(0), 0))
@@ -2342,8 +2342,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
-                                                              member: Expression.Identifier("pointee")))
+        let actual = try compiler.rvalue(expr: Get(expr: Identifier("foo"),
+                                                              member: Identifier("pointee")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lp(.p(1), .p(0), 0))
@@ -2358,8 +2358,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
-                                                              member: Expression.Identifier("count")))
+        let actual = try compiler.rvalue(expr: Get(expr: Identifier("foo"),
+                                                              member: Identifier("count")))
         let expected = TackInstructionNode(.liuw(.w(0), 42))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
@@ -2371,8 +2371,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
-                                                              member: Expression.Identifier("count")))
+        let actual = try compiler.rvalue(expr: Get(expr: Identifier("foo"),
+                                                              member: Identifier("count")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lp(.p(1), .p(0), 0)),
@@ -2388,8 +2388,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
-                                                              member: Expression.Identifier("count")))
+        let actual = try compiler.rvalue(expr: Get(expr: Identifier("foo"),
+                                                              member: Identifier("count")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lp(.p(1), .p(0), 0)),
@@ -2409,8 +2409,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Get(expr: Expression.Identifier("foo"),
-                                                              member: Expression.Identifier("baz")))
+        let actual = try compiler.rvalue(expr: Get(expr: Identifier("foo"),
+                                                              member: Identifier("baz")))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lp(.p(1), .p(0), 0)),
@@ -2425,7 +2425,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .function(FunctionTypeInfo(name: "foo", mangledName: "foo", returnType: .void, arguments: []))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: []))
+        let actual = try compiler.rvalue(expr: Call(callee: Identifier("foo"), arguments: []))
         let expected = TackInstructionNode(.call("foo"))
         XCTAssertEqual(actual, expected)
     }
@@ -2436,7 +2436,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: []))
+        let actual = try compiler.rvalue(expr: Call(callee: Identifier("foo"), arguments: []))
         let expected = Seq(children: [
             TackInstructionNode(.alloca(.p(0), 1)),
             TackInstructionNode(.call("foo")),
@@ -2456,7 +2456,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: []))
+        let actual = try compiler.rvalue(expr: Call(callee: Identifier("foo"), arguments: []))
         let expected = Seq(children: [
             TackInstructionNode(.alloca(.p(0), 2)),
             TackInstructionNode(.call("foo")),
@@ -2477,8 +2477,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: [
-            Expression.LiteralInt(0x1000)
+        let actual = try compiler.rvalue(expr: Call(callee: Identifier("foo"), arguments: [
+            LiteralInt(0x1000)
         ]))
         let expected = Seq(children: [
             TackInstructionNode(.liuw(.w(0), 0x1000)),
@@ -2497,7 +2497,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: [Expression.LiteralInt(0xabcd)]))
+        let actual = try compiler.rvalue(expr: Call(callee: Identifier("foo"), arguments: [LiteralInt(0xabcd)]))
         let expected = Seq(children: [
             TackInstructionNode(.liuw(.w(0), 0xabcd)),
             TackInstructionNode(.alloca(.p(1), 1)),
@@ -2521,8 +2521,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: [
-            Expression.LiteralInt(1000)
+        let actual = try compiler.rvalue(expr: Call(callee: Identifier("foo"), arguments: [
+            LiteralInt(1000)
         ]))
         let expected = Seq(children: [
             TackInstructionNode(.subip(.p(0), .fp, 3)),
@@ -2549,7 +2549,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("foo", Symbol(type: .pointer(.function(FunctionTypeInfo(returnType: .void, arguments: []))), offset: 0xabcd))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: []))
+        let actual = try compiler.rvalue(expr: Call(callee: Identifier("foo"), arguments: []))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0xabcd)),
             TackInstructionNode(.lp(.p(1), .p(0), 0)),
@@ -2564,8 +2564,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("panic"), arguments: [
-            Expression.LiteralString("panic")
+        let actual = try compiler.rvalue(expr: Call(callee: Identifier("panic"), arguments: [
+            LiteralString("panic")
         ]))
         let expected = Seq(children: [
             TackInstructionNode(.subip(.p(0), .fp, 2)),
@@ -2604,7 +2604,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         symbols.bind(identifier: "foo", symbol: Symbol(type: fooType, offset: 0x1000, storage: .staticStorage))
 
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Get(expr: Expression.Identifier("foo"), member: Expression.Identifier("bar")), arguments: []))
+        let actual = try compiler.rvalue(expr: Call(callee: Get(expr: Identifier("foo"), member: Identifier("bar")), arguments: []))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 272)),
             TackInstructionNode(.lip(.p(1), 0x1000)),
@@ -2641,7 +2641,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         symbols.bind(identifier: "foo", symbol: Symbol(type: fooType, offset: 0x1000, storage: .staticStorage))
 
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Get(expr: Expression.Identifier("foo"), member: Expression.Identifier("bar")), arguments: []))
+        let actual = try compiler.rvalue(expr: Call(callee: Get(expr: Identifier("foo"), member: Identifier("bar")), arguments: []))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 272)),
             TackInstructionNode(.lip(.p(1), 0x1000)),
@@ -2678,7 +2678,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         symbols.bind(identifier: "foo", symbol: Symbol(type: fooType, offset: 0x1000, storage: .staticStorage))
 
         let compiler = makeCompiler(symbols: symbols)
-        let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Get(expr: Expression.Identifier("foo"), member: Expression.Identifier("bar")), arguments: []))
+        let actual = try compiler.rvalue(expr: Call(callee: Get(expr: Identifier("foo"), member: Identifier("bar")), arguments: []))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 272)),
             TackInstructionNode(.lip(.p(1), 0x1000)),
@@ -2699,14 +2699,14 @@ final class CoreToTackCompilerTests: XCTestCase {
         symbols.bind(identifier: "foo", symbol: Symbol(type: kSliceType, offset: 0x1000, storage: .staticStorage))
         symbols.bind(identifier: kSliceName, symbolType: kSliceType)
         let compiler = makeCompiler(symbols: symbols)
-        let lexpr = Expression.Identifier("foo")
-        let rexpr = Expression.StructInitializer(identifier: Expression.Identifier(kSliceName), arguments: [
-            Expression.StructInitializer.Argument(name: kSliceBase,
-                                                  expr: Expression.LiteralInt(0xabcd)),
-            Expression.StructInitializer.Argument(name: kSliceCount,
-                                                  expr: Expression.LiteralInt(0xffff))
+        let lexpr = Identifier("foo")
+        let rexpr = StructInitializer(identifier: Identifier(kSliceName), arguments: [
+            StructInitializer.Argument(name: kSliceBase,
+                                                  expr: LiteralInt(0xabcd)),
+            StructInitializer.Argument(name: kSliceCount,
+                                                  expr: LiteralInt(0xffff))
         ])
-        let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: lexpr, rexpr: rexpr))
+        let actual = try compiler.rvalue(expr: Assignment(lexpr: lexpr, rexpr: rexpr))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x1000)),
             TackInstructionNode(.addip(.p(1), .p(0), 0)),
@@ -2726,10 +2726,10 @@ final class CoreToTackCompilerTests: XCTestCase {
         symbols.bind(identifier: "foo", symbol: Symbol(type: kSliceType, offset: 0x1000, storage: .staticStorage))
         symbols.bind(identifier: kSliceName, symbolType: kSliceType)
         let compiler = makeCompiler(symbols: symbols)
-        let lexpr = Expression.Identifier("foo")
-        let rexpr = Expression.StructInitializer(identifier: Expression.Identifier(kSliceName), arguments: [
+        let lexpr = Identifier("foo")
+        let rexpr = StructInitializer(identifier: Identifier(kSliceName), arguments: [
         ])
-        let actual = try compiler.rvalue(expr: Expression.Assignment(lexpr: lexpr, rexpr: rexpr))
+        let actual = try compiler.rvalue(expr: Assignment(lexpr: lexpr, rexpr: rexpr))
         let expected = Seq(children: [])
         XCTAssertEqual(actual, expected)
         XCTAssertTrue(compiler.registerStack.isEmpty)
@@ -2744,14 +2744,14 @@ final class CoreToTackCompilerTests: XCTestCase {
         symbols.bind(identifier: "foo", symbol: Symbol(type: kSliceType, offset: 0x1000, storage: .staticStorage))
         symbols.bind(identifier: kSliceName, symbolType: kSliceType)
         let compiler = makeCompiler(symbols: symbols)
-        let lexpr = Expression.Identifier("foo")
-        let rexpr = Expression.StructInitializer(identifier: Expression.Identifier(kSliceName), arguments: [
-            Expression.StructInitializer.Argument(name: kSliceBase,
-                                                  expr: Expression.LiteralInt(0xabcd)),
-            Expression.StructInitializer.Argument(name: kSliceCount,
-                                                  expr: Expression.LiteralInt(0xffff))
+        let lexpr = Identifier("foo")
+        let rexpr = StructInitializer(identifier: Identifier(kSliceName), arguments: [
+            StructInitializer.Argument(name: kSliceBase,
+                                                  expr: LiteralInt(0xabcd)),
+            StructInitializer.Argument(name: kSliceCount,
+                                                  expr: LiteralInt(0xffff))
         ])
-        let actual = try compiler.rvalue(expr: Expression.InitialAssignment(lexpr: lexpr, rexpr: rexpr))
+        let actual = try compiler.rvalue(expr: InitialAssignment(lexpr: lexpr, rexpr: rexpr))
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x1000)),
             TackInstructionNode(.addip(.p(1), .p(0), 0)),
@@ -2768,12 +2768,12 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_LiteralArray() throws {
         let compiler = makeCompiler()
-        let literalArrayType = Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8))
-        let literalArray = Expression.LiteralArray(arrayType: literalArrayType, elements: [
-            Expression.LiteralInt(42)
+        let literalArrayType = ArrayType(count: nil, elementType: PrimitiveType(.u8))
+        let literalArray = LiteralArray(arrayType: literalArrayType, elements: [
+            LiteralInt(42)
         ])
-        let targetType = Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u16))
-        let asExpr = Expression.As(expr: literalArray, targetType: targetType)
+        let targetType = ArrayType(count: nil, elementType: PrimitiveType(.u16))
+        let asExpr = As(expr: literalArray, targetType: targetType)
         let actual = try compiler.rvalue(expr: asExpr)
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x0110)),
@@ -2786,8 +2786,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testFixBugWithCompilerTemporaryOfArrayTypeWithNoExplicitCount() throws {
         let compiler = makeCompiler()
-        let literalArray = Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u16)), elements: [
-            Expression.LiteralInt(1), Expression.LiteralInt(2)
+        let literalArray = LiteralArray(arrayType: ArrayType(count: nil, elementType: PrimitiveType(.u16)), elements: [
+            LiteralInt(1), LiteralInt(2)
         ])
         _ = try compiler.rvalue(expr: literalArray)
         guard let type = try compiler.symbols?.resolve(identifier: "__temp0").type else {
@@ -2809,7 +2809,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             "None" : None
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let expr = Expression.InitialAssignment(lexpr: Expression.Identifier("r"), rexpr: Expression.Identifier("none"))
+        let expr = InitialAssignment(lexpr: Identifier("r"), rexpr: Identifier("none"))
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x0111)),
@@ -2829,11 +2829,11 @@ final class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [ ("foo", Symbol(type: .array(count: 2, elementType: .u16))) ],
                                   typeDict: [ kSliceName : kSliceType ])
         let compiler = makeCompiler(symbols: symbols)
-        let arg = Expression.StructInitializer(identifier: Expression.Identifier(kSliceName), arguments: [
-            Expression.StructInitializer.Argument(name: kSliceBase, expr: Expression.LiteralInt(0)),
-            Expression.StructInitializer.Argument(name: kSliceCount, expr: Expression.LiteralInt(0))
+        let arg = StructInitializer(identifier: Identifier(kSliceName), arguments: [
+            StructInitializer.Argument(name: kSliceBase, expr: LiteralInt(0)),
+            StructInitializer.Argument(name: kSliceCount, expr: LiteralInt(0))
         ])
-        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: arg)
+        let expr = Subscript(subscriptable: Identifier("foo"), argument: arg)
         XCTAssertThrowsError(try compiler.rvalue(expr: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -2845,11 +2845,11 @@ final class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [ ("foo", Symbol(type: .array(count: 1, elementType: .u16))) ],
                                   typeDict: [ kRangeName : kRangeType ])
         let compiler = makeCompiler(symbols: symbols)
-        let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
-            Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.LiteralInt(200)),
-            Expression.StructInitializer.Argument(name: kRangeLimit, expr: Expression.LiteralInt(201))
+        let range = StructInitializer(identifier: Identifier(kRangeName), arguments: [
+            StructInitializer.Argument(name: kRangeBegin, expr: LiteralInt(200)),
+            StructInitializer.Argument(name: kRangeLimit, expr: LiteralInt(201))
         ])
-        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
+        let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
         XCTAssertThrowsError(try compiler.rvalue(expr: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -2861,11 +2861,11 @@ final class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [ ("foo", Symbol(type: .array(count: 1, elementType: .u16))) ],
                                   typeDict: [ kRangeName : kRangeType ])
         let compiler = makeCompiler(symbols: symbols)
-        let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
-            Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.LiteralInt(0)),
-            Expression.StructInitializer.Argument(name: kRangeLimit, expr: Expression.LiteralInt(201))
+        let range = StructInitializer(identifier: Identifier(kRangeName), arguments: [
+            StructInitializer.Argument(name: kRangeBegin, expr: LiteralInt(0)),
+            StructInitializer.Argument(name: kRangeLimit, expr: LiteralInt(201))
         ])
-        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
+        let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
         XCTAssertThrowsError(try compiler.rvalue(expr: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -2877,11 +2877,11 @@ final class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [ ("foo", Symbol(type: .array(count: 2, elementType: .u16))) ],
                                   typeDict: [ kRangeName : kRangeType ])
         let compiler = makeCompiler(symbols: symbols)
-        let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
-            Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.LiteralInt(1)),
-            Expression.StructInitializer.Argument(name: kRangeLimit, expr: Expression.LiteralInt(0))
+        let range = StructInitializer(identifier: Identifier(kRangeName), arguments: [
+            StructInitializer.Argument(name: kRangeBegin, expr: LiteralInt(1)),
+            StructInitializer.Argument(name: kRangeLimit, expr: LiteralInt(0))
         ])
-        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
+        let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
         XCTAssertThrowsError(try compiler.rvalue(expr: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -2898,11 +2898,11 @@ final class CoreToTackCompilerTests: XCTestCase {
             kSliceName : kSliceType
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
-            Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.LiteralInt(0)),
-            Expression.StructInitializer.Argument(name: kRangeLimit, expr: Expression.LiteralInt(1))
+        let range = StructInitializer(identifier: Identifier(kRangeName), arguments: [
+            StructInitializer.Argument(name: kRangeBegin, expr: LiteralInt(0)),
+            StructInitializer.Argument(name: kRangeLimit, expr: LiteralInt(1))
         ])
-        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
+        let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x0110)),
@@ -2929,11 +2929,11 @@ final class CoreToTackCompilerTests: XCTestCase {
             kSliceName : kSliceType
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
-            Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.LiteralInt(1)),
-            Expression.StructInitializer.Argument(name: kRangeLimit, expr: Expression.LiteralInt(3))
+        let range = StructInitializer(identifier: Identifier(kRangeName), arguments: [
+            StructInitializer.Argument(name: kRangeBegin, expr: LiteralInt(1)),
+            StructInitializer.Argument(name: kRangeLimit, expr: LiteralInt(3))
         ])
-        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
+        let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x0110)),
@@ -2964,11 +2964,11 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         let opts = CoreToTackCompiler.Options(isBoundsCheckEnabled: false)
         let compiler = makeCompiler(options: opts, symbols: symbols)
-        let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
-            Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.Identifier("a")),
-            Expression.StructInitializer.Argument(name: kRangeLimit, expr: Expression.Identifier("b"))
+        let range = StructInitializer(identifier: Identifier(kRangeName), arguments: [
+            StructInitializer.Argument(name: kRangeBegin, expr: Identifier("a")),
+            StructInitializer.Argument(name: kRangeLimit, expr: Identifier("b"))
         ])
-        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
+        let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x0110)),
@@ -3001,11 +3001,11 @@ final class CoreToTackCompilerTests: XCTestCase {
             kSliceName : kSliceType
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
-            Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.LiteralInt(1)),
-            Expression.StructInitializer.Argument(name: kRangeLimit, expr: Expression.LiteralInt(3))
+        let range = StructInitializer(identifier: Identifier(kRangeName), arguments: [
+            StructInitializer.Argument(name: kRangeBegin, expr: LiteralInt(1)),
+            StructInitializer.Argument(name: kRangeLimit, expr: LiteralInt(3))
         ])
-        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
+        let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x0110)),
@@ -3035,8 +3035,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         let opts = CoreToTackCompiler.Options(isBoundsCheckEnabled: false)
         let compiler = makeCompiler(options: opts, symbols: symbols)
-        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"),
-                                        argument: Expression.Identifier("range"))
+        let expr = Subscript(subscriptable: Identifier("foo"),
+                                        argument: Identifier("range"))
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x0110)),
@@ -3072,11 +3072,11 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         let opts = CoreToTackCompiler.Options(isBoundsCheckEnabled: false)
         let compiler = makeCompiler(options: opts, symbols: symbols)
-        let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
-            Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.Identifier("a")),
-            Expression.StructInitializer.Argument(name: kRangeLimit, expr: Expression.Identifier("b"))
+        let range = StructInitializer(identifier: Identifier(kRangeName), arguments: [
+            StructInitializer.Argument(name: kRangeBegin, expr: Identifier("a")),
+            StructInitializer.Argument(name: kRangeLimit, expr: Identifier("b"))
         ])
-        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
+        let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x0110)),
@@ -3107,11 +3107,11 @@ final class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable(tuples: [ ("foo", Symbol(type: .dynamicArray(elementType: .u16))) ],
                                   typeDict: [ kSliceName : kSliceType ])
         let compiler = makeCompiler(symbols: symbols)
-        let arg = Expression.StructInitializer(identifier: Expression.Identifier(kSliceName), arguments: [
-            Expression.StructInitializer.Argument(name: kSliceBase, expr: Expression.LiteralInt(0)),
-            Expression.StructInitializer.Argument(name: kSliceCount, expr: Expression.LiteralInt(0))
+        let arg = StructInitializer(identifier: Identifier(kSliceName), arguments: [
+            StructInitializer.Argument(name: kSliceBase, expr: LiteralInt(0)),
+            StructInitializer.Argument(name: kSliceCount, expr: LiteralInt(0))
         ])
-        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: arg)
+        let expr = Subscript(subscriptable: Identifier("foo"), argument: arg)
         XCTAssertThrowsError(try compiler.rvalue(expr: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -3127,11 +3127,11 @@ final class CoreToTackCompilerTests: XCTestCase {
             kSliceName : kSliceType
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
-            Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.LiteralInt(0)),
-            Expression.StructInitializer.Argument(name: kRangeLimit, expr: Expression.LiteralInt(1))
+        let range = StructInitializer(identifier: Identifier(kRangeName), arguments: [
+            StructInitializer.Argument(name: kRangeBegin, expr: LiteralInt(0)),
+            StructInitializer.Argument(name: kRangeLimit, expr: LiteralInt(1))
         ])
-        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
+        let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x0110)),
@@ -3160,11 +3160,11 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         let opts = CoreToTackCompiler.Options(isBoundsCheckEnabled: false)
         let compiler = makeCompiler(options: opts, symbols: symbols)
-        let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
-            Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.Identifier("a")),
-            Expression.StructInitializer.Argument(name: kRangeLimit, expr: Expression.Identifier("b"))
+        let range = StructInitializer(identifier: Identifier(kRangeName), arguments: [
+            StructInitializer.Argument(name: kRangeBegin, expr: Identifier("a")),
+            StructInitializer.Argument(name: kRangeLimit, expr: Identifier("b"))
         ])
-        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
+        let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x0110)),
@@ -3197,11 +3197,11 @@ final class CoreToTackCompilerTests: XCTestCase {
             kSliceName : kSliceType
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
-            Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.LiteralInt(1)),
-            Expression.StructInitializer.Argument(name: kRangeLimit, expr: Expression.LiteralInt(3))
+        let range = StructInitializer(identifier: Identifier(kRangeName), arguments: [
+            StructInitializer.Argument(name: kRangeBegin, expr: LiteralInt(1)),
+            StructInitializer.Argument(name: kRangeLimit, expr: LiteralInt(3))
         ])
-        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
+        let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x0110)),
@@ -3232,11 +3232,11 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         let opts = CoreToTackCompiler.Options(isBoundsCheckEnabled: false)
         let compiler = makeCompiler(options: opts, symbols: symbols)
-        let range = Expression.StructInitializer(identifier: Expression.Identifier(kRangeName), arguments: [
-            Expression.StructInitializer.Argument(name: kRangeBegin, expr: Expression.Identifier("a")),
-            Expression.StructInitializer.Argument(name: kRangeLimit, expr: Expression.Identifier("b"))
+        let range = StructInitializer(identifier: Identifier(kRangeName), arguments: [
+            StructInitializer.Argument(name: kRangeBegin, expr: Identifier("a")),
+            StructInitializer.Argument(name: kRangeLimit, expr: Identifier("b"))
         ])
-        let expr = Expression.Subscript(subscriptable: Expression.Identifier("foo"), argument: range)
+        let expr = Subscript(subscriptable: Identifier("foo"), argument: range)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
             TackInstructionNode(.lip(.p(0), 0x0110)),
@@ -3272,10 +3272,10 @@ final class CoreToTackCompilerTests: XCTestCase {
         ], typeDict: [
             "Foo" : .structType(typ)
         ])
-        let si = Expression.StructInitializer(identifier: Expression.Identifier("Foo"), arguments: [
-            Expression.StructInitializer.Argument(name: "bar", expr: Expression.Identifier("foo"))
+        let si = StructInitializer(identifier: Identifier("Foo"), arguments: [
+            StructInitializer.Argument(name: "bar", expr: Identifier("foo"))
         ])
-        let expr = Expression.Get(expr: si, member: Expression.Identifier("bar"))
+        let expr = Get(expr: si, member: Identifier("bar"))
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.lvalue(expr: expr)
         let expected = TackInstructionNode(.lip(.p(0), 0xabcd))
@@ -3288,24 +3288,24 @@ final class CoreToTackCompilerTests: XCTestCase {
         let symbols = SymbolTable()
         let funSym = SymbolTable(parent: symbols)
         let bodySym = SymbolTable(parent: funSym)
-        let functionType = Expression.FunctionType(
+        let functionType = FunctionType(
             name: "foo",
-            returnType: Expression.Identifier("T"),
-            arguments: [Expression.Identifier("T")])
+            returnType: Identifier("T"),
+            arguments: [Identifier("T")])
         let template = FunctionDeclaration(
-            identifier: Expression.Identifier("foo"),
+            identifier: Identifier("foo"),
             functionType: functionType,
             argumentNames: ["a"],
-            typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
+            typeArguments: [GenericTypeArgument(identifier: Identifier("T"), constraints: [])],
             body: Block(symbols: bodySym),
             visibility: .privateVisibility,
             symbols: funSym)
-        let genericFunctionType = Expression.GenericFunctionType(template: template)
+        let genericFunctionType = GenericFunctionType(template: template)
         symbols.bind(identifier: "foo", symbol: Symbol(type: .genericFunction(genericFunctionType)))
         
         // Compile the expression. We expect this to fail because we're missing
         // a generic type application which would turn it into a concrete type.
-        let expr = Expression.Identifier("foo")
+        let expr = Identifier("foo")
         let compiler = makeCompiler(symbols: symbols)
         XCTAssertThrowsError(try compiler.lvalue(expr: expr)) {
             let compilerError = $0 as? CompilerError
@@ -3316,17 +3316,17 @@ final class CoreToTackCompilerTests: XCTestCase {
     
     func testRvalue_CannotInstantiateGenericFunctionTypeWithoutApplication() throws {
         let compiler = makeCompiler()
-        let functionType = Expression.FunctionType(name: "foo",
-                                                   returnType: Expression.Identifier("T"),
-                                                   arguments: [Expression.Identifier("T")])
-        let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
+        let functionType = FunctionType(name: "foo",
+                                                   returnType: Identifier("T"),
+                                                   arguments: [Identifier("T")])
+        let template = FunctionDeclaration(identifier: Identifier("foo"),
                                            functionType: functionType,
                                            argumentNames: ["a"],
-                                           typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
+                                           typeArguments: [GenericTypeArgument(identifier: Identifier("T"), constraints: [])],
                                            body: Block(),
                                            visibility: .privateVisibility,
                                            symbols: SymbolTable())
-        let expr = Expression.GenericFunctionType(template: template)
+        let expr = GenericFunctionType(template: template)
         XCTAssertThrowsError(try compiler.rvalue(expr: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -3335,22 +3335,22 @@ final class CoreToTackCompilerTests: XCTestCase {
     }
     
     func testRvalue_CannotTakeTheAddressOfGenericFunctionWithoutTypeArguments() {
-        let functionType = Expression.FunctionType(name: "foo",
-                                                   returnType: Expression.Identifier("T"),
-                                                   arguments: [Expression.Identifier("T")])
-        let template = FunctionDeclaration(identifier: Expression.Identifier("foo"),
+        let functionType = FunctionType(name: "foo",
+                                                   returnType: Identifier("T"),
+                                                   arguments: [Identifier("T")])
+        let template = FunctionDeclaration(identifier: Identifier("foo"),
                                            functionType: functionType,
                                            argumentNames: ["a"],
-                                           typeArguments: [Expression.GenericTypeArgument(identifier: Expression.Identifier("T"), constraints: [])],
+                                           typeArguments: [GenericTypeArgument(identifier: Identifier("T"), constraints: [])],
                                            body: Block(),
                                            visibility: .privateVisibility,
                                            symbols: SymbolTable())
-        let genericFunctionType = Expression.GenericFunctionType(template: template)
+        let genericFunctionType = GenericFunctionType(template: template)
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .genericFunction(genericFunctionType)))
         ])
 
-        let expr = Expression.Unary(op: .ampersand, expression: Expression.Identifier("foo"))
+        let expr = Unary(op: .ampersand, expression: Identifier("foo"))
         let compiler = makeCompiler(symbols: symbols)
         XCTAssertThrowsError(try compiler.rvalue(expr: expr)) {
             let compilerError = $0 as? CompilerError
@@ -3368,10 +3368,10 @@ final class CoreToTackCompilerTests: XCTestCase {
         ], typeDict: [
             "Foo" : .structType(typ)
         ])
-        let si = Expression.StructInitializer(identifier: Expression.Identifier("Foo"), arguments: [
-            Expression.StructInitializer.Argument(name: "bar", expr: Expression.Identifier("foo"))
+        let si = StructInitializer(identifier: Identifier("Foo"), arguments: [
+            StructInitializer.Argument(name: "bar", expr: Identifier("foo"))
         ])
-        let expr = Expression.Get(expr: si, member: Expression.Identifier("bar"))
+        let expr = Get(expr: si, member: Identifier("bar"))
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
@@ -3398,7 +3398,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_SizeOf() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.rvalue(expr: Expression.SizeOf(ExprUtils.makeU8(value: 1)))
+        let actual = try compiler.rvalue(expr: SizeOf(ExprUtils.makeU8(value: 1)))
         let expected = TackInstructionNode(.liuw(.w(0), 1))
         XCTAssertEqual(actual, expected)
         XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
@@ -3409,7 +3409,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("panic", Symbol(type: .function(FunctionTypeInfo(name: "panic", mangledName: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .arithmeticType(.immutableInt(.u8)))]))))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        let expr = Expression.Identifier("panic")
+        let expr = Identifier("panic")
         let actual = try compiler.rvalue(expr: expr)
         let expected = TackInstructionNode(.la(.p(0), "panic"))
         XCTAssertEqual(actual, expected)
@@ -3418,8 +3418,8 @@ final class CoreToTackCompilerTests: XCTestCase {
     
     func testRvalue_Eseq() throws {
         let compiler = makeCompiler()
-        let actual = try compiler.rvalue(expr: Expression.Eseq(children: [
-            Expression.LiteralBool(false)
+        let actual = try compiler.rvalue(expr: Eseq(children: [
+            LiteralBool(false)
         ]))
         let expected = TackInstructionNode(.lio(.o(0), false))
         XCTAssertEqual(actual, expected)
@@ -3437,9 +3437,9 @@ final class CoreToTackCompilerTests: XCTestCase {
                 kRangeName : kRangeType
             ])
         let compiler = makeCompiler(symbols: symbols)
-        let expr = Expression.Subscript(
-            subscriptable: Expression.Identifier("foo"),
-            argument: Expression.LiteralInt(1))
+        let expr = Subscript(
+            subscriptable: Identifier("foo"),
+            argument: LiteralInt(1))
         let actual = try compiler.rvalue(expr: expr)
         let expected = Seq(children: [
             TackInstructionNode(.liuw(.w(0), 1)),

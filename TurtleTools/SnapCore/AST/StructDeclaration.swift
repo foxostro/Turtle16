@@ -24,8 +24,8 @@ public final class StructDeclaration: AbstractSyntaxTreeNode {
         }
     }
     
-    public let identifier: Expression.Identifier
-    public let typeArguments: [Expression.GenericTypeArgument]
+    public let identifier: Identifier
+    public let typeArguments: [GenericTypeArgument]
     public let members: [Member]
     public let visibility: SymbolVisibility
     public let isConst: Bool
@@ -49,11 +49,11 @@ public final class StructDeclaration: AbstractSyntaxTreeNode {
         let nonFunctionSymbols = structType.symbols.symbolTable.filter(rejectFunctions)
         
         self.init(
-            identifier: Expression.Identifier(structType.name),
+            identifier: Identifier(structType.name),
             members: nonFunctionSymbols.map {
                 StructDeclaration.Member(
                     name: $0.key,
-                    type: Expression.PrimitiveType($0.value.type))
+                    type: PrimitiveType($0.value.type))
             },
             visibility: .privateVisibility,
             isConst: false,
@@ -61,8 +61,8 @@ public final class StructDeclaration: AbstractSyntaxTreeNode {
     }
     
     public init(sourceAnchor: SourceAnchor? = nil,
-                identifier: Expression.Identifier,
-                typeArguments: [Expression.GenericTypeArgument] = [],
+                identifier: Identifier,
+                typeArguments: [GenericTypeArgument] = [],
                 members: [Member],
                 visibility: SymbolVisibility = .privateVisibility,
                 isConst: Bool = false,
@@ -112,7 +112,7 @@ public final class StructDeclaration: AbstractSyntaxTreeNode {
                           id: id)
     }
     
-    public func withIdentifier(_ identifier: Expression.Identifier) -> StructDeclaration {
+    public func withIdentifier(_ identifier: Identifier) -> StructDeclaration {
         StructDeclaration(sourceAnchor: sourceAnchor,
                           identifier: identifier,
                           typeArguments: typeArguments,

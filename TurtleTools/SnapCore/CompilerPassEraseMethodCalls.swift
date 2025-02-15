@@ -17,26 +17,26 @@ public final class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
             memoryLayoutStrategy: memoryLayoutStrategy)
     }
     
-    public override func visit(get node0: Expression.Get) throws -> Expression? {
+    public override func visit(get node0: Get) throws -> Expression? {
         guard !isTypeName(expr: node0.expr),
               let structTyp = try maybeUnwrapStructType(node0),
               let _ = try typeChecker.check(expression: node0).maybeUnwrapFunctionType() else {
             return node0
         }
-        let node1 = Expression.Get(
+        let node1 = Get(
             sourceAnchor: node0.sourceAnchor,
-            expr: Expression.Identifier(
+            expr: Identifier(
                 sourceAnchor: node0.sourceAnchor,
                 identifier: structTyp.name),
             member: node0.member)
         return node1
     }
     
-    public override func visit(call node0: Expression.Call) throws -> Expression? {
+    public override func visit(call node0: Call) throws -> Expression? {
         // A method call looks like a Call expression where the callee is a Get
         // expression, the Get expression itself resolves to a function on the
         // struct, the Get expression's object is an instance of a struct.
-        guard let getExpr = node0.callee as? Expression.Get else {
+        guard let getExpr = node0.callee as? Get else {
             return node0
         }
         guard !isTypeName(expr: getExpr.expr),
@@ -47,8 +47,8 @@ public final class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
         }
         
         let node1 = node0
-            .withCallee(Expression.Get(
-                expr: Expression.Identifier(
+            .withCallee(Get(
+                expr: Identifier(
                     sourceAnchor: node0.sourceAnchor,
                     identifier: structTyp.name),
                 member: getExpr.member))
@@ -72,7 +72,7 @@ public final class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
     }
     
     func isTypeName(expr: Expression) -> Bool {
-        if let ident = expr as? Expression.Identifier,
+        if let ident = expr as? Identifier,
            let symbols = symbols,
            let _ = symbols.maybeResolveType(identifier: ident.identifier) {
             true
@@ -82,7 +82,7 @@ public final class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
         }
     }
     
-    func maybeUnwrapStructType(_ getExpr: Expression.Get) throws -> StructTypeInfo? {
+    func maybeUnwrapStructType(_ getExpr: Get) throws -> StructTypeInfo? {
         switch try typeChecker.check(expression: getExpr.expr) {
         case .constStructType(let typ), .structType(let typ),
              .constPointer(.constStructType(let typ)), .constPointer(.structType(let typ)),

@@ -36,8 +36,8 @@ public class CompilerPass {
         }
     }
     
-    // Override in a subclass to specify actions to perform before and after
-    // visiting the nodes in the tree.
+    /// Override in a subclass to specify actions to perform before and after
+    /// visiting the nodes in the tree.
     public func run(_ node: AbstractSyntaxTreeNode?) throws -> AbstractSyntaxTreeNode? {
         try visit(node)
     }
@@ -121,7 +121,7 @@ public class CompilerPass {
     }
     
     public func visit(varDecl node0: VarDeclaration) throws -> AbstractSyntaxTreeNode? {
-        guard let identifier = try visit(identifier: node0.identifier) as? Expression.Identifier else {
+        guard let identifier = try visit(identifier: node0.identifier) as? Identifier else {
             throw CompilerError(
                 sourceAnchor: node0.identifier.sourceAnchor,
                 message: "expected identifier: `\(node0.identifier)'")
@@ -155,7 +155,7 @@ public class CompilerPass {
     
     public func visit(forIn node: ForIn) throws -> AbstractSyntaxTreeNode? {
         ForIn(sourceAnchor: node.sourceAnchor,
-              identifier: try visit(identifier: node.identifier) as! Expression.Identifier,
+              identifier: try visit(identifier: node.identifier) as! Identifier,
               sequenceExpr: try visit(expr: node.sequenceExpr)!,
               body: try visit(node.body) as! Block,
               id: node.id)
@@ -205,11 +205,11 @@ public class CompilerPass {
     public func visit(func node: FunctionDeclaration) throws -> AbstractSyntaxTreeNode? {
         FunctionDeclaration(
             sourceAnchor: node.sourceAnchor,
-            identifier: try visit(identifier: node.identifier) as! Expression.Identifier,
-            functionType: try visit(expr: node.functionType) as! Expression.FunctionType,
+            identifier: try visit(identifier: node.identifier) as! Identifier,
+            functionType: try visit(expr: node.functionType) as! FunctionType,
             argumentNames: node.argumentNames,
             typeArguments: try node.typeArguments.compactMap {
-                try visit(genericTypeArgument: $0) as! Expression.GenericTypeArgument?
+                try visit(genericTypeArgument: $0) as! GenericTypeArgument?
             },
             body: try visit(node.body) as! Block,
             visibility: node.visibility,
@@ -227,7 +227,7 @@ public class CompilerPass {
     
     public func visit(struct node0: StructDeclaration) throws -> AbstractSyntaxTreeNode? {
         let maybeIdentNode = try visit(identifier: node0.identifier)
-        guard let identifier = maybeIdentNode as? Expression.Identifier else {
+        guard let identifier = maybeIdentNode as? Identifier else {
             throw CompilerError(
                 sourceAnchor: node0.identifier.sourceAnchor,
                 message: "expected identifier: `\(node0.identifier)'")
@@ -236,7 +236,7 @@ public class CompilerPass {
             sourceAnchor: node0.sourceAnchor,
             identifier: identifier,
             typeArguments: try node0.typeArguments.compactMap {
-                try visit(genericTypeArgument: $0) as! Expression.GenericTypeArgument?
+                try visit(genericTypeArgument: $0) as! GenericTypeArgument?
             },
             members: try node0.members.map {
                 StructDeclaration.Member(
@@ -254,7 +254,7 @@ public class CompilerPass {
         Impl(
             sourceAnchor: node.sourceAnchor,
             typeArguments: try node.typeArguments.compactMap {
-                try visit(genericTypeArgument: $0) as! Expression.GenericTypeArgument?
+                try visit(genericTypeArgument: $0) as! GenericTypeArgument?
             },
             structTypeExpr: try visit(expr: node.structTypeExpr)!,
             children: try node.children.compactMap {
@@ -267,7 +267,7 @@ public class CompilerPass {
         ImplFor(
             sourceAnchor: node.sourceAnchor,
             typeArguments: try node.typeArguments.compactMap {
-                try visit(genericTypeArgument: $0) as! Expression.GenericTypeArgument?
+                try visit(genericTypeArgument: $0) as! GenericTypeArgument?
             },
             traitTypeExpr: try visit(expr: node.traitTypeExpr)!,
             structTypeExpr: try visit(expr: node.structTypeExpr)!,
@@ -284,7 +284,7 @@ public class CompilerPass {
             clauses: try node.clauses.map {
                 Match.Clause(
                     sourceAnchor: $0.sourceAnchor,
-                    valueIdentifier: try visit(identifier: $0.valueIdentifier) as! Expression.Identifier,
+                    valueIdentifier: try visit(identifier: $0.valueIdentifier) as! Identifier,
                     valueType: try visit(expr: $0.valueType)!,
                     block: try visit(clause: $0, in: node))
             },
@@ -319,9 +319,9 @@ public class CompilerPass {
     public func visit(trait node: TraitDeclaration) throws -> AbstractSyntaxTreeNode? {
         TraitDeclaration(
             sourceAnchor: node.sourceAnchor,
-            identifier: try visit(identifier: node.identifier) as! Expression.Identifier,
+            identifier: try visit(identifier: node.identifier) as! Identifier,
             typeArguments: try node.typeArguments.compactMap {
-                try visit(genericTypeArgument: $0) as! Expression.GenericTypeArgument?
+                try visit(genericTypeArgument: $0) as! GenericTypeArgument?
             },
             members: try node.members.map {
                 TraitDeclaration.Member(
@@ -340,7 +340,7 @@ public class CompilerPass {
     public func visit(typealias node: Typealias) throws -> AbstractSyntaxTreeNode? {
         Typealias(
             sourceAnchor: node.sourceAnchor,
-            lexpr: try visit(identifier: node.lexpr) as! Expression.Identifier,
+            lexpr: try visit(identifier: node.lexpr) as! Identifier,
             rexpr: try visit(expr: node.rexpr)!,
             visibility: node.visibility,
             id: node.id)
@@ -380,89 +380,89 @@ public class CompilerPass {
     
     public func visit(expr: Expression) throws -> Expression? {
         switch expr {
-        case let node as Expression.UnsupportedExpression:
+        case let node as UnsupportedExpression:
             try visit(unsupported: node)
-        case let literal as Expression.LiteralInt:
+        case let literal as LiteralInt:
             try visit(literalInt: literal)
-        case let literal as Expression.LiteralBool:
+        case let literal as LiteralBool:
             try visit(literalBoolean: literal)
-        case let node as Expression.Identifier:
+        case let node as Identifier:
             try visit(identifier: node)
-        case let node as Expression.Unary:
+        case let node as Unary:
             try visit(unary: node)
-        case let group as Expression.Group:
+        case let group as Group:
             try visit(expr: group.expression)
-        case let eseq as Expression.Eseq:
+        case let eseq as Eseq:
             try visit(eseq: eseq)
-        case let node as Expression.Binary:
+        case let node as Binary:
             try visit(binary: node)
-        case let expr as Expression.InitialAssignment:
+        case let expr as InitialAssignment:
             try visit(initialAssignment: expr)
-        case let expr as Expression.Assignment:
+        case let expr as Assignment:
             try visit(assignment: expr)
-        case let node as Expression.Call:
+        case let node as Call:
             try visit(call: node)
-        case let node as Expression.As:
+        case let node as As:
             try visit(as: node)
-        case let node as Expression.Bitcast:
+        case let node as Bitcast:
             try visit(bitcast: node)
-        case let expr as Expression.Is:
+        case let expr as Is:
             try visit(is: expr)
-        case let expr as Expression.Subscript:
+        case let expr as Subscript:
             try visit(subscript: expr)
-        case let literal as Expression.LiteralArray:
+        case let literal as LiteralArray:
             try visit(literalArray: literal)
-        case let expr as Expression.Get:
+        case let expr as Get:
             try visit(get: expr)
-        case let expr as Expression.PrimitiveType:
+        case let expr as PrimitiveType:
             try visit(primitiveType: expr)
-        case let expr as Expression.DynamicArrayType:
+        case let expr as DynamicArrayType:
             try visit(dynamicArrayType: expr)
-        case let expr as Expression.ArrayType:
+        case let expr as ArrayType:
             try visit(arrayType: expr)
-        case let expr as Expression.FunctionType:
+        case let expr as FunctionType:
             try visit(functionType: expr)
-        case let expr as Expression.GenericFunctionType:
+        case let expr as GenericFunctionType:
             try visit(genericFunctionType: expr)
-        case let node as Expression.GenericTypeApplication:
+        case let node as GenericTypeApplication:
             try visit(genericTypeApplication: node)
-        case let node as Expression.GenericTypeArgument:
+        case let node as GenericTypeArgument:
             try visit(genericTypeArgument: node)
-        case let node as Expression.PointerType:
+        case let node as PointerType:
             try visit(pointerType: node)
-        case let node as Expression.ConstType:
+        case let node as ConstType:
             try visit(constType: node)
-        case let node as Expression.MutableType:
+        case let node as MutableType:
             try visit(mutableType: node)
-        case let node as Expression.UnionType:
+        case let node as UnionType:
             try visit(unionType: node)
-        case let node as Expression.StructInitializer:
+        case let node as StructInitializer:
             try visit(structInitializer: node)
-        case let literal as Expression.LiteralString:
+        case let literal as LiteralString:
             try visit(literalString: literal)
-        case let node as Expression.TypeOf:
+        case let node as TypeOf:
             try visit(typeof: node)
-        case let node as Expression.SizeOf:
+        case let node as SizeOf:
             try visit(sizeof: node)
         default:
             throw CompilerError(message: "unimplemented: `\(expr)'")
         }
     }
     
-    public func visit(unsupported node: Expression.UnsupportedExpression) throws -> Expression? {
+    public func visit(unsupported node: UnsupportedExpression) throws -> Expression? {
         node
     }
     
-    public func visit(literalInt node: Expression.LiteralInt) throws -> Expression? {
+    public func visit(literalInt node: LiteralInt) throws -> Expression? {
         node
     }
     
-    public func visit(literalBoolean node: Expression.LiteralBool) throws -> Expression? {
+    public func visit(literalBoolean node: LiteralBool) throws -> Expression? {
         node
     }
     
-    public func visit(literalArray expr: Expression.LiteralArray) throws -> Expression? {
-        Expression.LiteralArray(
+    public func visit(literalArray expr: LiteralArray) throws -> Expression? {
+        LiteralArray(
             sourceAnchor: expr.sourceAnchor,
             arrayType: try visit(expr: expr.arrayType)!,
             elements: try expr.elements.compactMap {
@@ -471,36 +471,36 @@ public class CompilerPass {
             id: expr.id)
     }
     
-    public func visit(literalString expr: Expression.LiteralString) throws -> Expression? {
+    public func visit(literalString expr: LiteralString) throws -> Expression? {
         expr
     }
     
-    public func visit(identifier node: Expression.Identifier) throws -> Expression? {
+    public func visit(identifier node: Identifier) throws -> Expression? {
         node
     }
     
-    public func visit(as expr: Expression.As) throws -> Expression? {
-        Expression.As(
+    public func visit(as expr: As) throws -> Expression? {
+        As(
             sourceAnchor: expr.sourceAnchor,
             expr: try visit(expr: expr.expr)!,
             targetType: try visit(expr: expr.targetType)!,
             id: expr.id)
     }
     
-    public func visit(bitcast node: Expression.Bitcast) throws -> Expression? {
-        Expression.Bitcast(
+    public func visit(bitcast node: Bitcast) throws -> Expression? {
+        Bitcast(
             sourceAnchor: node.sourceAnchor,
             expr: try visit(expr: node.expr)!,
             targetType: try visit(expr: node.targetType)!,
             id: node.id)
     }
     
-    public func visit(unary node: Expression.Unary) throws -> Expression? {
+    public func visit(unary node: Unary) throws -> Expression? {
         node.withExpression(try visit(expr: node.child)!)
     }
     
-    public func visit(binary node: Expression.Binary) throws -> Expression? {
-        Expression.Binary(
+    public func visit(binary node: Binary) throws -> Expression? {
+        Binary(
             sourceAnchor: node.sourceAnchor,
             op: node.op,
             left: try visit(expr: node.left)!,
@@ -508,59 +508,59 @@ public class CompilerPass {
             id: node.id)
     }
     
-    public func visit(is node: Expression.Is) throws -> Expression? {
-        Expression.Is(
+    public func visit(is node: Is) throws -> Expression? {
+        Is(
             sourceAnchor: node.sourceAnchor,
             expr: try visit(expr: node.expr)!,
             testType: try visit(expr: node.testType)!,
             id: node.id)
     }
     
-    public func visit(initialAssignment node: Expression.InitialAssignment) throws -> Expression? {
-        Expression.InitialAssignment(
+    public func visit(initialAssignment node: InitialAssignment) throws -> Expression? {
+        InitialAssignment(
             sourceAnchor: node.sourceAnchor,
             lexpr: try visit(expr: node.lexpr)!,
             rexpr: try visit(expr: node.rexpr)!,
             id: node.id)
     }
     
-    public func visit(assignment node: Expression.Assignment) throws -> Expression? {
-        Expression.Assignment(
+    public func visit(assignment node: Assignment) throws -> Expression? {
+        Assignment(
             sourceAnchor: node.sourceAnchor,
             lexpr: try visit(expr: node.lexpr)!,
             rexpr: try visit(expr: node.rexpr)!,
             id: node.id)
     }
     
-    public func visit(subscript node: Expression.Subscript) throws -> Expression? {
-        Expression.Subscript(
+    public func visit(subscript node: Subscript) throws -> Expression? {
+        Subscript(
             sourceAnchor: node.sourceAnchor,
             subscriptable: try visit(expr: node.subscriptable)!,
             argument: try visit(expr: node.argument)!,
             id: node.id)
     }
     
-    public func visit(get node: Expression.Get) throws -> Expression? {
-        Expression.Get(
+    public func visit(get node: Get) throws -> Expression? {
+        Get(
             sourceAnchor: node.sourceAnchor,
             expr: try visit(expr: node.expr)!,
             member: try visit(expr: node.member)!)
     }
     
-    public func visit(structInitializer node: Expression.StructInitializer) throws -> Expression? {
-        Expression.StructInitializer(
+    public func visit(structInitializer node: StructInitializer) throws -> Expression? {
+        StructInitializer(
             sourceAnchor: node.sourceAnchor,
             expr: try visit(expr: node.expr)!,
             arguments: try node.arguments.compactMap {
-                Expression.StructInitializer.Argument(
+                StructInitializer.Argument(
                     name: $0.name,
                     expr: try visit(expr: $0.expr)!)
             },
             id: node.id)
     }
     
-    public func visit(call node: Expression.Call) throws -> Expression? {
-        Expression.Call(
+    public func visit(call node: Call) throws -> Expression? {
+        Call(
             sourceAnchor: node.sourceAnchor,
             callee: try visit(expr: node.callee)!,
             arguments: try node.arguments.compactMap {
@@ -569,68 +569,68 @@ public class CompilerPass {
             id: node.id)
     }
     
-    public func visit(typeof node: Expression.TypeOf) throws -> Expression? {
+    public func visit(typeof node: TypeOf) throws -> Expression? {
         node.withExpr(try visit(expr: node.expr)!)
     }
     
-    public func visit(sizeof node: Expression.SizeOf) throws -> Expression? {
+    public func visit(sizeof node: SizeOf) throws -> Expression? {
         node.withExpr(try visit(expr: node.expr)!)
     }
     
-    public func visit(genericTypeApplication expr: Expression.GenericTypeApplication) throws -> Expression? {
-        Expression.GenericTypeApplication(
+    public func visit(genericTypeApplication expr: GenericTypeApplication) throws -> Expression? {
+        GenericTypeApplication(
             sourceAnchor: expr.sourceAnchor,
-            identifier: try visit(identifier: expr.identifier) as! Expression.Identifier,
+            identifier: try visit(identifier: expr.identifier) as! Identifier,
             arguments: try expr.arguments.compactMap {
                 try visit(expr: $0)
             },
             id: expr.id)
     }
     
-    public func visit(genericTypeArgument node: Expression.GenericTypeArgument) throws -> Expression? {
-        Expression.GenericTypeArgument(
+    public func visit(genericTypeArgument node: GenericTypeArgument) throws -> Expression? {
+        GenericTypeArgument(
             sourceAnchor: node.sourceAnchor,
-            identifier: try visit(identifier: node.identifier) as! Expression.Identifier,
+            identifier: try visit(identifier: node.identifier) as! Identifier,
             constraints: try node.constraints.compactMap {
-                try visit(expr: $0) as! Expression.Identifier?
+                try visit(expr: $0) as! Identifier?
             },
             id: node.id)
     }
     
-    public func visit(eseq node: Expression.Eseq) throws -> Expression? {
+    public func visit(eseq node: Eseq) throws -> Expression? {
         node.withChildren(try node.children.compactMap {
             try visit(expr: $0)
         })
     }
     
-    public func visit(primitiveType node: Expression.PrimitiveType) throws -> Expression? {
+    public func visit(primitiveType node: PrimitiveType) throws -> Expression? {
         node
     }
     
-    public func visit(pointerType node: Expression.PointerType) throws -> Expression? {
+    public func visit(pointerType node: PointerType) throws -> Expression? {
         node.withTyp(try visit(expr: node.typ)!)
     }
     
-    public func visit(constType node: Expression.ConstType) throws -> Expression? {
+    public func visit(constType node: ConstType) throws -> Expression? {
         node.withTyp(try visit(expr: node.typ)!)
     }
     
-    public func visit(mutableType node: Expression.MutableType) throws -> Expression? {
+    public func visit(mutableType node: MutableType) throws -> Expression? {
         node.withTyp(try visit(expr: node.typ)!)
     }
     
-    public func visit(unionType node: Expression.UnionType) throws -> Expression? {
+    public func visit(unionType node: UnionType) throws -> Expression? {
         node.withMembers(try node.members.compactMap {
             try visit(expr: $0)
         })
     }
     
-    public func visit(dynamicArrayType node: Expression.DynamicArrayType) throws -> Expression? {
+    public func visit(dynamicArrayType node: DynamicArrayType) throws -> Expression? {
         node.withElementType(try visit(expr: node.elementType)!)
     }
     
-    public func visit(arrayType node: Expression.ArrayType) throws -> Expression? {
-        Expression.ArrayType(
+    public func visit(arrayType node: ArrayType) throws -> Expression? {
+        ArrayType(
             sourceAnchor: node.sourceAnchor,
             count: try node.count.flatMap {
                 try visit(expr: $0)
@@ -639,8 +639,8 @@ public class CompilerPass {
             id: node.id)
     }
     
-    public func visit(functionType node: Expression.FunctionType) throws -> Expression? {
-        Expression.FunctionType(
+    public func visit(functionType node: FunctionType) throws -> Expression? {
+        FunctionType(
             sourceAnchor: node.sourceAnchor,
             name: node.name,
             returnType: try visit(expr: node.returnType)!,
@@ -650,7 +650,7 @@ public class CompilerPass {
             id: node.id)
     }
     
-    public func visit(genericFunctionType node0: Expression.GenericFunctionType) throws -> Expression? {
+    public func visit(genericFunctionType node0: GenericFunctionType) throws -> Expression? {
         let template0 = node0.template
         let template1 = try visit(func: template0) as! FunctionDeclaration
         let node1 = node0.withTemplate(template1)

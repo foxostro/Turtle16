@@ -16,10 +16,10 @@ final class FunctionScannerTests: XCTestCase {
         symbols.bind(identifier: "foo", symbol: Symbol(type: .void))
         
         let input = FunctionDeclaration(
-            identifier: Expression.Identifier("foo"),
-            functionType: Expression.FunctionType(
+            identifier: Identifier("foo"),
+            functionType: FunctionType(
                 name: "foo",
-                returnType: Expression.PrimitiveType(.u8),
+                returnType: PrimitiveType(.u8),
                 arguments: []),
             argumentNames: [],
             body: Block(children: []))
@@ -40,10 +40,10 @@ final class FunctionScannerTests: XCTestCase {
             visibility: .privateVisibility)
         
         let input = FunctionDeclaration(
-            identifier: Expression.Identifier("foo"),
-            functionType: Expression.FunctionType(
+            identifier: Identifier("foo"),
+            functionType: FunctionType(
                 name: "foo",
-                returnType: Expression.PrimitiveType(.u8),
+                returnType: PrimitiveType(.u8),
                 arguments: []),
             argumentNames: [],
             body: Block(children: []))
@@ -58,10 +58,10 @@ final class FunctionScannerTests: XCTestCase {
     
     func testDeclareFunction() throws {
         let input = FunctionDeclaration(
-            identifier: Expression.Identifier("foo"),
-            functionType: Expression.FunctionType(
+            identifier: Identifier("foo"),
+            functionType: FunctionType(
                 name: "foo",
-                returnType: Expression.PrimitiveType(.void),
+                returnType: PrimitiveType(.void),
                 arguments: []),
             argumentNames: [],
             body: Block(children: []))
@@ -83,19 +83,19 @@ final class FunctionScannerTests: XCTestCase {
     }
     
     func testDeclareGenericFunction() throws {
-        let functionType = Expression.FunctionType(
+        let functionType = FunctionType(
             name: "foo",
-            returnType: Expression.Identifier("T"),
-            arguments: [Expression.Identifier("T")])
+            returnType: Identifier("T"),
+            arguments: [Identifier("T")])
         let input = FunctionDeclaration(
-            identifier: Expression.Identifier("foo"),
+            identifier: Identifier("foo"),
             functionType: functionType,
             argumentNames: ["a"],
-            typeArguments: [Expression.GenericTypeArgument(
-                identifier: Expression.Identifier("T"),
+            typeArguments: [GenericTypeArgument(
+                identifier: Identifier("T"),
                 constraints: [])],
             body: Block(children: [
-                Return(Expression.Identifier("a"))
+                Return(Identifier("a"))
             ]),
             visibility: .privateVisibility,
             symbols: SymbolTable())
@@ -104,7 +104,7 @@ final class FunctionScannerTests: XCTestCase {
         try scanner.scan(func: input)
         let actualSymbol = try scanner.symbols.resolve(identifier: "foo")
         let actualType = actualSymbol.type
-        let expectedType = SymbolType.genericFunction(Expression.GenericFunctionType(template: input))
+        let expectedType = SymbolType.genericFunction(GenericFunctionType(template: input))
         XCTAssertEqual(actualType, expectedType)
     }
 }

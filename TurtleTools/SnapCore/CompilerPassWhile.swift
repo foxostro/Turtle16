@@ -13,10 +13,10 @@ public final class CompilerPassWhile: CompilerPassWithDeclScan {
     public override func visit(while node0: While) throws -> AbstractSyntaxTreeNode? {
         let symbols = symbols!
         let s = node0.sourceAnchor
-        let condition = Expression.As(
+        let condition = As(
             sourceAnchor: node0.condition.sourceAnchor,
             expr: node0.condition,
-            targetType: Expression.PrimitiveType(.bool))
+            targetType: PrimitiveType(.bool))
         try rvalueContext.check(expression: condition)
         let labelHead = symbols.nextLabel()
         let labelTail = symbols.nextLabel()

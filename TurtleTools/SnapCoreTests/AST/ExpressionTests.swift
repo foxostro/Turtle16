@@ -12,288 +12,288 @@ import TurtleCore
 
 final class ExpressionTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
-        XCTAssertNotEqual(Expression.LiteralInt(1),
+        XCTAssertNotEqual(LiteralInt(1),
                           CommentNode(string: ""))
     }
     
     func testLiteralWordEquality() {
-        XCTAssertNotEqual(Expression.LiteralInt(1),
-                          Expression.LiteralInt(2))
-        XCTAssertEqual(Expression.LiteralInt(1),
-                       Expression.LiteralInt(1))
-        XCTAssertEqual(Expression.LiteralInt(1).hashValue,
-                       Expression.LiteralInt(1).hashValue)
+        XCTAssertNotEqual(LiteralInt(1),
+                          LiteralInt(2))
+        XCTAssertEqual(LiteralInt(1),
+                       LiteralInt(1))
+        XCTAssertEqual(LiteralInt(1).hashValue,
+                       LiteralInt(1).hashValue)
     }
     
     func testLiteralBooleanEquality() {
-        XCTAssertNotEqual(Expression.LiteralBool(true),
-                          Expression.LiteralBool(false))
-        XCTAssertEqual(Expression.LiteralBool(true),
-                       Expression.LiteralBool(true))
-        XCTAssertEqual(Expression.LiteralBool(true).hashValue,
-                       Expression.LiteralBool(true).hashValue)
+        XCTAssertNotEqual(LiteralBool(true),
+                          LiteralBool(false))
+        XCTAssertEqual(LiteralBool(true),
+                       LiteralBool(true))
+        XCTAssertEqual(LiteralBool(true).hashValue,
+                       LiteralBool(true).hashValue)
     }
     
     func testIdentifierEquality() {
-        XCTAssertNotEqual(Expression.Identifier("foo"),
-                          Expression.Identifier("bar"))
-        XCTAssertEqual(Expression.Identifier("foo"),
-                       Expression.Identifier("foo"))
-        XCTAssertEqual(Expression.Identifier("foo").hashValue,
-                       Expression.Identifier("foo").hashValue)
+        XCTAssertNotEqual(Identifier("foo"),
+                          Identifier("bar"))
+        XCTAssertEqual(Identifier("foo"),
+                       Identifier("foo"))
+        XCTAssertEqual(Identifier("foo").hashValue,
+                       Identifier("foo").hashValue)
     }
     
     func testGroupEquality() {
         // Different expressions
-        XCTAssertNotEqual(Expression.Group(Expression.LiteralInt(1)),
-                          Expression.Group(Expression.LiteralInt(2)))
+        XCTAssertNotEqual(Group(LiteralInt(1)),
+                          Group(LiteralInt(2)))
         
         // Same
-        XCTAssertEqual(Expression.Group(Expression.LiteralInt(1)),
-                       Expression.Group(Expression.LiteralInt(1)))
+        XCTAssertEqual(Group(LiteralInt(1)),
+                       Group(LiteralInt(1)))
         
         // Same
-        XCTAssertEqual(Expression.Group(Expression.LiteralInt(1)).hashValue,
-                       Expression.Group(Expression.LiteralInt(1)).hashValue)
+        XCTAssertEqual(Group(LiteralInt(1)).hashValue,
+                       Group(LiteralInt(1)).hashValue)
     }
     
     func testUnaryEquality() {
         // Different expressions
-        XCTAssertNotEqual(Expression.Unary(op: .minus,
-                                           expression: Expression.LiteralInt(1)),
-                          Expression.Unary(op: .minus,
-                                           expression: Expression.LiteralInt(2)))
+        XCTAssertNotEqual(Unary(op: .minus,
+                                           expression: LiteralInt(1)),
+                          Unary(op: .minus,
+                                           expression: LiteralInt(2)))
         
         // Same
-        XCTAssertEqual(Expression.Unary(op: .minus,
-                                        expression: Expression.LiteralInt(1)),
-                       Expression.Unary(op: .minus,
-                                        expression: Expression.LiteralInt(1)))
+        XCTAssertEqual(Unary(op: .minus,
+                                        expression: LiteralInt(1)),
+                       Unary(op: .minus,
+                                        expression: LiteralInt(1)))
         
         // Same
-        XCTAssertEqual(Expression.Unary(op: .minus,
-                                        expression: Expression.LiteralInt(1)).hashValue,
-                       Expression.Unary(op: .minus,
-                                        expression: Expression.LiteralInt(1)).hashValue)
+        XCTAssertEqual(Unary(op: .minus,
+                                        expression: LiteralInt(1)).hashValue,
+                       Unary(op: .minus,
+                                        expression: LiteralInt(1)).hashValue)
     }
     
     func testBinaryEquality() {
         // Different right expression
-        XCTAssertNotEqual(Expression.Binary(op: .plus,
-                                            left: Expression.LiteralInt(1),
-                                            right: Expression.LiteralInt(2)),
-                          Expression.Binary(op: .plus,
-                                            left: Expression.LiteralInt(1),
-                                            right: Expression.LiteralInt(9)))
+        XCTAssertNotEqual(Binary(op: .plus,
+                                            left: LiteralInt(1),
+                                            right: LiteralInt(2)),
+                          Binary(op: .plus,
+                                            left: LiteralInt(1),
+                                            right: LiteralInt(9)))
         
         // Different left expression
-        XCTAssertNotEqual(Expression.Binary(op: .plus,
-                                            left: Expression.LiteralInt(1),
-                                            right: Expression.LiteralInt(2)),
-                          Expression.Binary(op: .plus,
-                                            left: Expression.LiteralInt(42),
-                                            right: Expression.LiteralInt(2)))
+        XCTAssertNotEqual(Binary(op: .plus,
+                                            left: LiteralInt(1),
+                                            right: LiteralInt(2)),
+                          Binary(op: .plus,
+                                            left: LiteralInt(42),
+                                            right: LiteralInt(2)))
         
         // Different tokens
-        XCTAssertNotEqual(Expression.Binary(op: .plus,
-                                            left: Expression.LiteralInt(1),
-                                            right: Expression.LiteralInt(2)),
-                          Expression.Binary(op: .minus,
-                                            left: Expression.LiteralInt(1),
-                                            right: Expression.LiteralInt(2)))
+        XCTAssertNotEqual(Binary(op: .plus,
+                                            left: LiteralInt(1),
+                                            right: LiteralInt(2)),
+                          Binary(op: .minus,
+                                            left: LiteralInt(1),
+                                            right: LiteralInt(2)))
         
         // Same
-        XCTAssertEqual(Expression.Binary(op: .plus,
-                                         left: Expression.LiteralInt(1),
-                                         right: Expression.LiteralInt(2)),
-                        Expression.Binary(op: .plus,
-                                          left: Expression.LiteralInt(1),
-                                          right: Expression.LiteralInt(2)))
+        XCTAssertEqual(Binary(op: .plus,
+                                         left: LiteralInt(1),
+                                         right: LiteralInt(2)),
+                        Binary(op: .plus,
+                                          left: LiteralInt(1),
+                                          right: LiteralInt(2)))
         
         // Hash
-        XCTAssertEqual(Expression.Binary(op: .plus,
-                                         left: Expression.LiteralInt(1),
-                                         right: Expression.LiteralInt(2)).hashValue,
-                       Expression.Binary(op: .plus,
-                                         left: Expression.LiteralInt(1),
-                                         right: Expression.LiteralInt(2)).hashValue)
+        XCTAssertEqual(Binary(op: .plus,
+                                         left: LiteralInt(1),
+                                         right: LiteralInt(2)).hashValue,
+                       Binary(op: .plus,
+                                         left: LiteralInt(1),
+                                         right: LiteralInt(2)).hashValue)
     }
     
     func testAssignmentEquality() {
-        let foo = Expression.Identifier("foo")
-        let bar = Expression.Identifier("bar")
+        let foo = Identifier("foo")
+        let bar = Identifier("bar")
         
         // Different right expression
-        XCTAssertNotEqual(Expression.Assignment(lexpr: foo,
-                                                rexpr: Expression.LiteralInt(1)),
-                          Expression.Assignment(lexpr: foo,
-                                                rexpr: Expression.LiteralInt(2)))
+        XCTAssertNotEqual(Assignment(lexpr: foo,
+                                                rexpr: LiteralInt(1)),
+                          Assignment(lexpr: foo,
+                                                rexpr: LiteralInt(2)))
         
         // Different left identifier
-        XCTAssertNotEqual(Expression.Assignment(lexpr: foo,
-                                                rexpr: Expression.LiteralInt(1)),
-                          Expression.Assignment(lexpr: bar,
-                                                rexpr: Expression.LiteralInt(1)))
+        XCTAssertNotEqual(Assignment(lexpr: foo,
+                                                rexpr: LiteralInt(1)),
+                          Assignment(lexpr: bar,
+                                                rexpr: LiteralInt(1)))
         
         // Same
-        XCTAssertEqual(Expression.Assignment(lexpr: foo,
-                                             rexpr: Expression.LiteralInt(1)),
-                       Expression.Assignment(lexpr: foo,
-                                             rexpr: Expression.LiteralInt(1)))
+        XCTAssertEqual(Assignment(lexpr: foo,
+                                             rexpr: LiteralInt(1)),
+                       Assignment(lexpr: foo,
+                                             rexpr: LiteralInt(1)))
         
         // Hash
-        XCTAssertEqual(Expression.Assignment(lexpr: foo,
-                                             rexpr: Expression.LiteralInt(1)).hashValue,
-                       Expression.Assignment(lexpr: foo,
-                                             rexpr: Expression.LiteralInt(1)).hashValue)
+        XCTAssertEqual(Assignment(lexpr: foo,
+                                             rexpr: LiteralInt(1)).hashValue,
+                       Assignment(lexpr: foo,
+                                             rexpr: LiteralInt(1)).hashValue)
     }
     
     func testCallEquality() {
         // Different callee
-        XCTAssertNotEqual(Expression.Call(callee: Expression.Identifier("foo"),
-                                          arguments: [Expression.LiteralInt(1)]),
-                          Expression.Call(callee: Expression.Identifier("bar"),
-                                          arguments: [Expression.LiteralInt(1)]))
+        XCTAssertNotEqual(Call(callee: Identifier("foo"),
+                                          arguments: [LiteralInt(1)]),
+                          Call(callee: Identifier("bar"),
+                                          arguments: [LiteralInt(1)]))
         // Different arguments
-        XCTAssertNotEqual(Expression.Call(callee: Expression.Identifier("foo"),
-                                          arguments: [Expression.LiteralInt(1)]),
-                          Expression.Call(callee: Expression.Identifier("foo"),
-                                          arguments: [Expression.LiteralInt(2)]))
+        XCTAssertNotEqual(Call(callee: Identifier("foo"),
+                                          arguments: [LiteralInt(1)]),
+                          Call(callee: Identifier("foo"),
+                                          arguments: [LiteralInt(2)]))
         
         // Same
-        XCTAssertEqual(Expression.Call(callee: Expression.Identifier("foo"),
-                                       arguments: [Expression.LiteralInt(1)]),
-                       Expression.Call(callee: Expression.Identifier("foo"),
-                                       arguments: [Expression.LiteralInt(1)]))
+        XCTAssertEqual(Call(callee: Identifier("foo"),
+                                       arguments: [LiteralInt(1)]),
+                       Call(callee: Identifier("foo"),
+                                       arguments: [LiteralInt(1)]))
         
         // Hash
-        XCTAssertEqual(Expression.Call(callee: Expression.Identifier("foo"),
-                                       arguments: [Expression.LiteralInt(1)]).hashValue,
-                       Expression.Call(callee: Expression.Identifier("foo"),
-                                       arguments: [Expression.LiteralInt(1)]).hashValue)
+        XCTAssertEqual(Call(callee: Identifier("foo"),
+                                       arguments: [LiteralInt(1)]).hashValue,
+                       Call(callee: Identifier("foo"),
+                                       arguments: [LiteralInt(1)]).hashValue)
     }
     
     func testAsEquality() {
         // Different expr
-        XCTAssertNotEqual(Expression.As(expr: Expression.Identifier("foo"),
-                                        targetType: Expression.PrimitiveType(.u8)),
-                          Expression.As(expr: Expression.Identifier("bar"),
-                                        targetType: Expression.PrimitiveType(.u8)))
+        XCTAssertNotEqual(As(expr: Identifier("foo"),
+                                        targetType: PrimitiveType(.u8)),
+                          As(expr: Identifier("bar"),
+                                        targetType: PrimitiveType(.u8)))
         
         // Different target type
-        XCTAssertNotEqual(Expression.As(expr: Expression.Identifier("foo"),
-                                        targetType: Expression.PrimitiveType(.u16)),
-                          Expression.As(expr: Expression.Identifier("foo"),
-                                        targetType: Expression.PrimitiveType(.u8)))
+        XCTAssertNotEqual(As(expr: Identifier("foo"),
+                                        targetType: PrimitiveType(.u16)),
+                          As(expr: Identifier("foo"),
+                                        targetType: PrimitiveType(.u8)))
         
         // Same
-        XCTAssertEqual(Expression.As(expr: Expression.Identifier("foo"),
-                                     targetType: Expression.PrimitiveType(.u8)),
-                       Expression.As(expr: Expression.Identifier("foo"),
-                                     targetType: Expression.PrimitiveType(.u8)))
+        XCTAssertEqual(As(expr: Identifier("foo"),
+                                     targetType: PrimitiveType(.u8)),
+                       As(expr: Identifier("foo"),
+                                     targetType: PrimitiveType(.u8)))
         
         // Hash
-        XCTAssertEqual(Expression.As(expr: Expression.Identifier("foo"),
-                                     targetType: Expression.PrimitiveType(.u8)).hashValue,
-                       Expression.As(expr: Expression.Identifier("foo"),
-                                     targetType: Expression.PrimitiveType(.u8)).hashValue)
+        XCTAssertEqual(As(expr: Identifier("foo"),
+                                     targetType: PrimitiveType(.u8)).hashValue,
+                       As(expr: Identifier("foo"),
+                                     targetType: PrimitiveType(.u8)).hashValue)
     }
     
     func testSubscriptEquality() {
         // Different identifier
-        XCTAssertNotEqual(Expression.Subscript(subscriptable: Expression.Identifier("foo"),
-                                               argument: Expression.LiteralInt(0)),
-                          Expression.Subscript(subscriptable: Expression.Identifier("bar"),
-                                               argument: Expression.LiteralInt(0)))
+        XCTAssertNotEqual(Subscript(subscriptable: Identifier("foo"),
+                                               argument: LiteralInt(0)),
+                          Subscript(subscriptable: Identifier("bar"),
+                                               argument: LiteralInt(0)))
         
         // Different expression
-        XCTAssertNotEqual(Expression.Subscript(subscriptable: Expression.Identifier("foo"),
-                                               argument: Expression.LiteralInt(0)),
-                          Expression.Subscript(subscriptable: Expression.Identifier("foo"),
-                                               argument: Expression.LiteralInt(1)))
+        XCTAssertNotEqual(Subscript(subscriptable: Identifier("foo"),
+                                               argument: LiteralInt(0)),
+                          Subscript(subscriptable: Identifier("foo"),
+                                               argument: LiteralInt(1)))
         
         // Same
-        XCTAssertEqual(Expression.Subscript(subscriptable: Expression.Identifier("foo"),
-                                            argument: Expression.LiteralInt(0)),
-                       Expression.Subscript(subscriptable: Expression.Identifier("foo"),
-                                            argument: Expression.LiteralInt(0)))
+        XCTAssertEqual(Subscript(subscriptable: Identifier("foo"),
+                                            argument: LiteralInt(0)),
+                       Subscript(subscriptable: Identifier("foo"),
+                                            argument: LiteralInt(0)))
         
         // Hash
-        XCTAssertEqual(Expression.Subscript(subscriptable: Expression.Identifier("foo"),
-                                            argument: Expression.LiteralInt(0)).hashValue,
-                       Expression.Subscript(subscriptable: Expression.Identifier("foo"),
-                                            argument: Expression.LiteralInt(0)).hashValue)
+        XCTAssertEqual(Subscript(subscriptable: Identifier("foo"),
+                                            argument: LiteralInt(0)).hashValue,
+                       Subscript(subscriptable: Identifier("foo"),
+                                            argument: LiteralInt(0)).hashValue)
     }
     
     func testLiteralArrayEquality() {
         // Different explicit lengths
-        XCTAssertNotEqual(Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u8)),
-                                                  elements: [Expression.LiteralInt(0)]),
-                          Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(2), elementType: Expression.PrimitiveType(.u8)),
-                                                  elements: [Expression.LiteralInt(0)]))
+        XCTAssertNotEqual(LiteralArray(arrayType: ArrayType(count: LiteralInt(1), elementType: PrimitiveType(.u8)),
+                                                  elements: [LiteralInt(0)]),
+                          LiteralArray(arrayType: ArrayType(count: LiteralInt(2), elementType: PrimitiveType(.u8)),
+                                                  elements: [LiteralInt(0)]))
         
         // Different explicit types
-        XCTAssertNotEqual(Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u16)),
-                                                  elements: [Expression.LiteralInt(0)]),
-                          Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8)),
-                                                  elements: [Expression.LiteralInt(0)]))
+        XCTAssertNotEqual(LiteralArray(arrayType: ArrayType(count: nil, elementType: PrimitiveType(.u16)),
+                                                  elements: [LiteralInt(0)]),
+                          LiteralArray(arrayType: ArrayType(count: nil, elementType: PrimitiveType(.u8)),
+                                                  elements: [LiteralInt(0)]))
         
         // Different element expressions
-        XCTAssertNotEqual(Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8)),
-                                                  elements: [Expression.LiteralInt(0)]),
-                          Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8)),
-                                                  elements: [Expression.LiteralBool(false)]))
+        XCTAssertNotEqual(LiteralArray(arrayType: ArrayType(count: nil, elementType: PrimitiveType(.u8)),
+                                                  elements: [LiteralInt(0)]),
+                          LiteralArray(arrayType: ArrayType(count: nil, elementType: PrimitiveType(.u8)),
+                                                  elements: [LiteralBool(false)]))
         
         // Same
-        XCTAssertEqual(Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8)),
-                                               elements: [Expression.LiteralInt(0)]),
-                       Expression.LiteralArray(arrayType: Expression.ArrayType(count: nil, elementType: Expression.PrimitiveType(.u8)),
-                                               elements: [Expression.LiteralInt(0)]))
+        XCTAssertEqual(LiteralArray(arrayType: ArrayType(count: nil, elementType: PrimitiveType(.u8)),
+                                               elements: [LiteralInt(0)]),
+                       LiteralArray(arrayType: ArrayType(count: nil, elementType: PrimitiveType(.u8)),
+                                               elements: [LiteralInt(0)]))
         
         // Same hashes
-        XCTAssertEqual(Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u8)),
-                                               elements: [Expression.LiteralInt(0)]).hashValue,
-                       Expression.LiteralArray(arrayType: Expression.ArrayType(count: Expression.LiteralInt(1), elementType: Expression.PrimitiveType(.u8)),
-                                               elements: [Expression.LiteralInt(0)]).hashValue)
+        XCTAssertEqual(LiteralArray(arrayType: ArrayType(count: LiteralInt(1), elementType: PrimitiveType(.u8)),
+                                               elements: [LiteralInt(0)]).hashValue,
+                       LiteralArray(arrayType: ArrayType(count: LiteralInt(1), elementType: PrimitiveType(.u8)),
+                                               elements: [LiteralInt(0)]).hashValue)
     }
     
     func testGetEquality() {
         // Different expressions
-        XCTAssertNotEqual(Expression.Get(expr: Expression.Identifier("foo"),
-                                         member: Expression.Identifier("foo")),
-                          Expression.Get(expr: Expression.Identifier("bar"),
-                                         member: Expression.Identifier("foo")))
+        XCTAssertNotEqual(Get(expr: Identifier("foo"),
+                                         member: Identifier("foo")),
+                          Get(expr: Identifier("bar"),
+                                         member: Identifier("foo")))
         
         // Different members
-        XCTAssertNotEqual(Expression.Get(expr: Expression.Identifier("foo"),
-                                         member: Expression.Identifier("foo")),
-                          Expression.Get(expr: Expression.Identifier("foo"),
-                                         member: Expression.Identifier("bar")))
+        XCTAssertNotEqual(Get(expr: Identifier("foo"),
+                                         member: Identifier("foo")),
+                          Get(expr: Identifier("foo"),
+                                         member: Identifier("bar")))
         
         // Same
-        XCTAssertEqual(Expression.Get(expr: Expression.Identifier("foo"),
-                                      member: Expression.Identifier("foo")),
-                       Expression.Get(expr: Expression.Identifier("foo"),
-                                      member: Expression.Identifier("foo")))
+        XCTAssertEqual(Get(expr: Identifier("foo"),
+                                      member: Identifier("foo")),
+                       Get(expr: Identifier("foo"),
+                                      member: Identifier("foo")))
         
         // Same
-        XCTAssertEqual(Expression.Get(expr: Expression.Identifier("foo"),
-                                      member: Expression.Identifier("foo")).hashValue,
-                       Expression.Get(expr: Expression.Identifier("foo"),
-                                      member: Expression.Identifier("foo")).hashValue)
+        XCTAssertEqual(Get(expr: Identifier("foo"),
+                                      member: Identifier("foo")).hashValue,
+                       Get(expr: Identifier("foo"),
+                                      member: Identifier("foo")).hashValue)
     }
     
     func testPrimitiveTypeEquality() {
         // Different underlying types
-        XCTAssertNotEqual(Expression.PrimitiveType(.u8),
-                          Expression.PrimitiveType(.bool))
+        XCTAssertNotEqual(PrimitiveType(.u8),
+                          PrimitiveType(.bool))
         
         // Same
-        XCTAssertEqual(Expression.PrimitiveType(.u8),
-                       Expression.PrimitiveType(.u8))
+        XCTAssertEqual(PrimitiveType(.u8),
+                       PrimitiveType(.u8))
         
         // Same hashes
-        XCTAssertEqual(Expression.PrimitiveType(.u8).hashValue,
-                       Expression.PrimitiveType(.u8).hashValue)
+        XCTAssertEqual(PrimitiveType(.u8).hashValue,
+                       PrimitiveType(.u8).hashValue)
     }
 }

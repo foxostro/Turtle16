@@ -13,14 +13,14 @@ import TurtleCore
 final class StatementTracerTests: XCTestCase {
     func testTraceSingleReturnStatement() {
         let tracer = StatementTracer()
-        let one = Expression.LiteralInt(1)
+        let one = LiteralInt(1)
         let traces = try! tracer.trace(ast: Return(one))
         XCTAssertEqual(traces[0], [.Return])
     }
     
     func testTraceBlockContainingSingleReturnStatement() {
         let tracer = StatementTracer()
-        let one = Expression.LiteralInt(1)
+        let one = LiteralInt(1)
         let traces = try! tracer.trace(ast: Block(children: [
             Return(one)
         ]))
@@ -29,7 +29,7 @@ final class StatementTracerTests: XCTestCase {
     
     func testThrowErrorWhenStatementAfterReturnInBlock() {
         let tracer = StatementTracer()
-        let one = Expression.LiteralInt(1)
+        let one = LiteralInt(1)
         let ast = Block(children: [
             Return(one),
             ExprUtils.makeAssignment(name: "foo", right: one)
@@ -45,9 +45,9 @@ final class StatementTracerTests: XCTestCase {
     
     func testTraceReturnStatementsThroughIf() {
         let tracer = StatementTracer()
-        let tr = Expression.LiteralBool(true)
-        let one = Expression.LiteralInt(1)
-        let two = Expression.LiteralInt(2)
+        let tr = LiteralBool(true)
+        let one = LiteralInt(1)
+        let two = LiteralInt(2)
         let traces = try! tracer.trace(ast: Block(children: [
             If(sourceAnchor: nil,
                condition: tr,
@@ -61,8 +61,8 @@ final class StatementTracerTests: XCTestCase {
     
     func testTraceReturnStatementsThroughElse() {
         let tracer = StatementTracer()
-        let tr = Expression.LiteralBool(true)
-        let one = Expression.LiteralInt(1)
+        let tr = LiteralBool(true)
+        let one = LiteralInt(1)
         let traces = try! tracer.trace(ast: Block(children: [
             If(sourceAnchor: nil,
                condition: tr,
@@ -76,8 +76,8 @@ final class StatementTracerTests: XCTestCase {
     
     func testTraceReturnStatementsThroughWhile() {
         let tracer = StatementTracer()
-        let tr = Expression.LiteralBool(true)
-        let one = Expression.LiteralInt(1)
+        let tr = LiteralBool(true)
+        let one = LiteralInt(1)
         let traces = try! tracer.trace(ast: Block(children: [
             While(sourceAnchor: nil,
                   condition: tr,
@@ -89,18 +89,18 @@ final class StatementTracerTests: XCTestCase {
     }
     
     func testTraceReturnStatementsThroughMatchClause() throws {
-        let one = Expression.LiteralInt(1)
-        let two = Expression.LiteralInt(2)
-        let three = Expression.LiteralInt(3)
+        let one = LiteralInt(1)
+        let two = LiteralInt(2)
+        let three = LiteralInt(3)
         let ast = Block(children: [
-            Match(expr: Expression.Identifier("test"), clauses: [
-                Match.Clause(valueIdentifier: Expression.Identifier("foo"),
-                             valueType: Expression.PrimitiveType(.u8),
+            Match(expr: Identifier("test"), clauses: [
+                Match.Clause(valueIdentifier: Identifier("foo"),
+                             valueType: PrimitiveType(.u8),
                              block: Block(children: [
                                 Return(one)
                             ])),
-                Match.Clause(valueIdentifier: Expression.Identifier("foo"),
-                             valueType: Expression.PrimitiveType(.bool),
+                Match.Clause(valueIdentifier: Identifier("foo"),
+                             valueType: PrimitiveType(.bool),
                              block: Block(children: [
                                 Return(two)
                             ]))

@@ -19,7 +19,7 @@ final class TackFlattenerTests: XCTestCase {
     }
     
     func testUnsupportedNode() throws {
-        let program = Expression.LiteralInt(0)
+        let program = LiteralInt(0)
         XCTAssertThrowsError(try TackFlattener.compile(program)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)

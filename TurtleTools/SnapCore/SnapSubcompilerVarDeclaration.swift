@@ -21,7 +21,7 @@ public struct SnapSubcompilerVarDeclaration {
         self.memoryLayoutStrategy = memoryLayoutStrategy
     }
     
-    public func compile(_ node: VarDeclaration) throws -> Expression.InitialAssignment? {
+    public func compile(_ node: VarDeclaration) throws -> InitialAssignment? {
         let sourceAnchor = node.identifier.sourceAnchor
         let ident = node.identifier.identifier
         
@@ -39,7 +39,7 @@ public struct SnapSubcompilerVarDeclaration {
                 message: "\(variable) redefines existing type: `\(ident)'")
         }
         
-        let result: Expression.InitialAssignment?
+        let result: InitialAssignment?
 
         // If the variable declaration provided an explicit type expression then
         // the type checker can determine what type it evaluates to.
@@ -100,7 +100,7 @@ public struct SnapSubcompilerVarDeclaration {
                 visibility: node.visibility)
             symbols.bind(identifier: node.identifier.identifier, symbol: symbol)
             attachToFrame(identifier: node.identifier.identifier, symbol: symbol)
-            result = Expression.InitialAssignment(sourceAnchor: node.sourceAnchor,
+            result = InitialAssignment(sourceAnchor: node.sourceAnchor,
                                                   lexpr: node.identifier,
                                                   rexpr: varDeclExpr)
         } else if let explicitType = explicitType {

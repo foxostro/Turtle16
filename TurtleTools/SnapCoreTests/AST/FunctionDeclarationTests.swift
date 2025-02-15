@@ -12,76 +12,76 @@ import TurtleCore
 
 final class FunctionDeclarationTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
-        XCTAssertNotEqual(FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                              functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
+        XCTAssertNotEqual(FunctionDeclaration(identifier: Identifier("foo"),
+                                              functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
                                               argumentNames: [],
                                               body: Block()),
                           CommentNode(string: ""))
     }
     
     func testDoesNotEqualNodeWithDifferentBody() {
-        XCTAssertNotEqual(FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                              functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
+        XCTAssertNotEqual(FunctionDeclaration(identifier: Identifier("foo"),
+                                              functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
                                               argumentNames: [],
                                               body: Block()),
-                          FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                              functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
+                          FunctionDeclaration(identifier: Identifier("foo"),
+                                              functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
                                               argumentNames: [],
-                                              body: Block(children: [Expression.LiteralInt(1)])))
+                                              body: Block(children: [LiteralInt(1)])))
     }
     
     func testDoesNotEqualNodeWithDifferentReturnType() {
-        XCTAssertNotEqual(FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                              functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
+        XCTAssertNotEqual(FunctionDeclaration(identifier: Identifier("foo"),
+                                              functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
                                               argumentNames: [],
                                               body: Block(sourceAnchor: nil)),
-                          FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                              functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.bool), arguments: []),
+                          FunctionDeclaration(identifier: Identifier("foo"),
+                                              functionType: FunctionType(name: "foo", returnType: PrimitiveType(.bool), arguments: []),
                                               argumentNames: [],
                                               body: Block(sourceAnchor: nil)))
     }
     
     func testDoesNotEqualNodeWithDifferentArguments() {
-        XCTAssertNotEqual(FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                              functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: [Expression.PrimitiveType(.u8)]),
+        XCTAssertNotEqual(FunctionDeclaration(identifier: Identifier("foo"),
+                                              functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: [PrimitiveType(.u8)]),
                                               argumentNames: ["foo"],
                                               body: Block(sourceAnchor: nil)),
-                          FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                              functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: [Expression.PrimitiveType(.u8)]),
+                          FunctionDeclaration(identifier: Identifier("foo"),
+                                              functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: [PrimitiveType(.u8)]),
                                               argumentNames: ["bar"],
                                               body: Block(sourceAnchor: nil)))
     }
     
     func testDoesNotEqualNodeWithDifferentIdentifier() {
-        XCTAssertNotEqual(FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                              functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
+        XCTAssertNotEqual(FunctionDeclaration(identifier: Identifier("foo"),
+                                              functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
                                               argumentNames: [],
-                                              body: Block(children: [Expression.LiteralInt(1)])),
-                          FunctionDeclaration(identifier: Expression.Identifier("bar"),
-                                              functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                              body: Block(children: [LiteralInt(1)])),
+                          FunctionDeclaration(identifier: Identifier("bar"),
+                                              functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
                                               argumentNames: [],
-                                              body: Block(children: [Expression.LiteralInt(1)])))
+                                              body: Block(children: [LiteralInt(1)])))
     }
     
     func testSame() {
-        XCTAssertEqual(FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                           functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
+        XCTAssertEqual(FunctionDeclaration(identifier: Identifier("foo"),
+                                           functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
                                            argumentNames: [],
-                                           body: Block(children: [Expression.LiteralInt(1)])),
-                       FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                           functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                           body: Block(children: [LiteralInt(1)])),
+                       FunctionDeclaration(identifier: Identifier("foo"),
+                                           functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
                                            argumentNames: [],
-                                           body: Block(children: [Expression.LiteralInt(1)])))
+                                           body: Block(children: [LiteralInt(1)])))
     }
     
     func testHash() {
-        XCTAssertEqual(FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                           functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
+        XCTAssertEqual(FunctionDeclaration(identifier: Identifier("foo"),
+                                           functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
                                            argumentNames: [],
-                                           body: Block(children: [Expression.LiteralInt(1)])).hashValue,
-                       FunctionDeclaration(identifier: Expression.Identifier("foo"),
-                                           functionType: Expression.FunctionType(name: "foo", returnType: Expression.PrimitiveType(.u8), arguments: []),
+                                           body: Block(children: [LiteralInt(1)])).hashValue,
+                       FunctionDeclaration(identifier: Identifier("foo"),
+                                           functionType: FunctionType(name: "foo", returnType: PrimitiveType(.u8), arguments: []),
                                            argumentNames: [],
-                                           body: Block(children: [Expression.LiteralInt(1)])).hashValue)
+                                           body: Block(children: [LiteralInt(1)])).hashValue)
     }
 }

@@ -13,18 +13,18 @@ public struct SnapSubcompilerAssert {
     
     public func compile(_ symbols: SymbolTable?, _ node: Assert) throws -> If {
         let s = node.sourceAnchor
-        let panic = Expression.Call(
+        let panic = Call(
             sourceAnchor: s,
-            callee: Expression.Identifier("__panic"),
-            arguments: [Expression.LiteralString(node.finalMessage)])
+            callee: Identifier("__panic"),
+            arguments: [LiteralString(node.finalMessage)])
         let then = Block(
             symbols: SymbolTable(parent: symbols),
             children: [panic])
-        let condition = Expression.Binary(
+        let condition = Binary(
             sourceAnchor: s,
             op: .eq,
             left: node.condition,
-            right: Expression.LiteralBool(false))
+            right: LiteralBool(false))
         let result = If(
             sourceAnchor: s,
             condition: condition,

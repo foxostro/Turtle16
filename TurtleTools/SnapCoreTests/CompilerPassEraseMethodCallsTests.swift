@@ -11,13 +11,6 @@ import TurtleCore
 import SnapCore
 
 final class CompilerPassEraseMethodCallsTests: XCTestCase {
-    fileprivate typealias Call = Expression.Call
-    fileprivate typealias Get = Expression.Get
-    fileprivate typealias LiteralInt = Expression.LiteralInt
-    fileprivate typealias Identifier = Expression.Identifier
-    fileprivate typealias PrimitiveType = Expression.PrimitiveType
-    fileprivate typealias PointerType = Expression.PointerType
-    
     func testEraseMethodCalls() throws {
         let ast0 = Block(children: [
             StructDeclaration(
@@ -34,7 +27,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 children: [
                     FunctionDeclaration(
                         identifier: Identifier("bar"),
-                        functionType: Expression.FunctionType(
+                        functionType: FunctionType(
                             name: "bar",
                             returnType: PrimitiveType(.u8),
                             arguments: [
@@ -74,7 +67,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 children: [
                     FunctionDeclaration(
                         identifier: Identifier("bar"),
-                        functionType: Expression.FunctionType(
+                        functionType: FunctionType(
                             name: "bar",
                             returnType: PrimitiveType(.u8),
                             arguments: [
@@ -124,7 +117,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 children: [
                     FunctionDeclaration(
                         identifier: Identifier("bar"),
-                        functionType: Expression.FunctionType(
+                        functionType: FunctionType(
                             name: "bar",
                             returnType: PrimitiveType(.u8),
                             arguments: [
@@ -164,7 +157,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 children: [
                     FunctionDeclaration(
                         identifier: Identifier("bar"),
-                        functionType: Expression.FunctionType(
+                        functionType: FunctionType(
                             name: "bar",
                             returnType: PrimitiveType(.u8),
                             arguments: [
@@ -214,7 +207,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 children: [
                     FunctionDeclaration(
                         identifier: Identifier("bar"),
-                        functionType: Expression.FunctionType(
+                        functionType: FunctionType(
                             name: "bar",
                             returnType: PrimitiveType(.u8),
                             arguments: [
@@ -264,7 +257,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 children: [
                     FunctionDeclaration(
                         identifier: Identifier("bar"),
-                        functionType: Expression.FunctionType(
+                        functionType: FunctionType(
                             name: "bar",
                             returnType: PrimitiveType(.u8),
                             arguments: []),
@@ -302,7 +295,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 children: [
                     FunctionDeclaration(
                         identifier: Identifier("bar"),
-                        functionType: Expression.FunctionType(
+                        functionType: FunctionType(
                             name: "bar",
                             returnType: PrimitiveType(.u8),
                             arguments: []),
@@ -348,7 +341,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 children: [
                     FunctionDeclaration(
                         identifier: Identifier("bar"),
-                        functionType: Expression.FunctionType(
+                        functionType: FunctionType(
                             name: "bar",
                             returnType: PrimitiveType(.u8),
                             arguments: []),
@@ -384,7 +377,7 @@ final class CompilerPassEraseMethodCallsTests: XCTestCase {
                 children: [
                     FunctionDeclaration(
                         identifier: Identifier("bar"),
-                        functionType: Expression.FunctionType(
+                        functionType: FunctionType(
                             name: "bar",
                             returnType: PrimitiveType(.u8),
                             arguments: []),

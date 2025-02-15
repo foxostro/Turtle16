@@ -10,12 +10,12 @@ import TurtleCore
 
 /// A for-in statement iterates elements of a sequence expression
 public final class ForIn: AbstractSyntaxTreeNode {
-    public let identifier: Expression.Identifier
+    public let identifier: Identifier
     public let sequenceExpr: Expression
     public let body: Block
     
     public init(sourceAnchor: SourceAnchor? = nil,
-                identifier: Expression.Identifier,
+                identifier: Identifier,
                 sequenceExpr: Expression,
                 body: Block,
                 id: ID = ID()) {

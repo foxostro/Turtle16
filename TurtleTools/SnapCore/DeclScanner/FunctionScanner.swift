@@ -54,7 +54,7 @@ public struct FunctionScanner {
     
     private func doGeneric(node: FunctionDeclaration) throws {
         let name = node.identifier.identifier
-        let typ = Expression.GenericFunctionType(
+        let typ = GenericFunctionType(
             template: node,
             enclosingImplId: enclosingImplId)
         let symbol = Symbol(
@@ -105,10 +105,10 @@ public struct FunctionScanner {
         let sizeOfFunctionReturnType = memoryLayoutStrategy.sizeof(type: functionType.returnType)
         offset += sizeOfFunctionReturnType
         
-        let node1 = node0.withFunctionType(Expression.FunctionType(
+        let node1 = node0.withFunctionType(FunctionType(
             sourceAnchor: node0.functionType.sourceAnchor,
             name: functionType.name,
-            returnType: Expression.PrimitiveType(functionType.returnType),
+            returnType: PrimitiveType(functionType.returnType),
             arguments: functionType.arguments.map(\.lift)))
         
         functionType.ast = node1

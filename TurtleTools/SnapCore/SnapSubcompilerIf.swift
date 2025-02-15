@@ -14,9 +14,9 @@ public struct SnapSubcompilerIf {
     public func compile(if node: If, symbols: SymbolTable) throws -> Seq {
         let s = node.sourceAnchor
         var children: [AbstractSyntaxTreeNode] = []
-        let condition = Expression.As(sourceAnchor: node.condition.sourceAnchor,
+        let condition = As(sourceAnchor: node.condition.sourceAnchor,
                                               expr: node.condition,
-                                      targetType: Expression.PrimitiveType(.bool))
+                                      targetType: PrimitiveType(.bool))
         try RvalueExpressionTypeChecker(symbols: symbols).check(expression: condition)
         if let elseBranch = node.elseBranch {
             let labelElse = symbols.nextLabel()

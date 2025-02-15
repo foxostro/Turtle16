@@ -46,22 +46,22 @@ public final class CompilerPassImpl: CompilerPassWithDeclScan {
         return node2
     }
     
-    public override func visit(get node0: Expression.Get) throws -> Expression? {
+    public override func visit(get node0: Get) throws -> Expression? {
         // If the object is the name of a struct type, and the member is one of
         // the struct's methods, then return a direct reference to the function
         // through the mangled function identifier.
-        guard let objectIdent = node0.expr as? Expression.Identifier,
+        guard let objectIdent = node0.expr as? Identifier,
               let objectType = symbols!.maybeResolveType(
                 sourceAnchor: objectIdent.sourceAnchor,
                 identifier: objectIdent.identifier),
               let structType = objectType.maybeUnwrapStructType(),
               !structType.isModule,
-              node0.member is Expression.Identifier,
+              node0.member is Identifier,
               let functionType = try typeChecker.check(expression: node0).maybeUnwrapFunctionType(),
               let mangledName = functionType.mangledName else {
             return node0
         }
-        return Expression.Identifier(
+        return Identifier(
             sourceAnchor: node0.sourceAnchor,
             identifier: mangledName)
     }

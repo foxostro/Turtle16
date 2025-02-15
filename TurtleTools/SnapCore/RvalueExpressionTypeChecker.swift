@@ -46,74 +46,74 @@ public class RvalueExpressionTypeChecker {
     
     @discardableResult public func check(expression: Expression) throws -> SymbolType {
         switch expression {
-        case let expr as Expression.LiteralInt:
+        case let expr as LiteralInt:
             return check(literalInt: expr)
-        case let expr as Expression.LiteralBool:
+        case let expr as LiteralBool:
             return .booleanType(.compTimeBool(expr.value))
-        case let expr as Expression.Group:
+        case let expr as Group:
             return try check(expression: expr.expression)
-        case let expr as Expression.Unary:
+        case let expr as Unary:
             return try check(unary: expr)
-        case let expr as Expression.Binary:
+        case let expr as Binary:
             return try check(binary: expr)
-        case let identifier as Expression.Identifier:
+        case let identifier as Identifier:
             return try check(identifier: identifier)
-        case let assig as Expression.Assignment:
+        case let assig as Assignment:
             return try check(assignment: assig)
-        case let call as Expression.Call:
+        case let call as Call:
             return try check(call: call)
-        case let expr as Expression.As:
+        case let expr as As:
             return try check(as: expr)
-        case let expr as Expression.Is:
+        case let expr as Is:
             return try check(is: expr)
-        case let expr as Expression.Subscript:
+        case let expr as Subscript:
             return try check(subscript: expr)
-        case let expr as Expression.LiteralArray:
+        case let expr as LiteralArray:
             return try check(literalArray: expr)
-        case let expr as Expression.Get:
+        case let expr as Get:
             return try check(get: expr)
-        case let expr as Expression.PrimitiveType:
+        case let expr as PrimitiveType:
             return try check(primitiveType: expr)
-        case let expr as Expression.ArrayType:
+        case let expr as ArrayType:
             return try check(arrayType: expr)
-        case let expr as Expression.DynamicArrayType:
+        case let expr as DynamicArrayType:
             return try check(dynamicArrayType: expr)
-        case let expr as Expression.FunctionType:
+        case let expr as FunctionType:
             return try check(functionType: expr)
-        case let expr as Expression.GenericFunctionType:
+        case let expr as GenericFunctionType:
             return try check(genericFunctionType: expr)
-        case let expr as Expression.GenericTypeApplication:
+        case let expr as GenericTypeApplication:
             return try check(genericTypeApplication: expr)
-        case let expr as Expression.PointerType:
+        case let expr as PointerType:
             return try check(pointerType: expr)
-        case let expr as Expression.ConstType:
+        case let expr as ConstType:
             return try check(constType: expr)
-        case let expr as Expression.MutableType:
+        case let expr as MutableType:
             return try check(mutableType: expr)
-        case let expr as Expression.StructInitializer:
+        case let expr as StructInitializer:
             return try check(structInitializer: expr)
-        case let expr as Expression.UnionType:
+        case let expr as UnionType:
             return try check(unionType: expr)
-        case let expr as Expression.LiteralString:
+        case let expr as LiteralString:
             return try check(literalString: expr)
-        case let expr as Expression.TypeOf:
+        case let expr as TypeOf:
             return try check(typeOf: expr)
-        case let expr as Expression.Bitcast:
+        case let expr as Bitcast:
             return try check(bitcast: expr)
-        case let expr as Expression.SizeOf:
+        case let expr as SizeOf:
             return try check(sizeOf: expr)
-        case let expr as Expression.Eseq:
+        case let expr as Eseq:
             return try check(eseq: expr)
         default:
             throw unsupportedError(expression: expression)
         }
     }
     
-    public func check(literalInt expr: Expression.LiteralInt) -> SymbolType {
+    public func check(literalInt expr: LiteralInt) -> SymbolType {
         .arithmeticType(.compTimeInt(expr.value))
     }
         
-    public func check(unary: Expression.Unary) throws -> SymbolType {
+    public func check(unary: Unary) throws -> SymbolType {
         let expressionType = try check(expression: unary.child)
         switch unary.op {
         case .minus:
@@ -197,7 +197,7 @@ public class RvalueExpressionTypeChecker {
         }
     }
     
-    private func check(binary: Expression.Binary) throws -> SymbolType {
+    private func check(binary: Binary) throws -> SymbolType {
         let rightType = try check(expression: binary.right)
         let leftType = try check(expression: binary.left)
         
@@ -212,7 +212,7 @@ public class RvalueExpressionTypeChecker {
         throw invalidBinaryExpr(binary, leftType, rightType)
     }
     
-    private func checkBooleanBinaryExpression(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> SymbolType {
+    private func checkBooleanBinaryExpression(_ binary: Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> SymbolType {
         guard leftType.isBooleanType && rightType.isBooleanType else {
             assert(false)
             abort()
@@ -240,7 +240,7 @@ public class RvalueExpressionTypeChecker {
         }
     }
     
-    private func checkConstantBooleanBinaryExpression(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> SymbolType {
+    private func checkConstantBooleanBinaryExpression(_ binary: Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> SymbolType {
         guard case .booleanType(.compTimeBool(let a)) = leftType, case .booleanType(.compTimeBool(let b)) = rightType else {
             assert(false)
             abort()
@@ -260,7 +260,7 @@ public class RvalueExpressionTypeChecker {
         }
     }
     
-    private func checkArithmeticBinaryExpression(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> SymbolType {
+    private func checkArithmeticBinaryExpression(_ binary: Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> SymbolType {
         switch (leftType, rightType) {
         case (.arithmeticType(.compTimeInt), .arithmeticType(.compTimeInt)):
             return try checkConstantArithmeticBinaryExpression(binary, leftType, rightType)
@@ -297,7 +297,7 @@ public class RvalueExpressionTypeChecker {
         }
     }
     
-    private func checkConstantArithmeticBinaryExpression(_ binary: Expression.Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> SymbolType {
+    private func checkConstantArithmeticBinaryExpression(_ binary: Binary, _ leftType: SymbolType, _ rightType: SymbolType) throws -> SymbolType {
         guard case .arithmeticType(.compTimeInt(let a)) = leftType, case .arithmeticType(.compTimeInt(let b)) = rightType else {
             assert(false)
             abort()
@@ -341,7 +341,7 @@ public class RvalueExpressionTypeChecker {
         }
     }
     
-    private func invalidBinaryExpr(_ binary: Expression.Binary, _ left: SymbolType, _ right: SymbolType) -> CompilerError {
+    private func invalidBinaryExpr(_ binary: Binary, _ left: SymbolType, _ right: SymbolType) -> CompilerError {
         if left == right {
             return CompilerError(sourceAnchor: binary.sourceAnchor, message: "binary operator `\(binary.op.description)' cannot be applied to two `\(right)' operands")
         } else {
@@ -349,15 +349,15 @@ public class RvalueExpressionTypeChecker {
         }
     }
     
-    public func check(assignment: Expression.Assignment) throws -> SymbolType {
+    public func check(assignment: Assignment) throws -> SymbolType {
         guard let ltype = try lvalueContext().check(expression: assignment.lexpr) else {
             throw CompilerError(sourceAnchor: assignment.lexpr.sourceAnchor,
                                 message: "lvalue required in assignment")
         }
         
-        guard !ltype.isConst || (assignment is Expression.InitialAssignment) else {
+        guard !ltype.isConst || (assignment is InitialAssignment) else {
             switch assignment.lexpr {
-            case let identifier as Expression.Identifier:
+            case let identifier as Identifier:
                 throw CompilerError(sourceAnchor: assignment.lexpr.sourceAnchor,
                                     message: "cannot assign to constant `\(identifier.identifier)' of type `\(ltype)'")
             default:
@@ -654,7 +654,7 @@ public class RvalueExpressionTypeChecker {
                                             isExplicitCast: true)
     }
         
-    public func check(identifier expr: Expression.Identifier) throws -> SymbolType {
+    public func check(identifier expr: Identifier) throws -> SymbolType {
         let rvalueType = try symbols.resolveTypeOfIdentifier(sourceAnchor: expr.sourceAnchor, identifier: expr.identifier)
         
         switch rvalueType {
@@ -672,9 +672,9 @@ public class RvalueExpressionTypeChecker {
         }
     }
         
-    public func check(call: Expression.Call) throws -> SymbolType {
+    public func check(call: Call) throws -> SymbolType {
         let calleeType: SymbolType
-        if let identifier = call.callee as? Expression.Identifier {
+        if let identifier = call.callee as? Identifier {
             calleeType = try symbols.resolveTypeOfIdentifier(sourceAnchor: identifier.sourceAnchor, identifier: identifier.identifier)
         }
         else {
@@ -683,7 +683,7 @@ public class RvalueExpressionTypeChecker {
         return try check(call: call, calleeType: calleeType)
     }
     
-    private func check(call: Expression.Call, calleeType: SymbolType) throws -> SymbolType {
+    private func check(call: Call, calleeType: SymbolType) throws -> SymbolType {
         switch calleeType {
         case .genericFunction(let typ):
             return try check(call: call, genericFunctionType: typ)
@@ -694,34 +694,34 @@ public class RvalueExpressionTypeChecker {
         }
     }
     
-    private func check(call expr: Expression.Call, genericFunctionType: Expression.GenericFunctionType) throws -> SymbolType {
+    private func check(call expr: Call, genericFunctionType: GenericFunctionType) throws -> SymbolType {
         let a = try synthesizeGenericTypeApplication(call: expr, genericFunctionType: genericFunctionType)
         let calleeType = try check(genericTypeApplication: a)
         return try check(call: expr, calleeType: calleeType)
     }
     
-    public func synthesizeGenericTypeApplication(call expr: Expression.Call, genericFunctionType: Expression.GenericFunctionType) throws -> Expression.GenericTypeApplication {
-        guard let identifier = expr.callee as? Expression.Identifier else {
+    public func synthesizeGenericTypeApplication(call expr: Call, genericFunctionType: GenericFunctionType) throws -> GenericTypeApplication {
+        guard let identifier = expr.callee as? Identifier else {
             throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "expected identifier, got `\(expr.callee)'")
         }
         let typeArguments = try inferTypeArguments(call: expr, genericFunctionType: genericFunctionType)
-        let a = Expression.GenericTypeApplication(sourceAnchor: expr.sourceAnchor,
+        let a = GenericTypeApplication(sourceAnchor: expr.sourceAnchor,
                                                   identifier: identifier,
                                                   arguments: typeArguments)
         return a
     }
     
-    private func inferTypeArguments(call expr: Expression.Call, genericFunctionType generic: Expression.GenericFunctionType) throws -> [Expression] {
+    private func inferTypeArguments(call expr: Call, genericFunctionType generic: GenericFunctionType) throws -> [Expression] {
         let solver = GenericFunctionTypeArgumentSolver()
         let typeArguments = try solver.inferTypeArguments(call: expr,
                                                           genericFunctionType: generic,
                                                           symbols: symbols)
         return typeArguments.map {
-            Expression.PrimitiveType($0)
+            PrimitiveType($0)
         }
     }
     
-    private func check(call: Expression.Call, typ: FunctionTypeInfo) throws -> SymbolType {
+    private func check(call: Call, typ: FunctionTypeInfo) throws -> SymbolType {
         do {
             return try checkInner(call: call, typ: typ)
         }
@@ -734,7 +734,7 @@ public class RvalueExpressionTypeChecker {
         }
     }
     
-    func checkInner(call: Expression.Call, typ: FunctionTypeInfo) throws -> SymbolType {
+    func checkInner(call: Call, typ: FunctionTypeInfo) throws -> SymbolType {
         if call.arguments.count != typ.arguments.count {
             let message: String
             if let name = typ.name {
@@ -763,19 +763,19 @@ public class RvalueExpressionTypeChecker {
         return typ.returnType
     }
     
-    fileprivate func rewriteStructMemberFunctionCallIfPossible(_ expr: Expression.Call) throws -> Expression.Call? {
+    fileprivate func rewriteStructMemberFunctionCallIfPossible(_ expr: Call) throws -> Call? {
         guard let match = try StructMemberFunctionCallMatcher(call: expr, typeChecker: self).match() else {
             return nil
         }
         
-        return Expression.Call(sourceAnchor: match.callExpr.sourceAnchor,
-                               callee: Expression.Get(sourceAnchor: match.callExpr.sourceAnchor,
+        return Call(sourceAnchor: match.callExpr.sourceAnchor,
+                               callee: Get(sourceAnchor: match.callExpr.sourceAnchor,
                                                       expr: match.getExpr.expr,
                                                       member: match.getExpr.member),
                                arguments: [match.getExpr.expr] + match.callExpr.arguments)
     }
         
-    public func check(as expr: Expression.As) throws -> SymbolType {
+    public func check(as expr: As) throws -> SymbolType {
         let ltype = try check(expression: expr.targetType)
         let rtype = try check(expression: expr.expr)
         return try checkTypesAreConvertibleInExplicitCast(ltype: ltype,
@@ -784,7 +784,7 @@ public class RvalueExpressionTypeChecker {
                                                           messageWhenNotConvertible: "cannot convert value of type `\(rtype)' to type `\(ltype)'")
     }
     
-    public func check(is expr: Expression.Is) throws -> SymbolType {
+    public func check(is expr: Is) throws -> SymbolType {
         let ltype = try check(expression: expr.expr)
         let rtype = try check(expression: expr.testType)
         switch ltype {
@@ -799,7 +799,7 @@ public class RvalueExpressionTypeChecker {
         }
     }
     
-    public func check(subscript expr: Expression.Subscript) throws -> SymbolType {
+    public func check(subscript expr: Subscript) throws -> SymbolType {
         let subscriptableType = try check(expression: expr.subscriptable)
         switch subscriptableType {
         case .array(count: _, elementType: let elementType),
@@ -849,7 +849,7 @@ public class RvalueExpressionTypeChecker {
         return true
     }
     
-    public func check(literalArray expr: Expression.LiteralArray) throws -> SymbolType {
+    public func check(literalArray expr: LiteralArray) throws -> SymbolType {
         var arrayLiteralType = try check(expression: expr.arrayType)
         let arrayCount = arrayLiteralType.arrayCount
         let arrayElementType = arrayLiteralType.arrayElementType
@@ -874,11 +874,11 @@ public class RvalueExpressionTypeChecker {
         return arrayLiteralType
     }
     
-    public func check(get expr: Expression.Get) throws -> SymbolType {
-        if let _ = expr.member as? Expression.Identifier {
+    public func check(get expr: Get) throws -> SymbolType {
+        if let _ = expr.member as? Identifier {
             return try check(getIdent: expr)
         }
-        else if let _ = expr.member as? Expression.GenericTypeApplication {
+        else if let _ = expr.member as? GenericTypeApplication {
             return try check(getApp: expr)
         }
         else {
@@ -886,10 +886,10 @@ public class RvalueExpressionTypeChecker {
         }
     }
     
-    private func check(getIdent expr: Expression.Get) throws -> SymbolType {
-        let member = expr.member as! Expression.Identifier
+    private func check(getIdent expr: Get) throws -> SymbolType {
+        let member = expr.member as! Identifier
         
-        if let structInitializer = expr.expr as? Expression.StructInitializer {
+        if let structInitializer = expr.expr as? StructInitializer {
             let argument = structInitializer.arguments.first(where: {$0.name == member.identifier})
             if let argument {
                 return try check(expression: argument.expr)
@@ -955,8 +955,8 @@ public class RvalueExpressionTypeChecker {
                 }
             }
         case .constTraitType(let typ), .traitType(let typ):
-            return try check(get: Expression.Get(sourceAnchor: expr.sourceAnchor,
-                                                 expr: Expression.Identifier(typ.nameOfTraitObjectType),
+            return try check(get: Get(sourceAnchor: expr.sourceAnchor,
+                                                 expr: Identifier(typ.nameOfTraitObjectType),
                                                  member: expr.member))
         default:
             break
@@ -964,8 +964,8 @@ public class RvalueExpressionTypeChecker {
         throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "value of type `\(objectType)' has no member `\(name)'")
     }
     
-    private func check(getApp expr: Expression.Get) throws -> SymbolType {
-        let app = expr.member as! Expression.GenericTypeApplication
+    private func check(getApp expr: Get) throws -> SymbolType {
+        let app = expr.member as! GenericTypeApplication
         
         let name = app.identifier.identifier
         let resultType = try check(expression: expr.expr)
@@ -987,11 +987,11 @@ public class RvalueExpressionTypeChecker {
         throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "value of type `\(resultType)' has no member `\(name)'")
     }
     
-    public func check(primitiveType expr: Expression.PrimitiveType) throws -> SymbolType {
+    public func check(primitiveType expr: PrimitiveType) throws -> SymbolType {
         return expr.typ
     }
     
-    public func check(arrayType expr: Expression.ArrayType) throws -> SymbolType {
+    public func check(arrayType expr: ArrayType) throws -> SymbolType {
         let count: Int?
         if let exprCount = expr.count {
             let typeOfCountExpr = try check(expression: exprCount)
@@ -1008,12 +1008,12 @@ public class RvalueExpressionTypeChecker {
         return .array(count: count, elementType: elementType)
     }
     
-    public func check(dynamicArrayType expr: Expression.DynamicArrayType) throws -> SymbolType {
+    public func check(dynamicArrayType expr: DynamicArrayType) throws -> SymbolType {
         let elementType = try check(expression: expr.elementType)
         return .dynamicArray(elementType: elementType)
     }
     
-    public func check(functionType expr: Expression.FunctionType) throws -> SymbolType {
+    public func check(functionType expr: FunctionType) throws -> SymbolType {
         let returnType = try check(expression: expr.returnType)
         let arguments = try evaluateFunctionArguments(expr.arguments)
         let mangledName = mangleFunctionName(expr.name)
@@ -1051,15 +1051,15 @@ public class RvalueExpressionTypeChecker {
         }
     }
     
-    public func check(genericFunctionType expr: Expression.GenericFunctionType) throws -> SymbolType {
+    public func check(genericFunctionType expr: GenericFunctionType) throws -> SymbolType {
         throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot instantiate generic function `\(expr.description)'")
     }
     
-    public func check(genericTypeApplication expr: Expression.GenericTypeApplication) throws -> SymbolType {
+    public func check(genericTypeApplication expr: GenericTypeApplication) throws -> SymbolType {
         return try check(genericTypeApplication: expr, symbols: symbols)
     }
     
-    fileprivate func check(genericTypeApplication expr: Expression.GenericTypeApplication, symbols: SymbolTable) throws -> SymbolType {
+    fileprivate func check(genericTypeApplication expr: GenericTypeApplication, symbols: SymbolTable) throws -> SymbolType {
         let typeOfIdentifier = try symbols.resolveTypeOfIdentifier(sourceAnchor: expr.sourceAnchor, identifier: expr.identifier.identifier)
         
         switch typeOfIdentifier {
@@ -1091,8 +1091,8 @@ public class RvalueExpressionTypeChecker {
         }
     }
     
-    fileprivate func apply(genericTypeApplication expr: Expression.GenericTypeApplication,
-                           genericFunctionType: Expression.GenericFunctionType) throws -> SymbolType {
+    fileprivate func apply(genericTypeApplication expr: GenericTypeApplication,
+                           genericFunctionType: GenericFunctionType) throws -> SymbolType {
         
         guard expr.arguments.count == genericFunctionType.typeArguments.count else {
             throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "incorrect number of type arguments in application of generic function type `\(expr.shortDescription)'")
@@ -1119,7 +1119,7 @@ public class RvalueExpressionTypeChecker {
             let ident = typeVariable.identifier
             let scope = symbols.lookupIdOfEnclosingScope(identifier: ident)
             let key = Key(identifier: ident, scope: scope)
-            replacementMap[key] = Expression.PrimitiveType(typeArgument)
+            replacementMap[key] = PrimitiveType(typeArgument)
         }
         let inner = RvalueExpressionTypeChecker(
             symbols: symbolsWithTypeArguments,
@@ -1149,7 +1149,7 @@ public class RvalueExpressionTypeChecker {
         return .function(functionType)
     }
     
-    fileprivate func apply(genericTypeApplication expr: Expression.GenericTypeApplication,
+    fileprivate func apply(genericTypeApplication expr: GenericTypeApplication,
                            genericStructType: GenericStructTypeInfo) throws -> SymbolType {
         guard expr.arguments.count == genericStructType.typeArguments.count else {
             throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "incorrect number of type arguments in application of generic struct type `\(expr.shortDescription)'")
@@ -1204,7 +1204,7 @@ public class RvalueExpressionTypeChecker {
         return concreteType
     }
     
-    fileprivate func apply(genericTypeApplication expr: Expression.GenericTypeApplication,
+    fileprivate func apply(genericTypeApplication expr: GenericTypeApplication,
                            genericTraitType: GenericTraitTypeInfo) throws -> SymbolType {
         guard expr.arguments.count == genericTraitType.typeArguments.count else {
             throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "incorrect number of type arguments in application of generic trait type `\(expr.shortDescription)'")
@@ -1320,7 +1320,7 @@ public class RvalueExpressionTypeChecker {
             return member
         }
         let structDecl = StructDeclaration(sourceAnchor: traitDecl.sourceAnchor,
-                                           identifier: Expression.Identifier(traitDecl.nameOfVtableType),
+                                           identifier: Identifier(traitDecl.nameOfVtableType),
                                            members: members,
                                            visibility: traitDecl.visibility,
                                            isConst: true)
@@ -1335,12 +1335,12 @@ public class RvalueExpressionTypeChecker {
         _ symbols: SymbolTable) throws {
         
         let members: [StructDeclaration.Member] = [
-            StructDeclaration.Member(name: "object", type: Expression.PointerType(Expression.PrimitiveType(.void))),
-            StructDeclaration.Member(name: "vtable", type: Expression.PointerType(Expression.ConstType(Expression.Identifier(traitDecl.nameOfVtableType))))
+            StructDeclaration.Member(name: "object", type: PointerType(PrimitiveType(.void))),
+            StructDeclaration.Member(name: "vtable", type: PointerType(ConstType(Identifier(traitDecl.nameOfVtableType))))
         ]
         let structDecl = StructDeclaration(
             sourceAnchor: traitDecl.sourceAnchor,
-            identifier: Expression.Identifier(traitDecl.nameOfTraitObjectType),
+            identifier: Identifier(traitDecl.nameOfTraitObjectType),
             members: members,
             visibility: traitDecl.visibility,
             isConst: false) // TODO: Should isConst be true here?
@@ -1361,8 +1361,8 @@ public class RvalueExpressionTypeChecker {
             let argumentNames = (0..<functionType.arguments.count).map {
                 ($0 == 0) ? "self" : "arg\($0)"
             }
-            let callee = Expression.Get(expr: Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("vtable")), member: Expression.Identifier(method.name))
-            let arguments = [Expression.Get(expr: Expression.Identifier("self"), member: Expression.Identifier("object"))] + argumentNames[1...].map({Expression.Identifier($0)})
+            let callee = Get(expr: Get(expr: Identifier("self"), member: Identifier("vtable")), member: Identifier(method.name))
+            let arguments = [Get(expr: Identifier("self"), member: Identifier("object"))] + argumentNames[1...].map({Identifier($0)})
             
             let outer = SymbolTable(
                 parent: symbols,
@@ -1372,14 +1372,14 @@ public class RvalueExpressionTypeChecker {
             let returnType = try TypeContextTypeChecker(symbols: symbols).check(expression: functionType.returnType)
             if returnType == .void {
                 fnBody = Block(symbols: SymbolTable(parent: outer),
-                               children: [Expression.Call(callee: callee, arguments: arguments)])
+                               children: [Call(callee: callee, arguments: arguments)])
             } else {
                 fnBody = Block(symbols: SymbolTable(parent: outer),
-                               children: [Return(Expression.Call(callee: callee, arguments: arguments))])
+                               children: [Return(Call(callee: callee, arguments: arguments))])
             }
             
             let fnDecl = FunctionDeclaration(
-                identifier: Expression.Identifier(method.name),
+                identifier: Identifier(method.name),
                 functionType: functionType,
                 argumentNames: argumentNames,
                 body: fnBody,
@@ -1389,7 +1389,7 @@ public class RvalueExpressionTypeChecker {
         let implBlock = Impl(
             sourceAnchor: traitDecl.sourceAnchor,
             typeArguments: [], // TODO: Generic traits
-            structTypeExpr: Expression.Identifier(traitDecl.nameOfTraitObjectType),
+            structTypeExpr: Identifier(traitDecl.nameOfTraitObjectType),
             children: thunks)
         try ImplScanner(
             memoryLayoutStrategy: memoryLayoutStrategy,
@@ -1398,9 +1398,9 @@ public class RvalueExpressionTypeChecker {
     }
     
     fileprivate func exportSymbols(
-        typeArguments: [Expression.GenericTypeArgument],
+        typeArguments: [GenericTypeArgument],
         symbolsWithTypeArguments: SymbolTable,
-        expr: Expression.GenericTypeApplication) throws {
+        expr: GenericTypeApplication) throws {
         
         // Collect the new types and symbols that were bound above in
         // `symbolsWithTypeArguments' and move them to `symbols'.
@@ -1437,22 +1437,22 @@ public class RvalueExpressionTypeChecker {
         }
     }
     
-    public func check(pointerType expr: Expression.PointerType) throws -> SymbolType {
+    public func check(pointerType expr: PointerType) throws -> SymbolType {
         let typ = try check(expression: expr.typ)
         return .pointer(typ)
     }
     
-    public func check(constType expr: Expression.ConstType) throws -> SymbolType {
+    public func check(constType expr: ConstType) throws -> SymbolType {
         let typ = try check(expression: expr.typ)
         return typ.correspondingConstType
     }
     
-    public func check(mutableType expr: Expression.MutableType) throws -> SymbolType {
+    public func check(mutableType expr: MutableType) throws -> SymbolType {
         let typ = try check(expression: expr.typ)
         return typ.correspondingMutableType
     }
     
-    public func check(structInitializer expr: Expression.StructInitializer) throws -> SymbolType {
+    public func check(structInitializer expr: StructInitializer) throws -> SymbolType {
         let result = try check(expression: expr.expr)
         let typ = result.unwrapStructType()
         var membersAlreadyInitialized: [String] = []
@@ -1476,16 +1476,16 @@ public class RvalueExpressionTypeChecker {
         return result
     }
     
-    public func check(unionType expr: Expression.UnionType) throws -> SymbolType {
+    public func check(unionType expr: UnionType) throws -> SymbolType {
         let members = try expr.members.map({try check(expression: $0)})
         return .unionType(UnionTypeInfo(members))
     }
     
-    public func check(literalString expr: Expression.LiteralString) throws -> SymbolType {
+    public func check(literalString expr: LiteralString) throws -> SymbolType {
         return .array(count: expr.value.count, elementType: .u8)
     }
     
-    public func check(typeOf expr: Expression.TypeOf) throws -> SymbolType {
+    public func check(typeOf expr: TypeOf) throws -> SymbolType {
         let type0 = try rvalueContext().check(expression: expr.expr)
         
         let type1: SymbolType = switch type0 {
@@ -1501,15 +1501,15 @@ public class RvalueExpressionTypeChecker {
         return type1
     }
     
-    public func check(bitcast expr: Expression.Bitcast) throws -> SymbolType {
+    public func check(bitcast expr: Bitcast) throws -> SymbolType {
         return try rvalueContext().check(expression: expr.targetType)
     }
     
-    public func check(sizeOf expr: Expression.SizeOf) throws -> SymbolType {
+    public func check(sizeOf expr: SizeOf) throws -> SymbolType {
         return .arithmeticType(.immutableInt(.u16)) // TODO: should the runtime provide a `usize' typealias for this?
     }
     
-    public func check(eseq: Expression.Eseq) throws -> SymbolType {
+    public func check(eseq: Eseq) throws -> SymbolType {
         guard let expr = eseq.children.last else {
             return .void
         }

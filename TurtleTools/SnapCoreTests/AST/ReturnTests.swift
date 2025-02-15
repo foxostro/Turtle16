@@ -17,14 +17,14 @@ final class ReturnTests: XCTestCase {
     }
     
     func testDoesNotEqualNodeWithDifferentExpression() {
-        XCTAssertNotEqual(Return(Expression.LiteralInt(1)),
-                          Return(Expression.LiteralInt(2)))
+        XCTAssertNotEqual(Return(LiteralInt(1)),
+                          Return(LiteralInt(2)))
     }
     
     func testHash() {
         XCTAssertEqual(Return().hashValue,
                        Return().hashValue)
-        XCTAssertEqual(Return(Expression.LiteralInt(1)).hashValue,
-                       Return(Expression.LiteralInt(1)).hashValue)
+        XCTAssertEqual(Return(LiteralInt(1)).hashValue,
+                       Return(LiteralInt(1)).hashValue)
     }
 }

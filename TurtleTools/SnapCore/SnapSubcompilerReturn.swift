@@ -40,10 +40,10 @@ public struct SnapSubcompilerReturn {
                 rtype: returnExpressionType,
                 sourceAnchor: node.sourceAnchor,
                 messageWhenNotConvertible: "cannot convert return expression of type `\(returnExpressionType)' to return type `\(enclosingFunctionType.returnType)'")
-            let lexpr = Expression.Identifier(
+            let lexpr = Identifier(
                 sourceAnchor: node.sourceAnchor,
                 identifier: kReturnValueIdentifier)
-            output.append(Expression.InitialAssignment(
+            output.append(InitialAssignment(
                 sourceAnchor: node.sourceAnchor,
                 lexpr: lexpr,
                 rexpr: expr))

@@ -15,7 +15,7 @@ final class CompilerPassMatchTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("foo", Symbol(type: .u8))
         ])
-        let input = Match(expr: Expression.Identifier("foo"), clauses: [], elseClause: nil)
+        let input = Match(expr: Identifier("foo"), clauses: [], elseClause: nil)
         
         let compiler = CompilerPassMatch(symbols: symbols)
         XCTAssertThrowsError(try compiler.run(input)) {
@@ -29,13 +29,13 @@ final class CompilerPassMatchTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("result", Symbol(type: .u8))
         ])
-        let input = Match(expr: Expression.Identifier("result"), clauses: [], elseClause: Block(children: [
-            Expression.Assignment(lexpr: Expression.Identifier("result"), rexpr: Expression.LiteralInt(42))
+        let input = Match(expr: Identifier("result"), clauses: [], elseClause: Block(children: [
+            Assignment(lexpr: Identifier("result"), rexpr: LiteralInt(42))
         ]))
         let expected = Block(children: [
             Block(children: [
-                Expression.Assignment(lexpr: Expression.Identifier("result"),
-                                      rexpr: Expression.LiteralInt(42))
+                Assignment(lexpr: Identifier("result"),
+                                      rexpr: LiteralInt(42))
             ])
         ])
         
@@ -48,12 +48,12 @@ final class CompilerPassMatchTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("result", Symbol(type: .u8))
         ])
-        let input = Match(expr: Expression.Identifier("result"), clauses: [
-            Match.Clause(valueIdentifier: Expression.Identifier("foo"),
-                         valueType: Expression.PrimitiveType(.u8),
+        let input = Match(expr: Identifier("result"), clauses: [
+            Match.Clause(valueIdentifier: Identifier("foo"),
+                         valueType: PrimitiveType(.u8),
                          block: Block(children: [])),
-            Match.Clause(valueIdentifier: Expression.Identifier("foo"),
-                         valueType: Expression.PrimitiveType(.bool),
+            Match.Clause(valueIdentifier: Identifier("foo"),
+                         valueType: PrimitiveType(.bool),
                          block: Block(children: []))
         ], elseClause: nil)
         let compiler = CompilerPassMatch(symbols: symbols)
@@ -70,15 +70,15 @@ final class CompilerPassMatchTests: XCTestCase {
         ], typeDict: [
             "None" : .structType(StructTypeInfo(name: "None", symbols: SymbolTable()))
         ])
-        let input = Match(expr: Expression.Identifier("result"), clauses: [
-            Match.Clause(valueIdentifier: Expression.Identifier("foo"),
-                         valueType: Expression.PrimitiveType(.u8),
+        let input = Match(expr: Identifier("result"), clauses: [
+            Match.Clause(valueIdentifier: Identifier("foo"),
+                         valueType: PrimitiveType(.u8),
                          block: Block(children: [])),
-            Match.Clause(valueIdentifier: Expression.Identifier("foo"),
-                         valueType: Expression.PrimitiveType(.bool),
+            Match.Clause(valueIdentifier: Identifier("foo"),
+                         valueType: PrimitiveType(.bool),
                          block: Block(children: [])),
-            Match.Clause(valueIdentifier: Expression.Identifier("foo"),
-                         valueType: Expression.Identifier("None"),
+            Match.Clause(valueIdentifier: Identifier("foo"),
+                         valueType: Identifier("None"),
                          block: Block(children: []))
         ], elseClause: nil)
             .reconnect(parent: symbols)
@@ -95,29 +95,29 @@ final class CompilerPassMatchTests: XCTestCase {
             ("result", Symbol(type: .u8)),
             ("test", Symbol(type: .u8))
         ])
-        let input = Match(expr: Expression.Identifier("test"), clauses: [
-            Match.Clause(valueIdentifier: Expression.Identifier("foo"),
-                         valueType: Expression.PrimitiveType(.u8),
+        let input = Match(expr: Identifier("test"), clauses: [
+            Match.Clause(valueIdentifier: Identifier("foo"),
+                         valueType: PrimitiveType(.u8),
                          block: Block(children: [
-                            Expression.Assignment(lexpr: Expression.Identifier("result"), rexpr: Expression.Identifier("foo"))
+                            Assignment(lexpr: Identifier("result"), rexpr: Identifier("foo"))
                         ]))
         ], elseClause: nil)
         let expected = Block(children: [
-            VarDeclaration(identifier: Expression.Identifier("__index"),
+            VarDeclaration(identifier: Identifier("__index"),
                            explicitType: nil,
-                           expression: Expression.Identifier("test"),
+                           expression: Identifier("test"),
                            storage: .automaticStorage,
                            isMutable: true),
-            If(condition: Expression.Is(expr: Expression.Identifier("__index"),
-                                        testType: Expression.PrimitiveType(.u8)), then: Block(children: [
-                VarDeclaration(identifier: Expression.Identifier("foo"),
+            If(condition: Is(expr: Identifier("__index"),
+                                        testType: PrimitiveType(.u8)), then: Block(children: [
+                VarDeclaration(identifier: Identifier("foo"),
                                explicitType: nil,
-                               expression: Expression.As(expr: Expression.Identifier("__index"), targetType: Expression.PrimitiveType(.u8)),
+                               expression: As(expr: Identifier("__index"), targetType: PrimitiveType(.u8)),
                                storage: .automaticStorage,
                                isMutable: false),
                 Block(children: [
-                    Expression.Assignment(lexpr: Expression.Identifier("result"),
-                                          rexpr: Expression.Identifier("foo"))
+                    Assignment(lexpr: Identifier("result"),
+                                          rexpr: Identifier("foo"))
                 ])
             ])),
         ])
@@ -131,11 +131,11 @@ final class CompilerPassMatchTests: XCTestCase {
             ("result", Symbol(type: .u8)),
             ("test", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool]))))
         ])
-        let input = Match(expr: Expression.Identifier("test"), clauses: [
-            Match.Clause(valueIdentifier: Expression.Identifier("foo"),
-                         valueType: Expression.PrimitiveType(.u8),
+        let input = Match(expr: Identifier("test"), clauses: [
+            Match.Clause(valueIdentifier: Identifier("foo"),
+                         valueType: PrimitiveType(.u8),
                          block: Block(children: [
-                            Expression.Assignment(lexpr: Expression.Identifier("result"), rexpr: Expression.LiteralInt(1))
+                            Assignment(lexpr: Identifier("result"), rexpr: LiteralInt(1))
                         ]))
         ], elseClause: nil)
         let compiler = CompilerPassMatch(symbols: symbols)
@@ -151,45 +151,45 @@ final class CompilerPassMatchTests: XCTestCase {
             ("result", Symbol(type: .u8)),
             ("test", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool]))))
         ])
-        let input = Match(expr: Expression.Identifier("test"), clauses: [
-            Match.Clause(valueIdentifier: Expression.Identifier("foo"),
-                         valueType: Expression.PrimitiveType(.u8),
+        let input = Match(expr: Identifier("test"), clauses: [
+            Match.Clause(valueIdentifier: Identifier("foo"),
+                         valueType: PrimitiveType(.u8),
                          block: Block(children: [
-                            Expression.Assignment(lexpr: Expression.Identifier("result"), rexpr: Expression.LiteralInt(1))
+                            Assignment(lexpr: Identifier("result"), rexpr: LiteralInt(1))
                         ])),
-            Match.Clause(valueIdentifier: Expression.Identifier("foo"),
-                         valueType: Expression.PrimitiveType(.bool),
+            Match.Clause(valueIdentifier: Identifier("foo"),
+                         valueType: PrimitiveType(.bool),
                          block: Block(children: [
-                            Expression.Assignment(lexpr: Expression.Identifier("result"), rexpr: Expression.LiteralInt(2))
+                            Assignment(lexpr: Identifier("result"), rexpr: LiteralInt(2))
                         ]))
         ], elseClause: nil)
         let expected = Block(children: [
-            VarDeclaration(identifier: Expression.Identifier("__index"),
+            VarDeclaration(identifier: Identifier("__index"),
                            explicitType: nil,
-                           expression: Expression.Identifier("test"),
+                           expression: Identifier("test"),
                            storage: .automaticStorage,
                            isMutable: true),
-            If(condition: Expression.Is(expr: Expression.Identifier("__index"),
-                                        testType: Expression.PrimitiveType(.bool)), then: Block(children: [
-                VarDeclaration(identifier: Expression.Identifier("foo"),
+            If(condition: Is(expr: Identifier("__index"),
+                                        testType: PrimitiveType(.bool)), then: Block(children: [
+                VarDeclaration(identifier: Identifier("foo"),
                                explicitType: nil,
-                               expression: Expression.As(expr: Expression.Identifier("__index"), targetType: Expression.PrimitiveType(.bool)),
+                               expression: As(expr: Identifier("__index"), targetType: PrimitiveType(.bool)),
                                storage: .automaticStorage,
                                isMutable: false),
                 Block(children: [
-                    Expression.Assignment(lexpr: Expression.Identifier("result"),
-                                          rexpr: Expression.LiteralInt(2))
+                    Assignment(lexpr: Identifier("result"),
+                                          rexpr: LiteralInt(2))
                 ])
-            ]), else: If(condition: Expression.Is(expr: Expression.Identifier("__index"),
-                                                  testType: Expression.PrimitiveType(.u8)), then: Block(children: [
-                          VarDeclaration(identifier: Expression.Identifier("foo"),
+            ]), else: If(condition: Is(expr: Identifier("__index"),
+                                                  testType: PrimitiveType(.u8)), then: Block(children: [
+                          VarDeclaration(identifier: Identifier("foo"),
                                          explicitType: nil,
-                                         expression: Expression.As(expr: Expression.Identifier("__index"), targetType: Expression.PrimitiveType(.u8)),
+                                         expression: As(expr: Identifier("__index"), targetType: PrimitiveType(.u8)),
                                          storage: .automaticStorage,
                                          isMutable: false),
                           Block(children: [
-                              Expression.Assignment(lexpr: Expression.Identifier("result"),
-                                                    rexpr: Expression.LiteralInt(1))
+                              Assignment(lexpr: Identifier("result"),
+                                                    rexpr: LiteralInt(1))
                           ])
                       ]))
             )

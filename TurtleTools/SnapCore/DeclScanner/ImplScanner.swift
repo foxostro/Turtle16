@@ -38,7 +38,7 @@ public struct ImplScanner {
     private func doGenericCase(_ node: Impl) throws {
         assert(node.isGeneric)
         
-        guard let app = node.structTypeExpr as? Expression.GenericTypeApplication else {
+        guard let app = node.structTypeExpr as? GenericTypeApplication else {
             throw CompilerError(
                 sourceAnchor: node.structTypeExpr.sourceAnchor,
                 message: "expected a generic type application: `\(node.structTypeExpr)'")

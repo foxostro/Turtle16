@@ -239,7 +239,7 @@ public class SnapParser: Parser {
             exprSourceAnchor = expression!.sourceAnchor!
         }
         
-        if let arr = expression as? Expression.LiteralArray {
+        if let arr = expression as? LiteralArray {
             if arr.elements.count == 0 && explicitType == nil {
                 throw CompilerError(sourceAnchor: arr.sourceAnchor,
                                     message: "empty array literal requires an explicit type")
@@ -250,7 +250,7 @@ public class SnapParser: Parser {
             .union(exprSourceAnchor)
             .union(firstSpeciferToken?.sourceAnchor)
         return [VarDeclaration(sourceAnchor: sourceAnchor,
-                               identifier: Expression.Identifier(sourceAnchor: identifier.sourceAnchor, identifier: identifier.lexeme),
+                               identifier: Identifier(sourceAnchor: identifier.sourceAnchor, identifier: identifier.lexeme),
                                explicitType: explicitType,
                                expression: expression,
                                storage: storage,
@@ -279,7 +279,7 @@ public class SnapParser: Parser {
             return members[0]
         } else {
             let sourceAnchor = members.first?.sourceAnchor?.union(members.last?.sourceAnchor)
-            return Expression.UnionType(sourceAnchor: sourceAnchor, members: members)
+            return UnionType(sourceAnchor: sourceAnchor, members: members)
         }
     }
     
@@ -287,7 +287,7 @@ public class SnapParser: Parser {
         if let constToken = accept(TokenConst.self) {
             let expr = try consumeTypeWithoutRegardForConst()
             let sourceAnchor = constToken.sourceAnchor?.union(expr.sourceAnchor)
-            return Expression.ConstType(sourceAnchor: sourceAnchor, typ: expr)
+            return ConstType(sourceAnchor: sourceAnchor, typ: expr)
         } else {
             return try consumeTypeWithoutRegardForConst()
         }
@@ -303,7 +303,7 @@ public class SnapParser: Parser {
         } else if let app = try consumeGenericTypeApplication() {
             return app
         } else if let identifier = accept(TokenIdentifier.self) as? TokenIdentifier {
-            return Expression.Identifier(sourceAnchor: identifier.sourceAnchor,
+            return Identifier(sourceAnchor: identifier.sourceAnchor,
                                          identifier: identifier.lexeme)
         } else {
             return try consumePrimitiveType()
@@ -313,7 +313,7 @@ public class SnapParser: Parser {
     fileprivate func consumePointerType(_ star: Token) throws -> Expression {
         let typ = try consumeConstType()
         let sourceAnchor = star.sourceAnchor?.union(typ.sourceAnchor)
-        return Expression.PointerType(sourceAnchor: sourceAnchor, typ: typ)
+        return PointerType(sourceAnchor: sourceAnchor, typ: typ)
     }
     
     fileprivate func consumeArrayType() throws -> Expression {
@@ -321,7 +321,7 @@ public class SnapParser: Parser {
         if nil != accept(TokenSquareBracketRight.self) {
             let elementType = try consumeConstType()
             let sourceAnchor = tokenBracketLeft.sourceAnchor?.union(elementType.sourceAnchor)
-            return Expression.DynamicArrayType(sourceAnchor: sourceAnchor, elementType: elementType)
+            return DynamicArrayType(sourceAnchor: sourceAnchor, elementType: elementType)
         }
         else {
             let count: Expression?
@@ -333,7 +333,7 @@ public class SnapParser: Parser {
             try expect(type: TokenSquareBracketRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `]' in array type"))
             let elementType = try consumeConstType()
             let sourceAnchor = tokenBracketLeft.sourceAnchor?.union(elementType.sourceAnchor)
-            return Expression.ArrayType(sourceAnchor: sourceAnchor, count: count, elementType: elementType)
+            return ArrayType(sourceAnchor: sourceAnchor, count: count, elementType: elementType)
         }
     }
     
@@ -354,19 +354,19 @@ public class SnapParser: Parser {
         
         let returnType: Expression
         if nil == accept(TokenArrow.self) {
-            returnType = Expression.PrimitiveType(.void)
+            returnType = PrimitiveType(.void)
         } else {
             returnType = try consumeType()
         }
         
         let sourceAnchor = funcKeywordToken.sourceAnchor?.union(previous?.sourceAnchor)
-        return Expression.PointerType(sourceAnchor: sourceAnchor, typ: Expression.FunctionType(sourceAnchor: sourceAnchor, name: nil, returnType: returnType, arguments: arguments))
+        return PointerType(sourceAnchor: sourceAnchor, typ: FunctionType(sourceAnchor: sourceAnchor, name: nil, returnType: returnType, arguments: arguments))
     }
     
     private func consumePrimitiveType() throws -> Expression {
         let tokenType = try expect(type: TokenType.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected a type")) as! TokenType
         let explicitType = tokenType.representedType
-        return Expression.PrimitiveType(sourceAnchor: tokenType.sourceAnchor, typ: explicitType)
+        return PrimitiveType(sourceAnchor: tokenType.sourceAnchor, typ: explicitType)
     }
     
     private func consumeIf(_ ifToken: TokenIf) throws -> [AbstractSyntaxTreeNode] {
@@ -492,7 +492,7 @@ public class SnapParser: Parser {
     
     private func consumeForIn(_ forToken: TokenFor) throws -> [AbstractSyntaxTreeNode] {
         let identifierToken = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in for-in loop"))
-        let identifier = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
+        let identifier = Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
         _ = try expect(type: TokenIn.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected the `in' keyword following identifier in for-in loop"))
         let sequenceExpr = try consumeExpression(allowsStructInitializer: false)
         
@@ -546,7 +546,7 @@ public class SnapParser: Parser {
         
         let returnType: Expression
         if nil == accept(TokenArrow.self) {
-            returnType = Expression.PrimitiveType(.void)
+            returnType = PrimitiveType(.void)
         } else {
             returnType = try consumeType()
         }
@@ -556,38 +556,38 @@ public class SnapParser: Parser {
         let body = try consumeBlock(errorOnMissingCurlyLeft: leftError, errorOnMissingCurlyRight: rightError).first as! Block
         let sourceAnchor = firstToken.sourceAnchor?.union(previous?.sourceAnchor)
         return [FunctionDeclaration(sourceAnchor: sourceAnchor,
-                                    identifier: Expression.Identifier(sourceAnchor: tokenIdentifier.sourceAnchor, identifier: tokenIdentifier.lexeme),
-                                    functionType: Expression.FunctionType(sourceAnchor: sourceAnchor, name: tokenIdentifier.lexeme, returnType: returnType, arguments: argumentTypes),
+                                    identifier: Identifier(sourceAnchor: tokenIdentifier.sourceAnchor, identifier: tokenIdentifier.lexeme),
+                                    functionType: FunctionType(sourceAnchor: sourceAnchor, name: tokenIdentifier.lexeme, returnType: returnType, arguments: argumentTypes),
                                     argumentNames: argumentNames,
                                     typeArguments: typeArguments,
                                     body: body,
                                     visibility: visibility)]
     }
     
-    private func consumeOptionalTypeArgumentListWithConstraints() throws -> [Expression.GenericTypeArgument] {
+    private func consumeOptionalTypeArgumentListWithConstraints() throws -> [GenericTypeArgument] {
         guard nil != accept(TokenSquareBracketLeft.self) else {
             return []
         }
         
-        var arguments: [Expression.GenericTypeArgument] = []
+        var arguments: [GenericTypeArgument] = []
         
         repeat {
             if let identifierToken = accept(TokenIdentifier.self) as? TokenIdentifier {
-                let ident = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor,
+                let ident = Identifier(sourceAnchor: identifierToken.sourceAnchor,
                                                   identifier: identifierToken.lexeme)
                 
-                var constraints: [Expression.Identifier] = []
+                var constraints: [Identifier] = []
                 if nil != accept(TokenColon.self) {
                     repeat {
                         let identifierToken = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in generic type constraint")) as! TokenIdentifier
-                        let ident = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor,
+                        let ident = Identifier(sourceAnchor: identifierToken.sourceAnchor,
                                                           identifier: identifierToken.lexeme)
                         constraints.append(ident)
                     } while(nil != accept(operator: .plus))
                 }
                 
                 let sourceAnchor = ident.sourceAnchor?.union(constraints.last?.sourceAnchor)
-                let arg = Expression.GenericTypeArgument(sourceAnchor: sourceAnchor,
+                let arg = GenericTypeArgument(sourceAnchor: sourceAnchor,
                                                          identifier: ident,
                                                          constraints: constraints)
                 arguments.append(arg)
@@ -656,7 +656,7 @@ public class SnapParser: Parser {
         if nil != accept(TokenEqual.self) {
             let rexpr = try consumeLogicalOperator()
             let sourceAnchor = lexpr.sourceAnchor?.union(rexpr.sourceAnchor)
-            let expression = Expression.Assignment(sourceAnchor: sourceAnchor,
+            let expression = Assignment(sourceAnchor: sourceAnchor,
                                                    lexpr: lexpr,
                                                    rexpr: rexpr)
             return expression
@@ -669,7 +669,7 @@ public class SnapParser: Parser {
         while let tokenOperator = accept(operators: [.doubleAmpersand, .doublePipe]) {
             let right = try consumeBitwiseOperator()
             let sourceAnchor = expression.sourceAnchor?.union(right.sourceAnchor)
-            expression = Expression.Binary(sourceAnchor: sourceAnchor,
+            expression = Binary(sourceAnchor: sourceAnchor,
                                            op: tokenOperator.op,
                                            left: expression,
                                            right: right)
@@ -682,7 +682,7 @@ public class SnapParser: Parser {
         while let tokenOperator = accept(operators: [.pipe, .caret, .ampersand]) {
             let right = try consumeRelationalOperator()
             let sourceAnchor = expression.sourceAnchor?.union(right.sourceAnchor)
-            expression = Expression.Binary(sourceAnchor: sourceAnchor,
+            expression = Binary(sourceAnchor: sourceAnchor,
                                            op: tokenOperator.op,
                                            left: expression,
                                            right: right)
@@ -695,7 +695,7 @@ public class SnapParser: Parser {
         while let tokenOperator = accept(operators: [.ne, .eq, .gt, .ge, .lt, .le]) {
             let right = try consumeBitwiseShift()
             let sourceAnchor = expression.sourceAnchor?.union(right.sourceAnchor)
-            expression = Expression.Binary(sourceAnchor: sourceAnchor,
+            expression = Binary(sourceAnchor: sourceAnchor,
                                            op: tokenOperator.op,
                                            left: expression,
                                            right: right)
@@ -708,7 +708,7 @@ public class SnapParser: Parser {
         while let tokenOperator = accept(operators: [.leftDoubleAngle, .rightDoubleAngle]) {
             let right = try consumeAddition()
             let sourceAnchor = expression.sourceAnchor?.union(right.sourceAnchor)
-            expression = Expression.Binary(sourceAnchor: sourceAnchor,
+            expression = Binary(sourceAnchor: sourceAnchor,
                                            op: tokenOperator.op,
                                            left: expression,
                                            right: right)
@@ -721,7 +721,7 @@ public class SnapParser: Parser {
         while let tokenOperator = accept(operators: [.plus, .minus]) {
             let right = try consumeMultiplication()
             let sourceAnchor = expression.sourceAnchor?.union(right.sourceAnchor)
-            expression = Expression.Binary(sourceAnchor: sourceAnchor,
+            expression = Binary(sourceAnchor: sourceAnchor,
                                            op: tokenOperator.op,
                                            left: expression, right: right)
         }
@@ -733,7 +733,7 @@ public class SnapParser: Parser {
         while let tokenOperator = accept(operators: [.star, .divide, .modulus]) {
             let right = try consumeBitcast()
             let sourceAnchor = expression.sourceAnchor?.union(right.sourceAnchor)
-            expression = Expression.Binary(sourceAnchor: sourceAnchor,
+            expression = Binary(sourceAnchor: sourceAnchor,
                                            op: tokenOperator.op,
                                            left: expression,
                                            right: right)
@@ -746,7 +746,7 @@ public class SnapParser: Parser {
         if let tokenBitcastAs = accept(TokenBitcastAs.self) as? TokenBitcastAs {
             let targetType = try consumeType()
             let sourceAnchor = expr.sourceAnchor?.union(tokenBitcastAs.sourceAnchor).union(previous?.sourceAnchor)
-            return Expression.Bitcast(sourceAnchor: sourceAnchor,
+            return Bitcast(sourceAnchor: sourceAnchor,
                                       expr: expr,
                                       targetType: targetType)
         } else {
@@ -759,7 +759,7 @@ public class SnapParser: Parser {
         if let tokenAs = accept(TokenAs.self) as? TokenAs {
             let targetType = try consumeType()
             let sourceAnchor = expr.sourceAnchor?.union(tokenAs.sourceAnchor).union(previous?.sourceAnchor)
-            return Expression.As(sourceAnchor: sourceAnchor,
+            return As(sourceAnchor: sourceAnchor,
                                  expr: expr,
                                  targetType: targetType)
         } else {
@@ -771,7 +771,7 @@ public class SnapParser: Parser {
         if let token = accept(operators: [.ampersand, .tilde, .bang, .minus]) {
             let right = try consumeUnary()
             let sourceAnchor = token.sourceAnchor?.union(right.sourceAnchor)
-            return Expression.Unary(sourceAnchor: sourceAnchor,
+            return Unary(sourceAnchor: sourceAnchor,
                                     op: token.op,
                                     expression: right)
         }
@@ -786,7 +786,7 @@ public class SnapParser: Parser {
             let argument = try consumeExpression()
             let rightBracket = try expect(type: TokenSquareBracketRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `]'")) as! TokenSquareBracketRight
             let sourceAnchor = expr.sourceAnchor?.union(rightBracket.sourceAnchor)
-            return Expression.Subscript(sourceAnchor: sourceAnchor, subscriptable: expr, argument: argument)
+            return Subscript(sourceAnchor: sourceAnchor, subscriptable: expr, argument: argument)
         } else {
             return expr
         }
@@ -796,7 +796,7 @@ public class SnapParser: Parser {
         let expr = try consumeRange()
         if nil != accept(TokenIs.self) {
             let testType = try consumeType()
-            return Expression.Is(sourceAnchor: expr.sourceAnchor?.union(testType.sourceAnchor), expr: expr, testType: testType)
+            return Is(sourceAnchor: expr.sourceAnchor?.union(testType.sourceAnchor), expr: expr, testType: testType)
         }
         return expr
     }
@@ -818,9 +818,9 @@ public class SnapParser: Parser {
             let limitExpr = try consumeCall()
             popAllowStructInitializer()
             let sourceAnchor = beginExpr.sourceAnchor?.union(limitExpr.sourceAnchor)
-            typealias Arg = Expression.StructInitializer.Argument
-            return Expression.StructInitializer(sourceAnchor: sourceAnchor,
-                                                identifier: Expression.Identifier("Range"),
+            typealias Arg = StructInitializer.Argument
+            return StructInitializer(sourceAnchor: sourceAnchor,
+                                                identifier: Identifier("Range"),
                                                 arguments: [
                                                     Arg(name: "begin", expr: beginExpr),
                                                     Arg(name: "limit", expr: limitExpr)
@@ -840,7 +840,7 @@ public class SnapParser: Parser {
             }
             let rparen = try expect(type: TokenParenRight.self, error: CompilerError(sourceAnchor: token.sourceAnchor, message: "expected `)' in sizeof expression"))
             let sourceAnchor = token.sourceAnchor?.union(rparen.sourceAnchor)
-            return Expression.SizeOf(sourceAnchor: sourceAnchor, expr: expr)
+            return SizeOf(sourceAnchor: sourceAnchor, expr: expr)
         }
         else {
             return try consumeCall()
@@ -859,7 +859,7 @@ public class SnapParser: Parser {
                     try expect(type: TokenParenRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `)'"))
                 }
                 let sourceAnchor = expr.sourceAnchor?.union(previous?.sourceAnchor)
-                expr = Expression.Call(sourceAnchor: sourceAnchor,
+                expr = Call(sourceAnchor: sourceAnchor,
                                        callee: expr,
                                        arguments: arguments)
             }
@@ -873,11 +873,11 @@ public class SnapParser: Parser {
                 }
                 else {
                     let identifierToken = try expect(type: TokenIdentifier.self, error: error)
-                    member = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor,
+                    member = Identifier(sourceAnchor: identifierToken.sourceAnchor,
                                                    identifier: identifierToken.lexeme)
                 }
                 let sourceAnchor = expr.sourceAnchor?.union(member.sourceAnchor)
-                expr = Expression.Get(sourceAnchor: sourceAnchor,
+                expr = Get(sourceAnchor: sourceAnchor,
                                       expr: expr,
                                       member: member)
             }
@@ -893,7 +893,7 @@ public class SnapParser: Parser {
         
         // If the primary is an identifier or a generic type application then
         // the expression might be a struct initializer.
-        if (nil == primary as? Expression.Identifier) && (nil == primary as? Expression.GenericTypeApplication) {
+        if (nil == primary as? Identifier) && (nil == primary as? GenericTypeApplication) {
             return primary
         }
         
@@ -914,7 +914,7 @@ public class SnapParser: Parser {
         
         try expect(type: TokenCurlyLeft.self, error: CompilerError(message: "expected `{'"))
         
-        var arguments: [Expression.StructInitializer.Argument] = []
+        var arguments: [StructInitializer.Argument] = []
         
         if nil == accept(TokenCurlyRight.self) {
             repeat {
@@ -930,7 +930,7 @@ public class SnapParser: Parser {
                 
                 if nil == accept(TokenUndefined.self) {
                     let argumentExpression = try consumeExpression()
-                    let argument = Expression.StructInitializer.Argument(name: argumentIdentifier.lexeme, expr: argumentExpression)
+                    let argument = StructInitializer.Argument(name: argumentIdentifier.lexeme, expr: argumentExpression)
                     arguments.append(argument)
                 }
             } while nil != accept(TokenComma.self)
@@ -939,25 +939,25 @@ public class SnapParser: Parser {
             try expect(type: TokenCurlyRight.self, error: CompilerError(sourceAnchor: sourceAnchor, message: "expected `}' in struct initializer expression"))
         }
         
-        return Expression.StructInitializer(sourceAnchor: primary.sourceAnchor?.union(previous?.sourceAnchor),
+        return StructInitializer(sourceAnchor: primary.sourceAnchor?.union(previous?.sourceAnchor),
                                             expr: primary,
                                             arguments: arguments)
     }
     
     private func consumePrimary() throws -> Expression {
         if let numberToken = accept(TokenNumber.self) as? TokenNumber {
-            return Expression.LiteralInt(sourceAnchor: numberToken.sourceAnchor,
+            return LiteralInt(sourceAnchor: numberToken.sourceAnchor,
                                           value: numberToken.literal)
         }
         else if let booleanToken = accept(TokenBoolean.self) as? TokenBoolean {
-            return Expression.LiteralBool(sourceAnchor: booleanToken.sourceAnchor,
+            return LiteralBool(sourceAnchor: booleanToken.sourceAnchor,
                                              value: booleanToken.literal)
         }
         else if let app = try consumeGenericTypeApplication() {
             return app
         }
         else if let identifierToken = accept(TokenIdentifier.self) as? TokenIdentifier {
-            return Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor,
+            return Identifier(sourceAnchor: identifierToken.sourceAnchor,
                                          identifier: identifierToken.lexeme)
         }
         else if let leftParen = accept(TokenParenLeft.self) as? TokenParenLeft {
@@ -965,7 +965,7 @@ public class SnapParser: Parser {
             let rightParen = try expect(type: TokenParenRight.self,
                        error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `)' after expression"))
             let sourceAnchor = leftParen.sourceAnchor?.union(rightParen.sourceAnchor)
-            return Expression.Group(sourceAnchor: sourceAnchor, expression: expression)
+            return Group(sourceAnchor: sourceAnchor, expression: expression)
         }
         else if let squareBracketLeft = peek() as? TokenSquareBracketLeft {
             let typ = try consumeArrayType()
@@ -979,12 +979,12 @@ public class SnapParser: Parser {
             try expect(type: TokenCurlyRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `}' in array literal"))
             
             let sourceAnchor = squareBracketLeft.sourceAnchor?.union(previous?.sourceAnchor)
-            return Expression.LiteralArray(sourceAnchor: sourceAnchor,
+            return LiteralArray(sourceAnchor: sourceAnchor,
                                            arrayType: typ,
                                            elements: elements)
         }
         else if let literalString = accept(TokenLiteralString.self) as? TokenLiteralString {
-            return Expression.LiteralString(sourceAnchor: literalString.sourceAnchor,
+            return LiteralString(sourceAnchor: literalString.sourceAnchor,
                                             value: literalString.literal)
         }
         else if let token = peek() {
@@ -998,21 +998,21 @@ public class SnapParser: Parser {
         }
     }
     
-    private func consumeGenericTypeApplication() throws -> Expression.GenericTypeApplication? {
+    private func consumeGenericTypeApplication() throws -> GenericTypeApplication? {
         guard let _ = peek(0) as? TokenIdentifier,
               let _ = peek(1) as? TokenAt else {
             return nil
         }
         
         let identifierToken = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in generic type application"))
-        let identifier = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
+        let identifier = Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
         try expect(type: TokenAt.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `@' in type argument list"))
         try expect(type: TokenSquareBracketLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `[' in type argument list"))
         let arguments = try consumeTypeArgumentList()
         let rightBracket = try expect(type: TokenSquareBracketRight.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `[' in type argument list"))
         let anchor = identifierToken.sourceAnchor?.union(rightBracket.sourceAnchor)
         
-        return Expression.GenericTypeApplication(sourceAnchor: anchor,
+        return GenericTypeApplication(sourceAnchor: anchor,
                                                  identifier: identifier,
                                                  arguments: arguments)
     }
@@ -1053,7 +1053,7 @@ public class SnapParser: Parser {
     
     private func consumeStruct(_ firstToken: Token, _ visibility: SymbolVisibility = .privateVisibility) throws -> [AbstractSyntaxTreeNode] {
         let identifierToken = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in struct declaration"))
-        let identifier = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
+        let identifier = Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
         let typeArguments = try consumeOptionalTypeArgumentListWithConstraints()
         
         try expect(type: TokenCurlyLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `{' in struct"))
@@ -1084,7 +1084,7 @@ public class SnapParser: Parser {
     
     private func consumeTrait(_ firstToken: Token, _ visibility: SymbolVisibility = .privateVisibility) throws -> [AbstractSyntaxTreeNode] {
         let identifierToken = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in trait declaration"))
-        let identifier = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
+        let identifier = Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
         let typeArguments = try consumeOptionalTypeArgumentListWithConstraints()
         
         try expect(type: TokenCurlyLeft.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `{' in trait"))
@@ -1120,14 +1120,14 @@ public class SnapParser: Parser {
                 
                 let returnType: Expression
                 if nil == accept(TokenArrow.self) {
-                    returnType = Expression.PrimitiveType(.void)
+                    returnType = PrimitiveType(.void)
                 } else {
                     returnType = try consumeType()
                 }
                 
                 let funcSourceAnchor = tokenFunc.sourceAnchor?.union(previous?.sourceAnchor)
                 
-                let typeExpr = Expression.PointerType(sourceAnchor: funcSourceAnchor, typ: Expression.FunctionType(sourceAnchor: funcSourceAnchor, name: nil, returnType: returnType, arguments: argumentTypes))
+                let typeExpr = PointerType(sourceAnchor: funcSourceAnchor, typ: FunctionType(sourceAnchor: funcSourceAnchor, name: nil, returnType: returnType, arguments: argumentTypes))
                 members.append(TraitDeclaration.Member(name: tokenIdentifier.lexeme, type: typeExpr))
                 
                 if let tok = accept(TokenCurlyRight.self) {
@@ -1206,7 +1206,7 @@ public class SnapParser: Parser {
     
     private func consumeTypealias(_ firstToken: Token, _ visibility: SymbolVisibility = .privateVisibility) throws -> [AbstractSyntaxTreeNode] {
         let identifierToken = try expect(type: TokenIdentifier.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected identifier in typealias declaration"))
-        let identifier = Expression.Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
+        let identifier = Identifier(sourceAnchor: identifierToken.sourceAnchor, identifier: identifierToken.lexeme)
         try expect(type: TokenEqual.self, error: CompilerError(sourceAnchor: peek()?.sourceAnchor, message: "expected `=' in typealias declaration"))
         let expr = try consumeType()
         return [Typealias(sourceAnchor: firstToken.sourceAnchor?.union(expr.sourceAnchor),
@@ -1222,7 +1222,7 @@ public class SnapParser: Parser {
         var clauses: [Match.Clause] = []
         while let leftParen = accept(TokenParenLeft.self) {
             let maybeIdentifier = try consumeExpression()
-            guard let valueIdentifier = maybeIdentifier as? Expression.Identifier else {
+            guard let valueIdentifier = maybeIdentifier as? Identifier else {
                 throw CompilerError(sourceAnchor: maybeIdentifier.sourceAnchor, message: "expected identifier in match statement clause")
             }
             let maybeType = try consumeTypeAnnotation()

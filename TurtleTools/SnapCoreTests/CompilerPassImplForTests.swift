@@ -11,20 +11,6 @@ import TurtleCore
 import SnapCore
 
 final class CompilerPassImplForTests: XCTestCase {
-    fileprivate typealias Assignment = Expression.Assignment
-    fileprivate typealias Bitcast = Expression.Bitcast
-    fileprivate typealias ConstType = Expression.ConstType
-    fileprivate typealias DynamicArrayType = Expression.DynamicArrayType
-    fileprivate typealias FunctionType = Expression.FunctionType
-    fileprivate typealias Get = Expression.Get
-    fileprivate typealias Identifier = Expression.Identifier
-    fileprivate typealias InitialAssignment = Expression.InitialAssignment
-    fileprivate typealias LiteralBool = Expression.LiteralBool
-    fileprivate typealias PointerType = Expression.PointerType
-    fileprivate typealias PrimitiveType = Expression.PrimitiveType
-    fileprivate typealias StructInitializer = Expression.StructInitializer
-    fileprivate typealias Unary = Expression.Unary
-    
     let serialFakeAST = Block(children: [
         Seq(children: [
             StructDeclaration(
@@ -97,10 +83,10 @@ final class CompilerPassImplForTests: XCTestCase {
                 ],
                 id: implForID),
             VarDeclaration(
-                identifier: Expression.Identifier("serialFake"),
-                explicitType: Expression.Identifier("SerialFake"),
-                expression: Expression.StructInitializer(
-                    identifier: Expression.Identifier("SerialFake"),
+                identifier: Identifier("serialFake"),
+                explicitType: Identifier("SerialFake"),
+                expression: StructInitializer(
+                    identifier: Identifier("SerialFake"),
                     arguments: []),
                 storage: .automaticStorage,
                 isMutable: false,
@@ -442,7 +428,7 @@ final class CompilerPassImplForTests: XCTestCase {
                 storage: .automaticStorage,
                 isMutable: false,
                 visibility: .privateVisibility),
-            Expression.InitialAssignment(
+            InitialAssignment(
                 lexpr: Identifier("serial"),
                 rexpr: StructInitializer(
                     identifier: Identifier("__Serial_object"),

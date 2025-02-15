@@ -12,10 +12,10 @@ import TurtleCore
 
 final class VarDeclarationTests: XCTestCase {
     func testDoesNotEqualAnotherNodeType() {
-        let foo = Expression.Identifier("foo")
-        let one = Expression.LiteralInt(1)
+        let foo = Identifier("foo")
+        let one = LiteralInt(1)
         XCTAssertNotEqual(VarDeclaration(identifier: foo,
-                                         explicitType: Expression.PrimitiveType(.u8),
+                                         explicitType: PrimitiveType(.u8),
                                          expression: one,
                                          storage: .staticStorage,
                                          isMutable: true),
@@ -23,102 +23,102 @@ final class VarDeclarationTests: XCTestCase {
     }
     
     func testDoesNotEqualNodeWithDifferentIdentifier() {
-        let foo = Expression.Identifier("foo")
-        let bar = Expression.Identifier("bar")
-        let one = Expression.LiteralInt(1)
+        let foo = Identifier("foo")
+        let bar = Identifier("bar")
+        let one = LiteralInt(1)
         XCTAssertNotEqual(VarDeclaration(identifier: foo,
-                                         explicitType: Expression.PrimitiveType(.u8),
+                                         explicitType: PrimitiveType(.u8),
                                          expression: one,
                                          storage: .staticStorage,
                                          isMutable: true),
                           VarDeclaration(identifier: bar,
-                                         explicitType: Expression.PrimitiveType(.u8),
+                                         explicitType: PrimitiveType(.u8),
                                          expression: one,
                                          storage: .staticStorage,
                                          isMutable: true))
     }
     
     func testDoesNotEqualNodeWithDifferentStorage() {
-        let foo = Expression.Identifier("foo")
-        let bar = Expression.Identifier("bar")
-        let one = Expression.LiteralInt(1)
+        let foo = Identifier("foo")
+        let bar = Identifier("bar")
+        let one = LiteralInt(1)
         XCTAssertNotEqual(VarDeclaration(identifier: foo,
-                                         explicitType:  Expression.PrimitiveType(.u8),
+                                         explicitType:  PrimitiveType(.u8),
                                          expression: one,
                                          storage: .staticStorage,
                                          isMutable: true),
                           VarDeclaration(identifier: bar,
-                                         explicitType:  Expression.PrimitiveType(.u8),
+                                         explicitType:  PrimitiveType(.u8),
                                          expression: one,
                                          storage: .automaticStorage,
                                          isMutable: true))
     }
     
     func testDoesNotEqualNodeWithDifferentMutability() {
-        let foo = Expression.Identifier("foo")
-        let bar = Expression.Identifier("bar")
-        let one = Expression.LiteralInt(1)
+        let foo = Identifier("foo")
+        let bar = Identifier("bar")
+        let one = LiteralInt(1)
         XCTAssertNotEqual(VarDeclaration(identifier: foo,
-                                         explicitType:  Expression.PrimitiveType(.u8),
+                                         explicitType:  PrimitiveType(.u8),
                                          expression: one,
                                          storage: .staticStorage,
                                          isMutable: true),
                           VarDeclaration(identifier: bar,
-                                         explicitType:  Expression.PrimitiveType(.u8),
+                                         explicitType:  PrimitiveType(.u8),
                                          expression: one,
                                          storage: .staticStorage,
                                          isMutable: false))
     }
     
     func testDoesNotEqualNodeWithDifferentNumber() {
-        let foo = Expression.Identifier("foo")
-        let one = Expression.LiteralInt(1)
-        let two = Expression.LiteralInt(2)
+        let foo = Identifier("foo")
+        let one = LiteralInt(1)
+        let two = LiteralInt(2)
         XCTAssertNotEqual(VarDeclaration(identifier: foo,
-                                         explicitType:  Expression.PrimitiveType(.u8),
+                                         explicitType:  PrimitiveType(.u8),
                                          expression: one,
                                          storage: .staticStorage,
                                          isMutable: true),
                           VarDeclaration(identifier: foo,
-                                         explicitType:  Expression.PrimitiveType(.u8),
+                                         explicitType:  PrimitiveType(.u8),
                                          expression: two,
                                          storage: .staticStorage,
                                          isMutable: true))
     }
     
     func testDoesNotEqualNodeWithDifferentExplicitType() {
-        let foo = Expression.Identifier("foo")
+        let foo = Identifier("foo")
         XCTAssertNotEqual(VarDeclaration(identifier: foo,
-                                         explicitType:  Expression.PrimitiveType(.u8),
-                                         expression: Expression.LiteralInt(1),
+                                         explicitType:  PrimitiveType(.u8),
+                                         expression: LiteralInt(1),
                                                    storage: .staticStorage, isMutable: true),
                           VarDeclaration(identifier: foo,
-                                         explicitType:  Expression.PrimitiveType(.u16),
-                                         expression: Expression.LiteralInt(1),
+                                         explicitType:  PrimitiveType(.u16),
+                                         expression: LiteralInt(1),
                                          storage: .staticStorage, isMutable: true))
     }
     
     func testNodesActuallyAreTheSame() {
-        let foo = Expression.Identifier("foo")
+        let foo = Identifier("foo")
         XCTAssertEqual(VarDeclaration(identifier: foo,
-                                      explicitType:  Expression.PrimitiveType(.u8),
-                                      expression: Expression.LiteralInt(1),
+                                      explicitType:  PrimitiveType(.u8),
+                                      expression: LiteralInt(1),
                                       storage: .staticStorage, isMutable: true),
                        VarDeclaration(identifier: foo,
-                                      explicitType:  Expression.PrimitiveType(.u8),
-                                      expression: Expression.LiteralInt(1),
+                                      explicitType:  PrimitiveType(.u8),
+                                      expression: LiteralInt(1),
                                       storage: .staticStorage, isMutable: true))
     }
     
     func testHash() {
-        let foo = Expression.Identifier("foo")
+        let foo = Identifier("foo")
         XCTAssertNotEqual(VarDeclaration(identifier: foo,
-                                         explicitType:  Expression.PrimitiveType(.u8),
-                                         expression: Expression.LiteralInt(1),
+                                         explicitType:  PrimitiveType(.u8),
+                                         expression: LiteralInt(1),
                                          storage: .staticStorage, isMutable: true).hashValue,
                           VarDeclaration(identifier: foo,
-                                         explicitType:  Expression.PrimitiveType(.u8),
-                                         expression: Expression.LiteralInt(2),
+                                         explicitType:  PrimitiveType(.u8),
+                                         expression: LiteralInt(2),
                                          storage: .staticStorage, isMutable: true).hashValue)
     }
 }

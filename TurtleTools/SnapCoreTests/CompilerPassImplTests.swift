@@ -11,20 +11,7 @@ import TurtleCore
 import SnapCore
 
 final class CompilerPassImplTests: XCTestCase {
-    fileprivate typealias Assignment = Expression.Assignment
-    fileprivate typealias Binary = Expression.Binary
-    fileprivate typealias Bitcast = Expression.Bitcast
-    fileprivate typealias Call = Expression.Call
-    fileprivate typealias ConstType = Expression.ConstType
-    fileprivate typealias Get = Expression.Get
-    fileprivate typealias Identifier = Expression.Identifier
-    fileprivate typealias LiteralInt = Expression.LiteralInt
-    fileprivate typealias PointerType = Expression.PointerType
-    fileprivate typealias PrimitiveType = Expression.PrimitiveType
-    fileprivate typealias StructInitializer = Expression.StructInitializer
-    fileprivate typealias Unary = Expression.Unary
-    
-    fileprivate func parse(_ text: String) -> TopLevel {
+    private func parse(_ text: String) -> TopLevel {
         try! SnapCore.parse(text: text, url: URL(fileURLWithPath: testName))
     }
     
@@ -44,7 +31,7 @@ final class CompilerPassImplTests: XCTestCase {
                 children: [
                     FunctionDeclaration(
                         identifier: Identifier("bar"),
-                        functionType: Expression.FunctionType(
+                        functionType: FunctionType(
                             name: "bar",
                             returnType: PrimitiveType(.u8),
                             arguments: [
@@ -72,7 +59,7 @@ final class CompilerPassImplTests: XCTestCase {
                 visibility: .privateVisibility),
             FunctionDeclaration(
                 identifier: Identifier("Foo::bar"),
-                functionType: Expression.FunctionType(
+                functionType: FunctionType(
                     name: "Foo::bar",
                     returnType: PrimitiveType(.u8),
                     arguments: [
@@ -107,7 +94,7 @@ final class CompilerPassImplTests: XCTestCase {
                 visibility: .privateVisibility),
             FunctionDeclaration(
                 identifier: Identifier("myFunc"),
-                functionType: Expression.FunctionType(
+                functionType: FunctionType(
                     name: "myFunc",
                     returnType: PrimitiveType(.void),
                     arguments: []),
@@ -120,7 +107,7 @@ final class CompilerPassImplTests: XCTestCase {
                         children: [
                             FunctionDeclaration(
                                 identifier: Identifier("bar"),
-                                functionType: Expression.FunctionType(
+                                functionType: FunctionType(
                                     name: "bar",
                                     returnType: PrimitiveType(.u8),
                                     arguments: [
@@ -148,7 +135,7 @@ final class CompilerPassImplTests: XCTestCase {
                 visibility: .privateVisibility),
             FunctionDeclaration(
                 identifier: Identifier("myFunc"),
-                functionType: Expression.FunctionType(
+                functionType: FunctionType(
                     name: "myFunc",
                     returnType: PrimitiveType(.void),
                     arguments: []),
@@ -157,7 +144,7 @@ final class CompilerPassImplTests: XCTestCase {
                 body: Block(children: [
                     FunctionDeclaration(
                         identifier: Identifier("myFunc::Foo::bar"),
-                        functionType: Expression.FunctionType(
+                        functionType: FunctionType(
                             name: "myFunc::Foo::bar",
                             returnType: PrimitiveType(.u8),
                             arguments: [
@@ -218,7 +205,7 @@ final class CompilerPassImplTests: XCTestCase {
         let expected = Block(children: [
             FunctionDeclaration(
                 identifier: Identifier("myFunction"),
-                functionType: Expression.FunctionType(
+                functionType: FunctionType(
                     name: "myFunction",
                     returnType: PrimitiveType(.u16),
                     arguments: []),
@@ -231,7 +218,7 @@ final class CompilerPassImplTests: XCTestCase {
                         members: [
                             StructDeclaration.Member(
                                 name: "increment",
-                                type: PointerType(Expression.FunctionType(
+                                type: PointerType(FunctionType(
                                     name: nil,
                                     returnType: PrimitiveType(.void),
                                     arguments: [
@@ -258,7 +245,7 @@ final class CompilerPassImplTests: XCTestCase {
                         associatedTraitType: "Incrementer"),
                     FunctionDeclaration(
                         identifier: Identifier("myFunction::__Incrementer_object::increment"),
-                        functionType: Expression.FunctionType(
+                        functionType: FunctionType(
                             name: "myFunction::__Incrementer_object::increment",
                             returnType: PrimitiveType(.void),
                             arguments: [PointerType(Identifier("__Incrementer_object"))]),
@@ -314,7 +301,7 @@ final class CompilerPassImplTests: XCTestCase {
                         isConst: false),
                     FunctionDeclaration(
                         identifier: Identifier("myFunction::RealIncrementer[u16]::increment"),
-                        functionType: Expression.FunctionType(
+                        functionType: FunctionType(
                             name: "myFunction::RealIncrementer[u16]::increment",
                             returnType: PrimitiveType(.void),
                             arguments: [

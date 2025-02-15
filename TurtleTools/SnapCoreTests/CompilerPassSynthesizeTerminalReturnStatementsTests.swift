@@ -14,10 +14,10 @@ final class CompilerPassSynthesizeTerminalReturnStatementsTests: XCTestCase {
     func testFunctionBodyMissingReturn() throws {
         let ast = Block(children: [
             FunctionDeclaration(
-                identifier: Expression.Identifier("foo"),
-                functionType: Expression.FunctionType(
+                identifier: Identifier("foo"),
+                functionType: FunctionType(
                     name: "foo",
-                    returnType: Expression.PrimitiveType(.u8),
+                    returnType: PrimitiveType(.u8),
                     arguments: []),
                 argumentNames: [],
                 body: Block(children: []))
@@ -38,10 +38,10 @@ final class CompilerPassSynthesizeTerminalReturnStatementsTests: XCTestCase {
         let ast0 = Block(
             children: [
                 FunctionDeclaration(
-                    identifier: Expression.Identifier("foo"),
-                    functionType: Expression.FunctionType(
+                    identifier: Identifier("foo"),
+                    functionType: FunctionType(
                         name: "foo",
-                        returnType: Expression.PrimitiveType(.void),
+                        returnType: PrimitiveType(.void),
                         arguments: []),
                     argumentNames: [],
                     body: Block(children: [], id: fnBodyId))
@@ -52,10 +52,10 @@ final class CompilerPassSynthesizeTerminalReturnStatementsTests: XCTestCase {
         let expected = Block(
             children: [
                 FunctionDeclaration(
-                    identifier: Expression.Identifier("foo"),
-                    functionType: Expression.FunctionType(
+                    identifier: Identifier("foo"),
+                    functionType: FunctionType(
                         name: "foo",
-                        returnType: Expression.PrimitiveType(.void),
+                        returnType: PrimitiveType(.void),
                         arguments: []),
                     argumentNames: [],
                     body: Block(

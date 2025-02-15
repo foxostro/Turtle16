@@ -6,12 +6,12 @@
 //  Copyright © 2020 Andrew Fox. All rights reserved.
 //
 
-public class SourceLineRangeMapper: NSObject {
+public struct SourceLineRangeMapper: Hashable {
     public let url: URL?
     public let text: String
     let lineRanges: [Range<String.Index>]
     
-    public convenience init(text: String) {
+    public init(text: String) {
         self.init(url: nil, text: text)
     }
     

@@ -82,7 +82,7 @@ final class ImplForScannerTests: XCTestCase {
         XCTAssertEqual(vtableStructType.name, "__Serial_vtable")
         XCTAssertEqual(vtableStructType.symbols.exists(identifier: "puts"), true)
         let putsSymbol = try vtableStructType.symbols.resolve(identifier: "puts")
-        XCTAssertEqual(putsSymbol.type, .pointer(.function(FunctionType(returnType: .void, arguments: [.pointer(.void), .dynamicArray(elementType: .u8)]))))
+        XCTAssertEqual(putsSymbol.type, .pointer(.function(FunctionTypeInfo(returnType: .void, arguments: [.pointer(.void), .dynamicArray(elementType: .u8)]))))
         XCTAssertEqual(putsSymbol.offset, 0)
     }
     

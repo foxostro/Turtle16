@@ -232,7 +232,7 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
     
     func testDeclareVariableWithExpression_structInitializer() throws {
         let symbols = SymbolTable()
-        let typ = StructType(name: "bar", symbols: SymbolTable())
+        let typ = StructTypeInfo(name: "bar", symbols: SymbolTable())
         symbols.bind(identifier: "bar", symbolType: .structType(typ))
         let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
         let compiler = SnapSubcompilerVarDeclaration(

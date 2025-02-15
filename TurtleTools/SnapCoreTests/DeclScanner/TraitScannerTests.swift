@@ -21,7 +21,7 @@ final class TraitScannerTests: XCTestCase {
         let expectedSymbols = SymbolTable()
         expectedSymbols.frameLookupMode = .set(Frame())
         expectedSymbols.breadcrumb = .traitType("Foo")
-        let expected: SymbolType = .traitType(TraitType(name: "Foo", nameOfTraitObjectType: "__Foo_object", nameOfVtableType: "__Foo_vtable", symbols: expectedSymbols))
+        let expected: SymbolType = .traitType(TraitTypeInfo(name: "Foo", nameOfTraitObjectType: "__Foo_object", nameOfVtableType: "__Foo_vtable", symbols: expectedSymbols))
         let actual = try scanner.symbols.resolveType(identifier: "Foo")
         XCTAssertEqual(expected, actual)
     }
@@ -39,7 +39,7 @@ final class TraitScannerTests: XCTestCase {
         
         let memoryLayoutStrategy = MemoryLayoutStrategyNull()
         let members = SymbolTable()
-        let expected: SymbolType = .traitType(TraitType(
+        let expected: SymbolType = .traitType(TraitTypeInfo(
             name: "Foo",
             nameOfTraitObjectType: "__Foo_object",
             nameOfVtableType: "__Foo_vtable",
@@ -47,7 +47,7 @@ final class TraitScannerTests: XCTestCase {
         members.breadcrumb = .traitType("Foo")
         let frame = Frame()
         members.frameLookupMode = .set(frame)
-        let memberType: SymbolType = .pointer(.function(FunctionType(returnType: .u8, arguments: [.pointer(expected)])))
+        let memberType: SymbolType = .pointer(.function(FunctionTypeInfo(returnType: .u8, arguments: [.pointer(expected)])))
         let sizeOfMemoryType = memoryLayoutStrategy.sizeof(type: memberType)
         let offset = frame.allocate(size: sizeOfMemoryType)
         let symbol = Symbol(type: memberType, offset: offset, storage: .automaticStorage)
@@ -148,7 +148,7 @@ final class TraitScannerTests: XCTestCase {
         try scanner.scan(trait: ast)
         let actual = try scanner.symbols.resolveType(identifier: "Foo")
         
-        let expected = SymbolType.genericTraitType(GenericTraitType(template: ast))
+        let expected = SymbolType.genericTraitType(GenericTraitTypeInfo(template: ast))
         XCTAssertEqual(expected, actual)
     }
     
@@ -202,7 +202,7 @@ final class TraitScannerTests: XCTestCase {
         
         // Ensure the vtable type name is already taken before scanning.
         let scanner = TraitScanner(symbols: SymbolTable(typeDict: [
-            "__Foo_vtable" : .structType(StructType(
+            "__Foo_vtable" : .structType(StructTypeInfo(
                 name: "__Foo_vtable",
                 symbols: SymbolTable()))
         ]))
@@ -260,7 +260,7 @@ final class TraitScannerTests: XCTestCase {
         
         // Ensure the trait-object type name is already taken before scanning.
         let scanner = TraitScanner(symbols: SymbolTable(typeDict: [
-            "__Foo_object" : .structType(StructType(
+            "__Foo_object" : .structType(StructTypeInfo(
                 name: "__Foo_object",
                 symbols: SymbolTable(),
                 associatedTraitType: "Foo"))

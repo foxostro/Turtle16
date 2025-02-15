@@ -70,7 +70,7 @@ final class SnapSubcompilerMatchTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("result", Symbol(type: .u8))
         ], typeDict: [
-            "None" : .structType(StructType(name: "None", symbols: SymbolTable()))
+            "None" : .structType(StructTypeInfo(name: "None", symbols: SymbolTable()))
         ])
         let input = Match(expr: Expression.Identifier("result"), clauses: [
             Match.Clause(valueIdentifier: Expression.Identifier("foo"),
@@ -132,7 +132,7 @@ final class SnapSubcompilerMatchTests: XCTestCase {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
         let symbols = SymbolTable(tuples: [
             ("result", Symbol(type: .u8)),
-            ("test", Symbol(type: .unionType(UnionType([.u8, .bool]))))
+            ("test", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool]))))
         ])
         let input = Match(expr: Expression.Identifier("test"), clauses: [
             Match.Clause(valueIdentifier: Expression.Identifier("foo"),
@@ -153,7 +153,7 @@ final class SnapSubcompilerMatchTests: XCTestCase {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
         let symbols = SymbolTable(tuples: [
             ("result", Symbol(type: .u8)),
-            ("test", Symbol(type: .unionType(UnionType([.u8, .bool]))))
+            ("test", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool]))))
         ])
         let input = Match(expr: Expression.Identifier("test"), clauses: [
             Match.Clause(valueIdentifier: Expression.Identifier("foo"),

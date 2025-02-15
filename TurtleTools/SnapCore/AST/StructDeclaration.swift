@@ -39,7 +39,7 @@ public final class StructDeclaration: AbstractSyntaxTreeNode {
         !typeArguments.isEmpty
     }
     
-    public convenience init(_ structType: StructType) {
+    public convenience init(_ structType: StructTypeInfo) {
         let rejectFunctions = { (ident: String, sym: Symbol) in
             switch sym.type {
             case .function, .genericFunction: false

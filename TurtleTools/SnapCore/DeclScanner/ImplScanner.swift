@@ -54,7 +54,7 @@ public struct ImplScanner {
         // If the struct type was not defined in the current scope then
         // clone it for the current scope. This ensures that changes we make
         // in an Impl block do not propagate outside the current scope.
-        let structType: GenericStructType
+        let structType: GenericStructTypeInfo
         if parent.typeTable.contains(where: { $0.key == name }) {
             structType = originalStructType
         }
@@ -80,7 +80,7 @@ public struct ImplScanner {
         // If the struct type was not defined in the current scope then
         // clone it for the current scope. This ensures that changes we make
         // in an Impl block do not propagate outside the current scope.
-        let structType: StructType
+        let structType: StructTypeInfo
         if parent.typeTable.contains(where: { $0.key == name }) {
             structType = originalStructType
         }
@@ -97,7 +97,7 @@ public struct ImplScanner {
         try scanImplStruct(node, structType)
     }
     
-    private func scanImplStruct(_ node: Impl, _ typ: StructType) throws {
+    private func scanImplStruct(_ node: Impl, _ typ: StructTypeInfo) throws {
         let symbols = SymbolTable(parent: parent)
         symbols.breadcrumb = .structType(typ.name)
         

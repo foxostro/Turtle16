@@ -12,7 +12,7 @@ public struct StructMemberFunctionCallMatcher {
     public struct Match {
         public let callExpr: Expression.Call
         public let getExpr: Expression.Get
-        public let fnType: FunctionType
+        public let fnType: FunctionTypeInfo
         public let firstArgumentType: SymbolType
     }
     
@@ -49,7 +49,7 @@ public struct StructMemberFunctionCallMatcher {
         }
     }
     
-    func getFunctionType() throws -> FunctionType? {
+    func getFunctionType() throws -> FunctionTypeInfo? {
         switch try typeChecker.check(expression: expr.callee) {
         case .function(let typ),
              .pointer(.function(let typ)),

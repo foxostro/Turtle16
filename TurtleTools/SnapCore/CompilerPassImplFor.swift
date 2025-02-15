@@ -189,7 +189,7 @@ public final class CompilerPassImplFor: CompilerPassWithDeclScan {
     
     /// If the expression refers resolves to the type of a trait-object then
     /// return the name of the associated trait, else return nil.
-    fileprivate func maybeLookupCorrespondingTraitType(expr: Expression) throws -> TraitType? {
+    fileprivate func maybeLookupCorrespondingTraitType(expr: Expression) throws -> TraitTypeInfo? {
         guard let traitObjectType = try typeChecker.check(expression: expr).maybeUnwrapStructType(),
               let traitName = traitObjectType.associatedTraitType,
               let traitType = symbols?
@@ -203,7 +203,7 @@ public final class CompilerPassImplFor: CompilerPassWithDeclScan {
     /// Return an expression which converts the given expression and evaluates
     /// to an appropriate trait-object
     fileprivate func convertToTraitObject(
-        _ traitType: TraitType,
+        _ traitType: TraitTypeInfo,
         expr expr0: Expression) throws -> StructInitializer? {
         
         let exprTyp0 = try typeChecker.check(expression: expr0)
@@ -227,8 +227,8 @@ public final class CompilerPassImplFor: CompilerPassWithDeclScan {
     
     /// Returns an expression which populates a trait-object
     fileprivate func makeTraitObject(
-        _ traitType: TraitType,
-        _ structType: StructType,
+        _ traitType: TraitTypeInfo,
+        _ structType: StructTypeInfo,
         expr: Expression) -> StructInitializer {
         
         StructInitializer(

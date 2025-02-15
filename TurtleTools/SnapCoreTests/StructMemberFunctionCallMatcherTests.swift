@@ -14,8 +14,8 @@ final class StructMemberFunctionCallMatcherTests: XCTestCase {
     func testExample() throws {
         let symbols = SymbolTable()
         let fooSymbols = SymbolTable()
-        let fooType = SymbolType.structType(StructType(name: "Foo", symbols: fooSymbols))
-        let fnType = FunctionType(name: "bar", mangledName: "bar", returnType: .void, arguments: [
+        let fooType = SymbolType.structType(StructTypeInfo(name: "Foo", symbols: fooSymbols))
+        let fnType = FunctionTypeInfo(name: "bar", mangledName: "bar", returnType: .void, arguments: [
             .constPointer(fooType.correspondingConstType)
         ])
         fooSymbols.bind(identifier: "bar", symbol: Symbol(type: .function(fnType)))

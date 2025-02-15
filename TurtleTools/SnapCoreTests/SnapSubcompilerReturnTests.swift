@@ -25,7 +25,7 @@ final class SnapSubcompilerReturnTests: XCTestCase {
     func testUnexpectedNonVoidReturnValueInVoidFunction() {
         let input = Return(ExprUtils.makeU8(value: 1))
         let symbols = SymbolTable()
-        symbols.breadcrumb = .functionType(FunctionType(
+        symbols.breadcrumb = .functionType(FunctionTypeInfo(
             returnType: .void,
             arguments: []))
         let compiler = SnapSubcompilerReturn(symbols)
@@ -39,7 +39,7 @@ final class SnapSubcompilerReturnTests: XCTestCase {
     func testItIsCompletelyValidToHaveMeaninglessReturnStatementAtBottomOfVoidFunction() {
         let input = Return()
         let symbols = SymbolTable()
-        symbols.breadcrumb = .functionType(FunctionType(
+        symbols.breadcrumb = .functionType(FunctionTypeInfo(
             returnType: .void,
             arguments: []))
         let compiler = SnapSubcompilerReturn(symbols)
@@ -49,7 +49,7 @@ final class SnapSubcompilerReturnTests: XCTestCase {
     func testNonVoidFunctionShouldReturnAValue() {
         let input = Return()
         let symbols = SymbolTable()
-        symbols.breadcrumb = .functionType(FunctionType(
+        symbols.breadcrumb = .functionType(FunctionTypeInfo(
             returnType: .u8,
             arguments: []))
         let compiler = SnapSubcompilerReturn(symbols)
@@ -63,7 +63,7 @@ final class SnapSubcompilerReturnTests: XCTestCase {
     func testReturnAValue() {
         let input = Return(Expression.LiteralInt(1))
         let symbols = SymbolTable()
-        symbols.breadcrumb = .functionType(FunctionType(
+        symbols.breadcrumb = .functionType(FunctionTypeInfo(
             returnType: .u8,
             arguments: []))
         let compiler = SnapSubcompilerReturn(symbols)

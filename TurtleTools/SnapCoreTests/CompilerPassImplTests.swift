@@ -291,7 +291,7 @@ final class CompilerPassImplTests: XCTestCase {
                                             op: .ampersand,
                                             expression: Identifier("myFunction::RealIncrementer[u16]::increment")),
                                         targetType: PrimitiveType(
-                                            .pointer(.function(FunctionType(
+                                            .pointer(.function(FunctionTypeInfo(
                                                 name: nil,
                                                 mangledName: nil,
                                                 returnType: .void,

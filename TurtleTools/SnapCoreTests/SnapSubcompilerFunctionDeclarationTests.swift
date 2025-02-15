@@ -53,7 +53,7 @@ final class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
             argumentNames: [],
             body: originalBody)
             .reconnect(parent: nil)
-        let functionType = FunctionType(name: "foo",
+        let functionType = FunctionTypeInfo(name: "foo",
                                         mangledName: "foo",
                                         returnType: .void,
                                         arguments: [],

@@ -18,14 +18,14 @@ let kSliceBaseAddressType = SymbolType.u16
 let kSliceCount = "count"
 let kSliceCountOffset = 1
 let kSliceCountType = SymbolType.u16
-let kSliceType: SymbolType = .structType(StructType(name: kSliceName, symbols: SymbolTable(tuples: [
+let kSliceType: SymbolType = .structType(StructTypeInfo(name: kSliceName, symbols: SymbolTable(tuples: [
     (kSliceBase,  Symbol(type: kSliceBaseAddressType, offset: kSliceBaseAddressOffset)),
     (kSliceCount, Symbol(type: kSliceCountType, offset: kSliceCountOffset))
 ])))
 let kRangeName = "Range"
 let kRangeBegin = "begin"
 let kRangeLimit = "limit"
-let kRangeType: SymbolType = .structType(StructType(name: kRangeName, symbols: SymbolTable(tuples: [
+let kRangeType: SymbolType = .structType(StructTypeInfo(name: kRangeName, symbols: SymbolTable(tuples: [
     (kRangeBegin, Symbol(type: .u16, offset: 0, storage: .automaticStorage)),
     (kRangeLimit, Symbol(type: .u16, offset: 1, storage: .automaticStorage))
 ])))
@@ -562,7 +562,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_union_to_union() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .unionType(UnionType([.u16])), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .unionType(UnionTypeInfo([.u16])), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -575,7 +575,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_union_to_primitive() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .unionType(UnionType([.u16])), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .unionType(UnionTypeInfo([.u16])), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -591,7 +591,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_union_to_non_primitive() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .unionType(UnionType([.array(count: 1, elementType: .u16)])), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .unionType(UnionTypeInfo([.array(count: 1, elementType: .u16)])), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -664,7 +664,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_union_to_primitive_with_dynamic_type_check() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .unionType(UnionType([.bool, .u16])), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .unionType(UnionTypeInfo([.bool, .u16])), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
@@ -849,7 +849,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Unary_addressOf_Function() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .void, arguments: []))))
+            ("foo", Symbol(type: .function(FunctionTypeInfo(name: "foo", mangledName: "foo", returnType: .void, arguments: []))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Unary(op: .ampersand, expression: Expression.Identifier("foo")))
@@ -1890,7 +1890,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Is_test_union_type_tag() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .unionType(UnionType([.u8, .bool])), offset: 100, storage: .staticStorage))
+            ("foo", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool])), offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Is(expr: Expression.Identifier("foo"), testType: Expression.PrimitiveType(.bool)))
@@ -1906,7 +1906,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Is_test_union_type_tag_const() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .unionType(UnionType([.arithmeticType(.immutableInt(.u8)), .constBool])), offset: 100, storage: .staticStorage))
+            ("foo", Symbol(type: .unionType(UnionTypeInfo([.arithmeticType(.immutableInt(.u8)), .constBool])), offset: 100, storage: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Is(expr: Expression.Identifier("foo"), testType: Expression.PrimitiveType(.bool)))
@@ -2269,7 +2269,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     }
 
     func testRvalue_Get_struct_member_not_primitive() throws {
-        let type: SymbolType = .structType(StructType(name: "bar", symbols: SymbolTable(tuples: [
+        let type: SymbolType = .structType(StructTypeInfo(name: "bar", symbols: SymbolTable(tuples: [
             ("wat", Symbol(type: .u16, offset: 0)),
             ("baz", Symbol(type: .array(count: 1, elementType: .u16), offset: 1))
         ])))
@@ -2400,7 +2400,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     }
 
     func testRvalue_Get_non_primitive_struct_member_via_pointer() throws {
-        let type: SymbolType = .pointer(.structType(StructType(name: "bar", symbols: SymbolTable(tuples: [
+        let type: SymbolType = .pointer(.structType(StructTypeInfo(name: "bar", symbols: SymbolTable(tuples: [
             ("wat", Symbol(type: .u16, offset: 0)),
             ("baz", Symbol(type: .array(count: 1, elementType: .u16), offset: 1))
         ]))))
@@ -2422,7 +2422,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Call_no_return_no_args() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .void, arguments: []))))
+            ("foo", Symbol(type: .function(FunctionTypeInfo(name: "foo", mangledName: "foo", returnType: .void, arguments: []))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: []))
@@ -2432,7 +2432,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Call_return_some_primitive_value_and_no_args() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .u16, arguments: []))))
+            ("foo", Symbol(type: .function(FunctionTypeInfo(name: "foo", mangledName: "foo", returnType: .u16, arguments: []))))
         ])
         symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
@@ -2452,7 +2452,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Call_return_some_non_primitive_value_and_no_args() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .dynamicArray(elementType: .u16), arguments: []))))
+            ("foo", Symbol(type: .function(FunctionTypeInfo(name: "foo", mangledName: "foo", returnType: .dynamicArray(elementType: .u16), arguments: []))))
         ])
         symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
@@ -2471,7 +2471,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Call_one_primitive_arg() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .void, arguments: [
+            ("foo", Symbol(type: .function(FunctionTypeInfo(name: "foo", mangledName: "foo", returnType: .void, arguments: [
                 .u16
             ]))))
         ])
@@ -2493,7 +2493,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Call_return_value_and_one_arg() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .u16, arguments: [.u16]))))
+            ("foo", Symbol(type: .function(FunctionTypeInfo(name: "foo", mangledName: "foo", returnType: .u16, arguments: [.u16]))))
         ])
         symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
@@ -2516,8 +2516,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Call_return_value_and_one_non_primitive_arg() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .function(FunctionType(name: "foo", mangledName: "foo", returnType: .u16, arguments: [.unionType(UnionType([.u16]))])))),
-            ("bar", Symbol(type: .unionType(UnionType([.u16])), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .function(FunctionTypeInfo(name: "foo", mangledName: "foo", returnType: .u16, arguments: [.unionType(UnionTypeInfo([.u16]))])))),
+            ("bar", Symbol(type: .unionType(UnionTypeInfo([.u16])), offset: 0xabcd, storage: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
@@ -2546,7 +2546,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Call_function_pointer() throws {
         let symbols = SymbolTable(tuples: [
-            ("foo", Symbol(type: .pointer(.function(FunctionType(returnType: .void, arguments: []))), offset: 0xabcd))
+            ("foo", Symbol(type: .pointer(.function(FunctionTypeInfo(returnType: .void, arguments: []))), offset: 0xabcd))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Expression.Call(callee: Expression.Identifier("foo"), arguments: []))
@@ -2560,7 +2560,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Call_panic_with_string_arg() throws {
         let symbols = SymbolTable(tuples: [
-            ("panic", Symbol(type: .function(FunctionType(name: "panic", mangledName: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .arithmeticType(.immutableInt(.u8)))]))))
+            ("panic", Symbol(type: .function(FunctionTypeInfo(name: "panic", mangledName: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .arithmeticType(.immutableInt(.u8)))]))))
         ])
         symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
@@ -2595,8 +2595,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         // first argument is of the type `*Foo'
         let symbols = SymbolTable()
         let fooSymbols = SymbolTable()
-        let fooType = SymbolType.structType(StructType(name: "Foo", symbols: fooSymbols))
-        let fnType = FunctionType(name: "bar", mangledName: "bar", returnType: .void, arguments: [
+        let fooType = SymbolType.structType(StructTypeInfo(name: "Foo", symbols: fooSymbols))
+        let fnType = FunctionTypeInfo(name: "bar", mangledName: "bar", returnType: .void, arguments: [
             .pointer(fooType)
         ])
         fooSymbols.bind(identifier: "bar", symbol: Symbol(type: .function(fnType)))
@@ -2632,8 +2632,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         // first argument is of the type `*const Foo'
         let symbols = SymbolTable()
         let fooSymbols = SymbolTable()
-        let fooType = SymbolType.structType(StructType(name: "Foo", symbols: fooSymbols))
-        let fnType = FunctionType(name: "bar", mangledName: "bar", returnType: .void, arguments: [
+        let fooType = SymbolType.structType(StructTypeInfo(name: "Foo", symbols: fooSymbols))
+        let fnType = FunctionTypeInfo(name: "bar", mangledName: "bar", returnType: .void, arguments: [
             .constPointer(fooType)
         ])
         fooSymbols.bind(identifier: "bar", symbol: Symbol(type: .function(fnType)))
@@ -2669,8 +2669,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         // first argument is of the type `*const Foo'
         let symbols = SymbolTable()
         let fooSymbols = SymbolTable()
-        let fooType = SymbolType.structType(StructType(name: "Foo", symbols: fooSymbols))
-        let fnType = FunctionType(name: "bar", mangledName: "bar", returnType: .void, arguments: [
+        let fooType = SymbolType.structType(StructTypeInfo(name: "Foo", symbols: fooSymbols))
+        let fnType = FunctionTypeInfo(name: "bar", mangledName: "bar", returnType: .void, arguments: [
             .constPointer(fooType.correspondingConstType)
         ])
         fooSymbols.bind(identifier: "bar", symbol: Symbol(type: .function(fnType)))
@@ -2737,7 +2737,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testFixBugInvolvingInitialAssignmentWithStructInitializer() throws {
         let symbols = SymbolTable()
-        let kSliceType: SymbolType = .constStructType(StructType(name: kSliceName, symbols: SymbolTable(tuples: [
+        let kSliceType: SymbolType = .constStructType(StructTypeInfo(name: kSliceName, symbols: SymbolTable(tuples: [
             (kSliceBase,  Symbol(type: kSliceBaseAddressType.correspondingConstType, offset: kSliceBaseAddressOffset)),
             (kSliceCount, Symbol(type: kSliceCountType.correspondingConstType, offset: kSliceCountOffset))
         ])))
@@ -2799,8 +2799,8 @@ final class CoreToTackCompilerTests: XCTestCase {
     }
 
     func testAssignConstStructToNonConstStructElementOfUnion() throws {
-        let None = SymbolType.structType(StructType(name: "None", symbols: SymbolTable()))
-        let OptU8 = SymbolType.unionType(UnionType([.u8, None]))
+        let None = SymbolType.structType(StructTypeInfo(name: "None", symbols: SymbolTable()))
+        let OptU8 = SymbolType.unionType(UnionTypeInfo([.u8, None]))
         let symbols = SymbolTable(tuples: [
             ("none", Symbol(type: None.correspondingConstType, offset: SnapCompilerMetrics.kStaticStorageStartAddress, storage: .staticStorage)),
             ("r", Symbol(type: OptU8, offset: SnapCompilerMetrics.kStaticStorageStartAddress+1, storage: .staticStorage))
@@ -3264,7 +3264,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     }
 
     func testLvalue_LvalueOfMemberOfStructInitializer() throws {
-        let typ = StructType(name: "Foo", symbols: SymbolTable(tuples: [
+        let typ = StructTypeInfo(name: "Foo", symbols: SymbolTable(tuples: [
             ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
         ]))
         let symbols = SymbolTable(tuples: [
@@ -3360,7 +3360,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     }
 
     func testRvalue_RvalueOfMemberOfStructInitializer() throws {
-        let typ = StructType(name: "Foo", symbols: SymbolTable(tuples: [
+        let typ = StructTypeInfo(name: "Foo", symbols: SymbolTable(tuples: [
             ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
         ]))
         let symbols = SymbolTable(tuples: [
@@ -3406,7 +3406,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_FunctionByIdentifier() throws {
         let symbols = SymbolTable(tuples: [
-            ("panic", Symbol(type: .function(FunctionType(name: "panic", mangledName: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .arithmeticType(.immutableInt(.u8)))]))))
+            ("panic", Symbol(type: .function(FunctionTypeInfo(name: "panic", mangledName: "panic", returnType: .void, arguments: [.dynamicArray(elementType: .arithmeticType(.immutableInt(.u8)))]))))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let expr = Expression.Identifier("panic")

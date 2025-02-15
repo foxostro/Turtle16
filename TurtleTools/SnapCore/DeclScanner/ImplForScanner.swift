@@ -67,7 +67,7 @@ public struct ImplForScanner {
         }
     }
     
-    private func scan(implFor node: ImplFor, structType: StructType) throws {
+    private func scan(implFor node: ImplFor, structType: StructTypeInfo) throws {
         let traitType = try typeChecker.check(expression: node.traitTypeExpr).unwrapTraitType()
         
         try implScanner.scan(impl: Impl(
@@ -124,8 +124,8 @@ public struct ImplForScanner {
         try makeVtableDeclaration(traitType, structType, node)
     }
     
-    private func makeVtableDeclaration(_ traitType: TraitType,
-                                       _ structType: StructType,
+    private func makeVtableDeclaration(_ traitType: TraitTypeInfo,
+                                       _ structType: StructTypeInfo,
                                        _ node: ImplFor) throws {
         let vtableType = try symbols.resolveType(identifier: traitType.nameOfVtableType).unwrapStructType()
         var arguments: [Expression.StructInitializer.Argument] = []

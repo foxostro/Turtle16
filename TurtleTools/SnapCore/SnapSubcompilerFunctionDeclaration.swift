@@ -77,7 +77,7 @@ public struct SnapSubcompilerFunctionDeclaration {
     }
     
     public func instantiate(
-        functionType: FunctionType,
+        functionType: FunctionTypeInfo,
         functionDeclaration node0: FunctionDeclaration
     ) throws {
         node0.symbols.breadcrumb = .functionType(functionType)
@@ -115,7 +115,7 @@ public struct SnapSubcompilerFunctionDeclaration {
     private func evaluateFunctionTypeExpression(
         _ symbols: SymbolTable,
         _ expr: Expression
-    ) throws -> FunctionType {
+    ) throws -> FunctionTypeInfo {
         try TypeContextTypeChecker(
             symbols: symbols,
             memoryLayoutStrategy: memoryLayoutStrategy)
@@ -125,7 +125,7 @@ public struct SnapSubcompilerFunctionDeclaration {
     
     private func bindFunctionArguments(
         symbols: SymbolTable,
-        functionType: FunctionType,
+        functionType: FunctionTypeInfo,
         argumentNames: [String]
     ) {
         var offset = memoryLayoutStrategy.sizeOfSaveArea
@@ -154,7 +154,7 @@ public struct SnapSubcompilerFunctionDeclaration {
     
     private func expectFunctionReturnExpressionIsCorrectType(
         symbols: SymbolTable,
-        functionType: FunctionType,
+        functionType: FunctionTypeInfo,
         func node: FunctionDeclaration
     ) throws {
         let tracer = StatementTracer(symbols: symbols)
@@ -177,7 +177,7 @@ public struct SnapSubcompilerFunctionDeclaration {
     
     private func makeErrorForMissingReturn(
         _ symbols: SymbolTable,
-        _ functionType: FunctionType,
+        _ functionType: FunctionTypeInfo,
         _ node: FunctionDeclaration
     ) -> CompilerError {
         CompilerError(sourceAnchor: node.identifier.sourceAnchor,
@@ -186,7 +186,7 @@ public struct SnapSubcompilerFunctionDeclaration {
     
     private func shouldSynthesizeTerminalReturnStatement(
         symbols: SymbolTable,
-        functionType: FunctionType,
+        functionType: FunctionTypeInfo,
         func node: FunctionDeclaration
     ) throws -> Bool {
         guard functionType.returnType == .void else { return false }

@@ -66,7 +66,7 @@ final class FunctionScannerTests: XCTestCase {
             argumentNames: [],
             body: Block(children: []))
             .reconnect(parent: nil)
-        let functionType = FunctionType(
+        let functionType = FunctionTypeInfo(
             name: "foo",
             mangledName: "foo",
             returnType: .void,

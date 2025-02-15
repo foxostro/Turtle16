@@ -81,7 +81,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 (kSliceBase,  Symbol(type: kSliceBaseAddressType, offset: kSliceBaseAddressOffset)),
                 (kSliceCount, Symbol(type: kSliceCountType, offset: kSliceCountOffset))
             ])
-        kSliceType = .structType(StructType(name: kSliceName, symbols: structSymbols))
+        kSliceType = .structType(StructTypeInfo(name: kSliceName, symbols: structSymbols))
         super.init(symbols: symbols,
                    staticStorageFrame: staticStorageFrame,
                    memoryLayoutStrategy: memoryLayoutStrategy)
@@ -1016,7 +1016,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
     
     func rvalue(literalInt node: Expression.LiteralInt) -> AbstractSyntaxTreeNode {
         let result: AbstractSyntaxTreeNode
-        switch ArithmeticType.compTimeInt(node.value).intClass {
+        switch ArithmeticTypeInfo.compTimeInt(node.value).intClass {
         case .i8:
             let dest = nextRegister(type: .b)
             pushRegister(dest)
@@ -1891,7 +1891,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             return try compileConstantArithmeticBinaryExpression(binary, leftType, rightType)
         
         case (.arithmeticType(let leftArithmeticType), .arithmeticType(let rightArithmeticType)):
-            if let arithmeticTypeForArithmetic = ArithmeticType.binaryResultType(left: leftArithmeticType, right: rightArithmeticType) {
+            if let arithmeticTypeForArithmetic = ArithmeticTypeInfo.binaryResultType(left: leftArithmeticType, right: rightArithmeticType) {
                 let intClass: IntClass = arithmeticTypeForArithmetic.intClass!
                 let typeForArithmetic: SymbolType = .arithmeticType(arithmeticTypeForArithmetic)
                 
@@ -2381,7 +2381,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         }
     }
     
-    func compileUnionTypeIs(_ expr: Expression.Is, _ typ: UnionType) throws -> AbstractSyntaxTreeNode {
+    func compileUnionTypeIs(_ expr: Expression.Is, _ typ: UnionTypeInfo) throws -> AbstractSyntaxTreeNode {
         var children: [AbstractSyntaxTreeNode] = []
         
         // Take the test type and determine the corresponding type tag.
@@ -2429,7 +2429,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
     // can automatically promote and convert to other types. For example, if
     // the union can hold a u16 then we should automatically convert
     // LiteralInt(1) to u16 in order to insert into the union.
-    func determineUnionTargetType(_ typ: UnionType, _ rtype: SymbolType) -> SymbolType? {
+    func determineUnionTargetType(_ typ: UnionTypeInfo, _ rtype: SymbolType) -> SymbolType? {
         // Find the first type that is an exact match
         for ltype in typ.members {
             if rtype == ltype {
@@ -2466,7 +2466,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
     
     // Given a type and a related union, determine the corresponding type tag.
     // Return nil if the type does not match the union after all.
-    func determineUnionTypeTag(_ typ: UnionType, _ testType: SymbolType) -> Int? {
+    func determineUnionTypeTag(_ typ: UnionTypeInfo, _ testType: SymbolType) -> Int? {
         for i in 0..<typ.members.count {
             let member = typ.members[i]
             if testType == member || testType.correspondingConstType == member {
@@ -2846,7 +2846,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         }
     }
     
-    func rvalue(call expr: Expression.Call, typ: FunctionType) throws -> AbstractSyntaxTreeNode {
+    func rvalue(call expr: Expression.Call, typ: FunctionTypeInfo) throws -> AbstractSyntaxTreeNode {
         do {
             return try rvalueInner(call: expr, typ: typ)
         }
@@ -2859,7 +2859,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         }
     }
     
-    fileprivate func rvalueInner(call expr: Expression.Call, typ: FunctionType) throws -> AbstractSyntaxTreeNode {
+    fileprivate func rvalueInner(call expr: Expression.Call, typ: FunctionTypeInfo) throws -> AbstractSyntaxTreeNode {
         _ = try RvalueExpressionTypeChecker(symbols: symbols!).checkInner(call: expr, typ: typ)
         
         let calleeType = try typeCheck(rexpr: expr.callee)

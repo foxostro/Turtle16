@@ -193,7 +193,7 @@ public class CompilerPassWithDeclScan: CompilerPass {
         }
         else {
             let moduleSym = SymbolTable()
-            let module = SymbolType.structType(StructType(
+            let module = SymbolType.structType(StructTypeInfo(
                 name: name,
                 symbols: moduleSym,
                 associatedModuleName: name))

@@ -266,7 +266,7 @@ public class RvalueExpressionTypeChecker {
             return try checkConstantArithmeticBinaryExpression(binary, leftType, rightType)
         
         case (.arithmeticType(let leftArithmeticType), .arithmeticType(let rightArithmeticType)):
-            guard let arithmeticTypeForArithmetic = ArithmeticType.binaryResultType(left: leftArithmeticType, right: rightArithmeticType) else {
+            guard let arithmeticTypeForArithmetic = ArithmeticTypeInfo.binaryResultType(left: leftArithmeticType, right: rightArithmeticType) else {
                 throw invalidBinaryExpr(binary, leftType, rightType)
             }
             
@@ -529,7 +529,7 @@ public class RvalueExpressionTypeChecker {
              (.pointer(let a), .traitType(let b)),
              (.constPointer(let a), .constTraitType(let b)),
              (.pointer(let a), .constTraitType(let b)):
-            let traitType: TraitType = b
+            let traitType: TraitTypeInfo = b
             switch a {
             case .constStructType(let structType), .structType(let structType):
                 let conforms = doesStructConformToVtable(structType, traitType)
@@ -721,7 +721,7 @@ public class RvalueExpressionTypeChecker {
         }
     }
     
-    private func check(call: Expression.Call, typ: FunctionType) throws -> SymbolType {
+    private func check(call: Expression.Call, typ: FunctionTypeInfo) throws -> SymbolType {
         do {
             return try checkInner(call: call, typ: typ)
         }
@@ -734,7 +734,7 @@ public class RvalueExpressionTypeChecker {
         }
     }
     
-    func checkInner(call: Expression.Call, typ: FunctionType) throws -> SymbolType {
+    func checkInner(call: Expression.Call, typ: FunctionTypeInfo) throws -> SymbolType {
         if call.arguments.count != typ.arguments.count {
             let message: String
             if let name = typ.name {
@@ -836,7 +836,7 @@ public class RvalueExpressionTypeChecker {
         }
     }
     
-    fileprivate func isRangeType(_ typ: StructType) -> Bool {
+    fileprivate func isRangeType(_ typ: StructTypeInfo) -> Bool {
         guard typ.name == "Range" else {
             return false
         }
@@ -1018,7 +1018,7 @@ public class RvalueExpressionTypeChecker {
         let arguments = try evaluateFunctionArguments(expr.arguments)
         let mangledName = mangleFunctionName(expr.name)
         
-        return .function(FunctionType(name: expr.name,
+        return .function(FunctionTypeInfo(name: expr.name,
                                       mangledName: mangledName,
                                       returnType: returnType,
                                       arguments: arguments))
@@ -1132,7 +1132,7 @@ public class RvalueExpressionTypeChecker {
         let arguments = try inner.evaluateFunctionArguments(genericFunctionType.arguments)
         let mangledName = inner.mangleFunctionName(genericFunctionType.name, evaluatedTypeArguments: evaluatedTypeArguments)!
         let template3 = template2.withIdentifier(mangledName)
-        let functionType = FunctionType(name: mangledName,
+        let functionType = FunctionTypeInfo(name: mangledName,
                                         mangledName: mangledName,
                                         returnType: returnType,
                                         arguments: arguments,
@@ -1150,7 +1150,7 @@ public class RvalueExpressionTypeChecker {
     }
     
     fileprivate func apply(genericTypeApplication expr: Expression.GenericTypeApplication,
-                           genericStructType: GenericStructType) throws -> SymbolType {
+                           genericStructType: GenericStructTypeInfo) throws -> SymbolType {
         guard expr.arguments.count == genericStructType.typeArguments.count else {
             throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "incorrect number of type arguments in application of generic struct type `\(expr.shortDescription)'")
         }
@@ -1205,7 +1205,7 @@ public class RvalueExpressionTypeChecker {
     }
     
     fileprivate func apply(genericTypeApplication expr: Expression.GenericTypeApplication,
-                           genericTraitType: GenericTraitType) throws -> SymbolType {
+                           genericTraitType: GenericTraitTypeInfo) throws -> SymbolType {
         guard expr.arguments.count == genericTraitType.typeArguments.count else {
             throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "incorrect number of type arguments in application of generic trait type `\(expr.shortDescription)'")
         }
@@ -1241,7 +1241,7 @@ public class RvalueExpressionTypeChecker {
     }
     
     fileprivate func instantiate(
-        _ genericTraitType: GenericTraitType,
+        _ genericTraitType: GenericTraitTypeInfo,
         _ evaluatedTypeArguments: [SymbolType],
         _ symbols: SymbolTable) throws -> SymbolType {
         
@@ -1269,7 +1269,7 @@ public class RvalueExpressionTypeChecker {
     private func declareTraitType(
         _ traitDecl: TraitDeclaration,
         _ evaluatedTypeArguments: [SymbolType] = [],
-        _ genericTraitType: GenericTraitType? = nil,
+        _ genericTraitType: GenericTraitTypeInfo? = nil,
         _ symbols: SymbolTable) throws -> SymbolType {
         
         let mangledName = traitDecl.mangledName
@@ -1278,7 +1278,7 @@ public class RvalueExpressionTypeChecker {
             symbols: members,
             staticStorageFrame: staticStorageFrame,
             memoryLayoutStrategy: memoryLayoutStrategy)
-        let fullyQualifiedTraitType = TraitType(
+        let fullyQualifiedTraitType = TraitTypeInfo(
             name: mangledName,
             nameOfTraitObjectType: traitDecl.nameOfTraitObjectType,
             nameOfVtableType: traitDecl.nameOfVtableType,
@@ -1478,7 +1478,7 @@ public class RvalueExpressionTypeChecker {
     
     public func check(unionType expr: Expression.UnionType) throws -> SymbolType {
         let members = try expr.members.map({try check(expression: $0)})
-        return .unionType(UnionType(members))
+        return .unionType(UnionTypeInfo(members))
     }
     
     public func check(literalString expr: Expression.LiteralString) throws -> SymbolType {
@@ -1523,8 +1523,8 @@ public class RvalueExpressionTypeChecker {
     }
     
     private func doesStructConformToVtable(
-        _ structType: StructType,
-        _ traitType: TraitType) -> Bool {
+        _ structType: StructTypeInfo,
+        _ traitType: TraitTypeInfo) -> Bool {
         
         try! symbols
             .resolveType(identifier: traitType.nameOfVtableType)

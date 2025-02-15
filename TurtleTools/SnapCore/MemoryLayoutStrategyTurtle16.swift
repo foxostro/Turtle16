@@ -46,7 +46,7 @@ public struct MemoryLayoutStrategyTurtle16: MemoryLayoutStrategy {
         }
     }
     
-    private func sizeof(struct typ: StructType) -> Int {
+    private func sizeof(struct typ: StructTypeInfo) -> Int {
         var accum = 0
         for (_, symbol) in typ.symbols.symbolTable {
             accum += sizeof(type: symbol.type)
@@ -54,7 +54,7 @@ public struct MemoryLayoutStrategyTurtle16: MemoryLayoutStrategy {
         return accum
     }
     
-    private func sizeof(union typ: UnionType) -> Int {
+    private func sizeof(union typ: UnionTypeInfo) -> Int {
         let kTagSize = sizeof(type: .u8)
         let kBufferSize = typ.members.reduce(0) { (result, memberType) -> Int in
             return max(result, sizeof(type: memberType))

@@ -152,7 +152,7 @@ final class CompilerPassImplForTests: XCTestCase {
                                     expression: Get(
                                         expr: Identifier("SerialFake"),
                                         member: Identifier("puts"))),
-                                targetType: PrimitiveType(.pointer(.function(SnapCore.FunctionType(
+                                targetType: PrimitiveType(.pointer(.function(SnapCore.FunctionTypeInfo(
                                     returnType: .void,
                                     arguments: [
                                         .pointer(.void),

@@ -37,7 +37,7 @@ public struct TraitScanner {
     private func doGeneric(_ node: TraitDeclaration) throws -> SymbolType {
         assert(node.isGeneric)
         let name = node.identifier.identifier
-        let type = SymbolType.genericTraitType(GenericTraitType(template: node))
+        let type = SymbolType.genericTraitType(GenericTraitTypeInfo(template: node))
         symbols.bind(identifier: name,
                      symbolType: type,
                      visibility: node.visibility)
@@ -47,7 +47,7 @@ public struct TraitScanner {
     private func doNonGeneric(
         traitDecl node0: TraitDeclaration,
         evaluatedTypeArguments: [SymbolType],
-        genericTraitType: GenericTraitType?
+        genericTraitType: GenericTraitTypeInfo?
     ) throws -> SymbolType {
         assert(!node0.isGeneric)
         let mangledName = mangleTraitName(
@@ -55,7 +55,7 @@ public struct TraitScanner {
             evaluatedTypeArguments: evaluatedTypeArguments)
         let node1 = node0.withMangledName(mangledName)
         let members = SymbolTable(parent: symbols)
-        let traitType = SymbolType.traitType(TraitType(
+        let traitType = SymbolType.traitType(TraitTypeInfo(
             name: mangledName,
             nameOfTraitObjectType: node1.nameOfTraitObjectType,
             nameOfVtableType: node1.nameOfVtableType,

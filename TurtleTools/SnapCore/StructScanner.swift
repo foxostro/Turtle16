@@ -46,7 +46,7 @@ public struct StructScanner {
                 sourceAnchor: node.identifier.sourceAnchor,
                 message: "struct declaration redefines existing type: `\(name)'")
         }
-        let type = SymbolType.genericStructType(GenericStructType(template: node))
+        let type = SymbolType.genericStructType(GenericStructTypeInfo(template: node))
         symbols.bind(identifier: name,
                      symbolType: type,
                      visibility: node.visibility)
@@ -63,7 +63,7 @@ public struct StructScanner {
         let typeChecker = TypeContextTypeChecker(symbols: members, memoryLayoutStrategy: memoryLayoutStrategy)
         let name = node.identifier.identifier
         let mangledName = typeChecker.mangleStructName(name, evaluatedTypeArguments: evaluatedTypeArguments)!
-        let fullyQualifiedStructType = StructType(
+        let fullyQualifiedStructType = StructTypeInfo(
             name: mangledName,
             symbols: members,
             associatedTraitType: node.associatedTraitType)

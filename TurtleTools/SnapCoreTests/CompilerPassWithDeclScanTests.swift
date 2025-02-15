@@ -44,7 +44,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
             .withBody(Block(children: [
                 Return()
             ]))
-        let expectedFunctionType = FunctionType(
+        let expectedFunctionType = FunctionTypeInfo(
             name: "foo",
             mangledName: "foo",
             returnType: .void,
@@ -74,7 +74,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
         let expectedStructSymbols = SymbolTable()
         expectedStructSymbols.frameLookupMode = .set(Frame())
         expectedStructSymbols.breadcrumb = .structType("None")
-        let expectedType: SymbolType = .structType(StructType(name: "None", symbols: expectedStructSymbols))
+        let expectedType: SymbolType = .structType(StructTypeInfo(name: "None", symbols: expectedStructSymbols))
         let actualType = try symbols.resolveType(identifier: "None")
         XCTAssertEqual(actualType, expectedType)
     }
@@ -107,7 +107,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
         let expectedSymbols = SymbolTable()
         expectedSymbols.frameLookupMode = .set(Frame())
         expectedSymbols.breadcrumb = .traitType("Foo")
-        let expectedType: SymbolType = .traitType(TraitType(name: "Foo", nameOfTraitObjectType: "__Foo_object", nameOfVtableType: "__Foo_vtable", symbols: expectedSymbols))
+        let expectedType: SymbolType = .traitType(TraitTypeInfo(name: "Foo", nameOfTraitObjectType: "__Foo_object", nameOfVtableType: "__Foo_vtable", symbols: expectedSymbols))
         let actualType = try? symbols.resolveType(identifier: "Foo")
         XCTAssertEqual(expectedType, actualType)
     }
@@ -189,7 +189,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
         XCTAssertEqual(vtableStructType.name, "__Serial_vtable")
         XCTAssertEqual(vtableStructType.symbols.exists(identifier: "puts"), true)
         let putsSymbol = try vtableStructType.symbols.resolve(identifier: "puts")
-        XCTAssertEqual(putsSymbol.type, .pointer(.function(FunctionType(returnType: .void, arguments: [.pointer(.void), .dynamicArray(elementType: .u8)]))))
+        XCTAssertEqual(putsSymbol.type, .pointer(.function(FunctionTypeInfo(returnType: .void, arguments: [.pointer(.void), .dynamicArray(elementType: .u8)]))))
         XCTAssertEqual(putsSymbol.offset, 0)
     }
     

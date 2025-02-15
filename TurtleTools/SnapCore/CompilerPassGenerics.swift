@@ -221,7 +221,7 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
     
     fileprivate func visit(expr: Expression.GenericTypeApplication,
                            symbols: SymbolTable,
-                           concreteFunctionType: FunctionType) throws -> Expression? {
+                           concreteFunctionType: FunctionTypeInfo) throws -> Expression? {
         
         let mangledName = concreteFunctionType.mangledName!
         let concreteIdent = Expression.Identifier(mangledName)
@@ -295,7 +295,7 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
     
     fileprivate func visit(expr: Expression.GenericTypeApplication,
                            symbols: SymbolTable,
-                           concreteStructType: StructType) throws -> Expression? {
+                           concreteStructType: StructTypeInfo) throws -> Expression? {
         
         let concreteIdent = Expression.Identifier(concreteStructType.name)
         
@@ -366,7 +366,7 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
     
     fileprivate func visit(expr: Expression.GenericTypeApplication,
                            symbols: SymbolTable,
-                           concreteTraitType: TraitType) throws -> Expression? {
+                           concreteTraitType: TraitTypeInfo) throws -> Expression? {
         
         let concreteIdent = Expression.Identifier(concreteTraitType.name)
         

@@ -50,13 +50,13 @@ final class MemoryLayoutStrategyTurtleTTLTests: XCTestCase {
     }
     
     func testSizeOfUnion() throws {
-        let typ: SymbolType = .unionType(UnionType([.u16]))
+        let typ: SymbolType = .unionType(UnionTypeInfo([.u16]))
         let strategy = makeStrategy()
         XCTAssertEqual(strategy.sizeof(type: typ), 3)
     }
     
     func testSizeOfStruct() throws {
-        let typ: SymbolType = .structType(StructType(name: "Slice", symbols: SymbolTable(tuples: [
+        let typ: SymbolType = .structType(StructTypeInfo(name: "Slice", symbols: SymbolTable(tuples: [
             ("base", Symbol(type: .u16, offset: 0, storage: .automaticStorage)),
             ("count", Symbol(type: .u16, offset: 2, storage: .automaticStorage))
         ])))

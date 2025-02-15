@@ -725,7 +725,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                             argumentNames: ["arg1"],
                             typeArguments: [],
                             body: Block(children: [
-                                StructDeclaration(StructType(name: "T", symbols: SymbolTable())),
+                                StructDeclaration(StructTypeInfo(name: "T", symbols: SymbolTable())),
                                 Return(Expression.Identifier("arg1"))
                             ]))
                     ]),

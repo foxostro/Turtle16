@@ -82,7 +82,7 @@ public final class CompilerPassEraseMethodCalls: CompilerPassWithDeclScan {
         }
     }
     
-    func maybeUnwrapStructType(_ getExpr: Expression.Get) throws -> StructType? {
+    func maybeUnwrapStructType(_ getExpr: Expression.Get) throws -> StructTypeInfo? {
         switch try typeChecker.check(expression: getExpr.expr) {
         case .constStructType(let typ), .structType(let typ),
              .constPointer(.constStructType(let typ)), .constPointer(.structType(let typ)),

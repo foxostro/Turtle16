@@ -68,7 +68,7 @@ final class CompilerPassMatchTests: XCTestCase {
         let symbols = SymbolTable(tuples: [
             ("result", Symbol(type: .u8))
         ], typeDict: [
-            "None" : .structType(StructType(name: "None", symbols: SymbolTable()))
+            "None" : .structType(StructTypeInfo(name: "None", symbols: SymbolTable()))
         ])
         let input = Match(expr: Expression.Identifier("result"), clauses: [
             Match.Clause(valueIdentifier: Expression.Identifier("foo"),
@@ -129,7 +129,7 @@ final class CompilerPassMatchTests: XCTestCase {
     func testCompileMatchStatementWithUnionTypeAndNonexhaustiveClauses() {
         let symbols = SymbolTable(tuples: [
             ("result", Symbol(type: .u8)),
-            ("test", Symbol(type: .unionType(UnionType([.u8, .bool]))))
+            ("test", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool]))))
         ])
         let input = Match(expr: Expression.Identifier("test"), clauses: [
             Match.Clause(valueIdentifier: Expression.Identifier("foo"),
@@ -149,7 +149,7 @@ final class CompilerPassMatchTests: XCTestCase {
     func testCompileMatchStatementWithUnionTypeAndExhaustiveClauses() throws {
         let symbols = SymbolTable(tuples: [
             ("result", Symbol(type: .u8)),
-            ("test", Symbol(type: .unionType(UnionType([.u8, .bool]))))
+            ("test", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool]))))
         ])
         let input = Match(expr: Expression.Identifier("test"), clauses: [
             Match.Clause(valueIdentifier: Expression.Identifier("foo"),

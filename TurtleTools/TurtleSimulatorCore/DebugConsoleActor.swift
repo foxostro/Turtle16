@@ -15,7 +15,8 @@ public extension Notification.Name {
     static let debuggerIsFreeRunningDidChange = Notification.Name("debuggerIsFreeRunningDidChange")
 }
 
-public final class DebugConsoleActor: NSObject {
+// TODO: I may try rewriting `DebugConsoleActor` using Swift's new actors
+public final class DebugConsoleActor {
     private let debugConsole: DebugConsole
     private let lock = NSCondition()
     private var worker: Thread!
@@ -60,8 +61,6 @@ public final class DebugConsoleActor: NSObject {
         self.debugConsole = debugConsole
         internalLatestSnapshot = try? TurtleComputer.decode(from: debugConsole.computer.snapshot())
             
-        super.init()
-        
         NotificationCenter.default
             .publisher(for: .computerStateDidChange)
             .sink { [weak self] _ in

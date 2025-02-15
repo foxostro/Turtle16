@@ -10,13 +10,13 @@ import Foundation
 import Cocoa
 import TurtleCore
 
-public class DebugConsoleCommandLineCompiler: NSObject {
+public final class DebugConsoleCommandLineCompiler {
     public var syntaxTree: TopLevel! = nil
     public var instructions: [DebugConsoleInstruction] = []
     public private(set) var errors: [CompilerError] = []
-    public var hasError:Bool {
-        return errors.count != 0
-    }
+    public var hasError:Bool { errors.count != 0 }
+    
+    public init() {}
     
     public func compile(_ text: String) {
         instructions = []
@@ -91,7 +91,7 @@ public class DebugConsoleCommandLineCompiler: NSObject {
         }
     }
     
-    fileprivate func acceptHelp(_ node: InstructionNode) {
+    private func acceptHelp(_ node: InstructionNode) {
         guard node.parameters.count > 0 else {
             instructions.append(.help(nil))
             return
@@ -147,7 +147,7 @@ public class DebugConsoleCommandLineCompiler: NSObject {
         }
     }
     
-    fileprivate func acceptQuit(_ node: InstructionNode) {
+    private func acceptQuit(_ node: InstructionNode) {
         if node.parameters.count != 0 {
             errors.append(CompilerError(sourceAnchor: node.parameters.first?.sourceAnchor, message: "instruction takes no parameters: `\(node.instruction)'"))
         } else {
@@ -155,7 +155,7 @@ public class DebugConsoleCommandLineCompiler: NSObject {
         }
     }
     
-    fileprivate func acceptReset(_ node: InstructionNode) {
+    private func acceptReset(_ node: InstructionNode) {
         if node.parameters.count > 1 {
             errors.append(CompilerError(sourceAnchor: node.parameters[1].sourceAnchor, message: "instruction takes zero or one parameters: `\(node.instruction)'"))
         } else {
@@ -182,7 +182,7 @@ public class DebugConsoleCommandLineCompiler: NSObject {
         }
     }
     
-    fileprivate func acceptContinue(_ node: InstructionNode) {
+    private func acceptContinue(_ node: InstructionNode) {
         if node.parameters.count != 0 {
             errors.append(CompilerError(sourceAnchor: node.parameters.first?.sourceAnchor, message: "instruction takes no parameters: `\(node.instruction)'"))
         } else {
@@ -190,7 +190,7 @@ public class DebugConsoleCommandLineCompiler: NSObject {
         }
     }
     
-    fileprivate func acceptStep(_ node: InstructionNode) {
+    private func acceptStep(_ node: InstructionNode) {
         if node.parameters.count == 0 {
             instructions.append(.step(count: 1))
         } else if node.parameters.count == 1 {
@@ -204,7 +204,7 @@ public class DebugConsoleCommandLineCompiler: NSObject {
         }
     }
     
-    fileprivate func acceptReg(_ node: InstructionNode) {
+    private func acceptReg(_ node: InstructionNode) {
         if node.parameters.count != 0 {
             errors.append(CompilerError(sourceAnchor: node.parameters.first?.sourceAnchor, message: "instruction takes no parameters: `\(node.instruction)'"))
         } else {
@@ -212,7 +212,7 @@ public class DebugConsoleCommandLineCompiler: NSObject {
         }
     }
     
-    fileprivate func acceptInfo(_ node: InstructionNode) {
+    private func acceptInfo(_ node: InstructionNode) {
         if node.parameters.count < 2 {
             let device = node.parameters.first as? ParameterIdentifier
             instructions.append(.info(device?.value))
@@ -221,25 +221,25 @@ public class DebugConsoleCommandLineCompiler: NSObject {
         }
     }
     
-    fileprivate func acceptReadMemory(_ node: InstructionNode) {
+    private func acceptReadMemory(_ node: InstructionNode) {
         if let parameters = acceptReadMemoryParameters(node) {
             instructions.append(.readMemory(base: parameters.0, count: parameters.1))
         }
     }
     
-    fileprivate func acceptWriteMemory(_ node: InstructionNode) {
+    private func acceptWriteMemory(_ node: InstructionNode) {
         if let parameters = acceptWriteMemoryParameters(node) {
             instructions.append(.writeMemory(base: parameters.0, words: parameters.1))
         }
     }
     
-    fileprivate func acceptReadInstructions(_ node: InstructionNode) {
+    private func acceptReadInstructions(_ node: InstructionNode) {
         if let parameters = acceptReadMemoryParameters(node) {
             instructions.append(.readInstructions(base: parameters.0, count: parameters.1))
         }
     }
     
-    fileprivate func acceptReadMemoryParameters(_ node: InstructionNode) -> (UInt16, UInt)? {
+    private func acceptReadMemoryParameters(_ node: InstructionNode) -> (UInt16, UInt)? {
         if node.parameters.count == 1 {
             if let base = node.parameters.first as? ParameterNumber {
                 return (UInt16(base.value), 1)
@@ -269,7 +269,7 @@ public class DebugConsoleCommandLineCompiler: NSObject {
         return nil
     }
     
-    fileprivate func validateParameterUInt16(_ node: InstructionNode, _ param: ParameterNumber) -> UInt16? {
+    private func validateParameterUInt16(_ node: InstructionNode, _ param: ParameterNumber) -> UInt16? {
         guard param.value <= UInt16.max && param.value >= Int16.min else {
             errors.append(CompilerError(sourceAnchor: param.sourceAnchor, message: "not enough bits to represent the passed value: `\(node.instruction)'"))
                 return nil
@@ -283,7 +283,7 @@ public class DebugConsoleCommandLineCompiler: NSObject {
         return baseAddr
     }
     
-    fileprivate func acceptWriteInstructions(_ node: InstructionNode) {
+    private func acceptWriteInstructions(_ node: InstructionNode) {
         if let parameters = acceptWriteMemoryParameters(node) {
             instructions.append(.writeInstructions(base: parameters.0, words: parameters.1))
         }
@@ -318,7 +318,7 @@ public class DebugConsoleCommandLineCompiler: NSObject {
         return (baseAddr, words)
     }
     
-    fileprivate func acceptLoad(_ node: InstructionNode) {
+    private func acceptLoad(_ node: InstructionNode) {
         guard (1...2).contains(node.parameters.count) else {
             let sourceAnchor = (node.parameters.last?.sourceAnchor) ?? node.sourceAnchor
             errors.append(CompilerError(sourceAnchor: sourceAnchor, message: "expected one parameter for the destination and one parameter for the file path: `\(node.instruction)'"))
@@ -348,7 +348,7 @@ public class DebugConsoleCommandLineCompiler: NSObject {
         }
     }
     
-    fileprivate func acceptSave(_ node: InstructionNode) {
+    private func acceptSave(_ node: InstructionNode) {
         guard (1...2).contains(node.parameters.count) else {
             let sourceAnchor = (node.parameters.last?.sourceAnchor) ?? node.sourceAnchor
             errors.append(CompilerError(sourceAnchor: sourceAnchor, message: "expected one parameter for the source and one parameter for the file path: `\(node.instruction)'"))
@@ -378,7 +378,7 @@ public class DebugConsoleCommandLineCompiler: NSObject {
         }
     }
     
-    fileprivate func acceptDisassemble(_ node: InstructionNode) {
+    private func acceptDisassemble(_ node: InstructionNode) {
         switch node.parameters.count {
         case 0:
             instructions.append(.disassemble(.unspecified))

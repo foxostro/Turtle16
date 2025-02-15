@@ -9,7 +9,7 @@
 import Foundation
 import TurtleCore
 
-public class DebugConsoleCommandLineInterpreter: NSObject {
+public final class DebugConsoleCommandLineInterpreter {
     public let computer: TurtleComputer
     public var shouldQuit = false
     public var logger: Logger = StringLogger()

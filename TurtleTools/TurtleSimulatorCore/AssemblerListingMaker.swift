@@ -8,20 +8,22 @@
 
 import TurtleCore
 
-public class AssemblerListingMaker: NSObject {
+public struct AssemblerListingMaker {
+    public init() {}
+    
     public func makeListing(_ node: AbstractSyntaxTreeNode) -> String {
         switch node {
         case let node as TopLevel:
-            return makeListing(topLevel: node)
+            makeListing(topLevel: node)
 
         case let node as InstructionNode:
-            return makeListing(instruction: node)
+            makeListing(instruction: node)
             
         case let node as LabelDeclaration:
-            return makeListing(label: node)
+            makeListing(label: node)
             
         case let node as CommentNode:
-            return makeListing(comment: node)
+            makeListing(comment: node)
         
         default:
             fatalError("unimplemented node: \(node)")
@@ -29,28 +31,28 @@ public class AssemblerListingMaker: NSObject {
     }
     
     public func makeListing(topLevel node: TopLevel) -> String {
-        return node.children.map { makeListing($0) }.joined(separator: "\n")
+        node.children.map { makeListing($0) }.joined(separator: "\n")
     }
     
     public func makeListing(instruction node: InstructionNode) -> String {
         if node.parameters.count > 0 {
-            return node.instruction + " " + makeListing(parameterList: node.parameters)
+            node.instruction + " " + makeListing(parameterList: node.parameters)
         } else {
-            return node.instruction
+            node.instruction
         }
     }
     
     public func makeListing(parameterList: [Parameter]) -> String {
-        return parameterList.map { makeListing(parameter: $0) }.joined(separator: ", ")
+        parameterList.map { makeListing(parameter: $0) }.joined(separator: ", ")
     }
     
     public func makeListing(parameter node: Parameter) -> String {
         switch node {
         case let node as ParameterIdentifier:
-            return node.value
+            node.value
 
         case let node as ParameterNumber:
-            return "\(node.value)"
+            "\(node.value)"
         
         default:
             fatalError("unimplemented node: \(node)")
@@ -58,10 +60,10 @@ public class AssemblerListingMaker: NSObject {
     }
     
     public func makeListing(label node: LabelDeclaration) -> String {
-        return "\(node.identifier):"
+        "\(node.identifier):"
     }
     
     public func makeListing(comment node: CommentNode) -> String {
-        return node.string.split(separator: "\n").map({"# \($0)"}).joined(separator: "\n")
+        node.string.split(separator: "\n").map({"# \($0)"}).joined(separator: "\n")
     }
 }

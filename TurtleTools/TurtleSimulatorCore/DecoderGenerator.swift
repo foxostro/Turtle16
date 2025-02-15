@@ -28,7 +28,7 @@ public extension UInt16 {
     }
 }
 
-public class DecoderGenerator: NSObject {
+public struct DecoderGenerator {
     public static let HLT = 0
     public static let SelStoreOpA = 1
     public static let SelStoreOpB = 2
@@ -547,4 +547,6 @@ public class DecoderGenerator: NSObject {
         } // n
         return indices
     }
+    
+    public init() {}
 }

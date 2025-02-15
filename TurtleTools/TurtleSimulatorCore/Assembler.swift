@@ -9,12 +9,12 @@
 import Foundation
 import TurtleCore
 
-public class Assembler: NSObject {
+public final class Assembler {
     public var instructions: [UInt16] = []
     public private(set) var errors: [CompilerError] = []
-    public var hasError:Bool {
-        return errors.count != 0
-    }
+    public var hasError:Bool { errors.count != 0 }
+    
+    public init() {}
     
     public func compile(_ text: String) {
         instructions = []

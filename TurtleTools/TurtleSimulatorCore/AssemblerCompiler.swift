@@ -49,14 +49,14 @@ public let kLEAVE = "LEAVE"
 public let kRET = "RET"
 public let kBREAK = "BREAK"
 
-public class AssemblerCompiler: NSObject {
-    let codeGenerator = AssemblerCodeGenerator()
+public final class AssemblerCompiler {
+    private let codeGenerator = AssemblerCodeGenerator()
     
-    public var hasError: Bool {
-        return !errors.isEmpty
-    }
+    public var hasError: Bool { !errors.isEmpty }
     public private(set) var errors: [CompilerError] = []
     public private(set) var instructions: [UInt16] = []
+    
+    public init() {}
     
     public func compile(_ topLevel: TopLevel) {
         compile(ast: topLevel.children)

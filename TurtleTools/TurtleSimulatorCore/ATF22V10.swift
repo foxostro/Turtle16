@@ -11,7 +11,7 @@ import Foundation
 // The ATF22V10 contains a 132x44 programmable interconnect array.
 // The ProgrammableLogicInterconnect class simulates this array.
 // This produces lists of product terms for the OLMCs.
-public class ATF22V10: NSObject {
+public struct ATF22V10 {
     public static let numberOfProductTerms = 132
     public static let sizeOfProductTerm = 44
     public static let numberOfInputPins = 11

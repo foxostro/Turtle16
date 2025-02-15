@@ -9,7 +9,7 @@
 import Foundation
 import TurtleCore
 
-public class AssemblerCodeGenerator: NSObject {
+public final class AssemblerCodeGenerator {
     public typealias Register = AssemblerSingleInstructionCodeGenerator.Register
     public var instructions: [UInt16] = []
     public var symbols: [String:Int] = [:]
@@ -35,6 +35,8 @@ public class AssemblerCodeGenerator: NSObject {
         public let offset: Int
     }
     public private(set) var patcherActions: [PatcherAction] = []
+    
+    public init() {}
     
     public func begin() {
         isAssembling = true

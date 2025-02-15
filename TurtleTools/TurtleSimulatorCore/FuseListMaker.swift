@@ -8,8 +8,8 @@
 
 import Foundation
 
-// Tool for making a JEDEC fuse list. This is useful when simulating ATF22V10.
-public class FuseListMaker: NSObject {
+/// Tool for making a JEDEC fuse list. This is useful when simulating ATF22V10.
+public final class FuseListMaker {
     public private(set) var fuseList: [UInt] = []
     public var defaultFuseState: UInt = 0
     
@@ -40,4 +40,6 @@ public class FuseListMaker: NSObject {
             return scalar == "0" ? 0 : 1
         }))
     }
+    
+    public init() {}
 }

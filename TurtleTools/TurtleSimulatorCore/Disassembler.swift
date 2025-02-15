@@ -7,7 +7,7 @@
 //
 import Foundation
 
-public class Disassembler: NSObject {
+public final class Disassembler {
     public var shouldUseConventionalRegisterNames = false
     public typealias Register = AssemblerSingleInstructionCodeGenerator.Register
     
@@ -237,4 +237,6 @@ public class Disassembler: NSObject {
             return str
         }.joined(separator: "\n")
     }
+    
+    public init() {}
 }

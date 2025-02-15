@@ -14,3 +14,15 @@ public protocol MemoryLayoutStrategy {
     /// The number of words to reserve in the stack frame to save registers.
     var sizeOfSaveArea: Int { get }
 }
+
+extension MemoryLayoutStrategy {
+    func sizeof(struct typ: StructTypeInfo) -> Int {
+        typ.symbols.symbolTable.values.reduce(0) { $0 + sizeof(type: $1.type) }
+    }
+    
+    func sizeof(union typ: UnionTypeInfo) -> Int {
+        sizeofUnionTag + typ.members.reduce(0) { max($0, sizeof(type: $1)) }
+    }
+    
+    var sizeofUnionTag: Int { sizeof(type: .u8) }
+}

@@ -11,7 +11,7 @@ import SnapCore
 
 final class MemoryLayoutStrategyTurtleTTLTests: XCTestCase {
     func makeStrategy() -> MemoryLayoutStrategy {
-        return MemoryLayoutStrategyTurtleTTL()
+        MemoryLayoutStrategyTurtleTTL()
     }
     
     func testSizeOfVoid() throws {

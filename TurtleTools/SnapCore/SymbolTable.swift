@@ -8,7 +8,7 @@
 
 import TurtleCore
 
-public indirect enum SymbolType: Equatable, Hashable, CustomStringConvertible {
+public indirect enum SymbolType: Hashable, CustomStringConvertible {
     case void
     case function(FunctionType)
     case genericFunction(Expression.GenericFunctionType)
@@ -389,7 +389,7 @@ public enum SymbolStorage: Equatable {
     case staticStorage, automaticStorage
 }
 
-public enum BooleanType: Equatable, Hashable, CustomStringConvertible {
+public enum BooleanType: Hashable, CustomStringConvertible {
     case mutableBool, immutableBool, compTimeBool(Bool)
     
     public func canValueBeTriviallyReinterpretedAs(type: BooleanType) -> Bool {
@@ -430,7 +430,7 @@ public enum BooleanType: Equatable, Hashable, CustomStringConvertible {
     }
 }
 
-public enum IntClass: Equatable, Hashable, CustomStringConvertible, CaseIterable {
+public enum IntClass: Hashable, CustomStringConvertible, CaseIterable {
     case u8, u16, i8, i16
     
     public static func binaryResultType(left: IntClass?, right: IntClass?) -> IntClass? {
@@ -518,7 +518,7 @@ public enum IntClass: Equatable, Hashable, CustomStringConvertible, CaseIterable
     }
 }
 
-public enum ArithmeticType: Equatable, Hashable, CustomStringConvertible {
+public enum ArithmeticType: Hashable, CustomStringConvertible {
     case mutableInt(IntClass), immutableInt(IntClass), compTimeInt(Int)
     
     public static func binaryResultType(left: ArithmeticType, right: ArithmeticType) -> ArithmeticType? {
@@ -608,7 +608,7 @@ public enum ArithmeticType: Equatable, Hashable, CustomStringConvertible {
     }
 }
 
-public final class FunctionType: Equatable, Hashable, CustomStringConvertible {
+public final class FunctionType: Hashable, CustomStringConvertible {
     public let name: String?
     public let mangledName: String?
     public let returnType: SymbolType
@@ -704,7 +704,7 @@ public final class FunctionType: Equatable, Hashable, CustomStringConvertible {
     }
 }
 
-public final class StructType: Equatable, Hashable, CustomStringConvertible {
+public final class StructType: Hashable, CustomStringConvertible {
     public let name: String
     public let symbols: SymbolTable
     
@@ -812,7 +812,7 @@ public final class StructType: Equatable, Hashable, CustomStringConvertible {
     }
 }
 
-public final class GenericStructType: Equatable, Hashable, CustomStringConvertible {
+public final class GenericStructType: Hashable, CustomStringConvertible {
     public let template: StructDeclaration
     public var instantiations: [ [SymbolType] : SymbolType ] = [:]
     
@@ -852,7 +852,7 @@ public final class GenericStructType: Equatable, Hashable, CustomStringConvertib
     }
 }
 
-public final class TraitType: Equatable, Hashable, CustomStringConvertible {
+public final class TraitType: Hashable, CustomStringConvertible {
     public let name: String
     public let symbols: SymbolTable
     public let nameOfTraitObjectType: String
@@ -926,7 +926,7 @@ trait \(name) {
     }
 }
 
-public final class GenericTraitType: Equatable, Hashable, CustomStringConvertible {
+public final class GenericTraitType: Hashable, CustomStringConvertible {
     public let template: TraitDeclaration
     public var instantiations: [ [SymbolType] : SymbolType ] = [:]
     
@@ -954,7 +954,7 @@ public final class GenericTraitType: Equatable, Hashable, CustomStringConvertibl
     }
 }
 
-public final class UnionType: Equatable, Hashable, CustomStringConvertible {
+public final class UnionType: Hashable, CustomStringConvertible {
     let members: [SymbolType]
     
     public init(_ members: [SymbolType]) {
@@ -983,7 +983,7 @@ public final class UnionType: Equatable, Hashable, CustomStringConvertible {
     }
 }
 
-public enum SymbolVisibility: Equatable, Hashable, CustomStringConvertible {
+public enum SymbolVisibility: Hashable, CustomStringConvertible {
     case publicVisibility
     case privateVisibility
     
@@ -995,7 +995,7 @@ public enum SymbolVisibility: Equatable, Hashable, CustomStringConvertible {
     }
 }
 
-public struct Symbol: Hashable, Equatable {
+public struct Symbol: Hashable {
     public let type: SymbolType
     public let maybeOffset: Int?
     public var offset: Int {
@@ -1027,8 +1027,8 @@ public struct Symbol: Hashable, Equatable {
 }
 
 // Maps a name to symbol information.
-public final class SymbolTable: Equatable, Hashable {
-    public struct TypeRecord: Equatable, Hashable {
+public final class SymbolTable: Hashable {
+    public struct TypeRecord: Hashable {
         let symbolType: SymbolType
         let visibility: SymbolVisibility
     }
@@ -1069,7 +1069,7 @@ public final class SymbolTable: Equatable, Hashable {
     
     private var internalLabelNameCounter: Int = 0
     
-    public enum FrameLookupMode: Hashable, Equatable {
+    public enum FrameLookupMode: Hashable {
         case inherit, set(Frame)
         
         public var isSet: Bool {
@@ -1103,7 +1103,7 @@ public final class SymbolTable: Equatable, Hashable {
         return index
     }
     
-    public enum Breadcrumb: Hashable, Equatable, CustomStringConvertible {
+    public enum Breadcrumb: Hashable, CustomStringConvertible {
         case functionType(FunctionType)
         case module(name: String, useGlobalNamespace: Bool)
         case structType(String)

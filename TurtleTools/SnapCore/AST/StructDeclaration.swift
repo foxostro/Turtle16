@@ -9,7 +9,7 @@
 import TurtleCore
 
 public class StructDeclaration: AbstractSyntaxTreeNode {
-    public struct Member: Hashable, Equatable, CustomStringConvertible {
+    public struct Member: Hashable, CustomStringConvertible {
         public let name: String
         public let memberType: Expression
         

@@ -10,13 +10,13 @@ import Foundation
 import TurtleCore
 
 // Program are compiled to an intermediate language called Tack
-public enum TackInstruction: Equatable, Hashable {
+public enum TackInstruction: Hashable {
     public typealias Label = String
     public typealias Count = Int
     public typealias Offset = Int
     public typealias Imm = Int
     
-    public enum RegisterType: Equatable, Hashable {
+    public enum RegisterType: Hashable {
         case p, w, b, o
         
         public var description: String {
@@ -29,7 +29,7 @@ public enum TackInstruction: Equatable, Hashable {
         }
     }
     
-    public enum Register: Equatable, Hashable {
+    public enum Register: Hashable {
         case p(RegisterPointer), w(Register16), b(Register8), o(RegisterBoolean)
         
         public static let sp: Register = .p(.sp)
@@ -83,7 +83,7 @@ public enum TackInstruction: Equatable, Hashable {
         }
     }
     
-    public enum RegisterPointer: Equatable, Hashable {
+    public enum RegisterPointer: Hashable {
         case sp, fp, ra, p(Int)
         
         public var description: String {
@@ -100,7 +100,7 @@ public enum TackInstruction: Equatable, Hashable {
         }
     }
     
-    public enum Register16: Equatable, Hashable {
+    public enum Register16: Hashable {
         case w(Int)
         
         public var description: String {
@@ -111,7 +111,7 @@ public enum TackInstruction: Equatable, Hashable {
         }
     }
     
-    public enum RegisterBoolean: Equatable, Hashable {
+    public enum RegisterBoolean: Hashable {
         case o(Int)
         
         public var description: String {
@@ -122,7 +122,7 @@ public enum TackInstruction: Equatable, Hashable {
         }
     }
     
-    public enum Register8: Equatable, Hashable {
+    public enum Register8: Hashable {
         case b(Int)
         
         public var description: String {

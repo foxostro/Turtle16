@@ -149,7 +149,7 @@ public class EX: NSObject, NSSecureCoding {
     
     public var associatedPC: UInt16? = nil
     
-    public struct Input: Equatable, Hashable {
+    public struct Input: Hashable {
         public let pc: UInt16
         public let ctl: UInt
         public let a: UInt16

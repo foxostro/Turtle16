@@ -15,7 +15,7 @@ open class AbstractSyntaxTreeNode : NSObject {
     /// diagnostic messages for the user.
     public let sourceAnchor: SourceAnchor?
     
-    public struct CountingID: Equatable, Hashable, CustomStringConvertible, Sendable {
+    public struct CountingID: Hashable, CustomStringConvertible, Sendable {
         private static var counter: Int = 0
         private static func next() -> Int {
             let result: Int

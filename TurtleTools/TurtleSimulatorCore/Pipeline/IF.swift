@@ -79,7 +79,7 @@ public class IF_Output: NSObject, NSSecureCoding {
 public class IF: NSObject, NSSecureCoding {
     public static var supportsSecureCoding = true
     
-    public struct Input: Equatable, Hashable {
+    public struct Input: Hashable {
         public let stall: UInt
         public let y: UInt16
         public let jabs: UInt

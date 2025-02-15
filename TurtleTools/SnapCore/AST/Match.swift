@@ -9,7 +9,7 @@
 import TurtleCore
 
 public class Match: AbstractSyntaxTreeNode {
-    public struct Clause: Equatable, Hashable {
+    public struct Clause: Hashable {
         public let sourceAnchor: SourceAnchor?
         public let valueIdentifier: Expression.Identifier
         public let valueType: Expression

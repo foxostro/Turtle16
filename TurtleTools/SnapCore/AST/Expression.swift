@@ -1507,7 +1507,7 @@ public class Expression: AbstractSyntaxTreeNode {
     }
 
     public class StructInitializer: Expression {
-        public struct Argument: Equatable, Hashable, CustomStringConvertible {
+        public struct Argument: Hashable, CustomStringConvertible {
             public let name: String
             public let expr: Expression
             

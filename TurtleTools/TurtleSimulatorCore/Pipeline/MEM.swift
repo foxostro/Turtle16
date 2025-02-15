@@ -93,7 +93,7 @@ public class MEM: NSObject, NSSecureCoding {
     
     public var associatedPC: UInt16? = nil
     
-    public struct Input: Equatable, Hashable {
+    public struct Input: Hashable {
         public let rdy: UInt
         public let y: UInt16
         public let storeOp: UInt16

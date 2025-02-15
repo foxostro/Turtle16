@@ -106,7 +106,7 @@ public class ID: NSObject, NSSecureCoding {
     public static let nopControlWord: UInt = 0b111111111111111111111 // The signals output to ctl_EX on a NOP instruction. This is different than the signals on ctl_ID for the same.
     public static let nopControlWord_ID: UInt = 0b11111111111111111111111 // The signals on ctl_ID when executing a NOP instruction. This is differnet than ctl_EX.
     
-    public struct WriteBackInput: Equatable, Hashable {
+    public struct WriteBackInput: Hashable {
         public let c: UInt16
         public let wrh: UInt
         public let wrl: UInt
@@ -137,7 +137,7 @@ public class ID: NSObject, NSSecureCoding {
         }
     }
     
-    public struct Input: Equatable, Hashable {
+    public struct Input: Hashable {
         public let ins: UInt16
         public let y_EX: UInt16
         public let y_MEM: UInt16

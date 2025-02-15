@@ -8,11 +8,11 @@
 
 import Foundation
 
-// An activation record, usually a stack frame
-public final class Frame: Equatable, Hashable {
+/// An activation record, usually a stack frame
+public final class Frame: Hashable {
     public enum GrowthDirection { case down, up }
     
-    public struct Pair: Hashable, Equatable {
+    public struct Pair: Hashable {
         let identifier: String
         let symbol: Symbol
     }

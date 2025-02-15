@@ -18,7 +18,7 @@ public class MEM_Output: NSObject, NSSecureCoding {
     public let associatedPC: UInt16?
     
     public override var description: String {
-        return "y: \(String(format: "%04x", y)), storeOp: \(String(format: "%04x", storeOp)), selC: \(selC), ctl: \(String(format: "%x", ctl))"
+        "y: \(String(format: "%04x", y)), storeOp: \(String(format: "%04x", storeOp)), selC: \(selC), ctl: \(String(format: "%x", ctl))"
     }
     
     public init(y: UInt16, storeOp: UInt16, selC: UInt, ctl: UInt, associatedPC: UInt16? = nil) {

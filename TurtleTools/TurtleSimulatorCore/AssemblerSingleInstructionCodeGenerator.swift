@@ -21,14 +21,14 @@ public final class AssemblerSingleInstructionCodeGenerator {
         
         public var description: String {
             switch self {
-            case .r0: return "r0"
-            case .r1: return "r1"
-            case .r2: return "r2"
-            case .r3: return "r3"
-            case .r4: return "r4"
-            case .r5: return "r5"
-            case .r6: return "r6"
-            case .r7: return "r7"
+            case .r0: "r0"
+            case .r1: "r1"
+            case .r2: "r2"
+            case .r3: "r3"
+            case .r4: "r4"
+            case .r5: "r5"
+            case .r6: "r6"
+            case .r7: "r7"
             }
         }
     }

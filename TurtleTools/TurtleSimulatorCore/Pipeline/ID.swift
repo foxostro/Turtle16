@@ -19,7 +19,7 @@ public class ID_Output: NSObject, NSSecureCoding {
     public let associatedPC: UInt16?
     
     public override var description: String {
-        return "stall: \(stall), ctl_EX: \(String(format: "%x", ctl_EX)), a: \(String(format: "%04x", a)), b: \(String(format: "%04x", b)), ins: \(String(format: "%04x", ins))"
+        "stall: \(stall), ctl_EX: \(String(format: "%x", ctl_EX)), a: \(String(format: "%04x", a)), b: \(String(format: "%04x", b)), ins: \(String(format: "%04x", ins))"
     }
     
     public required init(stall: UInt,

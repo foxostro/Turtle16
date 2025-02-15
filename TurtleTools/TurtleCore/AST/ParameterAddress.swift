@@ -43,7 +43,7 @@ public class ParameterAddress: Parameter {
     }
     
     public override var description: String {
-        return "\(offset)(\(identifier))"
+        "\(offset)(\(identifier))"
     }
 }
 

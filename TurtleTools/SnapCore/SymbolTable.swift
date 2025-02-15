@@ -27,78 +27,78 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
     public var isPrimitive: Bool {
         switch self {
         case .void, .booleanType, .arithmeticType, .pointer, .constPointer, .label:
-            return true
+            true
         
         default:
-            return false
+            false
         }
     }
     
     public var isConst: Bool {
         switch self {
         case .void, .function, .label:
-            return true
+            true
         case .booleanType(let typ):
-            return typ.isConst
+            typ.isConst
         case .arithmeticType(let typ):
-            return typ.isConst
+            typ.isConst
         case .constDynamicArray, .constPointer, .constStructType, .constTraitType:
-            return true
+            true
         default:
-            return false
+            false
         }
     }
     
     public var correspondingConstType: SymbolType {
         switch self {
         case .booleanType:
-            return .constBool
+            .constBool
         case .arithmeticType(let arithmeticType):
-            return .arithmeticType(.immutableInt(arithmeticType.intClass!))
+            .arithmeticType(.immutableInt(arithmeticType.intClass!))
         case .array(count: let n, elementType: let typ):
-            return .array(count: n, elementType: typ.correspondingConstType)
+            .array(count: n, elementType: typ.correspondingConstType)
         case .dynamicArray(elementType: let typ):
-            return .constDynamicArray(elementType: typ)
+            .constDynamicArray(elementType: typ)
         case .structType(let typ):
-            return .constStructType(typ)
+            .constStructType(typ)
         case .pointer(let typ):
-            return .constPointer(typ)
+            .constPointer(typ)
         case .unionType(let typ):
-            return .unionType(typ.correspondingConstType)
+            .unionType(typ.correspondingConstType)
         case .traitType(let typ):
-            return .constTraitType(typ)
+            .constTraitType(typ)
         default:
-            return self
+            self
         }
     }
     
     public var correspondingMutableType: SymbolType {
         switch self {
         case .booleanType:
-            return .bool
+            .bool
         case .arithmeticType(let arithmeticType):
-            return .arithmeticType(.mutableInt(arithmeticType.intClass!))
+            .arithmeticType(.mutableInt(arithmeticType.intClass!))
         case .array(count: let n, elementType: let typ):
-            return .array(count: n, elementType: typ.correspondingMutableType)
+            .array(count: n, elementType: typ.correspondingMutableType)
         case .constDynamicArray(elementType: let typ):
-            return .dynamicArray(elementType: typ)
+            .dynamicArray(elementType: typ)
         case .constStructType(let typ):
-            return .structType(typ)
+            .structType(typ)
         case .constPointer(let typ):
-            return .pointer(typ)
+            .pointer(typ)
         case .unionType(let typ):
-            return .unionType(typ.correspondingMutableType)
+            .unionType(typ.correspondingMutableType)
         case .constTraitType(let typ):
-            return .traitType(typ)
+            .traitType(typ)
         default:
-            return self
+            self
         }
     }
     
     public func unwrapGenericFunctionType() -> Expression.GenericFunctionType {
         switch self {
         case .genericFunction(let typ):
-            return typ
+            typ
         default:
             abort()
         }
@@ -107,7 +107,7 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
     public func unwrapPointerType() -> SymbolType {
         switch self {
         case .pointer(let typ), .constPointer(let typ):
-            return typ
+            typ
         default:
             abort()
         }
@@ -181,36 +181,36 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
     public var isFunctionType: Bool {
         switch self {
         case .function:
-            return true
+            true
         default:
-            return false
+            false
         }
     }
     
     public var isBooleanType: Bool {
         switch self {
         case .booleanType:
-            return true
+            true
         default:
-            return false
+            false
         }
     }
     
     public var isArithmeticType: Bool {
         switch self {
         case .arithmeticType:
-            return true
+            true
         default:
-            return false
+            false
         }
     }
     
     public var isPointerType: Bool {
         switch self {
         case .pointer, .constPointer:
-            return true
+            true
         default:
-            return false
+            false
         }
     }
     
@@ -230,7 +230,7 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
     public var arrayCount: Int? {
         switch self {
         case .array(count: let count, elementType: _):
-            return count
+            count
         default:
             abort()
         }
@@ -239,9 +239,9 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
     public var arrayElementType: SymbolType {
         switch self {
         case .array(count: _, elementType: let elementType):
-            return elementType
+            elementType
         case .constDynamicArray(elementType: let elementType), .dynamicArray(elementType: let elementType):
-            return elementType
+            elementType
         default:
             abort()
         }
@@ -250,45 +250,45 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
     public var description: String {
         switch self {
         case .void:
-            return "void"
+            "void"
         case .booleanType(let a):
-            return "\(a)"
+            "\(a)"
         case .arithmeticType(let arithmeticType):
-            return "\(arithmeticType)"
+            "\(arithmeticType)"
         case .array(count: let count, elementType: let elementType):
             if let count = count {
-                return "[\(count)]\(elementType)"
+                "[\(count)]\(elementType)"
             } else {
-                return "[_]\(elementType)"
+                "[_]\(elementType)"
             }
         case .constDynamicArray(elementType: let elementType):
-            return "const []\(elementType)"
+            "const []\(elementType)"
         case .dynamicArray(elementType: let elementType):
-            return "[]\(elementType)"
+            "[]\(elementType)"
         case .function(let functionType):
-            return functionType.description
+            functionType.description
         case .genericFunction(let genericFunctionType):
-            return genericFunctionType.description
+            genericFunctionType.description
         case .constStructType(let typ):
-            return "const \(typ.name)"
+            "const \(typ.name)"
         case .structType(let typ):
-            return "\(typ.name)"
+            "\(typ.name)"
         case .genericStructType(let typ):
-            return "\(typ.description)"
+            "\(typ.description)"
         case .constTraitType(let typ):
-            return "const \(typ.name)"
+            "const \(typ.name)"
         case .traitType(let typ):
-            return "\(typ.name)"
+            "\(typ.name)"
         case .genericTraitType(let genericTraitType):
-            return genericTraitType.description
+            genericTraitType.description
         case .constPointer(let pointee):
-            return "const *\(pointee.description)"
+            "const *\(pointee.description)"
         case .pointer(let pointee):
-            return "*\(pointee.description)"
+            "*\(pointee.description)"
         case .unionType(let typ):
-            return typ.description
+            typ.description
         case .label:
-            return "label"
+            "label"
         }
     }
     
@@ -393,39 +393,39 @@ public enum BooleanType: Hashable, CustomStringConvertible {
     case mutableBool, immutableBool, compTimeBool(Bool)
     
     public func canValueBeTriviallyReinterpretedAs(type: BooleanType) -> Bool {
-        return !(self.isCompTime || type.isCompTime)
+        !(self.isCompTime || type.isCompTime)
     }
     
     public var isCompTime: Bool {
         switch self {
         case .compTimeBool:
-            return true
+            true
             
         case .immutableBool, .mutableBool:
-            return false
+            false
         }
     }
     
     public var isConst: Bool {
         switch self {
         case .mutableBool:
-            return false
+            false
             
         case .immutableBool, .compTimeBool:
-            return true
+            true
         }
     }
     
     public var description: String {
         switch self {
         case .mutableBool:
-            return "bool"
+            "bool"
             
         case .immutableBool:
-            return "const bool"
+            "const bool"
             
         case .compTimeBool(let a):
-            return "boolean constant \(a)"
+            "boolean constant \(a)"
         }
     }
 }
@@ -452,58 +452,37 @@ public enum IntClass: Hashable, CustomStringConvertible, CaseIterable {
     public var isSigned: Bool {
         switch self {
         case .i8, .i16:
-            return true
+            true
             
         case .u8, .u16:
-            return false
+            false
         }
     }
     
     public var description: String {
         switch self {
-        case .i8:
-            return "i8"
-            
-        case .i16:
-            return "i16"
-            
-        case .u8:
-            return "u8"
-            
-        case .u16:
-            return "u16"
+        case .i8:  "i8"
+        case .i16: "i16"
+        case .u8:  "u8"
+        case .u16: "u16"
         }
     }
     
     public var min: Int {
         switch self {
-        case .i8:
-            return -128
-            
-        case .i16:
-            return -32768
-            
-        case .u8:
-            return 0
-            
-        case .u16:
-            return 0
+        case .i8:  -128
+        case .i16: -32768
+        case .u8:  0
+        case .u16: 0
         }
     }
     
     public var max: Int {
         switch self {
-        case .i8:
-            return 127
-            
-        case .i16:
-            return 32767
-            
-        case .u8:
-            return 255
-            
-        case .u16:
-            return 65535
+        case .i8:  127
+        case .i16: 32767
+        case .u8:  255
+        case .u16: 65535
         }
     }
     
@@ -523,40 +502,40 @@ public enum ArithmeticType: Hashable, CustomStringConvertible {
     
     public static func binaryResultType(left: ArithmeticType, right: ArithmeticType) -> ArithmeticType? {
         if let intClass = IntClass.binaryResultType(left: left.intClass, right: right.intClass) {
-            return .mutableInt(intClass)
+            .mutableInt(intClass)
         }
         else {
-            return nil
+            nil
         }
     }
     
     public var intClass: IntClass? {
         switch self {
         case .mutableInt(let a), .immutableInt(let a):
-            return a
+            a
             
         case .compTimeInt(let value):
-            return IntClass.smallestClassContaining(value: value)
+            IntClass.smallestClassContaining(value: value)
         }
     }
     
     public var min: Int {
         switch self {
         case .compTimeInt(let constantValue):
-            return constantValue
+            constantValue
             
         case .mutableInt(let a), .immutableInt(let a):
-            return a.min
+            a.min
         }
     }
     
     public var max: Int {
         switch self {
         case .compTimeInt(let constantValue):
-            return constantValue
+            constantValue
             
         case .mutableInt(let a), .immutableInt(let a):
-            return a.max
+            a.max
         }
     }
     
@@ -577,33 +556,33 @@ public enum ArithmeticType: Hashable, CustomStringConvertible {
     public var isCompTime: Bool {
         switch self {
         case .compTimeInt:
-            return true
+            true
             
         case .mutableInt, .immutableInt:
-            return false
+            false
         }
     }
     
     public var isConst: Bool {
         switch self {
         case .mutableInt:
-            return false
+            false
             
         case .immutableInt, .compTimeInt:
-            return true
+            true
         }
     }
     
     public var description: String {
         switch self {
         case .mutableInt(let width):
-            return "\(width)"
+            "\(width)"
             
         case .immutableInt(let width):
-            return "const \(width)"
+            "const \(width)"
             
         case .compTimeInt(let value):
-            return "integer constant \(value)"
+            "integer constant \(value)"
         }
     }
 }
@@ -839,12 +818,11 @@ public final class GenericStructType: Hashable, CustomStringConvertible {
     }
     
     public var description: String {
-        return "\(template.name)\(template.typeArgumentsDescription)"
+        "\(template.name)\(template.typeArgumentsDescription)"
     }
     
     public static func ==(lhs: GenericStructType, rhs: GenericStructType) -> Bool {
-        guard lhs.template == rhs.template else { return false }
-        return true
+        lhs.template == rhs.template
     }
     
     public func hash(into hasher: inout Hasher) {
@@ -941,8 +919,7 @@ public final class GenericTraitType: Hashable, CustomStringConvertible {
     }
     
     public static func ==(lhs: GenericTraitType, rhs: GenericTraitType) -> Bool {
-        guard lhs.template == rhs.template else { return false }
-        return true
+        lhs.template == rhs.template
     }
     
     public func hash(into hasher: inout Hasher) {
@@ -970,8 +947,7 @@ public final class UnionType: Hashable, CustomStringConvertible {
     }
     
     public static func ==(lhs: UnionType, rhs: UnionType) -> Bool {
-        guard lhs.members == rhs.members else { return false }
-        return true
+        lhs.members == rhs.members
     }
     
     public func hash(into hasher: inout Hasher) {
@@ -1012,17 +988,17 @@ public struct Symbol: Hashable {
     }
     
     public func withOffset(_ offset: Int?) -> Symbol {
-        return Symbol(type: type,
-                      offset: offset,
-                      storage: storage,
-                      visibility: visibility)
+        Symbol(type: type,
+               offset: offset,
+               storage: storage,
+               visibility: visibility)
     }
     
     public func withType(_ type: SymbolType) -> Symbol {
-        return Symbol(type: type,
-                      offset: maybeOffset,
-                      storage: storage,
-                      visibility: visibility)
+        Symbol(type: type,
+               offset: maybeOffset,
+               storage: storage,
+               visibility: visibility)
     }
 }
 
@@ -1197,11 +1173,14 @@ public final class SymbolTable: Hashable {
     
     private func maybeResolveTypeWithScopeDepth(sourceAnchor: SourceAnchor? = nil, identifier: String) -> (SymbolType, Int)? {
         if let symbolType = typeTable[identifier] {
-            return (symbolType.symbolType, 0)
-        } else if let parentResolution = parent?.maybeResolveTypeWithScopeDepth(sourceAnchor: sourceAnchor, identifier: identifier) {
-            return (parentResolution.0, parentResolution.1 + 1)
+            (symbolType.symbolType, 0)
         }
-        return nil
+        else if let parentResolution = parent?.maybeResolveTypeWithScopeDepth(sourceAnchor: sourceAnchor, identifier: identifier) {
+            (parentResolution.0, parentResolution.1 + 1)
+        }
+        else {
+            nil
+        }
     }
     
     public func bind(identifier: String, symbol: Symbol) {
@@ -1228,7 +1207,7 @@ public final class SymbolTable: Hashable {
     }
     
     public func resolve(identifier: String) throws -> Symbol {
-        return try resolve(sourceAnchor: nil, identifier: identifier)
+        try resolve(sourceAnchor: nil, identifier: identifier)
     }
     
     public func maybeResolve(identifier: String) -> Symbol? {
@@ -1264,9 +1243,11 @@ public final class SymbolTable: Hashable {
     
     private func maybeResolveWithStackFrameDepth(sourceAnchor: SourceAnchor?, identifier: String) -> (Symbol, Int)? {
         if let symbol = symbolTable[identifier] {
-            return (symbol, stackFrameIndex)
+            (symbol, stackFrameIndex)
         }
-        return parent?.maybeResolveWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier)
+        else {
+            parent?.maybeResolveWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier)
+        }
     }
     
     public func resolveWithScopeDepth(sourceAnchor: SourceAnchor? = nil, identifier: String) throws -> (Symbol, Int) {
@@ -1279,11 +1260,14 @@ public final class SymbolTable: Hashable {
     
     private func maybeResolveWithScopeDepth(sourceAnchor: SourceAnchor? = nil, identifier: String) -> (Symbol, Int)? {
         if let symbol = symbolTable[identifier] {
-            return (symbol, 0)
-        } else if let parentResolution = parent?.maybeResolveWithScopeDepth(sourceAnchor: sourceAnchor, identifier: identifier) {
-            return (parentResolution.0, parentResolution.1 + 1)
+            (symbol, 0)
         }
-        return nil
+        else if let parentResolution = parent?.maybeResolveWithScopeDepth(sourceAnchor: sourceAnchor, identifier: identifier) {
+            (parentResolution.0, parentResolution.1 + 1)
+        }
+        else {
+            nil
+        }
     }
     
     /// The UUID of the AST node associated with this scope, if any
@@ -1377,9 +1361,11 @@ public final class SymbolTable: Hashable {
     
     private func maybeResolveTypeRecord(sourceAnchor: SourceAnchor?, identifier: String) -> (TypeRecord, Int)? {
         if let symbolRecord = typeTable[identifier] {
-            return (symbolRecord, stackFrameIndex)
+            (symbolRecord, stackFrameIndex)
         }
-        return parent?.maybeResolveTypeRecord(sourceAnchor: sourceAnchor, identifier: identifier)
+        else {
+            parent?.maybeResolveTypeRecord(sourceAnchor: sourceAnchor, identifier: identifier)
+        }
     }
     
     public static func ==(lhs: SymbolTable, rhs: SymbolTable) -> Bool {

@@ -17,7 +17,7 @@ public class WB_Output: NSObject, NSSecureCoding {
     public let wben: UInt
     
     public override var description: String {
-        return "c: \(String(format: "%04x", c)), wrl: \(wrl), wrh: \(wrh), wben: \(wben)"
+        "c: \(String(format: "%04x", c)), wrl: \(wrl), wrh: \(wrh), wben: \(wben)"
     }
     
     public init(c: UInt16, wrl: UInt, wrh: UInt, wben: UInt) {

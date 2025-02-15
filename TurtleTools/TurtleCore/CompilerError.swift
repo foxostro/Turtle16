@@ -41,7 +41,7 @@ open class CompilerError: Error {
     }
     
     public var description: String {
-        return localizedDescription
+        localizedDescription
     }
     
     public static func makeOmnibusError(fileName: String?, errors: [CompilerError]) -> CompilerError {

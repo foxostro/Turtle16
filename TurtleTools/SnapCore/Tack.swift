@@ -21,10 +21,10 @@ public enum TackInstruction: Hashable {
         
         public var description: String {
             switch self {
-            case .p: return "p"
-            case .w: return "w"
-            case .b: return "b"
-            case .o: return "o"
+            case .p: "p"
+            case .w: "w"
+            case .b: "b"
+            case .o: "o"
             }
         }
     }

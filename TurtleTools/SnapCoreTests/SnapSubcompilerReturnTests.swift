@@ -13,7 +13,7 @@ import TurtleCore
 final class SnapSubcompilerReturnTests: XCTestCase {
     func testCompilationFailsBecauseReturnIsInvalidOutsideFunction() {
         let ast = Return(LiteralBool(true))
-        let symbols = SymbolTable()
+        let symbols = Env()
         let compiler = SnapSubcompilerReturn(symbols)
         XCTAssertThrowsError(try compiler.compile(ast)) {
             let compilerError = $0 as? CompilerError
@@ -24,7 +24,7 @@ final class SnapSubcompilerReturnTests: XCTestCase {
     
     func testUnexpectedNonVoidReturnValueInVoidFunction() {
         let input = Return(ExprUtils.makeU8(value: 1))
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.breadcrumb = .functionType(FunctionTypeInfo(
             returnType: .void,
             arguments: []))
@@ -38,7 +38,7 @@ final class SnapSubcompilerReturnTests: XCTestCase {
 
     func testItIsCompletelyValidToHaveMeaninglessReturnStatementAtBottomOfVoidFunction() {
         let input = Return()
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.breadcrumb = .functionType(FunctionTypeInfo(
             returnType: .void,
             arguments: []))
@@ -48,7 +48,7 @@ final class SnapSubcompilerReturnTests: XCTestCase {
     
     func testNonVoidFunctionShouldReturnAValue() {
         let input = Return()
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.breadcrumb = .functionType(FunctionTypeInfo(
             returnType: .u8,
             arguments: []))
@@ -62,7 +62,7 @@ final class SnapSubcompilerReturnTests: XCTestCase {
     
     func testReturnAValue() {
         let input = Return(LiteralInt(1))
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.breadcrumb = .functionType(FunctionTypeInfo(
             returnType: .u8,
             arguments: []))

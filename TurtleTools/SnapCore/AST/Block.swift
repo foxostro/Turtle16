@@ -10,11 +10,11 @@ import TurtleCore
 
 /// Represents a code block with associated symbols
 public final class Block: AbstractSyntaxTreeNode {
-    public let symbols: SymbolTable
+    public let symbols: Env
     public let children: [AbstractSyntaxTreeNode]
     
     public init(sourceAnchor: SourceAnchor? = nil,
-                symbols: SymbolTable = SymbolTable(),
+                symbols: Env = Env(),
                 children: [AbstractSyntaxTreeNode] = [],
                 id: ID = ID()) {
         self.symbols = symbols
@@ -32,7 +32,7 @@ public final class Block: AbstractSyntaxTreeNode {
     }
     
     /// Returns a new block, replacing the block's symbols
-    public func withSymbols(_ symbols: SymbolTable) -> Block {
+    public func withSymbols(_ symbols: Env) -> Block {
         Block(sourceAnchor: sourceAnchor,
               symbols: symbols,
               children: children,

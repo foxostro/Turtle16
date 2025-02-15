@@ -1,5 +1,5 @@
 //
-//  SymbolTable.swift
+//  Env.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 9/1/19.
@@ -685,7 +685,7 @@ public final class FunctionTypeInfo: Hashable, CustomStringConvertible {
 
 public final class StructTypeInfo: Hashable, CustomStringConvertible {
     public let name: String
-    public let symbols: SymbolTable
+    public let symbols: Env
     
     /// If the struct was synthesized to represent a Trait then this is the
     /// name of the associated trait, else nil.
@@ -699,7 +699,7 @@ public final class StructTypeInfo: Hashable, CustomStringConvertible {
     public var isModule: Bool { associatedModuleName != nil }
     
     public init(name: String,
-                symbols: SymbolTable,
+                symbols: Env,
                 associatedTraitType: String? = nil,
                 associatedModuleName: String? = nil) {
         self.name = name
@@ -832,7 +832,7 @@ public final class GenericStructTypeInfo: Hashable, CustomStringConvertible {
 
 public final class TraitTypeInfo: Hashable, CustomStringConvertible {
     public let name: String
-    public let symbols: SymbolTable
+    public let symbols: Env
     public let nameOfTraitObjectType: String
     public let nameOfVtableType: String
     
@@ -840,7 +840,7 @@ public final class TraitTypeInfo: Hashable, CustomStringConvertible {
         name: String,
         nameOfTraitObjectType: String,
         nameOfVtableType: String,
-        symbols: SymbolTable
+        symbols: Env
     ) {
         self.name = name
         self.nameOfTraitObjectType = nameOfTraitObjectType
@@ -1006,8 +1006,10 @@ public struct Symbol: Hashable {
     }
 }
 
-// Maps a name to symbol information.
-public final class SymbolTable: Hashable {
+/// Records types and symbols in the environment
+/// Instances of `Env` are connected in a linked list to represent nested
+/// lexical scopes.
+public final class Env: Hashable {
     public struct TypeRecord: Hashable {
         let symbolType: SymbolType
         let visibility: SymbolVisibility
@@ -1015,7 +1017,7 @@ public final class SymbolTable: Hashable {
     public var declarationOrder: [String] = []
     public var symbolTable: [String:Symbol] = [:]
     public var typeTable: [String:TypeRecord]
-    public var parent: SymbolTable?
+    public var parent: Env?
     
     private lazy var internalTempNameCounter: Int = 0
     private var tempNameCounter: Int {
@@ -1073,7 +1075,7 @@ public final class SymbolTable: Hashable {
     }
     private var stackFrameIndex: Int {
         var index = 0
-        var curr: SymbolTable? = self
+        var curr: Env? = self
         repeat {
             if case .set(_) = curr?.frameLookupMode {
                 index += 1
@@ -1141,7 +1143,7 @@ public final class SymbolTable: Hashable {
     
     public var modulesAlreadyImported: Set<String> = []
     
-    public init(parent p: SymbolTable? = nil, frameLookupMode s: FrameLookupMode = .inherit, tuples: [(String, Symbol)] = [], typeDict: [String:SymbolType] = [:]) {
+    public init(parent p: Env? = nil, frameLookupMode s: FrameLookupMode = .inherit, tuples: [(String, Symbol)] = [], typeDict: [String:SymbolType] = [:]) {
         parent = p
         frameLookupMode = s
         typeTable = typeDict.mapValues({TypeRecord(symbolType: $0, visibility: .privateVisibility)})
@@ -1292,12 +1294,12 @@ public final class SymbolTable: Hashable {
     }
     
     /// Given an identifier for a symbol or type, return the scope in which it was defined
-    public func lookupEnclosingScope(identifier id: String) -> SymbolTable? {
+    public func lookupEnclosingScope(identifier id: String) -> Env? {
         lookupScopeEnclosingSymbol(identifier: id) ?? lookupScopeEnclosingType(identifier: id)
     }
     
     /// Given a symbol identifier, return the scope in which it was defined
-    public func lookupScopeEnclosingSymbol(identifier: String) -> SymbolTable? {
+    public func lookupScopeEnclosingSymbol(identifier: String) -> Env? {
         if let _ = symbolTable[identifier] {
             self
         }
@@ -1307,7 +1309,7 @@ public final class SymbolTable: Hashable {
     }
     
     /// Given a type identifier, return the the scope in which it was defined
-    public func lookupScopeEnclosingType(identifier: String) -> SymbolTable? {
+    public func lookupScopeEnclosingType(identifier: String) -> Env? {
         if let _ = typeTable[identifier] {
             self
         }
@@ -1372,7 +1374,7 @@ public final class SymbolTable: Hashable {
         }
     }
     
-    public static func ==(lhs: SymbolTable, rhs: SymbolTable) -> Bool {
+    public static func ==(lhs: Env, rhs: Env) -> Bool {
         guard lhs.declarationOrder == rhs.declarationOrder else { return false }
         guard lhs.symbolTable == rhs.symbolTable else { return false }
         guard lhs.typeTable == rhs.typeTable else { return false }
@@ -1383,7 +1385,7 @@ public final class SymbolTable: Hashable {
     }
     
     // TODO: Remove isEqualExceptFunctions(). This is part of a workaround for an issue with StructType persisting in the AST across compiler passes. This is described in more detail in StructType, above.
-    public func isEqualExceptFunctions(_ rhs: SymbolTable) -> Bool {
+    public func isEqualExceptFunctions(_ rhs: Env) -> Bool {
         let rejectFunctions = { (ident: String, sym: Symbol) in
             switch sym.type {
             case .function, .genericFunction: false
@@ -1417,8 +1419,8 @@ public final class SymbolTable: Hashable {
         hasher.combine(frameLookupMode)
     }
     
-    public func clone() -> SymbolTable {
-        let result = SymbolTable()
+    public func clone() -> Env {
+        let result = Env()
         result.declarationOrder = declarationOrder
         result.symbolTable = symbolTable
         result.typeTable = typeTable
@@ -1444,7 +1446,7 @@ public final class SymbolTable: Hashable {
 extension SymbolType {
     /// Return true if the type includes a Module type somewhere in the def'n
     public func hasModule(
-        _ sym: SymbolTable,
+        _ sym: Env,
         _ workingSet: [SymbolType] = []
     ) throws -> Bool {
         

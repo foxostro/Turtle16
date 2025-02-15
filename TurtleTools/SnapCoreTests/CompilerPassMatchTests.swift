@@ -12,7 +12,7 @@ import SnapCore
 
 final class CompilerPassMatchTests: XCTestCase {
     func testCompileEmptyMatchStatement() {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .u8))
         ])
         let input = Match(expr: Identifier("foo"), clauses: [], elseClause: nil)
@@ -26,7 +26,7 @@ final class CompilerPassMatchTests: XCTestCase {
     }
     
     func testCompileMatchStatementWithOnlyElseClause() throws {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("result", Symbol(type: .u8))
         ])
         let input = Match(expr: Identifier("result"), clauses: [], elseClause: Block(children: [
@@ -45,7 +45,7 @@ final class CompilerPassMatchTests: XCTestCase {
     }
 
     func testCompileMatchStatementWithOneExtraneousClause() {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("result", Symbol(type: .u8))
         ])
         let input = Match(expr: Identifier("result"), clauses: [
@@ -65,10 +65,10 @@ final class CompilerPassMatchTests: XCTestCase {
     }
 
     func testCompileMatchStatementWithTwoExtraneousClauses() {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("result", Symbol(type: .u8))
         ], typeDict: [
-            "None" : .structType(StructTypeInfo(name: "None", symbols: SymbolTable()))
+            "None" : .structType(StructTypeInfo(name: "None", symbols: Env()))
         ])
         let input = Match(expr: Identifier("result"), clauses: [
             Match.Clause(valueIdentifier: Identifier("foo"),
@@ -91,7 +91,7 @@ final class CompilerPassMatchTests: XCTestCase {
     }
 
     func testCompileMatchStatementWithOnlyOneClause() throws {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("result", Symbol(type: .u8)),
             ("test", Symbol(type: .u8))
         ])
@@ -127,7 +127,7 @@ final class CompilerPassMatchTests: XCTestCase {
     }
 
     func testCompileMatchStatementWithUnionTypeAndNonexhaustiveClauses() {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("result", Symbol(type: .u8)),
             ("test", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool]))))
         ])
@@ -147,7 +147,7 @@ final class CompilerPassMatchTests: XCTestCase {
     }
 
     func testCompileMatchStatementWithUnionTypeAndExhaustiveClauses() throws {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("result", Symbol(type: .u8)),
             ("test", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool]))))
         ])

@@ -17,7 +17,7 @@ final class SnapToCoreCompilerTests: XCTestCase {
                 CommentNode(string: "")
             ])
         let expected = Block(
-            symbols: SymbolTable(),
+            symbols: Env(),
             children: [
                 CommentNode(string: "")
             ])
@@ -32,7 +32,7 @@ final class SnapToCoreCompilerTests: XCTestCase {
     }
     
     func testRvalue_convert_pointer_to_trait() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
 
         let ast0 = Block(symbols: symbols, children: [
             TraitDeclaration(

@@ -12,7 +12,7 @@ import TurtleCore
 
 final class FunctionScannerTests: XCTestCase {
     func testFunctionRedefinesExistingSymbol() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .void))
         
         let input = FunctionDeclaration(
@@ -33,7 +33,7 @@ final class FunctionScannerTests: XCTestCase {
     }
     
     func testFunctionRedefinesExistingType() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(
             identifier: "foo",
             symbolType: .bool,
@@ -98,7 +98,7 @@ final class FunctionScannerTests: XCTestCase {
                 Return(Identifier("a"))
             ]),
             visibility: .privateVisibility,
-            symbols: SymbolTable())
+            symbols: Env())
             .reconnect(parent: nil)
         let scanner = FunctionScanner()
         try scanner.scan(func: input)

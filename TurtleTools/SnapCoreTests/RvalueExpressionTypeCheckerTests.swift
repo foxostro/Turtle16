@@ -10,11 +10,11 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-extension SymbolTable {
-    func withCompilerIntrinsicRangeType(_ memoryLayoutStrategy: MemoryLayoutStrategy) -> SymbolTable {
+extension Env {
+    func withCompilerIntrinsicRangeType(_ memoryLayoutStrategy: MemoryLayoutStrategy) -> Env {
         let sizeOfU16 = memoryLayoutStrategy.sizeof(type: .u16)
         let name = "Range"
-        let typ: SymbolType = .structType(StructTypeInfo(name: name, symbols: SymbolTable(tuples: [
+        let typ: SymbolType = .structType(StructTypeInfo(name: name, symbols: Env(tuples: [
             ("begin", Symbol(type: .u16, offset: 0*sizeOfU16, storage: .automaticStorage)),
             ("limit", Symbol(type: .u16, offset: 1*sizeOfU16, storage: .automaticStorage))
         ])))
@@ -3501,7 +3501,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
    }
     
     func testAssignment_IntegerConstant_to_U16_Overflows() {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .u16, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3514,7 +3514,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testAssignment_IntegerConstant_to_U8_Overflows() {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .u8, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3527,7 +3527,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testAssignment_IntegerConstant_to_I16_Overflows() {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .i16, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3540,7 +3540,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testAssignment_IntegerConstant_to_I16_Underflows() {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .i16, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3553,7 +3553,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testAssignment_IntegerConstant_to_I8_Overflows() {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .i8, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3566,7 +3566,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testAssignment_IntegerConstant_to_I8_Underflows() {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .i8, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3579,7 +3579,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testAssignment_IntegerConstant_to_U16() {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .u16, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3590,7 +3590,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testAssignment_IntegerConstant_to_U8() {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .u8, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3601,7 +3601,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testAssignment_U16_to_U16() {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .u16, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3612,7 +3612,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testAssignment_U8_to_U8() {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .u8, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3623,7 +3623,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testAssignment_Bool_to_Bool() {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .bool, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3634,7 +3634,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testAssignment_ArrayOfU8_to_DynamicArrayOfU8() {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("src", Symbol(type: .array(count: 5, elementType: .u8), offset: 0x0010)),
             ("dst", Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010))
         ])
@@ -3646,7 +3646,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testIdentifier_U16() {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .u16, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3657,7 +3657,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testIdentifier_U8() {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .u8, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3668,7 +3668,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testIdentifier_Boolean() {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .bool, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3681,7 +3681,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testFailBecauseFunctionCallUsesIncorrectParameterType() {
         let expr = Call(callee: Identifier("foo"),
                                    arguments: [ExprUtils.makeBool(value: false)])
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .function(FunctionTypeInfo(name: "foo", returnType: .u8, arguments: [.u8])), offset: 0x0000))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3693,7 +3693,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testFailBecauseFunctionCallUsesIncorrectNumberOfParameters() {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .function(FunctionTypeInfo(name: "foo", returnType: .u8, arguments: [.u8])), offset: 0x0000))
         ])
         let expr = Call(callee: Identifier("foo"),
@@ -3708,7 +3708,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testFailBecauseAssignmentCannotConvertLargeIntegerConstantToU16() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: LiteralInt(65536))
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .u16, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3721,7 +3721,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testFailBecauseAssignmentCannotConvertLargeIntegerConstantToU8() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: LiteralInt(256))
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .u8, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3734,7 +3734,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testFailBecauseAssignmentCannotConvertU16ToU8() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU16(value: 0xabcd))
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .u8, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3747,7 +3747,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testFailBecauseAssignmentCannotConvertBoolToU8() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeBool(value: false))
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .u8, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3760,7 +3760,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testFailBecauseAssignmentCannotConvertU16ToI16() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU16(value: 0xabcd))
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .i16, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3773,7 +3773,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testFailBecauseAssignmentCannotConvertU16ToI8() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU16(value: 0xabcd))
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .i8, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3786,7 +3786,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testFailBecauseAssignmentCannotConvertU8ToI8() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: 0xab))
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .i8, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3799,7 +3799,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testFailBecauseAssignmentCannotConvertI16ToU16() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeI16(value: -1))
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .u16, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3812,7 +3812,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testFailBecauseAssignmentCannotConvertI8ToU8() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeI8(value: -1))
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .u8, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3825,7 +3825,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testAssignmentWhichConvertsU8ToU16() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: 42))
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .u16, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3836,7 +3836,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testAssignmentWhichConvertsU8ToI16() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeU8(value: 42))
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .i16, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -3847,7 +3847,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testAssignmentWhichConvertsI8ToI16() {
         let expr = ExprUtils.makeAssignment(name: "foo", right: ExprUtils.makeI8(value: -1))
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .i16, offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -4310,7 +4310,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     private func doTestSubscriptOfZero(_ symbolType: SymbolType) {
         let ident = "foo"
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             (ident, Symbol(type: symbolType, offset: 0x0010))
         ])
         let zero = LiteralInt(0)
@@ -4325,7 +4325,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testArraySubscriptFailsWithNonarithmeticIndex() {
         let ident = "foo"
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             (ident, Symbol(type: .array(count: 3, elementType: .bool), offset: 0x0010))
         ])
         let index = ExprUtils.makeBool(value: false)
@@ -4356,7 +4356,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     private func checkArraySubscriptAccessesArrayElement(elementType: SymbolType) {
         let ident = "foo"
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             (ident, Symbol(type: .array(count: 3, elementType: elementType), offset: 0x0010))
         ])
         let expr = ExprUtils.makeSubscript(identifier: ident, expr: LiteralInt(0))
@@ -4567,7 +4567,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testCannotAssignFunctionToArray() {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .function(FunctionTypeInfo(returnType: .bool, arguments: [.u8, .u16])), offset: 0x0010)),
             ("bar", Symbol(type: .array(count: nil, elementType: .u16), offset: 0x0012))
         ])
@@ -4609,7 +4609,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testGetLengthOfDynamicArray() {
         let expr = Get(expr: Identifier("foo"),
                                   member: Identifier("count"))
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .dynamicArray(elementType: .u8), offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -4619,7 +4619,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testGetCountOfRange() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
             .withCompilerIntrinsicRangeType(MemoryLayoutStrategyNull())
         let expr = Get(
             expr: ExprUtils.makeRange(0, 10),
@@ -4682,10 +4682,10 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testGetValueOfStructMemberLoadsTheValue() {
         let expr = Get(expr: Identifier("foo"),
                                   member: Identifier("bar"))
-        let typ = StructTypeInfo(name: "foo", symbols: SymbolTable(tuples: [
+        let typ = StructTypeInfo(name: "foo", symbols: Env(tuples: [
             ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
         ]))
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .structType(typ), offset: 0))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -4697,10 +4697,10 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testGetValueOfNonexistentStructMember() {
         let expr = Get(expr: Identifier("foo"),
                                   member: Identifier("asdf"))
-        let typ = StructTypeInfo(name: "foo", symbols: SymbolTable(tuples: [
+        let typ = StructTypeInfo(name: "foo", symbols: Env(tuples: [
             ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
         ]))
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .structType(typ), offset: 0))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -4723,8 +4723,8 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testStructInitializerExpression_Empty() {
         let expr = StructInitializer(identifier: Identifier("Foo"), arguments: [])
-        let typ: SymbolType = .structType(StructTypeInfo(name: "Foo", symbols: SymbolTable()))
-        let symbols = SymbolTable(typeDict: ["Foo" : typ])
+        let typ: SymbolType = .structType(StructTypeInfo(name: "Foo", symbols: Env()))
+        let symbols = Env(typeDict: ["Foo" : typ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         XCTAssertEqual(try typeChecker.check(expression: expr), typ)
     }
@@ -4734,8 +4734,8 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = StructInitializer(identifier: Identifier("Foo"), arguments: [
             Arg(name: "asdf", expr: LiteralInt(0))
         ])
-        let typ = StructTypeInfo(name: "foo", symbols: SymbolTable())
-        let symbols = SymbolTable(typeDict: ["Foo" : .structType(typ)])
+        let typ = StructTypeInfo(name: "foo", symbols: Env())
+        let symbols = Env(typeDict: ["Foo" : .structType(typ)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -4749,10 +4749,10 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = StructInitializer(identifier: Identifier("Foo"), arguments: [
             Arg(name: "bar", expr: LiteralBool(false))
         ])
-        let typ = StructTypeInfo(name: "Foo", symbols: SymbolTable(tuples: [
+        let typ = StructTypeInfo(name: "Foo", symbols: Env(tuples: [
             ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
         ]))
-        let symbols = SymbolTable(typeDict: ["Foo" : .structType(typ)])
+        let symbols = Env(typeDict: ["Foo" : .structType(typ)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -4767,11 +4767,11 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             Arg(name: "bar", expr: LiteralInt(0)),
             Arg(name: "baz", expr: LiteralInt(0))
         ])
-        let typ = StructTypeInfo(name: "Foo", symbols: SymbolTable(tuples: [
+        let typ = StructTypeInfo(name: "Foo", symbols: Env(tuples: [
             ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage)),
             ("baz", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
         ]))
-        let symbols = SymbolTable(typeDict: ["Foo" : .structType(typ)])
+        let symbols = Env(typeDict: ["Foo" : .structType(typ)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         XCTAssertEqual(try typeChecker.check(expression: expr), .structType(typ))
     }
@@ -4782,10 +4782,10 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             Arg(name: "bar", expr: LiteralInt(0)),
             Arg(name: "bar", expr: LiteralInt(0))
         ])
-        let typ = StructTypeInfo(name: "Foo", symbols: SymbolTable(tuples: [
+        let typ = StructTypeInfo(name: "Foo", symbols: Env(tuples: [
             ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
         ]))
-        let symbols = SymbolTable(typeDict: ["Foo" : .structType(typ)])
+        let symbols = Env(typeDict: ["Foo" : .structType(typ)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -4797,11 +4797,11 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testStructInitializerExpression_TheresNothingWrongWithOmittingMembers() {
         typealias Arg = StructInitializer.Argument
         let expr = StructInitializer(identifier: Identifier("Foo"), arguments: [])
-        let typ = StructTypeInfo(name: "Foo", symbols: SymbolTable(tuples: [
+        let typ = StructTypeInfo(name: "Foo", symbols: Env(tuples: [
             ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage)),
             ("baz", Symbol(type: .u16, offset: 2, storage: .automaticStorage))
         ]))
-        let symbols = SymbolTable(typeDict: ["Foo" : .structType(typ)])
+        let symbols = Env(typeDict: ["Foo" : .structType(typ)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         XCTAssertEqual(try typeChecker.check(expression: expr), .structType(typ))
     }
@@ -4859,7 +4859,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testAddressOfIdentifierForU8Symbol() {
         let expr = Unary(op: .ampersand, expression: Identifier("foo"))
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .u8, offset: 0xabcd))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -4871,7 +4871,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testDereferencePointerToU8() {
         let expr = Get(expr: Identifier("foo"),
                                   member: Identifier("pointee"))
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .pointer(.u8), offset: 0))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -4883,10 +4883,10 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testGetValueOfStructMemberThroughPointerLoadsTheValue() {
         let expr = Get(expr: Identifier("foo"),
                                   member: Identifier("bar"))
-        let typ = StructTypeInfo(name: "Foo", symbols: SymbolTable(tuples: [
+        let typ = StructTypeInfo(name: "Foo", symbols: Env(tuples: [
             ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
         ]))
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .pointer(.structType(typ)), offset: 0))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -4898,10 +4898,10 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testGetValueOfNonexistentStructMemberThroughPointer() {
         let expr = Get(expr: Identifier("foo"),
                                   member: Identifier("asdf"))
-        let typ = StructTypeInfo(name: "Foo", symbols: SymbolTable(tuples: [
+        let typ = StructTypeInfo(name: "Foo", symbols: Env(tuples: [
             ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
         ]))
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .pointer(.structType(typ)), offset: 0))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -4917,7 +4917,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             StructInitializer.Argument(name: "bar", expr: LiteralInt(1000))
         ])
         let expr = Get(expr: si, member: Identifier("bar"))
-        let symbols = SymbolTable()
+        let symbols = Env()
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         let result = try typeChecker.check(expression: expr)
         XCTAssertEqual(result, .arithmeticType(.compTimeInt(1000)))
@@ -4978,7 +4978,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testCompileFailsWhenCastingUnionTypeToNonMemberType() {
         let union = Identifier("foo")
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .unionType(UnionTypeInfo([.u8, .u16])), offset: offset, storage: .automaticStorage))
         ])
         let expr = As(expr: union, targetType: PrimitiveType(.bool))
@@ -4993,7 +4993,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testSuccessfullyCastUnionTypeToMemberType() {
         let expr = As(expr: Identifier("foo"), targetType: PrimitiveType(.u8))
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .unionType(UnionTypeInfo([.u8, .u16])), offset: offset, storage: .automaticStorage))
         ])
         let expected: SymbolType = .u8
@@ -5026,7 +5026,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testTestUnionVariantTypeAgainstNonMemberType() {
         let union = Identifier("foo")
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .unionType(UnionTypeInfo([.u8, .u16])), offset: offset, storage: .automaticStorage))
         ])
         let expr = Is(expr: union, testType: PrimitiveType(.bool))
@@ -5040,7 +5040,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testTestUnionVariantTypeAgainstKnownMemberType() {
         let union = Identifier("foo")
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool])), offset: offset, storage: .automaticStorage))
         ])
         let expr = Is(expr: union, testType: PrimitiveType(.u8))
@@ -5054,7 +5054,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testCanAssignToUnionGivenTypeWhichConvertsToMatchingUnionMember() {
         let expr = Assignment(lexpr: Identifier("foo"),
                                          rexpr: ExprUtils.makeU8(value: 1))
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .unionType(UnionTypeInfo([.u16])), offset: 0x0010))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -5064,7 +5064,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testSubscriptAnArrayWithARange() {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
                 ("foo", Symbol(type: .array(count: 10, elementType: .u8), offset: 0x0010))
             ])
             .withCompilerIntrinsicRangeType(MemoryLayoutStrategyTurtleTTL())
@@ -5082,7 +5082,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testSubscriptADynamicArrayWithARange_1() {
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
                 ("foo", Symbol(type: .dynamicArray(elementType: .u16), offset: offset))
             ])
             .withCompilerIntrinsicRangeType(MemoryLayoutStrategyTurtleTTL())
@@ -5110,7 +5110,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = Unary(op: .ampersand, expression: Identifier(name))
         let typ: SymbolType = .function(FunctionTypeInfo(name: name, returnType: .void, arguments: []))
         let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage, visibility: .privateVisibility)
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(identifier: name, symbol: symbol)
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         var result: SymbolType? = nil
@@ -5122,7 +5122,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testCallFunctionThroughFunctionPointer() {
         let expr = Call(callee: Identifier("bar"), arguments: [])
         let addressOfBar = SnapCompilerMetrics.kStaticStorageStartAddress
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .function(FunctionTypeInfo(name: "foo", returnType: .void, arguments: [])), offset: 0)),
             ("bar", Symbol(type: .pointer(.function(FunctionTypeInfo(name: "foo", returnType: .void, arguments: []))), offset: addressOfBar)),
         ])
@@ -5144,7 +5144,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testBitcastPointerToADifferentPointer() {
         let expr = Bitcast(expr: Identifier("foo"), targetType: PointerType(PrimitiveType(.u16)))
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .pointer(.u8), offset: SnapCompilerMetrics.kStaticStorageStartAddress))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -5154,7 +5154,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testAssignment_automatic_conversion_from_object_to_pointer() {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .pointer(.u16), offset: 0x1000, storage: .staticStorage)),
             ("bar", Symbol(type: .u16, offset: 0x2000, storage: .staticStorage))
         ])
@@ -5167,7 +5167,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testAssignment_automatic_conversion_from_trait_to_pointer() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let traitDecl = TraitDeclaration(
             identifier: Identifier("Foo"),
             members: [],
@@ -5189,10 +5189,10 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testInitialAssignment_automatic_conversion_from_struct_to_trait_object() throws {
-        let traitObjectType: SymbolType = .traitType(TraitTypeInfo(name: "Foo", nameOfTraitObjectType: "", nameOfVtableType: "", symbols: SymbolTable()))
-        let symbols = SymbolTable(tuples: [
-            ("__Foo_Bar_vtable_instance", Symbol(type: .structType(StructTypeInfo(name: "", symbols: SymbolTable())))),
-            ("bar", Symbol(type: .structType(StructTypeInfo(name: "Bar", symbols: SymbolTable())))),
+        let traitObjectType: SymbolType = .traitType(TraitTypeInfo(name: "Foo", nameOfTraitObjectType: "", nameOfVtableType: "", symbols: Env()))
+        let symbols = Env(tuples: [
+            ("__Foo_Bar_vtable_instance", Symbol(type: .structType(StructTypeInfo(name: "", symbols: Env())))),
+            ("bar", Symbol(type: .structType(StructTypeInfo(name: "Bar", symbols: Env())))),
             ("foo", Symbol(type: traitObjectType))
         ])
         
@@ -5234,7 +5234,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                                             Return(Identifier("a"))
                                            ]),
                                            visibility: .privateVisibility,
-                                           symbols: SymbolTable())
+                                           symbols: Env())
         let expr = GenericFunctionType(template: template)
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
@@ -5255,9 +5255,9 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                                             Return(Identifier("a"))
                                            ]),
                                            visibility: .privateVisibility,
-                                           symbols: SymbolTable())
+                                           symbols: Env())
         let genericFunctionType = GenericFunctionType(template: template)
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .genericFunction(genericFunctionType)))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -5284,9 +5284,9 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                                             Return(Identifier("a"))
                                            ]),
                                            visibility: .privateVisibility,
-                                           symbols: SymbolTable())
+                                           symbols: Env())
         let genericFunctionType = GenericFunctionType(template: template)
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .genericFunction(genericFunctionType)))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -5313,9 +5313,9 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                                             Return(Identifier("a"))
                                            ]),
                                            visibility: .privateVisibility,
-                                           symbols: SymbolTable())
+                                           symbols: Env())
         let genericFunctionType = GenericFunctionType(template: template)
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .genericFunction(genericFunctionType)))
         ])
         
@@ -5340,9 +5340,9 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                                             Return(Identifier("a"))
                                            ]),
                                            visibility: .privateVisibility,
-                                           symbols: SymbolTable())
+                                           symbols: Env())
         let genericFunctionType = GenericFunctionType(template: template)
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .genericFunction(genericFunctionType)))
         ])
         
@@ -5367,9 +5367,9 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                                             Return(Identifier("a"))
                                            ]),
                                            visibility: .privateVisibility,
-                                           symbols: SymbolTable())
+                                           symbols: Env())
         let genericFunctionType = GenericFunctionType(template: template)
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .genericFunction(genericFunctionType)))
         ])
         let expr = Call(callee: Identifier("foo"),
@@ -5394,9 +5394,9 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                                             Return(Identifier("a"))
                                            ]),
                                            visibility: .privateVisibility,
-                                           symbols: SymbolTable())
+                                           symbols: Env())
         let genericFunctionType = GenericFunctionType(template: template)
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .genericFunction(genericFunctionType)))
         ])
         let expr = Call(callee: Identifier("foo"),
@@ -5421,7 +5421,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                                          members: [],
                                          visibility: .privateVisibility,
                                          isConst: false)
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .genericStructType(GenericStructTypeInfo(template: template))))
         
         let expr = Identifier("foo")
@@ -5439,7 +5439,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                                          members: [],
                                          visibility: .privateVisibility,
                                          isConst: false)
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .genericStructType(GenericStructTypeInfo(template: template))))
         
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -5460,14 +5460,14 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                                          members: [],
                                          visibility: .privateVisibility,
                                          isConst: false)
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .genericStructType(GenericStructTypeInfo(template: template))))
         
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         let expr = GenericTypeApplication(identifier: Identifier("foo"),
                                                      arguments: [PrimitiveType(.u16)])
         
-        let concreteStructSymbols = SymbolTable(tuples: [
+        let concreteStructSymbols = Env(tuples: [
         ])
         let frame = Frame()
         concreteStructSymbols.frameLookupMode = .set(frame)
@@ -5485,7 +5485,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                                          ],
                                          visibility: .privateVisibility,
                                          isConst: false)
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .genericStructType(GenericStructTypeInfo(template: template))))
         
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -5493,7 +5493,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                                                      arguments: [PrimitiveType(.u16)])
         
         let bar = Symbol(type: .u16, offset: 0, storage: .automaticStorage)
-        let concreteStructSymbols = SymbolTable(tuples: [("bar", bar)])
+        let concreteStructSymbols = Env(tuples: [("bar", bar)])
         let frame = Frame()
         _ = frame.allocate(size: 1)
         frame.add(identifier: "bar", symbol: bar)
@@ -5513,7 +5513,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                                          ],
                                          visibility: .privateVisibility,
                                          isConst: false)
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .genericStructType(GenericStructTypeInfo(template: template))))
 
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -5524,7 +5524,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         ])
 
         let bar = Symbol(type: .u16, offset: 0, storage: .automaticStorage)
-        let concreteStructSymbols = SymbolTable(tuples: [
+        let concreteStructSymbols = Env(tuples: [
             ("bar", bar)
         ])
         let frame = Frame()
@@ -5548,7 +5548,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             ],
             members: [],
             visibility: .privateVisibility)
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(identifier: "Foo", symbol: Symbol(type: .genericTraitType(GenericTraitTypeInfo(template: template))))
         
         let expr = Identifier("Foo")
@@ -5570,7 +5570,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             ],
             members: [],
             visibility: .privateVisibility)
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(identifier: "Foo", symbol: Symbol(type: .genericTraitType(GenericTraitTypeInfo(template: template))))
         
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -5595,7 +5595,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             ],
             members: [],
             visibility: .privateVisibility)
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(identifier: "Foo", symbol: Symbol(type: .genericTraitType(GenericTraitTypeInfo(template: template))))
         
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -5603,7 +5603,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             identifier: Identifier("Foo"),
             arguments: [ PrimitiveType(.u16) ])
         
-        let expectedSymbols = SymbolTable()
+        let expectedSymbols = Env()
         let frame = Frame()
         expectedSymbols.frameLookupMode = .set(frame)
         expectedSymbols.breadcrumb = .traitType("Foo[u16]")
@@ -5635,7 +5635,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                             ])))
             ],
             visibility: .privateVisibility)
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(identifier: "Foo", symbol: Symbol(type: .genericTraitType(GenericTraitTypeInfo(template: template))))
         
         let typeChecker = RvalueExpressionTypeChecker(
@@ -5654,7 +5654,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                 ast: nil))),
             offset: 0,
             storage: .automaticStorage)
-        let concreteTraitSymbols = SymbolTable(tuples: [
+        let concreteTraitSymbols = Env(tuples: [
             ("bar", bar)
         ])
         let frame = Frame()

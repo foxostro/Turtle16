@@ -108,7 +108,7 @@ final class StatementTracerTests: XCTestCase {
                 Return(three)
             ]))
         ])
-        let symbols = SymbolTable()
+        let symbols = Env()
         let tracer = StatementTracer(symbols: symbols)
         let traces = try tracer.trace(ast: ast)
         XCTAssertEqual(traces.count, 3)

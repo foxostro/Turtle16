@@ -11,14 +11,14 @@ import TurtleCore
 public struct SnapSubcompilerAssert {
     public init() {}
     
-    public func compile(_ symbols: SymbolTable?, _ node: Assert) throws -> If {
+    public func compile(_ symbols: Env?, _ node: Assert) throws -> If {
         let s = node.sourceAnchor
         let panic = Call(
             sourceAnchor: s,
             callee: Identifier("__panic"),
             arguments: [LiteralString(node.finalMessage)])
         let then = Block(
-            symbols: SymbolTable(parent: symbols),
+            symbols: Env(parent: symbols),
             children: [panic])
         let condition = Binary(
             sourceAnchor: s,

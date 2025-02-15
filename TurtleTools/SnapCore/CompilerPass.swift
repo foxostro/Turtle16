@@ -9,28 +9,28 @@
 import TurtleCore
 
 public class CompilerPass {
-    struct Environment {
-        private var stack: [SymbolTable] = []
+    struct EnvStack {
+        private var stack: [Env] = []
         
-        var symbols: SymbolTable? {
+        var symbols: Env? {
             stack.last
         }
         
-        mutating func push(_ newSymbols: SymbolTable) {
+        mutating func push(_ newSymbols: Env) {
             stack.append(newSymbols)
         }
         
-        @discardableResult mutating func pop() -> SymbolTable {
+        @discardableResult mutating func pop() -> Env {
             stack.removeLast()
         }
     }
-    var env = Environment()
+    var env = EnvStack()
     
-    public var symbols: SymbolTable? {
+    public var symbols: Env? {
         env.symbols
     }
     
-    public init(_ symbols: SymbolTable? = nil) {
+    public init(_ symbols: Env? = nil) {
         if let symbols {
             env.push(symbols)
         }

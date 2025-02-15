@@ -16,7 +16,7 @@ public final class FunctionDeclaration: AbstractSyntaxTreeNode {
     public let typeArguments: [GenericTypeArgument]
     public let body: Block
     public let visibility: SymbolVisibility
-    public let symbols: SymbolTable
+    public let symbols: Env
     
     public var isGeneric: Bool {
         !typeArguments.isEmpty
@@ -29,7 +29,7 @@ public final class FunctionDeclaration: AbstractSyntaxTreeNode {
                 typeArguments: [GenericTypeArgument] = [],
                 body: Block,
                 visibility: SymbolVisibility = .privateVisibility,
-                symbols: SymbolTable = SymbolTable(),
+                symbols: Env = Env(),
                 id: ID = ID()) {
         self.identifier = identifier
         self.functionType = functionType

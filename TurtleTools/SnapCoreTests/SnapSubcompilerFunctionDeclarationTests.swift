@@ -12,7 +12,7 @@ import TurtleCore
 
 final class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
     func testFunctionRedefinesExistingSymbol() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .void))
         let compiler = SnapSubcompilerFunctionDeclaration()
         let input = FunctionDeclaration(
@@ -28,7 +28,7 @@ final class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
     }
     
     func testFunctionBodyMissingReturn() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let compiler = SnapSubcompilerFunctionDeclaration()
         let input = FunctionDeclaration(
             identifier: Identifier("foo"),
@@ -44,7 +44,7 @@ final class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
     }
     
     func testDeclareFunction() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let originalBody = Block(children: [])
         let expectedRewrittenBody = Block(children: [Return()])
         let input = FunctionDeclaration(
@@ -67,7 +67,7 @@ final class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
     }
     
     func testCompilationFailsBecauseCodeAfterReturnWillNeverBeExecuted() {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let compiler = SnapSubcompilerFunctionDeclaration()
         let input = FunctionDeclaration(
             identifier: Identifier("foo"),
@@ -98,9 +98,9 @@ final class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
                 Return(Identifier("a"))
             ]),
             visibility: .privateVisibility,
-            symbols: SymbolTable())
+            symbols: Env())
             .reconnect(parent: nil)
-        let symbols = SymbolTable()
+        let symbols = Env()
         try SnapSubcompilerFunctionDeclaration().compile(symbols: symbols, node: input)
         let actualSymbol = try symbols.resolve(identifier: "foo")
         let actualType = actualSymbol.type

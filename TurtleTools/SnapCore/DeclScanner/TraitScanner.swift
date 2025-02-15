@@ -10,13 +10,13 @@ import TurtleCore
 
 /// Scans a trait declaration and binds the trait type in the environment
 public struct TraitScanner {
-    public let symbols: SymbolTable
+    public let symbols: Env
     
     private let memoryLayoutStrategy: MemoryLayoutStrategy
     
     public init(
         memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull(),
-        symbols: SymbolTable = SymbolTable()
+        symbols: Env = Env()
     ) {
         self.memoryLayoutStrategy = memoryLayoutStrategy
         self.symbols = symbols
@@ -54,7 +54,7 @@ public struct TraitScanner {
             name: node0.name,
             evaluatedTypeArguments: evaluatedTypeArguments)
         let node1 = node0.withMangledName(mangledName)
-        let members = SymbolTable(parent: symbols)
+        let members = Env(parent: symbols)
         let traitType = SymbolType.traitType(TraitTypeInfo(
             name: mangledName,
             nameOfTraitObjectType: node1.nameOfTraitObjectType,
@@ -154,7 +154,7 @@ public struct TraitScanner {
         typeChecker(symbols: symbols)
     }
     
-    private func typeChecker(symbols: SymbolTable) -> TypeContextTypeChecker {
+    private func typeChecker(symbols: Env) -> TypeContextTypeChecker {
         TypeContextTypeChecker(
             symbols: symbols,
             memoryLayoutStrategy: memoryLayoutStrategy)

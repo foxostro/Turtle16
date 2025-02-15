@@ -58,8 +58,8 @@ public final class TackVirtualMachine {
         return result
     }
     
-    public var symbols: SymbolTable? {
-        var result: SymbolTable? = nil
+    public var symbols: Env? {
+        var result: Env? = nil
         var i = Int(pc)
         while i >= 0 && result == nil {
             if i < program.symbols.count {

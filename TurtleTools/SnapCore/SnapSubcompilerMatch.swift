@@ -10,16 +10,16 @@ import TurtleCore
 
 /// Lowers a Match statement
 public struct SnapSubcompilerMatch {
-    public let symbols: SymbolTable
+    public let symbols: Env
     public let memoryLayoutStrategy: MemoryLayoutStrategy
     
-    public init(memoryLayoutStrategy: MemoryLayoutStrategy, symbols: SymbolTable) {
+    public init(memoryLayoutStrategy: MemoryLayoutStrategy, symbols: Env) {
         self.symbols = symbols
         self.memoryLayoutStrategy = memoryLayoutStrategy
     }
     
     public func compile(_ match: Match) throws -> AbstractSyntaxTreeNode {
-        let outer = SymbolTable(parent: symbols)
+        let outer = Env(parent: symbols)
         
         let matchExprType = try RvalueExpressionTypeChecker(symbols: symbols).check(expression: match.expr)
         
@@ -73,7 +73,7 @@ public struct SnapSubcompilerMatch {
         }
         else if let elseClause = match.elseClause {
             let rewrittenElseClause = Block(sourceAnchor: elseClause.sourceAnchor,
-                                            symbols: SymbolTable(parent: outer),
+                                            symbols: Env(parent: outer),
                                             children: elseClause.children)
             stmts.append(rewrittenElseClause)
         }
@@ -85,7 +85,7 @@ public struct SnapSubcompilerMatch {
         return block0
     }
     
-    private func compileMatchClause(_ match: Match, _ clauses: [Match.Clause], _ symbols: SymbolTable) -> If {
+    private func compileMatchClause(_ match: Match, _ clauses: [Match.Clause], _ symbols: Env) -> If {
         assert(!clauses.isEmpty)
         
         let clause = clauses.last!
@@ -97,11 +97,11 @@ public struct SnapSubcompilerMatch {
                 clauseElseBlock = nil
             } else {
                 clauseElseBlock = Block(sourceAnchor: match.elseClause!.sourceAnchor,
-                                        symbols: SymbolTable(parent: symbols),
+                                        symbols: Env(parent: symbols),
                                         children: match.elseClause!.children)
             }
             
-            let outerSymbols = SymbolTable(parent: symbols)
+            let outerSymbols = Env(parent: symbols)
             
             return If(condition: Is(expr: index, testType: clause.valueType),
                       then: Block(symbols: outerSymbols,
@@ -112,12 +112,12 @@ public struct SnapSubcompilerMatch {
                                        storage: .automaticStorage,
                                        isMutable: false),
                                     Block(sourceAnchor: clause.block.sourceAnchor,
-                                          symbols: SymbolTable(parent: outerSymbols),
+                                          symbols: Env(parent: outerSymbols),
                                           children: clause.block.children)
                       ]),
                       else: clauseElseBlock)
         } else {
-            let outerSymbols = SymbolTable(parent: symbols)
+            let outerSymbols = Env(parent: symbols)
             return If(condition: Is(expr: index, testType: clause.valueType),
                       then: Block(symbols: outerSymbols,
                                   children: [
@@ -127,7 +127,7 @@ public struct SnapSubcompilerMatch {
                                        storage: .automaticStorage,
                                        isMutable: false),
                                     Block(sourceAnchor: clause.block.sourceAnchor,
-                                          symbols: SymbolTable(parent: outerSymbols),
+                                          symbols: Env(parent: outerSymbols),
                                           children: clause.block.children)
                       ]),
                       else: compileMatchClause(match, clauses.dropLast(), symbols))

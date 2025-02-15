@@ -9,10 +9,10 @@
 import TurtleCore
 
 public final class SymbolTablesReconnector {
-    var symbols: SymbolTable? = nil
+    var symbols: Env? = nil
     let onlyCheck: Bool
     
-    public init(_ symbols: SymbolTable? = nil, onlyCheck: Bool = false) {
+    public init(_ symbols: Env? = nil, onlyCheck: Bool = false) {
         self.symbols = symbols
         self.onlyCheck = onlyCheck
     }
@@ -143,7 +143,7 @@ public final class SymbolTablesReconnector {
 extension AbstractSyntaxTreeNode {
     // Perform a reconnect to ensure the symbol table tree is topologically
     // connected to correspond to the lexical structure of the program.
-    public func reconnect(parent: SymbolTable?) -> Self {
+    public func reconnect(parent: Env?) -> Self {
         SymbolTablesReconnector(parent).reconnect(self)
         return self
     }

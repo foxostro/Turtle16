@@ -54,7 +54,7 @@ final class CompilerPassImportTests: XCTestCase {
     }
     
     func testImportFromBundleResource() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let compiler = CompilerPassImport()
         let input = Block(
             symbols: symbols,

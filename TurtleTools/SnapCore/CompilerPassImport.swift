@@ -15,7 +15,7 @@ public final class CompilerPassImport: CompilerPass {
     fileprivate let runtimeSupport: String?
     fileprivate var pendingInsertions: [Module] = []
     
-    public init(symbols: SymbolTable? = nil,
+    public init(symbols: Env? = nil,
                 injectModules: [(String, String)] = [],
                 runtimeSupport: String? = nil) {
         
@@ -107,7 +107,7 @@ public func parse(moduleName: String, text: String, url: URL) throws -> Module {
         name: moduleName,
         block: Block(
             sourceAnchor: topLevel.sourceAnchor,
-            symbols: SymbolTable(),
+            symbols: Env(),
             children: topLevel.children))
     return module
 }

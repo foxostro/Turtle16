@@ -15,7 +15,7 @@ import TurtleCore
 /// replaced by the expressions to which they evaluate. This works because the
 /// language forbids any identifier from shadowing an existing symbol or type.
 public final class GenericsPartialEvaluator: CompilerPass {
-    public typealias ScopeIdentifier = SymbolTable.ScopeIdentifier
+    public typealias ScopeIdentifier = Env.ScopeIdentifier
     public struct ReplacementKey: Hashable {
         let identifier: String
         let scope: ScopeIdentifier
@@ -39,7 +39,7 @@ public final class GenericsPartialEvaluator: CompilerPass {
         return ast1
     }
     
-    public init(symbols: SymbolTable?, map: ReplacementMap) {
+    public init(symbols: Env?, map: ReplacementMap) {
         self.map = map
         super.init(symbols)
     }

@@ -29,8 +29,8 @@ public final class SnapASTTransformerTestDeclaration: CompilerPass {
             
             if let testName = shouldRunSpecificTest,
                let testDeclaration = testDeclarations.first(where: { $0.name == testName }) {
-                let fnSymbols = SymbolTable(parent: result.symbols)
-                let bodySymbols = SymbolTable(parent: fnSymbols)
+                let fnSymbols = Env(parent: result.symbols)
+                let bodySymbols = Env(parent: fnSymbols)
                 testDeclaration.body.symbols.parent = bodySymbols
                 let body = Block(symbols: bodySymbols, children: [
                     testDeclaration.body,

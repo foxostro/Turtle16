@@ -17,7 +17,7 @@ final class SymbolTableTests: XCTestCase {
     }
     
     func testUseOfUnresolvedIdentifier() {
-        let symbols = SymbolTable()
+        let symbols = Env()
         XCTAssertThrowsError(try symbols.resolve(sourceAnchor: nil, identifier: "foo")) {
             let error = $0 as? CompilerError
             XCTAssertNotNil(error)
@@ -31,7 +31,7 @@ final class SymbolTableTests: XCTestCase {
     }
     
     func testSuccessfullyResolveSymbolByIdentifier() {
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0x10))
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
         XCTAssertEqual(symbol.type, .u8)
@@ -39,14 +39,14 @@ final class SymbolTableTests: XCTestCase {
     }
     
     func testExists() {
-        let symbols = SymbolTable()
+        let symbols = Env()
         XCTAssertFalse(symbols.exists(identifier: "foo"))
         symbols.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0x10))
         XCTAssertTrue(symbols.exists(identifier: "foo"))
     }
 
     func testBindWord_Static_Mutable() {
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .u8, offset: 0x10))
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
         XCTAssertEqual(symbol.type, .u8)
@@ -54,7 +54,7 @@ final class SymbolTableTests: XCTestCase {
     }
 
     func testBindWord_Static_Constant() {
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .arithmeticType(.immutableInt(.u8)), offset: 0x10))
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
         XCTAssertEqual(symbol.type, .arithmeticType(.immutableInt(.u8)))
@@ -62,7 +62,7 @@ final class SymbolTableTests: XCTestCase {
     }
 
     func testBindBoolean_Static_Mutable() {
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .bool, offset: 0x10))
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
         XCTAssertEqual(symbol.type, .bool)
@@ -70,7 +70,7 @@ final class SymbolTableTests: XCTestCase {
     }
 
     func testBindBoolean_Static_Constant() {
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
         XCTAssertEqual(symbol.type, .constBool)
@@ -78,40 +78,40 @@ final class SymbolTableTests: XCTestCase {
     }
     
     func testExistsInParentScope() {
-        let parent = SymbolTable()
+        let parent = Env()
         parent.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
-        let symbols = SymbolTable(parent: parent)
+        let symbols = Env(parent: parent)
         XCTAssertTrue(symbols.exists(identifier: "foo"))
     }
     
     func testResolveSymbolInParentScope() {
-        let parent = SymbolTable()
+        let parent = Env()
         parent.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
-        let symbols = SymbolTable(parent: parent)
+        let symbols = Env(parent: parent)
         let symbol = try! symbols.resolve(sourceAnchor: nil, identifier: "foo")
         XCTAssertEqual(symbol, Symbol(type: .constBool, offset: 0x10))
     }
     
     func testResolveSymbolWithStackFrameDepth() {
-        let parent = SymbolTable()
+        let parent = Env()
         parent.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
-        let symbols = SymbolTable(parent: parent)
+        let symbols = Env(parent: parent)
         let resolution = try! symbols.resolveWithStackFrameDepth(sourceAnchor: nil, identifier: "foo")
         XCTAssertEqual(resolution.0, Symbol(type: .constBool, offset: 0x10))
         XCTAssertEqual(resolution.1, 0)
     }
     
     func testResolveSymbolWithScopeDepth() {
-        let parent = SymbolTable()
+        let parent = Env()
         parent.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
-        let symbols = SymbolTable(parent: parent)
+        let symbols = Env(parent: parent)
         let resolution = try! symbols.resolveWithScopeDepth(identifier: "foo")
         XCTAssertEqual(resolution.0, Symbol(type: .constBool, offset: 0x10))
         XCTAssertEqual(resolution.1, 1)
     }
     
     func testFailToResolveType() {
-        let symbols = SymbolTable()
+        let symbols = Env()
         XCTAssertThrowsError(try symbols.resolveType(identifier: "foo")) {
             let error = $0 as? CompilerError
             XCTAssertNotNil(error)
@@ -120,7 +120,7 @@ final class SymbolTableTests: XCTestCase {
     }
     
     func testSuccessfullyResolveTypeByIdentifier() {
-        let symbols = SymbolTable(parent: nil, typeDict: ["foo" : .structType(StructTypeInfo(name: "foo", symbols: SymbolTable()))])
+        let symbols = Env(parent: nil, typeDict: ["foo" : .structType(StructTypeInfo(name: "foo", symbols: Env()))])
         let symbolType = try! symbols.resolveType(identifier: "foo")
         switch symbolType {
         case .structType(let typ):
@@ -131,8 +131,8 @@ final class SymbolTableTests: XCTestCase {
     }
 
     func testBindStructType() {
-        let symbols = SymbolTable()
-        symbols.bind(identifier: "foo", symbolType: .structType(StructTypeInfo(name: "foo", symbols: SymbolTable())))
+        let symbols = Env()
+        symbols.bind(identifier: "foo", symbolType: .structType(StructTypeInfo(name: "foo", symbols: Env())))
         let symbolType = try! symbols.resolveType(identifier: "foo")
         switch symbolType {
         case .structType(let typ):
@@ -143,7 +143,7 @@ final class SymbolTableTests: XCTestCase {
     }
     
     func testInitializedWithDeclarationOrder() {
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .u8, offset: 0)),
             ("bar", Symbol(type: .u8, offset: 0))
         ])
@@ -153,13 +153,13 @@ final class SymbolTableTests: XCTestCase {
     }
     
     func testDeclarationOrderAffectsEquality() {
-        let symbols1 = SymbolTable(tuples: [
+        let symbols1 = Env(tuples: [
             ("foo", Symbol(type: .u8, offset: 0)),
             ("bar", Symbol(type: .u8, offset: 0))
         ])
         symbols1.declarationOrder = ["foo", "bar"]
         
-        let symbols2 = SymbolTable(tuples: [
+        let symbols2 = Env(tuples: [
             ("foo", Symbol(type: .u8, offset: 0)),
             ("bar", Symbol(type: .u8, offset: 0))
         ])
@@ -169,7 +169,7 @@ final class SymbolTableTests: XCTestCase {
     }
     
     func testBindUpdatesDeclarationOrder() {
-        let symbols = SymbolTable()
+        let symbols = Env()
         XCTAssertEqual(symbols.declarationOrder, [])
         symbols.bind(identifier: "foo", symbol: Symbol(type: .constBool, offset: 0x10))
         XCTAssertEqual(symbols.declarationOrder, ["foo"])

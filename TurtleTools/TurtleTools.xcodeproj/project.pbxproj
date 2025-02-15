@@ -80,7 +80,7 @@
 		6F2940A9248306EC00C50ABA /* While.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2940A8248306EC00C50ABA /* While.swift */; };
 		6F2940AB2483070C00C50ABA /* WhileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2940AA2483070C00C50ABA /* WhileTests.swift */; };
 		6F2940BF2483995500C50ABA /* SymbolTableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F50DB0D247F5F9500643DAC /* SymbolTableTests.swift */; };
-		6F2940C5248399BE00C50ABA /* SymbolTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00E9231C6454003E7C7F /* SymbolTable.swift */; };
+		6F2940C5248399BE00C50ABA /* Env.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5A00E9231C6454003E7C7F /* Env.swift */; };
 		6F2940CE2483A0DB00C50ABA /* TokenMisc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F2940CD2483A0DB00C50ABA /* TokenMisc.swift */; };
 		6F2940CF2483A13B00C50ABA /* Expression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCB684924724B6300798905 /* Expression.swift */; };
 		6F2940D02483A15000C50ABA /* ExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCB684B24724B7F00798905 /* ExpressionTests.swift */; };
@@ -715,7 +715,7 @@
 		6F5462F2253C0560005DDAB6 /* TraitDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraitDeclaration.swift; sourceTree = "<group>"; };
 		6F546310253D3B5F005DDAB6 /* ImplFor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImplFor.swift; sourceTree = "<group>"; };
 		6F565901293D641100AC1679 /* runtime_TackVM.snap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = runtime_TackVM.snap; sourceTree = "<group>"; };
-		6F5A00E9231C6454003E7C7F /* SymbolTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolTable.swift; sourceTree = "<group>"; };
+		6F5A00E9231C6454003E7C7F /* Env.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Env.swift; sourceTree = "<group>"; };
 		6F5A00ED231D029D003E7C7F /* Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
 		6F5A0115231F721B003E7C7F /* TokenEOFTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenEOFTests.swift; sourceTree = "<group>"; };
 		6F5A011D231F725A003E7C7F /* TokenNumberTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenNumberTests.swift; sourceTree = "<group>"; };
@@ -1232,6 +1232,7 @@
 				6F1F3B7B2C7D011B008C2EEB /* CompilerPassWhile.swift */,
 				6FBC1F172C72F9F200CAC35E /* CompilerPassWithDeclScan.swift */,
 				6F40730626B1D5ED007D8382 /* CoreToTackCompiler.swift */,
+				6F5A00E9231C6454003E7C7F /* Env.swift */,
 				6FBB8D902B97DDD600FEEF1F /* Frame.swift */,
 				6FC4E6EC28FBEB900079A88C /* GenericFunctionTypeArgumentSolver.swift */,
 				6FBD0F042C657E80000FEE84 /* GenericsPartialEvaluator.swift */,
@@ -1269,7 +1270,6 @@
 				6F24AC8A24A07CAF005193BB /* StatementTracer.swift */,
 				6FBCFA5526F5121A00193819 /* StructMemberFunctionCallMatcher.swift */,
 				6F15423526B92AB500BA9572 /* StructScanner.swift */,
-				6F5A00E9231C6454003E7C7F /* SymbolTable.swift */,
 				6F15421D26B34E3300BA9572 /* SymbolTablesReconnector.swift */,
 				6FBCFA5926F7F4D400193819 /* Tack.swift */,
 				6F3E5AD6291AF85A00C0F988 /* TackDebugger.swift */,
@@ -2116,7 +2116,7 @@
 				6F8508E12D0FA5F600B57518 /* CompilerPassImplFor.swift in Sources */,
 				6F1800A7251D9079005D9D36 /* Import.swift in Sources */,
 				6FCA942525264C61000C2A2D /* Assert.swift in Sources */,
-				6F2940C5248399BE00C50ABA /* SymbolTable.swift in Sources */,
+				6F2940C5248399BE00C50ABA /* Env.swift in Sources */,
 				6FBC1F182C72F9F200CAC35E /* CompilerPassWithDeclScan.swift in Sources */,
 				6F40731726B281B7007D8382 /* SnapToCoreCompiler.swift in Sources */,
 				6FC87B6A2D25DF0F006D6CD8 /* CompilerPassLowerVarDecl.swift in Sources */,

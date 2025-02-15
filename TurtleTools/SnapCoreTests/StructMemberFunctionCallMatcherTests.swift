@@ -12,8 +12,8 @@ import TurtleCore
 
 final class StructMemberFunctionCallMatcherTests: XCTestCase {
     func testExample() throws {
-        let symbols = SymbolTable()
-        let fooSymbols = SymbolTable()
+        let symbols = Env()
+        let fooSymbols = Env()
         let fooType = SymbolType.structType(StructTypeInfo(name: "Foo", symbols: fooSymbols))
         let fnType = FunctionTypeInfo(name: "bar", mangledName: "bar", returnType: .void, arguments: [
             .constPointer(fooType.correspondingConstType)

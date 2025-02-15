@@ -10,12 +10,12 @@ import TurtleCore
 
 /// Evaluates the expression type in an lvalue context.
 public final class LvalueExpressionTypeChecker {
-    private let symbols: SymbolTable
+    private let symbols: Env
     private let staticStorageFrame: Frame
     private let memoryLayoutStrategy: MemoryLayoutStrategy
     
     public init(
-        symbols: SymbolTable = SymbolTable(),
+        symbols: Env = Env(),
         staticStorageFrame: Frame = Frame(),
         memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) {

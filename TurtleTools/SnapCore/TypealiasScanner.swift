@@ -9,9 +9,9 @@
 import TurtleCore
 
 public struct TypealiasScanner {
-    private let symbols: SymbolTable
+    private let symbols: Env
     
-    public init(_ symbols: SymbolTable) {
+    public init(_ symbols: Env) {
         self.symbols = symbols
     }
     

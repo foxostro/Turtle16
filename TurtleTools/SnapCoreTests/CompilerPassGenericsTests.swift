@@ -16,7 +16,7 @@ final class CompilerPassGenericsTests: XCTestCase {
         try! SnapCore.parse(text: text, url: URL(fileURLWithPath: testName))
     }
     
-    fileprivate func makeGenericFunctionDeclaration(_ parentSymbols: SymbolTable = SymbolTable()) -> FunctionDeclaration {
+    fileprivate func makeGenericFunctionDeclaration(_ parentSymbols: Env = Env()) -> FunctionDeclaration {
         parse("""
             func foo[T](a: T) -> T {
                 let b: T = a
@@ -27,7 +27,7 @@ final class CompilerPassGenericsTests: XCTestCase {
             .reconnect(parent: parentSymbols) as! FunctionDeclaration
     }
     
-    fileprivate func addGenericFunctionSymbol(_ symbols: SymbolTable) -> SymbolTable {
+    fileprivate func addGenericFunctionSymbol(_ symbols: Env) -> Env {
         let template = makeGenericFunctionDeclaration(symbols)
         let genericFunctionType = GenericFunctionType(template: template)
         symbols.bind(identifier: "foo", symbol: Symbol(type: .genericFunction(genericFunctionType)))
@@ -37,7 +37,7 @@ final class CompilerPassGenericsTests: XCTestCase {
     // Every expression with a generic function application is rewritten to
     // instead reference the concrete instantiation of the function.
     func testRewriteGenericFunctionApplicationExpressionToConcreteInstantiation() throws {
-        let symbols = addGenericFunctionSymbol(SymbolTable())
+        let symbols = addGenericFunctionSymbol(Env())
         let expr = GenericTypeApplication(
             identifier: Identifier("foo"),
             arguments: [PrimitiveType(.constU16)])
@@ -49,7 +49,7 @@ final class CompilerPassGenericsTests: XCTestCase {
     
     // The concrete instantiation of the function is added to the symbol table.
     func testGenericFunctionApplicationCausesConcreteFunctionToBeAddedToSymbolTable() throws {
-        let symbols = addGenericFunctionSymbol(SymbolTable())
+        let symbols = addGenericFunctionSymbol(Env())
         let expr = GenericTypeApplication(
             identifier: Identifier("foo"),
             arguments: [PrimitiveType(.constU16)])
@@ -76,7 +76,7 @@ final class CompilerPassGenericsTests: XCTestCase {
             makeGenericFunctionDeclaration()
         ])
         
-        let compiler = CompilerPassGenerics(symbols: SymbolTable())
+        let compiler = CompilerPassGenerics(symbols: Env())
         let ast1 = try compiler.run(ast0)
         
         XCTAssertEqual(ast1, Block())
@@ -84,9 +84,9 @@ final class CompilerPassGenericsTests: XCTestCase {
     
     // The concrete instantiation of the function is added to the AST.
     func testGenericFunctionApplicationCausesConcreteFunctionToBeAddedToAST() throws {
-        let symbols = SymbolTable()
-        let blockSymbols = SymbolTable(parent: symbols)
-        let funSym = SymbolTable(parent: blockSymbols, frameLookupMode: .set(Frame()))
+        let symbols = Env()
+        let blockSymbols = Env(parent: symbols)
+        let funSym = Env(parent: blockSymbols, frameLookupMode: .set(Frame()))
         
         let expected = Block(symbols: blockSymbols, children: [
             FunctionDeclaration(
@@ -117,7 +117,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                         identifier: Identifier("T"),
                         constraints: [])
                 ],
-                body: Block(symbols: SymbolTable(parent: funSym), children: [
+                body: Block(symbols: Env(parent: funSym), children: [
                     Return(Identifier("a"))
                 ]),
                 visibility: .privateVisibility,
@@ -135,9 +135,9 @@ final class CompilerPassGenericsTests: XCTestCase {
     // A Call expression which calls a generic function is rewritten to a
     // generic function application expression
     func testCallExprWithGenericFunctionIsRewrittenToApp() throws {
-        let symbols = SymbolTable()
-        let blockSymbols = SymbolTable(parent: symbols)
-        let funSym = SymbolTable(parent: blockSymbols, frameLookupMode: .set(Frame()))
+        let symbols = Env()
+        let blockSymbols = Env(parent: symbols)
+        let funSym = Env(parent: blockSymbols, frameLookupMode: .set(Frame()))
         
         let expected = Block(symbols: blockSymbols, children: [
             FunctionDeclaration(
@@ -170,7 +170,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                         identifier: Identifier("T"),
                         constraints: [])
                 ],
-                body: Block(symbols: SymbolTable(parent: funSym), children: [
+                body: Block(symbols: Env(parent: funSym), children: [
                     Return(Identifier("a"))
                 ]),
                 visibility: .privateVisibility,
@@ -186,9 +186,9 @@ final class CompilerPassGenericsTests: XCTestCase {
     }
     
     func testRejectsGenericFunctionApplicationWithIncorrectNumberOfArguments() throws {
-        let symbols = SymbolTable()
-        let funSym = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))
-        let bodySym = SymbolTable(parent: funSym)
+        let symbols = Env()
+        let funSym = Env(parent: symbols, frameLookupMode: .set(Frame()))
+        let bodySym = Env(parent: funSym)
         let functionType = FunctionType(
             name: "foo",
             returnType: Identifier("T"),
@@ -223,9 +223,9 @@ final class CompilerPassGenericsTests: XCTestCase {
     }
     
     func testCannotTakeTheAddressOfGenericFunctionWithInappropriateTypeArguments() {
-        let symbols = SymbolTable()
-        let funSym = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))
-        let bodySym = SymbolTable(parent: funSym)
+        let symbols = Env()
+        let funSym = Env(parent: symbols, frameLookupMode: .set(Frame()))
+        let bodySym = Env(parent: funSym)
         let functionType = FunctionType(
             name: "foo",
             returnType: Identifier("T"),
@@ -280,14 +280,14 @@ final class CompilerPassGenericsTests: XCTestCase {
                 isConst: false)
         ])
         
-        let compiler = CompilerPassGenerics(symbols: SymbolTable())
+        let compiler = CompilerPassGenerics(symbols: Env())
         let ast1 = try compiler.run(ast0)
         XCTAssertEqual(ast1, Block())
     }
     
     // The concrete instantiation of the generic struct is added to the symbol table.
     func testGenericTypeApplicationCausesConcreteStructToBeAddedToSymbolTable() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         
         let ast0 = Block(symbols: symbols, children: [
             StructDeclaration(
@@ -383,9 +383,9 @@ final class CompilerPassGenericsTests: XCTestCase {
     // concrete struct as well as an Impl node for the methods.
     // This test is for the case where the methods are not themselves generic.
     func testInstantiatingGenericStructEmitsImplNodesForMethods_1() throws {
-        let symbols = SymbolTable()
-        let funSym = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))
-        let bodySym = SymbolTable(parent: funSym)
+        let symbols = Env()
+        let funSym = Env(parent: symbols, frameLookupMode: .set(Frame()))
+        let bodySym = Env(parent: funSym)
         
         let outerBlockID = AbstractSyntaxTreeNode.ID()
         let myStructFooID = AbstractSyntaxTreeNode.ID()
@@ -483,9 +483,9 @@ final class CompilerPassGenericsTests: XCTestCase {
     // This test is for the case where the methods use the Impl's generic type
     // argument but are not otherwise generic themselves.
     func testInstantiatingGenericStructEmitsImplNodesForMethods_2() throws {
-        let symbols = SymbolTable()
-        let funSym = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))
-        let bodySym = SymbolTable(parent: funSym)
+        let symbols = Env()
+        let funSym = Env(parent: symbols, frameLookupMode: .set(Frame()))
+        let bodySym = Env(parent: funSym)
         
         let expected = Block(
             symbols: symbols,
@@ -725,7 +725,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                             argumentNames: ["arg1"],
                             typeArguments: [],
                             body: Block(children: [
-                                StructDeclaration(StructTypeInfo(name: "T", symbols: SymbolTable())),
+                                StructDeclaration(StructTypeInfo(name: "T", symbols: Env())),
                                 Return(Identifier("arg1"))
                             ]))
                     ]),
@@ -762,14 +762,14 @@ final class CompilerPassGenericsTests: XCTestCase {
                 ])
         ])
         
-        let compiler = CompilerPassGenerics(symbols: SymbolTable())
+        let compiler = CompilerPassGenerics(symbols: Env())
         let ast1 = try compiler.run(ast0)
         XCTAssertEqual(ast1, Block())
     }
     
     // The concrete instantiation of the generic trait is added to the symbol table.
     func testGenericTypeApplicationCausesConcreteTraitToBeAddedToSymbolTable() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         
         let ast0 = Block(symbols: symbols, children: [
             TraitDeclaration(
@@ -805,9 +805,9 @@ final class CompilerPassGenericsTests: XCTestCase {
     
     // The concrete instantiation of the generic trait is inserted into the AST.
     func testGenericTypeApplicationCausesConcreteTraitToBeAddedToAST() throws {
-        let symbols = SymbolTable()
-        let funSym = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))
-        let bodySym = SymbolTable(parent: funSym)
+        let symbols = Env()
+        let funSym = Env(parent: symbols, frameLookupMode: .set(Frame()))
+        let bodySym = Env(parent: funSym)
         
         let expected = Block(symbols: symbols, children: [
             TraitDeclaration(
@@ -893,9 +893,9 @@ final class CompilerPassGenericsTests: XCTestCase {
     }
     
     func testGetWhereMemberIsGenericTypeApp() throws {
-        let symbols = SymbolTable()
-        let funSym = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))
-        let bodySym = SymbolTable(parent: funSym)
+        let symbols = Env()
+        let funSym = Env(parent: symbols, frameLookupMode: .set(Frame()))
+        let bodySym = Env(parent: funSym)
         
         let blockId = AbstractSyntaxTreeNode.ID()
         let implId = AbstractSyntaxTreeNode.ID()

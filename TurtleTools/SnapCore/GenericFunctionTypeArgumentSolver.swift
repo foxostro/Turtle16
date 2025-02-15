@@ -15,7 +15,7 @@ public struct GenericFunctionTypeArgumentSolver {
     public func inferTypeArguments(
         call expr: Call,
         genericFunctionType generic: GenericFunctionType,
-        symbols: SymbolTable
+        symbols: Env
     ) throws -> [SymbolType] {
         guard expr.arguments.count == generic.arguments.count else {
             throw failedToInferError(expr, generic)

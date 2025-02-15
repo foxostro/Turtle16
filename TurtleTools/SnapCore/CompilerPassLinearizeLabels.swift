@@ -35,7 +35,7 @@ fileprivate final class CompilerPassRewriteLabel: CompilerPass {
     
     public init(from targets: [String],
                 to replacements: [String],
-                symbols: SymbolTable? = nil) {
+                symbols: Env? = nil) {
         self.targets = targets
         self.replacements = replacements
     }
@@ -95,7 +95,7 @@ fileprivate extension AbstractSyntaxTreeNode {
 extension AbstractSyntaxTreeNode {
     /// Rewrite labels to avoid collisions with names in the specified symbol table
     public func linearizeLabels(
-        relativeTo symbols: SymbolTable,
+        relativeTo symbols: Env,
         staticStorageFrame: Frame,
         memoryLayoutStrategy: MemoryLayoutStrategy
     ) throws -> AbstractSyntaxTreeNode? {
@@ -117,7 +117,7 @@ extension Block {
     /// specified symbol table. Typically, this specifies the symbols of the
     /// enclosing Block.
     func eraseBlock(
-        relativeTo symbols: SymbolTable,
+        relativeTo symbols: Env,
         staticStorageFrame: Frame = Frame(),
         memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) throws -> Seq {

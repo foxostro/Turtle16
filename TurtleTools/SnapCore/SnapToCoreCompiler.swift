@@ -83,7 +83,7 @@ extension AbstractSyntaxTreeNode {
     public func replaceTopLevelWithBlock() -> AbstractSyntaxTreeNode {
         guard let top = self as? TopLevel else { return self }
         let block = Block(sourceAnchor: top.sourceAnchor,
-                          symbols: SymbolTable(),
+                          symbols: Env(),
                           children: top.children)
         return block
     }

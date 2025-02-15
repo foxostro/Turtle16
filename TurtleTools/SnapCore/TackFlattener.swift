@@ -11,7 +11,7 @@ import TurtleCore
 
 /// Accepts a Tack AST and produces a TackProgram.
 public struct TackFlattener {
-    private var instructions: [(TackInstruction, SourceAnchor?, SymbolTable?, String?)] = []
+    private var instructions: [(TackInstruction, SourceAnchor?, Env?, String?)] = []
     private var didProcessSubroutine = false
     private var labels: [String : Int] = [:]
     private var currentSubroutine: String? = nil

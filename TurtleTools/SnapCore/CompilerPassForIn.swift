@@ -27,9 +27,9 @@ public final class CompilerPassForIn: CompilerPass {
         let zero = LiteralInt(sourceAnchor: node1.sourceAnchor, value: 0)
         let one = LiteralInt(sourceAnchor: node1.sourceAnchor, value: 1)
         
-        let grandparent = SymbolTable(parent: symbols)
-        let parent = SymbolTable(parent: grandparent)
-        let inner = SymbolTable(parent: parent)
+        let grandparent = Env(parent: symbols)
+        let parent = Env(parent: grandparent)
+        let inner = Env(parent: parent)
         
         let body = node1.body.withSymbols(inner)
         

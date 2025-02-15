@@ -66,7 +66,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         return result
     }
     
-    public init(symbols: SymbolTable = SymbolTable(),
+    public init(symbols: Env = Env(),
                 staticStorageFrame: Frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress),
                 memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyTurtle16(),
                 options: CoreToTackCompiler.Options = Options()) {
@@ -75,7 +75,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         kUnionPayloadOffset = memoryLayoutStrategy.sizeof(type: .u16)
         kSliceBaseAddressOffset = 0
         kSliceCountOffset = memoryLayoutStrategy.sizeof(type: .pointer(.void))
-        let structSymbols = SymbolTable(
+        let structSymbols = Env(
             frameLookupMode: .set(Frame()),
             tuples: [
                 (kSliceBase,  Symbol(type: kSliceBaseAddressType, offset: kSliceBaseAddressOffset)),
@@ -2874,7 +2874,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     typ: typ.returnType))
         }
         
-        let innerBlock = SymbolTable(parent: symbols)
+        let innerBlock = Env(parent: symbols)
         env.push(innerBlock)
         
         var children: [AbstractSyntaxTreeNode] = []

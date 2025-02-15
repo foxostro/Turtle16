@@ -13,14 +13,14 @@ import TurtleCore
 final class StructScannerTests: XCTestCase {
     fileprivate let memoryLayoutStrategy = MemoryLayoutStrategyTurtle16()
     
-    fileprivate func makeCompiler(_ symbols: SymbolTable) -> StructScanner {
+    fileprivate func makeCompiler(_ symbols: Env) -> StructScanner {
         StructScanner(
             symbols: symbols,
             memoryLayoutStrategy: memoryLayoutStrategy)
     }
     
     func testStructDeclarationMayNotRedefineExistingSymbol() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(
             identifier: "foo",
             symbol: Symbol(
@@ -39,7 +39,7 @@ final class StructScannerTests: XCTestCase {
     }
     
     func testStructDeclarationMayNotRedefineExistingType() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(
             identifier: "foo",
             symbolType: .void,
@@ -55,7 +55,7 @@ final class StructScannerTests: XCTestCase {
     }
     
     func testGenericStructDeclarationMayNotRedefineExistingSymbol() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(
             identifier: "foo",
             symbol: Symbol(
@@ -79,7 +79,7 @@ final class StructScannerTests: XCTestCase {
     }
     
     func testGenericStructDeclarationMayNotRedefineExistingType() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(
             identifier: "foo",
             symbolType: .void,
@@ -100,10 +100,10 @@ final class StructScannerTests: XCTestCase {
     }
     
     func testEmptyStruct() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let input = StructDeclaration(identifier: Identifier("None"), members: [])
         XCTAssertNoThrow(try makeCompiler(symbols).compile(input))
-        let expectedStructSymbols = SymbolTable()
+        let expectedStructSymbols = Env()
         expectedStructSymbols.frameLookupMode = .set(Frame())
         expectedStructSymbols.breadcrumb = .structType("None")
         let expectedType: SymbolType = .structType(StructTypeInfo(name: "None", symbols: expectedStructSymbols))
@@ -112,13 +112,13 @@ final class StructScannerTests: XCTestCase {
     }
     
     func testConstStruct() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let input = StructDeclaration(
             identifier: Identifier("None"),
             members: [],
             isConst: true)
         XCTAssertNoThrow(try makeCompiler(symbols).compile(input))
-        let expectedStructSymbols = SymbolTable()
+        let expectedStructSymbols = Env()
         expectedStructSymbols.frameLookupMode = .set(Frame())
         expectedStructSymbols.breadcrumb = .structType("None")
         let expectedType: SymbolType = .constStructType(StructTypeInfo(name: "None", symbols: expectedStructSymbols))
@@ -127,7 +127,7 @@ final class StructScannerTests: XCTestCase {
     }
     
     func testStructWithOneMember() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let input = StructDeclaration(identifier: Identifier("Foo"), members: [
             StructDeclaration.Member(name: "bar", type: PrimitiveType(.u8))
         ])
@@ -136,7 +136,7 @@ final class StructScannerTests: XCTestCase {
             type: .u8,
             offset: 0,
             storage: .automaticStorage)
-        let expectedStructSymbols = SymbolTable(tuples: [
+        let expectedStructSymbols = Env(tuples: [
             ("bar", bar)
         ])
         expectedStructSymbols.breadcrumb = .structType("Foo")
@@ -150,7 +150,7 @@ final class StructScannerTests: XCTestCase {
     }
     
     func testStructCannotContainItselfRecursively() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let input = StructDeclaration(identifier: Identifier("Foo"), members: [
             StructDeclaration.Member(name: "bar", type: Identifier("Foo"))
         ])
@@ -162,7 +162,7 @@ final class StructScannerTests: XCTestCase {
     }
     
     func testGenericStruct() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let input = StructDeclaration(
             identifier: Identifier("Foo"),
             typeArguments: [
@@ -174,7 +174,7 @@ final class StructScannerTests: XCTestCase {
         try makeCompiler(symbols).compile(input)
         let actualType = try symbols.resolveType(identifier: "Foo")
         
-        let expectedStructSymbols = SymbolTable()
+        let expectedStructSymbols = Env()
         expectedStructSymbols.breadcrumb = .structType("Foo")
         let expectedType: SymbolType = .genericStructType(GenericStructTypeInfo(template: input))
         

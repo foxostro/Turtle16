@@ -9,7 +9,7 @@
 import TurtleSimulatorCore
 
 public class SnapDebugConsole : DebugConsole {
-    public var symbols: SymbolTable? = nil
+    public var symbols: Env? = nil
     public let memoryLayoutStrategy = MemoryLayoutStrategyNull()
     
     public func loadSymbolU8(_ identifier: String) -> UInt8? {

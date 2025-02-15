@@ -12,12 +12,12 @@ import TurtleCore
 /// Scans an Impl declaration and binds the function symbols in the environment
 public struct ImplScanner {
     private let memoryLayoutStrategy: MemoryLayoutStrategy
-    private let parent: SymbolTable
+    private let parent: Env
     private let typeChecker: RvalueExpressionTypeChecker
     
     public init(
         memoryLayoutStrategy: MemoryLayoutStrategy,
-        symbols parent: SymbolTable = SymbolTable()
+        symbols parent: Env = Env()
     ) {
         self.memoryLayoutStrategy = memoryLayoutStrategy
         self.parent = parent
@@ -98,7 +98,7 @@ public struct ImplScanner {
     }
     
     private func scanImplStruct(_ node: Impl, _ typ: StructTypeInfo) throws {
-        let symbols = SymbolTable(parent: parent)
+        let symbols = Env(parent: parent)
         symbols.breadcrumb = .structType(typ.name)
         
         for child in node.children {

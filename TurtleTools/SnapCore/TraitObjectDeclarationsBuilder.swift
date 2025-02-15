@@ -16,7 +16,7 @@ struct TraitObjectDeclarationsBuilder {
     }
     
     func declarations(for traitDecl: TraitDeclaration,
-                      symbols: SymbolTable) throws -> Declarations {
+                      symbols: Env) throws -> Declarations {
         assert(!traitDecl.isGeneric)
         let vtableDecl = vtable(for: traitDecl)
         let traitObjectDecl = traitObjectDecl(for: traitDecl)
@@ -63,7 +63,7 @@ struct TraitObjectDeclarationsBuilder {
     
     func traitObjectImpl(
         for traitDecl: TraitDeclaration,
-        _ symbols: SymbolTable) throws -> Impl? {
+        _ symbols: Env) throws -> Impl? {
         
         var thunks: [FunctionDeclaration] = []
         for method in traitDecl.members {
@@ -71,7 +71,7 @@ struct TraitObjectDeclarationsBuilder {
             let argumentNames = (0..<functionType.arguments.count).map { ($0 == 0) ? "self" : "arg\($0)" }
             let callee = Get(expr: Get(expr: Identifier("self"), member: Identifier("vtable")), member: Identifier(method.name))
             let arguments = [Get(expr: Identifier("self"), member: Identifier("object"))] + argumentNames[1...].map({Identifier($0)})
-            let outer = SymbolTable(
+            let outer = Env(
                 parent: symbols,
                 frameLookupMode: .set(Frame(growthDirection: .down)))
             let typeChecker = TypeContextTypeChecker(symbols: symbols)
@@ -83,7 +83,7 @@ struct TraitObjectDeclarationsBuilder {
                 ? callExpr0
                 : Return(callExpr0)
             let fnBody = Block(
-                symbols: SymbolTable(parent: outer),
+                symbols: Env(parent: outer),
                 children: [callExpr1])
             let fnDecl = FunctionDeclaration(
                 identifier: Identifier(method.name),

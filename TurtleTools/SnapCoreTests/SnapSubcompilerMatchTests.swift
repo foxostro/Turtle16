@@ -13,7 +13,7 @@ import TurtleCore
 final class SnapSubcompilerMatchTests: XCTestCase {
     func testCompileEmptyMatchStatement() {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("foo", Symbol(type: .u8))
         ])
         let input = Match(expr: Identifier("foo"), clauses: [], elseClause: nil)
@@ -27,7 +27,7 @@ final class SnapSubcompilerMatchTests: XCTestCase {
     
     func testCompileMatchStatementWithOnlyElseClause() {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("result", Symbol(type: .u8))
         ])
         let input = Match(expr: Identifier("result"), clauses: [], elseClause: Block(children: [
@@ -46,7 +46,7 @@ final class SnapSubcompilerMatchTests: XCTestCase {
 
     func testCompileMatchStatementWithOneExtraneousClause() {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("result", Symbol(type: .u8))
         ])
         let input = Match(expr: Identifier("result"), clauses: [
@@ -67,10 +67,10 @@ final class SnapSubcompilerMatchTests: XCTestCase {
 
     func testCompileMatchStatementWithTwoExtraneousClauses() {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("result", Symbol(type: .u8))
         ], typeDict: [
-            "None" : .structType(StructTypeInfo(name: "None", symbols: SymbolTable()))
+            "None" : .structType(StructTypeInfo(name: "None", symbols: Env()))
         ])
         let input = Match(expr: Identifier("result"), clauses: [
             Match.Clause(valueIdentifier: Identifier("foo"),
@@ -93,7 +93,7 @@ final class SnapSubcompilerMatchTests: XCTestCase {
 
     func testCompileMatchStatementWithOnlyOneClause() {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("result", Symbol(type: .u8)),
             ("test", Symbol(type: .u8))
         ])
@@ -130,7 +130,7 @@ final class SnapSubcompilerMatchTests: XCTestCase {
 
     func testCompileMatchStatementWithUnionTypeAndNonexhaustiveClauses() {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("result", Symbol(type: .u8)),
             ("test", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool]))))
         ])
@@ -151,7 +151,7 @@ final class SnapSubcompilerMatchTests: XCTestCase {
 
     func testCompileMatchStatementWithUnionTypeAndExhaustiveClauses() {
         let memoryLayoutStrategy = MemoryLayoutStrategyTurtleTTL()
-        let symbols = SymbolTable(tuples: [
+        let symbols = Env(tuples: [
             ("result", Symbol(type: .u8)),
             ("test", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool]))))
         ])

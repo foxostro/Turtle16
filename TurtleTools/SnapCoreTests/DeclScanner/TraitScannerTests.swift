@@ -18,7 +18,7 @@ final class TraitScannerTests: XCTestCase {
         let scanner = TraitScanner()
         try scanner.scan(trait: ast)
         
-        let expectedSymbols = SymbolTable()
+        let expectedSymbols = Env()
         expectedSymbols.frameLookupMode = .set(Frame())
         expectedSymbols.breadcrumb = .traitType("Foo")
         let expected: SymbolType = .traitType(TraitTypeInfo(name: "Foo", nameOfTraitObjectType: "__Foo_object", nameOfVtableType: "__Foo_vtable", symbols: expectedSymbols))
@@ -38,7 +38,7 @@ final class TraitScannerTests: XCTestCase {
         try scanner.scan(trait: ast)
         
         let memoryLayoutStrategy = MemoryLayoutStrategyNull()
-        let members = SymbolTable()
+        let members = Env()
         let expected: SymbolType = .traitType(TraitTypeInfo(
             name: "Foo",
             nameOfTraitObjectType: "__Foo_object",
@@ -171,7 +171,7 @@ final class TraitScannerTests: XCTestCase {
             visibility: .privateVisibility)
         
         // Ensure the vtable type name is already taken before scanning.
-        let scanner = TraitScanner(symbols: SymbolTable(typeDict: [
+        let scanner = TraitScanner(symbols: Env(typeDict: [
             "__Foo_vtable" : .void
         ]))
         
@@ -201,10 +201,10 @@ final class TraitScannerTests: XCTestCase {
             visibility: .privateVisibility)
         
         // Ensure the vtable type name is already taken before scanning.
-        let scanner = TraitScanner(symbols: SymbolTable(typeDict: [
+        let scanner = TraitScanner(symbols: Env(typeDict: [
             "__Foo_vtable" : .structType(StructTypeInfo(
                 name: "__Foo_vtable",
-                symbols: SymbolTable()))
+                symbols: Env()))
         ]))
         
         XCTAssertNoThrow(try scanner.scan(trait: ast))
@@ -229,7 +229,7 @@ final class TraitScannerTests: XCTestCase {
             visibility: .privateVisibility)
         
         // Ensure the trait-object type name is already taken before scanning.
-        let scanner = TraitScanner(symbols: SymbolTable(typeDict: [
+        let scanner = TraitScanner(symbols: Env(typeDict: [
             "__Foo_object" : .void
         ]))
         
@@ -259,10 +259,10 @@ final class TraitScannerTests: XCTestCase {
             visibility: .privateVisibility)
         
         // Ensure the trait-object type name is already taken before scanning.
-        let scanner = TraitScanner(symbols: SymbolTable(typeDict: [
+        let scanner = TraitScanner(symbols: Env(typeDict: [
             "__Foo_object" : .structType(StructTypeInfo(
                 name: "__Foo_object",
-                symbols: SymbolTable(),
+                symbols: Env(),
                 associatedTraitType: "Foo"))
             ]))
         

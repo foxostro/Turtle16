@@ -35,7 +35,7 @@ public final class SnapCompilerFrontEnd {
     
     public private(set) var testNames: [String] = []
     public private(set) var syntaxTree: AbstractSyntaxTreeNode! = nil
-    public private(set) var symbolsOfTopLevelScope: SymbolTable! = nil
+    public private(set) var symbolsOfTopLevelScope: Env! = nil
     
     public var sandboxAccessManager: SandboxAccessManager? = nil
     

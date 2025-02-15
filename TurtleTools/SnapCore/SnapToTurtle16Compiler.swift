@@ -11,7 +11,7 @@ import TurtleSimulatorCore
 
 public struct TurtleProgram {
     public let testNames: [String]
-    public let symbolsOfTopLevelScope: SymbolTable
+    public let symbolsOfTopLevelScope: Env
     public let syntaxTree: AbstractSyntaxTreeNode
     public let tackProgram: TackProgram
     public let assembly: TopLevel

@@ -12,7 +12,7 @@ import TurtleCore
 
 final class SnapSubcompilerVarDeclarationTests: XCTestCase {
     func testDeclareVariable_StaticStorage() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
         let compiler = SnapSubcompilerVarDeclaration(
             symbols: symbols,
@@ -33,7 +33,7 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
     }
     
     func testDeclareVariable_AutomaticStorage() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = SnapSubcompilerVarDeclaration(
             symbols: symbols,
@@ -54,7 +54,7 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
     }
     
     func testConstantRedefinesExistingSymbol() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .void))
         let compiler = SnapSubcompilerVarDeclaration(symbols: symbols)
         let input = VarDeclaration(identifier: Identifier("foo"),
@@ -69,7 +69,7 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
     }
     
     func testVariableRedefinesExistingSymbol() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(identifier: "foo", symbol: Symbol(type: .void))
         let compiler = SnapSubcompilerVarDeclaration(symbols: symbols)
         let input = VarDeclaration(identifier: Identifier("foo"),
@@ -84,7 +84,7 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
     }
     
     func testConstantRedefinesExistingType() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(identifier: "foo", symbolType: .bool)
         let compiler = SnapSubcompilerVarDeclaration(symbols: symbols)
         let input = VarDeclaration(
@@ -100,7 +100,7 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
     }
     
     func testVariableRedefinesExistingType() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(identifier: "foo", symbolType: .bool)
         let compiler = SnapSubcompilerVarDeclaration(symbols: symbols)
         let input = VarDeclaration(
@@ -116,7 +116,7 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
     }
     
     func testDeclareVariableWithExpressionAndExplicitType() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
         let compiler = SnapSubcompilerVarDeclaration(
             symbols: symbols,
@@ -139,7 +139,7 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
     }
     
     func testDeclareVariableWithExpression_compTimeU8_mutableVariable() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
         let compiler = SnapSubcompilerVarDeclaration(
             symbols: symbols,
@@ -162,7 +162,7 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
     }
     
     func testDeclareVariableWithExpression_compTimeU8() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
         let compiler = SnapSubcompilerVarDeclaration(
             symbols: symbols,
@@ -185,7 +185,7 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
     }
     
     func testDeclareVariableWithExpression_compTimeU16() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
         let compiler = SnapSubcompilerVarDeclaration(
             symbols: symbols,
@@ -208,7 +208,7 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
     }
     
     func testDeclareVariableWithExpression_compTimeBool() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
         let compiler = SnapSubcompilerVarDeclaration(
             symbols: symbols,
@@ -231,8 +231,8 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
     }
     
     func testDeclareVariableWithExpression_structInitializer() throws {
-        let symbols = SymbolTable()
-        let typ = StructTypeInfo(name: "bar", symbols: SymbolTable())
+        let symbols = Env()
+        let typ = StructTypeInfo(name: "bar", symbols: Env())
         symbols.bind(identifier: "bar", symbolType: .structType(typ))
         let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
         let compiler = SnapSubcompilerVarDeclaration(
@@ -256,7 +256,7 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
     }
     
     func testDeclareVariableWithExplicitTypeButNoExpression_immutable() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
         let compiler = SnapSubcompilerVarDeclaration(
             symbols: symbols,
@@ -277,7 +277,7 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
     }
     
     func testDeclareVariableWithExplicitTypeButNoExpression_mutable() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
         let compiler = SnapSubcompilerVarDeclaration(
             symbols: symbols,
@@ -298,7 +298,7 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
     }
     
     func testUnableToDeduceTypeOfConstant() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let compiler = SnapSubcompilerVarDeclaration(symbols: symbols)
         let input = VarDeclaration(identifier: Identifier("foo"),
                                    explicitType: nil,
@@ -312,7 +312,7 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
     }
     
     func testUnableToDeduceTypeOfVariable() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
         let compiler = SnapSubcompilerVarDeclaration(
             symbols: symbols,
@@ -329,7 +329,7 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
     }
     
     func testDeclareVariableWithExpressionAndExplicitType_literalArray() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
         let compiler = SnapSubcompilerVarDeclaration(
             symbols: symbols,
@@ -353,7 +353,7 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
     }
     
     func testDeclareVariableWithNoExpression() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
         let compiler = SnapSubcompilerVarDeclaration(
             symbols: symbols,

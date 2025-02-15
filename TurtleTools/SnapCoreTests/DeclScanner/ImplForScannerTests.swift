@@ -11,7 +11,7 @@ import SnapCore
 import TurtleCore
 
 final class ImplForScannerTests: XCTestCase {
-    fileprivate func scanSerialTrait(_ symbols: SymbolTable) throws {
+    fileprivate func scanSerialTrait(_ symbols: Env) throws {
         
         let traitDecl = TraitDeclaration(
             identifier: Identifier("Serial"),
@@ -32,7 +32,7 @@ final class ImplForScannerTests: XCTestCase {
         try scanner.scan(trait: traitDecl)
     }
     
-    fileprivate func scanSerialFake(_ symbols: SymbolTable) throws {
+    fileprivate func scanSerialFake(_ symbols: Env) throws {
         
         let fake = StructDeclaration(
             identifier: Identifier("SerialFake"),
@@ -44,7 +44,7 @@ final class ImplForScannerTests: XCTestCase {
     }
     
     func testScanImplForTrait() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         
         try scanSerialTrait(symbols)
         try scanSerialFake(symbols)
@@ -87,7 +87,7 @@ final class ImplForScannerTests: XCTestCase {
     }
     
     func testFailToScanImplForTraitBecauseMethodsAreMissing() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         
         try scanSerialTrait(symbols)
         try scanSerialFake(symbols)
@@ -111,7 +111,7 @@ final class ImplForScannerTests: XCTestCase {
     }
     
     func testFailToScanImplForTraitBecauseMethodHasIncorrectNumberOfParameters() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         
         try scanSerialTrait(symbols)
         try scanSerialFake(symbols)
@@ -147,7 +147,7 @@ final class ImplForScannerTests: XCTestCase {
     }
     
     func testFailToCompileImplForTraitBecauseMethodHasIncorrectParameterTypes() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         
         try scanSerialTrait(symbols)
         try scanSerialFake(symbols)
@@ -184,7 +184,7 @@ final class ImplForScannerTests: XCTestCase {
     }
     
     func testFailToScanImplForTraitBecauseMethodHasIncorrectSelfParameterTypes() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         
         try scanSerialTrait(symbols)
         try scanSerialFake(symbols)
@@ -221,7 +221,7 @@ final class ImplForScannerTests: XCTestCase {
     }
     
     func testFailToCompileImplForTraitBecauseMethodHasIncorrectReturnType() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         
         try scanSerialTrait(symbols)
         try scanSerialFake(symbols)

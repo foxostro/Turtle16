@@ -12,16 +12,16 @@ import TurtleCore
 
 final class ImplScannerTests: XCTestCase {
     func testExample() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         
         let foo = StructDeclaration(
             identifier: Identifier("Foo"),
             members: [],
             visibility: .privateVisibility)
-        let functionSymbols = SymbolTable(
+        let functionSymbols = Env(
             parent: symbols,
             frameLookupMode: .set(Frame()))
-        let functionBodySymbols = SymbolTable(
+        let functionBodySymbols = Env(
             parent: functionSymbols,
             frameLookupMode: .inherit)
         let impl = Impl(
@@ -70,7 +70,7 @@ final class ImplScannerTests: XCTestCase {
     }
     
     func testRedefinesExistingSymbol() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         
         let foo = StructDeclaration(
             identifier: Identifier("Foo"),
@@ -85,9 +85,9 @@ final class ImplScannerTests: XCTestCase {
             memoryLayoutStrategy: MemoryLayoutStrategyNull())
         .compile(foo)
         
-        let functionSymbols = SymbolTable(parent: symbols, frameLookupMode: .set(Frame()))
+        let functionSymbols = Env(parent: symbols, frameLookupMode: .set(Frame()))
         
-        let functionBodySymbols = SymbolTable(parent: functionSymbols, frameLookupMode: .inherit)
+        let functionBodySymbols = Env(parent: functionSymbols, frameLookupMode: .inherit)
         
         let impl = Impl(
             typeArguments: [],

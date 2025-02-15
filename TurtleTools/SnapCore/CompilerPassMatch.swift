@@ -12,7 +12,7 @@ import TurtleCore
 public final class CompilerPassMatch: CompilerPassWithDeclScan {
     public override func visit(match node0: Match) throws -> AbstractSyntaxTreeNode? {
         let node1 = try super.visit(match: node0) as! Match
-        let outer = SymbolTable(parent: symbols)
+        let outer = Env(parent: symbols)
         let matchExprType = try typeChecker.check(expression: node1.expr)
         
         // Get the list of types this match statement is expected to contain.
@@ -65,7 +65,7 @@ public final class CompilerPassMatch: CompilerPassWithDeclScan {
         }
         else if let elseClause = node1.elseClause {
             let rewrittenElseClause = Block(sourceAnchor: elseClause.sourceAnchor,
-                                            symbols: SymbolTable(parent: outer),
+                                            symbols: Env(parent: outer),
                                             children: elseClause.children)
             stmts.append(rewrittenElseClause)
         }
@@ -77,7 +77,7 @@ public final class CompilerPassMatch: CompilerPassWithDeclScan {
         return block0
     }
     
-    fileprivate func compileMatchClause(_ match: Match, _ clauses: [Match.Clause], _ symbols: SymbolTable) -> If {
+    fileprivate func compileMatchClause(_ match: Match, _ clauses: [Match.Clause], _ symbols: Env) -> If {
         assert(!clauses.isEmpty)
         
         let clause = clauses.last!
@@ -89,11 +89,11 @@ public final class CompilerPassMatch: CompilerPassWithDeclScan {
                 clauseElseBlock = nil
             } else {
                 clauseElseBlock = Block(sourceAnchor: match.elseClause!.sourceAnchor,
-                                        symbols: SymbolTable(parent: symbols),
+                                        symbols: Env(parent: symbols),
                                         children: match.elseClause!.children)
             }
             
-            let outerSymbols = SymbolTable(parent: symbols)
+            let outerSymbols = Env(parent: symbols)
             
             return If(condition: Is(expr: index, testType: clause.valueType),
                       then: Block(symbols: outerSymbols,
@@ -104,12 +104,12 @@ public final class CompilerPassMatch: CompilerPassWithDeclScan {
                                        storage: .automaticStorage,
                                        isMutable: false),
                                     Block(sourceAnchor: clause.block.sourceAnchor,
-                                          symbols: SymbolTable(parent: outerSymbols),
+                                          symbols: Env(parent: outerSymbols),
                                           children: clause.block.children)
                       ]),
                       else: clauseElseBlock)
         } else {
-            let outerSymbols = SymbolTable(parent: symbols)
+            let outerSymbols = Env(parent: symbols)
             return If(condition: Is(expr: index, testType: clause.valueType),
                       then: Block(symbols: outerSymbols,
                                   children: [
@@ -119,7 +119,7 @@ public final class CompilerPassMatch: CompilerPassWithDeclScan {
                                        storage: .automaticStorage,
                                        isMutable: false),
                                     Block(sourceAnchor: clause.block.sourceAnchor,
-                                          symbols: SymbolTable(parent: outerSymbols),
+                                          symbols: Env(parent: outerSymbols),
                                           children: clause.block.children)
                       ]),
                       else: compileMatchClause(match, clauses.dropLast(), symbols))

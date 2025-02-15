@@ -26,7 +26,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
     }
     
     func testFunctionDeclaration() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let originalFunctionDeclaration = FunctionDeclaration(
             identifier: Identifier("foo"),
             functionType: FunctionType(
@@ -62,7 +62,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
     }
     
     func testStructDeclaration() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let input = Block(symbols: symbols, children: [
             StructDeclaration(identifier: Identifier("None"), members: [])
         ])
@@ -71,7 +71,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
         let result = try compiler.run(input)
         XCTAssertEqual(result, input)
         
-        let expectedStructSymbols = SymbolTable()
+        let expectedStructSymbols = Env()
         expectedStructSymbols.frameLookupMode = .set(Frame())
         expectedStructSymbols.breadcrumb = .structType("None")
         let expectedType: SymbolType = .structType(StructTypeInfo(name: "None", symbols: expectedStructSymbols))
@@ -80,7 +80,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
     }
     
     func testTypealias() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let input = Block(symbols: symbols, children: [
             Typealias(lexpr: Identifier("Foo"), rexpr: PrimitiveType(.u8))
         ])
@@ -95,7 +95,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
     }
     
     func testTraitDeclaration() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         
         let input = Block(symbols: symbols, children: [
             TraitDeclaration(identifier: Identifier("Foo"), members: [])
@@ -104,7 +104,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
         let compiler = CompilerPassWithDeclScan()
         _ = try compiler.run(input)
         
-        let expectedSymbols = SymbolTable()
+        let expectedSymbols = Env()
         expectedSymbols.frameLookupMode = .set(Frame())
         expectedSymbols.breadcrumb = .traitType("Foo")
         let expectedType: SymbolType = .traitType(TraitTypeInfo(name: "Foo", nameOfTraitObjectType: "__Foo_object", nameOfVtableType: "__Foo_vtable", symbols: expectedSymbols))
@@ -113,7 +113,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
     }
     
     func testImportingAModuleCausesItToExportPublicSymbols() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let ast0 = Block(symbols: symbols, children: [
             Import(moduleName: "Foo")
         ])
@@ -132,7 +132,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
     
     func testCompileImplForTrait() throws {
         
-        let symbols = SymbolTable()
+        let symbols = Env()
         
         func compileSerialTrait() throws {
             let bar = TraitDeclaration.Member(name: "puts", type:  PointerType(FunctionType(name: nil, returnType: PrimitiveType(.void), arguments: [

@@ -9,11 +9,11 @@
 import TurtleCore
 
 public struct SnapSubcompilerVarDeclaration {
-    private let symbols: SymbolTable
+    private let symbols: Env
     private let staticStorageFrame: Frame
     private let memoryLayoutStrategy: MemoryLayoutStrategy
     
-    public init(symbols: SymbolTable,
+    public init(symbols: Env,
                 staticStorageFrame: Frame = Frame(),
                 memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()) {
         self.symbols = symbols

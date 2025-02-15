@@ -74,7 +74,7 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
     }
     
     func testCannotInferTypeArgumentFromCallExpressionWithIncorrectNumberOfArguments() {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let call = Call(callee: Identifier("foo"), arguments: [])
         let functionType = FunctionType(name: "foo",
                                                    returnType: Identifier("T"),
@@ -87,7 +87,7 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
                                             Return(LiteralInt(0))
                                            ]),
                                            visibility: .privateVisibility,
-                                           symbols: SymbolTable())
+                                           symbols: Env())
         let generic = GenericFunctionType(template: template)
         let solver = GenericFunctionTypeArgumentSolver()
         XCTAssertThrowsError(try solver.inferTypeArguments(call: call,
@@ -100,7 +100,7 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
     }
     
     func testCannotInferTypeArgumentFromCallExpressionWithNoArguments() {
-        let symbols = SymbolTable()
+        let symbols = Env()
         let call = Call(callee: Identifier("foo"), arguments: [])
         let functionType = FunctionType(name: "foo",
                                                    returnType: Identifier("T"),
@@ -113,7 +113,7 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
                                             Return(LiteralInt(0))
                                            ]),
                                            visibility: .privateVisibility,
-                                           symbols: SymbolTable())
+                                           symbols: Env())
         let generic = GenericFunctionType(template: template)
         let solver = GenericFunctionTypeArgumentSolver()
         XCTAssertThrowsError(try solver.inferTypeArguments(call: call,
@@ -126,7 +126,7 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
     }
     
     func testInferOneTypeArgument() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(identifier: "U", symbol: Symbol(type: .constBool))
         
         let call = Call(callee: Identifier("foo"), arguments: [Identifier("U")])
@@ -141,7 +141,7 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
                                             Return(LiteralInt(0))
                                            ]),
                                            visibility: .privateVisibility,
-                                           symbols: SymbolTable())
+                                           symbols: Env())
         let generic = GenericFunctionType(template: template)
         let solver = GenericFunctionTypeArgumentSolver()
         let actual = try solver.inferTypeArguments(call: call,
@@ -152,7 +152,7 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
     }
     
     func testInferDifferentSubstitutionsOnEachArgumentButTheEvaluatedTypesAreIdentical() throws {
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(identifier: "U", symbol: Symbol(type: .constBool))
         symbols.bind(identifier: "V", symbol: Symbol(type: .constBool))
         
@@ -173,7 +173,7 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
                                            typeArguments: [GenericTypeArgument(identifier: Identifier("T"), constraints: [])],
                                            body: Block(),
                                            visibility: .privateVisibility,
-                                           symbols: SymbolTable())
+                                           symbols: Env())
         let generic = GenericFunctionType(template: template)
         let solver = GenericFunctionTypeArgumentSolver()
         let actual = try solver.inferTypeArguments(call: call,
@@ -185,7 +185,7 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
         
     func testFailWhenInferDifferentSubstitutionsOnEachArgument() throws {
         // TODO: What if the fully qualified types of `U' and `V' are the same? Need to actually resolve the types to get this right.
-        let symbols = SymbolTable()
+        let symbols = Env()
         symbols.bind(identifier: "U", symbol: Symbol(type: .constBool))
         symbols.bind(identifier: "V", symbol: Symbol(type: .arithmeticType(.immutableInt(.u16))))
         
@@ -206,7 +206,7 @@ final class GenericFunctionTypeArgumentSolverTests: XCTestCase {
                                            typeArguments: [GenericTypeArgument(identifier: Identifier("T"), constraints: [])],
                                            body: Block(),
                                            visibility: .privateVisibility,
-                                           symbols: SymbolTable())
+                                           symbols: Env())
         let generic = GenericFunctionType(template: template)
         let solver = GenericFunctionTypeArgumentSolver()
         XCTAssertThrowsError(try solver.inferTypeArguments(call: call,

@@ -52,7 +52,7 @@ final class MemoryLayoutStrategyTurtle16Tests: XCTestCase {
     }
     
     func testSizeOfStruct() throws {
-        let typ: SymbolType = .structType(StructTypeInfo(name: "Slice", symbols: SymbolTable(tuples: [
+        let typ: SymbolType = .structType(StructTypeInfo(name: "Slice", symbols: Env(tuples: [
             ("base", Symbol(type: .u16, offset: 0, storage: .automaticStorage)),
             ("count", Symbol(type: .u16, offset: 1, storage: .automaticStorage))
         ])))

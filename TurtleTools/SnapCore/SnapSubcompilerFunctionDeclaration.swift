@@ -20,7 +20,7 @@ public struct SnapSubcompilerFunctionDeclaration {
         self.memoryLayoutStrategy = memoryLayoutStrategy
     }
     
-    public func compile(symbols: SymbolTable, node: FunctionDeclaration) throws {
+    public func compile(symbols: Env, node: FunctionDeclaration) throws {
         assert(node.symbols.frameLookupMode.isSet)
         let name = node.identifier.identifier
         
@@ -45,7 +45,7 @@ public struct SnapSubcompilerFunctionDeclaration {
     }
     
     private func doGeneric(
-        symbols: SymbolTable,
+        symbols: Env,
         node: FunctionDeclaration
     ) throws {
         let name = node.identifier.identifier
@@ -61,7 +61,7 @@ public struct SnapSubcompilerFunctionDeclaration {
     }
     
     private func doNonGeneric(
-        symbols: SymbolTable,
+        symbols: Env,
         node: FunctionDeclaration
     ) throws {
         let functionType = try evaluateFunctionTypeExpression(symbols, node.functionType)
@@ -113,7 +113,7 @@ public struct SnapSubcompilerFunctionDeclaration {
     }
     
     private func evaluateFunctionTypeExpression(
-        _ symbols: SymbolTable,
+        _ symbols: Env,
         _ expr: Expression
     ) throws -> FunctionTypeInfo {
         try TypeContextTypeChecker(
@@ -124,7 +124,7 @@ public struct SnapSubcompilerFunctionDeclaration {
     }
     
     private func bindFunctionArguments(
-        symbols: SymbolTable,
+        symbols: Env,
         functionType: FunctionTypeInfo,
         argumentNames: [String]
     ) {
@@ -153,7 +153,7 @@ public struct SnapSubcompilerFunctionDeclaration {
     }
     
     private func expectFunctionReturnExpressionIsCorrectType(
-        symbols: SymbolTable,
+        symbols: Env,
         functionType: FunctionTypeInfo,
         func node: FunctionDeclaration
     ) throws {
@@ -176,7 +176,7 @@ public struct SnapSubcompilerFunctionDeclaration {
     }
     
     private func makeErrorForMissingReturn(
-        _ symbols: SymbolTable,
+        _ symbols: Env,
         _ functionType: FunctionTypeInfo,
         _ node: FunctionDeclaration
     ) -> CompilerError {
@@ -185,7 +185,7 @@ public struct SnapSubcompilerFunctionDeclaration {
     }
     
     private func shouldSynthesizeTerminalReturnStatement(
-        symbols: SymbolTable,
+        symbols: Env,
         functionType: FunctionTypeInfo,
         func node: FunctionDeclaration
     ) throws -> Bool {

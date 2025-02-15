@@ -12,8 +12,8 @@ import TurtleCore
 
 final class SymbolTablesReconnectorTests: XCTestCase {
     func testBlock() throws {
-        let table1 = SymbolTable()
-        let table2 = SymbolTable()
+        let table1 = Env()
+        let table2 = Env()
         let input = Block(symbols: table1, children: [
             Block(symbols: table2, children: [
             ])
@@ -24,8 +24,8 @@ final class SymbolTablesReconnectorTests: XCTestCase {
     }
     
     func testFunctionDeclaration_IncreasesStackFrame() throws {
-        let table1 = SymbolTable()
-        let table2 = SymbolTable()
+        let table1 = Env()
+        let table2 = Env()
         
         let input = Block(symbols: table1, children: [
             FunctionDeclaration(

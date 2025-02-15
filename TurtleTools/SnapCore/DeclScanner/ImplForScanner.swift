@@ -13,7 +13,7 @@ import TurtleCore
 public struct ImplForScanner {
     private let staticStorageFrame: Frame
     private let memoryLayoutStrategy: MemoryLayoutStrategy
-    private let symbols: SymbolTable
+    private let symbols: Env
     private let typeChecker: RvalueExpressionTypeChecker
     private var implScanner: ImplScanner {
         ImplScanner(memoryLayoutStrategy: memoryLayoutStrategy,
@@ -23,7 +23,7 @@ public struct ImplForScanner {
     public init(
         staticStorageFrame: Frame,
         memoryLayoutStrategy: MemoryLayoutStrategy,
-        symbols: SymbolTable = SymbolTable()
+        symbols: Env = Env()
     ) {
         self.staticStorageFrame = staticStorageFrame
         self.memoryLayoutStrategy = memoryLayoutStrategy

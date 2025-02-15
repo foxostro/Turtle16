@@ -11,7 +11,7 @@ import TurtleCore
 public struct SnapSubcompilerIf {
     public init() {}
     
-    public func compile(if node: If, symbols: SymbolTable) throws -> Seq {
+    public func compile(if node: If, symbols: Env) throws -> Seq {
         let s = node.sourceAnchor
         var children: [AbstractSyntaxTreeNode] = []
         let condition = As(sourceAnchor: node.condition.sourceAnchor,

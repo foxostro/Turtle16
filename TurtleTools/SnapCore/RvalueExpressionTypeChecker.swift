@@ -12,16 +12,16 @@ import TurtleCore
 /// Throws a compiler error when the result type cannot be determined, e.g., due
 /// to a type error in the expression.
 public class RvalueExpressionTypeChecker {
-    let symbols: SymbolTable
+    let symbols: Env
     private let staticStorageFrame: Frame
     private let memoryLayoutStrategy: MemoryLayoutStrategy
     
-    public convenience init(_ symbols: SymbolTable) {
+    public convenience init(_ symbols: Env) {
         self.init(symbols: symbols)
     }
     
     public init(
-        symbols: SymbolTable = SymbolTable(),
+        symbols: Env = Env(),
         staticStorageFrame: Frame = Frame(),
         memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) {
@@ -1059,7 +1059,7 @@ public class RvalueExpressionTypeChecker {
         return try check(genericTypeApplication: expr, symbols: symbols)
     }
     
-    fileprivate func check(genericTypeApplication expr: GenericTypeApplication, symbols: SymbolTable) throws -> SymbolType {
+    fileprivate func check(genericTypeApplication expr: GenericTypeApplication, symbols: Env) throws -> SymbolType {
         let typeOfIdentifier = try symbols.resolveTypeOfIdentifier(sourceAnchor: expr.sourceAnchor, identifier: expr.identifier.identifier)
         
         switch typeOfIdentifier {
@@ -1158,7 +1158,7 @@ public class RvalueExpressionTypeChecker {
         // TODO: check type constraints on the type variables here too
         
         // Bind types in a new symbol table to apply the type arguments.
-        let symbolsWithTypeArguments = SymbolTable(parent: symbols)
+        let symbolsWithTypeArguments = Env(parent: symbols)
         var evaluatedTypeArguments: [SymbolType] = []
         for i in 0..<expr.arguments.count {
             let typeVariable = genericStructType.typeArguments[i]
@@ -1213,7 +1213,7 @@ public class RvalueExpressionTypeChecker {
         // TODO: check type constraints on the type variables here too
         
         // Bind types in a new symbol table to apply the type arguments.
-        let symbolsWithTypeArguments = SymbolTable(parent: symbols)
+        let symbolsWithTypeArguments = Env(parent: symbols)
         var evaluatedTypeArguments: [SymbolType] = []
         for i in 0..<expr.arguments.count {
             let typeVariable = genericTraitType.typeArguments[i]
@@ -1243,7 +1243,7 @@ public class RvalueExpressionTypeChecker {
     fileprivate func instantiate(
         _ genericTraitType: GenericTraitTypeInfo,
         _ evaluatedTypeArguments: [SymbolType],
-        _ symbols: SymbolTable) throws -> SymbolType {
+        _ symbols: Env) throws -> SymbolType {
         
         let node0 = genericTraitType.template.eraseTypeArguments()
         
@@ -1270,10 +1270,10 @@ public class RvalueExpressionTypeChecker {
         _ traitDecl: TraitDeclaration,
         _ evaluatedTypeArguments: [SymbolType] = [],
         _ genericTraitType: GenericTraitTypeInfo? = nil,
-        _ symbols: SymbolTable) throws -> SymbolType {
+        _ symbols: Env) throws -> SymbolType {
         
         let mangledName = traitDecl.mangledName
-        let members = SymbolTable(parent: symbols)
+        let members = Env(parent: symbols)
         let typeChecker = TypeContextTypeChecker(
             symbols: members,
             staticStorageFrame: staticStorageFrame,
@@ -1310,7 +1310,7 @@ public class RvalueExpressionTypeChecker {
     
     private func declareVtableType(
         _ traitDecl: TraitDeclaration,
-        _ symbols: SymbolTable) throws {
+        _ symbols: Env) throws {
         
         let traitName = traitDecl.identifier.identifier
         let members: [StructDeclaration.Member] = traitDecl.members.map {
@@ -1332,7 +1332,7 @@ public class RvalueExpressionTypeChecker {
     
     private func declareTraitObjectType(
         _ traitDecl: TraitDeclaration,
-        _ symbols: SymbolTable) throws {
+        _ symbols: Env) throws {
         
         let members: [StructDeclaration.Member] = [
             StructDeclaration.Member(name: "object", type: PointerType(PrimitiveType(.void))),
@@ -1352,7 +1352,7 @@ public class RvalueExpressionTypeChecker {
     
     private func declareTraitObjectThunks(
         _ traitDecl: TraitDeclaration,
-        _ symbols: SymbolTable) throws {
+        _ symbols: Env) throws {
         
         var thunks: [FunctionDeclaration] = []
         for method in traitDecl.members {
@@ -1364,17 +1364,17 @@ public class RvalueExpressionTypeChecker {
             let callee = Get(expr: Get(expr: Identifier("self"), member: Identifier("vtable")), member: Identifier(method.name))
             let arguments = [Get(expr: Identifier("self"), member: Identifier("object"))] + argumentNames[1...].map({Identifier($0)})
             
-            let outer = SymbolTable(
+            let outer = Env(
                 parent: symbols,
                 frameLookupMode: .set(Frame(growthDirection: .down)))
             
             let fnBody: Block
             let returnType = try TypeContextTypeChecker(symbols: symbols).check(expression: functionType.returnType)
             if returnType == .void {
-                fnBody = Block(symbols: SymbolTable(parent: outer),
+                fnBody = Block(symbols: Env(parent: outer),
                                children: [Call(callee: callee, arguments: arguments)])
             } else {
-                fnBody = Block(symbols: SymbolTable(parent: outer),
+                fnBody = Block(symbols: Env(parent: outer),
                                children: [Return(Call(callee: callee, arguments: arguments))])
             }
             
@@ -1399,7 +1399,7 @@ public class RvalueExpressionTypeChecker {
     
     fileprivate func exportSymbols(
         typeArguments: [GenericTypeArgument],
-        symbolsWithTypeArguments: SymbolTable,
+        symbolsWithTypeArguments: Env,
         expr: GenericTypeApplication) throws {
         
         // Collect the new types and symbols that were bound above in
@@ -1549,7 +1549,7 @@ public struct NameMangler {
     public func mangleFunctionName(
         _ name: String?,
         evaluatedTypeArguments: [SymbolType] = [],
-        symbols: SymbolTable
+        symbols: Env
     ) -> String? {
         
         guard let name else { return nil }
@@ -1577,7 +1577,7 @@ public struct NameMangler {
     public func mangleStructName(
         _ name: String?,
         evaluatedTypeArguments: [SymbolType] = [],
-        symbols: SymbolTable
+        symbols: Env
     ) -> String? {
         
         guard let name else { return nil }
@@ -1598,7 +1598,7 @@ public struct NameMangler {
     public func mangleTraitName(
         _ name: String?,
         evaluatedTypeArguments: [SymbolType] = [],
-        symbols: SymbolTable
+        symbols: Env
     ) -> String? {
         
         mangleStructName(

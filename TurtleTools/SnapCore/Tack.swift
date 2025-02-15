@@ -352,7 +352,7 @@ public enum TackInstruction: Hashable {
 /// Allows a TackInstruction to be embedded in an Abstract Syntax Tree
 public final class TackInstructionNode: AbstractSyntaxTreeNode {
     public let instruction: TackInstruction
-    public let symbols: SymbolTable?
+    public let symbols: Env?
     
     public convenience init(_ instruction: TackInstruction) {
         self.init(instruction: instruction,
@@ -362,14 +362,14 @@ public final class TackInstructionNode: AbstractSyntaxTreeNode {
     
     public init(instruction: TackInstruction,
                 sourceAnchor: SourceAnchor?,
-                symbols: SymbolTable?,
+                symbols: Env?,
                 id: ID = ID()) {
         self.instruction = instruction
         self.symbols = symbols
         super.init(sourceAnchor: sourceAnchor, id: id)
     }
     
-    public func withSymbols(_ symbols: SymbolTable?) -> TackInstructionNode {
+    public func withSymbols(_ symbols: Env?) -> TackInstructionNode {
         TackInstructionNode(
             instruction: instruction,
             sourceAnchor: sourceAnchor,
@@ -421,14 +421,14 @@ public final class TackInstructionNode: AbstractSyntaxTreeNode {
 public struct TackProgram: Equatable {
     public let instructions: [TackInstruction]
     public let sourceAnchor: [SourceAnchor?]
-    public let symbols: [SymbolTable?]
+    public let symbols: [Env?]
     public let subroutines: [String?]
     public let labels: [String : Int]
     public let ast: AbstractSyntaxTreeNode
     
     public init(instructions: [TackInstruction] = [],
                 sourceAnchor: [SourceAnchor?]? = nil,
-                symbols: [SymbolTable?]? = nil,
+                symbols: [Env?]? = nil,
                 subroutines: [String?]? = nil,
                 labels: [String : Int] = [:],
                 ast: AbstractSyntaxTreeNode = Seq()) {
@@ -449,7 +449,7 @@ public struct TackProgram: Equatable {
             self.symbols = symbols
         }
         else {
-            self.symbols = Array<SymbolTable?>(repeating: nil, count: instructions.count)
+            self.symbols = Array<Env?>(repeating: nil, count: instructions.count)
         }
         
         if let subroutines {

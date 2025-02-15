@@ -14,9 +14,9 @@ public final class TackDebugger {
     
     public let vm: TackVirtualMachine
     public let memoryLayoutStrategy: MemoryLayoutStrategy
-    public var symbolsOfTopLevelScope: SymbolTable? = nil
+    public var symbolsOfTopLevelScope: Env? = nil
     
-    public var symbols: SymbolTable? {
+    public var symbols: Env? {
         vm.symbols ?? symbolsOfTopLevelScope
     }
     

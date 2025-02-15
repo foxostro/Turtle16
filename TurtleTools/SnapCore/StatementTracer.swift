@@ -23,9 +23,9 @@ public struct StatementTracer {
         case Return
     }
     public typealias Trace = [TraceElement]
-    private let symbols: SymbolTable
+    private let symbols: Env
     
-    public init(symbols: SymbolTable = SymbolTable()) {
+    public init(symbols: Env = Env()) {
         self.symbols = symbols
     }
     

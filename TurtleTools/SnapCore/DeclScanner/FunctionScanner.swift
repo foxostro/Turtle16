@@ -11,12 +11,12 @@ import TurtleCore
 
 /// Scans a function declaration and binds the function symbol in the environment
 public struct FunctionScanner {
-    public let symbols: SymbolTable
+    public let symbols: Env
     private let memoryLayoutStrategy: MemoryLayoutStrategy
     private let enclosingImplId: AbstractSyntaxTreeNode.ID?
     
     public init(memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull(),
-                symbols: SymbolTable = SymbolTable(),
+                symbols: Env = Env(),
                 enclosingImplId: AbstractSyntaxTreeNode.ID? = nil) {
         self.memoryLayoutStrategy = memoryLayoutStrategy
         self.symbols = symbols

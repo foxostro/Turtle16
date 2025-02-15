@@ -35,7 +35,7 @@ public class CompilerPassWithDeclScan: CompilerPass {
     }
     
     public init(
-        symbols: SymbolTable? = nil,
+        symbols: Env? = nil,
         staticStorageFrame: Frame = Frame(),
         memoryLayoutStrategy: MemoryLayoutStrategy = MemoryLayoutStrategyNull()
     ) {
@@ -192,7 +192,7 @@ public class CompilerPassWithDeclScan: CompilerPass {
                 sourceAnchor: sourceAnchor)
         }
         else {
-            let moduleSym = SymbolTable()
+            let moduleSym = Env()
             let module = SymbolType.structType(StructTypeInfo(
                 name: name,
                 symbols: moduleSym,
@@ -265,8 +265,8 @@ public class CompilerPassWithDeclScan: CompilerPass {
     }
 }
 
-fileprivate extension SymbolTable {
-    func export(to dst: SymbolTable,
+fileprivate extension Env {
+    func export(to dst: Env,
                 moduleName: String,
                 sourceAnchor: SourceAnchor?) throws {
         

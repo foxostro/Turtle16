@@ -10,11 +10,11 @@ import TurtleCore
 
 /// Adds a new struct type to the environment for a given StructDeclaration
 public struct StructScanner {
-    private let symbols: SymbolTable
+    private let symbols: Env
     private let memoryLayoutStrategy: MemoryLayoutStrategy
     
     public init(
-        symbols: SymbolTable,
+        symbols: Env,
         memoryLayoutStrategy: MemoryLayoutStrategy
     ) {
         self.symbols = symbols
@@ -59,7 +59,7 @@ public struct StructScanner {
     ) throws -> SymbolType {
         assert(!node.isGeneric)
         
-        let members = SymbolTable(parent: symbols)
+        let members = Env(parent: symbols)
         let typeChecker = TypeContextTypeChecker(symbols: members, memoryLayoutStrategy: memoryLayoutStrategy)
         let name = node.identifier.identifier
         let mangledName = typeChecker.mangleStructName(name, evaluatedTypeArguments: evaluatedTypeArguments)!

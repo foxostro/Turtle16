@@ -266,27 +266,27 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
         case .dynamicArray(elementType: let elementType):
             "[]\(elementType)"
         case .function(let functionType):
-            functionType.description
+            "\(functionType)"
         case .genericFunction(let genericFunctionType):
-            genericFunctionType.description
+            "\(genericFunctionType)"
         case .constStructType(let typ):
             "const \(typ.name)"
         case .structType(let typ):
             "\(typ.name)"
         case .genericStructType(let typ):
-            "\(typ.description)"
+            "\(typ)"
         case .constTraitType(let typ):
             "const \(typ.name)"
         case .traitType(let typ):
             "\(typ.name)"
         case .genericTraitType(let genericTraitType):
-            genericTraitType.description
+            "\(genericTraitType)"
         case .constPointer(let pointee):
-            "const *\(pointee.description)"
+            "const *\(pointee)"
         case .pointer(let pointee):
-            "*\(pointee.description)"
+            "*\(pointee)"
         case .unionType(let typ):
-            typ.description
+            "\(typ)"
         case .label:
             "label"
         }
@@ -632,7 +632,7 @@ public final class FunctionTypeInfo: Hashable, CustomStringConvertible {
     }
     
     public var argumentsDescription: String {
-        arguments.map({$0.description}).joined(separator: ", ")
+        arguments.map(\.description).joined(separator: ", ")
     }
     
     public static func ==(lhs: FunctionTypeInfo, rhs: FunctionTypeInfo) -> Bool {
@@ -1093,7 +1093,7 @@ public final class Env: Hashable {
         
         public var description: String {
             switch self {
-            case .functionType(let typ):   "function(\(typ.description))"
+            case .functionType(let typ):   "function(\(typ))"
             case .module(let name, let g): "module(\(name), \(g)"
             case .structType(let name):    "struct(\(name))"
             case .traitType(let name):     "trait(\(name))"

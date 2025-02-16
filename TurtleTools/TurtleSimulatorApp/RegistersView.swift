@@ -13,7 +13,7 @@ struct RegistersView: View {
     @StateObject var viewModel: ViewModel
     
     struct RegisterValueView: View {
-        enum DisplayValueAs: CaseIterable, Identifiable {
+        enum DisplayValueAs: CaseIterable, Identifiable, CustomStringConvertible {
             case hex, binary, unsignedDecimal, signedDecimal
             
             var id: Self { self }
@@ -36,7 +36,7 @@ struct RegistersView: View {
                 .contextMenu {
                     Picker("Display Value As", selection: $displayValueAs) {
                         ForEach(DisplayValueAs.allCases) { mode in
-                            Text(mode.description)
+                            Text("\(mode)")
                         }
                     }
                 }

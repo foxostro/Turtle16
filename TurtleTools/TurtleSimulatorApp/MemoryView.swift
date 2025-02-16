@@ -164,7 +164,7 @@ struct MemoryView: View {
             HStack {
                 Picker(NSLocalizedString("Address Space:", comment: "Label for the address space picker"), selection: $viewModel.selectedAddressSpace) {
                     ForEach(viewModel.addressSpaces) {
-                        Text("\($0.description)")
+                        Text("\($0)")
                     }
                 }
                 Spacer()

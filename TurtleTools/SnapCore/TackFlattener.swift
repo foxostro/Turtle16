@@ -62,7 +62,7 @@ public struct TackFlattener {
             didProcessSubroutine = true
             
         default:
-            throw CompilerError(sourceAnchor: node.sourceAnchor, message: "unsupported node: `\(node.description)'")
+            throw CompilerError(sourceAnchor: node.sourceAnchor, message: "unsupported node: `\(node)'")
         }
     }
     

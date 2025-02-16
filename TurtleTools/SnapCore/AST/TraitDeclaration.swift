@@ -177,13 +177,13 @@ public final class TraitDeclaration: AbstractSyntaxTreeNode {
     }
     
     private var membersDescription: String {
-        guard !members.isEmpty else {
-            return ""
+        if members.isEmpty {
+            ""
         }
-        
-        let result = "\n" + members.map { arg in
-            "\t\(arg.description)"
-        }.joined(separator: ",\n")
-        return result
+        else {
+            "\n" + members
+                .map { "\t\($0)" }
+                .joined(separator: ",\n")
+        }
     }
 }

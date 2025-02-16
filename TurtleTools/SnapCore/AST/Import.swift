@@ -45,7 +45,6 @@ public final class Import: AbstractSyntaxTreeNode {
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        let selfDesc = String(describing: type(of: self))
         let globalLbl = intoGlobalNamespace ? " [GLOBAL]" : ""
         let result = "\(indent)\(selfDesc)(\(moduleName))\(globalLbl)"
         return result

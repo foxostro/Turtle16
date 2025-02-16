@@ -126,11 +126,11 @@ public class RvalueExpressionTypeChecker {
                     return expressionType
                 }
             default:
-                throw CompilerError(sourceAnchor: unary.sourceAnchor, message: "Unary operator `\(unary.op.description)' cannot be applied to an operand of type `\(expressionType)'")
+                throw CompilerError(sourceAnchor: unary.sourceAnchor, message: "Unary operator `\(unary.op)' cannot be applied to an operand of type `\(expressionType)'")
             }
         case .ampersand:
             guard let lvalueType = try lvalueContext().check(expression: unary.child) else {
-                throw CompilerError(sourceAnchor: unary.child.sourceAnchor, message: "lvalue required as operand of unary operator `\(unary.op.description)'")
+                throw CompilerError(sourceAnchor: unary.child.sourceAnchor, message: "lvalue required as operand of unary operator `\(unary.op)'")
             }
             if case .function(let typ) = lvalueType {
                 return .pointer(.function(typ.eraseName()))
@@ -147,7 +147,7 @@ public class RvalueExpressionTypeChecker {
                     return expressionType
                 }
             default:
-                throw CompilerError(sourceAnchor: unary.sourceAnchor, message: "Unary operator `\(unary.op.description)' cannot be applied to an operand of type `\(expressionType)'")
+                throw CompilerError(sourceAnchor: unary.sourceAnchor, message: "Unary operator `\(unary.op)' cannot be applied to an operand of type `\(expressionType)'")
             }
         case .bang:
             switch expressionType {
@@ -159,7 +159,7 @@ public class RvalueExpressionTypeChecker {
                     return expressionType
                 }
             default:
-                throw CompilerError(sourceAnchor: unary.sourceAnchor, message: "Unary operator `\(unary.op.description)' cannot be applied to an operand of type `\(expressionType)'")
+                throw CompilerError(sourceAnchor: unary.sourceAnchor, message: "Unary operator `\(unary.op)' cannot be applied to an operand of type `\(expressionType)'")
             }
         default:
             let operatorString: String
@@ -343,9 +343,9 @@ public class RvalueExpressionTypeChecker {
     
     private func invalidBinaryExpr(_ binary: Binary, _ left: SymbolType, _ right: SymbolType) -> CompilerError {
         if left == right {
-            return CompilerError(sourceAnchor: binary.sourceAnchor, message: "binary operator `\(binary.op.description)' cannot be applied to two `\(right)' operands")
+            return CompilerError(sourceAnchor: binary.sourceAnchor, message: "binary operator `\(binary.op)' cannot be applied to two `\(right)' operands")
         } else {
-            return CompilerError(sourceAnchor: binary.sourceAnchor, message: "binary operator `\(binary.op.description)' cannot be applied to operands of types `\(left)' and `\(right)'")
+            return CompilerError(sourceAnchor: binary.sourceAnchor, message: "binary operator `\(binary.op)' cannot be applied to operands of types `\(left)' and `\(right)'")
         }
     }
     
@@ -659,13 +659,13 @@ public class RvalueExpressionTypeChecker {
         
         switch rvalueType {
         case .genericFunction(let typ):
-            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot instantiate generic function `\(typ.description)'")
+            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot instantiate generic function `\(typ)'")
             
         case .genericStructType(let typ):
-            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot instantiate generic struct `\(typ.description)'")
+            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot instantiate generic struct `\(typ)'")
             
         case .genericTraitType(let typ):
-            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot instantiate generic trait `\(typ.description)'")
+            throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot instantiate generic trait `\(typ)'")
             
         default:
             return rvalueType
@@ -1052,7 +1052,7 @@ public class RvalueExpressionTypeChecker {
     }
     
     public func check(genericFunctionType expr: GenericFunctionType) throws -> SymbolType {
-        throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot instantiate generic function `\(expr.description)'")
+        throw CompilerError(sourceAnchor: expr.sourceAnchor, message: "cannot instantiate generic function `\(expr)'")
     }
     
     public func check(genericTypeApplication expr: GenericTypeApplication) throws -> SymbolType {

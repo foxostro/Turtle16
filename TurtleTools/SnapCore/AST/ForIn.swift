@@ -50,14 +50,13 @@ public final class ForIn: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        String(format: "%@%@\n%@identifier: %@\n%@sequenceExpr: %@\n%@body: %@",
-               wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-               String(describing: type(of: self)),
-               makeIndent(depth: depth + 1),
-               identifier.makeIndentedDescription(depth: depth + 1),
-               makeIndent(depth: depth + 1),
-               sequenceExpr.makeIndentedDescription(depth: depth + 1),
-               makeIndent(depth: depth + 1),
-               body.makeIndentedDescription(depth: depth + 1))
+        let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let indent1 = makeIndent(depth: depth+1)
+        return """
+            \(indent0)\(selfDesc)
+            \(indent0)identifier: \(identifier.makeIndentedDescription(depth: depth+1))
+            \(indent1)sequenceExpr: \(sequenceExpr.makeIndentedDescription(depth: depth + 1))
+            \(indent1)body: \(body.makeIndentedDescription(depth: depth + 1))
+            """
     }
 }

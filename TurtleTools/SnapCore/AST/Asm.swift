@@ -36,16 +36,17 @@ public final class Asm: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        let leadingWhitespace = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        let selfDesc = String(describing: type(of: self))
-        let indentedAssemblyCode: String
-        if assemblyCode == "" {
-            indentedAssemblyCode = " (empty)"
+        let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let indentedAssemblyCode: String = if assemblyCode == "" {
+            " (empty)"
         }
         else {
-            indentedAssemblyCode = "\n" + assemblyCode.split(separator: "\n").map({ makeIndent(depth: depth + 1) + $0 }).joined()
+            "\n" + assemblyCode
+                .split(separator: "\n")
+                .map { makeIndent(depth: depth + 1) + $0 }
+                .joined()
         }
-        let result = "\(leadingWhitespace)\(selfDesc):\(indentedAssemblyCode)"
+        let result = "\(indent0)\(selfDesc):\(indentedAssemblyCode)"
         return result
     }
 }

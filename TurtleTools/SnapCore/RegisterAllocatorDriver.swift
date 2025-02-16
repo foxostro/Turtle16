@@ -82,7 +82,7 @@ public struct RegisterAllocatorDriver {
                 
             case .failure(let e):
                 throw CompilerError(sourceAnchor: children0.first?.sourceAnchor,
-                                    message: "Register allocation failed: \(e.description)")
+                                    message: "Register allocation failed: \(e)")
             }
         } while(!done)
 

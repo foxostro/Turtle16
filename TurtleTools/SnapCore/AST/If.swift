@@ -51,14 +51,13 @@ public final class If: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        String(format: "%@%@\n%@condition: %@\n%@then: %@\n%@else: %@",
-               wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-               String(describing: type(of: self)),
-               makeIndent(depth: depth + 1),
-               condition.makeIndentedDescription(depth: depth + 1),
-               makeIndent(depth: depth + 1),
-               thenBranch.makeIndentedDescription(depth: depth + 1),
-               makeIndent(depth: depth + 1),
-               elseBranch?.makeIndentedDescription(depth: depth + 1) ?? "nil")
+        let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let indent1 = makeIndent(depth: depth+1)
+        return """
+            \(indent0)\(selfDesc)
+            \(indent1)condition: \(condition.makeIndentedDescription(depth: depth + 1))
+            \(indent1)then: \(thenBranch.makeIndentedDescription(depth: depth + 1))
+            \(indent1)else: \(elseBranch?.makeIndentedDescription(depth: depth + 1) ?? "nil")
+            """
     }
 }

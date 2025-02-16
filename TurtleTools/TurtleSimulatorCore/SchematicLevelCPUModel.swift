@@ -83,24 +83,23 @@ public class SchematicLevelCPUModel: NSObject, CPU {
     
     public func getPipelineStageInfo(_ idx: Int) -> PipelineStageInfo {
         assert(idx >= 0 && idx < numberOfPipelineStages)
-        switch idx {
-        case 0: return PipelineStageInfo(name: "IF",
-                                         pc: stageIF.associatedPC,
-                                         status: outputIF.description)
-        case 1: return PipelineStageInfo(name: "ID",
-                                         pc: stageID.associatedPC,
-                                         status: outputID.description)
-        case 2: return PipelineStageInfo(name: "EX",
-                                         pc: stageEX.associatedPC,
-                                         status: outputEX.description)
-        case 3: return PipelineStageInfo(name: "MEM",
-                                         pc: stageMEM.associatedPC,
-                                         status: outputMEM.description)
-        case 4: return PipelineStageInfo(name: "WB",
-                                         pc: stageWB.associatedPC,
-                                         status: outputWB.description)
+        return switch idx {
+        case 0: PipelineStageInfo(name: "IF",
+                                  pc: stageIF.associatedPC,
+                                  status: "\(outputIF)")
+        case 1: PipelineStageInfo(name: "ID",
+                                  pc: stageID.associatedPC,
+                                  status: "\(outputID)")
+        case 2: PipelineStageInfo(name: "EX",
+                                  pc: stageEX.associatedPC,
+                                  status: "\(outputEX)")
+        case 3: PipelineStageInfo(name: "MEM",
+                                  pc: stageMEM.associatedPC,
+                                  status: "\(outputMEM)")
+        case 4: PipelineStageInfo(name: "WB",
+                                  pc: stageWB.associatedPC,
+                                  status: "\(outputWB)")
         default:
-            assert(false)
             fatalError("unreachable")
         }
     }

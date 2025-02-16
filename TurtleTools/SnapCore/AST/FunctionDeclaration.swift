@@ -141,36 +141,22 @@ public final class FunctionDeclaration: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        let parentStr: String
-        if let parent = symbols.parent {
-            parentStr = "\(parent)"
+        let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let indent1 = makeIndent(depth: depth+1)
+        let parentStr = if let parent = symbols.parent {
+            "\(parent)"
         } else {
-            parentStr = "nil"
+            "nil"
         }
-        
-        return String(format: """
-            %@%@
-            %@identifier: %@
-            %@visibility: %@
-            %@functionType: %@
-            %@argumentNames: %@
-            %@typeArguments: %@
-            %@body: %@
-            """,
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)) + "(symbols=\(symbols); parent=\(parentStr))",
-                      makeIndent(depth: depth + 1),
-                      identifier.makeIndentedDescription(depth: depth + 1),
-                      makeIndent(depth: depth + 1),
-                      visibility.description,
-                      makeIndent(depth: depth + 1),
-                      functionType.makeIndentedDescription(depth: depth + 1),
-                      makeIndent(depth: depth + 1),
-                      makeArgumentsDescription(depth: depth + 1),
-                      makeIndent(depth: depth + 1),
-                      makeTypeArgumentsDescription(depth: depth + 1),
-                      makeIndent(depth: depth + 1),
-                      body.makeIndentedDescription(depth: depth + 1))
+        return """
+            \(indent0)\(selfDesc)(symbols=\(symbols); parent=\(parentStr))
+            \(indent1)identifier: \(identifier.makeIndentedDescription(depth: depth + 1))
+            \(indent1)visibility: \(visibility)
+            \(indent1)functionType: \(functionType.makeIndentedDescription(depth: depth + 1))
+            \(indent1)argumentNames: \(makeArgumentsDescription(depth: depth + 1))
+            \(indent1)typeArguments: \(makeTypeArgumentsDescription(depth: depth + 1))
+            \(indent1)body: \(body.makeIndentedDescription(depth: depth + 1))
+            """
     }
     
     fileprivate func makeArgumentsDescription(depth: Int) -> String {

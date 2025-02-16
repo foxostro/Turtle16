@@ -116,19 +116,19 @@ public final class Disassembler {
     }
     
     public func disassembleOne(_ ins: UInt16) -> String? {
-        return disassembleOne(pc: nil, ins: ins)
+        disassembleOne(pc: nil, ins: ins)
     }
     
     public func registerName(_ index: Int) -> String {
         if shouldUseConventionalRegisterNames {
             switch index {
-            case 5: return "ra"
-            case 6: return "sp"
-            case 7: return "fp"
-            default: return Register(rawValue: index)!.description
+            case 5: "ra"
+            case 6: "sp"
+            case 7: "fp"
+            default: "\(Register(rawValue: index)!)"
             }
         } else {
-            return Register(rawValue: index)!.description
+            "\(Register(rawValue: index)!)"
         }
     }
     

@@ -50,14 +50,13 @@ public final class Typealias: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        String(format: "%@%@\n%@lexpr: %@\n%@rexpr: %@\n%@visibility: %@",
-               wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-               String(describing: type(of: self)),
-               makeIndent(depth: depth + 1),
-               lexpr.makeIndentedDescription(depth: depth),
-               makeIndent(depth: depth + 1),
-               rexpr.makeIndentedDescription(depth: depth),
-               makeIndent(depth: depth + 1),
-               visibility.description)
+        let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let indent1 = makeIndent(depth: depth + 1)
+        return """
+            \(indent0)\(selfDesc)
+            \(indent1)lexpr: \(lexpr.makeIndentedDescription(depth: depth))
+            \(indent1)rexpr: \(rexpr.makeIndentedDescription(depth: depth))
+            \(indent1)visibility: \(visibility)
+            """
     }
 }

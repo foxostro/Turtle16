@@ -90,20 +90,16 @@ public final class VarDeclaration: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        String(format: "%@%@\n%@identifier: %@\n%@explicitType: %@\n%@storage: %@\n%@isMutable: %@\n%@visibility: %@\n%@expression: %@",
-               wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-               String(describing: type(of: self)),
-               makeIndent(depth: depth + 1),
-               identifier.makeIndentedDescription(depth: depth + 1),
-               makeIndent(depth: depth + 1),
-               explicitType?.makeIndentedDescription(depth: depth + 1) ?? "nil",
-               makeIndent(depth: depth + 1),
-               String(describing: storage),
-               makeIndent(depth: depth + 1),
-               isMutable ? "true" : "false",
-               makeIndent(depth: depth + 1),
-               visibility.description,
-               makeIndent(depth: depth + 1),
-               expression?.makeIndentedDescription(depth: depth + 1) ?? "nil")
+        let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let indent1 = makeIndent(depth: depth+1)
+        return """
+            \(indent0)\(selfDesc)
+            \(indent1)identifier: \(identifier.makeIndentedDescription(depth: depth + 1))
+            \(indent1)explicitType: \(explicitType?.makeIndentedDescription(depth: depth + 1) ?? "nil")
+            \(indent1)storage: \(storage)
+            \(indent1)isMutable: \(isMutable ? "true" : "false")
+            \(indent1)visibility: \(visibility)
+            \(indent1)expression: \(expression?.makeIndentedDescription(depth: depth + 1) ?? "nil")
+            """
     }
 }

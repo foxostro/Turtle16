@@ -7,8 +7,10 @@
 //
 
 public final class TokenOperator : Token {
-    public enum Operator {
+    public enum Operator: String, Hashable, CustomStringConvertible {
         case eq, ne, lt, gt, le, ge, plus, minus, star, divide, modulus, ampersand, doubleAmpersand, pipe, doublePipe, bang, caret, leftDoubleAngle, rightDoubleAngle, tilde
+        
+        public var name: String { rawValue }
         
         public var description: String {
             switch self {
@@ -47,7 +49,7 @@ public final class TokenOperator : Token {
     }
     
     public override var description: String {
-        "<\(selfDesc): sourceAnchor=\(sourceAnchorDesc), lexeme=\"\(lexeme)\", op=\(op)>"
+        "<\(selfDesc): sourceAnchor=\(sourceAnchorDesc), lexeme=\"\(lexeme)\", op=\(op.name)>"
     }
     
     public override func isEqual(_ rhs: Token) -> Bool {

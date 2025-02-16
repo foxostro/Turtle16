@@ -108,16 +108,14 @@ public final class Block: AbstractSyntaxTreeNode {
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        let typeDesc = String(describing: type(of: self))
         let parentStr = if let parent = symbols.parent {
                 "\(parent)"
             }
             else {
                 "nil"
             }
-        let selfDesc = "(symbols=\(symbols); parent=\(parentStr); id=\(id))"
         let childDesc = makeChildDescriptions(depth: depth + 1)
-        let fullDesc = "\(indent)\(typeDesc)\(selfDesc)\(childDesc)"
+        let fullDesc = "\(indent)\(selfDesc)(symbols=\(symbols); parent=\(parentStr); id=\(id))\(childDesc)"
         return fullDesc
     }
     

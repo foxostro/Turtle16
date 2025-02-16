@@ -189,13 +189,15 @@ public class Unary: Expression {
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        String(format: "%@%@\n%@op: %@\n%@expr: %@",
-               wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-               String(describing: type(of: self)),
-               makeIndent(depth: depth+1),
-               String(describing: op),
-               makeIndent(depth: depth+1),
-               child.makeIndentedDescription(depth: depth+1))
+        let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let indent1 = makeIndent(depth: depth+1)
+        let childDesc = child.makeIndentedDescription(depth: depth+1)
+        let result = """
+            \(indent0)\(selfDesc)
+            \(indent1)op: \(op)
+            \(indent1)expr: \(childDesc)
+            """
+        return result
     }
 }
 
@@ -232,10 +234,12 @@ public class Group: Expression {
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        String(format: "%@%@\n%@",
-               wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-               String(describing: type(of: self)),
-               expression.makeIndentedDescription(depth: depth+1, wantsLeadingWhitespace: true))
+        let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let exprDesc = expression.makeIndentedDescription(depth: depth+1, wantsLeadingWhitespace: true)
+        return """
+            \(indent)\(selfDesc)
+            \(exprDesc)
+            """
     }
 }
 
@@ -277,16 +281,16 @@ public class Eseq: Expression {
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let leading = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         
-        let typeDesc = String(describing: type(of: self))
-        
-        var childrenDesc = children.map {
-            $0.makeIndentedDescription(depth: depth+1, wantsLeadingWhitespace: true)
-        }.joined(separator: "\n")
+        var childrenDesc = children
+            .map {
+                $0.makeIndentedDescription(depth: depth+1, wantsLeadingWhitespace: true)
+            }
+            .joined(separator: "\n")
         if children.count > 0 {
             childrenDesc = "\n" + childrenDesc
         }
         
-        let result = leading + typeDesc + childrenDesc
+        let result = leading + selfDesc + childrenDesc
         return result
     }
 }
@@ -332,15 +336,14 @@ public class Binary: Expression {
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        String(format: "%@%@\n%@op: %@\n%@left: %@\n%@right: %@",
-               wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-               String(describing: type(of: self)),
-               makeIndent(depth: depth + 1),
-               String(describing: op),
-               makeIndent(depth: depth + 1),
-               left.makeIndentedDescription(depth: depth + 1),
-               makeIndent(depth: depth + 1),
-               right.makeIndentedDescription(depth: depth + 1))
+        let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let indent1 = makeIndent(depth: depth + 1)
+        return """
+            \(indent0)\(selfDesc)
+            \(indent1)op: \(op)
+            \(indent1)left: \(left.makeIndentedDescription(depth: depth + 1))
+            \(indent1)right: \(right.makeIndentedDescription(depth: depth + 1))
+            """
     }
 }
 
@@ -393,13 +396,13 @@ public class Assignment: Expression {
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        String(format: "%@%@\n%@lexpr: %@\n%@rexpr: %@",
-               wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-               String(describing: type(of: self)),
-               makeIndent(depth: depth+1),
-               lexpr.makeIndentedDescription(depth: depth + 1),
-               makeIndent(depth: depth+1),
-               rexpr.makeIndentedDescription(depth: depth + 1))
+        let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let indent1 = makeIndent(depth: depth+1)
+        return """
+            \(indent0)\(selfDesc)
+            \(indent1)lexpr: \(lexpr.makeIndentedDescription(depth: depth + 1))
+            \(indent1)rexpr: \(rexpr.makeIndentedDescription(depth: depth + 1))
+            """
     }
 }
 
@@ -482,16 +485,12 @@ public class Call: Expression {
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        let selfDesc = String(describing: type(of: self))
         let indent1 = makeIndent(depth: depth + 1)
-        let calleeDesc = callee.makeIndentedDescription(depth: depth + 1)
-        let argumentsDesc = makeArgumentsDescription(depth: depth + 1)
-        let result = """
+        return """
             \(indent0)\(selfDesc)
-            \(indent1)callee: \(calleeDesc)
-            \(indent1)arguments: \(argumentsDesc)
+            \(indent1)callee: \(callee.makeIndentedDescription(depth: depth + 1))
+            \(indent1)arguments: \(makeArgumentsDescription(depth: depth + 1))
             """
-        return result
     }
     
     private func makeArgumentsDescription(depth: Int) -> String {
@@ -540,13 +539,13 @@ public class As: Expression {
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@\n%@convertingTo: %@\n%@expr: %@",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      makeIndent(depth: depth+1),
-                      targetType.makeIndentedDescription(depth: depth+1),
-                      makeIndent(depth: depth+1),
-                      expr.makeIndentedDescription(depth: depth+1))
+        let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let indent1 = makeIndent(depth: depth+1)
+        return """
+            \(indent0)\(selfDesc)
+            \(indent1)convertingTo: \(targetType.makeIndentedDescription(depth: depth+1))
+            \(indent1)expr: \(expr.makeIndentedDescription(depth: depth+1))
+            """
     }
 }
 
@@ -579,13 +578,13 @@ public class Bitcast: Expression {
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@\n%@convertingTo: %@\n%@expr: %@",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      makeIndent(depth: depth+1),
-                      targetType.makeIndentedDescription(depth: depth+1),
-                      makeIndent(depth: depth+1),
-                      expr.makeIndentedDescription(depth: depth+1))
+        let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let indent1 = makeIndent(depth: depth+1)
+        return """
+            \(indent0)\(selfDesc)
+            \(indent1)convertingTo: \(targetType.makeIndentedDescription(depth: depth+1))
+            \(indent1)expr: \(expr.makeIndentedDescription(depth: depth+1))
+            """
     }
 }
 
@@ -618,13 +617,13 @@ public class Is: Expression {
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@\n%@comparingWith: %@\n%@expr: %@",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      makeIndent(depth: depth+1),
-                      testType.makeIndentedDescription(depth: depth+1),
-                      makeIndent(depth: depth+1),
-                      expr.makeIndentedDescription(depth: depth+1))
+        let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let indent1 = makeIndent(depth: depth+1)
+        return """
+            \(indent0)\(selfDesc)
+            \(indent1)comparingWith: \(testType.makeIndentedDescription(depth: depth+1))
+            \(indent1)expr: \(expr.makeIndentedDescription(depth: depth+1))
+            """
     }
 }
 
@@ -657,13 +656,13 @@ public class Subscript: Expression {
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@\n%@subscriptable: %@\n%@argument: %@",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      makeIndent(depth: depth+1),
-                      subscriptable.makeIndentedDescription(depth: depth+1),
-                      makeIndent(depth: depth+1),
-                      argument.makeIndentedDescription(depth: depth+1))
+        let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let indent1 = makeIndent(depth: depth+1)
+        return """
+            \(indent0)\(selfDesc)
+            \(indent1)subscriptable: \(subscriptable.makeIndentedDescription(depth: depth+1))
+            \(indent1)argument: \(argument.makeIndentedDescription(depth: depth+1))
+            """
     }
 }
 
@@ -704,13 +703,13 @@ public class LiteralArray: Expression {
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@\n%@arrayType: %@\n%@elements: %@",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      makeIndent(depth: depth+1),
-                      arrayType.makeIndentedDescription(depth: depth+1),
-                      makeIndent(depth: depth+1),
-                      makeElementsDescription(depth: depth+1))
+        let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let indent1 = makeIndent(depth: depth+1)
+        return """
+            \(indent0)\(selfDesc)
+            \(indent1)arrayType: \(arrayType.makeIndentedDescription(depth: depth+1))
+            \(indent1)elements: \(makeElementsDescription(depth: depth+1))
+            """
     }
     
     private func makeElementsDescription(depth: Int) -> String {
@@ -776,13 +775,13 @@ public class Get: Expression {
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@\n%@expr: %@\n%@member: %@",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      makeIndent(depth: depth+1),
-                      expr.makeIndentedDescription(depth: depth+1),
-                      makeIndent(depth: depth+1),
-                      member.makeIndentedDescription(depth: depth+1))
+        let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let indent1 = makeIndent(depth: depth+1)
+        return """
+            \(indent0)\(selfDesc)
+            \(indent1)expr: \(expr.makeIndentedDescription(depth: depth+1))
+            \(indent1)member: \(member.makeIndentedDescription(depth: depth+1))
+            """
     }
 }
 
@@ -820,7 +819,7 @@ public class PrimitiveType: Expression {
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        return "\(indent)\(typ.description)"
+        return "\(indent)\(typ)"
     }
 }
 
@@ -864,7 +863,6 @@ public class DynamicArrayType: Expression {
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        let selfDesc = String(describing: type(of: self))
         let result = "\(indent)\(selfDesc)(\(elementType))"
         return result
     }
@@ -905,13 +903,13 @@ public class ArrayType: Expression {
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@\n%@count: %@\n%@elementType: %@",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      makeIndent(depth: depth+1),
-                      count?.description ?? "nil",
-                      makeIndent(depth: depth+1),
-                      elementType.description)
+        let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let indent1 = makeIndent(depth: depth+1)
+        return """
+            \(indent0)\(selfDesc)
+            \(indent1)count: \(String(describing: count))
+            \(indent1)elementType: \(elementType))
+            """
     }
 }
 
@@ -956,15 +954,14 @@ public class FunctionType: Expression {
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@\n%@name: %@\n%@returnType: %@\n%@arguments: %@",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      makeIndent(depth: depth+1),
-                      name ?? "none",
-                      makeIndent(depth: depth+1),
-                      returnType.makeIndentedDescription(depth: depth+1),
-                      makeIndent(depth: depth+1),
-                      makeArgumentsDescription(depth: depth+1))
+        let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let indent1 = makeIndent(depth: depth+1)
+        return """
+            \(indent0)\(selfDesc)
+            \(indent1)name: \(name ?? "none")
+            \(indent1)returnType: \(returnType.makeIndentedDescription(depth: depth+1))
+            \(indent1)arguments: \(makeArgumentsDescription(depth: depth+1))
+            """
     }
     
     private func makeArgumentsDescription(depth: Int) -> String {
@@ -1000,9 +997,9 @@ public class FunctionType: Expression {
     }
 }
 
-// GenericFunctionType is a type function. It evaluates to a concrete
-// function type only when given type arguments to fulfill specified type
-// variables.
+/// GenericFunctionType is a type function. It evaluates to a concrete
+/// function type only when given type arguments to fulfill specified type
+/// variables.
 public class GenericFunctionType: Expression {
     public let template: FunctionDeclaration
     public let enclosingImplId: AbstractSyntaxTreeNode.ID?
@@ -1046,7 +1043,7 @@ public class GenericFunctionType: Expression {
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        let typeArgumentsDescription = typeArguments.map({$0.description}).joined(separator: ", ")
+        let typeArgumentsDescription = typeArguments.map(\.description).joined(separator: ", ")
         let argumentsDescription = zip(template.argumentNames, arguments).map({"\($0.0): \($0.1)"}).joined(separator: ", ")
         return "\(indent)func \(name)[\(typeArgumentsDescription)](\(argumentsDescription)) -> \(returnType)"
     }
@@ -1088,22 +1085,18 @@ public class GenericTypeApplication: Expression {
     }
     
     public var shortDescription: String {
-        let typeVariablesDescription = arguments.map({$0.description}).joined(separator: ", ")
+        let typeVariablesDescription = arguments.map(\.description).joined(separator: ", ")
         return "\(identifier)@[\(typeVariablesDescription)]"
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: """
-                              %@%@
-                              %@identifier: %@
-                              %@arguments: %@
-                              """,
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      makeIndent(depth: depth+1),
-                      identifier.makeIndentedDescription(depth: depth+1),
-                      makeIndent(depth: depth+1),
-                      makeTypeArgumentsDescription(depth: depth+1))
+        let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let indent1 = makeIndent(depth: depth+1)
+        return """
+            \(indent0)\(selfDesc)
+            \(indent0)identifier: \(identifier.makeIndentedDescription(depth: depth+1))
+            \(indent1)arguments: \(makeTypeArgumentsDescription(depth: depth+1))
+            """
     }
     
     private func makeTypeArgumentsDescription(depth: Int) -> String {
@@ -1162,15 +1155,14 @@ public class GenericTypeArgument: Expression {
             return "\(identifier)"
         }
         else {
-            let argsDesc = constraints.map({$0.description}).joined(separator: " + ")
+            let argsDesc = constraints.map(\.description).joined(separator: " + ")
             return "\(identifier): \(argsDesc)"
         }
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let leading = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        let desc = String(describing: type(of: self))
-        return "\(leading)\(desc): \(shortDescription)"
+        return "\(leading)\(selfDesc): \(shortDescription)"
     }
     
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
@@ -1215,10 +1207,8 @@ public class PointerType: Expression {
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@(%@)",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      typ.makeIndentedDescription(depth: depth+1))
+        let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        return "\(indent)\(selfDesc)(\(typ))"
     }
     
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
@@ -1261,10 +1251,8 @@ public class ConstType: Expression {
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@(%@)",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      typ.makeIndentedDescription(depth: depth+1))
+        let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        return "\(indent)\(selfDesc)(\(typ))"
     }
     
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
@@ -1308,10 +1296,7 @@ public class MutableType: Expression {
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        let selfDesc = String(describing: type(of: self))
-        let typDesc = typ.makeIndentedDescription(depth: depth+1)
-        let result = "\(indent)\(selfDesc)(\(typDesc))"
-        return result
+        return "\(indent)\(selfDesc)(\(typ))"
     }
     
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
@@ -1355,11 +1340,11 @@ public class UnionType: Expression {
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        let selfDesc = String(describing: type(of: self))
         let indent1 = makeIndent(depth: depth + 1)
-        let membersDesc = makeMembersDescription(depth: depth + 1)
-        let result = "\(indent0)\(selfDesc)\n\(indent1)members: \(membersDesc)"
-        return result
+        return """
+            \(indent0)\(selfDesc)
+            \(indent1)members: \(makeMembersDescription(depth: depth + 1))
+            """
     }
     
     private func makeMembersDescription(depth: Int) -> String {
@@ -1434,17 +1419,13 @@ public class StructInitializer: Expression {
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        let leadingWhitespace = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        let selfDesc = String(describing: type(of: self))
-        let indent = makeIndent(depth: depth + 1)
-        let exprDesc = expr.makeIndentedDescription(depth: depth + 1)
-        let argsDesc = makeArgumentsDescription(depth: depth + 1)
-        let result = """
-            \(leadingWhitespace)\(selfDesc)
-            \(indent)expr: \(exprDesc)
-            \(indent)arguments: \(argsDesc)
+        let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let indent1 = makeIndent(depth: depth + 1)
+        return """
+            \(indent0)\(selfDesc)
+            \(indent1)expr: \(expr.makeIndentedDescription(depth: depth + 1))
+            \(indent1)arguments: \(makeArgumentsDescription(depth: depth + 1))
             """
-        return result
     }
     
     private func makeArgumentsDescription(depth: Int) -> String {
@@ -1512,9 +1493,8 @@ public class LiteralString: Expression {
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@\"%@\"",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      value)
+        let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        return "\(indent)\"\(value)\""
     }
 }
 
@@ -1545,10 +1525,9 @@ public class TypeOf: Expression {
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@(%@)",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      expr.makeIndentedDescription(depth: depth + 1))
+        let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let exprDesc = expr.makeIndentedDescription(depth: 0, wantsLeadingWhitespace: false)
+        return "\(indent)\(selfDesc)(\(exprDesc)"
     }
     
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
@@ -1591,10 +1570,9 @@ public class SizeOf: Expression {
     }
     
     open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        return String(format: "%@%@(%@)",
-                      wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-                      String(describing: type(of: self)),
-                      expr.makeIndentedDescription(depth: depth + 1))
+        let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let exprDesc = expr.makeIndentedDescription(depth: 0, wantsLeadingWhitespace: false)
+        return "\(indent)\(selfDesc)(\(exprDesc))"
     }
     
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {

@@ -129,6 +129,6 @@ public struct GenericFunctionTypeArgumentSolver {
     private func failedToInferError(_ expr: Call, _ generic: GenericFunctionType) -> CompilerError {
         CompilerError(
             sourceAnchor: expr.sourceAnchor,
-            message: "failed to infer the type arguments of the generic function `\(generic.description)' in a call expression")
+            message: "failed to infer the type arguments of the generic function `\(generic)' in a call expression")
     }
 }

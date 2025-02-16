@@ -52,22 +52,20 @@ public final class Subroutine: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        String(format: "%@%@(%@):%@",
-               wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-               String(describing: type(of: self)),
-               identifier,
-               makeChildDescriptions(depth: depth + 1))
+        let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        return "\(indent)\(selfDesc)(\(identifier)):\(makeChildDescriptions(depth: depth + 1))"
     }
     
     public func makeChildDescriptions(depth: Int = 0) -> String {
-        let result: String
         if children.isEmpty {
-            result = " empty"
-        } else {
-            result = "\n" + children.map {
-                $0.makeIndentedDescription(depth: depth, wantsLeadingWhitespace: true)
-            }.joined(separator: "\n")
+            " empty"
         }
-        return result
+        else {
+            "\n" + children
+                .map {
+                    $0.makeIndentedDescription(depth: depth, wantsLeadingWhitespace: true)
+                }
+                .joined(separator: "\n")
+        }
     }
 }

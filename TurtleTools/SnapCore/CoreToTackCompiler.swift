@@ -236,7 +236,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         switch lvalueType {
         case .function(let typ):
             guard let mangledName = typ.mangledName else {
-                throw CompilerError(sourceAnchor: node.sourceAnchor, message: "internal compiler error: function has no mangled name: `\(lvalueType!.description)'")
+                throw CompilerError(sourceAnchor: node.sourceAnchor, message: "internal compiler error: function has no mangled name: `\(lvalueType!)'")
             }
             
             let dst = nextRegister(type: .p)

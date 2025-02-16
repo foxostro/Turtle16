@@ -279,7 +279,7 @@ public final class SnapCommandLineDriver {
         printNumberOfInstructionWordsUsed(program)
         
         if shouldDoASTDump {
-            stdout.write(program.syntaxTree.description)
+            stdout.write("\(program.syntaxTree)")
             stdout.write("\n")
         }
         

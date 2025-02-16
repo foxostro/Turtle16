@@ -69,15 +69,15 @@ public final class Match: AbstractSyntaxTreeNode {
     }
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        String(format: "%@%@\n%@expr: %@\n%@clauses: %@\n%@elseClause: %@",
-               wantsLeadingWhitespace ? makeIndent(depth: depth) : "",
-               String(describing: type(of: self)),
-               makeIndent(depth: depth + 1),
-               expr.makeIndentedDescription(depth: depth + 1),
-               makeIndent(depth: depth + 1),
-               makeClausesDescription(depth: depth + 1),
-               makeIndent(depth: depth + 1),
-               elseClause==nil ? "nil" : elseClause!.makeIndentedDescription(depth: depth + 1))
+        let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+        let indent1 = makeIndent(depth: depth+1)
+        let elseDesc = elseClause==nil ? "nil" : elseClause!.makeIndentedDescription(depth: depth + 1)
+        return """
+            \(indent0)\(selfDesc)
+            \(indent1)expr: \(expr.makeIndentedDescription(depth: depth + 1))
+            \(indent1)clauses: \(makeClausesDescription(depth: depth + 1))
+            \(indent1)elseClause: \(elseDesc)
+            """
     }
     
     private func makeClausesDescription(depth: Int) -> String {

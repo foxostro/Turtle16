@@ -100,8 +100,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testUnaryBitwiseNegationOfIntegerConstantIsIntegerConstant() {
         let typeChecker = RvalueExpressionTypeChecker()
-        let expr = Unary(op: .tilde,
-                                    expression: LiteralInt(1))
+        let expr = Unary(op: .tilde, expression: LiteralInt(1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .arithmeticType(.compTimeInt(~1)))
@@ -109,8 +108,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testUnaryBitwiseNegationOfU8IsU8() {
         let typeChecker = RvalueExpressionTypeChecker()
-        let expr = Unary(op: .tilde,
-                                    expression: ExprUtils.makeU8(value: 1))
+        let expr = Unary(op: .tilde, expression: ExprUtils.makeU8(value: 1))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .u8)
@@ -118,8 +116,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testUnaryBitwiseNegationOfU16IsU16() {
         let typeChecker = RvalueExpressionTypeChecker()
-        let expr = Unary(op: .tilde,
-                                    expression: ExprUtils.makeU16(value: 1000))
+        let expr = Unary(op: .tilde, expression: ExprUtils.makeU16(value: 1000))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .u16)
@@ -127,8 +124,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testUnaryBitwiseNegationOfBooleanIsInvalid() {
         let typeChecker = RvalueExpressionTypeChecker()
-        let expr = Unary(op: .tilde,
-                                    expression: ExprUtils.makeBool(value: false))
+        let expr = Unary(op: .tilde, expression: ExprUtils.makeBool(value: false))
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -138,8 +134,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testUnaryLogicalNegationOfIntegerConstantIsInvalid() {
         let typeChecker = RvalueExpressionTypeChecker()
-        let expr = Unary(op: .bang,
-                                    expression: LiteralInt(1))
+        let expr = Unary(op: .bang, expression: LiteralInt(1))
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -149,8 +144,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testUnaryLogicalNegationOfU8IsInvalid() {
         let typeChecker = RvalueExpressionTypeChecker()
-        let expr = Unary(op: .bang,
-                                    expression: ExprUtils.makeU8(value: 1))
+        let expr = Unary(op: .bang, expression: ExprUtils.makeU8(value: 1))
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -160,8 +154,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testUnaryLogicalNegationOfU16IsInvalid() {
         let typeChecker = RvalueExpressionTypeChecker()
-        let expr = Unary(op: .bang,
-                                    expression: ExprUtils.makeU16(value: 1000))
+        let expr = Unary(op: .bang, expression: ExprUtils.makeU16(value: 1000))
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -171,8 +164,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testUnaryLogicalNegationOfBooleanIsBool() {
         let typeChecker = RvalueExpressionTypeChecker()
-        let expr = Unary(op: .bang,
-                                    expression: ExprUtils.makeBool(value: false))
+        let expr = Unary(op: .bang, expression: ExprUtils.makeBool(value: false))
         var result: SymbolType? = nil
         XCTAssertNoThrow(result = try typeChecker.check(expression: expr))
         XCTAssertEqual(result, .bool)
@@ -5410,7 +5402,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             XCTAssertEqual(actual, expected)
         }
         catch let err as CompilerError {
-            print(err.description)
+            print("\(err)")
             throw err
         }
     }

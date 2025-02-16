@@ -211,7 +211,7 @@ public final class StructDeclaration: AbstractSyntaxTreeNode {
         }
         
         let result = "\n" + members.map { arg in
-            "\t\(arg.description)"
+            "\t\(arg)"
         }.joined(separator: ",\n")
         return result
     }

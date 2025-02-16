@@ -9,14 +9,14 @@
 import Foundation
 import TurtleCore
 
-// Program are compiled to an intermediate language called Tack
-public enum TackInstruction: Hashable {
+/// Program are compiled to an intermediate language called Tack
+public enum TackInstruction: Hashable, CustomStringConvertible {
     public typealias Label = String
     public typealias Count = Int
     public typealias Offset = Int
     public typealias Imm = Int
     
-    public enum RegisterType: Hashable {
+    public enum RegisterType: Hashable, CustomStringConvertible {
         case p, w, b, o
         
         public var description: String {
@@ -29,7 +29,7 @@ public enum TackInstruction: Hashable {
         }
     }
     
-    public enum Register: Hashable {
+    public enum Register: Hashable, CustomStringConvertible {
         case p(RegisterPointer), w(Register16), b(Register8), o(RegisterBoolean)
         
         public static let sp: Register = .p(.sp)
@@ -38,96 +38,90 @@ public enum TackInstruction: Hashable {
         
         public var type: RegisterType {
             switch self {
-            case .p: return .p
-            case .w: return .w
-            case .b: return .b
-            case .o: return .o
+            case .p: .p
+            case .w: .w
+            case .b: .b
+            case .o: .o
             }
         }
         
         public var unwrapPointer: RegisterPointer? {
             switch self {
-            case .p(let p): return p
-            default:        return nil
+            case .p(let p): p
+            default:        nil
             }
         }
         
         public var unwrap16: Register16? {
             switch self {
-            case .w(let w): return w
-            default:        return nil
+            case .w(let w): w
+            default:        nil
             }
         }
         
         public var unwrap8: Register8? {
             switch self {
-            case .b(let b): return b
-            default:        return nil
+            case .b(let b): b
+            default:        nil
             }
         }
         
         public var unwrapBool: RegisterBoolean? {
             switch self {
-            case .o(let o): return o
-            default:        return nil
+            case .o(let o): o
+            default:        nil
             }
         }
 
         public var description: String {
             switch self {
-            case .p(let register): return register.description
-            case .w(let register): return register.description
-            case .b(let register): return register.description
-            case .o(let register): return register.description
+            case .p(let register): "\(register)"
+            case .w(let register): "\(register)"
+            case .b(let register): "\(register)"
+            case .o(let register): "\(register)"
             }
         }
     }
     
-    public enum RegisterPointer: Hashable {
+    public enum RegisterPointer: Hashable, CustomStringConvertible {
         case sp, fp, ra, p(Int)
         
         public var description: String {
             switch self {
-            case .sp:
-                return "sp"
-            case .fp:
-                return "fp"
-            case .ra:
-                return "ra"
-            case .p(let i):
-                return "p\(i)"
+            case .sp: "sp"
+            case .fp: "fp"
+            case .ra: "ra"
+            case .p(let i): "p\(i)"
             }
         }
     }
     
-    public enum Register16: Hashable {
+    public enum Register16: Hashable, CustomStringConvertible {
         case w(Int)
         
         public var description: String {
             switch self {
-            case .w(let i):
-                return "w\(i)"
+            case .w(let i): "w\(i)"
             }
         }
     }
     
-    public enum RegisterBoolean: Hashable {
+    public enum RegisterBoolean: Hashable, CustomStringConvertible {
         case o(Int)
         
         public var description: String {
             switch self {
-            case .o(let i):
-                return "o\(i)"
+            case .o(let i): "o\(i)"
             }
         }
     }
     
-    public enum Register8: Hashable {
+    public enum Register8: Hashable, CustomStringConvertible {
         case b(Int)
         
         public var description: String {
             switch self {
-            case .b(let i): return "b\(i)"
+            case .b(let i): "b\(i)"
             }
         }
     }
@@ -233,103 +227,103 @@ public enum TackInstruction: Hashable {
     
     public var description: String {
         switch self {
-        case .nop: return "NOP"
-        case .hlt: return "HLT"
-        case .call(let target): return "CALL \(target)"
-        case .callptr(let register): return "CALLPTR \(register.description)"
-        case .enter(let count): return "ENTER \(count)"
-        case .leave: return "LEAVE"
-        case .ret: return "RET"
-        case .jmp(let target): return "JMP \(target)"
-        case .la(let dst, let label): return "LA \(dst.description), \(label)"
-        case .ststr(let dst, let str): return "STSTR \(dst.description), \"\(str)\""
-        case .memcpy(let dst, let src, let count): return "MEMCPY \(dst.description), \(src.description), \(count)"
-        case .alloca(let dst, let count): return "ALLOCA \(dst.description), \(count)"
-        case .free(let count): return "FREE \(count)"
-        case .inlineAssembly(let asm): return "ASM \(makeInlineAssemblyDescription(asm))"
-        case .syscall(let n, let ptr): return "SYSCALL \(n.description), \(ptr.description)"
+        case .nop: "NOP"
+        case .hlt: "HLT"
+        case .call(let target): "CALL \(target)"
+        case .callptr(let register): "CALLPTR \(register)"
+        case .enter(let count): "ENTER \(count)"
+        case .leave: "LEAVE"
+        case .ret: "RET"
+        case .jmp(let target): "JMP \(target)"
+        case .la(let dst, let label): "LA \(dst), \(label)"
+        case .ststr(let dst, let str): "STSTR \(dst), \"\(str)\""
+        case .memcpy(let dst, let src, let count): "MEMCPY \(dst), \(src), \(count)"
+        case .alloca(let dst, let count): "ALLOCA \(dst), \(count)"
+        case .free(let count): "FREE \(count)"
+        case .inlineAssembly(let asm): "ASM \(makeInlineAssemblyDescription(asm))"
+        case .syscall(let n, let ptr): "SYSCALL \(n), \(ptr)"
         
-        case .bz(let test, let target): return "BZ \(test) \(target)"
-        case .bnz(let test, let target): return "BNZ \(test) \(target)"
-        case .not(let dst, let src): return "NOT \(dst.description), \(src.description)"
-        case .eqo(let c, let a, let b): return "EQO \(c.description), \(a.description), \(b.description)"
-        case .neo(let c, let a, let b): return "NEO \(c.description), \(a.description), \(b.description)"
-        case .lio(let dst, let imm): return "LIO \(dst.description), \(imm)"
-        case .lo(let dst, let addr, let offset): return "LO \(dst.description), \(addr.description), \(offset)"
-        case .so(let src, let addr, let offset): return "SO \(src.description), \(addr.description), \(offset)"
+        case .bz(let test, let target): "BZ \(test) \(target)"
+        case .bnz(let test, let target): "BNZ \(test) \(target)"
+        case .not(let dst, let src): "NOT \(dst), \(src)"
+        case .eqo(let c, let a, let b): "EQO \(c), \(a), \(b)"
+        case .neo(let c, let a, let b): "NEO \(c), \(a), \(b)"
+        case .lio(let dst, let imm): "LIO \(dst), \(imm)"
+        case .lo(let dst, let addr, let offset): "LO \(dst), \(addr), \(offset)"
+        case .so(let src, let addr, let offset): "SO \(src), \(addr), \(offset)"
             
-        case .eqp(let c, let a, let b): return "EQP \(c.description), \(a.description), \(b.description)"
-        case .nep(let c, let a, let b): return "NEP \(c.description), \(a.description), \(b.description)"
-        case .lip(let dst, let imm): return "LIP \(dst.description), \(imm)"
-        case .addip(let c, let a, let b): return "ADDIP \(c.description), \(a.description), \(b.description)"
-        case .subip(let c, let a, let b): return "SUBIP \(c.description), \(a.description), \(b.description)"
-        case .addpw(let c, let a, let b): return "ADDPW \(c.description), \(a.description), \(b.description)"
-        case .lp(let dst, let addr, let offset): return "LP \(dst.description), \(addr.description), \(offset)"
-        case .sp(let src, let addr, let offset): return "SP \(src.description), \(addr.description), \(offset)"
+        case .eqp(let c, let a, let b): "EQP \(c), \(a), \(b)"
+        case .nep(let c, let a, let b): "NEP \(c), \(a), \(b)"
+        case .lip(let dst, let imm): "LIP \(dst), \(imm)"
+        case .addip(let c, let a, let b): "ADDIP \(c), \(a), \(b)"
+        case .subip(let c, let a, let b): "SUBIP \(c), \(a), \(b)"
+        case .addpw(let c, let a, let b): "ADDPW \(c), \(a), \(b)"
+        case .lp(let dst, let addr, let offset): "LP \(dst), \(addr), \(offset)"
+        case .sp(let src, let addr, let offset): "SP \(src), \(addr), \(offset)"
         
-        case .lw(let dst, let addr, let offset): return "LW \(dst.description), \(addr.description), \(offset)"
-        case .sw(let src, let addr, let offset): return "SW \(src.description), \(addr.description), \(offset)"
-        case .bzw(let test, let target): return "BZW \(test) \(target)"
-        case .andiw(let c, let a, let b): return "ANDIW \(c.description), \(a.description), \(b.description)"
-        case .addiw(let c, let a, let b): return "ADDIW \(c.description), \(a.description), \(b.description)"
-        case .subiw(let c, let a, let b): return "SUBIW \(c.description), \(a.description), \(b.description)"
-        case .muliw(let c, let a, let b): return "MULIIW \(c.description), \(a.description), \(b.description)"
-        case .liw(let dst, let imm): return "LIW \(dst.description), \(imm)"
-        case .liuw(let dst, let imm): return "LIUW \(dst.description), \(imm)"
-        case .andw(let c, let a, let b): return "ANDW \(c.description), \(a.description), \(b.description)"
-        case .orw(let c, let a, let b): return "ORW \(c.description), \(a.description), \(b.description)"
-        case .xorw(let c, let a, let b): return "XORW \(c.description), \(a.description), \(b.description)"
-        case .negw(let c, let a): return "NEGW \(c.description), \(a.description)"
-        case .addw(let c, let a, let b): return "ADDW \(c.description), \(a.description), \(b.description)"
-        case .subw(let c, let a, let b): return "SUBW \(c.description), \(a.description), \(b.description)"
-        case .mulw(let c, let a, let b): return "MULW \(c.description), \(a.description), \(b.description)"
-        case .divw(let c, let a, let b): return "DIVW \(c.description), \(a.description), \(b.description)"
-        case .divuw(let c, let a, let b): return "DIVUW \(c.description), \(a.description), \(b.description)"
-        case .modw(let c, let a, let b): return "MODW \(c.description), \(a.description), \(b.description)"
-        case .lslw(let c, let a, let b): return "LSLW \(c.description), \(a.description), \(b.description)"
-        case .lsrw(let c, let a, let b): return "LSRW \(c.description), \(a.description), \(b.description)"
-        case .eqw(let c, let a, let b): return "EQW \(c.description), \(a.description), \(b.description)"
-        case .new(let c, let a, let b): return "NEW \(c.description), \(a.description), \(b.description)"
-        case .ltw(let c, let a, let b): return "LTW \(c.description), \(a.description), \(b.description)"
-        case .gew(let c, let a, let b): return "GEW \(c.description), \(a.description), \(b.description)"
-        case .lew(let c, let a, let b): return "LEW \(c.description), \(a.description), \(b.description)"
-        case .gtw(let c, let a, let b): return "GTW \(c.description), \(a.description), \(b.description)"
-        case .ltuw(let c, let a, let b): return "LTUW \(c.description), \(a.description), \(b.description)"
-        case .geuw(let c, let a, let b): return "GEUW \(c.description), \(a.description), \(b.description)"
-        case .leuw(let c, let a, let b): return "LEUW \(c.description), \(a.description), \(b.description)"
-        case .gtuw(let c, let a, let b): return "GTUW \(c.description), \(a.description), \(b.description)"
+        case .lw(let dst, let addr, let offset): "LW \(dst), \(addr), \(offset)"
+        case .sw(let src, let addr, let offset): "SW \(src), \(addr), \(offset)"
+        case .bzw(let test, let target): "BZW \(test) \(target)"
+        case .andiw(let c, let a, let b): "ANDIW \(c), \(a), \(b)"
+        case .addiw(let c, let a, let b): "ADDIW \(c), \(a), \(b)"
+        case .subiw(let c, let a, let b): "SUBIW \(c), \(a), \(b)"
+        case .muliw(let c, let a, let b): "MULIIW \(c), \(a), \(b)"
+        case .liw(let dst, let imm): "LIW \(dst), \(imm)"
+        case .liuw(let dst, let imm): "LIUW \(dst), \(imm)"
+        case .andw(let c, let a, let b): "ANDW \(c), \(a), \(b)"
+        case .orw(let c, let a, let b): "ORW \(c), \(a), \(b)"
+        case .xorw(let c, let a, let b): "XORW \(c), \(a), \(b)"
+        case .negw(let c, let a): "NEGW \(c), \(a)"
+        case .addw(let c, let a, let b): "ADDW \(c), \(a), \(b)"
+        case .subw(let c, let a, let b): "SUBW \(c), \(a), \(b)"
+        case .mulw(let c, let a, let b): "MULW \(c), \(a), \(b)"
+        case .divw(let c, let a, let b): "DIVW \(c), \(a), \(b)"
+        case .divuw(let c, let a, let b): "DIVUW \(c), \(a), \(b)"
+        case .modw(let c, let a, let b): "MODW \(c), \(a), \(b)"
+        case .lslw(let c, let a, let b): "LSLW \(c), \(a), \(b)"
+        case .lsrw(let c, let a, let b): "LSRW \(c), \(a), \(b)"
+        case .eqw(let c, let a, let b): "EQW \(c), \(a), \(b)"
+        case .new(let c, let a, let b): "NEW \(c), \(a), \(b)"
+        case .ltw(let c, let a, let b): "LTW \(c), \(a), \(b)"
+        case .gew(let c, let a, let b): "GEW \(c), \(a), \(b)"
+        case .lew(let c, let a, let b): "LEW \(c), \(a), \(b)"
+        case .gtw(let c, let a, let b): "GTW \(c), \(a), \(b)"
+        case .ltuw(let c, let a, let b): "LTUW \(c), \(a), \(b)"
+        case .geuw(let c, let a, let b): "GEUW \(c), \(a), \(b)"
+        case .leuw(let c, let a, let b): "LEUW \(c), \(a), \(b)"
+        case .gtuw(let c, let a, let b): "GTUW \(c), \(a), \(b)"
         
-        case .lb(let dst, let addr, let offset): return "LB \(dst.description), \(addr.description), \(offset)"
-        case .sb(let src, let addr, let offset): return "SB \(src.description), \(addr.description), \(offset)"
-        case .lib(let dst, let imm): return "LIB \(dst.description), \(imm)"
-        case .liub(let dst, let imm): return "LIUB \(dst.description), \(imm)"
-        case .andb(let c, let a, let b): return "ANDB \(c.description), \(a.description), \(b.description)"
-        case .orb(let c, let a, let b): return "ORB \(c.description), \(a.description), \(b.description)"
-        case .xorb(let c, let a, let b): return "XORB \(c.description), \(a.description), \(b.description)"
-        case .negb(let c, let a): return "NEGB \(c.description), \(a.description)"
-        case .addb(let c, let a, let b): return "ADDB \(c.description), \(a.description), \(b.description)"
-        case .subb(let c, let a, let b): return "SUBB \(c.description), \(a.description), \(b.description)"
-        case .mulb(let c, let a, let b): return "MULB \(c.description), \(a.description), \(b.description)"
-        case .divb(let c, let a, let b): return "DIVB \(c.description), \(a.description), \(b.description)"
-        case .divub(let c, let a, let b): return "DIVU \(c.description), \(a.description), \(b.description)"
-        case .modb(let c, let a, let b): return "MODB \(c.description), \(a.description), \(b.description)"
-        case .lslb(let c, let a, let b): return "LSLB \(c.description), \(a.description), \(b.description)"
-        case .lsrb(let c, let a, let b): return "LSRB \(c.description), \(a.description), \(b.description)"
-        case .eqb(let c, let a, let b): return "EQB \(c.description), \(a.description), \(b.description)"
-        case .neb(let c, let a, let b): return "NEB \(c.description), \(a.description), \(b.description)"
-        case .ltb(let c, let a, let b): return "LTB \(c.description), \(a.description), \(b.description)"
-        case .geb(let c, let a, let b): return "GEB \(c.description), \(a.description), \(b.description)"
-        case .leb(let c, let a, let b): return "LEB \(c.description), \(a.description), \(b.description)"
-        case .gtb(let c, let a, let b): return "GTB \(c.description), \(a.description), \(b.description)"
-        case .ltub(let c, let a, let b): return "LTUB \(c.description), \(a.description), \(b.description)"
-        case .geub(let c, let a, let b): return "GEUB \(c.description), \(a.description), \(b.description)"
-        case .leub(let c, let a, let b): return "LEUB \(c.description), \(a.description), \(b.description)"
-        case .gtub(let c, let a, let b): return "GTUB \(c.description), \(a.description), \(b.description)"
-        case .movsbw(let dst, let src): return "MOVSBW \(dst.description), \(src.description)"
-        case .movswb(let dst, let src): return "MOVSWB \(dst.description), \(src.description)"
-        case .movzwb(let dst, let src): return "MOVZWB \(dst.description), \(src.description)"
-        case .movzbw(let dst, let src): return "MOVZBW \(dst.description), \(src.description)"
-        case .bitcast(let dst, let src): return "BITCAST \(dst.description), \(src.description)"
+        case .lb(let dst, let addr, let offset): "LB \(dst), \(addr), \(offset)"
+        case .sb(let src, let addr, let offset): "SB \(src), \(addr), \(offset)"
+        case .lib(let dst, let imm): "LIB \(dst), \(imm)"
+        case .liub(let dst, let imm): "LIUB \(dst), \(imm)"
+        case .andb(let c, let a, let b): "ANDB \(c), \(a), \(b)"
+        case .orb(let c, let a, let b): "ORB \(c), \(a), \(b)"
+        case .xorb(let c, let a, let b): "XORB \(c), \(a), \(b)"
+        case .negb(let c, let a): "NEGB \(c), \(a)"
+        case .addb(let c, let a, let b): "ADDB \(c), \(a), \(b)"
+        case .subb(let c, let a, let b): "SUBB \(c), \(a), \(b)"
+        case .mulb(let c, let a, let b): "MULB \(c), \(a), \(b)"
+        case .divb(let c, let a, let b): "DIVB \(c), \(a), \(b)"
+        case .divub(let c, let a, let b): "DIVU \(c), \(a), \(b)"
+        case .modb(let c, let a, let b): "MODB \(c), \(a), \(b)"
+        case .lslb(let c, let a, let b): "LSLB \(c), \(a), \(b)"
+        case .lsrb(let c, let a, let b): "LSRB \(c), \(a), \(b)"
+        case .eqb(let c, let a, let b): "EQB \(c), \(a), \(b)"
+        case .neb(let c, let a, let b): "NEB \(c), \(a), \(b)"
+        case .ltb(let c, let a, let b): "LTB \(c), \(a), \(b)"
+        case .geb(let c, let a, let b): "GEB \(c), \(a), \(b)"
+        case .leb(let c, let a, let b): "LEB \(c), \(a), \(b)"
+        case .gtb(let c, let a, let b): "GTB \(c), \(a), \(b)"
+        case .ltub(let c, let a, let b): "LTUB \(c), \(a), \(b)"
+        case .geub(let c, let a, let b): "GEUB \(c), \(a), \(b)"
+        case .leub(let c, let a, let b): "LEUB \(c), \(a), \(b)"
+        case .gtub(let c, let a, let b): "GTUB \(c), \(a), \(b)"
+        case .movsbw(let dst, let src): "MOVSBW \(dst), \(src)"
+        case .movswb(let dst, let src): "MOVSWB \(dst), \(src)"
+        case .movzwb(let dst, let src): "MOVZWB \(dst), \(src)"
+        case .movzbw(let dst, let src): "MOVZBW \(dst), \(src)"
+        case .bitcast(let dst, let src): "BITCAST \(dst), \(src)"
         }
     }
     
@@ -410,14 +404,14 @@ public final class TackInstructionNode: AbstractSyntaxTreeNode {
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        let result = "\(indent)\(instruction.description)"
+        let result = "\(indent)\(instruction)"
         return result
     }
 }
 
-// Representation of the program in the Tack intermediate language.
-// This can be compiled to assembly code for some target, or it can be executed
-// in the Tack virtual machine.
+/// Representation of the program in the Tack intermediate language.
+/// This can be compiled to assembly code for some target, or it can be executed
+/// in the Tack virtual machine.
 public struct TackProgram: Equatable {
     public let instructions: [TackInstruction]
     public let sourceAnchor: [SourceAnchor?]
@@ -471,7 +465,7 @@ public struct TackProgram: Equatable {
         var rows: [(Int, String?, String)] = []
         for i in 0..<instructions.count {
             let label = rowToLabel[i]
-            let insDesc = instructions[i].description
+            let insDesc = "\(instructions[i])"
             rows.append((i, label, insDesc))
         }
         var longestLabelLength = 0
@@ -491,8 +485,8 @@ public struct TackProgram: Equatable {
             else {
                 labelCol = String(repeating: " ", count: longestLabelLength)
             }
-            let addrCol = String(format: "%04x  ", addr)
-            lines.append("\(addrCol)\(labelCol)\(insDesc)")
+            let addrCol = addr.hexadecimalString
+            lines.append("\(addrCol)  \(labelCol)\(insDesc)")
         }
         let result = lines.joined(separator: "\n")
         return result
@@ -529,5 +523,11 @@ extension SymbolType {
         default:
             return nil
         }
+    }
+}
+
+fileprivate extension Int {
+    var hexadecimalString: String {
+        String(format: "%04x", self)
     }
 }

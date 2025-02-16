@@ -2658,7 +2658,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             XCTAssertEqual(typ.associatedTraitType, "Serial")
 
         default:
-            XCTFail("unexpected type: \(serialType?.description ?? "nil")")
+            XCTFail("unexpected type: \(String(describing: serialType))")
         }
     }
 
@@ -2684,7 +2684,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             XCTAssertEqual(typ.associatedTraitType, "Serial")
 
         default:
-            XCTFail("unexpected type: \(serialType?.description ?? "nil")")
+            XCTFail("unexpected type: \(String(describing: serialType))")
         }
     }
 
@@ -2711,7 +2711,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             XCTAssertEqual(typ.associatedTraitType, "Serial")
 
         default:
-            XCTFail("unexpected type: \(serialType?.description ?? "nil")")
+            XCTFail("unexpected type: \(String(describing: serialType))")
         }
     }
 

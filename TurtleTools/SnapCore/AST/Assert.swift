@@ -67,7 +67,6 @@ public final class Assert: AbstractSyntaxTreeNode {
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        let selfDesc = String(describing: type(of: self))
         let indent1 = makeIndent(depth: depth + 1)
         let conditionDesc = condition.makeIndentedDescription(depth: depth + 1)
         let result = """

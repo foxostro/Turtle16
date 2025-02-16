@@ -90,10 +90,11 @@ open class AbstractSyntaxTreeNode: Equatable, Hashable, CustomStringConvertible 
     
     open func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        let selfDesc = String(describing: type(of: self))
         let result = "\(indent)\(selfDesc)"
         return result
     }
+    
+    public var selfDesc: String { String(describing: type(of: self)) }
     
     public func makeIndent(depth: Int) -> String {
         String(repeating: "\t", count: depth)

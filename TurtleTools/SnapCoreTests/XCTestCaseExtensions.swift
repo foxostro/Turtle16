@@ -14,7 +14,7 @@ public extension XCTestCase {
         if let match = regex.firstMatch(in: name, range: NSRange(name.startIndex..., in: name)) {
             let nsRange = match.range(withName: "testName")
             if let range = Range(nsRange, in: name) {
-                return String(name[range])
+                return "\(name[range])"
             }
         }
         return ""

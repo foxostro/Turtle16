@@ -16,7 +16,7 @@ public class Expression: AbstractSyntaxTreeNode {
 }
 
 // Useful for testing
-public class UnsupportedExpression: Expression {
+public final class UnsupportedExpression: Expression {
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> UnsupportedExpression {
         UnsupportedExpression(
             sourceAnchor: sourceAnchor,
@@ -24,7 +24,7 @@ public class UnsupportedExpression: Expression {
     }
 }
 
-public class LiteralInt: Expression {
+public final class LiteralInt: Expression {
     public let value: Int
     
     public convenience init(_ value: Int) {
@@ -55,14 +55,14 @@ public class LiteralInt: Expression {
         hasher.combine(value)
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let result = "\(indent)\(value)"
         return result
     }
 }
 
-public class LiteralBool: Expression {
+public final class LiteralBool: Expression {
     public let value: Bool
     
     public convenience init(_ value: Bool) {
@@ -94,7 +94,7 @@ public class LiteralBool: Expression {
         hasher.combine(value)
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let valStr = value ? "true" : "false"
         let result = "\(indent)\(valStr)"
@@ -102,7 +102,7 @@ public class LiteralBool: Expression {
     }
 }
 
-public class Identifier: Expression {
+public final class Identifier: Expression {
     public let identifier: String
     
     public convenience init(_ identifier: String) {
@@ -140,14 +140,14 @@ public class Identifier: Expression {
         hasher.combine(identifier)
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let result = "\(indent)\(identifier)"
         return result
     }
 }
 
-public class Unary: Expression {
+public final class Unary: Expression {
     public let op: TokenOperator.Operator
     public let child: Expression
     
@@ -188,7 +188,7 @@ public class Unary: Expression {
         hasher.combine(child)
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let indent1 = makeIndent(depth: depth+1)
         let childDesc = child.makeIndentedDescription(depth: depth+1)
@@ -201,7 +201,7 @@ public class Unary: Expression {
     }
 }
 
-public class Group: Expression {
+public final class Group: Expression {
     public let expression: Expression
     
     public convenience init(_ expression: Expression) {
@@ -233,7 +233,7 @@ public class Group: Expression {
         hasher.combine(expression)
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let exprDesc = expression.makeIndentedDescription(depth: depth+1, wantsLeadingWhitespace: true)
         return """
@@ -244,7 +244,7 @@ public class Group: Expression {
 }
 
 // A linear sequence of expressions, the value of which is determined by the last expression
-public class Eseq: Expression {
+public final class Eseq: Expression {
     public let children: [Expression]
     
     public init(sourceAnchor: SourceAnchor? = nil,
@@ -278,7 +278,7 @@ public class Eseq: Expression {
         hasher.combine(children)
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let leading = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         
         var childrenDesc = children
@@ -295,7 +295,7 @@ public class Eseq: Expression {
     }
 }
 
-public class Binary: Expression {
+public final class Binary: Expression {
     public let op: TokenOperator.Operator
     public let left: Expression
     public let right: Expression
@@ -335,7 +335,7 @@ public class Binary: Expression {
         hasher.combine(right)
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let indent1 = makeIndent(depth: depth + 1)
         return """
@@ -406,7 +406,7 @@ public class Assignment: Expression {
     }
 }
 
-public class InitialAssignment: Assignment {
+public final class InitialAssignment: Assignment {
     public override func withSourceAnchor(_ sourceAnchor: SourceAnchor?) -> InitialAssignment {
         InitialAssignment(sourceAnchor: sourceAnchor,
                           lexpr: lexpr,
@@ -429,7 +429,7 @@ public class InitialAssignment: Assignment {
     }
 }
 
-public class Call: Expression {
+public final class Call: Expression {
     public let callee: Expression
     public let arguments: [Expression]
     
@@ -483,7 +483,7 @@ public class Call: Expression {
         hasher.combine(arguments)
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let indent1 = makeIndent(depth: depth + 1)
         return """
@@ -510,7 +510,7 @@ public class Call: Expression {
     }
 }
 
-public class As: Expression {
+public final class As: Expression {
     public let expr: Expression
     public let targetType: Expression
     
@@ -538,7 +538,7 @@ public class As: Expression {
         return true
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let indent1 = makeIndent(depth: depth+1)
         return """
@@ -549,7 +549,7 @@ public class As: Expression {
     }
 }
 
-public class Bitcast: Expression {
+public final class Bitcast: Expression {
     public let expr: Expression
     public let targetType: Expression
     
@@ -577,7 +577,7 @@ public class Bitcast: Expression {
         return true
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let indent1 = makeIndent(depth: depth+1)
         return """
@@ -588,7 +588,7 @@ public class Bitcast: Expression {
     }
 }
 
-public class Is: Expression {
+public final class Is: Expression {
     public let expr: Expression
     public let testType: Expression
     
@@ -616,7 +616,7 @@ public class Is: Expression {
         return true
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let indent1 = makeIndent(depth: depth+1)
         return """
@@ -627,7 +627,7 @@ public class Is: Expression {
     }
 }
 
-public class Subscript: Expression {
+public final class Subscript: Expression {
     public let subscriptable: Expression
     public let argument: Expression
     
@@ -655,7 +655,7 @@ public class Subscript: Expression {
         return true
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let indent1 = makeIndent(depth: depth+1)
         return """
@@ -666,7 +666,7 @@ public class Subscript: Expression {
     }
 }
 
-public class LiteralArray: Expression {
+public final class LiteralArray: Expression {
     public let arrayType: Expression
     public let elements: [Expression]
     
@@ -702,7 +702,7 @@ public class LiteralArray: Expression {
         hasher.combine(elements)
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let indent1 = makeIndent(depth: depth+1)
         return """
@@ -726,7 +726,7 @@ public class LiteralArray: Expression {
     }
 }
 
-public class Get: Expression {
+public final class Get: Expression {
     public let expr: Expression
     public let member: Expression
     
@@ -774,7 +774,7 @@ public class Get: Expression {
         hasher.combine(member)
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let indent1 = makeIndent(depth: depth+1)
         return """
@@ -785,7 +785,7 @@ public class Get: Expression {
     }
 }
 
-public class PrimitiveType: Expression {
+public final class PrimitiveType: Expression {
     public let typ: SymbolType
     
     public convenience init(_ typ: SymbolType) {
@@ -817,13 +817,13 @@ public class PrimitiveType: Expression {
         hasher.combine(typ)
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         return "\(indent)\(typ)"
     }
 }
 
-public class DynamicArrayType: Expression {
+public final class DynamicArrayType: Expression {
     public let elementType: Expression
     
     public convenience init(_ elementType: Expression) {
@@ -861,14 +861,14 @@ public class DynamicArrayType: Expression {
         hasher.combine(elementType)
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let result = "\(indent)\(selfDesc)(\(elementType))"
         return result
     }
 }
 
-public class ArrayType: Expression {
+public final class ArrayType: Expression {
     public let count: Expression?
     public let elementType: Expression
     
@@ -902,7 +902,7 @@ public class ArrayType: Expression {
         hasher.combine(elementType)
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let indent1 = makeIndent(depth: depth+1)
         return """
@@ -913,7 +913,7 @@ public class ArrayType: Expression {
     }
 }
 
-public class FunctionType: Expression {
+public final class FunctionType: Expression {
     public let name: String?
     public let returnType: Expression
     public let arguments: [Expression]
@@ -953,7 +953,7 @@ public class FunctionType: Expression {
                      id: ID())
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let indent1 = makeIndent(depth: depth+1)
         return """
@@ -1000,7 +1000,7 @@ public class FunctionType: Expression {
 /// GenericFunctionType is a type function. It evaluates to a concrete
 /// function type only when given type arguments to fulfill specified type
 /// variables.
-public class GenericFunctionType: Expression {
+public final class GenericFunctionType: Expression {
     public let template: FunctionDeclaration
     public let enclosingImplId: AbstractSyntaxTreeNode.ID?
     
@@ -1041,7 +1041,7 @@ public class GenericFunctionType: Expression {
             id: id)
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let typeArgumentsDescription = typeArguments.map(\.description).joined(separator: ", ")
         let argumentsDescription = zip(template.argumentNames, arguments).map({"\($0.0): \($0.1)"}).joined(separator: ", ")
@@ -1061,10 +1061,10 @@ public class GenericFunctionType: Expression {
     }
 }
 
-// GenericTypeApplication is a type expression. This applies the given
-// type arguments to the generic function type to yield a concrete function
-// type.
-public class GenericTypeApplication: Expression {
+/// GenericTypeApplication is a type expression. This applies the given
+/// type arguments to the generic function type to yield a concrete function
+/// type.
+public final class GenericTypeApplication: Expression {
     public let identifier: Identifier
     public let arguments: [Expression]
     
@@ -1089,7 +1089,7 @@ public class GenericTypeApplication: Expression {
         return "\(identifier)@[\(typeVariablesDescription)]"
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let indent1 = makeIndent(depth: depth+1)
         return """
@@ -1130,7 +1130,7 @@ public class GenericTypeApplication: Expression {
     }
 }
 
-public class GenericTypeArgument: Expression {
+public final class GenericTypeArgument: Expression {
     public let identifier: Identifier
     public let constraints: [Identifier]
     
@@ -1160,7 +1160,7 @@ public class GenericTypeArgument: Expression {
         }
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let leading = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         return "\(leading)\(selfDesc): \(shortDescription)"
     }
@@ -1180,7 +1180,7 @@ public class GenericTypeArgument: Expression {
     }
 }
 
-public class PointerType: Expression {
+public final class PointerType: Expression {
     public let typ: Expression
     
     public convenience init(_ typ: Expression) {
@@ -1206,7 +1206,7 @@ public class PointerType: Expression {
                     id: id)
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         return "\(indent)\(selfDesc)(\(typ))"
     }
@@ -1224,7 +1224,7 @@ public class PointerType: Expression {
     }
 }
 
-public class ConstType: Expression {
+public final class ConstType: Expression {
     public let typ: Expression
     
     public convenience init(_ typ: Expression) {
@@ -1250,7 +1250,7 @@ public class ConstType: Expression {
                   id: id)
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         return "\(indent)\(selfDesc)(\(typ))"
     }
@@ -1268,7 +1268,7 @@ public class ConstType: Expression {
     }
 }
 
-public class MutableType: Expression {
+public final class MutableType: Expression {
     public let typ: Expression
     
     public convenience init(_ typ: Expression) {
@@ -1294,7 +1294,7 @@ public class MutableType: Expression {
                     id: id)
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         return "\(indent)\(selfDesc)(\(typ))"
     }
@@ -1312,7 +1312,7 @@ public class MutableType: Expression {
     }
 }
 
-public class UnionType: Expression {
+public final class UnionType: Expression {
     public let members: [Expression]
     
     public convenience init(_ members: [Expression]) {
@@ -1338,7 +1338,7 @@ public class UnionType: Expression {
                   id: id)
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let indent1 = makeIndent(depth: depth + 1)
         return """
@@ -1374,7 +1374,7 @@ public class UnionType: Expression {
     }
 }
 
-public class StructInitializer: Expression {
+public final class StructInitializer: Expression {
     public struct Argument: Hashable, CustomStringConvertible {
         public let name: String
         public let expr: Expression
@@ -1418,7 +1418,7 @@ public class StructInitializer: Expression {
                           id: id)
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let indent1 = makeIndent(depth: depth + 1)
         return """
@@ -1460,7 +1460,7 @@ public class StructInitializer: Expression {
     }
 }
 
-public class LiteralString: Expression {
+public final class LiteralString: Expression {
     public let value: String
     
     public convenience init(_ value: String) {
@@ -1492,13 +1492,13 @@ public class LiteralString: Expression {
         hasher.combine(value)
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         return "\(indent)\"\(value)\""
     }
 }
 
-public class TypeOf: Expression {
+public final class TypeOf: Expression {
     public let expr: Expression
     
     public convenience init(_ expr: Expression) {
@@ -1524,7 +1524,7 @@ public class TypeOf: Expression {
                id: id)
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let exprDesc = expr.makeIndentedDescription(depth: 0, wantsLeadingWhitespace: false)
         return "\(indent)\(selfDesc)(\(exprDesc)"
@@ -1543,7 +1543,7 @@ public class TypeOf: Expression {
     }
 }
 
-public class SizeOf: Expression {
+public final class SizeOf: Expression {
     public let expr: Expression
     
     public convenience init(_ expr: Expression) {
@@ -1569,7 +1569,7 @@ public class SizeOf: Expression {
                id: id)
     }
     
-    open override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
         let exprDesc = expr.makeIndentedDescription(depth: 0, wantsLeadingWhitespace: false)
         return "\(indent)\(selfDesc)(\(exprDesc))"

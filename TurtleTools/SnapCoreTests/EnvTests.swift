@@ -1,5 +1,5 @@
 //
-//  SymbolTableTests.swift
+//  EnvTests.swift
 //  SnapCoreTests
 //
 //  Created by Andrew Fox on 5/27/20.
@@ -10,7 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-final class SymbolTableTests: XCTestCase {
+final class EnvTests: XCTestCase {
     func testEquatableSymbols() {
         XCTAssertNotEqual(Symbol(type: .u8, offset: 0x10),
                           Symbol(type: .bool, offset: 0x10))

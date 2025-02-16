@@ -16,25 +16,27 @@ public final class CompilerPassMatch: CompilerPassWithDeclScan {
         let matchExprType = try typeChecker.check(expression: node1.expr)
         
         // Get the list of types this match statement is expected to contain.
-        let expectedTypes: NSOrderedSet
-        switch matchExprType {
+        let expectedTypes = switch matchExprType {
         case .unionType(let typ):
-            expectedTypes = NSOrderedSet(array: typ.members.map({ $0.correspondingMutableType }))
+            NSOrderedSet(array: typ.members.map { $0.correspondingMutableType })
+            
         default:
-            expectedTypes = NSOrderedSet(array: [matchExprType.correspondingMutableType])
+            NSOrderedSet(array: [ matchExprType.correspondingMutableType ])
         }
         
         // Check that the expected and provided types match.
-        let valueTypes = NSOrderedSet(array: try node1.clauses.map({
+        let valueTypes = NSOrderedSet(array: try node1.clauses.map {
             ($0, try typeChecker.check(expression: $0.valueType))
-        }))
+        })
         let extraneousTypes = valueTypes.filter { (element_: Any) -> Bool in
             let element = element_ as! (Match.Clause, SymbolType)
             let isIncluded = !expectedTypes.contains(element.1)
             return isIncluded
         }
         guard extraneousTypes.count == 0 else {
-            let what = extraneousTypes.map({"\(($0 as! (Match.Clause, SymbolType)).1)"}).joined(separator: ", ")
+            let what = extraneousTypes
+                .map { "\(($0 as! (Match.Clause, SymbolType)).1)" }
+                .joined(separator: ", ")
             let clauseStr = extraneousTypes.count == 1 ? "clause" : "clauses"
             let badClause = (extraneousTypes.first as? (Match.Clause, SymbolType))?.0
             let sourceAnchor = badClause?.valueIdentifier.sourceAnchor?.union(badClause?.valueType.sourceAnchor)
@@ -46,7 +48,9 @@ public final class CompilerPassMatch: CompilerPassWithDeclScan {
             ($0 as! (Match.Clause, SymbolType)).1
         }))
         guard missingTypes.count == 0 || node1.elseClause != nil else {
-            let what = missingTypes.map({"\($0)"}).joined(separator: ", ")
+            let what = missingTypes
+                .map { "\($0)" }
+                .joined(separator: ", ")
             let clauseStr = missingTypes.count == 1 ? "clause" : "clauses"
             let sourceAnchor = node1.expr.sourceAnchor
             throw CompilerError(sourceAnchor: sourceAnchor,

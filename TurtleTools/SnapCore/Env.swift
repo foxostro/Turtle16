@@ -955,9 +955,7 @@ public final class UnionTypeInfo: Hashable, CustomStringConvertible {
     }
     
     public var description: String {
-        members
-            .map { "\($0)" }
-            .joined(separator: " | ")
+        members.map(\.description).joined(separator: " | ")
     }
 }
 

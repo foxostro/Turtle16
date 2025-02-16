@@ -169,7 +169,7 @@ public final class StructDeclaration: AbstractSyntaxTreeNode {
     
     public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
         let unindented = """
-            \(visibilityDescription) struct \(name)\(typeArgumentsDescription) {\(membersDescription)
+            \(visibility) struct \(name)\(typeArgumentsDescription) {\(membersDescription)
             }
             """
         let indented = indent(text: unindented, depth: depth)
@@ -178,19 +178,13 @@ public final class StructDeclaration: AbstractSyntaxTreeNode {
     
     private func indent(text: String, depth: Int) -> String {
         let indentLine = makeIndent(depth: depth)
-        let indented = text.split(separator: "\n").map { line in
-            "\(indentLine)\(line)"
-        }.joined(separator: "\n")
+        let indented = text
+            .split(separator: "\n")
+            .map { line in
+                "\(indentLine)\(line)"
+            }
+            .joined(separator: "\n")
         return indented
-    }
-    
-    private var visibilityDescription: String {
-        switch visibility {
-        case .publicVisibility:
-            return "public"
-        case .privateVisibility:
-            return "private"
-        }
     }
     
     public var typeArgumentsDescription: String {
@@ -198,21 +192,21 @@ public final class StructDeclaration: AbstractSyntaxTreeNode {
             return ""
         }
         
-        let str = typeArguments.map { arg in
-            arg.shortDescription
-        }.joined(separator: ", ")
+        let str = typeArguments
+            .map { $0.shortDescription }
+            .joined(separator: ", ")
         
         return "[\(str)]"
     }
     
     private var membersDescription: String {
-        guard !members.isEmpty else {
-            return ""
+        if members.isEmpty {
+            ""
         }
-        
-        let result = "\n" + members.map { arg in
-            "\t\(arg)"
-        }.joined(separator: ",\n")
-        return result
+        else {
+            "\n" + members
+                .map { "\t\($0)" }
+                .joined(separator: ",\n")
+        }
     }
 }

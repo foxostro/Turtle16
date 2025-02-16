@@ -54,7 +54,9 @@ public struct SnapSubcompilerMatch {
             ($0 as! (Match.Clause, SymbolType)).1
         }))
         guard missingTypes.count == 0 || match.elseClause != nil else {
-            let what = missingTypes.map({"\($0)"}).joined(separator: ", ")
+            let what = missingTypes
+                .map { "\($0)" }
+                .joined(separator: ", ")
             let clauseStr = missingTypes.count == 1 ? "clause" : "clauses"
             let sourceAnchor = match.expr.sourceAnchor
             throw CompilerError(sourceAnchor: sourceAnchor,

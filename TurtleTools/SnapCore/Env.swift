@@ -636,7 +636,6 @@ public final class FunctionTypeInfo: Hashable, CustomStringConvertible {
     }
     
     public static func ==(lhs: FunctionTypeInfo, rhs: FunctionTypeInfo) -> Bool {
-        guard type(of: lhs) == type(of: rhs) else { return false }
         guard lhs.name == rhs.name else { return false }
         guard lhs.mangledName == rhs.mangledName else { return false }
         guard lhs.returnType == rhs.returnType else { return false }

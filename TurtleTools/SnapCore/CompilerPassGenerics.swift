@@ -197,7 +197,10 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
         try visit(genericTypeApplication: expr, symbols: symbols!)
     }
     
-    fileprivate func visit(genericTypeApplication expr: GenericTypeApplication, symbols: Env) throws -> Expression? {
+    fileprivate func visit(
+        genericTypeApplication expr: GenericTypeApplication,
+        symbols: Env
+    ) throws -> Expression? {
         
         let typeChecker = RvalueExpressionTypeChecker(
             symbols: symbols,
@@ -219,9 +222,11 @@ public final class CompilerPassGenerics: CompilerPassWithDeclScan {
         return concreteDeclaration
     }
     
-    fileprivate func visit(expr: GenericTypeApplication,
-                           symbols: Env,
-                           concreteFunctionType: FunctionTypeInfo) throws -> Expression? {
+    fileprivate func visit(
+        expr: GenericTypeApplication,
+        symbols: Env,
+        concreteFunctionType: FunctionTypeInfo
+    ) throws -> Expression? {
         
         let mangledName = concreteFunctionType.mangledName!
         let concreteIdent = Identifier(mangledName)

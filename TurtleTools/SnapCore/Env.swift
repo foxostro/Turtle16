@@ -364,7 +364,7 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
             Identifier(typ.name)
             
         case .unionType(let typ):
-            UnionType(typ.members.map { $0.lift })
+            UnionType(typ.members.map(\.lift))
             
         case .label:
             fatalError("cannot lift a label")

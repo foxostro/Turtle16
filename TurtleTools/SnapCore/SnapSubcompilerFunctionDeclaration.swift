@@ -180,8 +180,9 @@ public struct SnapSubcompilerFunctionDeclaration {
         _ functionType: FunctionTypeInfo,
         _ node: FunctionDeclaration
     ) -> CompilerError {
-        CompilerError(sourceAnchor: node.identifier.sourceAnchor,
-                      message: "missing return in a function expected to return `\(functionType.returnType)'")
+        CompilerError(
+            sourceAnchor: node.identifier.sourceAnchor,
+            message: "missing return in a function expected to return `\(functionType.returnType)'")
     }
     
     private func shouldSynthesizeTerminalReturnStatement(

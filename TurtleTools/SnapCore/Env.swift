@@ -587,6 +587,7 @@ public enum ArithmeticTypeInfo: Hashable, CustomStringConvertible {
     }
 }
 
+/// Describe a function type in detail
 public final class FunctionTypeInfo: Hashable, CustomStringConvertible {
     public let name: String?
     public let mangledName: String?
@@ -659,29 +660,30 @@ public final class FunctionTypeInfo: Hashable, CustomStringConvertible {
     
     public func eraseName() -> FunctionTypeInfo {
         FunctionTypeInfo(name: nil,
-                     mangledName: nil,
-                     returnType: returnType,
-                     arguments: arguments,
-                     ast: ast)
+                         mangledName: nil,
+                         returnType: returnType,
+                         arguments: arguments,
+                         ast: ast)
     }
     
     public func withBody(_ body: Block) -> FunctionTypeInfo {
         FunctionTypeInfo(name: name,
-                     mangledName: mangledName,
-                     returnType: returnType,
-                     arguments: arguments,
-                     ast: ast?.withBody(body))
+                         mangledName: mangledName,
+                         returnType: returnType,
+                         arguments: arguments,
+                         ast: ast?.withBody(body))
     }
     
     public func withName(_ name: String) -> FunctionTypeInfo {
         FunctionTypeInfo(name: name,
-                     mangledName: mangledName,
-                     returnType: returnType,
-                     arguments: arguments,
-                     ast: ast)
+                         mangledName: mangledName,
+                         returnType: returnType,
+                         arguments: arguments,
+                         ast: ast)
     }
 }
 
+/// Describe a struct type in detail
 public final class StructTypeInfo: Hashable, CustomStringConvertible {
     public let name: String
     public let symbols: Env
@@ -697,10 +699,12 @@ public final class StructTypeInfo: Hashable, CustomStringConvertible {
     /// Indicates whether the struct was synthesized to represent a Module
     public var isModule: Bool { associatedModuleName != nil }
     
-    public init(name: String,
-                symbols: Env,
-                associatedTraitType: String? = nil,
-                associatedModuleName: String? = nil) {
+    public init(
+        name: String,
+        symbols: Env,
+        associatedTraitType: String? = nil,
+        associatedModuleName: String? = nil
+    ) {
         self.name = name
         self.symbols = symbols
         self.associatedTraitType = associatedTraitType
@@ -709,16 +713,16 @@ public final class StructTypeInfo: Hashable, CustomStringConvertible {
     
     public func clone() -> StructTypeInfo {
         StructTypeInfo(name: name,
-                   symbols: symbols.clone(),
-                   associatedTraitType: associatedTraitType,
-                   associatedModuleName: associatedModuleName)
+                       symbols: symbols.clone(),
+                       associatedTraitType: associatedTraitType,
+                       associatedModuleName: associatedModuleName)
     }
     
     public func withAssociatedModule(_ associatedModuleName: String?) -> StructTypeInfo {
         StructTypeInfo(name: name,
-                   symbols: symbols.clone(),
-                   associatedTraitType: associatedTraitType,
-                   associatedModuleName: associatedModuleName)
+                       symbols: symbols.clone(),
+                       associatedTraitType: associatedTraitType,
+                       associatedModuleName: associatedModuleName)
     }
     
     public var description: String {
@@ -790,18 +794,19 @@ public final class StructTypeInfo: Hashable, CustomStringConvertible {
     }
 }
 
+/// Describe a generic struct type in detail
 public final class GenericStructTypeInfo: Hashable, CustomStringConvertible {
     public let template: StructDeclaration
     public var instantiations: [ [SymbolType] : SymbolType ] = [:]
     
     public var name: String { template.name }
     
-    // Compilation of Impl nodes is deferred until the generic struct is
-    // instantiated with concrete types.
+    /// Compilation of Impl nodes is deferred until the generic struct is
+    /// instantiated with concrete types.
     public var implNodes: [Impl] = []
     
-    // Compilation of ImplFor nodes is deferred until the generic struct is
-    // instantiated with concrete types.
+    /// Compilation of ImplFor nodes is deferred until the generic struct is
+    /// instantiated with concrete types.
     public var implForNodes: [ImplFor] = []
     
     public func clone() -> GenericStructTypeInfo {
@@ -829,6 +834,7 @@ public final class GenericStructTypeInfo: Hashable, CustomStringConvertible {
     }
 }
 
+/// Describe a trait type in detail
 public final class TraitTypeInfo: Hashable, CustomStringConvertible {
     public let name: String
     public let symbols: Env
@@ -890,10 +896,11 @@ trait \(name) {
     }
     
     public func makeMembersDescription() -> String {
-        members.map { name, type in
-            "\t\(name): \(type)"
-        }
-        .joined(separator: ",\n")
+        members
+            .map { name, type in
+                "\t\(name): \(type)"
+            }
+            .joined(separator: ",\n")
     }
     
     var members: [(name: String, type: SymbolType)] {
@@ -903,6 +910,7 @@ trait \(name) {
     }
 }
 
+/// Describe a generic trait type in details
 public final class GenericTraitTypeInfo: Hashable, CustomStringConvertible {
     public let template: TraitDeclaration
     public var instantiations: [ [SymbolType] : SymbolType ] = [:]
@@ -930,6 +938,7 @@ public final class GenericTraitTypeInfo: Hashable, CustomStringConvertible {
     }
 }
 
+/// Describe a union type in detail
 public final class UnionTypeInfo: Hashable, CustomStringConvertible {
     let members: [SymbolType]
     
@@ -1003,14 +1012,18 @@ public struct Symbol: Hashable {
     }
 }
 
-/// Records types and symbols in the environment
+/// Used to form a type binding in the environment
+public struct TypeRecord: Hashable, CustomStringConvertible {
+    public let symbolType: SymbolType
+    public let visibility: SymbolVisibility
+    
+    public var description: String {
+        "TypeRecord(symbolType: \(symbolType), visibility: \(visibility))"
+    }
+}
 /// Instances of `Env` are connected in a linked list to represent nested
 /// lexical scopes.
 public final class Env: Hashable {
-    public struct TypeRecord: Hashable {
-        let symbolType: SymbolType
-        let visibility: SymbolVisibility
-    }
     public var declarationOrder: [String] = []
     public var symbolTable: [String:Symbol] = [:]
     public var typeTable: [String:TypeRecord]
@@ -1140,7 +1153,12 @@ public final class Env: Hashable {
     
     public var modulesAlreadyImported: Set<String> = []
     
-    public init(parent p: Env? = nil, frameLookupMode s: FrameLookupMode = .inherit, tuples: [(String, Symbol)] = [], typeDict: [String:SymbolType] = [:]) {
+    public init(
+        parent p: Env? = nil,
+        frameLookupMode s: FrameLookupMode = .inherit,
+        tuples: [(String, Symbol)] = [],
+        typeDict: [String:SymbolType] = [:]
+    ) {
         parent = p
         frameLookupMode = s
         typeTable = typeDict.mapValues({TypeRecord(symbolType: $0, visibility: .privateVisibility)})
@@ -1205,67 +1223,126 @@ public final class Env: Hashable {
         declarationOrder.append(identifier)
     }
     
-    public func bind(identifier: String, symbolType: SymbolType, visibility: SymbolVisibility = .privateVisibility) {
-        typeTable[identifier] = TypeRecord(symbolType: symbolType, visibility: visibility)
+    /// Bind an identifier to a type record, convenient creating the type record from parameters
+    /// See also bind(identifier:,typeRecord:)
+    public func bind(
+        identifier ident: String,
+        symbolType: SymbolType,
+        visibility: SymbolVisibility = .privateVisibility
+    ) {
+        let record = TypeRecord(symbolType: symbolType, visibility: visibility)
+        bind(identifier: ident, typeRecord: record)
     }
     
-    public func resolve(identifier: String) throws -> Symbol {
-        try resolve(sourceAnchor: nil, identifier: identifier)
+    /// Bind an identifier to a type record.
+    /// A type binding allows the program to use a string identifier to name a
+    /// type, and to have that binding change with the environment. That is, the
+    /// same name may refer to different types in different lexical scopes.
+    public func bind(identifier: String, typeRecord: TypeRecord) {
+        typeTable[identifier] = typeRecord
     }
     
+    /// Given an identifier, resolve to the corresponding symbol, or return nil
     public func maybeResolve(identifier: String) -> Symbol? {
-        let maybeResolution: (Symbol, Int)? = maybeResolveWithScopeDepth(sourceAnchor: nil, identifier: identifier)
-        return maybeResolution?.0
+        maybeResolveWithScopeDepth(identifier: identifier)?.0
     }
     
-    public func resolve(sourceAnchor: SourceAnchor?, identifier: String) throws -> Symbol {
-        guard let resolution = maybeResolveWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier) else {
-            throw CompilerError(sourceAnchor: sourceAnchor,
-                                message: "use of unresolved identifier: `\(identifier)'")
+    /// Given an identifier, resolve to the corresponding symbol, or throw
+    public func resolve(
+        sourceAnchor: SourceAnchor? = nil,
+        identifier: String
+    ) throws -> Symbol {
+        let resolution = maybeResolveWithStackFrameDepth(
+            sourceAnchor: sourceAnchor,
+            identifier: identifier)
+        guard let resolution else {
+            throw CompilerError(
+                sourceAnchor: sourceAnchor,
+                message: "use of unresolved identifier: `\(identifier)'")
         }
         return resolution.0
     }
     
-    public func resolveTypeOfIdentifier(sourceAnchor: SourceAnchor?, identifier: String) throws -> SymbolType {
-        if let resolution = maybeResolveWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier) {
-            return resolution.0.type
+    /// Given an identifier, resolve the type of the corresponding symbol, if
+    /// the identifier names a symbol. Return the corresponding type if the
+    /// identifier names a type. Otherwise, throw an error for an unresolve
+    /// identifier.
+    public func resolveTypeOfIdentifier(
+        sourceAnchor: SourceAnchor?,
+        identifier: String
+    ) throws -> SymbolType {
+        if let resolution = maybeResolve(identifier: identifier) {
+            resolution.type
         }
-        if let resolution = maybeResolveTypeWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier) {
-            return resolution.0
+        else if let resolution = maybeResolveType(identifier: identifier) {
+            resolution
         }
-        throw CompilerError(sourceAnchor: sourceAnchor, message: "use of unresolved identifier: `\(identifier)'")
+        else {
+            throw CompilerError(
+                sourceAnchor: sourceAnchor,
+                message: "use of unresolved identifier: `\(identifier)'")
+        }
     }
     
-    public func resolveWithStackFrameDepth(sourceAnchor: SourceAnchor?, identifier: String) throws -> (Symbol, Int) {
-        guard let resolution = maybeResolveWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier) else {
-            throw CompilerError(sourceAnchor: sourceAnchor,
-                                message: "use of unresolved identifier: `\(identifier)'")
+    /// Given an identifier, return the corresponding symbol and the number of
+    /// stack frames needed to traverse to find storage backing the symbol.
+    /// Otherwise, throw an error for an unresolved identifier.
+    public func resolveWithStackFrameDepth(
+        sourceAnchor: SourceAnchor?,
+        identifier: String
+    ) throws -> (Symbol, Int) {
+        let resolution = maybeResolveWithStackFrameDepth(
+            sourceAnchor: sourceAnchor,
+            identifier: identifier)
+        guard let resolution else {
+            throw CompilerError(
+                sourceAnchor: sourceAnchor,
+                message: "use of unresolved identifier: `\(identifier)'")
         }
         return (resolution.0, stackFrameIndex - resolution.1)
     }
     
-    private func maybeResolveWithStackFrameDepth(sourceAnchor: SourceAnchor?, identifier: String) -> (Symbol, Int)? {
+    /// Given an identifier, return the corresponding symbol and the number of
+    /// steps toward the Env graph root in which we find the binding.
+    /// Otherwise, return nil.
+    private func maybeResolveWithStackFrameDepth(
+        sourceAnchor: SourceAnchor?,
+        identifier: String
+    ) -> (Symbol, Int)? {
         if let symbol = symbolTable[identifier] {
             (symbol, stackFrameIndex)
         }
         else {
-            parent?.maybeResolveWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier)
+            parent?.maybeResolveWithStackFrameDepth(
+                sourceAnchor: sourceAnchor,
+                identifier: identifier)
         }
     }
     
-    public func resolveWithScopeDepth(sourceAnchor: SourceAnchor? = nil, identifier: String) throws -> (Symbol, Int) {
-        guard let resolution = maybeResolveWithScopeDepth(sourceAnchor: sourceAnchor, identifier: identifier) else {
-            throw CompilerError(sourceAnchor: sourceAnchor,
-                                message: "use of unresolved identifier: `\(identifier)'")
+    /// Given an identifier, return the corresponding symbol and the number of
+    /// steps toward the Env graph root in which we find the binding.
+    /// Otherwise, throw an error for an unresolved identifier.
+    public func resolveWithScopeDepth(
+        sourceAnchor: SourceAnchor? = nil,
+        identifier: String
+    ) throws -> (Symbol, Int) {
+        let resolution = maybeResolveWithScopeDepth(identifier: identifier)
+        guard let resolution else {
+            throw CompilerError(
+                sourceAnchor: sourceAnchor,
+                message: "use of unresolved identifier: `\(identifier)'")
         }
         return resolution
     }
     
-    private func maybeResolveWithScopeDepth(sourceAnchor: SourceAnchor? = nil, identifier: String) -> (Symbol, Int)? {
+    /// Given an identifier, return the corresponding symbol and the number of
+    /// steps toward the Env graph root in which we find the binding.
+    /// Otherwise, return nil.
+     private func maybeResolveWithScopeDepth(identifier: String) -> (Symbol, Int)? {
         if let symbol = symbolTable[identifier] {
             (symbol, 0)
         }
-        else if let parentResolution = parent?.maybeResolveWithScopeDepth(sourceAnchor: sourceAnchor, identifier: identifier) {
+        else if let parentResolution = parent?.maybeResolveWithScopeDepth(identifier: identifier) {
             (parentResolution.0, parentResolution.1 + 1)
         }
         else {
@@ -1276,26 +1353,30 @@ public final class Env: Hashable {
     /// The UUID of the AST node associated with this scope, if any
     public var associatedNodeId: AbstractSyntaxTreeNode.ID?
     
-    /// Return an Int which uniquely identifies this specific symbol table
-    public var id: Int {
+    public typealias ScopeIdentifier = Int
+    
+    /// Return a value which uniquely identifies the scope, i.e., this specific
+    /// node in the Env graph.
+    public var id: ScopeIdentifier {
         Unmanaged.passUnretained(self).toOpaque().hashValue
     }
     
-    public typealias ScopeIdentifier = Int
-    
-    /// Given an identifier for a symbol or type, return the ID of the scope in which it was defined
-    public func lookupIdOfEnclosingScope(identifier id: String) -> ScopeIdentifier {
-        let scope = lookupEnclosingScope(identifier: id)
+    /// Given an identifier for a symbol or type, return the ID of the scope in
+    /// which it was defined. Otherwise, return NSNotFound.
+    public func lookupIdOfEnclosingScope(identifier: String) -> ScopeIdentifier {
+        let scope = lookupEnclosingScope(identifier: identifier)
         let scopeID = scope?.id ?? NSNotFound
         return scopeID
     }
     
-    /// Given an identifier for a symbol or type, return the scope in which it was defined
+    /// Given an identifier for a symbol or type, return the scope in which it
+    /// was defined. Otherwise, return nil.
     public func lookupEnclosingScope(identifier id: String) -> Env? {
         lookupScopeEnclosingSymbol(identifier: id) ?? lookupScopeEnclosingType(identifier: id)
     }
     
-    /// Given a symbol identifier, return the scope in which it was defined
+    /// Given a symbol identifier, return the scope in which it was defined.
+    /// Otherwise, return nil.
     public func lookupScopeEnclosingSymbol(identifier: String) -> Env? {
         if let _ = symbolTable[identifier] {
             self
@@ -1305,7 +1386,7 @@ public final class Env: Hashable {
         }
     }
     
-    /// Given a type identifier, return the the scope in which it was defined
+    /// Given a type identifier, return the the scope in which it was defined.
     public func lookupScopeEnclosingType(identifier: String) -> Env? {
         if let _ = typeTable[identifier] {
             self
@@ -1315,37 +1396,44 @@ public final class Env: Hashable {
         }
     }
     
-    public func maybeResolveType(
+    /// Given an identifier, return the type to which it refers.
+    /// Otherwise, throw an error for an undeclared type.
+    public func resolveType(
         sourceAnchor: SourceAnchor? = nil,
-        identifier: String,
+        identifier: String
+    ) throws -> SymbolType {
+        let type = maybeResolveType(identifier: identifier)
+        guard let type else {
+            throw CompilerError(
+                sourceAnchor: sourceAnchor,
+                message: "use of undeclared type `\(identifier)'")
+        }
+        return type
+    }
+    
+    /// Given an identifier, return the type to which it refers, or nil.
+    public func maybeResolveType(
+        identifier id: String,
         maxDepth: Int = Int.max
     ) -> SymbolType? {
-        let maybeResolution = maybeResolveTypeWithStackFrameDepth(
-            sourceAnchor: sourceAnchor,
-            identifier: identifier,
+        let maybeResolution = maybeResolveTypeWithScopeDepth(
+            identifier: id,
             maxDepth: maxDepth)
         return maybeResolution?.0
     }
     
-    public func resolveType(sourceAnchor: SourceAnchor? = nil, identifier: String) throws -> SymbolType {
-        guard let resolution = maybeResolveTypeWithStackFrameDepth(sourceAnchor: sourceAnchor, identifier: identifier) else {
-            throw CompilerError(sourceAnchor: sourceAnchor,
-                                message: "use of undeclared type `\(identifier)'")
-        }
-        return resolution.0
-    }
-    
-    private func maybeResolveTypeWithStackFrameDepth(
-        sourceAnchor: SourceAnchor?,
+    /// Given a type identifier, return the type to which it refers as well as
+    /// the number of nested scopes between the current scope and the one in
+    /// which the type was declared, e.g., the scope depth fo the type binding.
+    private func maybeResolveTypeWithScopeDepth(
         identifier: String,
         maxDepth: Int = Int.max
     ) -> (SymbolType, Int)? {
-        if let symbolRecord = typeTable[identifier] {
-            (symbolRecord.symbolType, stackFrameIndex)
+        if let typeRecord = typeTable[identifier] {
+            (typeRecord.symbolType, stackFrameIndex)
         }
         else if maxDepth > 0 {
-            parent?.maybeResolveTypeWithStackFrameDepth(
-                sourceAnchor: sourceAnchor,
+            parent?.maybeResolveTypeWithScopeDepth(
                 identifier: identifier,
                 maxDepth: maxDepth - 1)
         }
@@ -1354,20 +1442,35 @@ public final class Env: Hashable {
         }
     }
     
-    public func resolveTypeRecord(sourceAnchor: SourceAnchor?, identifier: String) throws -> TypeRecord {
-        guard let resolution = maybeResolveTypeRecord(sourceAnchor: sourceAnchor, identifier: identifier) else {
-            throw CompilerError(sourceAnchor: sourceAnchor,
-                                message: "use of undeclared type `\(identifier)'")
+    /// Given a type identifier, return the corresponding type record, or throw
+    /// an error for an undeclared type.
+    public func resolveTypeRecord(
+        sourceAnchor: SourceAnchor?,
+        identifier: String
+    ) throws -> TypeRecord {
+        let typeRecord = maybeResolveTypeRecord(
+            sourceAnchor: sourceAnchor,
+            identifier: identifier)
+        guard let typeRecord else {
+            throw CompilerError(
+                sourceAnchor: sourceAnchor,
+                message: "use of undeclared type `\(identifier)'")
         }
-        return resolution.0
+        return typeRecord
     }
     
-    private func maybeResolveTypeRecord(sourceAnchor: SourceAnchor?, identifier: String) -> (TypeRecord, Int)? {
-        if let symbolRecord = typeTable[identifier] {
-            (symbolRecord, stackFrameIndex)
+    /// Given a type identifier, return the corresponding type record, or nil.
+    private func maybeResolveTypeRecord(
+        sourceAnchor: SourceAnchor?,
+        identifier: String
+    ) -> TypeRecord? {
+        if let typeRecord = typeTable[identifier] {
+            typeRecord
         }
         else {
-            parent?.maybeResolveTypeRecord(sourceAnchor: sourceAnchor, identifier: identifier)
+            parent?.maybeResolveTypeRecord(
+                sourceAnchor: sourceAnchor,
+                identifier: identifier)
         }
     }
     

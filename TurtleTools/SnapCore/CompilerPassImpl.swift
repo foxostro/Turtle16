@@ -52,7 +52,6 @@ public final class CompilerPassImpl: CompilerPassWithDeclScan {
         // through the mangled function identifier.
         guard let objectIdent = node0.expr as? Identifier,
               let objectType = symbols!.maybeResolveType(
-                sourceAnchor: objectIdent.sourceAnchor,
                 identifier: objectIdent.identifier),
               let structType = objectType.maybeUnwrapStructType(),
               !structType.isModule,

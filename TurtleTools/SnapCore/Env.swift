@@ -105,11 +105,15 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
     }
     
     public func unwrapPointerType() -> SymbolType {
+        maybeUnwrapPointerType()!
+    }
+    
+    public func maybeUnwrapPointerType() -> SymbolType? {
         switch self {
         case .pointer(let typ), .constPointer(let typ):
             typ
         default:
-            abort()
+            nil
         }
     }
     

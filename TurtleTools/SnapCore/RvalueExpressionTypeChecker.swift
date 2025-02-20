@@ -950,6 +950,11 @@ public class RvalueExpressionTypeChecker {
                     if let symbol = b.symbols.maybeResolve(identifier: name) {
                         return symbol.type
                     }
+                case .traitType(let b):
+                    return try check(get: Get(
+                        sourceAnchor: expr.sourceAnchor,
+                        expr: Identifier(b.nameOfTraitObjectType),
+                        member: expr.member))
                 default:
                     break
                 }

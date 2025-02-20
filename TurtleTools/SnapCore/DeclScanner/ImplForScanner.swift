@@ -97,13 +97,11 @@ public struct ImplForScanner {
                         memoryLayoutStrategy: memoryLayoutStrategy)
                     let genericMutableSelfPointerType = try typeChecker.check(expression: PointerType(Identifier(traitType.name)))
                     let concreteMutableSelfPointerType = try typeChecker.check(expression: PointerType(Identifier(structType.name)))
-                    if expectedArgumentType == genericMutableSelfPointerType {
-                        if actualArgumentType != concreteMutableSelfPointerType {
-                            throw CompilerError(sourceAnchor: node.sourceAnchor, message: "`\(structType.name)' method `\(requiredMethodName)' has incompatible type for trait `\(traitType.name)'; expected `\(concreteMutableSelfPointerType)' argument, got `\(actualArgumentType)' instead")
-                        }
-                    }
-                    else {
+                    guard expectedArgumentType == genericMutableSelfPointerType else {
                         throw CompilerError(sourceAnchor: node.sourceAnchor, message: "`\(structType.name)' method `\(requiredMethodName)' has incompatible type for trait `\(traitType.name)'; expected `\(expectedArgumentType)' argument, got `\(actualArgumentType)' instead")
+                    }
+                    guard actualArgumentType == concreteMutableSelfPointerType else {
+                        throw CompilerError(sourceAnchor: node.sourceAnchor, message: "`\(structType.name)' method `\(requiredMethodName)' has incompatible type for trait `\(traitType.name)'; expected `\(concreteMutableSelfPointerType)' argument, got `\(actualArgumentType)' instead")
                     }
                 }
             }
@@ -116,7 +114,7 @@ public struct ImplForScanner {
                     }
                 }
             }
-            if actualMethodType.returnType != expectedMethodType.returnType {
+            guard actualMethodType.returnType == expectedMethodType.returnType else {
                 throw CompilerError(sourceAnchor: node.sourceAnchor, message: "`\(structType.name)' method `\(requiredMethodName)' has incompatible type for trait `\(traitType.name)'; expected `\(expectedMethodType.returnType)' return value, got `\(actualMethodType.returnType)' instead")
             }
         }

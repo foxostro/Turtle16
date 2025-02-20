@@ -3331,8 +3331,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
     
     func test_EndToEndIntegration_DisjointImpl() throws {
         let debugger = try run(program: """
-            struct Foo {
-            }
+            struct Foo {}
             func a() -> u8 {
                 impl Foo {
                     func bar() -> u8 {
@@ -3359,13 +3358,14 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         XCTAssertEqual(debugger.loadSymbolU8("v"), 13)
     }
     
+    /// A single struct type may have two independent conformances to the same
+    /// trait if they are in entirely disjoint scopes.
     func test_EndToEndIntegration_DisjointImplFor_1() throws {
         let debugger = try run(program: """
             trait Baring {
                 func bar(self: *Baring) -> u8
             }
-            struct Foo {
-            }
+            struct Foo {}
             func a(it: *Foo) -> u8 {
                 impl Baring for Foo {
                     func bar(self: *Foo) -> u8 {
@@ -3391,36 +3391,94 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         XCTAssertEqual(debugger.loadSymbolU8("v"), 13)
     }
     
-//    func test_EndToEndIntegration_DisjointImplFor_2() throws {
-//        let debugger = try run(program: """
-//            trait Baring {
-//                func bar() -> u8
-//            }
-//            struct Foo {
-//            }
-//            func a() -> u8 {
-//                impl Baring for Foo {
-//                    func bar() -> u8 {
-//                        return 42
-//                    }
-//                }
-//                let p = Foo{}
-//                return p.bar()
-//            }
-//            func b() -> u8 {
-//                impl Baring for Foo {
-//                    func bar() -> u8 {
-//                        return 13
-//                    }
-//                }
-//                let p = Foo{}
-//                return p.bar()
-//            }
-//            let u = a()
-//            let v = b()
-//            """)
-//
-//        XCTAssertEqual(debugger.loadSymbolU8("u"), 42)
-//        XCTAssertEqual(debugger.loadSymbolU8("v"), 13)
-//    }
+    /// A trait-object uses a snapshot of the methods on the struct at the time
+    /// the trait-object was created
+    func test_EndToEndIntegration_DisjointImplFor_2() throws {
+        let debugger = try run(program: """
+            trait Baring {
+                func bar(self: *Baring) -> u8
+            }
+            struct Foo {}
+            func a(p: *Foo) -> *Baring {
+                impl Baring for Foo {
+                    func bar(self: *Baring) -> u8 {
+                        return 42
+                    }
+                }
+                static let q: Baring = p
+                return q
+            }
+            func b(q: *Baring) -> u8 {
+                impl Baring for Foo {
+                    func bar(self: *Baring) -> u8 {
+                        return 13
+                    }
+                }
+                return q.bar()
+            }
+            var p = Foo{}
+            var q = a(p)
+            let v = b(q)
+            """)
+
+        XCTAssertEqual(debugger.loadSymbolU8("v"), 42)
+    }
+    
+    /// Methods must have a self parameter
+    func test_EndToEndIntegration_MethodsMustHaveSelfParameter() throws
+    {
+        let compiler = makeCompiler()
+        let result = Result {
+            try compiler.compile(program: """
+            trait Fooing {
+                func foo() -> u8
+            }
+
+            struct MyStruct {}
+
+            impl Fooing for MyStruct {
+                func foo() -> u8 {
+                    return 42
+                }
+            }
+
+            var obj: Fooing = MyStruct {}
+            let v = obj.foo()
+            """)
+        }
+        expectError(result) { error in
+            XCTAssertEqual(error.sourceAnchor?.text, "func foo() -> u8")
+            XCTAssertEqual(error.sourceAnchor?.lineNumbers, 1..<2)
+            XCTAssertEqual(error.message, "every method on a trait must have, as its first parameter, an appropriate `self' parameter")
+        }
+    }
+    
+    /// Methods must have a self parameter of an appropriate type
+    func test_EndToEndIntegration_MethodSelfParameterMustHaveAppropriateType() throws
+    {
+        let compiler = makeCompiler()
+        let result = Result {
+            try compiler.compile(program: """
+            trait Fooing {
+                func foo(self: bool) -> u8
+            }
+
+            struct MyStruct {}
+
+            impl Fooing for MyStruct {
+                func foo(self: bool) -> u8 {
+                    return 42
+                }
+            }
+
+            var obj: Fooing = MyStruct {}
+            let v = obj.foo(false)
+            """)
+        }
+        expectError(result) { error in
+            XCTAssertEqual(error.sourceAnchor?.text, "func foo(self: bool) -> u8")
+            XCTAssertEqual(error.sourceAnchor?.lineNumbers, 1..<2)
+            XCTAssertEqual(error.message, "every method on a trait must have, as its first parameter, an appropriate `self' parameter: the `self' parameter must have a type that is a pointer to the trait type")
+        }
+    }
 }

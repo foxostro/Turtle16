@@ -268,5 +268,59 @@ final class TraitScannerTests: XCTestCase {
         
         XCTAssertNoThrow(try scanner.scan(trait: ast))
     }
+    
+    /// The first parameter of every trait method must be an appropriate "self"
+    /// parameter. This test is for the case where there are no parameters.
+    func testEveryMethodMustHaveAppropriateSelfParameter_1() throws {
+        let trait = TraitDeclaration(
+            identifier: Identifier("Foo"),
+            members: [
+                TraitDeclaration.Member(
+                    name: "bar",
+                    type: PointerType(FunctionType(
+                        name: nil,
+                        returnType: PrimitiveType(.void),
+                        arguments: [])))
+            ],
+            visibility: .privateVisibility)
+        
+        let scanner = TraitScanner()
+        
+        XCTAssertThrowsError(try scanner.scan(trait: trait)) {
+            guard let error = $0 as? CompilerError else {
+                XCTFail()
+                return
+            }
+            XCTAssertEqual(error.message, "every method on a trait must have, as its first parameter, an appropriate `self' parameter")
+        }
+    }
+    
+    /// The first parameter of every trait method must be an appropriate "self"
+    /// parameter. This test is for the case where there are no parameters.
+    func testEveryMethodMustHaveAppropriateSelfParameter_2() throws {
+        let trait = TraitDeclaration(
+            identifier: Identifier("Foo"),
+            members: [
+                TraitDeclaration.Member(
+                    name: "bar",
+                    type: PointerType(FunctionType(
+                        name: nil,
+                        returnType: PrimitiveType(.void),
+                        arguments: [
+                            PointerType(PrimitiveType(.u16))
+                        ])))
+            ],
+            visibility: .privateVisibility)
+        
+        let scanner = TraitScanner()
+        
+        XCTAssertThrowsError(try scanner.scan(trait: trait)) {
+            guard let error = $0 as? CompilerError else {
+                XCTFail()
+                return
+            }
+            XCTAssertEqual(error.message, "every method on a trait must have, as its first parameter, an appropriate `self' parameter: the `self' parameter must have a type that is a pointer to the trait type")
+        }
+    }
 
 }

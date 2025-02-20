@@ -68,9 +68,14 @@ struct TraitObjectDeclarationsBuilder {
         var thunks: [FunctionDeclaration] = []
         for method in traitDecl.members {
             let functionType = rewriteTraitMemberTypeForThunk(traitDecl, method)
+            guard functionType.arguments.count > 0 else { continue }
             let argumentNames = (0..<functionType.arguments.count).map { ($0 == 0) ? "self" : "arg\($0)" }
-            let callee = Get(expr: Get(expr: Identifier("self"), member: Identifier("vtable")), member: Identifier(method.name))
-            let arguments = [Get(expr: Identifier("self"), member: Identifier("object"))] + argumentNames[1...].map({Identifier($0)})
+            let callee = Get(expr: Get(expr: Identifier("self"),
+                                       member: Identifier("vtable")),
+                             member: Identifier(method.name))
+            let arguments = [
+                Get(expr: Identifier("self"), member: Identifier("object"))
+            ] + argumentNames[1...].map { Identifier($0) }
             let outer = Env(
                 parent: symbols,
                 frameLookupMode: .set(Frame(growthDirection: .down)))

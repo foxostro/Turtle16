@@ -55,11 +55,12 @@ public struct TraitScanner {
             evaluatedTypeArguments: evaluatedTypeArguments)
         let node1 = node0.withMangledName(mangledName)
         let members = Env(parent: symbols)
-        let traitType = SymbolType.traitType(TraitTypeInfo(
+        let traitTypeInfo = TraitTypeInfo(
             name: mangledName,
             nameOfTraitObjectType: node1.nameOfTraitObjectType,
             nameOfVtableType: node1.nameOfVtableType,
-            symbols: members))
+            symbols: members)
+        let traitType = SymbolType.traitType(traitTypeInfo)
         
         symbols.bind(identifier: mangledName,
                      symbolType: traitType,
@@ -80,6 +81,24 @@ public struct TraitScanner {
                     sourceAnchor: memberDeclaration.memberType.sourceAnchor,
                     message: "invalid use of module type")
             }
+            
+            // Check that each method has at least one parameter, and that the
+            // first parameter is of an appropriate type for a "self" parameter.
+            guard let firstParam = memberType.maybeUnwrapPointerType()?
+                                             .maybeUnwrapFunctionType()?
+                                             .arguments
+                                             .first else {
+                throw CompilerError(
+                    sourceAnchor: memberDeclaration.memberType.sourceAnchor,
+                    message: "every method on a trait must have, as its first parameter, an appropriate `self' parameter")
+            }
+            guard traitTypeInfo == firstParam.maybeUnwrapPointerType()?
+                                             .maybeUnwrapTraitType() else {
+                throw CompilerError(
+                    sourceAnchor: memberDeclaration.memberType.sourceAnchor,
+                    message: "every method on a trait must have, as its first parameter, an appropriate `self' parameter: the `self' parameter must have a type that is a pointer to the trait type")
+            }
+            
             let sizeOfMemberType = memoryLayoutStrategy.sizeof(type: memberType)
             let offset = frame.allocate(size: sizeOfMemberType)
             let symbol = Symbol(type: memberType, offset: offset, storage: .automaticStorage)

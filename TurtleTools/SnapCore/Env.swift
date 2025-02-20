@@ -736,12 +736,9 @@ public final class StructTypeInfo: Hashable, CustomStringConvertible {
     }
     
     public func makeMembersDescription() -> String {
-        var members: [String] = []
-        for (name, symbol) in symbols.symbolTable {
-            members.append("\(name): \(symbol.type)")
-        }
-        let result = members.map({"\t\t\($0)"}).joined(separator: "\n")
-        return result
+        symbols.symbolTable
+            .map { "\t\t\($0): \($1.type)" }
+            .joined(separator: "\n")
     }
     
     public static func ==(lhs: StructTypeInfo, rhs: StructTypeInfo) -> Bool {

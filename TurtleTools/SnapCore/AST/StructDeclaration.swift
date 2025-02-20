@@ -22,6 +22,16 @@ public final class StructDeclaration: AbstractSyntaxTreeNode {
         public var description: String {
             "\(name): \(memberType)"
         }
+        
+        public func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
+            let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
+            let result = "\(indent0)\(name): \(memberType.makeIndentedDescription(depth: depth + 1, wantsLeadingWhitespace: false))"
+            return result
+        }
+        
+        private func makeIndent(depth: Int) -> String {
+            String(repeating: "\t", count: depth)
+        }
     }
     
     public let identifier: Identifier
@@ -167,30 +177,14 @@ public final class StructDeclaration: AbstractSyntaxTreeNode {
         hasher.combine(associatedTraitType)
     }
     
-    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        let unindented = """
-            \(visibility) struct \(name)\(typeArgumentsDescription) {\(membersDescription)
-            }
-            """
-        let indented = indent(text: unindented, depth: depth)
-        return indented
-    }
-    
-    private func indent(text: String, depth: Int) -> String {
-        let indentLine = makeIndent(depth: depth)
-        let indented = text
-            .split(separator: "\n")
-            .map { line in
-                "\(indentLine)\(line)"
-            }
-            .joined(separator: "\n")
-        return indented
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace w: Bool = false) -> String {
+        let indent0 = w ? makeIndent(depth: depth) : ""
+        let result = "\(indent0)\(selfDesc)(\(visibility) \(name)\(typeArgumentsDescription))\(makeMembersDescription(depth: depth + 1))"
+        return result
     }
     
     public var typeArgumentsDescription: String {
-        guard !typeArguments.isEmpty else {
-            return ""
-        }
+        guard !typeArguments.isEmpty else { return "" }
         
         let str = typeArguments
             .map { $0.shortDescription }
@@ -199,14 +193,13 @@ public final class StructDeclaration: AbstractSyntaxTreeNode {
         return "[\(str)]"
     }
     
-    private var membersDescription: String {
-        if members.isEmpty {
-            ""
-        }
-        else {
-            "\n" + members
-                .map { "\t\($0)" }
-                .joined(separator: ",\n")
-        }
+    private func makeMembersDescription(depth: Int) -> String {
+        guard !members.isEmpty else { return "" }
+        let result = "\n" + members
+            .map {
+                $0.makeIndentedDescription(depth: depth, wantsLeadingWhitespace: true)
+            }
+            .joined(separator: ",\n")
+        return result
     }
 }

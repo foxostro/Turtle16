@@ -953,15 +953,17 @@ public final class FunctionType: Expression {
                      id: ID())
     }
     
-    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        let indent0 = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        let indent1 = makeIndent(depth: depth+1)
-        return """
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace w: Bool = false) -> String {
+        let indent0 = w ? makeIndent(depth: depth) : ""
+        let nextDepth = depth + (w ? 1 : 0)
+        let indent1 = makeIndent(depth: nextDepth)
+        let result = """
             \(indent0)\(selfDesc)
             \(indent1)name: \(name ?? "none")
-            \(indent1)returnType: \(returnType.makeIndentedDescription(depth: depth+1))
-            \(indent1)arguments: \(makeArgumentsDescription(depth: depth+1))
+            \(indent1)returnType: \(returnType.makeIndentedDescription(depth: nextDepth))
+            \(indent1)arguments: \(makeArgumentsDescription(depth: nextDepth))
             """
+        return result
     }
     
     private func makeArgumentsDescription(depth: Int) -> String {
@@ -1206,9 +1208,12 @@ public final class PointerType: Expression {
                     id: id)
     }
     
-    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        return "\(indent)\(selfDesc)(\(typ))"
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace w: Bool = false) -> String {
+        let indent = w ? makeIndent(depth: depth) : ""
+        let nextDepth = depth + (w ? 1 : 0)
+        let typDesc = typ.makeIndentedDescription(depth: nextDepth, wantsLeadingWhitespace: false)
+        let result = "\(indent)\(selfDesc)(\(typDesc))"
+        return result
     }
     
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {
@@ -1250,9 +1255,11 @@ public final class ConstType: Expression {
                   id: id)
     }
     
-    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace: Bool = false) -> String {
-        let indent = wantsLeadingWhitespace ? makeIndent(depth: depth) : ""
-        return "\(indent)\(selfDesc)(\(typ))"
+    public override func makeIndentedDescription(depth: Int, wantsLeadingWhitespace w: Bool = false) -> String {
+        let indent = w ? makeIndent(depth: depth) : ""
+        let nextDepth = depth + (w ? 1 : 0)
+        let typDesc = typ.makeIndentedDescription(depth: nextDepth, wantsLeadingWhitespace: false)
+        return "\(indent)\(selfDesc)(\(typDesc))"
     }
     
     public override func isEqual(_ rhs: AbstractSyntaxTreeNode) -> Bool {

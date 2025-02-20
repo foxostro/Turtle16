@@ -20,7 +20,7 @@ public final class TraitDeclaration: AbstractSyntaxTreeNode {
         }
         
         public var description: String {
-            "\(name): \(memberType)"
+            "\(name): \(memberType.makeIndentedDescription(depth: 1))"
         }
     }
     

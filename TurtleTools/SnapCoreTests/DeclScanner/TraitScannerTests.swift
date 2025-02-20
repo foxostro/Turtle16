@@ -204,7 +204,7 @@ final class TraitScannerTests: XCTestCase {
         let scanner = TraitScanner(symbols: Env(typeDict: [
             "__Foo_vtable" : .structType(StructTypeInfo(
                 name: "__Foo_vtable",
-                symbols: Env()))
+                fields: Env()))
         ]))
         
         XCTAssertNoThrow(try scanner.scan(trait: ast))
@@ -262,7 +262,7 @@ final class TraitScannerTests: XCTestCase {
         let scanner = TraitScanner(symbols: Env(typeDict: [
             "__Foo_object" : .structType(StructTypeInfo(
                 name: "__Foo_object",
-                symbols: Env(),
+                fields: Env(),
                 associatedTraitType: "Foo"))
             ]))
         

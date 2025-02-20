@@ -44,26 +44,11 @@ public struct ImplScanner {
                 message: "expected a generic type application: `\(node.structTypeExpr)'")
         }
         
-        let originalStructType = try parent
+        let structType = try parent
             .resolveTypeOfIdentifier(
                 sourceAnchor: app.sourceAnchor,
                 identifier: app.identifier.identifier)
             .unwrapGenericStructType()
-        let name = originalStructType.name
-        
-        // If the struct type was not defined in the current scope then
-        // clone it for the current scope. This ensures that changes we make
-        // in an Impl block do not propagate outside the current scope.
-        let structType: GenericStructTypeInfo
-        if parent.typeTable.contains(where: { $0.key == name }) {
-            structType = originalStructType
-        }
-        else {
-            structType = originalStructType.clone()
-            parent.bind(
-                identifier: name,
-                symbolType: .genericStructType(structType))
-        }
         
         structType.implNodes.append(node)
     }
@@ -71,27 +56,8 @@ public struct ImplScanner {
     private func doNonGenericCase(_ node: Impl) throws {
         assert(!node.isGeneric)
         
-        let type = try typeChecker.check(expression: node.structTypeExpr)
-        guard let originalStructType = type.maybeUnwrapStructType() else {
+        guard let structType = try typeChecker.check(expression: node.structTypeExpr).maybeUnwrapStructType() else {
             fatalError("unsupported expression: \(node)")
-        }
-        let name = originalStructType.name
-        
-        // If the struct type was not defined in the current scope then
-        // clone it for the current scope. This ensures that changes we make
-        // in an Impl block do not propagate outside the current scope.
-        let structType: StructTypeInfo
-        if parent.typeTable.contains(where: { $0.key == name }) {
-            structType = originalStructType
-        }
-        else {
-            let shadower: SymbolType = switch type {
-            case .constStructType(let typ): .constStructType(typ.clone())
-            case .structType(let typ): .structType(typ.clone())
-            default: fatalError("unreachable")
-            }
-            parent.bind(identifier: name, symbolType: shadower)
-            structType = shadower.unwrapStructType()
         }
         
         try scanImplStruct(node, structType)
@@ -100,6 +66,9 @@ public struct ImplScanner {
     private func scanImplStruct(_ node: Impl, _ typ: StructTypeInfo) throws {
         let symbols = Env(parent: parent)
         symbols.breadcrumb = .structType(typ.name)
+        
+        typ.push()
+        parent.deferAction { typ.pop() }
         
         for child in node.children {
             let identifier = child.identifier.identifier

@@ -12,7 +12,7 @@ import SnapCore
 final class TypeContextTypeCheckerTests: XCTestCase {
     func testTypeOfAnIdentifierNamingAStruct() {
         let expr = Identifier("foo")
-        let typ = StructTypeInfo(name: "foo", symbols: Env())
+        let typ = StructTypeInfo(name: "foo", fields: Env())
         let symbols = Env(typeDict: ["foo" : .structType(typ)])
         let typeChecker = TypeContextTypeChecker(symbols: symbols)
         var result: SymbolType? = nil

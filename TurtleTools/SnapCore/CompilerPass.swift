@@ -20,8 +20,8 @@ public class CompilerPass {
             stack.append(newSymbols)
         }
         
-        @discardableResult mutating func pop() -> Env {
-            stack.removeLast()
+        mutating func pop() {
+            stack.removeLast().performDeferredActions()
         }
     }
     var env = EnvStack()

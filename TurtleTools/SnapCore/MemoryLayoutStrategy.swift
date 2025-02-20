@@ -17,7 +17,7 @@ public protocol MemoryLayoutStrategy {
 
 extension MemoryLayoutStrategy {
     func sizeof(struct typ: StructTypeInfo) -> Int {
-        typ.symbols.symbolTable.values.reduce(0) { $0 + sizeof(type: $1.type) }
+        typ.fields.symbolTable.values.reduce(0) { $0 + sizeof(type: $1.type) }
     }
     
     func sizeof(union typ: UnionTypeInfo) -> Int {

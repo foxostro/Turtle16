@@ -195,7 +195,7 @@ public class CompilerPassWithDeclScan: CompilerPass {
             let moduleSym = Env()
             let module = SymbolType.structType(StructTypeInfo(
                 name: name,
-                symbols: moduleSym,
+                fields: moduleSym,
                 associatedModuleName: name))
             
             try src.export(

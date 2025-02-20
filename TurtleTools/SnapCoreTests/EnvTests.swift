@@ -120,7 +120,7 @@ final class EnvTests: XCTestCase {
     }
     
     func testSuccessfullyResolveTypeByIdentifier() {
-        let symbols = Env(parent: nil, typeDict: ["foo" : .structType(StructTypeInfo(name: "foo", symbols: Env()))])
+        let symbols = Env(parent: nil, typeDict: ["foo" : .structType(StructTypeInfo(name: "foo", fields: Env()))])
         let symbolType = try! symbols.resolveType(identifier: "foo")
         switch symbolType {
         case .structType(let typ):
@@ -132,7 +132,7 @@ final class EnvTests: XCTestCase {
 
     func testBindStructType() {
         let symbols = Env()
-        symbols.bind(identifier: "foo", symbolType: .structType(StructTypeInfo(name: "foo", symbols: Env())))
+        symbols.bind(identifier: "foo", symbolType: .structType(StructTypeInfo(name: "foo", fields: Env())))
         let symbolType = try! symbols.resolveType(identifier: "foo")
         switch symbolType {
         case .structType(let typ):

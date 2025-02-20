@@ -109,20 +109,25 @@ public final class CompilerPassImplFor: CompilerPassWithDeclScan {
         
         // Record the vtable instance so we can later insert it immediately
         // following the declaration of the vtable struct type.
-        pendingInsertions[vtableTypeScope.associatedNodeId!, default: []].append((vtableType.name, vtableInstanceDecl))
+//        pendingInsertions[vtableTypeScope.associatedNodeId!, default: []].append((vtableType.name, vtableInstanceDecl))
         
-        let impl = Impl(
+        let result = Seq(
             sourceAnchor: node.sourceAnchor,
-            typeArguments: try node.typeArguments.compactMap {
-                try visit(genericTypeArgument: $0) as! GenericTypeArgument?
-            },
-            structTypeExpr: try visit(expr: node.structTypeExpr)!,
-            children: try node.children.compactMap {
-                try visit($0) as? FunctionDeclaration
-            },
-            id: node.id)
+            children: [
+                Impl(
+                    sourceAnchor: node.sourceAnchor,
+                    typeArguments: try node.typeArguments.compactMap {
+                        try visit(genericTypeArgument: $0) as! GenericTypeArgument?
+                    },
+                    structTypeExpr: try visit(expr: node.structTypeExpr)!,
+                    children: try node.children.compactMap {
+                        try visit($0) as? FunctionDeclaration
+                    },
+                    id: node.id),
+                vtableInstanceDecl
+            ])
         
-        return impl
+        return result
     }
     
     /// All trait declarations are erased

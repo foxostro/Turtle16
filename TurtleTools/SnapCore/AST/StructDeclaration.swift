@@ -50,17 +50,9 @@ public final class StructDeclaration: AbstractSyntaxTreeNode {
     }
     
     public convenience init(_ structType: StructTypeInfo) {
-        let rejectFunctions = { (ident: String, sym: Symbol) in
-            switch sym.type {
-            case .function, .genericFunction: false
-            default: true
-            }
-        }
-        let nonFunctionSymbols = structType.symbols.symbolTable.filter(rejectFunctions)
-        
         self.init(
             identifier: Identifier(structType.name),
-            members: nonFunctionSymbols.map {
+            members: structType.fields.symbolTable.map { // This specifically ignores methods.
                 StructDeclaration.Member(
                     name: $0.key,
                     type: PrimitiveType($0.value.type))

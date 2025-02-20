@@ -14,7 +14,7 @@ extension Env {
     func withCompilerIntrinsicRangeType(_ memoryLayoutStrategy: MemoryLayoutStrategy) -> Env {
         let sizeOfU16 = memoryLayoutStrategy.sizeof(type: .u16)
         let name = "Range"
-        let typ: SymbolType = .structType(StructTypeInfo(name: name, symbols: Env(tuples: [
+        let typ: SymbolType = .structType(StructTypeInfo(name: name, fields: Env(tuples: [
             ("begin", Symbol(type: .u16, offset: 0*sizeOfU16, storage: .automaticStorage)),
             ("limit", Symbol(type: .u16, offset: 1*sizeOfU16, storage: .automaticStorage))
         ])))
@@ -4674,7 +4674,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testGetValueOfStructMemberLoadsTheValue() {
         let expr = Get(expr: Identifier("foo"),
                                   member: Identifier("bar"))
-        let typ = StructTypeInfo(name: "foo", symbols: Env(tuples: [
+        let typ = StructTypeInfo(name: "foo", fields: Env(tuples: [
             ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
         ]))
         let symbols = Env(tuples: [
@@ -4689,7 +4689,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testGetValueOfNonexistentStructMember() {
         let expr = Get(expr: Identifier("foo"),
                                   member: Identifier("asdf"))
-        let typ = StructTypeInfo(name: "foo", symbols: Env(tuples: [
+        let typ = StructTypeInfo(name: "foo", fields: Env(tuples: [
             ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
         ]))
         let symbols = Env(tuples: [
@@ -4715,7 +4715,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testStructInitializerExpression_Empty() {
         let expr = StructInitializer(identifier: Identifier("Foo"), arguments: [])
-        let typ: SymbolType = .structType(StructTypeInfo(name: "Foo", symbols: Env()))
+        let typ: SymbolType = .structType(StructTypeInfo(name: "Foo", fields: Env()))
         let symbols = Env(typeDict: ["Foo" : typ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         XCTAssertEqual(try typeChecker.check(expression: expr), typ)
@@ -4726,7 +4726,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = StructInitializer(identifier: Identifier("Foo"), arguments: [
             Arg(name: "asdf", expr: LiteralInt(0))
         ])
-        let typ = StructTypeInfo(name: "foo", symbols: Env())
+        let typ = StructTypeInfo(name: "foo", fields: Env())
         let symbols = Env(typeDict: ["Foo" : .structType(typ)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         XCTAssertThrowsError(try typeChecker.check(expression: expr)) {
@@ -4741,7 +4741,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = StructInitializer(identifier: Identifier("Foo"), arguments: [
             Arg(name: "bar", expr: LiteralBool(false))
         ])
-        let typ = StructTypeInfo(name: "Foo", symbols: Env(tuples: [
+        let typ = StructTypeInfo(name: "Foo", fields: Env(tuples: [
             ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
         ]))
         let symbols = Env(typeDict: ["Foo" : .structType(typ)])
@@ -4759,7 +4759,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             Arg(name: "bar", expr: LiteralInt(0)),
             Arg(name: "baz", expr: LiteralInt(0))
         ])
-        let typ = StructTypeInfo(name: "Foo", symbols: Env(tuples: [
+        let typ = StructTypeInfo(name: "Foo", fields: Env(tuples: [
             ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage)),
             ("baz", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
         ]))
@@ -4774,7 +4774,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             Arg(name: "bar", expr: LiteralInt(0)),
             Arg(name: "bar", expr: LiteralInt(0))
         ])
-        let typ = StructTypeInfo(name: "Foo", symbols: Env(tuples: [
+        let typ = StructTypeInfo(name: "Foo", fields: Env(tuples: [
             ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
         ]))
         let symbols = Env(typeDict: ["Foo" : .structType(typ)])
@@ -4789,7 +4789,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testStructInitializerExpression_TheresNothingWrongWithOmittingMembers() {
         typealias Arg = StructInitializer.Argument
         let expr = StructInitializer(identifier: Identifier("Foo"), arguments: [])
-        let typ = StructTypeInfo(name: "Foo", symbols: Env(tuples: [
+        let typ = StructTypeInfo(name: "Foo", fields: Env(tuples: [
             ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage)),
             ("baz", Symbol(type: .u16, offset: 2, storage: .automaticStorage))
         ]))
@@ -4875,7 +4875,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testGetValueOfStructMemberThroughPointerLoadsTheValue() {
         let expr = Get(expr: Identifier("foo"),
                                   member: Identifier("bar"))
-        let typ = StructTypeInfo(name: "Foo", symbols: Env(tuples: [
+        let typ = StructTypeInfo(name: "Foo", fields: Env(tuples: [
             ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
         ]))
         let symbols = Env(tuples: [
@@ -4890,7 +4890,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testGetValueOfNonexistentStructMemberThroughPointer() {
         let expr = Get(expr: Identifier("foo"),
                                   member: Identifier("asdf"))
-        let typ = StructTypeInfo(name: "Foo", symbols: Env(tuples: [
+        let typ = StructTypeInfo(name: "Foo", fields: Env(tuples: [
             ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
         ]))
         let symbols = Env(tuples: [
@@ -5183,8 +5183,8 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     func testInitialAssignment_automatic_conversion_from_struct_to_trait_object() throws {
         let traitObjectType: SymbolType = .traitType(TraitTypeInfo(name: "Foo", nameOfTraitObjectType: "", nameOfVtableType: "", symbols: Env()))
         let symbols = Env(tuples: [
-            ("__Foo_Bar_vtable_instance", Symbol(type: .structType(StructTypeInfo(name: "", symbols: Env())))),
-            ("bar", Symbol(type: .structType(StructTypeInfo(name: "Bar", symbols: Env())))),
+            ("__Foo_Bar_vtable_instance", Symbol(type: .structType(StructTypeInfo(name: "", fields: Env())))),
+            ("bar", Symbol(type: .structType(StructTypeInfo(name: "Bar", fields: Env())))),
             ("foo", Symbol(type: traitObjectType))
         ])
         
@@ -5447,24 +5447,33 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     }
     
     func testGenericStructApplication_Empty() throws {
-        let template = StructDeclaration(identifier: Identifier("foo"),
-                                         typeArguments: [GenericTypeArgument(identifier: Identifier("T"), constraints: [])],
-                                         members: [],
-                                         visibility: .privateVisibility,
-                                         isConst: false)
+        let template = StructDeclaration(
+            identifier: Identifier("foo"),
+            typeArguments: [
+                GenericTypeArgument(
+                    identifier: Identifier("T"),
+                    constraints: [])
+            ],
+            members: [],
+            visibility: .privateVisibility,
+            isConst: false)
         let symbols = Env()
-        symbols.bind(identifier: "foo", symbol: Symbol(type: .genericStructType(GenericStructTypeInfo(template: template))))
+        symbols.bind(
+            identifier: "foo",
+            symbol: Symbol(type: .genericStructType(GenericStructTypeInfo(template: template))))
         
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
-        let expr = GenericTypeApplication(identifier: Identifier("foo"),
-                                                     arguments: [PrimitiveType(.u16)])
+        let expr = GenericTypeApplication(
+            identifier: Identifier("foo"),
+            arguments: [ PrimitiveType(.u16) ])
         
-        let concreteStructSymbols = Env(tuples: [
-        ])
+        let concreteStructSymbols = Env()
         let frame = Frame()
         concreteStructSymbols.frameLookupMode = .set(frame)
-        concreteStructSymbols.breadcrumb = .structType("foo")
-        let expected = SymbolType.structType(StructTypeInfo(name: "foo[u16]", symbols: concreteStructSymbols))
+        concreteStructSymbols.breadcrumb = .structType("foo[u16]")
+        let expected = SymbolType.structType(StructTypeInfo(
+            name: "foo[u16]",
+            fields: concreteStructSymbols))
         let actual = try typeChecker.check(expression: expr)
         XCTAssertEqual(actual, expected)
     }
@@ -5490,9 +5499,9 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         _ = frame.allocate(size: 1)
         frame.add(identifier: "bar", symbol: bar)
         concreteStructSymbols.frameLookupMode = .set(frame)
-        concreteStructSymbols.breadcrumb = .structType("foo")
+        concreteStructSymbols.breadcrumb = .structType("foo[u16]")
         
-        let expected = SymbolType.structType(StructTypeInfo(name: "foo[u16]", symbols: concreteStructSymbols))
+        let expected = SymbolType.structType(StructTypeInfo(name: "foo[u16]", fields: concreteStructSymbols))
         let actual = try typeChecker.check(expression: expr)
         XCTAssertEqual(actual, expected)
     }
@@ -5523,9 +5532,9 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         _ = frame.allocate(size: 1)
         frame.add(identifier: "bar", symbol: bar)
         concreteStructSymbols.frameLookupMode = .set(frame)
-        concreteStructSymbols.breadcrumb = .structType("foo")
+        concreteStructSymbols.breadcrumb = .structType("foo[u16]")
 
-        let expected = SymbolType.structType(StructTypeInfo(name: "foo[u16]", symbols: concreteStructSymbols))
+        let expected = SymbolType.structType(StructTypeInfo(name: "foo[u16]", fields: concreteStructSymbols))
         let actual = try typeChecker.check(expression: expr)
         XCTAssertEqual(actual, expected)
     }

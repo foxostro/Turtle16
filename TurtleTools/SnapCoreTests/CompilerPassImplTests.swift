@@ -265,30 +265,6 @@ final class CompilerPassImplTests: XCTestCase {
                                 ]),
                             Return()
                         ])),
-                    VarDeclaration(
-                        identifier: Identifier("__Incrementer_RealIncrementer[u16]_vtable_instance"),
-                        explicitType: Identifier("__Incrementer_vtable"),
-                        expression: StructInitializer(
-                            expr: Identifier("__Incrementer_vtable"),
-                            arguments: [
-                                StructInitializer.Argument(
-                                    name: "increment",
-                                    expr: Bitcast(
-                                        expr: Unary(
-                                            op: .ampersand,
-                                            expression: Identifier("myFunction::RealIncrementer[u16]::increment")),
-                                        targetType: PrimitiveType(
-                                            .pointer(.function(FunctionTypeInfo(
-                                                name: nil,
-                                                mangledName: nil,
-                                                returnType: .void,
-                                                arguments: [
-                                                    .pointer(.void)
-                                                ]))))))
-                            ]),
-                        storage: .staticStorage,
-                        isMutable: false,
-                        visibility: .privateVisibility),
                     StructDeclaration(
                         identifier: Identifier("RealIncrementer[u16]"),
                         typeArguments: [],
@@ -322,6 +298,30 @@ final class CompilerPassImplTests: XCTestCase {
                                     right: LiteralInt(1))),
                             Return()
                         ]),
+                        visibility: .privateVisibility),
+                    VarDeclaration(
+                        identifier: Identifier("__Incrementer_RealIncrementer[u16]_vtable_instance"),
+                        explicitType: Identifier("__Incrementer_vtable"),
+                        expression: StructInitializer(
+                            expr: Identifier("__Incrementer_vtable"),
+                            arguments: [
+                                StructInitializer.Argument(
+                                    name: "increment",
+                                    expr: Bitcast(
+                                        expr: Unary(
+                                            op: .ampersand,
+                                            expression: Identifier("myFunction::RealIncrementer[u16]::increment")),
+                                        targetType: PrimitiveType(
+                                            .pointer(.function(FunctionTypeInfo(
+                                                name: nil,
+                                                mangledName: nil,
+                                                returnType: .void,
+                                                arguments: [
+                                                    .pointer(.void)
+                                                ]))))))
+                            ]),
+                        storage: .staticStorage,
+                        isMutable: false,
                         visibility: .privateVisibility),
                     VarDeclaration(
                         identifier: Identifier("realIncrementer"),

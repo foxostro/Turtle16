@@ -68,7 +68,7 @@ final class CompilerPassMatchTests: XCTestCase {
         let symbols = Env(tuples: [
             ("result", Symbol(type: .u8))
         ], typeDict: [
-            "None" : .structType(StructTypeInfo(name: "None", symbols: Env()))
+            "None" : .structType(StructTypeInfo(name: "None", fields: Env()))
         ])
         let input = Match(expr: Identifier("result"), clauses: [
             Match.Clause(valueIdentifier: Identifier("foo"),

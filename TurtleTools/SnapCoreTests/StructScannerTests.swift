@@ -106,7 +106,7 @@ final class StructScannerTests: XCTestCase {
         let expectedStructSymbols = Env()
         expectedStructSymbols.frameLookupMode = .set(Frame())
         expectedStructSymbols.breadcrumb = .structType("None")
-        let expectedType: SymbolType = .structType(StructTypeInfo(name: "None", symbols: expectedStructSymbols))
+        let expectedType: SymbolType = .structType(StructTypeInfo(name: "None", fields: expectedStructSymbols))
         let actualType = try? symbols.resolveType(identifier: "None")
         XCTAssertEqual(actualType, expectedType)
     }
@@ -121,7 +121,7 @@ final class StructScannerTests: XCTestCase {
         let expectedStructSymbols = Env()
         expectedStructSymbols.frameLookupMode = .set(Frame())
         expectedStructSymbols.breadcrumb = .structType("None")
-        let expectedType: SymbolType = .constStructType(StructTypeInfo(name: "None", symbols: expectedStructSymbols))
+        let expectedType: SymbolType = .constStructType(StructTypeInfo(name: "None", fields: expectedStructSymbols))
         let actualType = try? symbols.resolveType(identifier: "None")
         XCTAssertEqual(actualType, expectedType)
     }
@@ -144,7 +144,7 @@ final class StructScannerTests: XCTestCase {
         _ = frame.allocate(size: 1)
         frame.add(identifier: "bar", symbol: bar)
         expectedStructSymbols.frameLookupMode = .set(frame)
-        let expectedType: SymbolType = .structType(StructTypeInfo(name: "Foo", symbols: expectedStructSymbols))
+        let expectedType: SymbolType = .structType(StructTypeInfo(name: "Foo", fields: expectedStructSymbols))
         let actualType = try? symbols.resolveType(identifier: "Foo")
         XCTAssertEqual(actualType, expectedType)
     }

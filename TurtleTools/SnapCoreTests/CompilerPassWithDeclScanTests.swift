@@ -74,7 +74,7 @@ final class CompilerPassWithDeclScanTests: XCTestCase {
         let expectedStructSymbols = Env()
         expectedStructSymbols.frameLookupMode = .set(Frame())
         expectedStructSymbols.breadcrumb = .structType("None")
-        let expectedType: SymbolType = .structType(StructTypeInfo(name: "None", symbols: expectedStructSymbols))
+        let expectedType: SymbolType = .structType(StructTypeInfo(name: "None", fields: expectedStructSymbols))
         let actualType = try symbols.resolveType(identifier: "None")
         XCTAssertEqual(actualType, expectedType)
     }

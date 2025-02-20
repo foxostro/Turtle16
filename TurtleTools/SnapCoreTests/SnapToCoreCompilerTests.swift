@@ -78,6 +78,9 @@ final class SnapToCoreCompilerTests: XCTestCase {
                         type: PointerType(ConstType(Identifier("__Serial_vtable"))))
                 ],
                 associatedTraitType: "Serial"),
+            StructDeclaration(
+                identifier: Identifier("SerialFake"),
+                members: []),
             VarDeclaration(
                 identifier: Identifier("__Serial_SerialFake_vtable_instance"),
                 explicitType: Identifier("__Serial_vtable"),
@@ -89,9 +92,6 @@ final class SnapToCoreCompilerTests: XCTestCase {
                 rexpr: StructInitializer(
                     expr: Identifier("__Serial_vtable"),
                     arguments: [])),
-            StructDeclaration(
-                identifier: Identifier("SerialFake"),
-                members: []),
             VarDeclaration(
                 identifier: Identifier("serialFake"),
                 explicitType: Identifier("SerialFake"),

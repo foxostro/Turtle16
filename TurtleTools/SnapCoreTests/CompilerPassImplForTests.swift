@@ -124,50 +124,52 @@ final class CompilerPassImplForTests: XCTestCase {
                     isConst: true,
                     associatedTraitType: "Serial")
             ]),
-            VarDeclaration(
-                identifier: Identifier("__Serial_SerialFake_vtable_instance"),
-                explicitType: Identifier("__Serial_vtable"),
-                expression: StructInitializer(
-                    expr: Identifier("__Serial_vtable"),
-                    arguments: [
-                        StructInitializer.Argument(
-                            name: "puts",
-                            expr: Bitcast(
-                                expr: Unary(
-                                    op: .ampersand,
-                                    expression: Get(
-                                        expr: Identifier("SerialFake"),
-                                        member: Identifier("puts"))),
-                                targetType: PrimitiveType(.pointer(.function(SnapCore.FunctionTypeInfo(
-                                    returnType: .void,
-                                    arguments: [
-                                        .pointer(.void),
-                                        .dynamicArray(elementType: .u8)
-                                    ]))))))
-                    ]),
-                storage: .staticStorage,
-                isMutable: false,
-                visibility: .privateVisibility),
             StructDeclaration(
                 identifier: Identifier("SerialFake"),
                 members: []),
-            Impl(
-                typeArguments: [],
-                structTypeExpr: Identifier("SerialFake"),
-                children: [
-                    FunctionDeclaration(
-                        identifier: Identifier("puts"),
-                        functionType: FunctionType(
-                            name: "puts",
-                            returnType: PrimitiveType(.void),
-                            arguments: [
-                                PointerType(Identifier("__Serial_object")),
-                                DynamicArrayType(PrimitiveType(.u8))
-                            ]),
-                        argumentNames: ["self", "s"],
-                        body: Block(id: innerBlockID))
-                ],
-                id: implForID),
+            Seq(children: [
+                Impl(
+                    typeArguments: [],
+                    structTypeExpr: Identifier("SerialFake"),
+                    children: [
+                        FunctionDeclaration(
+                            identifier: Identifier("puts"),
+                            functionType: FunctionType(
+                                name: "puts",
+                                returnType: PrimitiveType(.void),
+                                arguments: [
+                                    PointerType(Identifier("__Serial_object")),
+                                    DynamicArrayType(PrimitiveType(.u8))
+                                ]),
+                            argumentNames: ["self", "s"],
+                            body: Block(id: innerBlockID))
+                    ],
+                    id: implForID),
+                VarDeclaration(
+                    identifier: Identifier("__Serial_SerialFake_vtable_instance"),
+                    explicitType: Identifier("__Serial_vtable"),
+                    expression: StructInitializer(
+                        expr: Identifier("__Serial_vtable"),
+                        arguments: [
+                            StructInitializer.Argument(
+                                name: "puts",
+                                expr: Bitcast(
+                                    expr: Unary(
+                                        op: .ampersand,
+                                        expression: Get(
+                                            expr: Identifier("SerialFake"),
+                                            member: Identifier("puts"))),
+                                    targetType: PrimitiveType(.pointer(.function(FunctionTypeInfo(
+                                        returnType: .void,
+                                        arguments: [
+                                            .pointer(.void),
+                                            .dynamicArray(elementType: .u8)
+                                        ]))))))
+                        ]),
+                    storage: .staticStorage,
+                    isMutable: false,
+                    visibility: .privateVisibility)
+            ]),
             VarDeclaration(
                 identifier: Identifier("serialFake"),
                 explicitType: Identifier("SerialFake"),
@@ -318,9 +320,8 @@ final class CompilerPassImplForTests: XCTestCase {
     func testCompileImplForTrait() throws {
         // We expect...
         // * Trait declarations are erased
-        // * The vtable instance is inserted following the declaration of the
-        //   vtable type itself
         // * ImplFor nodes are rewritten as plain Impl nodes
+        // * The vtable instance is inserted immediately following the Impl node
         let ast0 = serialFakeWithImplForAST
         let expected = compiledSerialFakeWithImplForAST
         let actual = try ast0.implForPass()

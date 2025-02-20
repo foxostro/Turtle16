@@ -725,7 +725,7 @@ final class CompilerPassGenericsTests: XCTestCase {
                             argumentNames: ["arg1"],
                             typeArguments: [],
                             body: Block(children: [
-                                StructDeclaration(StructTypeInfo(name: "T", symbols: Env())),
+                                StructDeclaration(StructTypeInfo(name: "T", fields: Env())),
                                 Return(Identifier("arg1"))
                             ]))
                     ]),

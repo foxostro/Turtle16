@@ -81,7 +81,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 (kSliceBase,  Symbol(type: kSliceBaseAddressType, offset: kSliceBaseAddressOffset)),
                 (kSliceCount, Symbol(type: kSliceCountType, offset: kSliceCountOffset))
             ])
-        kSliceType = .structType(StructTypeInfo(name: kSliceName, symbols: structSymbols))
+        kSliceType = .structType(StructTypeInfo(name: kSliceName, fields: structSymbols))
         super.init(symbols: symbols,
                    staticStorageFrame: staticStorageFrame,
                    memoryLayoutStrategy: memoryLayoutStrategy)

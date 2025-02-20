@@ -65,7 +65,7 @@ public struct StructScanner {
         let mangledName = typeChecker.mangleStructName(name, evaluatedTypeArguments: evaluatedTypeArguments)!
         let fullyQualifiedStructType = StructTypeInfo(
             name: mangledName,
-            symbols: members,
+            fields: members,
             associatedTraitType: node.associatedTraitType)
         let type: SymbolType = node.isConst ? .constStructType(fullyQualifiedStructType) : .structType(fullyQualifiedStructType)
         

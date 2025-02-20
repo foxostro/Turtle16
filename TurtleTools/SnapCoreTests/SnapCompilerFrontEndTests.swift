@@ -3328,4 +3328,99 @@ final class SnapCompilerFrontEndTests: XCTestCase {
         
         XCTAssertEqual(output, 65)
     }
+    
+    func test_EndToEndIntegration_DisjointImpl() throws {
+        let debugger = try run(program: """
+            struct Foo {
+            }
+            func a() -> u8 {
+                impl Foo {
+                    func bar() -> u8 {
+                        return 42
+                    }
+                }
+                let p = Foo{}
+                return p.bar()
+            }
+            func b() -> u8 {
+                impl Foo {
+                    func bar() -> u8 {
+                        return 13
+                    }
+                }
+                let p = Foo{}
+                return p.bar()
+            }
+            let u = a()
+            let v = b()
+            """)
+
+        XCTAssertEqual(debugger.loadSymbolU8("u"), 42)
+        XCTAssertEqual(debugger.loadSymbolU8("v"), 13)
+    }
+    
+    func test_EndToEndIntegration_DisjointImplFor_1() throws {
+        let debugger = try run(program: """
+            trait Baring {
+                func bar(self: *Baring) -> u8
+            }
+            struct Foo {
+            }
+            func a(it: *Foo) -> u8 {
+                impl Baring for Foo {
+                    func bar(self: *Foo) -> u8 {
+                        return 42
+                    }
+                }
+                return it.bar()
+            }
+            func b(it: *Foo) -> u8 {
+                impl Baring for Foo {
+                    func bar(self: *Foo) -> u8 {
+                        return 13
+                    }
+                }
+                return it.bar()
+            }
+            let it = Foo{}
+            let u = a(it)
+            let v = b(it)
+            """)
+
+        XCTAssertEqual(debugger.loadSymbolU8("u"), 42)
+        XCTAssertEqual(debugger.loadSymbolU8("v"), 13)
+    }
+    
+//    func test_EndToEndIntegration_DisjointImplFor_2() throws {
+//        let debugger = try run(program: """
+//            trait Baring {
+//                func bar() -> u8
+//            }
+//            struct Foo {
+//            }
+//            func a() -> u8 {
+//                impl Baring for Foo {
+//                    func bar() -> u8 {
+//                        return 42
+//                    }
+//                }
+//                let p = Foo{}
+//                return p.bar()
+//            }
+//            func b() -> u8 {
+//                impl Baring for Foo {
+//                    func bar() -> u8 {
+//                        return 13
+//                    }
+//                }
+//                let p = Foo{}
+//                return p.bar()
+//            }
+//            let u = a()
+//            let v = b()
+//            """)
+//
+//        XCTAssertEqual(debugger.loadSymbolU8("u"), 42)
+//        XCTAssertEqual(debugger.loadSymbolU8("v"), 13)
+//    }
 }

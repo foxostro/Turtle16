@@ -686,7 +686,8 @@ public final class FunctionTypeInfo: Hashable, CustomStringConvertible {
 /// Describe a struct type in detail
 public final class StructTypeInfo: Hashable, CustomStringConvertible {
     public let name: String
-    public let symbols: Env
+    public let fields: Env
+    public private(set) var symbols: Env
     
     /// If the struct was synthesized to represent a Trait then this is the
     /// name of the associated trait, else nil.
@@ -701,26 +702,27 @@ public final class StructTypeInfo: Hashable, CustomStringConvertible {
     
     public init(
         name: String,
-        symbols: Env,
+        fields: Env,
         associatedTraitType: String? = nil,
         associatedModuleName: String? = nil
     ) {
         self.name = name
-        self.symbols = symbols
+        self.fields = fields
+        self.symbols = fields
         self.associatedTraitType = associatedTraitType
         self.associatedModuleName = associatedModuleName
     }
     
     public func clone() -> StructTypeInfo {
         StructTypeInfo(name: name,
-                       symbols: symbols.clone(),
+                       fields: fields.clone(),
                        associatedTraitType: associatedTraitType,
                        associatedModuleName: associatedModuleName)
     }
     
     public func withAssociatedModule(_ associatedModuleName: String?) -> StructTypeInfo {
         StructTypeInfo(name: name,
-                       symbols: symbols.clone(),
+                       fields: fields.clone(),
                        associatedTraitType: associatedTraitType,
                        associatedModuleName: associatedModuleName)
     }
@@ -756,15 +758,9 @@ public final class StructTypeInfo: Hashable, CustomStringConvertible {
         defer { isDoingEqualityTest = false }
         
         guard name == rhs.name else { return false }
-        
-        // TODO: StructType can persist in the AST across compiler passes. This makes it possible to have an AST node which refers to an outdated version of StructType from a previous compiler pass. To work around this, we're forced to ignore function symbols when comparing the two StructType instances. It might be better to instead refuse to ever put fully resolved struct types into the AST at all. This jives with other plans I've written about involving replacing SymbolType with type expressions completely.
-        #if false
-        guard symbols == rhs.symbols else { return false }
-        #else
-        guard symbols.isEqualExceptFunctions(rhs.symbols) else { return false }
+        guard fields.symbolTable == rhs.fields.symbolTable else { return false }
         guard associatedTraitType == rhs.associatedTraitType else { return false }
         guard associatedModuleName == rhs.associatedModuleName else { return false }
-        #endif
         
         return true
     }
@@ -785,9 +781,19 @@ public final class StructTypeInfo: Hashable, CustomStringConvertible {
         isComputingHash = true
         defer { isComputingHash = false }
         
-        hasher.combine(symbols)
+        hasher.combine(fields)
         hasher.combine(associatedTraitType)
         hasher.combine(associatedModuleName)
+    }
+    
+    public func push() {
+        let top = Env(parent: symbols)
+        symbols = top
+    }
+    
+    public func pop() {
+        guard let parent = symbols.parent else { return }
+        symbols = parent
     }
 }
 
@@ -1150,6 +1156,8 @@ public final class Env: Hashable {
     
     public var modulesAlreadyImported: Set<String> = []
     
+    private var deferredActions: [()->Void] = []
+    
     public init(
         parent p: Env? = nil,
         frameLookupMode s: FrameLookupMode = .inherit,
@@ -1162,6 +1170,16 @@ public final class Env: Hashable {
         
         for (identifier, symbol) in tuples {
             bind(identifier: identifier, symbol: symbol)
+        }
+    }
+    
+    public func deferAction(block: @escaping ()->Void) {
+        deferredActions.append(block)
+    }
+    
+    public func performDeferredActions() {
+        while !deferredActions.isEmpty {
+            deferredActions.removeLast()()
         }
     }
     
@@ -1481,32 +1499,6 @@ public final class Env: Hashable {
         return true
     }
     
-    // TODO: Remove isEqualExceptFunctions(). This is part of a workaround for an issue with StructType persisting in the AST across compiler passes. This is described in more detail in StructType, above.
-    public func isEqualExceptFunctions(_ rhs: Env) -> Bool {
-        let rejectFunctions = { (ident: String, sym: Symbol) in
-            switch sym.type {
-            case .function, .genericFunction: false
-            default: true
-            }
-        }
-        guard symbolTable.filter(rejectFunctions) == rhs.symbolTable.filter(rejectFunctions) else {
-            return false
-        }
-        guard typeTable == rhs.typeTable else {
-            return false
-        }
-        guard parent == rhs.parent else {
-            return false
-        }
-        guard enclosingFunctionType == rhs.enclosingFunctionType else {
-            return false
-        }
-        guard frameLookupMode.isSet == rhs.frameLookupMode.isSet else {
-            return false
-        }
-        return true
-    }
-    
     public func hash(into hasher: inout Hasher) {
         hasher.combine(declarationOrder)
         hasher.combine(symbolTable)
@@ -1537,6 +1529,7 @@ public final class Env: Hashable {
         typeTable.removeAll()
         modulesAlreadyImported = []
         breadcrumb = nil
+        deferredActions.removeAll()
     }
 }
 
@@ -1582,7 +1575,7 @@ extension SymbolType {
             try elementType.hasModule(sym, workingSet.union(self))
             
         case .constStructType(let typ), .structType(let typ):
-            try typ.symbols.symbolTable.map(\.value.type).first {
+            try typ.fields.symbolTable.map(\.value.type).first { // This specifically ignores methods.
                 try $0.hasModule(sym, workingSet.union(self))
             } != nil || typ.isModule
             

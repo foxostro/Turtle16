@@ -18,14 +18,14 @@ let kSliceBaseAddressType = SymbolType.u16
 let kSliceCount = "count"
 let kSliceCountOffset = 1
 let kSliceCountType = SymbolType.u16
-let kSliceType: SymbolType = .structType(StructTypeInfo(name: kSliceName, symbols: Env(tuples: [
+let kSliceType: SymbolType = .structType(StructTypeInfo(name: kSliceName, fields: Env(tuples: [
     (kSliceBase,  Symbol(type: kSliceBaseAddressType, offset: kSliceBaseAddressOffset)),
     (kSliceCount, Symbol(type: kSliceCountType, offset: kSliceCountOffset))
 ])))
 let kRangeName = "Range"
 let kRangeBegin = "begin"
 let kRangeLimit = "limit"
-let kRangeType: SymbolType = .structType(StructTypeInfo(name: kRangeName, symbols: Env(tuples: [
+let kRangeType: SymbolType = .structType(StructTypeInfo(name: kRangeName, fields: Env(tuples: [
     (kRangeBegin, Symbol(type: .u16, offset: 0, storage: .automaticStorage)),
     (kRangeLimit, Symbol(type: .u16, offset: 1, storage: .automaticStorage))
 ])))
@@ -2269,7 +2269,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     }
 
     func testRvalue_Get_struct_member_not_primitive() throws {
-        let type: SymbolType = .structType(StructTypeInfo(name: "bar", symbols: Env(tuples: [
+        let type: SymbolType = .structType(StructTypeInfo(name: "bar", fields: Env(tuples: [
             ("wat", Symbol(type: .u16, offset: 0)),
             ("baz", Symbol(type: .array(count: 1, elementType: .u16), offset: 1))
         ])))
@@ -2400,7 +2400,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     }
 
     func testRvalue_Get_non_primitive_struct_member_via_pointer() throws {
-        let type: SymbolType = .pointer(.structType(StructTypeInfo(name: "bar", symbols: Env(tuples: [
+        let type: SymbolType = .pointer(.structType(StructTypeInfo(name: "bar", fields: Env(tuples: [
             ("wat", Symbol(type: .u16, offset: 0)),
             ("baz", Symbol(type: .array(count: 1, elementType: .u16), offset: 1))
         ]))))
@@ -2595,7 +2595,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         // first argument is of the type `*Foo'
         let symbols = Env()
         let fooSymbols = Env()
-        let fooType = SymbolType.structType(StructTypeInfo(name: "Foo", symbols: fooSymbols))
+        let fooType = SymbolType.structType(StructTypeInfo(name: "Foo", fields: fooSymbols))
         let fnType = FunctionTypeInfo(name: "bar", mangledName: "bar", returnType: .void, arguments: [
             .pointer(fooType)
         ])
@@ -2632,7 +2632,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         // first argument is of the type `*const Foo'
         let symbols = Env()
         let fooSymbols = Env()
-        let fooType = SymbolType.structType(StructTypeInfo(name: "Foo", symbols: fooSymbols))
+        let fooType = SymbolType.structType(StructTypeInfo(name: "Foo", fields: fooSymbols))
         let fnType = FunctionTypeInfo(name: "bar", mangledName: "bar", returnType: .void, arguments: [
             .constPointer(fooType)
         ])
@@ -2669,7 +2669,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         // first argument is of the type `*const Foo'
         let symbols = Env()
         let fooSymbols = Env()
-        let fooType = SymbolType.structType(StructTypeInfo(name: "Foo", symbols: fooSymbols))
+        let fooType = SymbolType.structType(StructTypeInfo(name: "Foo", fields: fooSymbols))
         let fnType = FunctionTypeInfo(name: "bar", mangledName: "bar", returnType: .void, arguments: [
             .constPointer(fooType.correspondingConstType)
         ])
@@ -2737,7 +2737,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testFixBugInvolvingInitialAssignmentWithStructInitializer() throws {
         let symbols = Env()
-        let kSliceType: SymbolType = .constStructType(StructTypeInfo(name: kSliceName, symbols: Env(tuples: [
+        let kSliceType: SymbolType = .constStructType(StructTypeInfo(name: kSliceName, fields: Env(tuples: [
             (kSliceBase,  Symbol(type: kSliceBaseAddressType.correspondingConstType, offset: kSliceBaseAddressOffset)),
             (kSliceCount, Symbol(type: kSliceCountType.correspondingConstType, offset: kSliceCountOffset))
         ])))
@@ -2799,7 +2799,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     }
 
     func testAssignConstStructToNonConstStructElementOfUnion() throws {
-        let None = SymbolType.structType(StructTypeInfo(name: "None", symbols: Env()))
+        let None = SymbolType.structType(StructTypeInfo(name: "None", fields: Env()))
         let OptU8 = SymbolType.unionType(UnionTypeInfo([.u8, None]))
         let symbols = Env(tuples: [
             ("none", Symbol(type: None.correspondingConstType, offset: SnapCompilerMetrics.kStaticStorageStartAddress, storage: .staticStorage)),
@@ -3264,7 +3264,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     }
 
     func testLvalue_LvalueOfMemberOfStructInitializer() throws {
-        let typ = StructTypeInfo(name: "Foo", symbols: Env(tuples: [
+        let typ = StructTypeInfo(name: "Foo", fields: Env(tuples: [
             ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
         ]))
         let symbols = Env(tuples: [
@@ -3360,7 +3360,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     }
 
     func testRvalue_RvalueOfMemberOfStructInitializer() throws {
-        let typ = StructTypeInfo(name: "Foo", symbols: Env(tuples: [
+        let typ = StructTypeInfo(name: "Foo", fields: Env(tuples: [
             ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
         ]))
         let symbols = Env(tuples: [

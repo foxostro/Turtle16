@@ -15,7 +15,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
     }
     
     fileprivate func flatten(_ node: AbstractSyntaxTreeNode?) -> AbstractSyntaxTreeNode {
-        return try! SnapASTTransformerFlattenSeq().visit(node) ?? Seq(sourceAnchor: node?.sourceAnchor, children: [])
+        return try! CompilerPassFlattenSeq().visit(node) ?? Seq(sourceAnchor: node?.sourceAnchor, children: [])
     }
     
     fileprivate var nextRegisterIndex = 0

@@ -1,5 +1,5 @@
 //
-//  SnapASTTransformerFlattenSeqTests.swift
+//  CompilerPassFlattenSeqTests.swift
 //  SnapCoreTests
 //
 //  Created by Andrew Fox on 8/27/21.
@@ -10,10 +10,10 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-final class SnapASTTransformerFlattenSeqTests: XCTestCase {
+final class CompilerPassFlattenSeqTests: XCTestCase {
     func testRemoveEmptySeqStatements() throws {
         let input = Seq(children: [])
-        let compiler = SnapASTTransformerFlattenSeq()
+        let compiler = CompilerPassFlattenSeq()
         let actual = try? compiler.visit(input)
         XCTAssertNil(actual)
     }
@@ -23,7 +23,7 @@ final class SnapASTTransformerFlattenSeqTests: XCTestCase {
             CommentNode(string: "")
         ])
         let expected = CommentNode(string: "")
-        let compiler = SnapASTTransformerFlattenSeq()
+        let compiler = CompilerPassFlattenSeq()
         let actual = try? compiler.visit(input)
         XCTAssertEqual(actual, expected)
     }
@@ -41,7 +41,7 @@ final class SnapASTTransformerFlattenSeqTests: XCTestCase {
             CommentNode(string: "b"),
             CommentNode(string: "c")
         ])
-        let compiler = SnapASTTransformerFlattenSeq()
+        let compiler = CompilerPassFlattenSeq()
         let actual = try? compiler.visit(input)
         XCTAssertEqual(actual, expected)
     }
@@ -59,7 +59,7 @@ final class SnapASTTransformerFlattenSeqTests: XCTestCase {
             CommentNode(string: "b"),
             CommentNode(string: "c")
         ])
-        let compiler = SnapASTTransformerFlattenSeq()
+        let compiler = CompilerPassFlattenSeq()
         let actual = try? compiler.visit(input)
         XCTAssertEqual(actual, expected)
     }
@@ -77,7 +77,7 @@ final class SnapASTTransformerFlattenSeqTests: XCTestCase {
             CommentNode(string: "b"),
             CommentNode(string: "c")
         ])
-        let compiler = SnapASTTransformerFlattenSeq()
+        let compiler = CompilerPassFlattenSeq()
         let actual = try? compiler.visit(input)
         XCTAssertEqual(actual, expected)
     }

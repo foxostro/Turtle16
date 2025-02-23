@@ -19,7 +19,7 @@ final class TackToTurtle16CompilerTests: XCTestCase {
             InstructionNode(instruction: kNOP),
             InstructionNode(instruction: kHLT)
         ])
-        let topLevel1 = try! SnapASTTransformerFlattenSeq().visit(topLevel0)! as! TopLevel
+        let topLevel1 = try! CompilerPassFlattenSeq().visit(topLevel0)! as! TopLevel
         let assembler = AssemblerCompiler()
         assembler.compile(topLevel1)
         if assembler.hasError {

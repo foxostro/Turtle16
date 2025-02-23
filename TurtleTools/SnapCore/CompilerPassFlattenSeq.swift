@@ -1,5 +1,5 @@
 //
-//  SnapASTTransformerFlattenSeq.swift
+//  CompilerPassFlattenSeq.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 8/27/21.
@@ -8,7 +8,7 @@
 
 import TurtleCore
 
-public final class SnapASTTransformerFlattenSeq: CompilerPass {
+public final class CompilerPassFlattenSeq: CompilerPass {
     public override func visit(topLevel node: TopLevel) throws -> AbstractSyntaxTreeNode? {
         node.withChildren(flatten(node.children))
     }
@@ -47,7 +47,7 @@ public final class SnapASTTransformerFlattenSeq: CompilerPass {
 extension AbstractSyntaxTreeNode {
     /// Flatten Seq nodes in the AST
     public func flatten() throws -> AbstractSyntaxTreeNode? {
-        try SnapASTTransformerFlattenSeq().visit(self)
+        try CompilerPassFlattenSeq().visit(self)
     }
 }
 

@@ -12,7 +12,24 @@ import TurtleCore
 public final class CompilerPassAssert: CompilerPassWithDeclScan {
     public override func visit(assert node0: Assert) throws -> AbstractSyntaxTreeNode? {
         let node1 = try super.visit(assert: node0) as! Assert
-        let node2 = try SnapSubcompilerAssert().compile(symbols, node1)
+        let s = node1.sourceAnchor
+        let panic = Call(
+            sourceAnchor: s,
+            callee: Identifier("__panic"),
+            arguments: [LiteralString(node1.finalMessage)])
+        let then = Block(
+            symbols: Env(parent: symbols),
+            children: [panic])
+        let condition = Binary(
+            sourceAnchor: s,
+            op: .eq,
+            left: node1.condition,
+            right: LiteralBool(false))
+        let node2 = If(
+            sourceAnchor: s,
+            condition: condition,
+            then: then,
+            else: nil)
         return node2
     }
 }

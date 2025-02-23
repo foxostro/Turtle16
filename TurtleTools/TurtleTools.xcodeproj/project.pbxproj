@@ -1263,7 +1263,6 @@
 				6FDC6AAB27331637003A8ABF /* SnapToTurtle16Compiler.swift */,
 				6F24AC8A24A07CAF005193BB /* StatementTracer.swift */,
 				6FBCFA5526F5121A00193819 /* StructMemberFunctionCallMatcher.swift */,
-				6F15423526B92AB500BA9572 /* StructScanner.swift */,
 				6F15421D26B34E3300BA9572 /* SymbolTablesReconnector.swift */,
 				6FBCFA5926F7F4D400193819 /* Tack.swift */,
 				6F3E5AD6291AF85A00C0F988 /* TackDebugger.swift */,
@@ -1469,6 +1468,7 @@
 				6FDFAA8A2C97B66200F7A68D /* FunctionScanner.swift */,
 				6FDFAA902C97BBF400F7A68D /* ImplScanner.swift */,
 				6FDFAA942C97BEDF00F7A68D /* ImplForScanner.swift */,
+				6F15423526B92AB500BA9572 /* StructScanner.swift */,
 				6F0943F22C8FDFAB00A24FAC /* TraitScanner.swift */,
 			);
 			path = DeclScanner;

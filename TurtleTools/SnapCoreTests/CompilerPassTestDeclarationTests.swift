@@ -1,5 +1,5 @@
 //
-//  SnapASTTransformerTestDeclarationTests.swift
+//  CompilerPassTestDeclarationTests.swift
 //  SnapCoreTests
 //
 //  Created by Andrew Fox on 7/29/21.
@@ -10,7 +10,7 @@ import XCTest
 import SnapCore
 import TurtleCore
 
-final class SnapASTTransformerTestDeclarationTests: XCTestCase {
+final class CompilerPassTestDeclarationTests: XCTestCase {
     func testTestDeclarationMustBeAtFileScope() {
         let original = Block(children: [
             VarDeclaration(identifier: Identifier("foo"),
@@ -28,7 +28,7 @@ final class SnapASTTransformerTestDeclarationTests: XCTestCase {
         ])
         .reconnect(parent: nil)
         
-        let transformer = SnapASTTransformerTestDeclaration(shouldRunSpecificTest: "bar")
+        let transformer = CompilerPassTestDeclaration(shouldRunSpecificTest: "bar")
         XCTAssertThrowsError(try transformer.visit(original)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -44,7 +44,7 @@ final class SnapASTTransformerTestDeclarationTests: XCTestCase {
         ])
         .reconnect(parent: nil)
         
-        let transformer = SnapASTTransformerTestDeclaration()
+        let transformer = CompilerPassTestDeclaration()
         XCTAssertThrowsError(try transformer.visit(original)) {
             let compilerError = $0 as? CompilerError
             XCTAssertNotNil(compilerError)
@@ -69,7 +69,7 @@ final class SnapASTTransformerTestDeclarationTests: XCTestCase {
                            isMutable: true)
         ])
         
-        let transformer = SnapASTTransformerTestDeclaration(shouldRunSpecificTest: nil)
+        let transformer = CompilerPassTestDeclaration(shouldRunSpecificTest: nil)
         var actual: AbstractSyntaxTreeNode? = nil
         XCTAssertNoThrow(actual = try transformer.visit(input))
         
@@ -99,7 +99,7 @@ final class SnapASTTransformerTestDeclarationTests: XCTestCase {
         ])
         .reconnect(parent: nil)
         
-        let transformer = SnapASTTransformerTestDeclaration(shouldRunSpecificTest: nil)
+        let transformer = CompilerPassTestDeclaration(shouldRunSpecificTest: nil)
         var actual: AbstractSyntaxTreeNode? = nil
         XCTAssertNoThrow(actual = try transformer.visit(input))
         
@@ -134,7 +134,7 @@ final class SnapASTTransformerTestDeclarationTests: XCTestCase {
             Call(callee: Identifier("__testMain"), arguments: [])
         ])
         
-        let transformer = SnapASTTransformerTestDeclaration(shouldRunSpecificTest: "bar")
+        let transformer = CompilerPassTestDeclaration(shouldRunSpecificTest: "bar")
         var actual: AbstractSyntaxTreeNode? = nil
         XCTAssertNoThrow(actual = try transformer.visit(input))
         
@@ -173,7 +173,7 @@ final class SnapASTTransformerTestDeclarationTests: XCTestCase {
             Call(callee: Identifier("__testMain"), arguments: [])
         ])
         
-        let transformer = SnapASTTransformerTestDeclaration(shouldRunSpecificTest: "bar")
+        let transformer = CompilerPassTestDeclaration(shouldRunSpecificTest: "bar")
         var actual: AbstractSyntaxTreeNode? = nil
         XCTAssertNoThrow(actual = try transformer.visit(input))
         
@@ -217,7 +217,7 @@ final class SnapASTTransformerTestDeclarationTests: XCTestCase {
         ])
         .reconnect(parent: nil)
         
-        let transformer = SnapASTTransformerTestDeclaration(shouldRunSpecificTest: "bar")
+        let transformer = CompilerPassTestDeclaration(shouldRunSpecificTest: "bar")
         var actual: AbstractSyntaxTreeNode? = nil
         XCTAssertNoThrow(actual = try transformer.visit(input))
         

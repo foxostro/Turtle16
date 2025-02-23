@@ -1,5 +1,5 @@
 //
-//  SnapASTTransformerTestDeclaration.swift
+//  CompilerPassTestDeclaration.swift
 //  SnapCore
 //
 //  Created by Andrew Fox on 7/29/21.
@@ -8,7 +8,7 @@
 
 import TurtleCore
 
-public final class SnapASTTransformerTestDeclaration: CompilerPass {
+public final class CompilerPassTestDeclaration: CompilerPass {
     public private(set) var testNames: [String] = []
     public private(set) var testDeclarations: [TestDeclaration] = []
     var currentTest: TestDeclaration? = nil
@@ -106,7 +106,7 @@ extension AbstractSyntaxTreeNode {
         testNames: inout [String],
         shouldRunSpecificTest: String?
     ) throws -> AbstractSyntaxTreeNode? {
-        let compiler = SnapASTTransformerTestDeclaration(shouldRunSpecificTest: shouldRunSpecificTest)
+        let compiler = CompilerPassTestDeclaration(shouldRunSpecificTest: shouldRunSpecificTest)
         let result = try compiler.run(self)
         testNames = compiler.testNames
         return result

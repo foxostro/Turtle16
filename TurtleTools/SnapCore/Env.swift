@@ -1054,13 +1054,6 @@ public struct Symbol: Hashable {
                visibility: visibility)
     }
     
-    public func withOffset(_ offset: Int?) -> Symbol {
-        Symbol(type: type,
-               offset: offset,
-               qualifier: storage.qualifier,
-               visibility: visibility)
-    }
-    
     public func withVisibility(_ visibility: SymbolVisibility) -> Symbol {
         Symbol(type: type,
                storage: storage,

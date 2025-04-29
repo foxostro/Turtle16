@@ -389,7 +389,18 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
     public static let constBool: SymbolType = .booleanType(.immutableBool)
 }
 
-public enum SymbolStorage: Equatable {
+public enum SymbolStorage: Hashable {
+    case staticStorage, automaticStorage
+    
+    init(_ qualifier: StorageQualifier) {
+        self = switch qualifier {
+        case StorageQualifier.automaticStorage: SymbolStorage.automaticStorage
+        case StorageQualifier.staticStorage:    SymbolStorage.staticStorage
+        }
+    }
+}
+
+public enum StorageQualifier: Hashable {
     case staticStorage, automaticStorage
 }
 

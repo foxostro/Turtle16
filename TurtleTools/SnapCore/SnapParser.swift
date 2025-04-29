@@ -170,7 +170,7 @@ public class SnapParser: Parser {
     }
     
     private func consumeLet(_ letToken: TokenLet,
-                            storage: SymbolStorage = .automaticStorage,
+                            storage: StorageQualifier = .automaticStorage,
                             firstSpeciferToken: Token? = nil,
                             visibility: SymbolVisibility = .privateVisibility) throws -> [AbstractSyntaxTreeNode] {
         let isMutable = false
@@ -188,7 +188,7 @@ public class SnapParser: Parser {
     }
     
     private func consumeVar(_ varToken: TokenVar,
-                            storage: SymbolStorage = .automaticStorage,
+                            storage: StorageQualifier = .automaticStorage,
                             firstSpeciferToken: Token? = nil,
                             visibility: SymbolVisibility = .privateVisibility) throws -> [AbstractSyntaxTreeNode] {
         let isMutable = true
@@ -209,7 +209,7 @@ public class SnapParser: Parser {
                                 _ errorMessageWhenMissingIdentifier: String,
                                 _ errorMessageWhenNoInitialValue: String,
                                 _ errorFormatWhenNoInitialValueAfterEqual: String,
-                                _ storage: SymbolStorage,
+                                _ storage: StorageQualifier,
                                 _ isMutable: Bool,
                                 _ firstSpeciferToken: Token?,
                                 _ visibility: SymbolVisibility) throws -> [AbstractSyntaxTreeNode] {

@@ -13,7 +13,7 @@ public final class VarDeclaration: AbstractSyntaxTreeNode {
     public let identifier: Identifier
     public let explicitType: Expression?
     public let expression: Expression?
-    public let storage: SymbolStorage
+    public let storage: StorageQualifier
     public let isMutable: Bool
     public let visibility: SymbolVisibility
     
@@ -21,7 +21,7 @@ public final class VarDeclaration: AbstractSyntaxTreeNode {
                 identifier: Identifier,
                 explicitType: Expression?,
                 expression: Expression?,
-                storage: SymbolStorage,
+                storage: StorageQualifier,
                 isMutable: Bool,
                 visibility: SymbolVisibility = .privateVisibility,
                 id: ID = ID()) {

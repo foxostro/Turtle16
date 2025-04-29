@@ -127,7 +127,7 @@ public struct SnapSubcompilerVarDeclaration {
     func makeSymbolWithExplicitType(
         sourceAnchor: SourceAnchor?,
         explicitType: SymbolType,
-        storage: SymbolStorage,
+        storage: StorageQualifier,
         visibility: SymbolVisibility
     ) throws -> Symbol {
         
@@ -136,13 +136,13 @@ public struct SnapSubcompilerVarDeclaration {
                 sourceAnchor: sourceAnchor,
                 message: "invalid use of module type")
         }
-        let storage: SymbolStorage = (symbols.frame==nil) ? .staticStorage : storage
+        let storage: StorageQualifier = (symbols.frame==nil) ? .staticStorage : storage
         let offset = bumpStoragePointer(explicitType, storage)
-        let symbol = Symbol(type: explicitType, offset: offset, storage: storage, visibility: visibility)
+        let symbol = Symbol(type: explicitType, offset: offset, storage: SymbolStorage(storage), visibility: visibility)
         return symbol
     }
 
-    func bumpStoragePointer(_ symbolType: SymbolType, _ storage: SymbolStorage) -> Int {
+    func bumpStoragePointer(_ symbolType: SymbolType, _ storage: StorageQualifier) -> Int {
         let size = memoryLayoutStrategy.sizeof(type: symbolType)
         let frame = switch storage {
         case .staticStorage:

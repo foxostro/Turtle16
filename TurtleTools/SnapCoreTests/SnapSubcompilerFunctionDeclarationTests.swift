@@ -60,7 +60,7 @@ final class SnapSubcompilerFunctionDeclarationTests: XCTestCase {
                                         ast: input.withBody(expectedRewrittenBody))
         let expected = Symbol(type: .function(functionType),
                               offset: 0,
-                              storage: .automaticStorage)
+                              qualifier: .automaticStorage)
         try SnapSubcompilerFunctionDeclaration().compile(symbols: symbols, node: input)
         let actual = try symbols.resolve(identifier: "foo")
         XCTAssertEqual(actual, expected)

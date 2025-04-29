@@ -57,8 +57,8 @@ final class MemoryLayoutStrategyTurtleTTLTests: XCTestCase {
     
     func testSizeOfStruct() throws {
         let typ: SymbolType = .structType(StructTypeInfo(name: "Slice", fields: Env(tuples: [
-            ("base", Symbol(type: .u16, offset: 0, storage: .automaticStorage)),
-            ("count", Symbol(type: .u16, offset: 2, storage: .automaticStorage))
+            ("base", Symbol(type: .u16, offset: 0, qualifier: .automaticStorage)),
+            ("count", Symbol(type: .u16, offset: 2, qualifier: .automaticStorage))
         ])))
         let strategy = makeStrategy()
         XCTAssertEqual(strategy.sizeof(type: typ), 4)

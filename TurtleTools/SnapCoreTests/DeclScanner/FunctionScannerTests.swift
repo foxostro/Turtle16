@@ -75,7 +75,7 @@ final class FunctionScannerTests: XCTestCase {
         let expected = Symbol(
             type: .function(functionType),
             offset: 0,
-            storage: .automaticStorage)
+            qualifier: .automaticStorage)
         let scanner = FunctionScanner()
         try scanner.scan(func: input)
         let actual = try scanner.symbols.resolve(identifier: "foo")

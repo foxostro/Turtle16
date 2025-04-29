@@ -101,7 +101,7 @@ public struct TraitScanner {
             
             let sizeOfMemberType = memoryLayoutStrategy.sizeof(type: memberType)
             let offset = frame.allocate(size: sizeOfMemberType)
-            let symbol = Symbol(type: memberType, offset: offset, storage: .automaticStorage)
+            let symbol = Symbol(type: memberType, offset: offset, qualifier: .automaticStorage)
             members.bind(identifier: memberDeclaration.name, symbol: symbol)
             frame.add(identifier: memberDeclaration.name, symbol: symbol)
         }

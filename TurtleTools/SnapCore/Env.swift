@@ -1022,20 +1022,7 @@ public struct Symbol: Hashable {
     public init(
         type: SymbolType,
         offset: Int?,
-        qualifier: StorageQualifier,
-        visibility: SymbolVisibility = .privateVisibility
-    ) {
-        self.init(
-            type: type,
-            storage: SymbolStorage(qualifier, offset),
-            visibility: visibility
-        )
-    }
-    
-    public init(
-        type: SymbolType,
-        offset: Int?,
-        storage qualifier: StorageQualifier = .staticStorage,
+        qualifier: StorageQualifier = .staticStorage,
         visibility: SymbolVisibility = .privateVisibility
     ) {
         self.init(

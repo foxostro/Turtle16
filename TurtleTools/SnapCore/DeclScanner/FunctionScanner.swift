@@ -60,7 +60,7 @@ public struct FunctionScanner {
         let symbol = Symbol(
             type: .genericFunction(typ),
             offset: 0,
-            storage: .automaticStorage,
+            qualifier: .automaticStorage,
             visibility: node.visibility)
         symbols.bind(identifier: name, symbol: symbol)
     }
@@ -87,7 +87,7 @@ public struct FunctionScanner {
             let symbol = Symbol(
                 type: argumentType.correspondingConstType,
                 offset: -offset,
-                storage: .automaticStorage)
+                qualifier: .automaticStorage)
             node0.symbols.bind(identifier: argumentName, symbol: symbol)
             let sizeOfArugmentType = memoryLayoutStrategy.sizeof(type: argumentType)
             offset += sizeOfArugmentType
@@ -101,7 +101,7 @@ public struct FunctionScanner {
             symbol: Symbol(
                 type: functionType.returnType,
                 offset: -offset,
-                storage: .automaticStorage))
+                qualifier: .automaticStorage))
         let sizeOfFunctionReturnType = memoryLayoutStrategy.sizeof(type: functionType.returnType)
         offset += sizeOfFunctionReturnType
         
@@ -116,7 +116,7 @@ public struct FunctionScanner {
         let symbol = Symbol(
             type: .function(functionType),
             offset: 0,
-            storage: .automaticStorage,
+            qualifier: .automaticStorage,
             visibility: node1.visibility)
         symbols.bind(identifier: node1.identifier.identifier, symbol: symbol)
     }

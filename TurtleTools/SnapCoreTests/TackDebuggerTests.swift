@@ -94,7 +94,7 @@ final class TackDebuggerTests: XCTestCase {
         debugger.symbolsOfTopLevelScope = Env(tuples: [
             ("foo", Symbol(type: .arithmeticType(.immutableInt(.u16)),
                            offset: 100,
-                           storage: .staticStorage,
+                           qualifier: .staticStorage,
                            visibility: .publicVisibility))
         ])
         XCTAssertNil(debugger.loadSymbolU8("foo"))
@@ -107,7 +107,7 @@ final class TackDebuggerTests: XCTestCase {
         debugger.symbolsOfTopLevelScope = Env(tuples: [
             ("foo", Symbol(type: .arithmeticType(.immutableInt(.u8)),
                            offset: 100,
-                           storage: .staticStorage,
+                           qualifier: .staticStorage,
                            visibility: .publicVisibility))
         ])
         debugger.vm.store(b: 0xcd, address: 100)
@@ -128,7 +128,7 @@ final class TackDebuggerTests: XCTestCase {
         debugger.symbolsOfTopLevelScope = Env(tuples: [
             ("foo", Symbol(type: .arithmeticType(.immutableInt(.u8)),
                            offset: 100,
-                           storage: .staticStorage,
+                           qualifier: .staticStorage,
                            visibility: .publicVisibility))
         ])
         XCTAssertNil(debugger.loadSymbolU16("foo"))
@@ -141,7 +141,7 @@ final class TackDebuggerTests: XCTestCase {
         debugger.symbolsOfTopLevelScope = Env(tuples: [
             ("foo", Symbol(type: .arithmeticType(.immutableInt(.u16)),
                            offset: 100,
-                           storage: .staticStorage,
+                           qualifier: .staticStorage,
                            visibility: .publicVisibility))
         ])
         debugger.vm.store(w: 0xabcd, address: 100)
@@ -162,7 +162,7 @@ final class TackDebuggerTests: XCTestCase {
         debugger.symbolsOfTopLevelScope = Env(tuples: [
             ("foo", Symbol(type: .arithmeticType(.immutableInt(.u16)),
                            offset: 100,
-                           storage: .staticStorage,
+                           qualifier: .staticStorage,
                            visibility: .publicVisibility))
         ])
         XCTAssertNil(debugger.loadSymbolI8("foo"))
@@ -175,7 +175,7 @@ final class TackDebuggerTests: XCTestCase {
         debugger.symbolsOfTopLevelScope = Env(tuples: [
             ("foo", Symbol(type: .arithmeticType(.immutableInt(.i8)),
                            offset: 100,
-                           storage: .staticStorage,
+                           qualifier: .staticStorage,
                            visibility: .publicVisibility))
         ])
         debugger.vm.store(b: 0xff, address: 100)
@@ -196,7 +196,7 @@ final class TackDebuggerTests: XCTestCase {
         debugger.symbolsOfTopLevelScope = Env(tuples: [
             ("foo", Symbol(type: .arithmeticType(.immutableInt(.u16)),
                            offset: 100,
-                           storage: .staticStorage,
+                           qualifier: .staticStorage,
                            visibility: .publicVisibility))
         ])
         XCTAssertNil(debugger.loadSymbolI16("foo"))
@@ -209,7 +209,7 @@ final class TackDebuggerTests: XCTestCase {
         debugger.symbolsOfTopLevelScope = Env(tuples: [
             ("foo", Symbol(type: .arithmeticType(.immutableInt(.i16)),
                            offset: 100,
-                           storage: .staticStorage,
+                           qualifier: .staticStorage,
                            visibility: .publicVisibility))
         ])
         debugger.vm.store(w: 0xffff, address: 100)
@@ -230,7 +230,7 @@ final class TackDebuggerTests: XCTestCase {
         debugger.symbolsOfTopLevelScope = Env(tuples: [
             ("foo", Symbol(type: .arithmeticType(.immutableInt(.u16)),
                            offset: 100,
-                           storage: .staticStorage,
+                           qualifier: .staticStorage,
                            visibility: .publicVisibility))
         ])
         XCTAssertNil(debugger.loadSymbolBool("foo"))
@@ -243,7 +243,7 @@ final class TackDebuggerTests: XCTestCase {
         debugger.symbolsOfTopLevelScope = Env(tuples: [
             ("foo", Symbol(type: .constBool,
                            offset: 100,
-                           storage: .staticStorage,
+                           qualifier: .staticStorage,
                            visibility: .publicVisibility))
         ])
         debugger.vm.store(o: true, address: 100)
@@ -264,7 +264,7 @@ final class TackDebuggerTests: XCTestCase {
         debugger.symbolsOfTopLevelScope = Env(tuples: [
             ("foo", Symbol(type: .arithmeticType(.immutableInt(.u16)),
                            offset: 100,
-                           storage: .staticStorage,
+                           qualifier: .staticStorage,
                            visibility: .publicVisibility))
         ])
         XCTAssertNil(debugger.loadSymbolPointer("foo"))
@@ -277,7 +277,7 @@ final class TackDebuggerTests: XCTestCase {
         debugger.symbolsOfTopLevelScope = Env(tuples: [
             ("foo", Symbol(type: .pointer(.arithmeticType(.immutableInt(.u16))),
                            offset: 100,
-                           storage: .staticStorage,
+                           qualifier: .staticStorage,
                            visibility: .publicVisibility))
         ])
         debugger.vm.store(w: 0xabcd, address: 100)
@@ -298,7 +298,7 @@ final class TackDebuggerTests: XCTestCase {
         debugger.symbolsOfTopLevelScope = Env(tuples: [
             ("foo", Symbol(type: .arithmeticType(.immutableInt(.u16)),
                            offset: 100,
-                           storage: .staticStorage,
+                           qualifier: .staticStorage,
                            visibility: .publicVisibility))
         ])
         XCTAssertNil(debugger.loadSymbolArrayOfU8(3, "foo"))
@@ -311,7 +311,7 @@ final class TackDebuggerTests: XCTestCase {
         debugger.symbolsOfTopLevelScope = Env(tuples: [
             ("foo", Symbol(type: .array(count: 3, elementType: .arithmeticType(.immutableInt(.u8))),
                            offset: 100,
-                           storage: .staticStorage,
+                           qualifier: .staticStorage,
                            visibility: .publicVisibility))
         ])
         debugger.vm.store(b: 0xaa, address: 100)
@@ -334,7 +334,7 @@ final class TackDebuggerTests: XCTestCase {
         debugger.symbolsOfTopLevelScope = Env(tuples: [
             ("foo", Symbol(type: .arithmeticType(.immutableInt(.u16)),
                            offset: 100,
-                           storage: .staticStorage,
+                           qualifier: .staticStorage,
                            visibility: .publicVisibility))
         ])
         XCTAssertNil(debugger.loadSymbolArrayOfU16(3, "foo"))
@@ -347,7 +347,7 @@ final class TackDebuggerTests: XCTestCase {
         debugger.symbolsOfTopLevelScope = Env(tuples: [
             ("foo", Symbol(type: .array(count: 3, elementType: .arithmeticType(.immutableInt(.u16))),
                            offset: 100,
-                           storage: .staticStorage,
+                           qualifier: .staticStorage,
                            visibility: .publicVisibility))
         ])
         debugger.vm.store(w: 0xaaaa, address: 100)
@@ -370,7 +370,7 @@ final class TackDebuggerTests: XCTestCase {
         debugger.symbolsOfTopLevelScope = Env(tuples: [
             ("foo", Symbol(type: .arithmeticType(.immutableInt(.u16)),
                            offset: 100,
-                           storage: .staticStorage,
+                           qualifier: .staticStorage,
                            visibility: .publicVisibility))
         ])
         XCTAssertNil(debugger.loadSymbolString("foo"))
@@ -383,7 +383,7 @@ final class TackDebuggerTests: XCTestCase {
         debugger.symbolsOfTopLevelScope = Env(tuples: [
             ("foo", Symbol(type: .array(count: 3, elementType: .arithmeticType(.immutableInt(.u8))),
                            offset: 100,
-                           storage: .staticStorage,
+                           qualifier: .staticStorage,
                            visibility: .publicVisibility))
         ])
         debugger.vm.store(b: 65, address: 100)
@@ -406,7 +406,7 @@ final class TackDebuggerTests: XCTestCase {
         debugger.symbolsOfTopLevelScope = Env(tuples: [
             ("foo", Symbol(type: .array(count: 3, elementType: .arithmeticType(.immutableInt(.u8))),
                            offset: 100,
-                           storage: .staticStorage,
+                           qualifier: .staticStorage,
                            visibility: .publicVisibility))
         ])
         XCTAssertNil(debugger.loadSymbolStringSlice("foo"))
@@ -419,7 +419,7 @@ final class TackDebuggerTests: XCTestCase {
         debugger.symbolsOfTopLevelScope = Env(tuples: [
             ("foo", Symbol(type: .dynamicArray(elementType: .arithmeticType(.immutableInt(.u8))),
                            offset: 100,
-                           storage: .staticStorage,
+                           qualifier: .staticStorage,
                            visibility: .publicVisibility))
         ])
         debugger.vm.store(w: 200, address: 100)

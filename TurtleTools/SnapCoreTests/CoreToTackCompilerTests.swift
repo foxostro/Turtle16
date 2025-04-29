@@ -26,8 +26,8 @@ let kRangeName = "Range"
 let kRangeBegin = "begin"
 let kRangeLimit = "limit"
 let kRangeType: SymbolType = .structType(StructTypeInfo(name: kRangeName, fields: Env(tuples: [
-    (kRangeBegin, Symbol(type: .u16, offset: 0, storage: .automaticStorage)),
-    (kRangeLimit, Symbol(type: .u16, offset: 1, storage: .automaticStorage))
+    (kRangeBegin, Symbol(type: .u16, offset: 0, qualifier: .automaticStorage)),
+    (kRangeLimit, Symbol(type: .u16, offset: 1, qualifier: .automaticStorage))
 ])))
 
 
@@ -272,7 +272,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Identifier_Static_u16() throws {
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let compiler = makeCompiler(symbols: Env(tuples: [
-            ("foo", Symbol(type: .u16, offset: offset, storage: .staticStorage))
+            ("foo", Symbol(type: .u16, offset: offset, qualifier: .staticStorage))
         ]))
         let actual = try compiler.rvalue(expr: Identifier("foo"))
         let expected = Seq(children: [
@@ -286,7 +286,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Identifier_Stack_u16() throws {
         let offset = 4
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .u16, offset: offset, storage: .automaticStorage))
+            ("foo", Symbol(type: .u16, offset: offset, qualifier: .automaticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -302,7 +302,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Identifier_struct() throws {
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let compiler = makeCompiler(symbols: Env(tuples: [
-            ("foo", Symbol(type: kSliceType, offset: offset, storage: .staticStorage))
+            ("foo", Symbol(type: kSliceType, offset: offset, qualifier: .staticStorage))
         ]))
         let actual = try compiler.rvalue(expr: Identifier("foo"))
         let expected = TackInstructionNode(.lip(.p(0), offset))
@@ -312,7 +312,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_u8_to_u8() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .u8, offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .u8, offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -328,7 +328,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_u8_to_u16() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .u8, offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .u8, offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -345,7 +345,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_u16_to_u8() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .u16, offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .u16, offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -362,7 +362,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_u8_to_i16() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .u8, offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .u8, offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -379,7 +379,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_i16_to_i8() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .i16, offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .i16, offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -396,7 +396,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     
     func testRvalue_As_i8_to_i16() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .i8, offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .i8, offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -413,7 +413,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_array_to_array_of_same_type() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .array(count: 1, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 1, elementType: .u16), offset: 0xabcd, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"),
@@ -425,7 +425,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_array_to_array_with_different_type_that_can_be_trivially_reinterpreted() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .array(count: 0, elementType: .u8), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 0, elementType: .u8), offset: 0xabcd, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"),
@@ -437,7 +437,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_array_to_array_where_each_element_must_be_converted() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .array(count: 1, elementType: .u16), offset: 0x1000, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 1, elementType: .u16), offset: 0x1000, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"),
@@ -460,7 +460,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_array_to_dynamic_array() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .array(count: 1, elementType: .u16), offset: 0x1000, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 1, elementType: .u16), offset: 0x1000, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: As(expr: Identifier("foo"), targetType: DynamicArrayType(PrimitiveType(.u16))))
@@ -494,7 +494,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_compTimeInt_small() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .arithmeticType(.compTimeInt(42)), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .arithmeticType(.compTimeInt(42)), offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -507,7 +507,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_compTimeInt_big() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .arithmeticType(.compTimeInt(1000)), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .arithmeticType(.compTimeInt(1000)), offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -520,7 +520,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_compTimeBool_true() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .booleanType(.compTimeBool(true)), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .booleanType(.compTimeBool(true)), offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -533,7 +533,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_compTimeBool_false() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .booleanType(.compTimeBool(false)), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .booleanType(.compTimeBool(false)), offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -546,7 +546,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_pointer_to_pointer() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .pointer(.u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .pointer(.u16), offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -562,7 +562,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_union_to_union() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .unionType(UnionTypeInfo([.u16])), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .unionType(UnionTypeInfo([.u16])), offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -575,7 +575,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_union_to_primitive() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .unionType(UnionTypeInfo([.u16])), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .unionType(UnionTypeInfo([.u16])), offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -591,7 +591,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_union_to_non_primitive() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .unionType(UnionTypeInfo([.array(count: 1, elementType: .u16)])), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .unionType(UnionTypeInfo([.array(count: 1, elementType: .u16)])), offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -607,7 +607,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_convert_primitive_value_to_union() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .u16, offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .u16, offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
@@ -626,7 +626,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_determine_union_type_tag() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .u16, offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .u16, offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
@@ -645,7 +645,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_convert_non_primitive_value_to_union() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .array(count: 2, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 2, elementType: .u16), offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
@@ -664,7 +664,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_As_union_to_primitive_with_dynamic_type_check() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .unionType(UnionTypeInfo([.bool, .u16])), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .unionType(UnionTypeInfo([.bool, .u16])), offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
@@ -685,7 +685,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Bitcast_u16_to_pointer() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .u16, offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .u16, offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -710,7 +710,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Unary_minus_u8() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .u8, offset: 100, storage: .staticStorage))
+            ("foo", Symbol(type: .u8, offset: 100, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Unary(op: .minus, expression: Identifier("foo")))
@@ -726,7 +726,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Unary_minus_u16() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .u16, offset: 100, storage: .staticStorage))
+            ("foo", Symbol(type: .u16, offset: 100, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Unary(op: .minus, expression: Identifier("foo")))
@@ -742,7 +742,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Unary_minus_i8() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .i8, offset: 100, storage: .staticStorage))
+            ("foo", Symbol(type: .i8, offset: 100, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Unary(op: .minus, expression: Identifier("foo")))
@@ -758,7 +758,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Unary_minus_i16() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .i16, offset: 100, storage: .staticStorage))
+            ("foo", Symbol(type: .i16, offset: 100, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Unary(op: .minus, expression: Identifier("foo")))
@@ -774,7 +774,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Unary_bang_bool() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .bool, offset: 100, storage: .staticStorage))
+            ("foo", Symbol(type: .bool, offset: 100, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Unary(op: .bang, expression: Identifier("foo")))
@@ -789,7 +789,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Unary_tilde_u8() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .u8, offset: 100, storage: .staticStorage))
+            ("foo", Symbol(type: .u8, offset: 100, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Unary(op: .tilde, expression: Identifier("foo")))
@@ -804,7 +804,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Unary_tilde_u16() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .u16, offset: 100, storage: .staticStorage))
+            ("foo", Symbol(type: .u16, offset: 100, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Unary(op: .tilde, expression: Identifier("foo")))
@@ -819,7 +819,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Unary_tilde_i8() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .i8, offset: 100, storage: .staticStorage))
+            ("foo", Symbol(type: .i8, offset: 100, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Unary(op: .tilde, expression: Identifier("foo")))
@@ -834,7 +834,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Unary_tilde_i16() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .i16, offset: 100, storage: .staticStorage))
+            ("foo", Symbol(type: .i16, offset: 100, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Unary(op: .tilde, expression: Identifier("foo")))
@@ -860,7 +860,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Unary_addressOf_Identifier() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .u16, offset: 100, storage: .staticStorage))
+            ("foo", Symbol(type: .u16, offset: 100, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Unary(op: .ampersand, expression: Identifier("foo")))
@@ -871,8 +871,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_addw() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u16, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u16, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .plus, left: Identifier("left"), right: Identifier("right")))
@@ -889,8 +889,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_subw() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u16, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u16, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .minus, left: Identifier("left"), right: Identifier("right")))
@@ -907,8 +907,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_mulw() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u16, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u16, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .star, left: Identifier("left"), right: Identifier("right")))
@@ -925,8 +925,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_divw() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .i16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .i16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .i16, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .i16, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .divide, left: Identifier("left"), right: Identifier("right")))
@@ -943,8 +943,8 @@ final class CoreToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_divuw() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u16, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u16, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .divide, left: Identifier("left"), right: Identifier("right")))
@@ -961,8 +961,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_mod16() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u16, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u16, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .modulus, left: Identifier("left"), right: Identifier("right")))
@@ -979,8 +979,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_lslw() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u16, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u16, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .leftDoubleAngle, left: Identifier("left"), right: Identifier("right")))
@@ -997,8 +997,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_lsrw() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u16, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u16, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .rightDoubleAngle, left: Identifier("left"), right: Identifier("right")))
@@ -1015,8 +1015,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_andw() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u16, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u16, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .ampersand, left: Identifier("left"), right: Identifier("right")))
@@ -1033,8 +1033,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_orw() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u16, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u16, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .pipe, left: Identifier("left"), right: Identifier("right")))
@@ -1051,8 +1051,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_xorw() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u16, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u16, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .caret, left: Identifier("left"), right: Identifier("right")))
@@ -1069,8 +1069,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_eqw() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u16, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u16, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .eq, left: Identifier("left"), right: Identifier("right")))
@@ -1087,8 +1087,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_new() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u16, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u16, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .ne, left: Identifier("left"), right: Identifier("right")))
@@ -1105,8 +1105,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_ltw() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .i16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .i16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .i16, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .i16, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .lt, left: Identifier("left"), right: Identifier("right")))
@@ -1123,8 +1123,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_gew() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .i16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .i16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .i16, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .i16, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .ge, left: Identifier("left"), right: Identifier("right")))
@@ -1141,8 +1141,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_lew() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .i16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .i16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .i16, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .i16, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .le, left: Identifier("left"), right: Identifier("right")))
@@ -1159,8 +1159,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_gtw() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .i16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .i16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .i16, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .i16, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .gt, left: Identifier("left"), right: Identifier("right")))
@@ -1177,8 +1177,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_ltuw() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u16, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u16, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .lt, left: Identifier("left"), right: Identifier("right")))
@@ -1195,8 +1195,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_geuw() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u16, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u16, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .ge, left: Identifier("left"), right: Identifier("right")))
@@ -1213,8 +1213,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_leuw() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u16, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u16, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .le, left: Identifier("left"), right: Identifier("right")))
@@ -1231,8 +1231,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_gtuw() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u16, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u16, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u16, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u16, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .gt, left: Identifier("left"), right: Identifier("right")))
@@ -1249,8 +1249,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_add8() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u8, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u8, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .plus, left: Identifier("left"), right: Identifier("right")))
@@ -1267,8 +1267,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_sub8() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u8, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u8, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .minus, left: Identifier("left"), right: Identifier("right")))
@@ -1285,8 +1285,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_mul8() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u8, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u8, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .star, left: Identifier("left"), right: Identifier("right")))
@@ -1303,8 +1303,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_divb() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .i8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .i8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .i8, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .i8, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .divide, left: Identifier("left"), right: Identifier("right")))
@@ -1321,8 +1321,8 @@ final class CoreToTackCompilerTests: XCTestCase {
     
     func testRvalue_Binary_divub() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u8, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u8, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .divide, left: Identifier("left"), right: Identifier("right")))
@@ -1339,8 +1339,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_mod8() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u8, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u8, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .modulus, left: Identifier("left"), right: Identifier("right")))
@@ -1357,8 +1357,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_lsl8() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u8, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u8, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .leftDoubleAngle, left: Identifier("left"), right: Identifier("right")))
@@ -1375,8 +1375,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_lsr8() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u8, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u8, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .rightDoubleAngle, left: Identifier("left"), right: Identifier("right")))
@@ -1393,8 +1393,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_and8() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u8, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u8, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .ampersand, left: Identifier("left"), right: Identifier("right")))
@@ -1411,8 +1411,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_or8() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u8, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u8, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .pipe, left: Identifier("left"), right: Identifier("right")))
@@ -1429,8 +1429,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_xor8() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u8, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u8, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .caret, left: Identifier("left"), right: Identifier("right")))
@@ -1447,8 +1447,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_eq8() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u8, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u8, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .eq, left: Identifier("left"), right: Identifier("right")))
@@ -1465,8 +1465,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_ne8() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u8, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u8, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .ne, left: Identifier("left"), right: Identifier("right")))
@@ -1483,8 +1483,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_ltu8() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u8, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u8, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .lt, left: Identifier("left"), right: Identifier("right")))
@@ -1501,8 +1501,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_geu8() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u8, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u8, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .ge, left: Identifier("left"), right: Identifier("right")))
@@ -1519,8 +1519,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_leu8() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u8, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u8, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .le, left: Identifier("left"), right: Identifier("right")))
@@ -1537,8 +1537,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_gtu8() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .u8, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .u8, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .u8, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .u8, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .gt, left: Identifier("left"), right: Identifier("right")))
@@ -1747,8 +1747,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_eq_bool() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .bool, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .bool, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .bool, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .bool, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .eq, left: Identifier("left"), right: Identifier("right")))
@@ -1765,8 +1765,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_ne_bool() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .bool, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .bool, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .bool, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .bool, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .ne, left: Identifier("left"), right: Identifier("right")))
@@ -1783,8 +1783,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_logical_and() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .bool, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .bool, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .bool, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .bool, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .doubleAmpersand, left: Identifier("left"), right: Identifier("right")))
@@ -1807,8 +1807,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Binary_logical_or() throws {
         let symbols = Env(tuples: [
-            ("left", Symbol(type: .bool, offset: 100, storage: .staticStorage)),
-            ("right", Symbol(type: .bool, offset: 200, storage: .staticStorage))
+            ("left", Symbol(type: .bool, offset: 100, qualifier: .staticStorage)),
+            ("right", Symbol(type: .bool, offset: 200, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Binary(op: .doublePipe, left: Identifier("left"), right: Identifier("right")))
@@ -1890,7 +1890,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Is_test_union_type_tag() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool])), offset: 100, storage: .staticStorage))
+            ("foo", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool])), offset: 100, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Is(expr: Identifier("foo"), testType: PrimitiveType(.bool)))
@@ -1906,7 +1906,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Is_test_union_type_tag_const() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .unionType(UnionTypeInfo([.arithmeticType(.immutableInt(.u8)), .constBool])), offset: 100, storage: .staticStorage))
+            ("foo", Symbol(type: .unionType(UnionTypeInfo([.arithmeticType(.immutableInt(.u8)), .constBool])), offset: 100, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Is(expr: Identifier("foo"), testType: PrimitiveType(.bool)))
@@ -1922,7 +1922,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Assignment_ToPrimitiveScalar() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .u16, offset: 0x1000, storage: .staticStorage))
+            ("foo", Symbol(type: .u16, offset: 0x1000, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Assignment(lexpr: Identifier("foo"),
@@ -1938,8 +1938,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Assignment_ArrayToArray_Size_0() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .array(count: 0, elementType: .u16), offset: 0x1000, storage: .staticStorage)),
-            ("bar", Symbol(type: .array(count: 0, elementType: .u16), offset: 0x2000, storage: .staticStorage)),
+            ("foo", Symbol(type: .array(count: 0, elementType: .u16), offset: 0x1000, qualifier: .staticStorage)),
+            ("bar", Symbol(type: .array(count: 0, elementType: .u16), offset: 0x2000, qualifier: .staticStorage)),
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Assignment(lexpr: Identifier("foo"),
@@ -1951,8 +1951,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Assignment_ArrayToArray_Size_1() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .array(count: 1, elementType: .u16), offset: 0x1000, storage: .staticStorage)),
-            ("bar", Symbol(type: .array(count: 1, elementType: .u16), offset: 0x2000, storage: .staticStorage)),
+            ("foo", Symbol(type: .array(count: 1, elementType: .u16), offset: 0x1000, qualifier: .staticStorage)),
+            ("bar", Symbol(type: .array(count: 1, elementType: .u16), offset: 0x2000, qualifier: .staticStorage)),
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Assignment(lexpr: Identifier("foo"),
@@ -1968,8 +1968,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Assignment_ArrayToArray_Size_2() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .array(count: 2, elementType: .u16), offset: 0x1000, storage: .staticStorage)),
-            ("bar", Symbol(type: .array(count: 2, elementType: .u16), offset: 0x2000, storage: .staticStorage)),
+            ("foo", Symbol(type: .array(count: 2, elementType: .u16), offset: 0x1000, qualifier: .staticStorage)),
+            ("bar", Symbol(type: .array(count: 2, elementType: .u16), offset: 0x2000, qualifier: .staticStorage)),
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Assignment(lexpr: Identifier("foo"),
@@ -1985,7 +1985,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_SubscriptRvalue_CompileTimeIndexAndPrimitiveElement() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -2002,7 +2002,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_SubscriptRvalue_RuntimeTimeIndexAndPrimitiveElement() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -2029,7 +2029,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_SubscriptRvalue_ZeroSizeElement() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .array(count: 10, elementType: .void), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 10, elementType: .void), offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -2044,7 +2044,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_SubscriptRvalue_NestedArray() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .array(count: 10, elementType: .array(count: 2, elementType: .u16)), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 10, elementType: .array(count: 2, elementType: .u16)), offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -2071,7 +2071,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_SubscriptRvalue_DynamicArray() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .dynamicArray(elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .dynamicArray(elementType: .u16), offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -2099,7 +2099,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_compiler_error_when_index_is_known_negative_at_compile_time() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .dynamicArray(elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .dynamicArray(elementType: .u16), offset: 0xabcd, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         XCTAssertThrowsError(try compiler.rvalue(expr: Subscript(subscriptable: Identifier("foo"), argument: LiteralInt(-1)))) {
@@ -2111,7 +2111,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_compiler_error_when_index_is_known_oob_at_compile_time() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0xabcd, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         XCTAssertThrowsError(try compiler.rvalue(expr: Subscript(subscriptable: Identifier("foo"), argument: LiteralInt(100)))) {
@@ -2123,7 +2123,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testLvalue_compiler_error_when_index_is_known_negative_at_compile_time() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .dynamicArray(elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .dynamicArray(elementType: .u16), offset: 0xabcd, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         XCTAssertThrowsError(try compiler.lvalue(expr: Subscript(subscriptable: Identifier("foo"), argument: LiteralInt(-1)))) {
@@ -2135,7 +2135,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testLvalue_compiler_error_when_index_is_known_oob_at_compile_time() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0xabcd, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         XCTAssertThrowsError(try compiler.lvalue(expr: Subscript(subscriptable: Identifier("foo"), argument: LiteralInt(100)))) {
@@ -2147,7 +2147,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Assignment_ToArrayElementViaSubscript() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0x1000, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 10, elementType: .u16), offset: 0x1000, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Assignment(
@@ -2168,8 +2168,8 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Assignment_automatic_conversion_from_object_to_pointer() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .pointer(.u16), offset: 0x1000, storage: .staticStorage)),
-            ("bar", Symbol(type: .u16, offset: 0x2000, storage: .staticStorage))
+            ("foo", Symbol(type: .pointer(.u16), offset: 0x1000, qualifier: .staticStorage)),
+            ("bar", Symbol(type: .u16, offset: 0x2000, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Assignment(lexpr: Identifier("foo"),
@@ -2185,7 +2185,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Assignment_automatic_conversion_from_object_to_pointer_requires_lvalue() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .pointer(.u16), offset: 0x1000, storage: .staticStorage))
+            ("foo", Symbol(type: .pointer(.u16), offset: 0x1000, qualifier: .staticStorage))
         ])
         let compiler = makeCompiler(symbols: symbols)
         let expr = Assignment(lexpr: Identifier("foo"),
@@ -2206,10 +2206,10 @@ final class CoreToTackCompilerTests: XCTestCase {
         try TraitScanner(symbols: symbols).scan(trait: traitDecl)
 
         let traitObjectType = try symbols.resolveType(identifier: traitDecl.nameOfTraitObjectType)
-        symbols.bind(identifier: "foo", symbol: Symbol(type: .pointer(traitObjectType), offset: 0x1000, storage: .staticStorage))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .pointer(traitObjectType), offset: 0x1000, qualifier: .staticStorage))
 
         let traitType = try symbols.resolveType(identifier: traitDecl.identifier.identifier)
-        symbols.bind(identifier: "bar", symbol: Symbol(type: traitType, offset: 0x2000, storage: .staticStorage))
+        symbols.bind(identifier: "bar", symbol: Symbol(type: traitType, offset: 0x2000, qualifier: .staticStorage))
 
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Assignment(lexpr: Identifier("foo"),
@@ -2225,7 +2225,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Get_array_count() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .array(count: 42, elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .array(count: 42, elementType: .u16), offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -2238,7 +2238,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Get_dynamic_array_count() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .dynamicArray(elementType: .u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .dynamicArray(elementType: .u16), offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -2254,7 +2254,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Get_struct_member_primitive() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: kSliceType, offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: kSliceType, offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -2274,7 +2274,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("baz", Symbol(type: .array(count: 1, elementType: .u16), offset: 1))
         ])))
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: type, offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: type, offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -2290,7 +2290,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Get_pointee_primitive() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .pointer(.u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .pointer(.u16), offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -2307,7 +2307,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testLvalue_Get_pointee_primitive() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .pointer(.u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .pointer(.u16), offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -2323,7 +2323,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testLvalue_Bitcast() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .pointer(.u16), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .pointer(.u16), offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -2338,7 +2338,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Get_pointee_not_primitive() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .pointer(.array(count: 1, elementType: .u16)), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .pointer(.array(count: 1, elementType: .u16)), offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -2354,7 +2354,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Get_array_count_via_pointer() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .pointer(.array(count: 42, elementType: .u16)), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .pointer(.array(count: 42, elementType: .u16)), offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -2367,7 +2367,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Get_dynamic_array_count_via_pointer() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .pointer(.dynamicArray(elementType: .u16)), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .pointer(.dynamicArray(elementType: .u16)), offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -2384,7 +2384,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Get_primitive_struct_member_via_pointer() throws {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .pointer(kSliceType), offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: .pointer(kSliceType), offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -2405,7 +2405,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             ("baz", Symbol(type: .array(count: 1, elementType: .u16), offset: 1))
         ]))))
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: type, offset: 0xabcd, storage: .staticStorage))
+            ("foo", Symbol(type: type, offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame())
         let compiler = makeCompiler(symbols: symbols)
@@ -2517,7 +2517,7 @@ final class CoreToTackCompilerTests: XCTestCase {
     func testRvalue_Call_return_value_and_one_non_primitive_arg() throws {
         let symbols = Env(tuples: [
             ("foo", Symbol(type: .function(FunctionTypeInfo(name: "foo", mangledName: "foo", returnType: .u16, arguments: [.unionType(UnionTypeInfo([.u16]))])))),
-            ("bar", Symbol(type: .unionType(UnionTypeInfo([.u16])), offset: 0xabcd, storage: .staticStorage))
+            ("bar", Symbol(type: .unionType(UnionTypeInfo([.u16])), offset: 0xabcd, qualifier: .staticStorage))
         ])
         symbols.frameLookupMode = .set(Frame(growthDirection: .down))
         let compiler = makeCompiler(symbols: symbols)
@@ -2601,7 +2601,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         fooSymbols.bind(identifier: "bar", symbol: Symbol(type: .function(fnType)))
         symbols.bind(identifier: "Foo", symbolType: fooType)
-        symbols.bind(identifier: "foo", symbol: Symbol(type: fooType, offset: 0x1000, storage: .staticStorage))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: fooType, offset: 0x1000, qualifier: .staticStorage))
 
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Call(callee: Get(expr: Identifier("foo"), member: Identifier("bar")), arguments: []))
@@ -2638,7 +2638,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         fooSymbols.bind(identifier: "bar", symbol: Symbol(type: .function(fnType)))
         symbols.bind(identifier: "Foo", symbolType: fooType)
-        symbols.bind(identifier: "foo", symbol: Symbol(type: fooType, offset: 0x1000, storage: .staticStorage))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: fooType, offset: 0x1000, qualifier: .staticStorage))
 
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Call(callee: Get(expr: Identifier("foo"), member: Identifier("bar")), arguments: []))
@@ -2675,7 +2675,7 @@ final class CoreToTackCompilerTests: XCTestCase {
         ])
         fooSymbols.bind(identifier: "bar", symbol: Symbol(type: .function(fnType)))
         symbols.bind(identifier: "Foo", symbolType: fooType)
-        symbols.bind(identifier: "foo", symbol: Symbol(type: fooType, offset: 0x1000, storage: .staticStorage))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: fooType, offset: 0x1000, qualifier: .staticStorage))
 
         let compiler = makeCompiler(symbols: symbols)
         let actual = try compiler.rvalue(expr: Call(callee: Get(expr: Identifier("foo"), member: Identifier("bar")), arguments: []))
@@ -2696,7 +2696,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Assignment_with_StructInitializer() throws {
         let symbols = Env()
-        symbols.bind(identifier: "foo", symbol: Symbol(type: kSliceType, offset: 0x1000, storage: .staticStorage))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: kSliceType, offset: 0x1000, qualifier: .staticStorage))
         symbols.bind(identifier: kSliceName, symbolType: kSliceType)
         let compiler = makeCompiler(symbols: symbols)
         let lexpr = Identifier("foo")
@@ -2723,7 +2723,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_Assignment_with_StructInitializer_NoArgs() throws {
         let symbols = Env()
-        symbols.bind(identifier: "foo", symbol: Symbol(type: kSliceType, offset: 0x1000, storage: .staticStorage))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: kSliceType, offset: 0x1000, qualifier: .staticStorage))
         symbols.bind(identifier: kSliceName, symbolType: kSliceType)
         let compiler = makeCompiler(symbols: symbols)
         let lexpr = Identifier("foo")
@@ -2741,7 +2741,7 @@ final class CoreToTackCompilerTests: XCTestCase {
             (kSliceBase,  Symbol(type: kSliceBaseAddressType.correspondingConstType, offset: kSliceBaseAddressOffset)),
             (kSliceCount, Symbol(type: kSliceCountType.correspondingConstType, offset: kSliceCountOffset))
         ])))
-        symbols.bind(identifier: "foo", symbol: Symbol(type: kSliceType, offset: 0x1000, storage: .staticStorage))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: kSliceType, offset: 0x1000, qualifier: .staticStorage))
         symbols.bind(identifier: kSliceName, symbolType: kSliceType)
         let compiler = makeCompiler(symbols: symbols)
         let lexpr = Identifier("foo")
@@ -2802,8 +2802,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         let None = SymbolType.structType(StructTypeInfo(name: "None", fields: Env()))
         let OptU8 = SymbolType.unionType(UnionTypeInfo([.u8, None]))
         let symbols = Env(tuples: [
-            ("none", Symbol(type: None.correspondingConstType, offset: SnapCompilerMetrics.kStaticStorageStartAddress, storage: .staticStorage)),
-            ("r", Symbol(type: OptU8, offset: SnapCompilerMetrics.kStaticStorageStartAddress+1, storage: .staticStorage))
+            ("none", Symbol(type: None.correspondingConstType, offset: SnapCompilerMetrics.kStaticStorageStartAddress, qualifier: .staticStorage)),
+            ("r", Symbol(type: OptU8, offset: SnapCompilerMetrics.kStaticStorageStartAddress+1, qualifier: .staticStorage))
         ],
         typeDict: [
             "None" : None
@@ -3265,7 +3265,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testLvalue_LvalueOfMemberOfStructInitializer() throws {
         let typ = StructTypeInfo(name: "Foo", fields: Env(tuples: [
-            ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
+            ("bar", Symbol(type: .u16, offset: 0, qualifier: .automaticStorage))
         ]))
         let symbols = Env(tuples: [
             ("foo", Symbol(type: .u16, offset: 0xabcd))
@@ -3361,7 +3361,7 @@ final class CoreToTackCompilerTests: XCTestCase {
 
     func testRvalue_RvalueOfMemberOfStructInitializer() throws {
         let typ = StructTypeInfo(name: "Foo", fields: Env(tuples: [
-            ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
+            ("bar", Symbol(type: .u16, offset: 0, qualifier: .automaticStorage))
         ]))
         let symbols = Env(tuples: [
             ("foo", Symbol(type: .u16, offset: 0xabcd))

@@ -20,7 +20,7 @@ final class StructMemberFunctionCallMatcherTests: XCTestCase {
         ])
         fooSymbols.bind(identifier: "bar", symbol: Symbol(type: .function(fnType)))
         symbols.bind(identifier: "Foo", symbolType: fooType)
-        symbols.bind(identifier: "foo", symbol: Symbol(type: fooType, offset: 0x1000, storage: .staticStorage))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: fooType, offset: 0x1000, qualifier: .staticStorage))
         
         let expr = Call(callee: Get(expr: Identifier("foo"), member: Identifier("bar")), arguments: [])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)

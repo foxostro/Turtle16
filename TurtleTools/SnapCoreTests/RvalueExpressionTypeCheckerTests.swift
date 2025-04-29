@@ -15,8 +15,8 @@ extension Env {
         let sizeOfU16 = memoryLayoutStrategy.sizeof(type: .u16)
         let name = "Range"
         let typ: SymbolType = .structType(StructTypeInfo(name: name, fields: Env(tuples: [
-            ("begin", Symbol(type: .u16, offset: 0*sizeOfU16, storage: .automaticStorage)),
-            ("limit", Symbol(type: .u16, offset: 1*sizeOfU16, storage: .automaticStorage))
+            ("begin", Symbol(type: .u16, offset: 0*sizeOfU16, qualifier: .automaticStorage)),
+            ("limit", Symbol(type: .u16, offset: 1*sizeOfU16, qualifier: .automaticStorage))
         ])))
         bind(identifier: name, symbolType: typ, visibility: .privateVisibility)
         return self
@@ -4675,7 +4675,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = Get(expr: Identifier("foo"),
                                   member: Identifier("bar"))
         let typ = StructTypeInfo(name: "foo", fields: Env(tuples: [
-            ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
+            ("bar", Symbol(type: .u16, offset: 0, qualifier: .automaticStorage))
         ]))
         let symbols = Env(tuples: [
             ("foo", Symbol(type: .structType(typ), offset: 0))
@@ -4690,7 +4690,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = Get(expr: Identifier("foo"),
                                   member: Identifier("asdf"))
         let typ = StructTypeInfo(name: "foo", fields: Env(tuples: [
-            ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
+            ("bar", Symbol(type: .u16, offset: 0, qualifier: .automaticStorage))
         ]))
         let symbols = Env(tuples: [
             ("foo", Symbol(type: .structType(typ), offset: 0))
@@ -4742,7 +4742,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             Arg(name: "bar", expr: LiteralBool(false))
         ])
         let typ = StructTypeInfo(name: "Foo", fields: Env(tuples: [
-            ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
+            ("bar", Symbol(type: .u16, offset: 0, qualifier: .automaticStorage))
         ]))
         let symbols = Env(typeDict: ["Foo" : .structType(typ)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -4760,8 +4760,8 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             Arg(name: "baz", expr: LiteralInt(0))
         ])
         let typ = StructTypeInfo(name: "Foo", fields: Env(tuples: [
-            ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage)),
-            ("baz", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
+            ("bar", Symbol(type: .u16, offset: 0, qualifier: .automaticStorage)),
+            ("baz", Symbol(type: .u16, offset: 0, qualifier: .automaticStorage))
         ]))
         let symbols = Env(typeDict: ["Foo" : .structType(typ)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -4775,7 +4775,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             Arg(name: "bar", expr: LiteralInt(0))
         ])
         let typ = StructTypeInfo(name: "Foo", fields: Env(tuples: [
-            ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
+            ("bar", Symbol(type: .u16, offset: 0, qualifier: .automaticStorage))
         ]))
         let symbols = Env(typeDict: ["Foo" : .structType(typ)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -4790,8 +4790,8 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         typealias Arg = StructInitializer.Argument
         let expr = StructInitializer(identifier: Identifier("Foo"), arguments: [])
         let typ = StructTypeInfo(name: "Foo", fields: Env(tuples: [
-            ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage)),
-            ("baz", Symbol(type: .u16, offset: 2, storage: .automaticStorage))
+            ("bar", Symbol(type: .u16, offset: 0, qualifier: .automaticStorage)),
+            ("baz", Symbol(type: .u16, offset: 2, qualifier: .automaticStorage))
         ]))
         let symbols = Env(typeDict: ["Foo" : .structType(typ)])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -4876,7 +4876,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = Get(expr: Identifier("foo"),
                                   member: Identifier("bar"))
         let typ = StructTypeInfo(name: "Foo", fields: Env(tuples: [
-            ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
+            ("bar", Symbol(type: .u16, offset: 0, qualifier: .automaticStorage))
         ]))
         let symbols = Env(tuples: [
             ("foo", Symbol(type: .pointer(.structType(typ)), offset: 0))
@@ -4891,7 +4891,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = Get(expr: Identifier("foo"),
                                   member: Identifier("asdf"))
         let typ = StructTypeInfo(name: "Foo", fields: Env(tuples: [
-            ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
+            ("bar", Symbol(type: .u16, offset: 0, qualifier: .automaticStorage))
         ]))
         let symbols = Env(tuples: [
             ("foo", Symbol(type: .pointer(.structType(typ)), offset: 0))
@@ -4971,7 +4971,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         let union = Identifier("foo")
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .unionType(UnionTypeInfo([.u8, .u16])), offset: offset, storage: .automaticStorage))
+            ("foo", Symbol(type: .unionType(UnionTypeInfo([.u8, .u16])), offset: offset, qualifier: .automaticStorage))
         ])
         let expr = As(expr: union, targetType: PrimitiveType(.bool))
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -4986,7 +4986,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = As(expr: Identifier("foo"), targetType: PrimitiveType(.u8))
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .unionType(UnionTypeInfo([.u8, .u16])), offset: offset, storage: .automaticStorage))
+            ("foo", Symbol(type: .unionType(UnionTypeInfo([.u8, .u16])), offset: offset, qualifier: .automaticStorage))
         ])
         let expected: SymbolType = .u8
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -5019,7 +5019,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         let union = Identifier("foo")
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .unionType(UnionTypeInfo([.u8, .u16])), offset: offset, storage: .automaticStorage))
+            ("foo", Symbol(type: .unionType(UnionTypeInfo([.u8, .u16])), offset: offset, qualifier: .automaticStorage))
         ])
         let expr = Is(expr: union, testType: PrimitiveType(.bool))
         let expected: SymbolType = .booleanType(.compTimeBool(false))
@@ -5033,7 +5033,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         let union = Identifier("foo")
         let offset = SnapCompilerMetrics.kStaticStorageStartAddress
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool])), offset: offset, storage: .automaticStorage))
+            ("foo", Symbol(type: .unionType(UnionTypeInfo([.u8, .bool])), offset: offset, qualifier: .automaticStorage))
         ])
         let expr = Is(expr: union, testType: PrimitiveType(.u8))
         let expected: SymbolType = .bool
@@ -5101,7 +5101,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         let name = "foo"
         let expr = Unary(op: .ampersand, expression: Identifier(name))
         let typ: SymbolType = .function(FunctionTypeInfo(name: name, returnType: .void, arguments: []))
-        let symbol = Symbol(type: typ, offset: 0x0000, storage: .staticStorage, visibility: .privateVisibility)
+        let symbol = Symbol(type: typ, offset: 0x0000, qualifier: .staticStorage, visibility: .privateVisibility)
         let symbols = Env()
         symbols.bind(identifier: name, symbol: symbol)
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
@@ -5147,8 +5147,8 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
     
     func testAssignment_automatic_conversion_from_object_to_pointer() {
         let symbols = Env(tuples: [
-            ("foo", Symbol(type: .pointer(.u16), offset: 0x1000, storage: .staticStorage)),
-            ("bar", Symbol(type: .u16, offset: 0x2000, storage: .staticStorage))
+            ("foo", Symbol(type: .pointer(.u16), offset: 0x1000, qualifier: .staticStorage)),
+            ("bar", Symbol(type: .u16, offset: 0x2000, qualifier: .staticStorage))
         ])
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         let expr = Assignment(lexpr: Identifier("foo"),
@@ -5167,10 +5167,10 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         try TraitScanner(symbols: symbols).scan(trait: traitDecl)
         
         let traitObjectType = try symbols.resolveType(identifier: traitDecl.nameOfTraitObjectType)
-        symbols.bind(identifier: "foo", symbol: Symbol(type: .pointer(traitObjectType), offset: 0x1000, storage: .staticStorage))
+        symbols.bind(identifier: "foo", symbol: Symbol(type: .pointer(traitObjectType), offset: 0x1000, qualifier: .staticStorage))
         
         let traitType = try symbols.resolveType(identifier: traitDecl.identifier.identifier)
-        symbols.bind(identifier: "bar", symbol: Symbol(type: traitType, offset: 0x2000, storage: .staticStorage))
+        symbols.bind(identifier: "bar", symbol: Symbol(type: traitType, offset: 0x2000, qualifier: .staticStorage))
         
         let typeChecker = RvalueExpressionTypeChecker(symbols: symbols)
         let expr = Assignment(lexpr: Identifier("foo"),
@@ -5493,7 +5493,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
         let expr = GenericTypeApplication(identifier: Identifier("foo"),
                                                      arguments: [PrimitiveType(.u16)])
         
-        let bar = Symbol(type: .u16, offset: 0, storage: .automaticStorage)
+        let bar = Symbol(type: .u16, offset: 0, qualifier: .automaticStorage)
         let concreteStructSymbols = Env(tuples: [("bar", bar)])
         let frame = Frame()
         _ = frame.allocate(size: 1)
@@ -5524,7 +5524,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
             StructInitializer.Argument(name: "bar", expr: LiteralInt(1)),
         ])
 
-        let bar = Symbol(type: .u16, offset: 0, storage: .automaticStorage)
+        let bar = Symbol(type: .u16, offset: 0, qualifier: .automaticStorage)
         let concreteStructSymbols = Env(tuples: [
             ("bar", bar)
         ])
@@ -5654,7 +5654,7 @@ final class RvalueExpressionTypeCheckerTests: XCTestCase {
                 arguments: [.u16],
                 ast: nil))),
             offset: 0,
-            storage: .automaticStorage)
+            qualifier: .automaticStorage)
         let concreteTraitSymbols = Env(tuples: [
             ("bar", bar)
         ])

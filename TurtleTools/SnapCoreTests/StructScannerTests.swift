@@ -26,7 +26,7 @@ final class StructScannerTests: XCTestCase {
             symbol: Symbol(
                 type: .void,
                 offset: 0,
-                storage: .staticStorage,
+                qualifier: .staticStorage,
                 visibility: .privateVisibility))
         let input = StructDeclaration(
             identifier: Identifier("foo"),
@@ -61,7 +61,7 @@ final class StructScannerTests: XCTestCase {
             symbol: Symbol(
                 type: .void,
                 offset: 0,
-                storage: .staticStorage,
+                qualifier: .staticStorage,
                 visibility: .privateVisibility))
         let input = StructDeclaration(
             identifier: Identifier("foo"),
@@ -135,7 +135,7 @@ final class StructScannerTests: XCTestCase {
         let bar = Symbol(
             type: .u8,
             offset: 0,
-            storage: .automaticStorage)
+            qualifier: .automaticStorage)
         let expectedStructSymbols = Env(tuples: [
             ("bar", bar)
         ])

@@ -89,8 +89,8 @@ final class LvalueExpressionTypeCheckerTests: XCTestCase {
                                   member: Identifier("asdf"))
         let offset = 0x0100
         let typ = StructTypeInfo(name: "foo", fields: Env(tuples: [
-            ("bar", Symbol(type: .u8, offset: 0, storage: .automaticStorage)),
-            ("baz", Symbol(type: .u16, offset: 1, storage: .automaticStorage))
+            ("bar", Symbol(type: .u8, offset: 0, qualifier: .automaticStorage)),
+            ("baz", Symbol(type: .u16, offset: 1, qualifier: .automaticStorage))
         ]))
         let symbols = Env(tuples: [
             ("foo", Symbol(type: .structType(typ), offset: offset))
@@ -108,8 +108,8 @@ final class LvalueExpressionTypeCheckerTests: XCTestCase {
                                   member: Identifier("bar"))
         let offset = 0x0100
         let typ = StructTypeInfo(name: "foo", fields: Env(tuples: [
-            ("bar", Symbol(type: .u8, offset: 0, storage: .automaticStorage)),
-            ("baz", Symbol(type: .u16, offset: 1, storage: .automaticStorage))
+            ("bar", Symbol(type: .u8, offset: 0, qualifier: .automaticStorage)),
+            ("baz", Symbol(type: .u16, offset: 1, qualifier: .automaticStorage))
         ]))
         let symbols = Env(tuples: [
             ("foo", Symbol(type: .structType(typ), offset: offset))
@@ -125,8 +125,8 @@ final class LvalueExpressionTypeCheckerTests: XCTestCase {
                                   member: Identifier("baz"))
         let offset = 0x0100
         let typ = StructTypeInfo(name: "foo", fields: Env(tuples: [
-            ("bar", Symbol(type: .u8, offset: 0, storage: .automaticStorage)),
-            ("baz", Symbol(type: .u16, offset: 1, storage: .automaticStorage))
+            ("bar", Symbol(type: .u8, offset: 0, qualifier: .automaticStorage)),
+            ("baz", Symbol(type: .u16, offset: 1, qualifier: .automaticStorage))
         ]))
         let symbols = Env(tuples: [
             ("foo", Symbol(type: .structType(typ), offset: offset))
@@ -167,8 +167,8 @@ final class LvalueExpressionTypeCheckerTests: XCTestCase {
                                   member: Identifier("asdf"))
         let offset = 0x0100
         let typ = StructTypeInfo(name: "Foo", fields: Env(tuples: [
-            ("bar", Symbol(type: .u8, offset: 0, storage: .automaticStorage)),
-            ("baz", Symbol(type: .u16, offset: 1, storage: .automaticStorage))
+            ("bar", Symbol(type: .u8, offset: 0, qualifier: .automaticStorage)),
+            ("baz", Symbol(type: .u16, offset: 1, qualifier: .automaticStorage))
         ]))
         let symbols = Env(tuples: [
             ("foo", Symbol(type: .pointer(.structType(typ)), offset: offset))
@@ -186,8 +186,8 @@ final class LvalueExpressionTypeCheckerTests: XCTestCase {
                                   member: Identifier("bar"))
         let offset = 0x0100
         let typ = StructTypeInfo(name: "Foo", fields: Env(tuples: [
-            ("bar", Symbol(type: .u8, offset: 0, storage: .automaticStorage)),
-            ("baz", Symbol(type: .u16, offset: 1, storage: .automaticStorage))
+            ("bar", Symbol(type: .u8, offset: 0, qualifier: .automaticStorage)),
+            ("baz", Symbol(type: .u16, offset: 1, qualifier: .automaticStorage))
         ]))
         let symbols = Env(tuples: [
             ("foo", Symbol(type: .pointer(.structType(typ)), offset: offset))
@@ -225,7 +225,7 @@ final class LvalueExpressionTypeCheckerTests: XCTestCase {
         ])
         let expr = Get(expr: si, member: Identifier("bar"))
         let typ = StructTypeInfo(name: "Foo", fields: Env(tuples: [
-            ("bar", Symbol(type: .u16, offset: 0, storage: .automaticStorage))
+            ("bar", Symbol(type: .u16, offset: 0, qualifier: .automaticStorage))
         ]))
         let symbols = Env(tuples: [
             ("foo", Symbol(type: .u16, offset: 0))

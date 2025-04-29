@@ -23,7 +23,7 @@ final class TypealiasScannerTests: XCTestCase {
     func testTypealiascannotRedefineExistingSymbol() throws {
         let input = Typealias(lexpr: Identifier("Foo"), rexpr: PrimitiveType(.u8))
         let symbols = Env()
-        symbols.bind(identifier: "Foo", symbol: Symbol(type: .void, offset: nil, storage: .staticStorage, visibility: .privateVisibility))
+        symbols.bind(identifier: "Foo", symbol: Symbol(type: .void, offset: nil, qualifier: .staticStorage, visibility: .privateVisibility))
         symbols.bind(identifier: "Foo", symbolType: .u8)
         XCTAssertThrowsError(try TypealiasScanner(symbols).compile(input)) {
             let error = $0 as? CompilerError

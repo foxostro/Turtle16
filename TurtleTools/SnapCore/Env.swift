@@ -390,12 +390,28 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
 }
 
 public enum SymbolStorage: Hashable {
-    case staticStorage, automaticStorage
+    case staticStorage(offset: Int?)
+    case automaticStorage(offset: Int?)
     
-    init(_ qualifier: StorageQualifier) {
+    public init(_ qualifier: StorageQualifier, _ offset: Int?) {
         self = switch qualifier {
-        case StorageQualifier.automaticStorage: SymbolStorage.automaticStorage
-        case StorageQualifier.staticStorage:    SymbolStorage.staticStorage
+        case .automaticStorage: .automaticStorage(offset: offset)
+        case .staticStorage:    .staticStorage(offset: offset)
+        }
+    }
+    
+    public var qualifier: StorageQualifier {
+        switch self {
+        case .automaticStorage(offset: _): .automaticStorage
+        case .staticStorage(offset: _): .staticStorage
+        }
+    }
+    
+    public var offset: Int {
+        switch self {
+        case .automaticStorage(offset: let offset),
+             .staticStorage(offset: let offset):
+            offset!
         }
     }
 }
@@ -998,33 +1014,68 @@ public enum SymbolVisibility: Hashable, CustomStringConvertible {
 
 public struct Symbol: Hashable {
     public let type: SymbolType
-    public let maybeOffset: Int?
-    public var offset: Int { maybeOffset! }
     public let storage: SymbolStorage
     public let visibility: SymbolVisibility
     
+    public var offset: Int { storage.offset }
+    
     public init(
         type: SymbolType,
-        offset: Int? = nil,
-        storage: SymbolStorage = .staticStorage,
+        offset: Int?,
+        qualifier: StorageQualifier,
+        visibility: SymbolVisibility = .privateVisibility
+    ) {
+        self.init(
+            type: type,
+            storage: SymbolStorage(qualifier, offset),
+            visibility: visibility
+        )
+    }
+    
+    public init(
+        type: SymbolType,
+        offset: Int?,
+        storage qualifier: StorageQualifier = .staticStorage,
+        visibility: SymbolVisibility = .privateVisibility
+    ) {
+        self.init(
+            type: type,
+            storage: SymbolStorage(qualifier, offset),
+            visibility: visibility
+        )
+    }
+    
+    public init(
+        type: SymbolType,
+        storage: SymbolStorage = .staticStorage(offset: nil),
         visibility: SymbolVisibility = .privateVisibility
     ) {
         self.type = type
-        self.maybeOffset = offset
         self.storage = storage
         self.visibility = visibility
+    }
+    
+    public func withType(_ type: SymbolType) -> Symbol {
+        Symbol(type: type,
+               storage: storage,
+               visibility: visibility)
+    }
+    
+    public func withStorage(_ storage: SymbolStorage) -> Symbol {
+        Symbol(type: type,
+               storage: storage,
+               visibility: visibility)
     }
     
     public func withOffset(_ offset: Int?) -> Symbol {
         Symbol(type: type,
                offset: offset,
-               storage: storage,
+               qualifier: storage.qualifier,
                visibility: visibility)
     }
     
-    public func withType(_ type: SymbolType) -> Symbol {
+    public func withVisibility(_ visibility: SymbolVisibility) -> Symbol {
         Symbol(type: type,
-               offset: maybeOffset,
                storage: storage,
                visibility: visibility)
     }

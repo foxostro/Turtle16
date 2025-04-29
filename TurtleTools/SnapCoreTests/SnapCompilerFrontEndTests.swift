@@ -579,7 +579,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             foo()
             """)
         let symbol = try debugger.symbols?.resolve(identifier: "a")
-        XCTAssertEqual(symbol?.storage, .staticStorage)
+        XCTAssertEqual(symbol?.storage.qualifier, .staticStorage)
         XCTAssertEqual(symbol?.offset, SnapCompilerMetrics.kStaticStorageStartAddress)
         XCTAssertEqual(debugger.loadSymbolU16("a"), 0xaa) // var a
         try debugger.vm.run()
@@ -594,7 +594,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             foo()
             """)
         let symbol = try debugger.symbols?.resolve(identifier: "a")
-        XCTAssertEqual(symbol?.storage, .automaticStorage)
+        XCTAssertEqual(symbol?.storage.qualifier, .automaticStorage)
         XCTAssertEqual(symbol?.offset, 1)
         XCTAssertEqual(debugger.loadSymbolU16("a"), 0xaa) // var a
         try debugger.vm.run()
@@ -616,17 +616,17 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             """)
         
         let a = try debugger.symbols?.resolve(identifier: "a")
-        XCTAssertEqual(a?.storage, .staticStorage)
+        XCTAssertEqual(a?.storage.qualifier, .staticStorage)
         XCTAssertEqual(a?.offset, SnapCompilerMetrics.kStaticStorageStartAddress+0)
         XCTAssertEqual(debugger.loadSymbolU8("a"), 0xaa)
         
         let b = try debugger.symbols?.resolve(identifier: "b")
-        XCTAssertEqual(b?.storage, .staticStorage)
+        XCTAssertEqual(b?.storage.qualifier, .staticStorage)
         XCTAssertEqual(b?.offset, SnapCompilerMetrics.kStaticStorageStartAddress+1)
         XCTAssertEqual(debugger.loadSymbolU8("b"), 0xbb)
         
         let c = try debugger.symbols?.resolve(identifier: "c")
-        XCTAssertEqual(c?.storage, .staticStorage)
+        XCTAssertEqual(c?.storage.qualifier, .staticStorage)
         XCTAssertEqual(c?.offset, SnapCompilerMetrics.kStaticStorageStartAddress+2)
         XCTAssertEqual(debugger.loadSymbolU8("c"), 0xcc)
     }
@@ -651,17 +651,17 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             """)
         
         let a = try debugger.symbols?.resolve(identifier: "a")
-        XCTAssertEqual(a?.storage, .staticStorage)
+        XCTAssertEqual(a?.storage.qualifier, .staticStorage)
         XCTAssertEqual(a?.offset, SnapCompilerMetrics.kStaticStorageStartAddress+0)
         XCTAssertEqual(debugger.loadSymbolU8("a"), 0xaa)
         
         let b = try debugger.symbols?.resolve(identifier: "b")
-        XCTAssertEqual(b?.storage, .staticStorage)
+        XCTAssertEqual(b?.storage.qualifier, .staticStorage)
         XCTAssertEqual(b?.offset, SnapCompilerMetrics.kStaticStorageStartAddress+1)
         XCTAssertEqual(debugger.loadSymbolU8("b"), 0xaa)
         
         let c = try debugger.symbols?.resolve(identifier: "c")
-        XCTAssertEqual(c?.storage, .staticStorage)
+        XCTAssertEqual(c?.storage.qualifier, .staticStorage)
         XCTAssertEqual(c?.offset, SnapCompilerMetrics.kStaticStorageStartAddress+2)
         XCTAssertEqual(debugger.loadSymbolU8("c"), 0xaa)
     }

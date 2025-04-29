@@ -288,7 +288,6 @@ fileprivate extension Env {
                     identifier: identifier,
                     symbol: Symbol(
                         type: symbol.type,
-                        offset: symbol.offset,
                         storage: symbol.storage,
                         visibility: .privateVisibility))
             }

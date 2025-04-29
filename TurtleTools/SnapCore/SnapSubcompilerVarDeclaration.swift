@@ -136,9 +136,9 @@ public struct SnapSubcompilerVarDeclaration {
                 sourceAnchor: sourceAnchor,
                 message: "invalid use of module type")
         }
-        let storage: StorageQualifier = (symbols.frame==nil) ? .staticStorage : storage
-        let offset = bumpStoragePointer(explicitType, storage)
-        let symbol = Symbol(type: explicitType, offset: offset, storage: SymbolStorage(storage), visibility: visibility)
+        let qualifier: StorageQualifier = (symbols.frame==nil) ? .staticStorage : storage
+        let offset = bumpStoragePointer(explicitType, qualifier)
+        let symbol = Symbol(type: explicitType, offset: offset, qualifier: qualifier, visibility: visibility)
         return symbol
     }
 

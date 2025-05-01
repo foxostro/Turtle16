@@ -1312,14 +1312,13 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             ]
 
             let resultRegister = popRegister()
-            let ins: TackInstruction = {
+            let ins: TackInstruction =
                 switch resultRegister {
-                case .p(let src): return .sp(src, tempArrayAddr.unwrapPointer!, i)
-                case .w(let src): return .sw(src, tempArrayAddr.unwrapPointer!, i)
-                case .b(let src): return .sb(src, tempArrayAddr.unwrapPointer!, i)
-                case .o(let src): return .so(src, tempArrayAddr.unwrapPointer!, i)
+                case .p(let src): .sp(src, tempArrayAddr.unwrapPointer!, i)
+                case .w(let src): .sw(src, tempArrayAddr.unwrapPointer!, i)
+                case .b(let src): .sb(src, tempArrayAddr.unwrapPointer!, i)
+                case .o(let src): .so(src, tempArrayAddr.unwrapPointer!, i)
                 }
-            }()
 
             children += [
                 TackInstructionNode(

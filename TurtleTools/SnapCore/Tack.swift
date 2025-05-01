@@ -140,7 +140,11 @@ public enum TackInstruction: Hashable, CustomStringConvertible {
     case alloca(RegisterPointer, Count)
     case free(Count)
     case inlineAssembly(String)
-    case syscall(RegisterPointer, RegisterPointer)  // first register is the address in memory where the syscall number is stored, second is a pointer to the arguments structure
+
+    /// Call the interpreter or runtime
+    /// The first register is the address in memory where the syscall number is
+    /// stored. The second register is a pointer to the arguments structure.
+    case syscall(RegisterPointer, RegisterPointer)
 
     case bz(RegisterBoolean, Label)
     case bnz(RegisterBoolean, Label)
@@ -219,11 +223,26 @@ public enum TackInstruction: Hashable, CustomStringConvertible {
     case leub(RegisterBoolean, Register8, Register8)
     case gtub(RegisterBoolean, Register8, Register8)
 
-    case movsbw(Register8, Register16)  // Move a signed sixteen-bit register to a signed eight-bit register
-    case movswb(Register16, Register8)  // Move an eight-bit register to a sixteen-bit register, sign-extending to fill the upper bits.
-    case movzwb(Register16, Register8)  // Move an eight-bit register to a sixteen-bit register, zero-extending to fill the upper bits.
-    case movzbw(Register8, Register16)  // Move an unsigned sixteen-bit register to an unsigned eight-bit register
-    case bitcast(Register, Register)  // Reinterpret the bit pattern of the source register as a new value in a desitnation register of a different type, with architecture-specific results.
+
+    /// Move a signed sixteen-bit register to a signed eight-bit register
+    case movsbw(Register8, Register16)
+
+    /// Move an eight-bit register to a sixteen-bit register, sign-extending to
+    /// fill the upper bits.
+    case movswb(Register16, Register8)
+
+    /// Move an eight-bit register to a sixteen-bit register, zero-extending to
+    /// fill the upper bits.
+    case movzwb(Register16, Register8)
+
+    /// Move an unsigned sixteen-bit register to an unsigned eight-bit register
+    case movzbw(Register8, Register16)
+
+    /// Reinterpret the bit pattern of the source register as a new value in a
+    /// destination register of a different type, with architecture-specific
+    /// results.
+    case bitcast(Register, Register)
+
 
     public var description: String {
         switch self {
@@ -319,6 +338,7 @@ public enum TackInstruction: Hashable, CustomStringConvertible {
         case .geub(let c, let a, let b): "GEUB \(c), \(a), \(b)"
         case .leub(let c, let a, let b): "LEUB \(c), \(a), \(b)"
         case .gtub(let c, let a, let b): "GTUB \(c), \(a), \(b)"
+
         case .movsbw(let dst, let src): "MOVSBW \(dst), \(src)"
         case .movswb(let dst, let src): "MOVSWB \(dst), \(src)"
         case .movzwb(let dst, let src): "MOVZWB \(dst), \(src)"

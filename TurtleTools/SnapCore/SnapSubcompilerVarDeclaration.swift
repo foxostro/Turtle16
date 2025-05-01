@@ -169,7 +169,7 @@ public struct SnapSubcompilerVarDeclaration {
             .automaticStorage(let offset) where offset == nil:
             // If the symbol has not been assigned a memory address then
             // allocate an address for it now in the appropriate frame.
-            
+
             let frame: Frame =
                 switch storage0 {
                 case .staticStorage:

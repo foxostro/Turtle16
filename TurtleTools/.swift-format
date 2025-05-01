@@ -5,6 +5,7 @@
   "indentation" : {
     "spaces" : 4
   },
+  "indentBlankLines" : false,
   "indentConditionalCompilationBlocks" : true,
   "indentSwitchCaseLabels" : false,
   "lineBreakAroundMultilineExpressionChainComponents" : false,
@@ -12,7 +13,7 @@
   "lineBreakBeforeEachArgument" : true,
   "lineBreakBeforeEachGenericRequirement" : false,
   "lineLength" : 100,
-  "maximumBlankLines" : 1,
+  "maximumBlankLines" : 2,
   "multiElementCollectionTrailingCommas" : true,
   "noAssignmentInExpressions" : {
     "allowedFunctions" : [

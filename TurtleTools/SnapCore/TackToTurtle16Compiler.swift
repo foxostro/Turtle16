@@ -66,9 +66,8 @@ public final class TackToTurtle16Compiler: CompilerPass {
         case .jmp(let target): return jmp(anc, target)
         case .la(let dst, let label): return la(anc, dst, label)
         case .ststr(let dst, let str): return ststr(anc, dst, str)
-        case .memcpy(let dst, let src, let numberOfWords):
-            return memcpy(anc, dst, src, numberOfWords)
-        case .alloca(let dst, let numberOfWords): return alloca(anc, dst, numberOfWords)
+        case .memcpy(let dst, let src, let n): return memcpy(anc, dst, src, n)
+        case .alloca(let dst, let n): return alloca(anc, dst, n)
         case .free(let numberOfWords): return free(anc, numberOfWords)
         case .inlineAssembly(let asm): return try inlineAssembly(asm)
         case .syscall(let n, let ptr): return syscall(anc, n, ptr)
@@ -149,6 +148,7 @@ public final class TackToTurtle16Compiler: CompilerPass {
         case .geub(let c, let a, let b): return geu8(anc, c, a, b)
         case .leub(let c, let a, let b): return leu8(anc, c, a, b)
         case .gtub(let c, let a, let b): return gtu8(anc, c, a, b)
+
         case .movsbw(let dst, let src): return movsbw(anc, dst, src)
         case .movswb(let dst, let src): return movswb(anc, dst, src)
         case .movzwb(let dst, let src): return movzwb(anc, dst, src)

@@ -2985,6 +2985,19 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
 
         let size = memoryLayoutStrategy.sizeof(type: ltype)
         let result: Seq
+        
+        // If the symbol has register storage but currently unbound then bind it
+        // now to the next available Tack register.
+        if let lexpr = expr.lexpr as? Identifier,
+           let symbol = symbols!.maybeResolve(identifier: lexpr.identifier),
+           let primitiveType = symbol.type.primitiveType,
+           symbol.storage.isRegisterStorage,
+           symbol.storage.register == nil
+        {
+            let nextReg = nextRegister(type: primitiveType)
+            let nextSym = symbol.withStorage(.registerStorage(nextReg))
+            symbols!.bind(identifier: lexpr.identifier, symbol: nextSym)
+        }
 
         if ltype.isPrimitive {
             if let lexpr = expr.lexpr as? Identifier,

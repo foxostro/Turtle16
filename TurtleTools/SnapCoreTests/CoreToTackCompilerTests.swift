@@ -4673,8 +4673,8 @@ final class CoreToTackCompilerTests: XCTestCase {
         XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
     }
 
-    // If a symbol has register storage but does not specify which register to
-    // use then attempting to read that value will cause an error.
+    // If a symbol has register storage, but does not specify which register to
+    // use, then attempting to read that value will cause an error.
     func testRvalue_ReadSymbolWithRegisterStorage_Unbound() throws {
         let symbols = Env(tuples: [
             ("foo", Symbol(type: .u16, storage: .registerStorage(nil)))
@@ -4690,27 +4690,29 @@ final class CoreToTackCompilerTests: XCTestCase {
         }
     }
 
-    // If a symbol has register storage but does not specify which register to
-    // use then attempting to store a value to that symbol will cause an error.
+    // If a symbol has register storage, but does not specify which register to
+    // use, then attempting to store a value to that symbol will cause the
+    // compiler to choose a register to bind it to.
     func testRvalue_Assignment_ToSymbolWithRegisterStorage_Unbound() throws {
         let symbols = Env(tuples: [
             ("foo", Symbol(type: .u16, storage: .registerStorage(nil)))
         ])
         let compiler = makeCompiler(symbols: symbols)
-        XCTAssertThrowsError(
-            try compiler.rvalue(
-                expr: Assignment(
-                    lexpr: Identifier("foo"),
-                    rexpr: LiteralInt(1000)
-                )
+        let actual = try compiler.rvalue(
+            expr: Assignment(
+                lexpr: Identifier("foo"),
+                rexpr: LiteralInt(1000)
             )
-        ) {
-            let compilerError = $0 as? CompilerError
-            XCTAssertNotNil(compilerError)
-            XCTAssertEqual(
-                compilerError?.message,
-                "symbol has register storage with no bound register: foo"
-            )
-        }
+        )
+        let expected = Seq(children: [
+            TackInstructionNode(.liuw(.w(1), 1000)),
+            TackInstructionNode(.movw(.w(0), .w(1))),
+        ])
+        XCTAssertEqual(actual, expected)
+        XCTAssertEqual(compiler.registerStack.last, .w(.w(0)))
+        XCTAssertEqual(
+            symbols.maybeResolve(identifier: "foo")?.storage,
+            .registerStorage(.w(.w(0)))
+        )
     }
 }

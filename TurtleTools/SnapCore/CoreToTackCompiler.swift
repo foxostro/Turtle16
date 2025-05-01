@@ -1304,7 +1304,10 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         for i in 0..<expr.elements.count {
             children += [
                 try rvalue(
-                    as: As(expr: expr.elements[i], targetType: PrimitiveType(arrayElementType))
+                    as: As(
+                        expr: expr.elements[i],
+                        targetType: PrimitiveType(arrayElementType)
+                    )
                 )
             ]
 

@@ -397,9 +397,11 @@ public indirect enum SymbolType: Hashable, CustomStringConvertible {
 }
 
 public enum SymbolStorage: Hashable {
+    public typealias Register = TackInstruction.Register
+
     case staticStorage(offset: Int?)
     case automaticStorage(offset: Int?)
-    case registerStorage(TackInstruction.Register?)
+    case registerStorage(Register?)
 
     public var offset: Int? {
         switch self {
@@ -416,6 +418,13 @@ public enum SymbolStorage: Hashable {
         switch self {
         case .automaticStorage: true
         default: false
+        }
+    }
+
+    public var register: Register? {
+        switch self {
+        case .registerStorage(let r): r
+        default: nil
         }
     }
 

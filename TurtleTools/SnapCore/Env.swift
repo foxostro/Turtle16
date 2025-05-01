@@ -412,10 +412,10 @@ public enum SymbolStorage: Hashable {
         }
     }
 
-    public var isRegisterStorage: Bool {
+    public var isAutomaticStorage: Bool {
         switch self {
-        case .automaticStorage, .staticStorage: false
-        case .registerStorage: true
+        case .automaticStorage: true
+        default: false
         }
     }
 

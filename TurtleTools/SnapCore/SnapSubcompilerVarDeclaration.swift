@@ -150,8 +150,7 @@ public struct SnapSubcompilerVarDeclaration {
                 message: "invalid use of module type"
             )
         }
-        let storage1 = (symbols.frame == nil) ? .staticStorage(offset: nil) : storage0
-        let storage2 = bumpStoragePointer(explicitType, storage1)
+        let storage2 = materialize(explicitType, storage0)
         let symbol = Symbol(
             type: explicitType,
             storage: storage2,
@@ -160,23 +159,60 @@ public struct SnapSubcompilerVarDeclaration {
         return symbol
     }
 
-    func bumpStoragePointer(_ symbolType: SymbolType, _ storage: SymbolStorage) -> SymbolStorage {
-        precondition(!storage.isRegisterStorage)
-        precondition(storage.offset == nil)
+    func materialize(
+        _ explicitType: SymbolType,
+        _ storage0: SymbolStorage
+    ) -> SymbolStorage {
 
+        switch storage0 {
+        case .staticStorage(let offset) where offset == nil,
+            .automaticStorage(let offset) where offset == nil:
+            // If the symbol has not been assigned a memory address then
+            // allocate an address for it now in the appropriate frame.
+            
+            let frame: Frame =
+                switch storage0 {
+                case .staticStorage:
+                    staticStorageFrame
+
+                case .automaticStorage:
+                    // Symbols with automatic storage are switched over to
+                    // static storage when there is no associated stack frame.
+                    symbols.frame ?? staticStorageFrame
+
+                default:
+                    fatalError("unreachable")
+                }
+
+            let offset = bumpStoragePointer(explicitType, frame)
+
+            let storage1: SymbolStorage =
+                if storage0.isAutomaticStorage && symbols.frame == nil {
+                    .staticStorage(offset: offset)
+                } else {
+                    storage0.withOffset(offset)
+                }
+
+            return storage1
+
+        default:
+            // If the symbol already has an assigned memory address then
+            // do not try to allocate storage for it in the frame now.
+            // If the symbol is marked as having register storage then we
+            // don't want or need to allocate storage for it in memory.
+            // In either case, pass the storage object through unmodified.
+            return storage0
+        }
+    }
+
+    func bumpStoragePointer(_ symbolType: SymbolType, _ frame: Frame) -> Int {
         let size = memoryLayoutStrategy.sizeof(type: symbolType)
-        let frame: Frame =
-            switch storage {
-            case .staticStorage: staticStorageFrame
-            case .automaticStorage: symbols.frame!
-            case .registerStorage: fatalError("unreachable")
-            }
         let offset = frame.allocate(size: size)
-        return storage.withOffset(offset)
+        return offset
     }
 
     func attachToFrame(identifier: String, symbol: Symbol) {
-        let frame =
+        let frame: Frame? =
             switch symbol.storage {
             case .staticStorage:
                 staticStorageFrame
@@ -185,10 +221,8 @@ public struct SnapSubcompilerVarDeclaration {
                 symbols.frame!
 
             case .registerStorage:
-                fatalError(
-                    "symbol with register storage cannot be attached to a frame: \(identifier)"
-                )
+                nil
             }
-        frame.add(identifier: identifier, symbol: symbol)
+        frame?.add(identifier: identifier, symbol: symbol)
     }
 }

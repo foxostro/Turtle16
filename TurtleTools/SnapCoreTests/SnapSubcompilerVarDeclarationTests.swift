@@ -448,4 +448,79 @@ final class SnapSubcompilerVarDeclarationTests: XCTestCase {
         )
         XCTAssertEqual(foo, expectedSymbol)
     }
+
+    func testDeclareVariable_StaticStorage_AlreadyAssignedMemoryAddress() throws {
+        let symbols = Env()
+        let frame = Frame(storagePointer: SnapCompilerMetrics.kStaticStorageStartAddress)
+        let compiler = SnapSubcompilerVarDeclaration(
+            symbols: symbols,
+            staticStorageFrame: frame
+        )
+        let input = VarDeclaration(
+            identifier: Identifier("foo"),
+            explicitType: PrimitiveType(.u8),
+            expression: nil,
+            storage: .staticStorage(offset: 42),
+            isMutable: false
+        )
+        let actual = try? compiler.compile(input)
+        XCTAssertNil(actual)
+        let foo = try? symbols.resolve(identifier: "foo")
+        let expectedSymbol = Symbol(
+            type: .arithmeticType(.immutableInt(.u8)),
+            storage: .staticStorage(offset: 42),
+            visibility: .privateVisibility
+        )
+        XCTAssertEqual(foo, expectedSymbol)
+    }
+
+    func testDeclareVariable_AutomaticStorage_AlreadyAssignedMemoryAddress() throws {
+        let symbols = Env()
+        symbols.frameLookupMode = .set(Frame(growthDirection: .down))
+        let compiler = SnapSubcompilerVarDeclaration(
+            symbols: symbols,
+            memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL()
+        )
+        let input = VarDeclaration(
+            identifier: Identifier("foo"),
+            explicitType: PrimitiveType(.u8),
+            expression: nil,
+            storage: .automaticStorage(offset: 42),
+            isMutable: false
+        )
+        let actual = try? compiler.compile(input)
+        XCTAssertNil(actual)
+        let foo = try? symbols.resolve(identifier: "foo")
+        let expectedSymbol = Symbol(
+            type: .arithmeticType(.immutableInt(.u8)),
+            storage: .automaticStorage(offset: 42),
+            visibility: .privateVisibility
+        )
+        XCTAssertEqual(foo, expectedSymbol)
+    }
+
+    func testDeclareVariable_RegisterStorage() throws {
+        let symbols = Env()
+        symbols.frameLookupMode = .set(Frame(growthDirection: .down))
+        let compiler = SnapSubcompilerVarDeclaration(
+            symbols: symbols,
+            memoryLayoutStrategy: MemoryLayoutStrategyTurtleTTL()
+        )
+        let input = VarDeclaration(
+            identifier: Identifier("foo"),
+            explicitType: PrimitiveType(.u8),
+            expression: nil,
+            storage: .registerStorage(nil),
+            isMutable: false
+        )
+        let actual = try? compiler.compile(input)
+        XCTAssertNil(actual)
+        let foo = try? symbols.resolve(identifier: "foo")
+        let expectedSymbol = Symbol(
+            type: .arithmeticType(.immutableInt(.u8)),
+            storage: .registerStorage(nil),
+            visibility: .privateVisibility
+        )
+        XCTAssertEqual(foo, expectedSymbol)
+    }
 }

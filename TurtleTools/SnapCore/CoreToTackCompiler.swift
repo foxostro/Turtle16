@@ -926,16 +926,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
         switch resultType {
         case .constStructType(let typ), .structType(let typ):
             let symbol = try typ.symbols.resolve(identifier: name)
-            let offset: Int? = switch symbol.storage {
-            case .staticStorage(offset: let offset),
-                 .automaticStorage(offset: let offset):
-                offset
-            case .registerStorage:
-                nil
-            }
-            guard let offset else {
-                fatalError("symbol is missing an expected offset: \(symbol)")
-            }
+            let offset = symbol.storage.offset!
             children += [
                 try lvalue(expr: expr.expr)
             ]
@@ -958,16 +949,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 switch typ {
                 case .constStructType(let b), .structType(let b):
                     let symbol = try b.symbols.resolve(identifier: name)
-                    let offset: Int? = switch symbol.storage {
-                    case .staticStorage(offset: let offset),
-                         .automaticStorage(offset: let offset):
-                        offset
-                    case .registerStorage:
-                        nil
-                    }
-                    guard let offset else {
-                        fatalError("symbol is missing an expected offset: \(symbol)")
-                    }
+                    let offset = symbol.storage.offset!
                     
                     children += [
                         try rvalue(expr: expr.expr)
@@ -2698,16 +2680,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
             }
             
             let symbol = try typ.symbols.resolve(identifier: name)
-            let offset: Int? = switch symbol.storage {
-            case .staticStorage(offset: let offset),
-                 .automaticStorage(offset: let offset):
-                offset
-            case .registerStorage:
-                nil
-            }
-            guard let offset else {
-                fatalError("symbol is missing an expected offset: \(symbol)")
-            }
+            let offset = symbol.storage.offset!
             
             if let primitiveType = symbol.type.primitiveType {
                 // Read the field in-place
@@ -2793,16 +2766,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                     
                 case .constStructType(let b), .structType(let b):
                     let symbol = try b.symbols.resolve(identifier: name)
-                    let offset: Int? = switch symbol.storage {
-                    case .staticStorage(offset: let offset),
-                         .automaticStorage(offset: let offset):
-                        offset
-                    case .registerStorage:
-                        nil
-                    }
-                    guard let offset else {
-                        fatalError("symbol is missing an expected offset: \(symbol)")
-                    }
+                    let offset = symbol.storage.offset!
                     
                     if let primitiveType = symbol.type.primitiveType {
                         // If the field is a primitive then load into a register

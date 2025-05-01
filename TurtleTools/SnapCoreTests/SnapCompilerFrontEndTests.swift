@@ -1432,14 +1432,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             return
         }
         
-        let offset: Int? = switch symbol.storage {
-        case .staticStorage(offset: let offset),
-             .automaticStorage(offset: let offset):
-            offset
-        case .registerStorage:
-            nil
-        }
-        guard let offset else {
+        guard let offset = symbol.storage.offset else {
             XCTFail("symbol is missing an expected offset: \(symbol)")
             return
         }
@@ -1460,14 +1453,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             XCTFail("failed to resolve identifier \"foo\"")
             return
         }
-        let offset: Int? = switch symbol.storage {
-        case .staticStorage(offset: let offset),
-             .automaticStorage(offset: let offset):
-            offset
-        case .registerStorage:
-            nil
-        }
-        guard let offset else {
+        guard let offset = symbol.storage.offset else {
             XCTFail("symbol is missing an expected offset: \(symbol)")
             return
         }
@@ -1488,14 +1474,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             XCTFail("failed to resolve identifier \"r\"")
             return
         }
-        let offset: Int? = switch symbol.storage {
-        case .staticStorage(offset: let offset),
-             .automaticStorage(offset: let offset):
-            offset
-        case .registerStorage:
-            nil
-        }
-        guard let offset else {
+        guard let offset = symbol.storage.offset else {
             XCTFail("symbol is missing an expected offset: \(symbol)")
             return
         }
@@ -1515,14 +1494,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             XCTFail("failed to resolve identifier \"foo\"")
             return
         }
-        let offset: Int? = switch symbol.storage {
-        case .staticStorage(offset: let offset),
-             .automaticStorage(offset: let offset):
-            offset
-        case .registerStorage:
-            nil
-        }
-        guard let offset else {
+        guard let offset = symbol.storage.offset else {
             XCTFail("symbol is missing an expected offset: \(symbol)")
             return
         }
@@ -1588,14 +1560,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             XCTFail("failed to resolve identifier \"bar\"")
             return
         }
-        let offset: Int? = switch symbol.storage {
-        case .staticStorage(offset: let offset),
-             .automaticStorage(offset: let offset):
-            offset
-        case .registerStorage:
-            nil
-        }
-        guard let offset else {
+        guard let offset = symbol.storage.offset else {
             XCTFail("symbol is missing an expected offset: \(symbol)")
             return
         }
@@ -1631,14 +1596,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             XCTFail("failed to resolve identifier \"foo\"")
             return
         }
-        let offset: Int? = switch symbol.storage {
-        case .staticStorage(offset: let offset),
-             .automaticStorage(offset: let offset):
-            offset
-        case .registerStorage:
-            nil
-        }
-        guard let offset else {
+        guard let offset = symbol.storage.offset else {
             XCTFail("symbol is missing an expected offset: \(symbol)")
             return
         }
@@ -1838,14 +1796,7 @@ final class SnapCompilerFrontEndTests: XCTestCase {
             XCTFail("failed to resolve identifier \"r\"")
             return
         }
-        let offset: Int? = switch symbol.storage {
-        case .staticStorage(offset: let offset),
-             .automaticStorage(offset: let offset):
-            offset
-        case .registerStorage:
-            nil
-        }
-        guard let offset else {
+        guard let offset = symbol.storage.offset else {
             XCTFail("symbol is missing an expected offset: \(symbol)")
             return
         }

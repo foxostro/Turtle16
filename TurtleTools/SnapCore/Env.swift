@@ -414,14 +414,14 @@ public enum SymbolStorage: Hashable {
         }
     }
     
-    public var offset: Int {
+    public var offset: Int? {
         switch self {
         case .automaticStorage(offset: let offset),
              .staticStorage(offset: let offset):
-            offset!
+            offset
             
         case .registerStorage:
-            fatalError("There is no offset associated with a symbol bound to a register: \(self)")
+            nil
         }
     }
 }

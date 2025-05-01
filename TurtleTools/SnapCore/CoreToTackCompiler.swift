@@ -1006,7 +1006,7 @@ public final class CoreToTackCompiler: CompilerPassWithDeclScan {
                 )
             ]
         case .registerStorage:
-            fatalError("a symbol with register storage has no offset: \(symbol)")
+            fatalError("symbol has no memory address: \(symbol)")
         }
         return Seq(sourceAnchor: sourceAnchor, children: children)
     }
